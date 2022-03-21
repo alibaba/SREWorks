@@ -20,6 +20,9 @@ SREWorks 作为阿里云大数据SRE团队对SRE理念的工程实践，专注�
 
 ![image.png](/paas/sw-frontend/docs/pictures/1627890956935-488725a3-68e9-429f-8671-2371a27a8161.png)
 
+
+
+
 # SREWorks 快速部署
 
 ## 1. 前提条件

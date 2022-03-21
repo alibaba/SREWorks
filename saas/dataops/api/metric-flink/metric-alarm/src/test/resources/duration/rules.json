@@ -1,0 +1,209 @@
+[
+  {
+    "app_name": "razor,general",
+    "condition": {
+      "duration": "5m",
+      "comparator": ">",
+      "thresholds": {
+        "WARNING": 240000.0,
+        "CRITICAL": 240000.0
+      },
+      "type": "value_threshold",
+      "math_abs": false
+    },
+    "metric": "razor.processor.data_delay_ms",
+    "rate": false,
+    "no_data_condition": {
+      "thresholds": {
+        "CRITICAL": "5m"
+      },
+      "type": "no_data"
+    },
+    "aggregator": "max",
+    "name": "worker-delay",
+    "ds-aggregator": "max",
+    "id": 1,
+    "group": "tisplus",
+    "tags": {
+      "index": "*",
+      "type": "udf"
+    }
+  },
+  {
+    "app_name": "razor,general",
+    "condition": {
+      "condition": {
+        "duration": "5m",
+        "comparator": ">",
+        "thresholds": {
+          "WARNING": 240000.0,
+          "CRITICAL": 240000.0
+        },
+        "type": "value_threshold",
+        "math_abs": false
+      },
+      "count": 2,
+      "type": "continuous"
+    },
+    "metric": "razor.processor.data_delay_ms",
+    "rate": false,
+    "no_data_condition": {
+      "thresholds": {
+        "CRITICAL": "3m"
+      },
+      "type": "no_data"
+    },
+    "aggregator": "max",
+    "name": "worker-delay_copy",
+    "ds-aggregator": "max",
+    "id": 2,
+    "group": "tisplus",
+    "tags": {
+      "index": "*",
+      "type": "udf"
+    }
+  },
+  {
+    "app_name": "razor,general",
+    "condition": {
+      "condition": {
+        "duration": "5m",
+        "comparator": ">",
+        "thresholds": {
+          "WARNING": 240000.0,
+          "CRITICAL": 240000.0
+        },
+        "compared_to": "30m",
+        "type": "change_threshold",
+        "math_abs": true
+      },
+      "count": 2,
+      "type": "continuous"
+    },
+    "metric": "razor.processor.data_delay_ms",
+    "rate": false,
+    "no_data_condition": {
+      "thresholds": {
+        "CRITICAL": "3m"
+      },
+      "type": "no_data"
+    },
+    "aggregator": "max",
+    "name": "worker-delay_copy",
+    "ds-aggregator": "max",
+    "id": 3,
+    "group": "tisplus",
+    "tags": {
+      "index": "*",
+      "type": "udf"
+    }
+  },
+  {
+    "app_name": "razor,general",
+    "condition": {
+      "condition": {
+        "type": "or",
+        "conditions": [
+          {
+            "duration": "5m",
+            "comparator": ">",
+            "thresholds": {
+              "WARNING": 240000.0,
+              "CRITICAL": 240000.0
+            },
+            "type": "value_threshold",
+            "math_abs": false
+          },
+          {
+            "duration": "5m",
+            "comparator": ">",
+            "thresholds": {
+              "WARNING": 240000.0,
+              "CRITICAL": 240000.0
+            },
+            "compared_to": "30m",
+            "type": "change_threshold",
+            "math_abs": true
+          }
+        ]
+      },
+      "count": 2,
+      "type": "continuous"
+    },
+    "metric": "razor.processor.data_delay_ms",
+    "rate": false,
+    "no_data_condition": {
+      "thresholds": {
+        "CRITICAL": "3m"
+      },
+      "type": "no_data"
+    },
+    "aggregator": "max",
+    "name": "worker-delay_copy",
+    "ds-aggregator": "max",
+    "id": 4,
+    "group": "tisplus",
+    "tags": {
+      "index": "*",
+      "type": "udf"
+    }
+  },
+  {
+    "app_name": "OpensearchOfflineBeijing,general",
+    "condition": {
+      "condition": {
+        "duration": "1m",
+        "comparator": ">",
+        "thresholds": {
+          "CRITICAL": 0
+        },
+        "type": "value_threshold",
+        "math_abs": false
+      },
+      "count": 5,
+      "type": "continuous"
+    },
+    "metric": "read_io_exception_qps",
+    "rate": false,
+    "aggregator": "sum",
+    "name": "JoinTaskReadIoException",
+    "ds-aggregator": "avg",
+    "id": 5,
+    "group": "tisplus",
+    "tags": {
+    }
+  },
+  {
+    "app_name": "OpensearchOfflineBeijing,general",
+    "condition":{
+      "type":"and",
+      "conditions":[
+        {
+          "duration":"5m",
+          "comparator":"<",
+          "thresholds":{
+            "WARNING":0,
+            "CRITICAL":0
+          },
+          "compared_to":"4h",
+          "type":"change_threshold",
+          "math_abs":false
+        }
+      ]
+    },
+    "metric": "OpenSearch.syncservice.enhanced.read_io_exception_qps",
+    "rate": false,
+    "aggregator": "sum",
+    "name": "JoinTaskReadIoException",
+    "ds-aggregator": "avg",
+    "id": 99671,
+    "group": "tisplus",
+    "tags": {
+      "aliyun_user_id": "1886399711646602",
+      "cluster": "advance_join_rt_hightps",
+      "env": "out_beijing",
+      "task_name": "130075239_enhanced_join_realtime"
+    }
+  }
+
+]

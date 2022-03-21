@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: abm-operator
+spec:
+  serviceName: "abm"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: abm-operator
+  template:
+    metadata:
+      labels:
+        app: abm-operator
+        standard-app: default
+        standard-service: abm-operator
+    spec:
+      serviceAccountName: abm-operator
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+      containers:
+        - env:
+            - name: ABM_clean_no_owner_resource
+              value: "true"
+          name: abm-operator
+          image: {{ .Values.opImage }}
+          imagePullPolicy: Always
+          ports:
+              - containerPort: 5005
+          securityContext:
+            privileged: true
+          resources:
+            limits:
+              cpu: "4"
+              memory: "4Gi"
+            requests:
+              cpu: "4"
+              memory: "4Gi"
+          volumeMounts:
+            - mountPath: /app/dshm
+              name: dshm
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: abm-operator
+
+---
+
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: abm-operator
+subjects:
+  - kind: ServiceAccount
+    name: abm-operator
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: templateversiondefinitions.abm.io
+spec:
+  group: abm.io
+  names:
+    kind: TemplateVersionDefinition
+    plural: templateversiondefinitions
+    singular: templateversiondefinition
+    shortNames:
+      - tvd
+  scope: Cluster
+  version: v1
+
+

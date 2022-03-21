@@ -1,0 +1,7 @@
+.idea
+*.iml
+*.log
+*/target/*
+cmdb-config/cmdb-config-*/target/
+*/__pycache__/*
+*.pyc

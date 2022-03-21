@@ -1,0 +1,69 @@
+{{- if eq .Values.installMode "default" -}}
+
+apiVersion: v1
+data:
+
+  IMAGE_PUSH_REGISTRY: {{ .Values.appmanager.server.docker.registry }}/{{ .Values.appmanager.server.docker.namespace }}
+  
+  MAVEN_IMAGE: {{ .Values.global.images.registry }}/sw-maven:{{ .Values.global.images.tag }}
+  PYTHON2_IMAGE: {{ .Values.global.images.registry }}/sw-python27:{{ .Values.global.images.tag }}
+  MIGRATE_IMAGE: {{ .Values.global.images.registry }}/sw-migrate:{{ .Values.global.images.tag }}
+  JRE8_IMAGE: {{ .Values.global.images.registry }}/sw-openjdk8-jre:{{ .Values.global.images.tag }}
+  POSTRUN_IMAGE: {{ .Values.global.images.registry }}/sw-postrun:{{ .Values.global.images.tag }}
+
+  SOURCE_BRANCH: {{ .Values.source.branch }}
+  SOURCE_REPO: {{ .Values.source.repo }}
+  SOURCE_CI_ACCOUNT: {{ .Values.source.ciAccount }}
+  SOURCE_CI_TOKEN: {{ .Values.source.ciToken }}
+
+  ZOOKEEPER_ENDPOINT: {{ .Release.Name }}-zookeeper
+  ENDPOINT_PAAS_MINIO: {{ .Release.Name }}-minio.{{ .Release.Namespace }}
+  APPMANAGER_ENDPOINT: {{ .Release.Name }}-appmanager
+  KAFKA_ENDPOINT: {{ .Release.Name }}-kafka.{{ .Release.Namespace }}
+  AUTHPROXY_ENDPOINT: {{ .Values.core.stageId }}-{{ .Values.core.appId }}-paas-authproxy
+  REDIS_ENDPOINT: {{ .Release.Name }}-redis-master.{{ .Release.Namespace }}
+  REDIS_PASSWORD: {{ .Values.appmanagerbase.redis.password | quote }}
+
+  APPMANAGER_USERNAME: {{ .Values.swcli.username }}
+  APPMANAGER_PASSWORD: {{ .Values.swcli.password }}
+  APPMANAGER_CLIENT_ID: {{ .Values.swcli.clientId }}
+  APPMANAGER_CLIENT_SECRET: {{ .Values.swcli.clientSecret }}
+
+  MINIO_ACCESS_KEY: {{ .Values.global.minio.accessKey }}
+  MINIO_SECRET_KEY: {{ .Values.global.minio.secretKey }}
+  GLOBAL_STORAGE_CLASS: {{ .Values.global.storageClass | default "alicloud-disk-available" | quote }}
+
+  #APPMANAGER_SERVICE: {{ .Release.Name }}-appmanager
+  CORE_STAGE_ID: {{ .Values.core.stageId }}
+  CORE_APP_ID: {{ .Values.core.appId }}
+
+  SAAS_STAGE_ID: {{ .Values.saas.stageId }}
+  
+  DOMAIN_BASE_INGRESS: {{ template "domain.base.ingress" . }}
+  DOMAIN_NETWORK_PROTOCOL: {{ template "domain.base.ingress.networkProtocol" . }}
+
+  PLATFORM_NAME: {{ .Values.platformName }}
+  PLATFORM_LOGO: {{ .Values.platformLogo }}
+
+  NAMESPACE_DATAOPS: {{ template "dataops.namespace" . }} 
+  NAMESPACE_AIOPS: {{ template "aiops.namespace" . }} 
+
+  IMPORT_FRONTEND: {{ .Values.build.importFrontend | quote }}
+  IMAGE_BUILD_ENABLE: {{ .Values.build.enable | quote }}
+
+  DATAOPS_DB_PASSWORD: {{ .Values.saas.dataops.dbPassword }}
+  GRAFANA_ADMIN_PASSWORD: {{ .Values.saas.grafana.password }} 
+
+  ACCOUNT_SUPER_CLIENT_ID: {{ .Values.appmanager.gateway.account_super_client_id }}
+  ACCOUNT_SUPER_CLIENT_SECRET: {{ .Values.appmanager.gateway.account_super_client_secret }}
+  ACCOUNT_SUPER_ID: {{ .Values.appmanager.gateway.account_super_id }}
+  ACCOUNT_SUPER_SECRET_KEY: {{ .Values.appmanager.gateway.account_super_secret_key }}
+
+  HOME_BUILD: {{ .Values.build.isHome | quote }}
+
+
+kind: ConfigMap
+metadata:
+  name: init-configmap
+
+{{- end -}}

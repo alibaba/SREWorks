@@ -1,0 +1,24 @@
+{
+  "json_conf_key": "json_conf_value",
+  "json_conf_list_key": [1, 2, 3],
+
+  "databases": {
+    "test1": {
+      "host": "rm-tatodps-pe-db.mysql.rdstest.tbsite.net",
+      "port": 3306,
+      "user": "brain_test",
+      "passwd": "brain_test555",
+      "db": "brain_test",
+      "pool_size": 50
+    },
+    "test2": {
+      "host": "rm-tatodps-pe-db.mysql.rdstest.tbsite.net",
+      "port": 3306,
+      "user": "brain_test",
+      "passwd": "brain_test555",
+      "db": "brain_test",
+      "pool_size": 50
+    }
+  }
+
+}

@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: canal-server
+  labels:
+    app: canal-server
+    release: {{ .Release.Name }}
+spec:
+  serviceName: "canal-server-discovery-svc"
+  selector:
+    matchLabels:
+      app: canal-server
+  replicas: {{ .Values.replicas }}
+  template:
+    metadata:
+      labels:
+        app: canal-server
+      annotations:
+        prometheus.io/path: /
+        prometheus.io/port: "11112"
+        prometheus.io/scrape: "true"
+    spec:
+      containers:
+      - name: "canal-server"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+        command: ["/bin/bash","-c","/home/admin/canal-server/bin/startup.sh local"]
+        ports:
+          - containerPort: 11110
+            protocol: TCP
+            name: admin
+          - containerPort: 11111
+            protocol: TCP
+            name: http
+          - containerPort: 11112
+            protocol: TCP
+            name: metric
+        resources:
+          requests:
+            cpu: 300m
+            memory: 500Mi
+          limits:
+            cpu: 4000m
+            memory: 2Gi
+        env:
+          - name: NameSpace
+            value: {{ .Release.Namespace | quote }}
+        volumeMounts:
+          - mountPath: /home/admin/canal-server/bin/startup.sh
+            subPath: startup.sh
+            name: server-startup
+
+      volumes:
+        - name: server-startup
+          configMap:
+            name: canal-server-startup-conf
+            defaultMode: 0777
+
+      securityContext:
+        runAsUser: 0

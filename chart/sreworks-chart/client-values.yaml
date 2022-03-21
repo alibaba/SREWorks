@@ -1,0 +1,25 @@
+
+installMode: client
+
+appmanagerbase:
+  enabled: true
+  redis:
+    enabled: false
+  zookeeper: 
+    enabled: false
+  minio:
+    enabled: false
+  mysql:
+    enabled: false
+  kafka:
+    enabled: false
+  kruise:
+    enabled: true
+  
+appmanager:
+  enabled: true
+  installMode: client
+
+
+
+

@@ -1,0 +1,13 @@
+oap:
+  image:
+    tag: 8.5.0-es7
+  storageType: elasticsearch7
+
+elasticsearch:
+  enabled: false
+  config:
+    host: elasticsearch-proxy
+    port:
+      http: 9200
+
+elasticsearchEndpint: http://sreworks.c38cca9c474484bdc9873f44f733d8bcd.cn-beijing.alicontainer.com/gateway/elasticsearch/

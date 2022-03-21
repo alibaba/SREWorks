@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: arena-deploy-{{ .Values.image.version }}
+  namespace: kube-system
+spec:
+  backoffLimit: 5
+  parallelism: 1
+  template:
+    metadata:
+      labels:
+        name: arena-deploy-{{ .Values.image.version }}
+    spec:
+      containers:
+        - image: {{ .Values.image.repository }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          name: arena-deploy-manager
+          env:
+            - name: PULL_IMAGE_BY_VPC_NETWORK
+              value: 'false'
+            - name: PLATFORM
+              value: unknown
+            - name: USE_PROMETHEUS
+              value: 'false'
+            - name: REGION
+              value: cn-hangzhou
+          command:
+            - /arena-installer/install.sh
+      dnsPolicy: ClusterFirst
+      hostNetwork: true
+      restartPolicy: Never
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: ack-arena
+      serviceAccountName: ack-arena
+      terminationGracePeriodSeconds: 30

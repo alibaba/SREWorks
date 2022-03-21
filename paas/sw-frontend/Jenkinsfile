@@ -1,0 +1,43 @@
+import groovy.json.JsonOutput
+
+def PROJECT_NAME = (env.JOB_NAME.tokenize('/') as String[])[0]
+def BRANCH = env.BRANCH_NAME
+def REPO = scm.getUserRemoteConfigs()[0].getUrl()
+def TEST_RESULT
+
+pipeline {
+    options {
+        disableConcurrentBuilds()
+    }
+    triggers {
+        pollSCM('* * * * *')
+    }
+    environment {
+        IMAGE_PREFIX = "reg.docker.alibaba-inc.com/sw/paas-frontend"
+    }
+    agent any
+    parameters {
+        string(name: 'ALPINE_X86_IMAGE', defaultValue: 'reg.docker.alibaba-inc.com/alibaba_apsara_paas/alpine:v1.0.0', description: '')
+        string(name: 'X86_IMAGE_PREFIX', defaultValue: 'reg.docker.alibaba-inc.com/abm-aone/paas-frontend', description: '')
+        string(name: 'X86_OSSUTIL_URL', defaultValue: 'http://gosspublic.alicdn.com/ossutil/1.6.10/ossutil64', description: '')
+    }
+    stages {
+        stage("Clone Repo") {
+            steps {
+                git credentialsId: "$GIT_CREDENTIAL",
+                    url: REPO,
+                    branch: BRANCH
+            }
+        }
+        stage("Build & Push lib") {
+            agent any
+            steps {
+                script {
+                    retry(count: "${env.MAX_RETRY_COUNT}") {
+                        docker.build("${params.X86_IMAGE_PREFIX}:$BRANCH", "--pull --no-cache --build-arg TAG=$BRANCH --build-arg OSSUTIL_URL=${params.X86_OSSUTIL_URL} -f ./Dockerfile_base .")
+                    }
+                }
+            }
+        }
+    }
+}

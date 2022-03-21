@@ -1,0 +1,18 @@
+{
+    "job": {
+        "build": {
+            "args": {},
+            "dockerfileTemplateArgs": {},
+            "dockerfileTemplate": "Dockerfile_job",
+            "repo": "http://gitlab.alibaba-inc.com/pe3/appmanager-python-demo.git",
+            "branch": "develop",
+            "imagePush": true,
+            "imagePushRegistry": "reg.docker.alibaba-inc.com/abm-oxs",
+            "imagePushUseBranchAsTag": true
+        },
+        "name": "job"
+    },
+    "env": [
+        "WHOAMI"
+    ]
+}

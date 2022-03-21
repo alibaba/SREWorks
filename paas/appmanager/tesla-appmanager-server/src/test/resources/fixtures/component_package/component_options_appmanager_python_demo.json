@@ -1,0 +1,21 @@
+{
+    "kind": "CloneSet",
+    "containers": [
+        {
+            "name": "server",
+            "build": {
+                "args": {},
+                "dockerfileTemplateArgs": {},
+                "dockerfileTemplate": "Dockerfile",
+                "branch": "develop",
+                "repo": "http://gitlab.alibaba-inc.com/pe3/appmanager-python-demo.git",
+                "imagePush": true,
+                "imagePushRegistry": "reg.docker.alibaba-inc.com/abm-oxs",
+                "imagePushUseBranchAsTag": true
+            }
+        }
+    ],
+    "env": [
+        "WHOAMI"
+    ]
+}

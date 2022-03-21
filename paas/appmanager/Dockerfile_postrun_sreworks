@@ -1,0 +1,7 @@
+FROM sw-postrun:latest
+COPY ./APP-META-PRIVATE/postrun /app/postrun
+ENV SREWORKS_INIT "enable"
+RUN pip install requests requests_oauthlib -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
+RUN rm -rf /app/postrun/00_init_app_manager_flow.py && \
+    apk update && \
+    apk add wget bind-tools

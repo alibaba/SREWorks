@@ -1,0 +1,32 @@
+stage:
+  集团代码规约检查:
+    env:
+      image: 5u7
+      setting:
+        jdk: '8'
+        maven: '3'
+    type: alibaba_code_scan
+    plugin:
+      - param:
+          url: '${repo}'
+          branch: '${branch}'
+          path: '${source_root}'
+          isDelGit: 'false'
+        name: checkout
+        pos: front
+      - param:
+          type: 'issues,blocker_issues,critical_issues,major_issues,code_lines,comments_rate,repetion_rate,cyc_complexity,debt'
+          source_root: '${source_root}'
+          exec: 'mvn org.codehaus.mojo:sonar-maven-plugin:2.7.1:sonar -Dsonar.scm.disabled=true -Dsonar.projectKey=p3c_repo_${repo_id} -Dsonar.branch=p3c_repo_${repo_id}'
+          sonar_url: metrics.alibaba.net
+          project_key: 'p3c_repo_${repo_id}:p3c_repo_${repo_id}'
+          timeout: '400'
+          jdk_version: '1.8'
+          pipeline_id: '${pipeline_id}'
+          sonar_domain_env: daily
+        name: p3c_sonar
+        pos: back
+    exec:
+      - 'echo "###### 集团代码规约检查开始 #####!"'
+pipeline:
+  - 集团代码规约检查

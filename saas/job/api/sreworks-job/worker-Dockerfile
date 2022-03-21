@@ -1,0 +1,14 @@
+FROM registry.cn-hangzhou.aliyuncs.com/alisre/sreworks-base AS build
+COPY . /app
+WORKDIR /app
+COPY settings.xml /root/.m2/settings.xml
+RUN mvn -Dmaven.test.skip=true clean package
+
+#FROM registry.cn-hangzhou.aliyuncs.com/alisre/openjdk:11.0.10-jre AS release
+FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/openjdk:13-alpine AS release
+USER root
+WORKDIR /root
+COPY --from=build /app/sreworks-job-worker/target/sreworks-job.jar /app/sreworks-job.jar
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && apk add build-base && apk add bash python3 && apk add python3-dev
+RUN pip3 install requests python-dateutil==1.4 --pre gql[aiohttp] -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com 
+ENTRYPOINT ["java", "-Xmx1g", "-Xms1g", "-XX:ActiveProcessorCount=2", "-jar", "/app/sreworks-job.jar"]

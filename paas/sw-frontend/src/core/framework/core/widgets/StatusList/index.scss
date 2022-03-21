@@ -1,0 +1,10 @@
+.status-list {
+  display: flex;
+  flex-flow: row wrap;
+  align-content: flex-start;
+
+  .status-item {
+    margin: 5px;
+    box-sizing: border-box;
+  }
+}

@@ -1,0 +1,75 @@
+
+.grid-card {
+  overflow-x: hidden;
+  .ant-card {
+    position: relative;
+    .tooltip-icon{
+      position: absolute;
+      right: 20px;
+      top: 30px;
+      color: #00c1de;
+    }
+  }
+  .action-text {
+    margin-left: 5px;
+  }
+
+  .description-wrap {
+    display: flex;
+    flex-wrap: wrap;
+
+    .description-item {
+      margin-bottom: 5px;
+
+      .description-item-title {
+        color: rgba(0, 0, 0, .45);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .description-item-value {
+        color: rgba(84, 84, 84, 0.85);
+        font-size: 18px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+  .description-wrap-backup {
+    display: flex;
+    flex-wrap: wrap;
+    .description-item-backup {
+      margin-bottom: 5px;
+
+      .description-item-title {
+        color: rgba(0, 0, 0, .45);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        .description-item-value-in {
+          color:#00c1de;
+          font-size: 14px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+      .description-item-value-out {
+        color:#00c1de;
+        font-size: 30px;
+        font-weight: bold;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .description-item-value {
+        color: rgba(84, 84, 84, 0.85);
+        font-size: 18px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+}

@@ -1,8 +1,6 @@
 # SREWorks 介绍
 
 
-随着行业不断发展，大数据&AI也逐渐呈现云原生化的趋势，在阿里，所有商业化场景使用的大数据 & AI 系统产品都是统一由阿里云计算平台建设和交付维护。复杂的业务场景及其背后涉及到的不同技术方向的开源和自研，使得产品运维面临技术复杂度高、规模大、场景多等挑战。
-
 阿里巴巴云原生大数据运维平台 SREWorks，沉淀了团队近10年经过内部业务锤炼的 SRE 工程实践，秉承“数据化、智能化”运维思想，帮助运维行业更多的从业者采用“数智”思想做好高效运维。
 
 
@@ -46,7 +44,7 @@ mv ./helm /usr/local/bin/
 ### 安装 SREWorks
 基于Helm，下面开始安装 SREWorks。
 
-- SREWorks的部署必须指定ingress的域名，阿里云ACK集群的域名在【基本信息】中可以找到，例如 `http://*.ceea604.cn-huhehaote.alicontainer.com` ，* 部分用户可以自行填写，比如`http://sreworks.c34a60e3c93854680b590b0d5a190310a.cn-zhangjiakou.alicontainer.com`。未使用阿里云ACK集群的也可以自行确定浏览器访问SREWorks控制台的域名，在安装时传入`appmanager.home.url`参数即可
+- SREWorks的部署必须指定ingress的域名，阿里云ACK集群的域名在【基本信息】中可以找到，例如 `http://*.ceea604.cn-huhehaote.alicontainer.com` ，* 部分用户可以自行填写，比如`http://sreworks.c34a0310a.cn-zhangjiakou.alicontainer.com`。未使用阿里云ACK集群的也可以自行确定浏览器访问SREWorks控制台的域名，在安装时传入`appmanager.home.url`参数即可
 
 ```
 # 下载sreworks到本地
@@ -56,7 +54,7 @@ cd sreworks/chart/sreworks-chart
 # 安装SREWorks
 helm install sreworks ./ \
     --create-namespace --namespace sreworks \
-    --set appmanager.home.url="http://sreworks-daily2.cf6f63261d18a46df830b4744c5ca8895.cn-hangzhou.alicontainer.com"
+    --set appmanager.home.url="http://sreworks-*.cn-hangzhou.alicontainer.com"
 
 ```
 

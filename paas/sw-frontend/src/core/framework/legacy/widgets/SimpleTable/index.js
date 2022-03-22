@@ -93,7 +93,7 @@ class SimpleTable extends React.Component  {
                 filterDropdown:false,
                 render: (text, record) => <ActionsRender {...rowActions} nodeParams={this.getNodeParams()} record={record} openAction={this.handleOpenRowAction}/>
             });
-        }else if(itemToolbar){//增加新的可视化row toolbar适配
+        }else if(itemToolbar && itemToolbar.actionList && itemToolbar.actionList.length){//增加新的可视化row toolbar适配
             hasOper=true;
             columns.push({
                 title: localeHelper.get('operation','操作'),

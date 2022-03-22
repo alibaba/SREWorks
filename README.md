@@ -75,8 +75,9 @@ kubectl delete namespace sreworks
 
 ## 5. 常见问题
 
-- 1. 需要使用非默认的kubeconfig，请在helm命令中加入`--kubeconfig`指定目标集群的kubeconfig文件的路径
-- 2. 如果遇到长时间Pod处于ContainerCreating，请执行 `kubectl describe pod `命令查看Pod的异常事件
+- 1. [SREWorks帮助文档](/paas/sw-frontend/docs/SUMMARY.md)
+- 2. 需要使用非默认的kubeconfig，请在helm命令中加入`--kubeconfig`指定目标集群的kubeconfig文件的路径
+- 3. 如果遇到长时间Pod处于ContainerCreating，请执行 `kubectl describe pod `命令查看Pod的异常事件
    - 异常事件中出现 `InvalidInstanceType.NotSupportDiskCategory`，说明当前的Node不支持挂载这种云盘类型，请在helm命令中加入 `--set global.storageClass="alicloud-disk-essd"` 进行指定，默认为`alicloud-disk-available`
 
 

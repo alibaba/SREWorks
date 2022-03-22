@@ -13,25 +13,20 @@ let properties = {
         ApsaraStack: "ApsaraStack",//标专
         DXZ: "DXZ",//大小专
         OXS: "OXS",//OXS
-        Internal: "Internal",//对内(Tesla)
+        Internal: "Internal",//对内()
         Standalone: "Standalone",//软件化输出
         RQY: "RQY",//敏捷版
         PaaS: "PaaS"//paas化版本
     },
     name: 'SREWorks',
-    blackLogoSrc: blackLogo,
-    whiteLogoSrc: whiteLogo,
-    textLogoSrc: textLogo,
-    whiteLogoLineSrc: whiteLogoLine,
     // envFlag: "PaaS",
     envFlag: "Standalone",
     defaultProduct: "desktop",
     defaultNamespace: "default",
     defaultStageId: "dev",
     deployEnv: process.env.DEPLOY_ENV || 'local',
-    footerText: '',
     platformName: 'SREWorks',
-    platformLogo: '//g.alicdn.com/bcc/bigdata-manager/new_favicon.png',
+    platformLogo: '/static/publicMedia/new_favicon.png',
 };
 
 /**
@@ -50,9 +45,9 @@ const development = {
 };
 // 日常环境配置项
 const daily = {
-    baseUrl: 'https://tesladaily.alibaba.net/',
-    apiEndpoint: 'https://tesladaily.alibaba.net/api-proxy/proxy/',
-    gateway: 'https://tesladaily.alibaba.net/gateway/'
+    baseUrl: '',
+    apiEndpoint: '',
+    gateway: ''
 };
 // mocks 环境配置
 const mocks = {
@@ -60,15 +55,15 @@ const mocks = {
 };
 // 预发环境配置项
 const prepub = {
-    baseUrl: 'https://tesla-pre.alibaba-inc.com/',
-    apiEndpoint: 'https://tesla-pre.alibaba-inc.com/api-proxy/proxy/',
-    gateway: 'https://tesla-pre.alibaba-inc.com/gateway/'
+    baseUrl: '',
+    apiEndpoint: '',
+    gateway: ''
 };
 // 生产环境配置项
 const production = {
-    baseUrl: 'https://tesla.alibaba-inc.com/',
-    apiEndpoint: 'https://tesla.alibaba-inc.com/api-proxy/proxy/',
-    gateway: 'https://tesla.alibaba-inc.com/gateway/'
+    baseUrl: '',
+    apiEndpoint: '',
+    gateway: ''
 };
 
 // 根据不同的环境生成运行时配置项

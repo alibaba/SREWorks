@@ -82,6 +82,13 @@ public enum DeployComponentStateEnum {
                     return FAILURE;
                 }
                 break;
+            case EXCEPTION:
+                if (DeployComponentEventEnum.OP_RETRY.equals(event)) {
+                    return PROCESSING;
+                } else if (DeployComponentEventEnum.OP_TERMINATE.equals(event)) {
+                    return FAILURE;
+                }
+                break;
             default:
                 return null;
         }

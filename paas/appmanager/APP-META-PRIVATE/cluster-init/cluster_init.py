@@ -74,8 +74,8 @@ def init_cluster():
     items = requests.get("%s/clusters" % ENDPOINT, headers=HEADERS).json().get('data', {}).get('items', [])
     for item in items:
         cluster_mapping[item['clusterId']] = {
-            'masterUrl': item['clusterConfig']['masterUrl'],
-            'oauthToken': item['clusterConfig']['oauthToken'],
+            'masterUrl': item.get('clusterConfig',{}).get('masterUrl'),
+            'oauthToken': item.get('clusterConfig',{}).get('oauthToken'),
         }
 
     # 获取当前的 masterUrl 和 oauthToken 信息
@@ -88,7 +88,7 @@ def init_cluster():
     for cluster in clusters:
         if not cluster_mapping.get(cluster):
             _insert_cluster(cluster, master_url, oauth_token)
-        elif cluster_mapping[cluster]['masterUrl'] != master_url or cluster_mapping[cluster]['oauthToken'] != oauth_token:
+        elif cluster_mapping[cluster].get('masterUrl') != master_url or cluster_mapping[cluster].get('oauthToken') != oauth_token:
             _update_cluster(cluster, master_url, oauth_token)
         else:
             logger.info('no need to update cluster %s' % cluster)

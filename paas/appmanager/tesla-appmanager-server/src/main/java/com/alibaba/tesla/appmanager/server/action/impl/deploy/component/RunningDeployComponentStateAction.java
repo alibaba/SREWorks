@@ -125,8 +125,7 @@ public class RunningDeployComponentStateAction implements DeployComponentStateAc
         } catch (Exception e) {
             response = GetDeployComponentHandlerRes.builder()
                     .status(DeployComponentStateEnum.WAIT_FOR_OP)
-                    .message(String.format("get component status failed|request=%s|exception=%s",
-                            JSONObject.toJSONString(request), ExceptionUtils.getStackTrace(e)))
+                    .message(String.format("deploy components failed|errorMessage=%s", ExceptionUtils.getStackTrace(e)))
                     .build();
         }
         switch (response.getStatus()) {

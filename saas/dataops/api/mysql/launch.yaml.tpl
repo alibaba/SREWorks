@@ -86,7 +86,6 @@ spec:
             tag: 8.0.22-debian-10-r44
 
           auth:
-            #rootPassword: 'bGuwsAWQ222M6Klls2'
             rootPassword: ${DATAOPS_DB_PASSWORD}
 
 

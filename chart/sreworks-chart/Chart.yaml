@@ -1,15 +1,15 @@
 description: SRE Works
-home: https://tesla.alibaba-inc.com/abm/
-icon: https://img.alicdn.com/tfs/TB1OS0eeMMPMeJjy1XdXXasrXXa-245-91.png
+home: https://github.com/alibaba/sreworks
+icon: https://sreworks.oss-cn-beijing.aliyuncs.com/logo/logo.png
 dependencies:
 - name: appmanagerbase
   condition: appmanagerbase.enabled
 - name: appmanager
   condition: appmanager.enabled
 maintainers:
-- email: jiongen.zje@alibaba-inc.com
-  name: Jiongen Zhong
+- email: dataops@service.alibaba.com
+  name: sreworks
 name: sreworks
 sources:
-- http://gitlab.alibaba-inc.com/alisre/sreworks-chart.git
+- https://github.com/alibaba/SREWorks.git
 version: 0.1.1

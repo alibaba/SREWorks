@@ -39,9 +39,9 @@ let properties = {
  */
 // 本地开发环境配置
 const development = {
-    baseUrl: 'http://sreworks.c38cca9c474484bdc9873f44f733d8bcd.cn-beijing.alicontainer.com/',
-    apiEndpoint: 'http://sreworks.c38cca9c474484bdc9873f44f733d8bcd.cn-beijing.alicontainer.com/',
-    gateway: 'http://sreworks.c38cca9c474484bdc9873f44f733d8bcd.cn-beijing.alicontainer.com/'
+    baseUrl: '',
+    apiEndpoint: '',
+    gateway: ''
 };
 // 日常环境配置项
 const daily = {
@@ -51,7 +51,7 @@ const daily = {
 };
 // mocks 环境配置
 const mocks = {
-    baseUrl: 'http://rap2api.alibaba-inc.com/app/mock/2727'
+    baseUrl: ''
 };
 // 预发环境配置项
 const prepub = {

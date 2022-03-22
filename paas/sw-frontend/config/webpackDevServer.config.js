@@ -78,7 +78,7 @@ module.exports = function (proxy, allowedHost) {
     public: allowedHost,
     proxy: {
       "/gateway": {
-        target: "http://sreworks.c38cca9c474484bdc9873f44f733d8bcd.cn-beijing.alicontainer.com/",
+        target: "",
         changeOrigin: true,
         cookieDomainRewrite:"localhost"
         // cookieDomainRewrite: "30.225.0.197"

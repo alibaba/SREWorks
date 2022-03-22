@@ -15,6 +15,5 @@ data:
             index  index.html index.htm;
 
             proxy_pass {{ .Values.elasticsearchEndpint }};
-            #proxy_pass http://sreworks.c38cca9c474484bdc9873f44f733d8bcd.cn-beijing.alicontainer.com/gateway/elasticsearch/;
         }
     }

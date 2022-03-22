@@ -10,4 +10,4 @@ elasticsearch:
     port:
       http: 9200
 
-elasticsearchEndpint: http://sreworks.c38cca9c474484bdc9873f44f733d8bcd.cn-beijing.alicontainer.com/gateway/elasticsearch/
+elasticsearchEndpint: http://test.com/gateway/elasticsearch/

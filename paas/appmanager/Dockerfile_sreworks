@@ -2,7 +2,7 @@ FROM maven:3.8.3-adoptopenjdk-11 AS build
 COPY . /app
 RUN mkdir /root/.m2/ && curl https://sreworks.oss-cn-beijing.aliyuncs.com/test/settings.xml -o /root/.m2/settings.xml
 WORKDIR /app
-RUN mvn -Dmaven.test.skip=true clean package -U -q
+RUN mvn -Dmaven.test.skip=true clean package -U
 
 # Release
 FROM maven:3.8.3-adoptopenjdk-11 AS release

@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `productops_node` (
   `version` varchar(1024) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `stage_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `uk` (`node_type_path`(128),`stage_id`(128))
+  UNIQUE KEY `uk` (`node_type_path`(128),`stage_id`(128))
 ) ENGINE=InnoDB AUTO_INCREMENT=2025 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `productops_node_element` (

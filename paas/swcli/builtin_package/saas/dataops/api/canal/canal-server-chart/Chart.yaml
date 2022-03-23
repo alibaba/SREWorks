@@ -1,6 +1,0 @@
-apiVersion: v2
-appVersion: 1.1.5
-description: A Helm chart for Kubernetes
-name: canal-server
-type: application
-version: 1.0.0

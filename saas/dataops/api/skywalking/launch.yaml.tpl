@@ -39,7 +39,9 @@ spec:
     - name: "values"
       value:
         oap:
+          replicas: 1
           image:
+            repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-oap-server-utc-8
             tag: 8.5.0-es7
           storageType: elasticsearch7
 

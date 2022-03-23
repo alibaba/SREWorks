@@ -43,7 +43,7 @@ spec:
             service:
               type: ClusterIP
             persistence:
-              size: 200Gi
+              size: 50Gi
             extraFlags: "--max-connect-errors=1000 --max_connections=10000"
 
             configuration: |-
@@ -63,7 +63,7 @@ spec:
               log-error=/opt/bitnami/mysql/logs/mysqld.log
               character-set-server=UTF8
               collation-server=utf8_general_ci
-              expire_logs_days=30
+              expire_logs_days=3
 
               [client]
               port=3306

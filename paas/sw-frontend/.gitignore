@@ -25,6 +25,11 @@ yarn-error.log*
 
 /.idea
 .vscode
-config/env.js
 
 .cache
+
+/src/properties.js
+
+
+
+

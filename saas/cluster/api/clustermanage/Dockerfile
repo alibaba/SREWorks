@@ -10,4 +10,4 @@ WORKDIR /root
 COPY --from=build /app/clustermanage-start/target/clustermanage.jar /app/clustermanage.jar
 COPY --from=build /app/helm /app/helm
 COPY --from=build /app/client-deploy-packages /app/client-deploy-packages
-ENTRYPOINT ["java", "-Xmx1g", "-Xms1g", "-XX:ActiveProcessorCount=2", "-jar", "/app/clustermanage.jar"]
+ENTRYPOINT ["java", "-Xmx100m", "-Xms20m", "-XX:ActiveProcessorCount=2", "-jar", "/app/clustermanage.jar"]

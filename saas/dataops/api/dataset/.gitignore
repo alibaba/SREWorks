@@ -5,3 +5,8 @@
 cmdb-config/cmdb-config-*/target/
 */__pycache__/*
 *.pyc
+
+*daily.properties
+*test.properties
+*dev.properties
+*pre.properties

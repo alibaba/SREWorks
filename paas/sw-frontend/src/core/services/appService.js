@@ -287,7 +287,7 @@ class AppService {
                         type: "custom",
                         hasSearch: true,
                         items: [],
-                        background: "//img.alicdn.com/tfs/TB1llmImWagSKJjy0FhXXcrbFXa-1920-966.jpg",
+                        background: "../../assets/deskstop/deskstop_four.jpg",
                     }];
                     let customQuickList = profile.customQuickList || [];
                     JSON.parse(JSON.stringify([...transItems || [], ...customQuickList])).map(item => {

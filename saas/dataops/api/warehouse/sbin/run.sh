@@ -8,7 +8,7 @@ done
 DOCKER_COMMAND+="IMAGE_ID"
 echo "Docker Command: ${DOCKER_COMMAND}"
 
-export JVM_XMX="100m"
+export JVM_XMX="256m"
 
 # 设置 ROCKETMQ_NAMESRV_ENDPOINT 变量
 IP_LIST=$(echo "${ROCKETMQ_NAMESRV_ENDPOINT}" | sed -n 1'p' | tr ',' '\n')

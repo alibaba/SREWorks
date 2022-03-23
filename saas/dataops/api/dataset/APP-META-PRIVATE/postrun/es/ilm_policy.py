@@ -3,7 +3,9 @@
 import requests
 from common.constant import host
 
-headers = {}
+headers = {
+    "kbn-version": "7.10.2"
+}
 
 ilm_policy = {
     "metricbeat": {
@@ -13,7 +15,7 @@ ilm_policy = {
                 "min_age": "0ms",
                 "actions": {
                     "rollover": {
-                        "max_size": "50gb",
+                        "max_size": "35gb",
                         "max_age": "7d"
                     }
                 }
@@ -33,7 +35,7 @@ ilm_policy = {
                 "min_age": "0ms",
                 "actions": {
                     "rollover": {
-                        "max_size": "50gb",
+                        "max_size": "25gb",
                         "max_age": "7d"
                     }
                 }
@@ -53,6 +55,5 @@ def set_ilm_policy():
     url = host["kibana"] + "/api/index_lifecycle_management/policies"
     for policy_name, policy_config in ilm_policy.items():
         r = requests.post(url, headers=headers, json=policy_config)
-        if r.status_code == 200:
-            print(r.json())
+        print(r.status_code)
 

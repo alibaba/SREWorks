@@ -60,9 +60,10 @@ swcli:
 
 source:
   branch: master
-  repo: https://codeup.aliyun.com/5ea46c39e17c0e0001fd9986/sreworks/sreworks.git
-  ciAccount: sreworks
-  ciToken: zwC8xJJ8z6FVZF6icqXf
+  repo: https://github.com/alibaba/SREWorks.git
+  #repo: https://codeup.aliyun.com/5ea46c39e17c0e0001fd9986/sreworks/sreworks.git
+  #ciAccount: sreworks
+  #ciToken: zwC8xJJ8z6FVZF6icqXf
 
 appmanagerbase:
   enabled: true
@@ -79,7 +80,7 @@ appmanager:
     account_super_secret_key: test-super-secret-key 
 
   server:
-    jvmXMX: "1000m"
+    jvmXMX: "256m"
     docker:
       enableKaniko: true
       account: sreworks

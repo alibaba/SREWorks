@@ -6,7 +6,8 @@ host = {
     "pmdb": "http://prod-dataops-pmdb.sreworks-dataops.svc.cluster.local:80",
     "app": "http://prod-app-app.sreworks.svc.cluster.local:80",
     "dataset": "http://prod-dataops-dataset.sreworks-dataops.svc.cluster.local:80",
-    "job-master": "http://prod-job-job-master.sreworks.svc.cluster.local:80"
+    "job-master": "http://prod-job-job-master.sreworks.svc.cluster.local:80",
+    "kibana": "http://prod-dataops-kibana-kibana.sreworks-dataops.svc.cluster.local:5601"
 }
 
 # host = {
@@ -16,6 +17,7 @@ host = {
 #     # "app": "http://prod-app-app.sreworks.svc.cluster.local:80",
 #     "dataset": "http://dataset.cf6f63261d18a46df830b4744c5ca8895.cn-hangzhou.alicontainer.com",
 #     "job-master": "http://sreworks-job-master.cf6f63261d18a46df830b4744c5ca8895.cn-hangzhou.alicontainer.com",
+#     "kibana": "http://kibana.c716338991f844a55b6fcd200b6331cb3.cn-beijing.alicontainer.com"
 # }
 
 

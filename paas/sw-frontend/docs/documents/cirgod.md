@@ -71,7 +71,11 @@
 <a name="b5EGH"></a>
 #### 1.4.2 数据管理
 
-1.数据采集：依托作业平台，开放采集场景作业服务。用户可自主开发采集场景作业，支持关联数仓或指标。关联数仓模型的采集数据将落地到数仓管理，关联指标的采集数据可支持推送消息队列topic(sreworks-dataops-metric-data)，支持下游数据消费。<br />           ![image.png](/pictures/1647327107995-b92830a2-2a40-4d1e-b32b-89cd0473f6ff.png)![image.png](/pictures/1647327191390-f95ef1cb-efd8-4805-aaa6-3b0c7cd61165.png)
+1.数据采集：
+
+方式一、依托作业平台方式，开放采集场景作业服务。用户可自主开发采集场景作业，支持关联数仓或指标。关联数仓模型的采集数据将落地到数仓管理，关联指标的采集数据可支持推送消息队列topic(sreworks-dataops-metric-data)，支持下游数据消费。<br />           ![image.png](/pictures/1647327107995-b92830a2-2a40-4d1e-b32b-89cd0473f6ff.png)![image.png](/pictures/1647327191390-f95ef1cb-efd8-4805-aaa6-3b0c7cd61165.png)
+
+方式二、API方式，规范化灵活接入。平台提供
 
 2.数据源：提供数据运维平台的数据源管理功能，默认内置SREWorks的mysql和es数据源
 

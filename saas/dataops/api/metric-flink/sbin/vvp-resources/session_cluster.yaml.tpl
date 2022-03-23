@@ -12,16 +12,16 @@ spec:
   flinkImageRegistry: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror
   flinkImageRepository: flink
   flinkImageTag: 1.14.2-stream1-scala_2.12-java8
-  numberOfTaskManagers: 5
+  numberOfTaskManagers: 2
   resources:
     jobmanager:
-      cpu: 2
-      memory: 2g
+      cpu: 1
+      memory: 1g
     taskmanager:
-      cpu: 16
-      memory: 32g
+      cpu: 1
+      memory: 1g
   flinkConfiguration:
-    taskmanager.numberOfTaskSlots: 32
+    taskmanager.numberOfTaskSlots: 4
   logging:
     loggingProfile: default
     log4jLoggers:

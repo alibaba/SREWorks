@@ -23,7 +23,7 @@ public class HealthAlertRulesManager extends EmonRulesManager {
 
     @Override
     protected RulesLoader initRuleLoader(Object rulesConfig) {
-        log.info("begin init minio rule loader");
+        log.info("begin init health alert rule loader");
         return initHealthAlertRuleLoader((String) rulesConfig);
     }
 

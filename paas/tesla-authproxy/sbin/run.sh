@@ -19,6 +19,6 @@ else
     export ENV_TYPE=${CLOUD_TYPE}
 fi
 
-export JVM_XMX="450m"
+export JVM_XMX="256m"
 
 exec java -Xmx${JVM_XMX} -Xms${JVM_XMX} -XX:ActiveProcessorCount=2 -Dloader.path=/app/ -jar /app/tesla-authproxy.jar --spring.config.location=/app/

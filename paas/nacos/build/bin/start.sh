@@ -23,7 +23,7 @@ function print_servers(){
 #===========================================================================================
 # JVM Configuration
 #===========================================================================================
-export JVM_XMX="450m"
+export JVM_XMX="256m"
 if [[ "${MODE}" == "standalone" ]]; then
 
     JAVA_OPT="${JAVA_OPT} -Xmx${JVM_XMX} -Xms${JVM_XMX}"

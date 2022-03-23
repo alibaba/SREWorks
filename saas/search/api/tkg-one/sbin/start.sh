@@ -19,7 +19,7 @@ if [ ! -f "/etc/ilogtail/users/1270632786127642" ]; then
 fi
 
 
-SERVICE_OPTS="${SERVICE_OPTS} -Xmx4g -Xms4g"
+SERVICE_OPTS="${SERVICE_OPTS} -Xmx320m -Xms320m"
 SERVICE_OPTS="${SERVICE_OPTS} -XX:ActiveProcessorCount=2"
 ## SERVICE_OPTS="${SERVICE_OPTS} -Dspring.profiles.active=oxs"
 SERVICE_OPTS="${SERVICE_OPTS} -Dproject.name=${APP_NAME}"

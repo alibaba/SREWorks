@@ -4,15 +4,15 @@
  */
 import React, { Component } from "react";
 import { List, Avatar, Tooltip, Statistic, Timeline } from "antd";
-import "./index.scss";
+import "./index.less";
 import _ from "lodash";
 
 export default class StatusList extends Component {
 
   render() {
     let { widgetData = [], widgetConfig = {}, actionParams, ...otherProps } = this.props;
-    let { warningExp, successExp, processExp, defaultExp, toolTip, background, href } = widgetConfig;
-    return <div className="status-list" style={background && { background: background }}>
+    let { warningExp, successExp, processExp, defaultExp, toolTip, href } = widgetConfig;
+    return <div className="status-list">
       {(widgetData || []).map(item => {
         let href = href && util.renderTemplateString(href, { row: item });
         let row = item;

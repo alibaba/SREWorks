@@ -398,7 +398,7 @@ class MenuNavigation extends React.Component {
       });
       let selectedKey=selectedKeys[0];
       if(selectedKey===`${appId}|app|T:`){
-          message.info("应用根节点不支持定义页面！");
+          // message.info("应用根节点不支持定义页面！");
          return ;
       }
       //console.log("pathNodeMapping------->",pathNodeMapping);

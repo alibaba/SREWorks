@@ -71,7 +71,7 @@ public class ElasticSearchDaemonService extends ElasticSearchBasic implements In
         log.info("ES index daemon enable={}", enable);
         if (enable) {
             ScheduledExecutorService executorService =
-                new ScheduledThreadPoolExecutor(10, new ElasticSearchDaemonThreadFactory());
+                new ScheduledThreadPoolExecutor(6, new ElasticSearchDaemonThreadFactory());
             executorService.scheduleAtFixedRate(this::addPartitions, 1, 60, TimeUnit.SECONDS);
             executorService.scheduleAtFixedRate(this::addIndices, 1, 60, TimeUnit.SECONDS);
         }

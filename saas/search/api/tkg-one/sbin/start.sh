@@ -7,7 +7,9 @@ for item in $(env); do
   DOCKER_COMMAND+="-e ${item} "
 done
 DOCKER_COMMAND+="IMAGE_ID"
-echo "Docker Command: ${DOCKER_COMMAND}"
+echo "Docker Comm
+
+and: ${DOCKER_COMMAND}"
 
 export APP_NAME=tkg-one
 export HTTP_SERVER_PORT=${HTTP_SERVER_PORT-"7001"}

@@ -54,6 +54,8 @@ spec:
         clusterName: "{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-elasticsearch"
         image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/elasticsearch
         imageTag: "7.10.2-with-plugins"
+        replicas: 1
+        minimumMasterNodes: 1
         volumeClaimTemplate:
           accessModes: [ "ReadWriteOnce" ]
           storageClassName: "${GLOBAL_STORAGE_CLASS}"

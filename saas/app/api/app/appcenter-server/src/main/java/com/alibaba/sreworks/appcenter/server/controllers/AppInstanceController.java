@@ -138,16 +138,18 @@ public class AppInstanceController extends BaseController {
         for (JSONObject item : ret.getJSONArray("items").toJavaList(JSONObject.class)) {
             String clusterId = item.getString("clusterId").replace("id","");
             JSONObject cluster = clusterMap.get(clusterId);
-            item.put("clusterDetail", JsonUtil.map(
-                "cluster_name", cluster.getString("cluster_name"),
-                "account_type", cluster.getString("account_type"),
-                "name", cluster.getString("name"),
-                "id", cluster.getInteger("id")
-            ));
-            item.put("team", JsonUtil.map(
-                "team_id", cluster.getInteger("team_id"),
-                "team_name", cluster.getString("team_name")
-            ));
+            if(cluster != null) {
+                item.put("clusterDetail", JsonUtil.map(
+                        "cluster_name", cluster.getString("cluster_name"),
+                        "account_type", cluster.getString("account_type"),
+                        "name", cluster.getString("name"),
+                        "id", cluster.getInteger("id")
+                ));
+                item.put("team", JsonUtil.map(
+                        "team_id", cluster.getInteger("team_id"),
+                        "team_name", cluster.getString("team_name")
+                ));
+            }
         }
         return buildSucceedResult(ret);
     }

@@ -113,3 +113,8 @@ buildNumber.properties
 target
 .idea
 *.iml
+
+*daily.properties
+*test.properties
+*dev.properties
+*pre.properties

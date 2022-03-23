@@ -2,3 +2,8 @@
 *.iml
 *.log
 */target/*
+
+*daily.properties
+*test.properties
+*dev.properties
+*pre.properties

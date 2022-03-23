@@ -1,6 +1,8 @@
 package com.alibaba.sreworks.warehouse.controllers.data;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.sreworks.warehouse.common.constant.Constant;
+import com.alibaba.sreworks.warehouse.common.exception.ParamException;
 import com.alibaba.sreworks.warehouse.services.entity.EntityDataServiceImpl;
 import com.alibaba.sreworks.warehouse.services.model.ModelDataServiceImpl;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
@@ -9,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +35,65 @@ public class DwDataControl extends BaseController {
 
     @Autowired
     EntityDataServiceImpl entityDataService;
+
+
+    @ApiOperation(value = "单条数据写入(需要预先定义模型)")
+    @RequestMapping(value = "/push", method = RequestMethod.POST)
+    public TeslaBaseResult push(@RequestParam(name = "id") Long id, @RequestParam(name = "type") String type,
+                                          @RequestBody @ApiParam(value = "数据") JSONObject node) throws Exception {
+        if (StringUtils.isEmpty(type) || !Constant.DW_TYPES.contains(type)) {
+            throw new ParamException(String.format("数据类型错误, 合法类型%s", Constant.DW_TYPES));
+        }
+        if (type.equals(Constant.DW_ENTITY)) {
+            return buildSucceedResult(entityDataService.flushDwData(id, node));
+        } else {
+            return buildSucceedResult(modelDataService.flushDwData(id, node));
+        }
+    }
+
+    @ApiOperation(value = "多条数据写入(需要预先定义模型)")
+    @RequestMapping(value = "/pushBatch", method = RequestMethod.POST)
+    public TeslaBaseResult pushBatch(@RequestParam(name = "id") Long id, @RequestParam(name = "type") String type,
+                                           @RequestBody @ApiParam(value = "数据列表") JSONObject[] nodes) throws Exception {
+        if (StringUtils.isEmpty(type) || !Constant.DW_TYPES.contains(type)) {
+            throw new ParamException(String.format("数据类型错误, 合法类型%s", Constant.DW_TYPES));
+        }
+        if (type.equals(Constant.DW_ENTITY)) {
+            return buildSucceedResult(entityDataService.flushDwDatas(id, Arrays.asList(nodes)));
+        } else {
+            return buildSucceedResult(modelDataService.flushDwDatas(id, Arrays.asList(nodes)));
+        }
+    }
+
+    @ApiOperation(value = "单条数据写入(需要预先定义模型)")
+    @RequestMapping(value = "/pushByName", method = RequestMethod.POST)
+    public TeslaBaseResult pushByName(@RequestParam(name = "name") String name, @RequestParam(name = "type") String type,
+                                    @RequestBody @ApiParam(value = "数据") JSONObject node) throws Exception {
+        if (StringUtils.isEmpty(type) || !Constant.DW_TYPES.contains(type)) {
+            throw new ParamException(String.format("数据类型错误, 合法类型%s", Constant.DW_TYPES));
+        }
+        if (type.equals(Constant.DW_ENTITY)) {
+            return buildSucceedResult(entityDataService.flushDwData(name, node));
+        } else {
+            return buildSucceedResult(modelDataService.flushDwData(name, node));
+        }
+    }
+
+    @ApiOperation(value = "多条数据写入(需要预先定义模型)")
+    @RequestMapping(value = "/pushBatchByName", method = RequestMethod.POST)
+    public TeslaBaseResult pushBatchByName(@RequestParam(name = "name") String name, @RequestParam(name = "type") String type,
+                                           @RequestBody @ApiParam(value = "数据列表") JSONObject[] nodes) throws Exception {
+        if (StringUtils.isEmpty(type) || !Constant.DW_TYPES.contains(type)) {
+            throw new ParamException(String.format("数据类型错误, 合法类型%s", Constant.DW_TYPES));
+        }
+        if (type.equals(Constant.DW_ENTITY)) {
+            return buildSucceedResult(entityDataService.flushDwDatas(name, Arrays.asList(nodes)));
+        } else {
+            return buildSucceedResult(modelDataService.flushDwDatas(name, Arrays.asList(nodes)));
+        }
+    }
+
+
 
     @ApiOperation(value = "单条实体数据写入(需要预先定义实体)")
     @RequestMapping(value = "/pushEntityData", method = RequestMethod.POST)

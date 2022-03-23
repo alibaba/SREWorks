@@ -57,6 +57,14 @@ spec:
 
         image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kibana
 
+        resources:
+          requests:
+            cpu: "200m"
+            memory: 512Mi
+          limits:
+            cpu: "300m"
+            memory: 512Mi
+
       toFieldPaths:
       - "spec.values"
 

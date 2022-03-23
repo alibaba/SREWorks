@@ -8,7 +8,9 @@ done
 DOCKER_COMMAND+="IMAGE_ID"
 echo "Docker Command: ${DOCKER_COMMAND}"
 
-export JVM_XMX="450m"
+export JVM_XMS="100m"
+
+export JVM_XMX="100m"
 
 # SkyWalking ENV 配置
 export SW_AGENT_NAMESPACE=data
@@ -25,9 +27,9 @@ export SW_GRPC_LOG_SERVER_PORT=${DATA_SKYW_PORT}
 
 if [ "${DATA_SKYW_ENABLE}" == "true" ]
 then
-  exec java -Xmx${JVM_XMX} -Xms${JVM_XMX} -XX:ActiveProcessorCount=2 -Dloader.path=/app/ $JAVA_AGENT -jar /app/dataset.jar --spring.config.location=/app/
+  exec java -Xmx${JVM_XMX} -Xms${JVM_XMS} -XX:ActiveProcessorCount=2 -Dloader.path=/app/ $JAVA_AGENT -jar /app/dataset.jar --spring.config.location=/app/
 else
-  exec java -Xmx${JVM_XMX} -Xms${JVM_XMX} -XX:ActiveProcessorCount=2 -Dloader.path=/app/ -jar /app/dataset.jar --spring.config.location=/app/
+  exec java -Xmx${JVM_XMX} -Xms${JVM_XMS} -XX:ActiveProcessorCount=2 -Dloader.path=/app/ -jar /app/dataset.jar --spring.config.location=/app/
 fi
 
-#exec java -Xmx${JVM_XMX} -Xms${JVM_XMX} -XX:ActiveProcessorCount=2 -Dloader.path=/app/ $JAVA_AGENT -jar /app/dataset.jar --spring.config.location=/app/
+#exec java -Xmx${JVM_XMX} -Xms${JVM_XMS} -XX:ActiveProcessorCount=2 -Dloader.path=/app/ $JAVA_AGENT -jar /app/dataset.jar --spring.config.location=/app/

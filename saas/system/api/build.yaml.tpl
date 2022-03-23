@@ -21,28 +21,28 @@ options:
 
   env:
 ---
-componentType: K8S_MICROSERVICE
-componentName: plugin-aliyun-rds
-options:
-  containers:
-    - ports:
-        - containerPort: 7001
-      name: server
-      build:
-        imagePush: ${IMAGE_BUILD_ENABLE}
-        imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        args:
-          TAG: plugin-clustermanage-resource-aliyun-rds
-        dockerfileTemplateArgs:
-          JRE11_IMAGE: registry.cn-hangzhou.aliyuncs.com/alisre/openjdk:11.0.10-jre
-        dockerfileTemplate: Dockerfile
-        repoPath: saas/system/api/plugin-clustermanage-resource-aliyun-rds
-        branch: ${SOURCE_BRANCH}
-        repo: ${SOURCE_REPO}
-        ciAccount: ${SOURCE_CI_ACCOUNT}
-        ciToken: ${SOURCE_CI_TOKEN}
-
-  env:
+#componentType: K8S_MICROSERVICE
+#componentName: plugin-aliyun-rds
+#options:
+#  containers:
+#    - ports:
+#        - containerPort: 7001
+#      name: server
+#      build:
+#        imagePush: ${IMAGE_BUILD_ENABLE}
+#        imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
+#        args:
+#          TAG: plugin-clustermanage-resource-aliyun-rds
+#        dockerfileTemplateArgs:
+#          JRE11_IMAGE: registry.cn-hangzhou.aliyuncs.com/alisre/openjdk:11.0.10-jre
+#        dockerfileTemplate: Dockerfile
+#        repoPath: saas/system/api/plugin-clustermanage-resource-aliyun-rds
+#        branch: ${SOURCE_BRANCH}
+#        repo: ${SOURCE_REPO}
+#        ciAccount: ${SOURCE_CI_ACCOUNT}
+#        ciToken: ${SOURCE_CI_TOKEN}
+#
+#  env:
 ---
 componentType: K8S_MICROSERVICE
 componentName: plugin-account-aliyun

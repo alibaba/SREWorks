@@ -62,7 +62,7 @@ spec:
           toFieldPaths:
             - spec.kind
         - name: REPLICAS
-          value: 2
+          value: 1
           toFieldPaths:
             - spec.replicas
         - name: Global.DB_NAME

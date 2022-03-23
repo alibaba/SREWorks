@@ -57,10 +57,10 @@ class AnomalyDetection(BentoService):
         ## 获取其他参数
         # try:
         if 'algoParam' in param.keys() and 'seriesInterval' in param['algoParam'].keys():
-            interval_ms = int(param['algoParam']['seriesInterval'])
+            interval = int(param['algoParam']['seriesInterval'])
         else:
             data['ts_diff'] = data['ts'].diff()
-            interval_ms = int(data['ts_diff'].dropna().median())
+            interval = int(data['ts_diff'].dropna().median())
             data = data[['ts', 'kpi']]
 
         if 'algoParam' in param.keys() and 'abnormalConditions' in param['algoParam'].keys():
@@ -82,7 +82,7 @@ class AnomalyDetection(BentoService):
         else:
             train_ts_start = data['ts'].min()
         ist = pytz.timezone("Asia/Shanghai")
-        train_ts_start = datetime.datetime.fromtimestamp(train_ts_start / 1000, ist)
+        train_ts_start = datetime.datetime.fromtimestamp(train_ts_start, ist)
         train_ts_start = train_ts_start.strftime("%Y-%m-%d %H:%M:%S")
 
         if 'algoParam' in param.keys() and 'trainTsEnd' in param['algoParam'].keys():
@@ -90,7 +90,7 @@ class AnomalyDetection(BentoService):
         else:
             train_ts_end = data[:-1]['ts'].max()
         ist = pytz.timezone("Asia/Shanghai")
-        train_ts_end = datetime.datetime.fromtimestamp(train_ts_end / 1000, ist)
+        train_ts_end = datetime.datetime.fromtimestamp(train_ts_end, ist)
         train_ts_end = train_ts_end.strftime("%Y-%m-%d %H:%M:%S")
 
         if 'algoParam' in param.keys() and 'detectTsStart' in param['algoParam'].keys():
@@ -98,7 +98,7 @@ class AnomalyDetection(BentoService):
         else:
             detect_ts_start = data['ts'].max()
         ist = pytz.timezone("Asia/Shanghai")
-        detect_ts_start = datetime.datetime.fromtimestamp(detect_ts_start / 1000, ist)
+        detect_ts_start = datetime.datetime.fromtimestamp(detect_ts_start , ist)
         detect_ts_start = detect_ts_start.strftime("%Y-%m-%d %H:%M:%S")
 
         if 'algoParam' in param.keys() and 'detectTsEnd' in param['algoParam'].keys():
@@ -106,7 +106,7 @@ class AnomalyDetection(BentoService):
         else:
             detect_ts_end = data['ts'].max()
         ist = pytz.timezone("Asia/Shanghai")
-        detect_ts_end = datetime.datetime.fromtimestamp(detect_ts_end / 1000, ist)
+        detect_ts_end = datetime.datetime.fromtimestamp(detect_ts_end , ist)
         detect_ts_end = detect_ts_end.strftime("%Y-%m-%d %H:%M:%S")
 
         if 'algoParam' in param.keys() and 'returnBounds' in param['algoParam'].keys():
@@ -122,7 +122,7 @@ class AnomalyDetection(BentoService):
         ## 输入数据转化,将timestamp转化为datetime
         try:
             # transform timestamp to datetime
-            data['ts'] = pd.to_datetime(data['ts'].astype(int), unit='ms')
+            data['ts'] = pd.to_datetime(data['ts'].astype(int), unit='s')
             data['ts'] = data['ts'] + datetime.timedelta(hours=8)
             data = data.sort_values(by=['ts'], ascending=[1])
             data = data.drop_duplicates(['ts'])
@@ -203,7 +203,7 @@ class AnomalyDetection(BentoService):
                     day = datetime.datetime.strptime(dt, "%Y-%m-%d")
                 timezone = pytz.timezone("Asia/Shanghai")
                 day_timezone = timezone.localize(day)
-                return int(datetime.datetime.timestamp(day_timezone)) * 1000
+                return int(datetime.datetime.timestamp(day_timezone))
 
             detect_result['ts'] = detect_result.astype(str)
             detect_result['timestamp'] = detect_result['ts'].apply(str2timestamp)

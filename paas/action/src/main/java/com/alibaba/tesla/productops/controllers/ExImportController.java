@@ -88,7 +88,10 @@ public class ExImportController extends BaseController {
             .toJavaList(ProductopsNode.class);
         List<ProductopsTab> tabList = jsonObject.getJSONArray("tabList")
             .toJavaList(ProductopsTab.class);
-
+        log.info(
+            "start import stageId:{} eSize:{} neSize:{} nSize:{} tSize:{}",
+            stageId, eList.size(), neList.size(), nodeList.size(), tabList.size()
+        );
         app.setGmtCreate(System.currentTimeMillis());
         ProductopsApp productopsApp = productopsAppRepository.findFirstByAppIdAndStageId(app.getAppId(), stageId);
         if (productopsApp == null) {
@@ -177,6 +180,8 @@ public class ExImportController extends BaseController {
             }
             productopsComponentRepository.flush();
         }
+
+        log.info("end import");
 
         return buildSucceedResult("ok");
 

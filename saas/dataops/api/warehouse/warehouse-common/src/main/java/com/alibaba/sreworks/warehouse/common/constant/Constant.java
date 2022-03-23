@@ -1,5 +1,7 @@
 package com.alibaba.sreworks.warehouse.common.constant;
 
+import com.google.common.collect.ImmutableList;
+
 /**
  * 常量
  *
@@ -12,6 +14,8 @@ public class Constant {
 
     public final static String DW_ENTITY = "entity";
     public final static String DW_MODEL = "model";
+
+    public final static ImmutableList<String> DW_TYPES = ImmutableList.of(DW_ENTITY, DW_MODEL);
 
     /**
      * 缓存五分钟

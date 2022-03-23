@@ -8,7 +8,7 @@ done
 DOCKER_COMMAND+="IMAGE_ID"
 echo "Docker Command: ${DOCKER_COMMAND}"
 
-export JVM_XMX="450m"
+export JVM_XMX="100m"
 
 # SkyWalking ENV 配置
 export SW_AGENT_NAMESPACE=data

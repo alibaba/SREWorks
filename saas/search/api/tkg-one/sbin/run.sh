@@ -44,6 +44,6 @@ MYSQL_CMD="mysql -h${DB_HOST} -u${DB_USER} -p${DB_PASSWORD} -P${DB_PORT} -D${DB_
 ${MYSQL_CMD} "delete from config where name = 'backendStores'"
 ${MYSQL_CMD} "INSERT IGNORE INTO config (gmt_create,gmt_modified,category,nr_type,nr_id,name,modifier,content) VALUES ('2020-03-24 22:46:53','2020-04-03 00:57:40','__category','__nrType','__nrId','backendStores','83242','[{\"schema\":\"http\",\"password\":\"${ELASTICSEARCH_PASSWORD}\",\"default_store\":true,\"port\":${ELASTICSEARCH_PORT},\"name\":\"backend_store_basic\",\"host\":\"${ELASTICSEARCH_HOST}\",\"index_patterns\":{},\"type\":\"elasticsearch\",\"user\":\"${ELASTICSEARCH_USER}\",\"backup_store\":\"\"}]');"
 
-export JVM_XMX="1350m"
+export JVM_XMX="512m"
 
 exec java -Xmx${JVM_XMX} -Xms${JVM_XMX} -XX:ActiveProcessorCount=2 -cp 'app:app/lib/*' com.alibaba.tesla.ApplicationPrivate

@@ -17,7 +17,7 @@ minio:
     tag: v1.0
   
   persistence:
-    size: 500Gi
+    size: 20Gi
 
 mysql:
   enabled: true
@@ -26,7 +26,7 @@ mysql:
     service:
       type: ClusterIP
     persistence:
-      size: 200Gi
+      size: 20Gi
     extraFlags: "--max-connect-errors=1000 --max_connections=10000"
     configuration: |-
       [mysqld]
@@ -45,7 +45,7 @@ mysql:
       log-error=/opt/bitnami/mysql/logs/mysqld.log
       character-set-server=UTF8
       collation-server=utf8_general_ci
-      expire_logs_days=30
+      expire_logs_days=3
 
       [client]
       port=3306
@@ -85,7 +85,7 @@ redis:
     disableCommands: 
       - FLUSHDB
     persistence:
-      size: 50Gi
+      size: 20Gi
     
   image:
     registry: sreworks-registry.cn-beijing.cr.aliyuncs.com
@@ -102,7 +102,7 @@ zookeeper:
     tag: v1.0
  
   persistence:
-    size: 50Gi
+    size: 20Gi
 
 ingressNginx:
   enabled: false
@@ -114,7 +114,7 @@ kafka:
   enabled: true
 
   persistence:
-    size: 500Gi
+    size: 20Gi
 
   image:
     registry: sreworks-registry.cn-beijing.cr.aliyuncs.com

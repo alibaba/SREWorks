@@ -46,38 +46,38 @@ spec:
             port: 7002
             targetPort: 7002
       parameterValues:
-    - revisionName: K8S_MICROSERVICE|plugin-aliyun-rds|_
-      scopes:
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Cluster
-            name: "{{ Global.CLUSTER_ID }}"
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Namespace
-            name: "{{ Global.NAMESPACE_ID }}"
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Stage
-            name: "{{ Global.STAGE_ID }}"
-      traits:
-      - name: service.trait.abm.io
-        runtime: post
-        spec:
-          labels:
-            pluginType: RESOURCE
-            accountType: aliyun
-            resourceType: redis
-          ports:
-          - name: main
-            protocol: TCP
-            port: 7001
-            targetPort: 7001
-          - name: manage
-            protocol: TCP
-            port: 7002
-            targetPort: 7002
-      parameterValues:
+#    - revisionName: K8S_MICROSERVICE|plugin-aliyun-rds|_
+#      scopes:
+#        - scopeRef:
+#            apiVersion: apps.abm.io/v1
+#            kind: Cluster
+#            name: "{{ Global.CLUSTER_ID }}"
+#        - scopeRef:
+#            apiVersion: apps.abm.io/v1
+#            kind: Namespace
+#            name: "{{ Global.NAMESPACE_ID }}"
+#        - scopeRef:
+#            apiVersion: apps.abm.io/v1
+#            kind: Stage
+#            name: "{{ Global.STAGE_ID }}"
+#      traits:
+#      - name: service.trait.abm.io
+#        runtime: post
+#        spec:
+#          labels:
+#            pluginType: RESOURCE
+#            accountType: aliyun
+#            resourceType: redis
+#          ports:
+#          - name: main
+#            protocol: TCP
+#            port: 7001
+#            targetPort: 7001
+#          - name: manage
+#            protocol: TCP
+#            port: 7002
+#            targetPort: 7002
+#      parameterValues:
     - revisionName: K8S_MICROSERVICE|plugin-account-aliyun|_
       scopes:
         - scopeRef:

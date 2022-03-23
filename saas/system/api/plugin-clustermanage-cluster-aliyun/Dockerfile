@@ -9,4 +9,4 @@ FROM registry.cn-hangzhou.aliyuncs.com/alisre/openjdk:11.0.10-jre AS release
 USER root
 WORKDIR /root
 COPY --from=build /app/plugin-clustermanage-cluster-aliyun-start/target/plugin-clustermanage-cluster-aliyun.jar /app/plugin-clustermanage-cluster-aliyun.jar
-ENTRYPOINT ["java", "-Xmx1g", "-Xms1g", "-XX:ActiveProcessorCount=2", "-jar", "/app/plugin-clustermanage-cluster-aliyun.jar"]
+ENTRYPOINT ["java", "-Xmx100m", "-Xms20m", "-XX:ActiveProcessorCount=2", "-jar", "/app/plugin-clustermanage-cluster-aliyun.jar"]

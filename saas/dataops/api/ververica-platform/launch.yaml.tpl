@@ -93,13 +93,31 @@ spec:
           s3:
             accessKeyId: ${MINIO_ACCESS_KEY}
             secretAccessKey: ${MINIO_SECRET_KEY}
-        
+
+        appmanager:
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+
+        gateway:
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 250m
+              memory: 1Gi
+
         persistentVolume:
           enabled: true
           accessModes:
             - ReadWriteOnce
           annotations: {}
-          size: 50Gi
+          size: 20Gi
           storageClass: ${GLOBAL_STORAGE_CLASS}
           subPath: ""
         

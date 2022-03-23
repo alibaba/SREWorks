@@ -59,7 +59,7 @@ spec:
           storageClassName: "${GLOBAL_STORAGE_CLASS}"
           resources:
             requests:
-              storage: 200Gi
+              storage: 100Gi
 
       toFieldPaths:
       - "spec.values"

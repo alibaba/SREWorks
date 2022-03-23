@@ -286,7 +286,8 @@ public class UserController extends BaseController {
         userDo.setNickName(modifyRequest.getNickName());
         userDo.setLoginName(modifyRequest.getLoginName());
         if (StringUtils.isNotEmpty(modifyRequest.getPassword())) {
-            userDo.setLoginPwd(TeslaMessageDigest.getMD5(modifyRequest.getPassword()));
+            userMapper.updateLoginPassword(
+                userDo.getLoginName(), TeslaMessageDigest.getMD5(modifyRequest.getPassword()), new Date());
         }
         userDo.setAvatar(modifyRequest.getAvatar());
         int ret = teslaUserService.update(userDo);

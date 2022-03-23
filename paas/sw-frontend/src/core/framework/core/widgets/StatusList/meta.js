@@ -47,16 +47,16 @@ export default {
     "schema": {
       "type": "object",
       "properties": {
-        "background": {
-          "description": "默认黑色",
-          "title": "背景颜色",
-          "required": false,
-          "type": "string",
-          "x-component": "Radio",
-          "x-component-props": {
-            "options": [{"value": "#000", "label": "黑色"}, {"value": "#fff", "label": "白色"}],
-          },
-        },
+        // "background": {
+        //   "description": "默认黑色",
+        //   "title": "背景颜色",
+        //   "required": false,
+        //   "type": "string",
+        //   "x-component": "Radio",
+        //   "x-component-props": {
+        //     "options": [{"value": "#000", "label": "黑色"}, {"value": "#fff", "label": "白色"}],
+        //   },
+        // },
         "warningExp": {
           "description": "eg:row.status === 'error'",
           "title": "警告表达式",

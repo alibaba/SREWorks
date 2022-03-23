@@ -91,7 +91,7 @@ export default {
                     type: "custom",
                     hasSearch: false,
                     items: [],
-                    background: "../../assets/deskstop/deskstop_four.jpg"
+                    background: ""
                 }, workspace)]
             }, namespaceId, stageId)
             return {
@@ -101,7 +101,7 @@ export default {
                     type: "custom",
                     hasSearch: false,
                     items: [],
-                    background: "../../assets/deskstop/deskstop_four.jpg"
+                    background: ""
                 }, workspace)],
             }
         },

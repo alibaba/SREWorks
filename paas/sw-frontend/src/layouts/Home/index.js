@@ -102,6 +102,9 @@ class HomeLayout extends React.Component {
     } else {
       backgroundImgeUrl = requiredImglist[0];
     }
+    if(!backgroundImgeUrl) {
+      backgroundImgeUrl = requiredImglist[0]
+    }
     let { loading } = this.state;
     return (
       <div className="abm-home-page" style={{ backgroundImage: `url(${backgroundImgeUrl})`, backgroundPosition: 'center bottom', backgroundRepeat: 'no-repeat', backgroundColor: 'rgb(51, 51, 51)' }} >

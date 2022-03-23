@@ -61,9 +61,6 @@ swcli:
 source:
   branch: master
   repo: https://github.com/alibaba/SREWorks.git
-  #repo: https://codeup.aliyun.com/5ea46c39e17c0e0001fd9986/sreworks/sreworks.git
-  #ciAccount: sreworks
-  #ciToken: zwC8xJJ8z6FVZF6icqXf
 
 appmanagerbase:
   enabled: true

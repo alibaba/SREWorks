@@ -7,7 +7,7 @@ import { Icon as LegacyIcon } from '@ant-design/compatible';
 import { DownOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { Spin, Card, Avatar, Popover, List, Dropdown, Menu, Pagination } from 'antd';
 import _ from 'lodash';
-import './index.scss'
+import './index.less';
 import * as util from '../../../../../utils/utils';
 import httpClient from '../../../../../utils/httpClient';
 import safeEval from '../../../../../utils/SafeEval';

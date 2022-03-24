@@ -4,7 +4,7 @@
   "engines": {
     "node": ">=6 < 11.0.0"
   },
-  "author":"",
+  "author": "",
   "description": "",
   "dependencies": {
     "@ant-design/compatible": "^1.0.8",
@@ -48,6 +48,7 @@
     "rc-tween-one": "^1.7.3",
     "react": "16.13.1",
     "react-ace": "7.0.5",
+    "react-color": "^2.19.3",
     "react-dom": "16.13.1",
     "react-grid-layout": "1.2.4",
     "react-highlight": "^0.10.0",

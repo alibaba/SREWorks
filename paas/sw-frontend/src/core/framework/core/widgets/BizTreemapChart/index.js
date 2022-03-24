@@ -94,7 +94,7 @@ export default class BizTreemapChart extends Component {
           text: chartTitle || '',
           style: {
             fontSize: 14,
-            color: '#00c1de',
+            color: 'var(--PrimaryColor)',
           }
         }}
         xAxis={{

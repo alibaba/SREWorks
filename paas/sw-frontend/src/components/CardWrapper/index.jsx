@@ -2,6 +2,7 @@ import { RollbackOutlined } from '@ant-design/icons';
 import { Table, Button, Tag, Divider, Card } from "antd";
 import * as React from "react";
 import { connect } from "dva";
+import './index.less';1
 
 @connect(({ node, global }) => ({
   userParams: Object.assign({}, { __currentUser__: global.currentUser }, node.userParams),
@@ -37,7 +38,7 @@ class CardWrapper extends React.Component {
             <div style={{ display: "flex", justifyContent: "space-between", height: 48 }}>
               <div style={{ display: "flex" }}>
                 <div style={{ alignItems: "center", display: "flex" }}>
-                  <div style={{ width: 4, height: 20, backgroundColor: "#00c1de" }}>
+                  <div className="card-item-title-icon-color" style={{ width: 4, height: 20}}>
                   </div>
                   <div>
                     <b style={{ marginLeft: 12, marginRight: 12, fontSize: 14 }}>{this.props.title}</b>

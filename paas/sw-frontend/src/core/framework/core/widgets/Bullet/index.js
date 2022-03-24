@@ -88,7 +88,7 @@ export default class Bullet extends Component {
                     text: chartTitle || '子弹图',
                     style: {
                         fontSize: 14,
-                        color: '#00c1de',
+                        color: 'var(--PrimaryColor)',
                     }
                 }}
                 width={(width && Number(width))}

@@ -1,3 +1,4 @@
+@import "../../themes/index.less";
 .abm-toggle-menu-bar {
   .menu-icon {
     padding: 14px;
@@ -6,7 +7,7 @@
     height: 100%;
   }
   .menu-icon:hover {
-    background: #00c1de
+    background: @primary-color;
   }
 
   .menu-drawer {
@@ -95,6 +96,9 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+  }
+  .list-meta-title-color {
+    background: @primary-color;
   }
   .small-icon {
     width: 16px;

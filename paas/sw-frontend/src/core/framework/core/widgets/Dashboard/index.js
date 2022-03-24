@@ -68,7 +68,7 @@ export default class Dashboard extends Component {
                     text: chartTitle || '',
                     style: {
                         fontSize: 14,
-                        color: '#00c1de',
+                        color: 'var(--PrimaryColor)',
                     }
                 }}
                 width={(width && Number(width))}

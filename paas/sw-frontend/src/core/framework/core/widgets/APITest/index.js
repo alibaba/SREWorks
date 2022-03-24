@@ -66,7 +66,7 @@ const APITest = (props) => {
     httpClient.post(testLink, inputParams)
       .then(res => {
         setCode(res.httpStatus);
-        setOutputParams(res.result);
+        setOutputParams(res.data);
         message.success("执行成功");
         clearInterval(timer);
       })

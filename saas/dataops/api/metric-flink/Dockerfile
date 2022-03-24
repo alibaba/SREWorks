@@ -4,8 +4,8 @@ COPY . /app
 COPY settings.xml /root/.m2/settings.xml
 RUN cd /app && mvn -f pom.xml -Dmaven.test.skip=true clean package
 
-FROM {{ ALPINE_IMAGE }} AS release
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/alpine:latest AS release
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
 RUN { \
         echo '#!/bin/sh'; \
         echo 'set -e'; \
@@ -15,7 +15,7 @@ RUN { \
     && chmod +x /usr/local/bin/docker-java-home
 ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
 ENV PATH $PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
-RUN set -x && apk add --no-cache openjdk8 && [ "$JAVA_HOME" = "$(docker-java-home)" ]
+RUN set -x && apk --update upgrade && apk add --no-cache openjdk8 && [ "$JAVA_HOME" = "$(docker-java-home)" ]
 
 RUN apk --no-cache add curl && apk --no-cache add gettext && apk --no-cache add jq
 

@@ -16,11 +16,6 @@
     <!--spring-->
     <spring.boot.dependencies.version>2.3.9.RELEASE</spring.boot.dependencies.version>
     <spring.cloud.dependencies.version>Hoxton.SR10</spring.cloud.dependencies.version>
-    <!-- alibaba-->
-    <pandora.boot.version>2020-07-release</pandora.boot.version>
-    <pandora-boot-maven-plugin.version>2.1.14.2</pandora-boot-maven-plugin.version>
-    <spring.cloud.alibaba.version>2.1.2.RELEASE</spring.cloud.alibaba.version>
-    <alibaba.security.spring>2.1.0-SNAPSHOT</alibaba.security.spring>
     <!-- other -->
     <lombok.version>1.18.8</lombok.version>
     <junit.version>4.12</junit.version>
@@ -57,10 +52,6 @@
         <groupId>com.alibaba.tesla</groupId>
         <artifactId>tesla-mybatis-spring-boot-starter</artifactId>
       </dependency>
-      <dependency>
-        <groupId>com.alibaba.tesla</groupId>
-        <artifactId>tesla-user-spring-boot-starter</artifactId>
-      </dependency>
       <!-- other -->
       <dependency>
         <groupId>com.alibaba</groupId>
@@ -86,11 +77,6 @@
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>
           <version>${spring.boot.dependencies.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>com.taobao.pandora</groupId>
-          <artifactId>pandora-boot-maven-plugin</artifactId>
-          <version>${pandora-boot-maven-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

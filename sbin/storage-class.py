@@ -52,6 +52,8 @@ for i in range(10):
 for storageClass in storageClasses:
     (ret, out, err) = popen("kubectl delete -f " + '/tmp/' + storageClass + ".yaml") 
     print(out)
+    (ret, out, err) = popen("kubectl delete pvc " + 'test-' + storageClass + "-0") 
+    print(out)
 
 
 print("")

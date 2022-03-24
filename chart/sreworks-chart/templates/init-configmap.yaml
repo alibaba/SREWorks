@@ -11,10 +11,10 @@ data:
   JRE8_IMAGE: {{ .Values.global.images.registry }}/sw-openjdk8-jre:{{ .Values.global.images.tag }}
   POSTRUN_IMAGE: {{ .Values.global.images.registry }}/sw-postrun:{{ .Values.global.images.tag }}
 
-  SOURCE_BRANCH: {{ .Values.source.branch }}
+  SOURCE_BRANCH: {{ .Values.source.branch | default "master" | quote }}
   SOURCE_REPO: {{ .Values.source.repo }}
-  SOURCE_CI_ACCOUNT: {{ .Values.source.ciAccount }}
-  SOURCE_CI_TOKEN: {{ .Values.source.ciToken }}
+  SOURCE_CI_ACCOUNT: {{ .Values.source.ciAccount | default "" | quote }}
+  SOURCE_CI_TOKEN: {{ .Values.source.ciToken | default "" | quote }}
 
   ZOOKEEPER_ENDPOINT: {{ .Release.Name }}-zookeeper
   ENDPOINT_PAAS_MINIO: {{ .Release.Name }}-minio.{{ .Release.Namespace }}

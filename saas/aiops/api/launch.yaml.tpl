@@ -161,7 +161,8 @@ spec:
           value: 'http://prod-job-job-master.sreworks/job/start'
         - name: Global.TASKPLATFORM_QUERY_URL
           value: 'http://prod-job-job-master.sreworks/jobInstance/get'
- 
+        - name: Global.AISP_URL
+          value: 'http://prod-aiops-aisp' 
 
 
 

@@ -75,7 +75,63 @@
 
 方式一、依托作业平台方式，开放采集场景作业服务。用户可自主开发采集场景作业，支持关联数仓或指标。关联数仓模型的采集数据将落地到数仓管理，关联指标的采集数据可支持推送消息队列topic(sreworks-dataops-metric-data)，支持下游数据消费。<br />           ![image.png](/pictures/1647327107995-b92830a2-2a40-4d1e-b32b-89cd0473f6ff.png)![image.png](/pictures/1647327191390-f95ef1cb-efd8-4805-aaa6-3b0c7cd61165.png)
 
-方式二、API方式，规范化灵活接入。平台提供
+方式二、API方式，规范化灵活接入。数仓服务提供数据推送API，用户可以不用依赖作业平台采集服务就可实现数据录入数据仓库，通过SREWorks数据服务平台进行管理。
+
+**按照ID进行数据录入**
+
+ 公共URL请求参数
+```
+id     // 数据实体/模型ID
+type   // 数据实体/模型类型 实体： entity 模型：model
+```
+  <br />**单条 **请求内部地址
+```
+POST http://prod-dataops-warehouse.sreworks-dataops.svc.cluster.local:80/dw/data/push
+```
+
+body参数
+```
+{}   // JSON对象类型 按照数据实体/模型 字段规范提供
+```
+
+**批量(**单次最大1000条**) **请求内部地址 
+```
+POST http://prod-dataops-warehouse.sreworks-dataops.svc.cluster.local:80/dw/data/pushBatch
+```
+
+body参数
+```
+[{}, {}]   // JSON数组对象类型 按照数据实体/模型 字段规范提供
+```
+
+**按照名称进行数据录入**
+
+ 公共URL请求参数
+```
+name   // 数据实体/模型名称
+type   // 数据实体/模型类型 实体： entity 模型：model
+```
+
+**单条** 请求内部地址
+```
+POST http://prod-dataops-warehouse.sreworks-dataops.svc.cluster.local:80/dw/data/pushByName
+```
+
+body参数
+```
+{}   // JSON对象类型 按照数据实体/模型 字段规范提供
+```
+
+**批量(**单次最大1000条**)** 请求内部地址
+```
+POST http://prod-dataops-warehouse.sreworks-dataops.svc.cluster.local:80/dw/data/pushBatchByName
+```
+
+body参数
+```
+[{}, {}]   // JSON数组对象类型 按照数据实体/模型 字段规范提供
+```
+ 
 
 2.数据源：提供数据运维平台的数据源管理功能，默认内置SREWorks的mysql和es数据源
 

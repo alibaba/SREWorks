@@ -15,4 +15,6 @@ public class Constant {
     public final static int SECOND_TS_LENGTH = 10;
 
     public final static int MILLISECOND_TS_LENGTH = 13;
+
+    public final static int MAX_METRIC_INS_FLUSH_SIZE = 1000;
 }

@@ -14,7 +14,6 @@ def check_sreworks_data_service_ready():
         while try_times < max_try_times:
             try:
                 r = requests.get(service_host)
-                print(try_times, service_name, r.status_code, r.content)
                 break
             except Exception as ex:
                 print(ex)

@@ -7,7 +7,9 @@ for item in $(env); do
   DOCKER_COMMAND+="-e ${item} "
 done
 DOCKER_COMMAND+="IMAGE_ID"
-echo "Docker Command: ${DOCKER_COMMAND}"
+echo "Docker Comm
+
+and: ${DOCKER_COMMAND}"
 
 export APP_NAME=tkg-one
 export HTTP_SERVER_PORT=${HTTP_SERVER_PORT-"7001"}
@@ -19,7 +21,7 @@ if [ ! -f "/etc/ilogtail/users/1270632786127642" ]; then
 fi
 
 
-SERVICE_OPTS="${SERVICE_OPTS} -Xmx4g -Xms4g"
+SERVICE_OPTS="${SERVICE_OPTS} -Xmx320m -Xms320m"
 SERVICE_OPTS="${SERVICE_OPTS} -XX:ActiveProcessorCount=2"
 ## SERVICE_OPTS="${SERVICE_OPTS} -Dspring.profiles.active=oxs"
 SERVICE_OPTS="${SERVICE_OPTS} -Dproject.name=${APP_NAME}"

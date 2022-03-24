@@ -28,7 +28,7 @@ SREWorks 作为阿里云大数据SRE团队对SRE理念的工程实践，专注�
 ## 1. 前提条件
 
 - Kubernetes 的版本需要大于等于 **1.20**
-- 硬件：由于内置了Elasticsearch的开源版默认亲和性原因，建议至少3台节点（配置为4 核 CPU，8G 内存，50G 磁盘及以上）。
+- 硬件：由于内置了Elasticsearch的开源版默认亲和性原因，建议至少3台节点（配置为4 核 CPU，16G 内存），存储需要600G以上空间。
 
 
 ## 2. 安装部署
@@ -37,10 +37,15 @@ SREWorks 作为阿里云大数据SRE团队对SRE理念的工程实践，专注�
 ### 安装 Helm 3
 使用以下命令安装（如果已安装了 Helm 3，可以跳过这一步骤）：
 ```
-# 适用mac intel芯片
+# 适用Mac intel芯片
 wget "http://sreworks.oss-cn-beijing.aliyuncs.com/bin/helm-darwin-amd64" -O helm
+
+# 适用Linux intel芯片
+# wget https://sreworks.oss-cn-beijing.aliyuncs.com/bin/helm-linux-am64 -O helm
+
 chmod +x ./helm
 mv ./helm /usr/local/bin/
+
 ```
 
 
@@ -57,6 +62,7 @@ cd sreworks/chart/sreworks-chart
 # 安装SREWorks
 helm install sreworks ./ \
     --create-namespace --namespace sreworks \
+    --kubeconfig="****" \
     --set appmanager.home.url="http://sreworks-*.cn-hangzhou.alicontainer.com"
 
 ```
@@ -68,8 +74,11 @@ helm install sreworks ./ \
 
 ## 4. 卸载
 ```
+
 helm uninstall sreworks -nsreworks
 kubectl delete namespace sreworks
+# 如果未删除namespace，请删除namespace下被创建的pvc, helm uninstall不会自动删除pvc
+
 ```
 
 
@@ -80,10 +89,9 @@ kubectl delete namespace sreworks
 - 3. 如果遇到长时间Pod处于ContainerCreating，请执行 `kubectl describe pod `命令查看Pod的异常事件
    - 异常事件中出现 `InvalidInstanceType.NotSupportDiskCategory`，说明当前的Node不支持挂载这种云盘类型，请在helm命令中加入 `--set global.storageClass="alicloud-disk-essd"` 进行指定，默认为`alicloud-disk-available`
 
-
 # 联系我们
 ### 微信群
-![image.png](/paas/sw-frontend/src/publicMedia/weixin.jpg)
+![image.png](https://sreworks.oss-cn-beijing.aliyuncs.com/logo/weixin.jpg)
 ### 钉钉群
 ![image.png](/paas/sw-frontend/src/publicMedia/ding.jpg)
 

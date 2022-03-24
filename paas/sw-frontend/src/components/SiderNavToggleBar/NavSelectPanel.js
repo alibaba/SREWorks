@@ -147,7 +147,7 @@ export default class NavSelectPanel extends React.Component {
                     <List.Item.Meta
                         title={
                             <div style={{ display: 'flex', width: '100%' }}>
-                                <div style={{ width: 4, height: 20, backgroundColor: '#00c1de' }} />
+                                <div className="list-meta-title-color" style={{ width: 4, height: 20}} />
                                 <span style={{ marginLeft: 8, marginRight: 8, fontSize: 14 }}>{item.title}</span>
                             </div>
                         }

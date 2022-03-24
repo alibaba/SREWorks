@@ -64,7 +64,7 @@ class StaticCard extends Component {
                 style={imgStyle}
                 src={backgroundImg || cardIcon || (widgetData && widgetData.icon)}
                 alt="icon"
-              /> : <Avatar style={{ fontSize: 26, width: 48, height: 48, lineHeight: "48px", backgroundColor: '#00c1de', verticalAlign: 'middle' }} size="large">{(widgetData && widgetData.value && widgetData.value[0]) || (cardTitle && cardTitle[0])}</Avatar>
+              /> : <Avatar style={{ fontSize: 26, width: 48, height: 48, lineHeight: "48px", backgroundColor: 'var(--PrimaryColor)', verticalAlign: 'middle' }} size="large">{(widgetData && widgetData.value && widgetData.value[0]) || (cardTitle && cardTitle[0])}</Avatar>
           ,
         }}
         footer={

@@ -49,10 +49,10 @@ export default class SearchBar extends React.Component {
         }
         {/* <LegacyIcon  type={showSearch ? "plus" : "search"} className={`search-icon icon-switch ${showSearch ? "close-icon" : ""}`} onClick={this.handleClick}/> */}
         {
-          showSearch && <CloseCircleOutlined style={{ color: "#00c1de" }} onClick={this.handleClick} className="search-bar-icon" />
+          showSearch && <CloseCircleOutlined className="top-search-icon"  onClick={this.handleClick} className="search-bar-icon" />
         }
         {
-          !showSearch && <SearchOutlined style={{ color: "#00c1de" }} onClick={this.handleClick} className="search-bar-icon" />
+          !showSearch && <SearchOutlined className="top-search-icon" onClick={this.handleClick} className="search-bar-icon" />
         }
       </div>
     );

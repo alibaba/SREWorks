@@ -8,12 +8,16 @@ import {
   Switch,
   Dropdown,
   Radio,
+  Button,
+  Tooltip
 } from "antd";
 import { connect } from "dva";
 import cacheRepository from "../../utils/cacheRepository";
 import NProgress from "nprogress";
 import httpClient from "../../utils/httpClient";
 import properties from "appRoot/properties";
+import {CirclePicker} from "react-color";
+import _ from 'lodash'
 
 const SubMenu = Menu.SubMenu;
 const Item = Menu.Item;
@@ -86,6 +90,37 @@ export default class DropDownUser extends React.Component {
     const { dispatch } = this.props;
     dispatch({ type: "global/logout" });
   };
+  setPrimaryColor=(targetObj)=> {
+    let color = targetObj.hex;
+    let themeType = (localStorage.getItem("tesla-theme") === "navyblue" ? "navyblue" : "light");
+    if(!window.less){
+      return
+    } else {
+      let obj = _.cloneDeep(THEMES[themeType]);
+      obj['@primary-color'] = color;
+      obj['@link-color']= color;
+      window.less.modifyVars(obj).then(res=> {
+        document.documentElement.style.setProperty('--PrimaryColor',color);
+        localStorage.setItem("theme_color",color);
+        console.log(res,'window.less.modifyVars,执行了2')
+      })
+    }
+  }
+  componentDidMount() {
+    let themeType = (localStorage.getItem("tesla-theme") === "navyblue" ? "navyblue" : "light");
+    if(!window.less){
+      return
+    } 
+    let color = localStorage.getItem("theme_color") || '#00c1de';
+      let obj = _.cloneDeep(THEMES[themeType]);
+      obj['@primary-color'] = color;
+      obj['@link-color']= color;
+      window.less.modifyVars(obj).then(res=> {
+        document.documentElement.style.setProperty('--PrimaryColor',color);
+        localStorage.setItem("theme_color",color);
+        console.log(res,'window.less.modifyVars,执行了2')
+      })
+  }
   render() {
     let { currentUser, currentProduct, isOnlyLogout } = this.props;
     const roles = currentUser.roles, cacheRole = cacheRepository.getRole(currentProduct.productId);
@@ -114,7 +149,7 @@ export default class DropDownUser extends React.Component {
       </div>
     );
     return <Dropdown placement="bottomRight" overlay={
-      <Menu mode="horizontal" style={{ width: 240 }}>
+      <Menu mode="horizontal" style={{ width: 280 }}>
         {!isOnlyLogout && <MenuItemGroup title={localeHelper.get("common.theme.setting", "主题设置")}>
           <Menu.Item key="theme">
             <Switch onChange={this.onSwitchTheme}
@@ -123,6 +158,15 @@ export default class DropDownUser extends React.Component {
               unCheckedChildren="暗" />
           </Menu.Item>
         </MenuItemGroup>}
+        <MenuItemGroup title="主色设置">
+          <Menu.Item key="primaryColor">
+          {/* <Tooltip title="点击切换">
+          <div onClick={()=> this.setPrimaryColor()} style={{width:45,height:25,backgroundColor:'var(--PrimaryColor)'}}></div>
+          </Tooltip> */}
+          <CirclePicker onChange={this.setPrimaryColor}/>
+            {/* <Button onClick={()=> this.setPrimaryColor()}>主色设置</Button> */}
+          </Menu.Item>
+        </MenuItemGroup>
         {/* <MenuItemGroup title={localeHelper.get("common.language.setting", "语言设置")}>
           <Menu.Item key="language">
             <Switch onChange={this.onLanguageChange} checked={localStorage.getItem("t_lang_locale") === "zh_CN"}

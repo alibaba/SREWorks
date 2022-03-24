@@ -367,14 +367,14 @@ class MenuNavigation extends React.Component {
           break;
       }
     }}>
-      {!item.shortcutFlag&&!item.isRootNode && <MenuItem key="modify-node"><span><EditOutlined style={{color: '#08c' }} />修改菜单信息</span></MenuItem>}
-        {<MenuItem key="add-node"><span><PlusOutlined style={{color: '#87d068' }} />新增子菜单</span> </MenuItem>}
+      {!item.shortcutFlag&&!item.isRootNode && <MenuItem key="modify-node"><span><EditOutlined style={{color: 'var(--PrimaryColor)' }} />修改菜单信息</span></MenuItem>}
+        {<MenuItem key="add-node"><span><PlusOutlined style={{color: 'var(--PrimaryColor)' }} />新增子菜单</span> </MenuItem>}
       {/*{<MenuItem key="assign-roles"><span><Icon type="user" style={{color: '#2db7f5' }}/>指定所属角色</span> </MenuItem>}*/}
       {item.level !== 0 && item.config.type !== "buildIn" && (item.children === null || item.children && item.children.length === 0 || !item.children) &&
       <MenuItem key="delete" onClick={e => e.domEvent.stopPropagation()}>
         <span style={{color: "red"}}>
              <Popconfirm title={"确认删除该菜单"} onConfirm={(e) => this._deleteNode(e, item)}>
-               <a onClick={e => e.stopPropagation()}><DeleteOutlined style={{color: '#f50',marginRight:6}} />删除该菜单</a>
+               <a onClick={e => e.stopPropagation()}><DeleteOutlined style={{color: 'var(--PrimaryColor)',marginRight:6}} />删除该菜单</a>
           </Popconfirm>
         </span>
       </MenuItem>}

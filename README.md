@@ -91,7 +91,7 @@ kubectl delete namespace sreworks
 
 # 联系我们
 ### 微信群
-![image.png](https://sreworks.oss-cn-beijing.aliyuncs.com/logo/weixin.jpg)
+![image.png](https://sreworks.oss-accelerate.aliyuncs.com/logo/weixin.jpg)
 ### 钉钉群
 ![image.png](/paas/sw-frontend/src/publicMedia/ding.jpg)
 

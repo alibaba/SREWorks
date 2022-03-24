@@ -108,7 +108,7 @@ options:
   env:
     - TASKPLATFORM_SUBMIT_URL
     - TASKPLATFORM_QUERY_URL
-
+    - AISP_URL
 
 
 

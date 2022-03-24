@@ -60,7 +60,7 @@ swcli:
 
 source:
   branch: master
-  repo: https://github.com/alibaba/SREWorks.git
+  repo: https://code.aliyun.com/sreworks_public/mirror.git
 
 appmanagerbase:
   enabled: true

@@ -2,9 +2,11 @@ package com.alibaba.sreworks.pmdb.services.metric;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.pmdb.api.metric.MetricInstanceService;
+import com.alibaba.sreworks.pmdb.common.constant.Constant;
 import com.alibaba.sreworks.pmdb.common.exception.MetricInstanceExistException;
 import com.alibaba.sreworks.pmdb.common.exception.MetricInstanceNotExistException;
 import com.alibaba.sreworks.pmdb.common.exception.MetricNotExistException;
+import com.alibaba.sreworks.pmdb.common.exception.ParamException;
 import com.alibaba.sreworks.pmdb.common.properties.ApplicationProperties;
 import com.alibaba.sreworks.pmdb.domain.metric.*;
 import com.alibaba.sreworks.pmdb.domain.req.metric.MetricDataReq;
@@ -248,6 +250,12 @@ public class MetricInstanceServiceImpl implements MetricInstanceService {
 
     @Override
     public void pushDatas(Integer metricId, boolean isInsertNewIns, boolean isDeleteOldIns, boolean isPushQueue, List<MetricDataReq> pushDatas) throws Exception {
+        if (CollectionUtils.isEmpty(pushDatas)) {
+            return;
+        } else if (pushDatas.size() > Constant.MAX_METRIC_INS_FLUSH_SIZE) {
+            throw new ParamException(String.format("请进行分批写入, 单次最大允许%s条数据", Constant.MAX_METRIC_INS_FLUSH_SIZE));
+        }
+
         Metric metric = metricMapper.selectByPrimaryKey(metricId);
         if (Objects.isNull(metric)) {
             throw new MetricNotExistException(String.format("指标[id:%s]不存在", metricId));

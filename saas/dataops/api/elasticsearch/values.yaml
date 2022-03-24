@@ -1,8 +1,0 @@
-volumeClaimTemplate:
-  accessModes: [ "ReadWriteOnce" ]
-  storageClassName: "bbbb"
-  resources:
-    requests:
-      storage: 500Gi
-
-

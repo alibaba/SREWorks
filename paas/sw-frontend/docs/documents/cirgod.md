@@ -94,7 +94,7 @@ body参数
 {}   // JSON对象类型 按照数据实体/模型 字段规范提供
 ```
 
-**批量 **请求内部地址
+**批量(**单次最大1000条**) **请求内部地址 
 ```
 POST http://prod-dataops-warehouse.sreworks-dataops.svc.cluster.local:80/dw/data/pushBatch
 ```
@@ -122,7 +122,7 @@ body参数
 {}   // JSON对象类型 按照数据实体/模型 字段规范提供
 ```
 
-**批量** 请求内部地址
+**批量(**单次最大1000条**)** 请求内部地址
 ```
 POST http://prod-dataops-warehouse.sreworks-dataops.svc.cluster.local:80/dw/data/pushBatchByName
 ```

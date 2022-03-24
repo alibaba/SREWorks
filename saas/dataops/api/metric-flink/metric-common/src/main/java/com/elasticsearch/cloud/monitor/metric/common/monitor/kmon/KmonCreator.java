@@ -8,7 +8,6 @@ import com.elasticsearch.cloud.monitor.metric.common.monitor.kmon.config.Monitor
 import com.elasticsearch.cloud.monitor.metric.common.monitor.kmon.config.OpentsdbConfigMapBuilder;
 import com.elasticsearch.cloud.monitor.metric.common.monitor.kmon.config.SlsConfigMapBuilder;
 import com.elasticsearch.cloud.monitor.metric.common.monitor.opentsdb.OpentsdbSink;
-import com.elasticsearch.cloud.monitor.metric.common.monitor.sls.SLSMonitorSink;
 import com.elasticsearch.cloud.monitor.sdk.sink.SlsMonitorSink;
 import com.opensearch.cobble.monitor.Monitor;
 import com.opensearch.cobble.monitor.MonitorFactory;

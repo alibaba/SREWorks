@@ -3,7 +3,6 @@ package com.elasticsearch.cloud.monitor.metric.common.rule;
 import com.alibaba.fastjson.JSONObject;
 import com.elasticsearch.cloud.monitor.metric.common.rule.failure.FailureLevelWithBoundary;
 import com.elasticsearch.cloud.monitor.metric.common.rule.failure.FailureRule;
-import com.elasticsearch.cloud.monitor.metric.common.rule.loader.RulesLoader;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 

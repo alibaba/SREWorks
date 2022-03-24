@@ -6,7 +6,6 @@ import com.alibaba.sreworks.dataset.common.exception.InterfaceConfigException;
 import com.alibaba.sreworks.dataset.common.exception.RequestException;
 import com.alibaba.sreworks.dataset.common.type.ColumnType;
 import com.alibaba.sreworks.dataset.connection.ESClient;
-import com.alibaba.sreworks.dataset.domain.bo.*;
 import com.alibaba.sreworks.dataset.domain.primary.InterfaceConfig;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;

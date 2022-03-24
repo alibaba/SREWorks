@@ -38,7 +38,6 @@ import org.apache.flink.table.functions.TableFunction;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;

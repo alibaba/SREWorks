@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.elasticsearch.cloud.monitor.metric.log.common.Constant;
-import com.elasticsearch.cloud.monitor.metric.log.common.Util;
 import com.elasticsearch.cloud.monitor.metric.log.udtf.sync.EsInfoSync;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Maps;

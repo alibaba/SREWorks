@@ -11,7 +11,6 @@ import com.alibaba.sreworks.dataset.domain.bo.DataModelGroupField;
 import com.alibaba.sreworks.dataset.domain.bo.DataModelQueryField;
 import com.alibaba.sreworks.dataset.domain.bo.DataModelValueField;
 import com.alibaba.sreworks.dataset.domain.primary.*;
-import com.alibaba.sreworks.dataset.domain.req.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

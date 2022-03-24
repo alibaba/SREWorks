@@ -7,7 +7,6 @@ import java.net.UnknownHostException;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLHandshakeException;
 
-import com.elasticsearch.cloud.monitor.metric.common.monitor.sls.SLSMonitorSink;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;

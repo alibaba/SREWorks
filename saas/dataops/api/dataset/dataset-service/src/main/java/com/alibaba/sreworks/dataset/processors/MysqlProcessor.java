@@ -3,7 +3,6 @@ package com.alibaba.sreworks.dataset.processors;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.dataset.common.exception.ModelConfigException;
 import com.alibaba.sreworks.dataset.connection.MysqlClient;
-import com.alibaba.sreworks.dataset.domain.bo.*;
 import com.alibaba.sreworks.dataset.domain.primary.InterfaceConfig;
 import com.google.common.base.Preconditions;
 import com.hubspot.jinjava.Jinjava;

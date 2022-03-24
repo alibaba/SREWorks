@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.elasticsearch.cloud.monitor.metric.common.blink.utils.BlinkLogTracer;
 import com.elasticsearch.cloud.monitor.metric.common.constant.Constants;
 import com.elasticsearch.cloud.monitor.metric.common.pojo.FailureInstance;
-import com.elasticsearch.cloud.monitor.metric.common.rule.*;
 import com.elasticsearch.cloud.monitor.metric.common.rule.failure.FailureLevelWithBoundary;
 import com.elasticsearch.cloud.monitor.metric.common.uti.HttpClientsUtil;
 import com.elasticsearch.cloud.monitor.metric.common.uti.PropertiesUtil;

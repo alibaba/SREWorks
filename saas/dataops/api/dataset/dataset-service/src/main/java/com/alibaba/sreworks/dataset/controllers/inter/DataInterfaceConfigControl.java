@@ -2,7 +2,6 @@ package com.alibaba.sreworks.dataset.controllers.inter;
 
 import com.alibaba.sreworks.dataset.api.inter.DataInterfaceConfigService;
 import com.alibaba.sreworks.dataset.api.model.ModelConfigService;
-import com.alibaba.sreworks.dataset.domain.req.inter.*;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.alibaba.tesla.web.controller.BaseController;
 import io.swagger.annotations.Api;

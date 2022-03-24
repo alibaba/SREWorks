@@ -2,7 +2,6 @@ package com.alibaba.sreworks.dataset.services.inter;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.sreworks.dataset.api.inter.*;
 import com.alibaba.sreworks.dataset.common.exception.InterfaceExistException;
 import com.alibaba.sreworks.dataset.common.exception.InterfaceNotExistException;
 import com.alibaba.sreworks.dataset.common.exception.ParamException;

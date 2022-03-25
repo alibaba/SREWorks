@@ -63,7 +63,7 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 11
+    public static final Integer REVISION = 12
 
     private static final String EXPORT_OPTION_FILE = "option.json"
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
@@ -109,6 +109,7 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
                 K8sMicroServiceMetaDO microService = k8sMicroserviceMetaService.getByMicroServiceId(k8sMicroServiceMetaDO.getAppId(), k8sMicroServiceMetaDO.getMicroServiceId())
                 k8sMicroServiceMetaDO.setId(null);
                 k8sMicroServiceMetaDO.extFromString();
+                k8sMicroServiceMetaDO.init();
                 if (microService == null) {
                     def response = k8sMicroserviceMetaService.create(k8sMicroServiceMetaDO)
                     log.info("import(create) app meta microservice config success|appId={}|content={}|response={}",

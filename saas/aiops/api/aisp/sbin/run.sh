@@ -11,6 +11,6 @@ done
 DOCKER_COMMAND+="IMAGE_ID"
 echo "Docker Command: ${DOCKER_COMMAND}"
 
-export JVM_XMX="14g"
+export JVM_XMX="500m"
 
-exec java -Xmx${JVM_XMX} -Xms${JVM_XMX} -XX:NewRatio=3 -XX:ActiveProcessorCount=8 -Dloader.path=/app/ ${EXTRA_JVM_PARAMETERS} -jar /app/tdata-aisp.jar --spring.config.location=/app/
+exec java -Xmx${JVM_XMX} -Xms${JVM_XMX} -XX:NewRatio=3 -XX:ActiveProcessorCount=4 -Dloader.path=/app/ ${EXTRA_JVM_PARAMETERS} -jar /app/tdata-aisp.jar --spring.config.location=/app/

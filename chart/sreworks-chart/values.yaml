@@ -9,6 +9,8 @@ global:
     registry: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks
     tag: v0.5
 
+  accessMode: ingress
+
 platformName: SREWorks
 platformLogo: /static/publicMedia/sreworks.png
 

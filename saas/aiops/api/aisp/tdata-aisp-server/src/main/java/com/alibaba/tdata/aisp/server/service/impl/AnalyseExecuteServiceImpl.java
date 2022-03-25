@@ -215,9 +215,8 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
         taskResultCache.put(TaskCacheUtil.genReqKey(taskUUID), postJson);
         OkHttpClient syncHttpClient = getSyncHttpClient();
         JSONObject headers = new JSONObject();
-        String url = DetectorUtil.buildUrl(envProperties.getStageId(), detectorUrl);
         Request.Builder requestBuilder = createRequestBuilder(
-            "http://".concat(url).concat("/analyze"), null, headers);
+            "http://".concat(detectorUrl).concat("/analyze"), null, headers);
         Request request = requestBuilder.post(RequestBody.create(postJson.toJSONString(),
             MediaType.parse("application/json"))).build();
         Response response;

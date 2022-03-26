@@ -28,15 +28,11 @@
 
 {{- define "nodePort" -}}
 {{- if eq .Values.global.accessMode "ingress" -}}
-80
+"80"
 {{- else -}}
-{{- (split ":" ((split "://" .Values.home.url)._1))._1 -}}
+{{- (split ":" .Values.appmanager.home.url)._2 | quote -}}
 {{- end -}}
-
-
-{{- (split "://" .Values.appmanager.home.url)._0 | quote -}}
 {{- end -}}
-
 
 {{- define "dataops.namespace" -}}
 {{- printf "%s-%s" .Release.Namespace "dataops" -}}

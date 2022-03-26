@@ -462,20 +462,6 @@ spec:
               - protocol: TCP
                 port: 80
                 targetPort: 80
-        - name: ingress.trait.abm.io
-          runtime: post
-          spec:
-            rules:
-            - host: "{{ Global.COOKIE_DOMAIN }}"
-              http:
-                paths:
-                - path: /
-                  pathType: ImplementationSpecific
-                  backend:
-                    service:
-                      name: ${CORE_STAGE_ID}-${CORE_APP_ID}-paas-frontend
-                      port:
-                        number: 80
       parameterValues:
         - name: KIND
           value: Deployment

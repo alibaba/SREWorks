@@ -42,6 +42,7 @@ data:
   ENDPOINT_PAAS_APPMANAGER: {{ template "name.service" . }}
   ABM_CLUSTER: {{ .Values.server.cluster | default "master" | quote }}
   COOKIE_DOMAIN: {{ template "domain.base" . }}
+  HOME_URL: {{ .Values.home.url | quote }}
   NETWORK_PROTOCOL: {{ template "domain.networkProtocol" . }}
   K8S_NAMESPACE: {{ .Release.Namespace | quote }}
   KANIKO_IMAGE: {{ .Values.images.kaniko | default "gcr.io/kaniko-project/executor:latest" | quote }}

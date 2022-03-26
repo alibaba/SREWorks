@@ -15,7 +15,7 @@ public class AuthProperties {
     /**
      * 是否开启鉴权逻辑
      */
-    private Boolean enableAuth = true;
+    private Boolean enableAuth = false;
 
     /**
      * SUPER CLIENT ID

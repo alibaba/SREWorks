@@ -68,6 +68,10 @@ public class JaegerAgentTrait extends BaseTrait {
             "    ],\n" +
             "    \"env\": [\n" +
             "        {\n" +
+            "            \"name\": \"SIGMA_IGNORE_RESOURCE\",\n" +
+            "            \"value\": \"true\"\n" +
+            "        },\n" +
+            "        {\n" +
             "            \"name\": \"JAEGER_SERVICE_NAME\",\n" +
             "            \"value\": \"%s\"\n" +
             "        }\n" +

@@ -24,7 +24,13 @@ data:
         # build&launch paas
         export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
         envsubst < /root/saas/swcore/api/core/build.yaml.tpl > build.yaml
-        envsubst < /root/saas/swcore/api/core/launch.yaml.tpl > launch.yaml
+
+        if [[ "$ACCESS_MODE" == "ingress" ]] ; then
+           envsubst < /root/saas/swcore/api/core/launch.yaml.tpl > launch.yaml
+        else
+           envsubst < /root/saas/swcore/api/core/launch-nodeport.yaml.tpl > launch.yaml
+        fi
+
         cat build.yaml
         cat launch.yaml
         /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=${CORE_APP_ID} --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=./launch.yaml --disable-dir-check 
@@ -32,7 +38,12 @@ data:
     else
     
         export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
-        envsubst < /root/saas/swcore/api/core/launch.yaml.tpl > /root/saas/swcore/launch.yaml
+
+        if [[ "$ACCESS_MODE" == "ingress" ]] ; then
+           envsubst < /root/saas/swcore/api/core/launch.yaml.tpl > /root/saas/swcore/launch.yaml
+        else
+           envsubst < /root/saas/swcore/api/core/launch-nodeport.yaml.tpl > /root/saas/swcore/launch.yaml
+        fi
 
         result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id=${CORE_APP_ID} --filepath /root/saas/swcore/flycore.zip --print-only-app-package-id=true --reset-version=true)
         /root/swcli --config /swcli/swcli.yaml deployment launch --app-id=${CORE_APP_ID} --stage=prod --namespace=${NAMESPACE_ID} --path /root/saas/swcore/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master

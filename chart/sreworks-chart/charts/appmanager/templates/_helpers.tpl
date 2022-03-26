@@ -39,7 +39,7 @@
 {{- end -}}
 
 {{- define "domain.base" -}}
-{{- (split "://" .Values.home.url)._1 | quote -}}
+{{- (split ":" ((split "://" .Values.home.url)._1))._0 | quote -}}
 {{- end -}}
 
 {{- define "domain.networkProtocol" -}}

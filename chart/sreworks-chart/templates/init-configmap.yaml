@@ -33,6 +33,7 @@ data:
   MINIO_SECRET_KEY: {{ .Values.global.minio.secretKey }}
   GLOBAL_STORAGE_CLASS: {{ .Values.global.storageClass | default "alicloud-disk-available" | quote }}
 
+  ACCESS_MODE: {{ .Values.global.accessMode }}
   #APPMANAGER_SERVICE: {{ .Release.Name }}-appmanager
   CORE_STAGE_ID: {{ .Values.core.stageId }}
   CORE_APP_ID: {{ .Values.core.appId }}

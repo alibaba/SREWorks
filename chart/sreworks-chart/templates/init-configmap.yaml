@@ -34,6 +34,7 @@ data:
   GLOBAL_STORAGE_CLASS: {{ .Values.global.storageClass | default "alicloud-disk-available" | quote }}
 
   ACCESS_MODE: {{ .Values.global.accessMode }}
+  NODE_PORT: {{ template "nodePort" . }} 
   #APPMANAGER_SERVICE: {{ .Release.Name }}-appmanager
   CORE_STAGE_ID: {{ .Values.core.stageId }}
   CORE_APP_ID: {{ .Values.core.appId }}

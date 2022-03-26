@@ -458,10 +458,12 @@ spec:
         - name: service.trait.abm.io
           runtime: post
           spec:
+            type: NodePort
             ports:
               - protocol: TCP
                 port: 80
                 targetPort: 80
+                nodePort: ${NODE_PORT}
       parameterValues:
         - name: KIND
           value: Deployment

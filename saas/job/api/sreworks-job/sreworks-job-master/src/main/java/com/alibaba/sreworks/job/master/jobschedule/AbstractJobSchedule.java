@@ -1,7 +1,6 @@
 package com.alibaba.sreworks.job.master.jobschedule;
 
 import com.alibaba.fastjson.JSONObject;
-
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

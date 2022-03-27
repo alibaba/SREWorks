@@ -1,12 +1,11 @@
 package com.alibaba.tesla.tkgone.server.common;
 
+import com.alibaba.fastjson.JSONArray;
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import com.alibaba.fastjson.JSONArray;
-
-import lombok.Data;
 
 /**
  * @author jialiang.tjl

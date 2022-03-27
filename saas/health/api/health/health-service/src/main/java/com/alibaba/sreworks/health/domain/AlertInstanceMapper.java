@@ -1,13 +1,11 @@
 package com.alibaba.sreworks.health.domain;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.sreworks.health.domain.AlertInstance;
-import com.alibaba.sreworks.health.domain.AlertInstanceExample;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
+
+import java.util.List;
+import java.util.Map;
 
 public interface AlertInstanceMapper {
     long countByExample(AlertInstanceExample example);

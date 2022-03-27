@@ -1,19 +1,16 @@
 package com.alibaba.sreworks.job.worker.taskscene.risk;
 
-import java.net.http.HttpResponse;
-import java.util.List;
-
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstanceWithBlobs;
 import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstanceWithBlobsRepository;
 import com.alibaba.sreworks.job.utils.Requests;
 import com.alibaba.sreworks.job.worker.taskscene.AbstractTaskScene;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.net.http.HttpResponse;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

@@ -1,5 +1,10 @@
 package com.alibaba.tesla.tkgone.server.common;
 
+import com.github.wnameless.json.flattener.JsonFlattener;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import redis.clients.jedis.Jedis;
+
 import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -7,15 +12,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.github.wnameless.json.flattener.JsonFlattener;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-
-import lombok.extern.log4j.Log4j;
-import redis.clients.jedis.Jedis;
 /**
  * @author yangjinghua
  */

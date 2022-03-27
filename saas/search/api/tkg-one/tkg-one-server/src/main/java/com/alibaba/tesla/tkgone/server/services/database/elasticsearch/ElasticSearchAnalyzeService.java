@@ -1,15 +1,14 @@
 package com.alibaba.tesla.tkgone.server.services.database.elasticsearch;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.mapper.IndexMapper;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author jialiang.tjl

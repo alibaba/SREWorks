@@ -1,25 +1,19 @@
 package com.alibaba.tesla.tkgone.server.consumer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.tkgone.server.common.Constant;
 import com.alibaba.tesla.tkgone.server.common.Tools;
 import com.alibaba.tesla.tkgone.server.domain.dto.ConsumerDto;
-
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import lombok.extern.log4j.Log4j;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author yangjinghua

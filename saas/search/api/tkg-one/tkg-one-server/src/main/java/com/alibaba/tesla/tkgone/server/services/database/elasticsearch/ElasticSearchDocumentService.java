@@ -1,16 +1,8 @@
 package com.alibaba.tesla.tkgone.server.services.database.elasticsearch;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.tesla.tkgone.server.common.Constant;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.mapper.IndexMapper;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.params.DocumentBulkRequest;
-
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.index.IndexRequest;
@@ -19,6 +11,8 @@ import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.*;
 
 /**
  * @author jialiang.tjl

@@ -2,9 +2,6 @@ package com.alibaba.sreworks.job.worker.taskscene;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstance;
-import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstanceWithBlobs;
-import com.alibaba.sreworks.job.taskinstance.TaskInstanceStatus;
-
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

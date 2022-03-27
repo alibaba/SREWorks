@@ -5,7 +5,9 @@ import com.elasticsearch.cloud.monitor.metric.common.client.MinioConfig;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.minio.*;
+import io.minio.GetObjectArgs;
+import io.minio.GetObjectResponse;
+import io.minio.MinioClient;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Headers;
 import org.apache.commons.lang.StringUtils;
@@ -13,7 +15,10 @@ import org.apache.commons.lang.StringUtils;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipInputStream;
 
 /**

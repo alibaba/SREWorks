@@ -1,10 +1,9 @@
 package com.alibaba.sreworks.dataset.domain.primary;
 
-import com.alibaba.sreworks.dataset.domain.primary.DataInterfaceConfig;
-import com.alibaba.sreworks.dataset.domain.primary.DataInterfaceConfigExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
+
+import java.util.List;
 
 public interface DataInterfaceConfigMapper {
     long countByExample(DataInterfaceConfigExample example);

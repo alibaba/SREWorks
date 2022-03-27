@@ -1,7 +1,6 @@
 package com.alibaba.sreworks.job.master.domain.repository;
 
 import com.alibaba.sreworks.job.master.domain.DO.SreworksConfig;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

@@ -1,11 +1,9 @@
 package com.alibaba.sreworks.warehouse.domain.req.entity;
 
 import com.alibaba.sreworks.warehouse.common.constant.DwConstant;
-import com.alibaba.sreworks.warehouse.common.utils.Regex;
 import com.google.common.base.Preconditions;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * 更新实体元信息

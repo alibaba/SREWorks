@@ -1,10 +1,9 @@
 package com.alibaba.sreworks.pmdb.domain.metric;
 
-import com.alibaba.sreworks.pmdb.domain.metric.DataSource;
-import com.alibaba.sreworks.pmdb.domain.metric.DataSourceExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
+
+import java.util.List;
 
 public interface DataSourceMapper {
     long countByExample(DataSourceExample example);

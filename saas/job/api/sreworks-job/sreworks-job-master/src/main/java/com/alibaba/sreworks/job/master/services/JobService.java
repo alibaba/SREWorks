@@ -1,8 +1,5 @@
 package com.alibaba.sreworks.job.master.services;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.job.master.common.JobTriggerType;
 import com.alibaba.sreworks.job.master.domain.DO.ElasticJobInstance;
@@ -19,13 +16,15 @@ import com.alibaba.sreworks.job.master.params.JobCreateParam;
 import com.alibaba.sreworks.job.master.params.JobEditScheduleParam;
 import com.alibaba.sreworks.job.master.params.JobModifyParam;
 import com.alibaba.sreworks.job.utils.StringUtil;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service

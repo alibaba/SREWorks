@@ -1,9 +1,9 @@
 package com.elasticsearch.cloud.monitor.metric.log.udtf.sync;
 
-import java.util.Map;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Map;
 
 /**
  * @author xiaoping

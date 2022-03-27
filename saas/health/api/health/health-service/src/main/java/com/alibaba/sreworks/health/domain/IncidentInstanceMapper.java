@@ -1,13 +1,11 @@
 package com.alibaba.sreworks.health.domain;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.sreworks.health.domain.IncidentInstance;
-import com.alibaba.sreworks.health.domain.IncidentInstanceExample;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
+
+import java.util.List;
+import java.util.Map;
 
 public interface IncidentInstanceMapper {
     long countByExample(IncidentInstanceExample example);

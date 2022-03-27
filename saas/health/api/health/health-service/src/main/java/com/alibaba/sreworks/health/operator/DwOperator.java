@@ -3,7 +3,8 @@ package com.alibaba.sreworks.health.operator;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.health.common.properties.ApplicationProperties;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
+import okhttp3.HttpUrl;
+import okhttp3.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

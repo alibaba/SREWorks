@@ -1,9 +1,5 @@
 package com.alibaba.sreworks.job.master.controllers;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.job.master.domain.DO.SreworksJob;
@@ -14,11 +10,9 @@ import com.alibaba.sreworks.job.master.jobschedule.JobScheduleService;
 import com.alibaba.sreworks.job.master.jobtrigger.JobTriggerService;
 import com.alibaba.sreworks.job.master.params.*;
 import com.alibaba.sreworks.job.master.services.JobService;
-import com.alibaba.sreworks.job.master.services.TaskService;
 import com.alibaba.sreworks.job.utils.JsonUtil;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.alibaba.tesla.web.controller.BaseController;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +20,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author jinghua.yjh

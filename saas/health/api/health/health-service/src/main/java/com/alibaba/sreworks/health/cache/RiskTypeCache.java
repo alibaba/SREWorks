@@ -1,6 +1,8 @@
 package com.alibaba.sreworks.health.cache;
 
-import com.alibaba.sreworks.health.domain.*;
+import com.alibaba.sreworks.health.domain.RiskType;
+import com.alibaba.sreworks.health.domain.RiskTypeExample;
+import com.alibaba.sreworks.health.domain.RiskTypeMapper;
 import lombok.Getter;
 
 import java.util.HashMap;

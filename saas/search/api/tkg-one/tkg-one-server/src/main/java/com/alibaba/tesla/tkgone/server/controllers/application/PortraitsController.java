@@ -1,20 +1,9 @@
 package com.alibaba.tesla.tkgone.server.controllers.application;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
-import com.alibaba.tesla.web.controller.BaseController;
 import com.alibaba.tesla.tkgone.server.common.Constant;
 import com.alibaba.tesla.tkgone.server.common.MysqlHelper;
 import com.alibaba.tesla.tkgone.server.common.Tools;
@@ -26,14 +15,22 @@ import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSe
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSearchSearchService;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.elasticsearchgrammar.GetQueryGrammar;
 import com.alibaba.tesla.tkgone.server.services.tsearch.TeslasearchService;
-
+import com.alibaba.tesla.web.controller.BaseController;
+import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import lombok.extern.log4j.Log4j;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author yangjinghua

@@ -1,20 +1,14 @@
 package com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.cache;
 
 import com.elasticsearch.cloud.monitor.commons.checker.duration.DurationConditionChecker;
-import com.elasticsearch.cloud.monitor.commons.client.SlsConfig;
-import com.elasticsearch.cloud.monitor.commons.client.SlsSearchClient;
 import com.elasticsearch.cloud.monitor.commons.core.PlottQueryClient;
 import com.elasticsearch.cloud.monitor.commons.datapoint.DataPoint;
 import com.elasticsearch.cloud.monitor.commons.rule.Rule;
-import com.elasticsearch.cloud.monitor.commons.rule.expression.SelectedMetric;
-import com.elasticsearch.cloud.monitor.commons.rule.filter.TagVFilter;
 import com.elasticsearch.cloud.monitor.commons.state.RuleDataPointsCache;
 import com.elasticsearch.cloud.monitor.commons.utils.Pair;
 import com.elasticsearch.cloud.monitor.commons.utils.TimeUtils;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.constant.MetricConstants;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.opensearch.cobble.monitor.Monitor;
 import com.taobao.kmonitor.core.MetricsTags;
@@ -22,7 +16,9 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Data

@@ -114,6 +114,11 @@ target
 .idea
 *.iml
 
+test.sh
+testm.sh
+testw.sh
+*/src/test/*
+
 *daily.properties
 *test.properties
 *dev.properties

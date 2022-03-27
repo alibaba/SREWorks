@@ -1,12 +1,13 @@
 package com.alibaba.sreworks.job.master.jobtrigger.normal;
 
 import com.alibaba.sreworks.job.master.jobtrigger.AbstractJobTrigger;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

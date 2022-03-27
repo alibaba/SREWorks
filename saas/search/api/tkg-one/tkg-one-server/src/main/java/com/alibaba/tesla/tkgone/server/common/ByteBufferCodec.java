@@ -1,9 +1,5 @@
 package com.alibaba.tesla.tkgone.server.common;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.nio.ByteBuffer;
-
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.parser.DefaultJSONParser;
 import com.alibaba.fastjson.parser.JSONToken;
@@ -12,6 +8,10 @@ import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.ObjectSerializer;
 import com.alibaba.fastjson.serializer.PrimitiveArraySerializer;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.nio.ByteBuffer;
 
 public class ByteBufferCodec implements ObjectSerializer, ObjectDeserializer {
     public static ByteBufferCodec instance = new ByteBufferCodec();

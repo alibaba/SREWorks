@@ -1,11 +1,5 @@
 package com.alibaba.tesla.tkgone.server.services.tsearch;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.tkgone.server.common.Constant;
 import com.alibaba.tesla.tkgone.server.common.Tools;
@@ -17,14 +11,18 @@ import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSe
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSearchSearchService;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSearchUpsertService;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.mapper.PartitionMapper;
-
+import lombok.Data;
+import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import lombok.Data;
-import lombok.extern.log4j.Log4j;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 /**
  * @author yangjinghua

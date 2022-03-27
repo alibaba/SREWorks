@@ -4,7 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.health.common.client.HttpClient;
 import com.alibaba.sreworks.health.common.exception.RequestException;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.springframework.stereotype.Service;
 
 

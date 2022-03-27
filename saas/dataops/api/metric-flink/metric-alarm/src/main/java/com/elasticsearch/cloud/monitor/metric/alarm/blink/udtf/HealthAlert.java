@@ -1,6 +1,5 @@
 package com.elasticsearch.cloud.monitor.metric.alarm.blink.udtf;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.elasticsearch.cloud.monitor.commons.checker.duration.DurationConditionChecker;
 import com.elasticsearch.cloud.monitor.commons.core.Alarm;
@@ -22,8 +21,8 @@ import com.elasticsearch.cloud.monitor.metric.common.blink.utils.FlinkTimeUtil;
 import com.elasticsearch.cloud.monitor.metric.common.client.KafkaConfig;
 import com.elasticsearch.cloud.monitor.metric.common.constant.Constants;
 import com.elasticsearch.cloud.monitor.metric.common.pojo.AlertInstance;
-import com.elasticsearch.cloud.monitor.metric.common.rule.HealthAlertRulesManagerFactory;
 import com.elasticsearch.cloud.monitor.metric.common.rule.EmonRulesManager;
+import com.elasticsearch.cloud.monitor.metric.common.rule.HealthAlertRulesManagerFactory;
 import com.elasticsearch.cloud.monitor.metric.common.uti.HttpClientsUtil;
 import com.elasticsearch.cloud.monitor.metric.common.uti.PropertiesUtil;
 import com.google.common.base.Throwables;
@@ -38,7 +37,6 @@ import org.apache.flink.table.functions.TableFunction;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;

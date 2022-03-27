@@ -1,9 +1,5 @@
 package com.alibaba.sreworks.job.master.services;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.job.master.domain.DO.SreworksJobTask;
 import com.alibaba.sreworks.job.master.domain.DTO.SreworksJobWorkerDTO;
@@ -12,10 +8,13 @@ import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstanceWithBlobs;
 import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstanceWithBlobsRepository;
 import com.alibaba.sreworks.job.taskinstance.TaskInstanceStatus;
 import com.alibaba.sreworks.job.utils.StringUtil;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service

@@ -1,7 +1,6 @@
 package com.alibaba.sreworks.job.master.jobscene.normal;
 
 import com.alibaba.sreworks.job.master.jobscene.AbstractJobScene;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;

@@ -1,19 +1,17 @@
 package com.alibaba.sreworks.job.worker.services;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.PostConstruct;
-
 import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstanceWithBlobs;
 import com.alibaba.sreworks.job.worker.taskhandlers.AbstractTaskHandler;
-
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
 
 @Data
 @Service

@@ -3,7 +3,9 @@ package com.alibaba.sreworks.dataset.processors;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.dataset.common.exception.ModelConfigException;
 import com.alibaba.sreworks.dataset.connection.MysqlClient;
-import com.alibaba.sreworks.dataset.domain.bo.*;
+import com.alibaba.sreworks.dataset.domain.bo.DataInterfaceSortField;
+import com.alibaba.sreworks.dataset.domain.bo.InterfaceGroupField;
+import com.alibaba.sreworks.dataset.domain.bo.InterfaceQueryField;
 import com.alibaba.sreworks.dataset.domain.primary.InterfaceConfig;
 import com.google.common.base.Preconditions;
 import com.hubspot.jinjava.Jinjava;
@@ -15,7 +17,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 

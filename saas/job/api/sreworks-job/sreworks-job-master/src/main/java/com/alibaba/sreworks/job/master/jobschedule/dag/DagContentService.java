@@ -1,20 +1,18 @@
 package com.alibaba.sreworks.job.master.jobschedule.dag;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.job.master.jobschedule.parallel.ParallelJobScheduleConf;
 import com.alibaba.sreworks.job.master.jobschedule.serial.SerialJobScheduleConf;
 import com.alibaba.sreworks.job.utils.JsonUtil;
 import com.alibaba.tesla.dag.model.repository.TcDagNodeRepository;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service

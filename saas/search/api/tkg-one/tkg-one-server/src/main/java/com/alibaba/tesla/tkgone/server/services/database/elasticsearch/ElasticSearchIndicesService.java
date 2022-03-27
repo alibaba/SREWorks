@@ -1,20 +1,5 @@
 package com.alibaba.tesla.tkgone.server.services.database.elasticsearch;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.tkgone.server.common.Constant;
 import com.alibaba.tesla.tkgone.server.common.RedisHelper;
@@ -23,19 +8,25 @@ import com.alibaba.tesla.tkgone.server.domain.dto.BackendStoreDTO;
 import com.alibaba.tesla.tkgone.server.services.config.CategoryConfigService;
 import com.alibaba.tesla.tkgone.server.services.config.ElasticSearchConfigService;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.mapper.IndexMapper;
-
+import lombok.extern.log4j.Log4j;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.get.GetIndexRequest;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.indices.CreateIndexRequest;
-import org.elasticsearch.action.admin.indices.get.GetIndexRequest;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import lombok.extern.log4j.Log4j;
+import javax.annotation.Nonnull;
+import java.util.*;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 
 /**
  * @author jialiang.tjl

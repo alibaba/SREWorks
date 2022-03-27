@@ -1,10 +1,9 @@
 package com.alibaba.sreworks.health.domain;
 
-import com.alibaba.sreworks.health.domain.EventInstance;
-import com.alibaba.sreworks.health.domain.EventInstanceExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
+
+import java.util.List;
 
 public interface EventInstanceMapper {
     long countByExample(EventInstanceExample example);

@@ -1,9 +1,5 @@
 package com.elasticsearch.cloud.monitor.metric.log.udtf;
 
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
 import com.elasticsearch.cloud.monitor.metric.common.blink.utils.BlinkTagsUtil;
 import com.elasticsearch.cloud.monitor.metric.common.monitor.kmon.KmonCreatorForBlink;
 import com.elasticsearch.cloud.monitor.metric.log.common.Constant;
@@ -18,6 +14,10 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.table.functions.FunctionContext;
 import org.apache.flink.table.functions.TableFunction;
+
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 /**
  * @author xiaoping

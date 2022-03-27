@@ -1,7 +1,6 @@
 package com.alibaba.sreworks.pmdb.domain.req.metric;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.sreworks.pmdb.common.constant.MetricConstant;
 import com.google.common.base.Preconditions;
 import io.swagger.annotations.ApiModel;
 import org.apache.commons.lang3.StringUtils;

@@ -1,20 +1,19 @@
 package com.elasticsearch.cloud.monitor.metric.common.monitor.kmon;
 
-import java.util.Map;
-
 import com.elasticsearch.cloud.monitor.metric.common.constant.Constants;
 import com.elasticsearch.cloud.monitor.metric.common.monitor.kmon.config.FlumeConfigMapBuilder;
 import com.elasticsearch.cloud.monitor.metric.common.monitor.kmon.config.MonitorConfig;
 import com.elasticsearch.cloud.monitor.metric.common.monitor.kmon.config.OpentsdbConfigMapBuilder;
 import com.elasticsearch.cloud.monitor.metric.common.monitor.kmon.config.SlsConfigMapBuilder;
 import com.elasticsearch.cloud.monitor.metric.common.monitor.opentsdb.OpentsdbSink;
-import com.elasticsearch.cloud.monitor.metric.common.monitor.sls.SLSMonitorSink;
 import com.elasticsearch.cloud.monitor.sdk.sink.SlsMonitorSink;
 import com.opensearch.cobble.monitor.Monitor;
 import com.opensearch.cobble.monitor.MonitorFactory;
 import com.taobao.kmonitor.impl.KMonitorConfig;
 import com.taobao.kmonitor.sink.flume.FlumeSink;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Map;
 
 import static com.elasticsearch.cloud.monitor.metric.common.monitor.opentsdb.OpentsdbSink.CONFIG_REPORT_SWITCH_KEY;
 import static com.elasticsearch.cloud.monitor.sdk.sink.SlsMonitorSink.CONFIG_REPORT_SWITCH;

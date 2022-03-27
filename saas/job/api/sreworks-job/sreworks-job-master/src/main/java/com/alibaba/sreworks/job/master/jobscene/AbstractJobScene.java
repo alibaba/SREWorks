@@ -1,7 +1,6 @@
 package com.alibaba.sreworks.job.master.jobscene;
 
 import com.alibaba.fastjson.JSONObject;
-
 import lombok.Data;
 import org.springframework.stereotype.Service;
 

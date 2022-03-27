@@ -6,7 +6,6 @@ import com.alibaba.sreworks.warehouse.domain.req.entity.EntityCreateReq;
 import com.alibaba.sreworks.warehouse.domain.req.entity.EntityFieldCreateReq;
 import com.alibaba.sreworks.warehouse.domain.req.entity.EntityFieldUpdateReq;
 import com.alibaba.sreworks.warehouse.domain.req.entity.EntityUpdateReq;
-import com.alibaba.sreworks.warehouse.domain.req.model.ModelUpdateReq;
 
 import java.util.List;
 

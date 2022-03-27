@@ -1,10 +1,9 @@
 package com.alibaba.tesla.tkgone.server.domain;
 
-import com.alibaba.tesla.tkgone.server.domain.ConsumerHistory;
-import com.alibaba.tesla.tkgone.server.domain.ConsumerHistoryExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
+
+import java.util.List;
 
 public interface ConsumerHistoryMapper {
     long countByExample(ConsumerHistoryExample example);

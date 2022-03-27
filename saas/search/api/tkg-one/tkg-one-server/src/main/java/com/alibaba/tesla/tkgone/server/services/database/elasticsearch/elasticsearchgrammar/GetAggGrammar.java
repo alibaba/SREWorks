@@ -1,14 +1,13 @@
 package com.alibaba.tesla.tkgone.server.services.database.elasticsearch.elasticsearchgrammar;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.tkgone.server.common.StringFun;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author yangjinghua

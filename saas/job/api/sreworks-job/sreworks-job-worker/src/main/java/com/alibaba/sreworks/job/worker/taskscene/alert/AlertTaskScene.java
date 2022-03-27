@@ -5,7 +5,6 @@ import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstanceWithBlobs;
 import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstanceWithBlobsRepository;
 import com.alibaba.sreworks.job.utils.Requests;
 import com.alibaba.sreworks.job.worker.taskscene.AbstractTaskScene;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;

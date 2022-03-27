@@ -1,18 +1,14 @@
 package com.alibaba.tesla.tkgone.server.controllers.database.elasticsearch;
 
-import java.util.List;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
-import com.alibaba.tesla.web.controller.BaseController;
 import com.alibaba.tesla.tkgone.server.common.Constant;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSearchAnalyzeService;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSearchSearchService;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSearchSpecSearchService;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSearchSqlService;
-
+import com.alibaba.tesla.web.controller.BaseController;
 import lombok.extern.log4j.Log4j;
-import org.apache.catalina.security.SecurityUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author jialiang.tjl

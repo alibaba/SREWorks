@@ -2,9 +2,8 @@ package com.alibaba.tesla.tkgone.server.controllers.database.elasticsearch;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
-import com.alibaba.tesla.web.controller.BaseController;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSearchClusterService;
-
+import com.alibaba.tesla.web.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

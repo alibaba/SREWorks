@@ -26,6 +26,10 @@ nbdist/
 .vscode/
 api-test.txt
 
+test.sh
+
+*/src/test/*
+
 *daily.properties
 *test.properties
 *dev.properties

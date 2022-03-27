@@ -1,17 +1,16 @@
 package com.alibaba.sreworks.job.worker.taskhandlers;
 
-import java.util.List;
-import java.util.Map;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.job.taskhandler.MysqlContent;
 import com.alibaba.sreworks.job.taskhandler.MysqlContentAction;
-import com.alibaba.sreworks.job.worker.services.ElasticTaskInstanceService;
 import com.alibaba.sreworks.job.utils.BeansUtil;
 import com.alibaba.sreworks.job.utils.JsonUtil;
-
+import com.alibaba.sreworks.job.worker.services.ElasticTaskInstanceService;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.List;
+import java.util.Map;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

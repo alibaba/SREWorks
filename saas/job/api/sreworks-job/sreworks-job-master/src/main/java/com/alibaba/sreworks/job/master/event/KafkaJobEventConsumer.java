@@ -1,18 +1,17 @@
 package com.alibaba.sreworks.job.master.event;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.UUID;
-
 import com.alibaba.fastjson.JSONObject;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

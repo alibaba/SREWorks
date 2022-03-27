@@ -1,13 +1,13 @@
 package com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.cache;
 
+import com.google.common.base.Preconditions;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
-
-import com.google.common.base.Preconditions;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class TimeSeriesCache {

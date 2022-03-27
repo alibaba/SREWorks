@@ -1,12 +1,11 @@
 package com.alibaba.sreworks.job.master.domain.DTO;
 
-import java.util.List;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.job.master.domain.DO.SreworksJobWorker;
-
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 /**
  * @author jinghua.yjh

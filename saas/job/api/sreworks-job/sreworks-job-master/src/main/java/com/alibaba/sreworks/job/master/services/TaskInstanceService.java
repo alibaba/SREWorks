@@ -1,19 +1,7 @@
 package com.alibaba.sreworks.job.master.services;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import com.alibaba.sreworks.job.master.domain.DO.ElasticJobInstance;
-import com.alibaba.sreworks.job.master.domain.DTO.JobInstanceStatus;
-import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstance;
-import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstanceDTO;
-import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstanceRepository;
-import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstanceWithBlobsDTO;
-import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstanceWithBlobsRepository;
-import com.alibaba.sreworks.job.taskinstance.TaskInstanceStatus;
+import com.alibaba.sreworks.job.taskinstance.*;
 import com.alibaba.sreworks.job.utils.StringUtil;
-
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -28,6 +16,10 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.alibaba.sreworks.job.utils.PageUtil.pageable;
 

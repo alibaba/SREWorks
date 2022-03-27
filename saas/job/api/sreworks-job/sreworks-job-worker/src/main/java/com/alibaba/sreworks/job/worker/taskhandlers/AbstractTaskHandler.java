@@ -1,7 +1,6 @@
 package com.alibaba.sreworks.job.worker.taskhandlers;
 
 import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstanceWithBlobs;
-
 import lombok.Data;
 
 @Data

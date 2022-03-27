@@ -1,26 +1,24 @@
 package com.alibaba.sreworks.job.worker.services;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
 import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstance;
 import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstanceWithBlobs;
 import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstanceWithBlobsRepository;
 import com.alibaba.sreworks.job.utils.JsonUtil;
 import com.alibaba.sreworks.job.utils.SleepUtil;
 import com.alibaba.sreworks.job.worker.taskhandlers.AbstractTaskHandler;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Slf4j
 @Service

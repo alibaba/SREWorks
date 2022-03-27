@@ -1,7 +1,6 @@
 package com.alibaba.tesla.tkgone.server.services.config;
 
 import com.alibaba.tesla.tkgone.server.common.Constant;
-
 import org.springframework.stereotype.Service;
 
 /**

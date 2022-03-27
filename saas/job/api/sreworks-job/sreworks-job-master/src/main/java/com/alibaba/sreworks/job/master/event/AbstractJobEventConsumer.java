@@ -1,10 +1,9 @@
 package com.alibaba.sreworks.job.master.event;
 
-import java.util.List;
-
 import com.alibaba.fastjson.JSONObject;
-
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public abstract class AbstractJobEventConsumer {

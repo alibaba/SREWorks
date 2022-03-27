@@ -1,12 +1,11 @@
 package com.alibaba.sreworks.job.utils;
 
-import java.util.Arrays;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
 import org.springframework.util.CollectionUtils;
+
+import java.util.Arrays;
 
 /**
  * @author jinghua.yjh

@@ -1,10 +1,9 @@
 package com.alibaba.sreworks.warehouse.domain;
 
-import com.alibaba.sreworks.warehouse.domain.SwEntity;
-import com.alibaba.sreworks.warehouse.domain.SwEntityExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
+
+import java.util.List;
 
 public interface SwEntityMapper {
     long countByExample(SwEntityExample example);

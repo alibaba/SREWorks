@@ -4,15 +4,16 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.warehouse.api.entity.EntityMetaService;
 import com.alibaba.sreworks.warehouse.api.model.ModelMetaService;
 import com.alibaba.sreworks.warehouse.common.constant.Constant;
-import com.alibaba.sreworks.warehouse.domain.req.entity.*;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.alibaba.tesla.web.controller.BaseController;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**

@@ -1,9 +1,8 @@
 package com.alibaba.tesla.tkgone.server.config;
 
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import lombok.Data;
 
 /**
  * @author jialiang.tjl

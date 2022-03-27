@@ -1,9 +1,5 @@
 package com.elasticsearch.cloud.monitor.metric.common.blink.udf;
 
-import java.sql.Timestamp;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
 import com.elasticsearch.cloud.monitor.commons.datapoint.ImmutableDataPoint;
 import com.elasticsearch.cloud.monitor.commons.datapoint.ImmutableDataPoint.MetricAndTimestamp;
 import com.elasticsearch.cloud.monitor.metric.common.rule.exception.InvalidParameterException;
@@ -13,6 +9,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.flink.table.functions.FunctionContext;
 import org.apache.flink.table.functions.ScalarFunction;
+
+import java.sql.Timestamp;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author xiaoping

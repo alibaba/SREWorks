@@ -1,11 +1,5 @@
 package com.elasticsearch.cloud.monitor.metric.log.udtf.sync;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import com.elasticsearch.cloud.monitor.metric.common.sync.OssSync;
 import com.elasticsearch.cloud.monitor.metric.common.sync.OssSync.OssSyncCallBack;
 import com.elasticsearch.cloud.monitor.metric.log.common.Constant;
@@ -18,6 +12,12 @@ import com.opensearch.cobble.monitor.Monitor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flink.table.functions.FunctionContext;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @author xiaoping

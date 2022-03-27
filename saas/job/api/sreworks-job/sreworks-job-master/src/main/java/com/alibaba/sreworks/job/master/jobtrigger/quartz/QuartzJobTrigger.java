@@ -1,18 +1,10 @@
 package com.alibaba.sreworks.job.master.jobtrigger.quartz;
 
 import com.alibaba.sreworks.job.master.jobtrigger.AbstractJobTrigger;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.quartz.CronScheduleBuilder;
-import org.quartz.CronTrigger;
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
+import org.quartz.*;
 import org.quartz.Trigger.TriggerState;
-import org.quartz.TriggerBuilder;
-import org.quartz.TriggerKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;

@@ -1,27 +1,25 @@
 package com.alibaba.tesla.tkgone.server.services.category;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.tesla.tkgone.server.config.ApplicationProperties;
 import com.alibaba.tesla.tkgone.server.common.Constant;
 import com.alibaba.tesla.tkgone.server.common.Tools;
+import com.alibaba.tesla.tkgone.server.config.ApplicationProperties;
 import com.alibaba.tesla.tkgone.server.services.config.BaseConfigService;
 import com.alibaba.tesla.tkgone.server.services.config.CategoryConfigService;
 import com.alibaba.tesla.tkgone.server.services.tsearch.TeslasearchService;
-
+import lombok.Data;
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import lombok.Data;
-import lombok.extern.log4j.Log4j;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author yangjinghua

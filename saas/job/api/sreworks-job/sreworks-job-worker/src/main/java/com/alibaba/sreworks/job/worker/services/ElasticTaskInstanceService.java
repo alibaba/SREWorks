@@ -8,7 +8,6 @@ import com.alibaba.sreworks.job.taskinstance.TaskInstanceStatus;
 import com.alibaba.sreworks.job.utils.JsonUtil;
 import com.alibaba.sreworks.job.utils.StringUtil;
 import com.alibaba.sreworks.job.worker.taskscene.TaskSceneService;
-
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import lombok.Data;

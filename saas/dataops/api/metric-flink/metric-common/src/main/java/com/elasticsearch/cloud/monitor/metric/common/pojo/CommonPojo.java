@@ -1,12 +1,12 @@
 package com.elasticsearch.cloud.monitor.metric.common.pojo;
 
-import java.util.Map;
-
 import com.google.common.base.Objects;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Map;
 
 /**
  * @author xiaoping

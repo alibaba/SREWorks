@@ -1,14 +1,9 @@
 package com.alibaba.tesla.tkgone.server.services.tsearch;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.tesla.tkgone.server.config.ApplicationProperties;
 import com.alibaba.tesla.tkgone.server.common.Constant;
+import com.alibaba.tesla.tkgone.server.config.ApplicationProperties;
 import com.alibaba.tesla.tkgone.server.domain.dto.BackendStoreDTO;
 import com.alibaba.tesla.tkgone.server.services.category.GetExData;
 import com.alibaba.tesla.tkgone.server.services.config.CategoryConfigService;
@@ -19,13 +14,16 @@ import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSe
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.elasticsearchgrammar.GetAggGrammar;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.elasticsearchgrammar.GetQueryGrammar;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.mapper.IndexMapper;
-
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import lombok.extern.log4j.Log4j;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author yangjinghua

@@ -1,9 +1,5 @@
 package com.alibaba.tesla.tkgone.server.controllers.config;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-
 import com.alibaba.tesla.tkgone.server.common.DateUtil;
 import com.alibaba.tesla.tkgone.server.common.http.RestResponse;
 import com.alibaba.tesla.tkgone.server.domain.config.StopWord;
@@ -13,21 +9,18 @@ import com.alibaba.tesla.tkgone.server.domain.vo.SaveSynonymRequest;
 import com.alibaba.tesla.tkgone.server.domain.vo.SaveWordsRequest;
 import com.alibaba.tesla.tkgone.server.domain.vo.SaveWordsResponse;
 import com.alibaba.tesla.tkgone.server.services.config.DictService;
-
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 /**
  * ES词典管理

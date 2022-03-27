@@ -19,14 +19,11 @@ echo "Current ROCKETMQ_NAMESRV_ENDPOINT: ${ROCKETMQ_NAMESRV_ENDPOINT}"
 export SW_AGENT_NAMESPACE=data
 export SW_AGENT_NAME=warehouse
 export SW_AGENT_COLLECTOR_BACKEND_SERVICES=${DATA_SKYW_HOST}:${DATA_SKYW_PORT}
-#export SW_AGENT_COLLECTOR_BACKEND_SERVICES=dev-data-skywalking-oap.data.svc.cluster.local:11800
 export JAVA_AGENT=-javaagent:/app/skywalking-agent/skywalking-agent.jar
 
 # Log GRPC Export ENV
 export SW_GRPC_LOG_SERVER_HOST=${DATA_SKYW_HOST}
 export SW_GRPC_LOG_SERVER_PORT=${DATA_SKYW_PORT}
-#export SW_GRPC_LOG_SERVER_HOST=dev-data-skywalking-oap.data.svc.cluster.local
-#export SW_GRPC_LOG_SERVER_PORT=11800
 
 if [ "${DATA_SKYW_ENABLE}" == "true" ]
 then
@@ -34,5 +31,3 @@ then
 else
   exec java -Xmx${JVM_XMX} -Xms${JVM_XMX} -XX:ActiveProcessorCount=2 -Dloader.path=/app/ -jar /app/warehouse.jar --spring.config.location=/app/
 fi
-
-#exec java -Xmx${JVM_XMX} -Xms${JVM_XMX} -XX:ActiveProcessorCount=2 -Dloader.path=/app/ $JAVA_AGENT -jar /app/warehouse.jar --spring.config.location=/app/

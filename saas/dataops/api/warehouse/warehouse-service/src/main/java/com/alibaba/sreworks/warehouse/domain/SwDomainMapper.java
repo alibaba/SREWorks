@@ -1,10 +1,9 @@
 package com.alibaba.sreworks.warehouse.domain;
 
-import com.alibaba.sreworks.warehouse.domain.SwDomain;
-import com.alibaba.sreworks.warehouse.domain.SwDomainExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
+
+import java.util.List;
 
 public interface SwDomainMapper {
     long countByExample(SwDomainExample example);

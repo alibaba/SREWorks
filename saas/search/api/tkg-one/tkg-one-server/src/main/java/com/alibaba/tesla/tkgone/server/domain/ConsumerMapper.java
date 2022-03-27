@@ -1,10 +1,9 @@
 package com.alibaba.tesla.tkgone.server.domain;
 
-import com.alibaba.tesla.tkgone.server.domain.Consumer;
-import com.alibaba.tesla.tkgone.server.domain.ConsumerExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
+
+import java.util.List;
 
 public interface ConsumerMapper {
     long countByExample(ConsumerExample example);

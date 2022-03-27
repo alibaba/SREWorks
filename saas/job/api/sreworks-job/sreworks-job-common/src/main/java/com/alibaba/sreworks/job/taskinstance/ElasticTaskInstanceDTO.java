@@ -1,11 +1,8 @@
 package com.alibaba.sreworks.job.taskinstance;
 
 import com.alibaba.fastjson.JSONObject;
-
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 @Data
 @Slf4j

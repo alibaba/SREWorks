@@ -1,10 +1,7 @@
 package com.alibaba.sreworks.job.master.event;
 
-import java.util.List;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.job.master.jobtrigger.AbstractJobTriggerConf;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;

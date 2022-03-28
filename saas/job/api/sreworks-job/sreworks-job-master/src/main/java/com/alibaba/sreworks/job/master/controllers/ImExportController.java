@@ -1,29 +1,25 @@
 package com.alibaba.sreworks.job.master.controllers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.job.master.domain.DTO.SreworksJobDTO;
 import com.alibaba.sreworks.job.master.domain.DTO.SreworksJobTaskDTO;
-import com.alibaba.sreworks.job.master.domain.repository.SreworksJobRepository;
 import com.alibaba.sreworks.job.master.domain.repository.SreworksJobTaskRepository;
-import com.alibaba.sreworks.job.master.event.JobEventConf;
 import com.alibaba.sreworks.job.master.params.JobCreateParam;
 import com.alibaba.sreworks.job.master.params.TaskCreateParam;
 import com.alibaba.sreworks.job.master.services.JobService;
 import com.alibaba.sreworks.job.utils.JsonUtil;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.alibaba.tesla.web.controller.BaseController;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author jinghua.yjh

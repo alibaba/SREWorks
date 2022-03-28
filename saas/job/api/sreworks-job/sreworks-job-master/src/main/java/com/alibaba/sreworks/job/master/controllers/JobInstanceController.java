@@ -1,7 +1,5 @@
 package com.alibaba.sreworks.job.master.controllers;
 
-import java.util.stream.Collectors;
-
 import com.alibaba.sreworks.job.master.domain.DO.ElasticJobInstance;
 import com.alibaba.sreworks.job.master.domain.DTO.ElasticJobInstanceDTO;
 import com.alibaba.sreworks.job.master.domain.DTO.JobInstanceStatus;
@@ -10,7 +8,6 @@ import com.alibaba.sreworks.job.master.services.JobInstanceService;
 import com.alibaba.sreworks.job.utils.JsonUtil;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.alibaba.tesla.web.controller.BaseController;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +16,8 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.stream.Collectors;
 
 import static com.alibaba.sreworks.job.utils.PageUtil.pageable;
 

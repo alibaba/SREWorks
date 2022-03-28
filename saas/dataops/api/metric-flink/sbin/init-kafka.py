@@ -1,6 +1,5 @@
-from confluent_kafka.admin import AdminClient, NewTopic
 import os
-
+from confluent_kafka.admin import AdminClient, NewTopic
 
 a = AdminClient({'bootstrap.servers': os.environ.get('KAFKA_URL')})
 

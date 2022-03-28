@@ -1,15 +1,10 @@
 package com.alibaba.sreworks.job.master.jobschedule.serial;
 
-import java.util.List;
-
 import com.alibaba.sreworks.job.master.jobschedule.AbstractJobScheduleConf;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

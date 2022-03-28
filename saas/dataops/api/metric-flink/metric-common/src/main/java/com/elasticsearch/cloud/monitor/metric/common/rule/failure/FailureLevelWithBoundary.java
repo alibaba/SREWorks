@@ -1,6 +1,5 @@
 package com.elasticsearch.cloud.monitor.metric.common.rule.failure;
 
-import com.elasticsearch.cloud.monitor.commons.utils.TimeUtils;
 import com.elasticsearch.cloud.monitor.metric.common.blink.utils.FlinkTimeUtil;
 
 /**

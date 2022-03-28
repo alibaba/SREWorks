@@ -1,9 +1,9 @@
 package com.elasticsearch.cloud.monitor.metric.alarm.blink.utils;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * @author xingming.xuxm

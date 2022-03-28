@@ -1,7 +1,5 @@
 package com.elasticsearch.cloud.monitor.metric.common.monitor.kmon;
 
-import java.util.Map;
-
 import com.elasticsearch.cloud.monitor.metric.common.constant.Constants;
 import com.elasticsearch.cloud.monitor.metric.common.monitor.kmon.config.FlumeConfigMapBuilder;
 import com.elasticsearch.cloud.monitor.metric.common.monitor.kmon.config.MonitorConfig;
@@ -11,6 +9,8 @@ import com.google.common.collect.Maps;
 import com.opensearch.cobble.monitor.Monitor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.table.functions.FunctionContext;
+
+import java.util.Map;
 
 import static com.elasticsearch.cloud.monitor.metric.common.monitor.kmon.KmonCreator.DEFAULT_TENANT;
 import static com.elasticsearch.cloud.monitor.metric.common.monitor.kmon.KmonCreator.doInit;

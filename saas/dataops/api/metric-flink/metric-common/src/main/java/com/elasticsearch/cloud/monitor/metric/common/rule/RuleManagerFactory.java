@@ -2,6 +2,7 @@ package com.elasticsearch.cloud.monitor.metric.common.rule;
 
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+
 import java.util.Map;
 
 /**

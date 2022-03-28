@@ -1,8 +1,5 @@
 package com.elasticsearch.cloud.monitor.metric.common.monitor.sls;
 
-import java.util.Collection;
-import java.util.List;
-
 import com.aliyun.openservices.log.common.LogItem;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.producer.ILogCallback;
@@ -21,9 +18,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 
-import static com.elasticsearch.cloud.monitor.metric.common.constant.Constants.MONITOR_SEND_METRIC_NAME_FIELD;
-import static com.elasticsearch.cloud.monitor.metric.common.constant.Constants.MONITOR_SEND_METRIC_TIMESTAMP_FIELD;
-import static com.elasticsearch.cloud.monitor.metric.common.constant.Constants.MONITOR_SEND_METRIC_VALUE_FIELD;
+import java.util.Collection;
+import java.util.List;
+
+import static com.elasticsearch.cloud.monitor.metric.common.constant.Constants.*;
 
 /**
  * Created by lily on 19/7/1.

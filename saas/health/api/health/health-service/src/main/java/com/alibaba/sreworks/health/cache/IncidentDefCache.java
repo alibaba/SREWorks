@@ -1,7 +1,9 @@
 package com.alibaba.sreworks.health.cache;
 
 import com.alibaba.sreworks.health.common.constant.Constant;
-import com.alibaba.sreworks.health.domain.*;
+import com.alibaba.sreworks.health.domain.CommonDefinition;
+import com.alibaba.sreworks.health.domain.CommonDefinitionExample;
+import com.alibaba.sreworks.health.domain.CommonDefinitionMapper;
 import lombok.Getter;
 
 import java.util.HashMap;

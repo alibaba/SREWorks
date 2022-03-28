@@ -1,10 +1,9 @@
 package com.alibaba.sreworks.health.domain;
 
-import com.alibaba.sreworks.health.domain.RiskType;
-import com.alibaba.sreworks.health.domain.RiskTypeExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
+
+import java.util.List;
 
 public interface RiskTypeMapper {
     long countByExample(RiskTypeExample example);

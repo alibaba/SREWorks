@@ -2,7 +2,6 @@ package com.alibaba.tesla.tkgone.server.services.database.elasticsearch.mapper;
 
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

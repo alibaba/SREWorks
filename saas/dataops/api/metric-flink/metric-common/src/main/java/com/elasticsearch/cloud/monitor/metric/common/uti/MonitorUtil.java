@@ -1,8 +1,8 @@
 package com.elasticsearch.cloud.monitor.metric.common.uti;
 
-import java.util.Map;
-
 import org.apache.flink.table.functions.FunctionContext;
+
+import java.util.Map;
 
 /**
  * @author xiaoping

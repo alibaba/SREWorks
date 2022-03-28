@@ -3,7 +3,6 @@ package com.alibaba.sreworks.job.master.params;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.job.master.domain.DO.SreworksJobTask;
 import com.alibaba.sreworks.job.utils.StringUtil;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

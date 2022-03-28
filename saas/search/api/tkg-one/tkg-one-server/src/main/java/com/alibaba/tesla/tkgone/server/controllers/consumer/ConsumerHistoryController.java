@@ -2,10 +2,9 @@ package com.alibaba.tesla.tkgone.server.controllers.consumer;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
-import com.alibaba.tesla.web.controller.BaseController;
 import com.alibaba.tesla.tkgone.server.domain.ConsumerHistoryExample;
 import com.alibaba.tesla.tkgone.server.domain.ConsumerHistoryMapper;
-
+import com.alibaba.tesla.web.controller.BaseController;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

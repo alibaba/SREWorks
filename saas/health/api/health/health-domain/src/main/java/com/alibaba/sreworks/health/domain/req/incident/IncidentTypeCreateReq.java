@@ -1,6 +1,5 @@
 package com.alibaba.sreworks.health.domain.req.incident;
 
-import com.alibaba.sreworks.health.common.constant.Constant;
 import com.google.common.base.Preconditions;
 import io.swagger.annotations.ApiModel;
 import org.apache.commons.lang3.StringUtils;

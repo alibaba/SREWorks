@@ -2,8 +2,6 @@ package com.elasticsearch.cloud.monitor.metric.alarm.blink.udtf;
 
 import com.elasticsearch.cloud.monitor.commons.utils.StringUtils;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.AlarmEvent;
-import org.apache.flink.api.java.tuple.Tuple7;
-import org.apache.flink.api.java.tuple.Tuple8;
 import org.apache.flink.api.java.tuple.Tuple9;
 import org.apache.flink.table.functions.TableFunction;
 

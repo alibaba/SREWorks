@@ -1,10 +1,5 @@
 package com.elasticsearch.cloud.monitor.metric.common.monitor.opentsdb;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import com.elasticsearch.cloud.monitor.metric.common.uti.HttpClientsUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -20,9 +15,12 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.json.JSONException;
 
-import static com.elasticsearch.cloud.monitor.metric.common.constant.Constants.MONITOR_SEND_METRIC_NAME_FIELD;
-import static com.elasticsearch.cloud.monitor.metric.common.constant.Constants.MONITOR_SEND_METRIC_TIMESTAMP_FIELD;
-import static com.elasticsearch.cloud.monitor.metric.common.constant.Constants.MONITOR_SEND_METRIC_VALUE_FIELD;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import static com.elasticsearch.cloud.monitor.metric.common.constant.Constants.*;
 
 /**
  * @author xiaoping

@@ -1,15 +1,10 @@
 package com.elasticsearch.cloud.monitor.metric.common.monitor.kmon.config;
 
-import java.util.Map;
-
 import com.google.common.collect.Maps;
 
-import static com.elasticsearch.cloud.monitor.sdk.sink.SlsMonitorSink.CONFIG_ACCESS_KEY;
-import static com.elasticsearch.cloud.monitor.sdk.sink.SlsMonitorSink.CONFIG_ACCESS_SECRET;
-import static com.elasticsearch.cloud.monitor.sdk.sink.SlsMonitorSink.CONFIG_END_POINT;
-import static com.elasticsearch.cloud.monitor.sdk.sink.SlsMonitorSink.CONFIG_LOG_STORE;
-import static com.elasticsearch.cloud.monitor.sdk.sink.SlsMonitorSink.CONFIG_REPORT_SWITCH;
-import static com.elasticsearch.cloud.monitor.sdk.sink.SlsMonitorSink.CONFIG_SLS_PROJECT;
+import java.util.Map;
+
+import static com.elasticsearch.cloud.monitor.sdk.sink.SlsMonitorSink.*;
 
 /**
  * @author xiaoping

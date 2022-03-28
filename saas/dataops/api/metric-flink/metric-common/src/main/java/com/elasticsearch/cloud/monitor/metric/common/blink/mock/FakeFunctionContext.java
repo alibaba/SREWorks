@@ -2,10 +2,6 @@ package com.elasticsearch.cloud.monitor.metric.common.blink.mock;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.flink.api.common.accumulators.DoubleCounter;
-import org.apache.flink.api.common.accumulators.Histogram;
-import org.apache.flink.api.common.accumulators.IntCounter;
-import org.apache.flink.api.common.accumulators.LongCounter;
 import org.apache.flink.api.common.functions.RuntimeContext;
 import org.apache.flink.metrics.MetricGroup;
 import org.apache.flink.table.functions.FunctionContext;

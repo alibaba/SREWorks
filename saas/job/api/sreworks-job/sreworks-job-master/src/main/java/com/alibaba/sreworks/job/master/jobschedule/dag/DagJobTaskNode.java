@@ -1,8 +1,5 @@
 package com.alibaba.sreworks.job.master.jobschedule.dag;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.alibaba.sreworks.job.master.domain.DO.ElasticJobInstance;
 import com.alibaba.sreworks.job.master.domain.DTO.JobInstanceStatus;
 import com.alibaba.sreworks.job.master.domain.repository.ElasticJobInstanceRepository;
@@ -18,10 +15,12 @@ import com.alibaba.tesla.dag.model.domain.ParamType;
 import com.alibaba.tesla.dag.model.domain.dagnode.DagInstNodeRunRet;
 import com.alibaba.tesla.dag.model.domain.dagnode.DagNodeInputParam;
 import com.alibaba.tesla.dag.model.domain.dagnode.ParamFromType;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Collections;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

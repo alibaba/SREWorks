@@ -1,5 +1,8 @@
 package com.alibaba.sreworks.job.taskhandler;
 
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -7,9 +10,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 @Data
 @Slf4j

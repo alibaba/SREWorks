@@ -1,15 +1,9 @@
 package com.elasticsearch.cloud.monitor.metric.log.udtf;
 
-import java.util.Set;
-
 import com.elasticsearch.cloud.monitor.metric.common.blink.utils.BlinkTagsUtil;
 import com.elasticsearch.cloud.monitor.metric.common.monitor.kmon.KmonCreatorForBlink;
 import com.elasticsearch.cloud.monitor.metric.log.common.Constant;
-import com.elasticsearch.cloud.monitor.metric.log.udtf.extract.AccessExtractor;
-import com.elasticsearch.cloud.monitor.metric.log.udtf.extract.EcsEventExtractor;
-import com.elasticsearch.cloud.monitor.metric.log.udtf.extract.InstanceExtractor;
-import com.elasticsearch.cloud.monitor.metric.log.udtf.extract.SlowIndexExtractor;
-import com.elasticsearch.cloud.monitor.metric.log.udtf.extract.SlowSearchExtractor;
+import com.elasticsearch.cloud.monitor.metric.log.udtf.extract.*;
 import com.elasticsearch.cloud.monitor.metric.log.udtf.sync.EsInfoSync;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
@@ -23,6 +17,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.flink.api.java.tuple.Tuple1;
 import org.apache.flink.table.functions.FunctionContext;
 import org.apache.flink.table.functions.TableFunction;
+
+import java.util.Set;
 
 /**
  * @author xiaoping

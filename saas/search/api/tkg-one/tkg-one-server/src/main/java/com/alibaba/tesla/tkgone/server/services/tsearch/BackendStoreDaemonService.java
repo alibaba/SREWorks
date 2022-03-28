@@ -1,5 +1,19 @@
 package com.alibaba.tesla.tkgone.server.services.tsearch;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.tkgone.server.common.Constant;
+import com.alibaba.tesla.tkgone.server.common.Tools;
+import com.alibaba.tesla.tkgone.server.services.config.BackendStoreConfigService;
+import com.alibaba.tesla.tkgone.server.services.config.BaseConfigService;
+import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSearchDeleteByQueryService;
+import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.mapper.IndexMapper;
+import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.mapper.PartitionMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
@@ -7,24 +21,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.annotation.Nonnull;
-
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.tesla.tkgone.server.common.Constant;
-import com.alibaba.tesla.tkgone.server.common.Tools;
-import com.alibaba.tesla.tkgone.server.domain.dto.ConfigDto;
-import com.alibaba.tesla.tkgone.server.services.config.BaseConfigService;
-import com.alibaba.tesla.tkgone.server.services.config.BackendStoreConfigService;
-import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSearchDeleteByQueryService;
-import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.mapper.IndexMapper;
-import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.mapper.PartitionMapper;
-
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 
 /**

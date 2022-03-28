@@ -1,16 +1,15 @@
 package com.alibaba.tesla.tkgone.server.services.database.elasticsearch;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.tkgone.server.services.config.CategoryConfigService;
 import com.alibaba.tesla.tkgone.server.services.config.ElasticSearchConfigService;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author jialiang.tjl

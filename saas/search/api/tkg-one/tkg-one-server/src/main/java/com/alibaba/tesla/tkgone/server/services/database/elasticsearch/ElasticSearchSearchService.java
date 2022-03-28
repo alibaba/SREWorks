@@ -1,14 +1,5 @@
 package com.alibaba.tesla.tkgone.server.services.database.elasticsearch;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.tkgone.server.common.Constant;
@@ -24,12 +15,14 @@ import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.elasticse
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.elasticsearchgrammar.GetSortGrammar;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.elasticsearchgrammar.GetSourceGrammar;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.params.ElasticsearchSearchMeta;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author jialiang.tjl

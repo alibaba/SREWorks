@@ -1,7 +1,6 @@
-import requests
 import json
 import os
-
+import requests
 
 #url = "http://prod-dataops-elasticsearch-master.sreworks-dataops:9200"
 url = os.environ.get("ES_ENDPOINT")

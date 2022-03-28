@@ -6,7 +6,6 @@ import com.alibaba.sreworks.job.master.domain.repository.ElasticJobInstanceRepos
 import com.alibaba.sreworks.job.utils.BeansUtil;
 import com.alibaba.tesla.dag.local.AbstractLocalNodeBase;
 import com.alibaba.tesla.dag.model.domain.dagnode.DagInstNodeRunRet;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;

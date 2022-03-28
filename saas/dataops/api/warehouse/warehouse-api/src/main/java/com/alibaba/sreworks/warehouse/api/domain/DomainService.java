@@ -3,6 +3,7 @@ package com.alibaba.sreworks.warehouse.api.domain;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.warehouse.api.BasicApi;
 import com.alibaba.sreworks.warehouse.domain.req.domain.DomainCreateReq;
+
 import java.util.List;
 
 /**

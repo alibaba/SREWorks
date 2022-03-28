@@ -5,8 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.util.TypeUtils;
 import com.alibaba.sreworks.dataset.common.type.ColumnType;
 import com.alibaba.sreworks.dataset.domain.bo.*;
-import com.alibaba.sreworks.dataset.domain.primary.DataInterfaceConfig;
-import com.alibaba.sreworks.dataset.domain.primary.DataModelConfigWithBLOBs;
 import com.alibaba.sreworks.dataset.domain.primary.InterfaceConfig;
 import org.apache.commons.lang3.StringUtils;
 

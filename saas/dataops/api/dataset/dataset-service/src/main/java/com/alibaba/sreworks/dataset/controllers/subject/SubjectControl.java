@@ -1,13 +1,16 @@
 package com.alibaba.sreworks.dataset.controllers.subject;
 
 import com.alibaba.sreworks.dataset.api.subject.SubjectService;
-import io.swagger.annotations.*;
+import com.alibaba.tesla.common.base.TeslaBaseResult;
+import com.alibaba.tesla.web.controller.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import com.alibaba.tesla.web.controller.BaseController;
-import com.alibaba.tesla.common.base.TeslaBaseResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 数据主题Control

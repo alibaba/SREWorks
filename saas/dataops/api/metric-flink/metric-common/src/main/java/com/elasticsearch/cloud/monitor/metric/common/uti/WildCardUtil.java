@@ -1,9 +1,9 @@
 package com.elasticsearch.cloud.monitor.metric.common.uti;
 
-import java.util.Set;
-
 import com.elasticsearch.cloud.monitor.metric.common.pojo.SearchFilterConfig;
 import com.google.common.collect.Sets;
+
+import java.util.Set;
 
 /**
  * @author xiaoping

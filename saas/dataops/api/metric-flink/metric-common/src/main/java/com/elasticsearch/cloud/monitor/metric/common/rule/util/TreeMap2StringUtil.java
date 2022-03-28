@@ -1,8 +1,8 @@
 package com.elasticsearch.cloud.monitor.metric.common.rule.util;
 
-import java.util.TreeMap;
-
 import com.google.common.base.Joiner;
+
+import java.util.TreeMap;
 
 
 /**

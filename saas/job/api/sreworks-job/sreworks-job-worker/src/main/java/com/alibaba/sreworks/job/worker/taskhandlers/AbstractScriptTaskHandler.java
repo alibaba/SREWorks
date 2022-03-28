@@ -1,17 +1,16 @@
 package com.alibaba.sreworks.job.worker.taskhandlers;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-
-import com.alibaba.sreworks.job.worker.services.ElasticTaskInstanceService;
 import com.alibaba.sreworks.job.utils.BeansUtil;
-
+import com.alibaba.sreworks.job.worker.services.ElasticTaskInstanceService;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

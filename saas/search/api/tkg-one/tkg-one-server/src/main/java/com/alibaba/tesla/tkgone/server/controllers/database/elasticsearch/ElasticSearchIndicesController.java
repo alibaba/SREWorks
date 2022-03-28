@@ -1,17 +1,12 @@
 package com.alibaba.tesla.tkgone.server.controllers.database.elasticsearch;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
-import com.alibaba.tesla.web.controller.BaseController;
 import com.alibaba.tesla.tkgone.server.common.Constant;
 import com.alibaba.tesla.tkgone.server.common.RedisHelper;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSearchIndicesService;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.mapper.IndexMapper;
-
+import com.alibaba.tesla.web.controller.BaseController;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -19,6 +14,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author jialiang.tjl

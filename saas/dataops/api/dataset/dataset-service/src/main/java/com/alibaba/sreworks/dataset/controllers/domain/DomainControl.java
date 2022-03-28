@@ -1,7 +1,6 @@
 package com.alibaba.sreworks.dataset.controllers.domain;
 
 import com.alibaba.sreworks.dataset.api.domain.DomainService;
-import com.alibaba.sreworks.dataset.api.subject.SubjectService;
 import com.alibaba.sreworks.dataset.domain.req.domain.DataDomainCreateReq;
 import com.alibaba.sreworks.dataset.domain.req.domain.DataDomainUpdateReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;

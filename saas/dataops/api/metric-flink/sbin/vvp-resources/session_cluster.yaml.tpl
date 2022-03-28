@@ -12,7 +12,7 @@ spec:
   flinkImageRegistry: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror
   flinkImageRepository: flink
   flinkImageTag: 1.14.2-stream1-scala_2.12-java8
-  numberOfTaskManagers: 2
+  numberOfTaskManagers: 1
   resources:
     jobmanager:
       cpu: 1

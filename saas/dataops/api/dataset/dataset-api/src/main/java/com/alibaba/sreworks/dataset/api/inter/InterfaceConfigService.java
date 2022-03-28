@@ -2,7 +2,8 @@ package com.alibaba.sreworks.dataset.api.inter;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.dataset.api.BasicApi;
-import com.alibaba.sreworks.dataset.domain.req.inter.*;
+import com.alibaba.sreworks.dataset.domain.req.inter.InterfaceConfigCreateReq;
+import com.alibaba.sreworks.dataset.domain.req.inter.InterfaceConfigUpdateReq;
 
 import java.util.List;
 

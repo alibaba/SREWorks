@@ -1,19 +1,18 @@
 package com.alibaba.sreworks.job.master.jobtrigger.quartz;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 import com.alibaba.sreworks.job.master.domain.DO.ElasticJobInstance;
 import com.alibaba.sreworks.job.master.domain.DO.SreworksJob;
 import com.alibaba.sreworks.job.master.domain.repository.SreworksJobRepository;
 import com.alibaba.sreworks.job.master.services.JobService;
 import com.alibaba.sreworks.job.utils.BeansUtil;
-
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 @Data
 @Slf4j

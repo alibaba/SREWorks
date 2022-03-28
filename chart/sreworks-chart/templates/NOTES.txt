@@ -1,3 +1,6 @@
+
+
+
 Now open the following URL in your browser:
 
    {{ .Values.appmanager.home.url }}
@@ -5,4 +8,4 @@ Now open the following URL in your browser:
    account: admin
    password: 12345678
    
-Please try reloading the page if you see "ServiceUnavailable / no endpoints available for service", pod creation might take a moment.
+Please try reloading the page if you see "ServiceUnavailable / no endpoints available for service / 404 Not Found", pod creation might take a moment.

@@ -30,8 +30,6 @@ public class DeployAppSchema implements Schema, Serializable {
 
     private static final long serialVersionUID = -5036403088019645161L;
 
-    private static final String STAGE_TRAIT_NAME = "stage.flyadmin.alibaba.com";
-
     /**
      * API 版本号
      */

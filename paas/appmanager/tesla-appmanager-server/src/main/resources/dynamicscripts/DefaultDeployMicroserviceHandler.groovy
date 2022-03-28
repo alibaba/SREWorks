@@ -64,7 +64,7 @@ class DefaultDeployMicroserviceHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 35
+    public static final Integer REVISION = 36
 
     /**
      * CRD Context
@@ -255,14 +255,7 @@ class DefaultDeployMicroserviceHandler implements DeployComponentHandler {
                 finalStatus = DeployComponentStateEnum.FAILURE
                 break
             default:
-                def conditions = JSONObject.parseObject(statusStr).getJSONArray("conditions")
-                if (conditions != null
-                        && conditions.size() > 0
-                        && "ReconcileError" == conditions.getJSONObject(conditions.size() - 1).getString("type")) {
-                    finalStatus = DeployComponentStateEnum.FAILURE
-                } else {
-                    finalStatus = DeployComponentStateEnum.RUNNING
-                }
+                finalStatus = DeployComponentStateEnum.RUNNING
                 break
         }
         GetDeployComponentHandlerRes res = GetDeployComponentHandlerRes.builder()

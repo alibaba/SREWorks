@@ -3,14 +3,21 @@ package com.alibaba.tesla.appmanager.trait.plugin;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
-import com.alibaba.tesla.appmanager.common.util.RequestUtil;
 import com.alibaba.tesla.appmanager.domain.core.WorkloadResource;
 import com.alibaba.tesla.appmanager.domain.schema.TraitDefinition;
+import com.alibaba.tesla.appmanager.kubernetes.KubernetesClientFactory;
+import com.alibaba.tesla.appmanager.spring.util.SpringBeanUtil;
 import com.alibaba.tesla.appmanager.trait.BaseTrait;
 import com.google.common.collect.ImmutableMap;
+import io.fabric8.kubernetes.api.model.networking.v1beta1.Ingress;
+import io.fabric8.kubernetes.client.DefaultKubernetesClient;
+import io.fabric8.kubernetes.client.dsl.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 多集群 Trait
@@ -26,31 +33,43 @@ public class MultipleClusterIngressTrait extends BaseTrait {
 
     @Override
     public void execute() {
+        KubernetesClientFactory clientFactory = SpringBeanUtil.getBean(KubernetesClientFactory.class);
         WorkloadResource workloadResource = getWorkloadRef();
         String name = workloadResource.getMetadata().getName();
         String namespace = workloadResource.getMetadata().getNamespace();
         JSONObject spec = getSpec();
-        String cluster = spec.getString("cluster");
-        if (StringUtils.isEmpty(cluster)) {
+        String clusterId = spec.getString("cluster");
+        if (StringUtils.isEmpty(clusterId)) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                     "empty cluster in multiple cluster ingress trait spec");
         }
-        JSONObject serviceSpec = generateIngress(namespace, name, spec.getJSONObject(cluster), spec);
-        String content = JSONObject.toJSONString(ImmutableMap.of("yaml_content", serviceSpec));
-        JSONObject params = new JSONObject();
-        params.put("overwrite", "true");
+        JSONObject cr = generateIngress(namespace, name, spec.getJSONObject(clusterId), spec);
+
+        // 获取指定 cluster 的 kubernetes client
+        DefaultKubernetesClient client = clientFactory.get(clusterId);
+
+        // 应用到集群
         try {
-            String ret = RequestUtil.post("http://abm-operator/kube/apply", params, content, new JSONObject());
-            log.info("apply ingress request has sent to abm-operator|content={}|response={}", content, ret);
-            JSONObject retJson = JSONObject.parseObject(ret);
-            if (!"Ingress".equals(retJson.getJSONObject("data").getString("kind"))) {
-                throw new AppException(AppErrorCode.DEPLOY_ERROR,
-                        String.format("cannot apply cr to abm-operator|content=%s|ret=%s", content, ret));
+            Resource<Ingress> resource = client.network().v1beta1().ingresses()
+                    .load(new ByteArrayInputStream(cr.toJSONString().getBytes(StandardCharsets.UTF_8)));
+            Ingress current = client.network().v1beta1().ingresses().inNamespace(namespace).withName(name).get();
+            // 如果存在的话，先删除再创建
+            if (current != null) {
+                client.network().v1beta1().ingresses().inNamespace(namespace).withName(name).delete();
             }
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ignored) {}
+            Ingress result = resource.create();
+            log.info("cr yaml has created in kubernetes|cluster={}|namespace={}|name={}|cr={}" +
+                            "result={}", clusterId, namespace, name, cr.toJSONString(),
+                    JSONObject.toJSONString(result));
         } catch (Exception e) {
-            throw new AppException(AppErrorCode.DEPLOY_ERROR,
-                    String.format("cannot parse response from abm-operator|content=%s|exception=%s",
-                            content, ExceptionUtils.getStackTrace(e)));
+            String errorMessage = String.format("apply cr yaml to kubernetes failed|cluster=%s|namespace=%s|" +
+                            "exception=%s|cr=%s", clusterId, namespace, ExceptionUtils.getStackTrace(e),
+                    cr.toJSONString());
+            log.error(errorMessage);
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, errorMessage);
         }
     }
 

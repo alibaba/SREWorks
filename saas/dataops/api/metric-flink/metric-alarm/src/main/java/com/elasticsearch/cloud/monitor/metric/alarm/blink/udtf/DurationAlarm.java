@@ -1,8 +1,5 @@
 package com.elasticsearch.cloud.monitor.metric.alarm.blink.udtf;
 
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import com.elasticsearch.cloud.monitor.commons.checker.duration.DurationConditionChecker;
 import com.elasticsearch.cloud.monitor.commons.core.Alarm;
 import com.elasticsearch.cloud.monitor.commons.core.MetricAlarm;
@@ -16,13 +13,13 @@ import com.elasticsearch.cloud.monitor.metric.alarm.blink.constant.AlarmConstant
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.constant.MetricConstants;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.AlarmEvent;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.AlarmEventHelper;
-import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.cache.RuleConditionCache;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.TagsUtils;
+import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.cache.RuleConditionCache;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.cache.RuleConditionKafkaCache;
 import com.elasticsearch.cloud.monitor.metric.common.blink.utils.BlinkLogTracer;
 import com.elasticsearch.cloud.monitor.metric.common.client.KafkaConfig;
-import com.elasticsearch.cloud.monitor.metric.common.rule.RuleManagerFactory;
 import com.elasticsearch.cloud.monitor.metric.common.rule.EmonRulesManager;
+import com.elasticsearch.cloud.monitor.metric.common.rule.RuleManagerFactory;
 import com.elasticsearch.cloud.monitor.metric.common.rule.util.RuleUtil;
 import com.google.common.base.Throwables;
 import com.google.common.cache.Cache;
@@ -33,6 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.api.java.tuple.Tuple9;
 import org.apache.flink.table.functions.FunctionContext;
 import org.apache.flink.table.functions.TableFunction;
+
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 特别提示: 同一条线, 必须放到同一个shard上且是保序的, 如果分布到多个shard上会有问题!!!

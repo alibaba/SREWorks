@@ -33,22 +33,7 @@ spec:
         apiVersion: "flyadmin.alibaba.com/v1alpha1"
         kind: "Stage"
         name: "${SAAS_STAGE_ID}"
-    traits:
-    - name: ingress.trait.abm.io
-      runtime: post
-      spec:
-        rules:
-        - host: "vvp.${DOMAIN_BASE_INGRESS}"
-          http:
-            paths:
-            - path: /
-              pathType: ImplementationSpecific
-              backend:
-                service:
-                  name: "{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-ververica-platform-ververica-platform"
-                  port: 
-                    number: 80
- 
+    traits: []
     dependencies: []
     parameterValues:
     - name: "values"

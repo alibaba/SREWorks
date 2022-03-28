@@ -1,10 +1,9 @@
 package com.alibaba.sreworks.health.domain;
 
-import com.alibaba.sreworks.health.domain.CommonDefinition;
-import com.alibaba.sreworks.health.domain.CommonDefinitionExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
+
+import java.util.List;
 
 public interface CommonDefinitionMapper {
     long countByExample(CommonDefinitionExample example);

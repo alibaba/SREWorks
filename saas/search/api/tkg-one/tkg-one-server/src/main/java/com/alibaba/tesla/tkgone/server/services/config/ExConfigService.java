@@ -6,7 +6,6 @@ import com.alibaba.tesla.tkgone.server.common.Tools;
 import com.alibaba.tesla.tkgone.server.common.annotation.timediff.TimeDiff;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSearchSearchService;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSearchSpecSearchService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -5,8 +5,8 @@ import com.alibaba.sreworks.dataset.api.BasicApi;
 import com.alibaba.sreworks.dataset.domain.bo.DataModelGroupField;
 import com.alibaba.sreworks.dataset.domain.bo.DataModelQueryField;
 import com.alibaba.sreworks.dataset.domain.bo.DataModelValueField;
-import com.alibaba.sreworks.dataset.domain.req.model.DataModelConfigUpdateReq;
 import com.alibaba.sreworks.dataset.domain.req.model.DataModelConfigCreateReq;
+import com.alibaba.sreworks.dataset.domain.req.model.DataModelConfigUpdateReq;
 
 import java.util.List;
 import java.util.Map;

@@ -1,7 +1,6 @@
 package com.elasticsearch.cloud.monitor.metric.common.datapoint;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 
 /**

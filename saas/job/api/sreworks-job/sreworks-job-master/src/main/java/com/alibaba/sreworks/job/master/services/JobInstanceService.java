@@ -1,11 +1,5 @@
 package com.alibaba.sreworks.job.master.services;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.job.master.domain.DO.ElasticJobInstance;
 import com.alibaba.sreworks.job.master.domain.DTO.ElasticJobInstanceDTO;
@@ -14,7 +8,6 @@ import com.alibaba.sreworks.job.master.domain.repository.ElasticJobInstanceRepos
 import com.alibaba.sreworks.job.master.jobschedule.JobScheduleService;
 import com.alibaba.sreworks.job.utils.JsonUtil;
 import com.alibaba.sreworks.job.utils.StringUtil;
-
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -40,6 +33,12 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.data.elasticsearch.core.query.UpdateQuery;
 import org.springframework.data.elasticsearch.core.query.UpdateQuery.Refresh;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service

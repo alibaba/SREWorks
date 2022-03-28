@@ -1,10 +1,6 @@
 package com.elasticsearch.cloud.monitor.metric.log.udtf.extract;
 
-import java.util.List;
-import java.util.Map;
-
 import com.elasticsearch.cloud.monitor.metric.log.common.Constant;
-import com.elasticsearch.cloud.monitor.metric.log.common.Util;
 import com.elasticsearch.cloud.monitor.metric.log.udtf.sync.EsInfoSync;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Maps;
@@ -17,6 +13,9 @@ import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author xiaoping

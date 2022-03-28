@@ -1,7 +1,6 @@
 package com.alibaba.sreworks.health.common;
 
 import com.alibaba.sreworks.health.common.exception.*;
-import com.alibaba.sreworks.health.domain.RiskInstance;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.alibaba.tesla.common.base.TeslaResultFactory;
 import com.alibaba.tesla.common.base.constant.TeslaStatusCode;

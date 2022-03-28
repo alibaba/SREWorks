@@ -1,7 +1,6 @@
 package com.alibaba.sreworks.job.worker.taskscene.collect;
 
 import com.alibaba.sreworks.job.worker.taskscene.AbstractTaskSceneConf;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;

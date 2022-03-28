@@ -3,5 +3,4 @@
 *.log
 */target/*
 
-metric-alarm/src/test/*
-metric-common/src/test/*
+*/src/test/*

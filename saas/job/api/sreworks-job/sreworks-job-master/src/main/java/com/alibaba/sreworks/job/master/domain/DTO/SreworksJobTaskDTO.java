@@ -1,10 +1,7 @@
 package com.alibaba.sreworks.job.master.domain.DTO;
 
-import javax.persistence.Column;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.job.master.domain.DO.SreworksJobTask;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

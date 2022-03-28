@@ -1,18 +1,17 @@
 package com.alibaba.sreworks.job.master.domain.DTO;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.job.master.domain.DO.SreworksJob;
 import com.alibaba.sreworks.job.master.event.JobEventConf;
 import com.alibaba.sreworks.job.utils.StringUtil;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Slf4j

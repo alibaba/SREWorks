@@ -1,6 +1,5 @@
 package com.alibaba.sreworks.pmdb.domain.req.metric;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

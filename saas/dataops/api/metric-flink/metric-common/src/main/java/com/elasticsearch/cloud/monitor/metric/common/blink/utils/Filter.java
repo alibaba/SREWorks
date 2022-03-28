@@ -1,10 +1,10 @@
 package com.elasticsearch.cloud.monitor.metric.common.blink.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.elasticsearch.cloud.monitor.commons.datapoint.ImmutableDataPoint;
 import org.apache.commons.lang.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Filter {
 

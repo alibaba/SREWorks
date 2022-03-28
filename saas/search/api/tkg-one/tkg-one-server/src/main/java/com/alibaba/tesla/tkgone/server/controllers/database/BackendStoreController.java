@@ -1,27 +1,26 @@
 package com.alibaba.tesla.tkgone.server.controllers.database;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
-import com.alibaba.tesla.web.controller.BaseController;
-import com.alibaba.tesla.tkgone.server.config.ApplicationProperties;
 import com.alibaba.tesla.tkgone.server.common.Constant;
 import com.alibaba.tesla.tkgone.server.common.RedisHelper;
 import com.alibaba.tesla.tkgone.server.common.Tools;
+import com.alibaba.tesla.tkgone.server.config.ApplicationProperties;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSearchDeleteByQueryService;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSearchIndicesService;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSearchUpsertService;
 import com.alibaba.tesla.tkgone.server.services.tsearch.BackendStoreService;
-
+import com.alibaba.tesla.web.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author yangjinghua

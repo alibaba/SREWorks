@@ -1,5 +1,8 @@
 package com.alibaba.sreworks.job.utils;
 
+import com.alibaba.fastjson.JSONObject;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -7,11 +10,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-
-import com.alibaba.fastjson.JSONObject;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.util.UriComponentsBuilder;
 
 public class Requests {
 

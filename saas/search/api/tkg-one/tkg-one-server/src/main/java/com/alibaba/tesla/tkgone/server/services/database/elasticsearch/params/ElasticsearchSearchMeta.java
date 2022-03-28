@@ -1,16 +1,14 @@
 package com.alibaba.tesla.tkgone.server.services.database.elasticsearch.params;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.tkgone.server.common.Tools;
-
+import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 
-import lombok.Data;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author yangjinghua

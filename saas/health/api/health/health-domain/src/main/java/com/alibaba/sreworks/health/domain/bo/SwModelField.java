@@ -3,8 +3,6 @@ package com.alibaba.sreworks.health.domain.bo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 @Data
 @NoArgsConstructor
 public class SwModelField {

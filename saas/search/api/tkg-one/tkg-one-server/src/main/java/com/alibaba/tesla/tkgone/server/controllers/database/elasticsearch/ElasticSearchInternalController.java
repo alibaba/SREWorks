@@ -1,12 +1,12 @@
 package com.alibaba.tesla.tkgone.server.controllers.database.elasticsearch;
 
 import com.alibaba.tesla.common.base.TeslaBaseResult;
-import com.alibaba.tesla.web.controller.BaseController;
 import com.alibaba.tesla.tkgone.server.common.ErrorUtil;
 import com.alibaba.tesla.tkgone.server.consumer.AbstractConsumer;
 import com.alibaba.tesla.tkgone.server.domain.ConsumerExample;
 import com.alibaba.tesla.tkgone.server.domain.ConsumerMapper;
 import com.alibaba.tesla.tkgone.server.services.database.elasticsearch.ElasticSearchUpsertService;
+import com.alibaba.tesla.web.controller.BaseController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

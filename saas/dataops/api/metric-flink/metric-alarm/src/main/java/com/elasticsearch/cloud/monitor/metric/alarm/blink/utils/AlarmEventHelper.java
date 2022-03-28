@@ -1,9 +1,5 @@
 package com.elasticsearch.cloud.monitor.metric.alarm.blink.utils;
 
-import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.elasticsearch.cloud.monitor.commons.core.MetricAlarm;
 import com.elasticsearch.cloud.monitor.commons.rule.Rule;
 import com.elasticsearch.cloud.monitor.commons.utils.StringUtils;
@@ -11,6 +7,10 @@ import com.elasticsearch.cloud.monitor.commons.utils.TagUtils;
 import com.elasticsearch.cloud.monitor.commons.utils.TimeUtils;
 import com.google.common.hash.Hashing;
 import org.apache.commons.collections.MapUtils;
+
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.elasticsearch.cloud.monitor.metric.common.constant.Constants.TENANT_TAG;
 

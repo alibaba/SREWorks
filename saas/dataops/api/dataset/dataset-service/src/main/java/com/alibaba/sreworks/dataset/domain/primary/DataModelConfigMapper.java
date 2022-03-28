@@ -1,11 +1,9 @@
 package com.alibaba.sreworks.dataset.domain.primary;
 
-import com.alibaba.sreworks.dataset.domain.primary.DataModelConfig;
-import com.alibaba.sreworks.dataset.domain.primary.DataModelConfigExample;
-import com.alibaba.sreworks.dataset.domain.primary.DataModelConfigWithBLOBs;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
+
+import java.util.List;
 
 public interface DataModelConfigMapper {
     long countByExample(DataModelConfigExample example);

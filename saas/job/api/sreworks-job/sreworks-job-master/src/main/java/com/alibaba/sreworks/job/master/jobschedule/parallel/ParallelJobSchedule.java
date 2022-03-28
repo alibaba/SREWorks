@@ -1,10 +1,6 @@
 package com.alibaba.sreworks.job.master.jobschedule.parallel;
 
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.sreworks.job.master.domain.DO.SreworksJobTask;
 import com.alibaba.sreworks.job.master.domain.DTO.SreworksJobTaskDTO;
 import com.alibaba.sreworks.job.master.domain.repository.SreworksJobTaskRepository;
 import com.alibaba.sreworks.job.master.jobschedule.AbstractJobSchedule;
@@ -14,12 +10,13 @@ import com.alibaba.tesla.dag.model.domain.TcDag;
 import com.alibaba.tesla.dag.model.domain.TcDagInst;
 import com.alibaba.tesla.dag.model.repository.TcDagRepository;
 import com.alibaba.tesla.dag.services.DagInstService;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

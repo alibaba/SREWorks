@@ -1,14 +1,11 @@
 package com.alibaba.sreworks.job.master.domain.repository;
 
-import java.util.List;
-
-import javax.transaction.Transactional;
-
 import com.alibaba.sreworks.job.master.domain.DO.SreworksJobWorker;
-
-import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+
+import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * @author jinghua.yjh

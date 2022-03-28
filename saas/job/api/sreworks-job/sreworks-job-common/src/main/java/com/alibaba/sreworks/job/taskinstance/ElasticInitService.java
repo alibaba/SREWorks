@@ -1,12 +1,12 @@
 package com.alibaba.sreworks.job.taskinstance;
 
-import java.util.concurrent.TimeUnit;
-
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ElasticInitService {

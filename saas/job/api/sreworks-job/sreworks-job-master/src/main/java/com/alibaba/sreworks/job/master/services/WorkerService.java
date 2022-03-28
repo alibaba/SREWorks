@@ -1,10 +1,5 @@
 package com.alibaba.sreworks.job.master.services;
 
-import java.net.http.HttpResponse;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.job.master.domain.DO.SreworksJobWorker;
 import com.alibaba.sreworks.job.master.domain.DTO.SreworksJobWorkerDTO;
@@ -13,10 +8,14 @@ import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstance;
 import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstanceRepository;
 import com.alibaba.sreworks.job.utils.JsonUtil;
 import com.alibaba.sreworks.job.utils.Requests;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.net.http.HttpResponse;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkerService {

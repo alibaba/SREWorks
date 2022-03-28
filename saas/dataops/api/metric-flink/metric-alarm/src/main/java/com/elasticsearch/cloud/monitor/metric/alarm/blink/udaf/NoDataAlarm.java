@@ -1,12 +1,5 @@
 package com.elasticsearch.cloud.monitor.metric.alarm.blink.udaf;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
 import com.elasticsearch.cloud.monitor.commons.checker.nodata.NoDataConditionChecker;
 import com.elasticsearch.cloud.monitor.commons.core.Alarm;
 import com.elasticsearch.cloud.monitor.commons.core.MetricAlarm;
@@ -34,6 +27,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flink.table.functions.AggregateFunction;
 import org.apache.flink.table.functions.FunctionContext;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author xingming.xuxm

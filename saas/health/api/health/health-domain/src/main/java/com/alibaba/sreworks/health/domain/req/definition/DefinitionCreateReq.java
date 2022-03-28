@@ -3,7 +3,6 @@ package com.alibaba.sreworks.health.domain.req.definition;
 import com.alibaba.sreworks.health.common.constant.Constant;
 import com.google.common.base.Preconditions;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 

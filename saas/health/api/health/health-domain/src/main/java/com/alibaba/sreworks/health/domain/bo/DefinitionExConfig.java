@@ -1,9 +1,7 @@
 package com.alibaba.sreworks.health.domain.bo;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.sreworks.health.domain.req.definition.DefinitionExConfigReq;
-import lombok.Data;
 
 /**
  * 事件定义个性化配置

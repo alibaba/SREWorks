@@ -1,12 +1,5 @@
 package com.elasticsearch.cloud.monitor.metric.common.sync;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.util.concurrent.TimeUnit;
-
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.ObjectMetadata;
@@ -14,6 +7,13 @@ import com.google.gson.Gson;
 import com.opensearch.cobble.thread.Stoppable;
 import com.opensearch.cobble.thread.StoppableThread;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author xiaoping

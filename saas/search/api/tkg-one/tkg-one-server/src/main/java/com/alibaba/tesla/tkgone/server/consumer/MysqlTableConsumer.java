@@ -6,12 +6,10 @@ import com.alibaba.tesla.tkgone.server.common.Constant;
 import com.alibaba.tesla.tkgone.server.common.MysqlHelper;
 import com.alibaba.tesla.tkgone.server.common.Tools;
 import com.alibaba.tesla.tkgone.server.domain.dto.ConsumerDto;
-
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
-
-import lombok.extern.log4j.Log4j;
 
 import java.util.List;
 

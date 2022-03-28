@@ -1,24 +1,19 @@
 package com.alibaba.sreworks.job.master.event;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.job.master.domain.DO.SreworksJob;
 import com.alibaba.sreworks.job.master.domain.DTO.SreworksJobDTO;
 import com.alibaba.sreworks.job.master.domain.repository.SreworksJobRepository;
 import com.alibaba.sreworks.job.master.services.JobService;
-
 import com.alibaba.sreworks.job.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service

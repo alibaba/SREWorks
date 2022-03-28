@@ -1,10 +1,9 @@
 package com.alibaba.sreworks.pmdb.domain.metric;
 
-import com.alibaba.sreworks.pmdb.domain.metric.MetricAnomalyDetectionConfig;
-import com.alibaba.sreworks.pmdb.domain.metric.MetricAnomalyDetectionConfigExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
+
+import java.util.List;
 
 public interface MetricAnomalyDetectionConfigMapper {
     long countByExample(MetricAnomalyDetectionConfigExample example);

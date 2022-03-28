@@ -3,6 +3,9 @@
 *.log
 */target/*
 
+*/src/test/*
+test.sh
+
 *daily.properties
 *test.properties
 *dev.properties

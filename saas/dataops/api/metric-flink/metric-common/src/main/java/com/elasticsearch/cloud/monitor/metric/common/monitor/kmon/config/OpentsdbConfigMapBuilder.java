@@ -1,8 +1,8 @@
 package com.elasticsearch.cloud.monitor.metric.common.monitor.kmon.config;
 
-import java.util.Map;
-
 import com.google.common.collect.Maps;
+
+import java.util.Map;
 
 import static com.elasticsearch.cloud.monitor.metric.common.monitor.opentsdb.OpentsdbSink.CONFIG_ENDPOINT_KEY;
 import static com.elasticsearch.cloud.monitor.metric.common.monitor.opentsdb.OpentsdbSink.CONFIG_REPORT_SWITCH_KEY;

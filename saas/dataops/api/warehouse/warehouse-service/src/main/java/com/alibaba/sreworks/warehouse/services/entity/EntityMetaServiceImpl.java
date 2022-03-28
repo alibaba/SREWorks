@@ -8,7 +8,6 @@ import com.alibaba.sreworks.warehouse.domain.*;
 import com.alibaba.sreworks.warehouse.domain.req.entity.*;
 import com.alibaba.sreworks.warehouse.operator.ESIndexOperator;
 import com.alibaba.sreworks.warehouse.services.DwCommonService;
-import jdk.nashorn.internal.runtime.options.Option;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

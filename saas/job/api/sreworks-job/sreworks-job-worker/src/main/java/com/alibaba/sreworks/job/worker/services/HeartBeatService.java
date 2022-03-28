@@ -1,21 +1,19 @@
 package com.alibaba.sreworks.job.worker.services;
 
-import java.net.http.HttpResponse;
-
-import javax.annotation.PostConstruct;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.job.utils.HostUtil;
 import com.alibaba.sreworks.job.utils.JsonUtil;
 import com.alibaba.sreworks.job.utils.Requests;
 import com.alibaba.sreworks.job.worker.configs.SreworksJobProperties;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.net.http.HttpResponse;
 
 @Slf4j
 @Service

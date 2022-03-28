@@ -1,9 +1,5 @@
 package com.elasticsearch.cloud.monitor.metric.alarm.blink.udaf;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import com.elasticsearch.cloud.monitor.commons.rule.Rule;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.udaf.MultiTagNoDataInfoSync.MultiTagNoDataInfo;
 import com.elasticsearch.cloud.monitor.metric.common.sync.OssSync;
@@ -14,6 +10,10 @@ import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @author xiaoping

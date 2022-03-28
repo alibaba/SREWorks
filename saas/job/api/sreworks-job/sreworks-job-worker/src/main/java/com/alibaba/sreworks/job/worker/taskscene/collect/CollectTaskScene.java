@@ -1,14 +1,10 @@
 package com.alibaba.sreworks.job.worker.taskscene.collect;
 
-import java.net.http.HttpResponse;
-import java.util.List;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstanceWithBlobs;
 import com.alibaba.sreworks.job.taskinstance.ElasticTaskInstanceWithBlobsRepository;
 import com.alibaba.sreworks.job.utils.Requests;
 import com.alibaba.sreworks.job.worker.taskscene.AbstractTaskScene;
-
 import com.google.common.base.Preconditions;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
+
+import java.net.http.HttpResponse;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

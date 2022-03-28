@@ -9,4 +9,4 @@ RUN apk add zip curl
 COPY builtin_package/saas /root/saas
 COPY builtin_package/chart /root/chart
 
-RUN wget https://sreworks.oss-cn-beijing.aliyuncs.com/bin/mc-linux-amd64 -O /root/mc && chmod +x /root/mc
+RUN wget https://sreworks.oss-accelerate.aliyuncs.com/bin/mc-linux-amd64 -O /root/mc && chmod +x /root/mc

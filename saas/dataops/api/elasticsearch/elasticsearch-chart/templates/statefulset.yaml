@@ -284,6 +284,7 @@ spec:
                     fi
                   else
                     exit 0
+                  fi
                 fi
 {{ toYaml .Values.readinessProbe | indent 10 }}
         ports:

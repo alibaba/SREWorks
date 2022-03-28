@@ -56,6 +56,11 @@ spec:
         imageTag: "7.10.2-with-plugins"
         replicas: 1
         minimumMasterNodes: 1
+        esConfig:
+          elasticsearch.yml: |
+            xpack.security.enabled: false
+            discovery.type: single-node
+            path.data: /usr/share/elasticsearch/data
         volumeClaimTemplate:
           accessModes: [ "ReadWriteOnce" ]
           storageClassName: "${GLOBAL_STORAGE_CLASS}"

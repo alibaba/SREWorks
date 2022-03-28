@@ -28,8 +28,7 @@ yarn-error.log*
 
 .cache
 
-/src/properties.js
-/config/webpackDevServer.config.js
+
 
 
 

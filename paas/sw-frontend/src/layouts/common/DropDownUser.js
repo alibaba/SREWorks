@@ -16,7 +16,7 @@ import cacheRepository from "../../utils/cacheRepository";
 import NProgress from "nprogress";
 import httpClient from "../../utils/httpClient";
 import properties from "appRoot/properties";
-import {CirclePicker} from "react-color";
+import { CirclePicker } from "react-color";
 import _ from 'lodash'
 
 const SubMenu = Menu.SubMenu;
@@ -45,6 +45,9 @@ export default class DropDownUser extends React.Component {
     envs = envs.filter(function (item) { return item.stageId != "" });
     // envs.push({stageId:'dev'})
     // 配合后端暂时给每个应用都配置dev/prod环境
+    this.state={
+      selectedColor: '#00c1de'
+    }
   }
 
   onSwitchTheme = () => {
@@ -53,7 +56,11 @@ export default class DropDownUser extends React.Component {
     dispatch({ type: "global/switchTheme", theme: themeType });
     {/* global THEMES */
     }
-    window.less.modifyVars(THEMES[themeType]);
+    let color = localStorage.getItem("theme_color") || '#00c1de';
+    let obj = _.cloneDeep(THEMES[themeType]);
+    obj['@primary-color'] = color;
+    obj['@link-color'] = color;
+    window.less.modifyVars(obj);
     //window.location.reload();
   };
 
@@ -90,39 +97,45 @@ export default class DropDownUser extends React.Component {
     const { dispatch } = this.props;
     dispatch({ type: "global/logout" });
   };
-  setPrimaryColor=(targetObj)=> {
+  setPrimaryColor = (targetObj) => {
     let color = targetObj.hex;
+    this.setState({
+      selectedColor: color
+    })
     let themeType = (localStorage.getItem("tesla-theme") === "navyblue" ? "navyblue" : "light");
-    if(!window.less){
+    if (!window.less) {
       return
     } else {
       let obj = _.cloneDeep(THEMES[themeType]);
       obj['@primary-color'] = color;
-      obj['@link-color']= color;
-      window.less.modifyVars(obj).then(res=> {
-        document.documentElement.style.setProperty('--PrimaryColor',color);
-        localStorage.setItem("theme_color",color);
-        console.log(res,'window.less.modifyVars,执行了2')
+      obj['@link-color'] = color;
+      window.less.modifyVars(obj).then(res => {
+        document.documentElement.style.setProperty('--PrimaryColor', color);
+        localStorage.setItem("theme_color", color);
       })
     }
   }
   componentDidMount() {
     let themeType = (localStorage.getItem("tesla-theme") === "navyblue" ? "navyblue" : "light");
-    if(!window.less){
+    if (!window.less) {
       return
-    } 
+    }
     let color = localStorage.getItem("theme_color") || '#00c1de';
-      let obj = _.cloneDeep(THEMES[themeType]);
-      obj['@primary-color'] = color;
-      obj['@link-color']= color;
-      window.less.modifyVars(obj).then(res=> {
-        document.documentElement.style.setProperty('--PrimaryColor',color);
-        localStorage.setItem("theme_color",color);
-        console.log(res,'window.less.modifyVars,执行了2')
-      })
+    this.setState({
+      selectedColor: color
+    })
+    let obj = _.cloneDeep(THEMES[themeType]);
+    obj['@primary-color'] = color;
+    obj['@link-color'] = color;
+    window.less.modifyVars(obj).then(res => {
+      document.documentElement.style.setProperty('--PrimaryColor', color);
+      localStorage.setItem("theme_color", color);
+      console.log(res, 'window.less.modifyVars,执行了2')
+    })
   }
   render() {
     let { currentUser, currentProduct, isOnlyLogout } = this.props;
+    let {selectedColor} = this.state;
     const roles = currentUser.roles, cacheRole = cacheRepository.getRole(currentProduct.productId);
     const currentRole = roles.filter(role => role.roleId === cacheRole)[0];
     const UserTitle = () => (
@@ -160,10 +173,10 @@ export default class DropDownUser extends React.Component {
         </MenuItemGroup>}
         <MenuItemGroup title="主色设置">
           <Menu.Item key="primaryColor">
-          {/* <Tooltip title="点击切换">
+            {/* <Tooltip title="点击切换">
           <div onClick={()=> this.setPrimaryColor()} style={{width:45,height:25,backgroundColor:'var(--PrimaryColor)'}}></div>
           </Tooltip> */}
-          <CirclePicker onChange={this.setPrimaryColor}/>
+            <CirclePicker color={selectedColor} onChange={this.setPrimaryColor} />
             {/* <Button onClick={()=> this.setPrimaryColor()}>主色设置</Button> */}
           </Menu.Item>
         </MenuItemGroup>

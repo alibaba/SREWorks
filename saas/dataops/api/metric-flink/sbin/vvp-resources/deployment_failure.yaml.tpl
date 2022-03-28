@@ -42,6 +42,7 @@ spec:
         metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
         state.backend: filesystem
         taskmanager.memory.managed.fraction: '0.0'
+        execution.checkpointing.checkpoints-after-tasks-finish.enabled: true
       parallelism: 1
   upgradeStrategy:
     kind: STATEFUL

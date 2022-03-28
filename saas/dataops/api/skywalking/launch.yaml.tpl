@@ -44,6 +44,7 @@ spec:
             repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-oap-server-utc-8
             tag: 8.5.0-es7
           storageType: elasticsearch7
+          javaOpts: -Xmx720m -Xms720m
 
         ui:
           image:

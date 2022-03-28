@@ -8,4 +8,4 @@ FROM registry.cn-hangzhou.aliyuncs.com/alisre/openjdk:11.0.10-jre AS release
 USER root
 WORKDIR /root
 COPY --from=build /app/sreworks-job-master/target/sreworks-job.jar /app/sreworks-job.jar
-ENTRYPOINT ["java", "-Xmx1g", "-Xms1g", "-XX:ActiveProcessorCount=2", "-jar", "/app/sreworks-job.jar"]
+ENTRYPOINT ["java", "-Xmx512m", "-Xms512m", "-XX:ActiveProcessorCount=2", "-jar", "/app/sreworks-job.jar"]

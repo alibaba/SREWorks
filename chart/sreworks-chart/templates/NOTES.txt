@@ -1,0 +1,8 @@
+Now open the following URL in your browser:
+
+   {{ .Values.appmanager.home.url }}
+
+   account: admin
+   password: 12345678
+   
+Please try reloading the page if you see "ServiceUnavailable / no endpoints available for service", pod creation might take a moment.

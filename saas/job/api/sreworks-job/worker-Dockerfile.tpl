@@ -11,4 +11,4 @@ RUN apk add --update --no-cache python3
 USER root
 WORKDIR /root
 COPY --from=build /app/sreworks-job-worker/target/sreworks-job.jar /app/sreworks-job.jar
-ENTRYPOINT ["java", "-Xmx720m", "-Xms720m", "-XX:ActiveProcessorCount=2", "-jar", "/app/sreworks-job.jar"]
+ENTRYPOINT ["java", "-Xmx840m", "-Xms840m", "-XX:ActiveProcessorCount=2", "-jar", "/app/sreworks-job.jar"]

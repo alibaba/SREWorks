@@ -27,7 +27,7 @@ public abstract class SreworksRulesManagerFactory<T extends SreworksRulesManager
         if (shufflePeriod != null) {
             RULE_REFRESH_SHUFFLE_DEF = shufflePeriod;
         }
-        rulesManagers = CacheBuilder.newBuilder().expireAfterAccess(RULE_REFRESH_PERIOD_DEF, TimeUnit.MILLISECONDS).build();;
+        rulesManagers = CacheBuilder.newBuilder().expireAfterWrite(RULE_REFRESH_PERIOD_DEF, TimeUnit.MILLISECONDS).build();;
     }
 
     public SreworksRulesManagerFactory() {
@@ -62,9 +62,6 @@ public abstract class SreworksRulesManagerFactory<T extends SreworksRulesManager
         T rulesManager = rulesManagers.getIfPresent(rulesKey);
         if (rulesManager == null) {
             log.warn(String.format("not exist rules manager[rules_manager_key:%s]", rulesKey));
-        }
-
-        if (Objects.isNull(rulesManager)) {
             rulesManager = load(rulesConfig);
             rulesManagers.put(rulesKey, rulesManager);
         }

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.util.DigestUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -73,6 +74,7 @@ public class HealthAlertRulesLoader extends AbstractRulesLoader {
 
     @Override
     public String getVersion() throws Exception {
+        version = DigestUtils.md5DigestAsHex(rulesConfig.getBytes());
         return version;
     }
 

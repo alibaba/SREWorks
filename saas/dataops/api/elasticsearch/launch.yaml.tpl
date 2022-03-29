@@ -56,6 +56,10 @@ spec:
         imageTag: "7.10.2-with-plugins"
         replicas: 1
         minimumMasterNodes: 1
+        clusterHealthCheckEnable: false
+        extraEnvs:
+          - name: cluster.initial_master_nodes
+            value: ""
         esConfig:
           elasticsearch.yml: |
             xpack.security.enabled: false

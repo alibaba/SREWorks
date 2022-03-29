@@ -273,13 +273,17 @@ spec:
                   fi
 
                 else
-                  echo 'Waiting for elasticsearch cluster to become ready (request params: "{{ .Values.clusterHealthCheckParams }}" )'
-                  if http "/_cluster/health?{{ .Values.clusterHealthCheckParams }}" "--fail" ; then
-                    touch ${START_FILE}
-                    exit 0
+                  if [[ "{{ .Values.clusterHealthCheckEnable }}" == "true" ]]; then
+                    echo 'Waiting for elasticsearch cluster to become ready (request params: "{{ .Values.clusterHealthCheckParams }}" )'
+                    if http "/_cluster/health?{{ .Values.clusterHealthCheckParams }}" "--fail" ; then
+                      touch ${START_FILE}
+                      exit 0
+                    else
+                      echo 'Cluster is not yet ready (request params: "{{ .Values.clusterHealthCheckParams }}" )'
+                      exit 1
+                    fi
                   else
-                    echo 'Cluster is not yet ready (request params: "{{ .Values.clusterHealthCheckParams }}" )'
-                    exit 1
+                    exit 0
                   fi
                 fi
 {{ toYaml .Values.readinessProbe | indent 10 }}

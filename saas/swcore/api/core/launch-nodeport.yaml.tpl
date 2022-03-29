@@ -193,7 +193,7 @@ spec:
     - name: NAMESPACE_DATAOPS
       value: "${NAMESPACE_DATAOPS}"
     - name: DEFAULT_AMDIN_AVATOR
-      value: "https://sreworks.oss-cn-beijing.aliyuncs.com/logo/person.png"
+      value: "/static/publicMedia/aliyun.png"
   components:
     - revisionName: K8S_MICROSERVICE|paas-authproxy|_
       scopes:

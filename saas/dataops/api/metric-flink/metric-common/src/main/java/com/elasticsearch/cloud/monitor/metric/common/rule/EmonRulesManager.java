@@ -21,6 +21,7 @@ public abstract class EmonRulesManager extends SreworksRulesManager{
     private RulesLoader loader;
     private RulesHolder holder;
     private Timer updateTimer;
+    private boolean updated = false;
 
     public EmonRulesManager(Object clientConfig) {
         this(clientConfig, null);
@@ -171,14 +172,12 @@ public abstract class EmonRulesManager extends SreworksRulesManager{
 
     private void checkAndLoad() {
         int ruleSize = 0;
-
+        boolean updated = false;
         try {
             List<Rule> all = new ArrayList();
-            boolean updated = false;
-
             try {
                 String curVersion = loader.getVersion();
-                if (curVersion == loader.getLastVersion()) {
+                if (curVersion.equals(loader.getLastVersion())) {
                     log.info("Rule version does not change, version=" + curVersion + ", path=" + loader.getRuleFileOrDir());
                 } else {
                     updated = true;
@@ -188,30 +187,29 @@ public abstract class EmonRulesManager extends SreworksRulesManager{
                 log.error("Get rule version failed. path=" + loader.getRuleFileOrDir(), ex);
             }
 
-            if (updated) {
-                try {
-                    List<Rule> rules = loader.load();
-                    if (rules == null || rules.isEmpty()) {
-                        log.warn("Load rules maybe failed. the size of rules is zero");
-                    } else {
-                        ruleSize += rules.size();
-                        all.addAll(rules);
-                        log.info("Load rules success, path=" + loader.getRuleFileOrDir() + ", rulesSize: " + rules.size());
-                    }
-                } catch (Exception ex) {
-                    log.error("Load rules failed. path=" + loader.getRuleFileOrDir(), ex);
-                }
-
-                if (all.size() > 0) {
-                    log.info("Load rules success, total rulesSize: " + ruleSize);
-                    holder = new RulesHolder(all);
+            try {
+                List<Rule> rules = loader.load();
+                if (rules == null || rules.isEmpty()) {
+                    log.warn("Load rules maybe failed. the size of rules is zero");
                 } else {
-                    log.warn("Load rules maybe fail, total rulesSize: " + ruleSize);
+                    ruleSize += rules.size();
+                    all.addAll(rules);
+                    log.info("Load rules success, path=" + loader.getRuleFileOrDir() + ", rulesSize: " + rules.size());
                 }
+            } catch (Exception ex) {
+                log.error("Load rules failed. path=" + loader.getRuleFileOrDir(), ex);
+            }
+
+            if (all.size() > 0) {
+                log.info("Load rules success, total rulesSize: " + ruleSize);
+                holder = new RulesHolder(all);
+            } else {
+                log.warn("Load rules maybe fail, total rulesSize: " + ruleSize);
             }
         } catch (Exception ex) {
             log.error("Load rules failed", ex);
         }
+        this.updated = updated;
     }
 
     public MetricStat getMetricStatCache() {
@@ -223,6 +221,10 @@ public abstract class EmonRulesManager extends SreworksRulesManager{
 //        String content = new String(FileUtils.readData(versionFile));
 //        return Long.valueOf(content.replaceAll("[\\n\\r]", "").trim());
 //    }
+
+    public boolean isUpdated() {
+        return updated;
+    }
 
     public String toString() {
         return "RuleManager{holder=" + holder + '}';

@@ -106,16 +106,20 @@ public class HealthAlert
 
         Long ruleId = generateRuleId(alertDefId, metricId);
         EmonRulesManager rulesManager = rulesManagerFactory.getRulesManager(String.valueOf(alertDefId));
+        boolean ruleUpdated = false;
         if (rulesManager == null) {
             JSONObject alertRuleConfig = buildAlertRuleConfig(appId, metricName, ruleId, alertConfig.getJSONObject("alert_rule_config"));
             rulesManager = rulesManagerFactory.getRulesManager(String.valueOf(alertDefId), JSONObject.toJSONString(alertRuleConfig));
             if (rulesManager == null) {
+                log.warn(String.format("build rules manager null[rules_manager_key:%s]", alertDefId));
                 return;
             }
+            ruleUpdated = rulesManager.isUpdated();
         }
 
         Rule rule = rulesManager.getRule(ruleId);
         if (rule == null) {
+            log.warn(String.format("not exist rule [rule_id:%s]", ruleId));
             return;
         }
 
@@ -130,7 +134,7 @@ public class HealthAlert
 //        com.elasticsearch.cloud.monitor.commons.core.Constants.CHECK_INTERVAL = interval;
 
         DataPoint dp = new ImmutableDataPoint(metricName, timestamp, value, labels, granularity);
-        RuleConditionCache ruleConditionCache = getRuleConditionCache(rule, metricInstanceUid, interval, dp);
+        RuleConditionCache ruleConditionCache = getRuleConditionCache(rule, ruleUpdated, metricInstanceUid, interval, dp);
         DurationConditionChecker checker = ruleConditionCache.getConditionChecker(dp.getTags());
         ruleConditionCache.put(dp);
         try {
@@ -251,10 +255,11 @@ public class HealthAlert
      * @param dataPoint 流入的数据点
      * @return
      */
-    private RuleConditionCache getRuleConditionCache(Rule rule, String instanceId, long interval, DataPoint dataPoint) {
+    private RuleConditionCache getRuleConditionCache(Rule rule, boolean ruleUpdated, String instanceId, long interval, DataPoint dataPoint) {
         String key = getCacheKey(rule.getId(), instanceId);
         RuleConditionCache ruleConditionCache = ruleConditionCaches.getIfPresent(key);
-        if (ruleConditionCache == null) {
+        if (ruleConditionCache == null || ruleUpdated) {
+            log.warn(String.format("not exist rules condition cache[cache_key:%s] or rule updated[%s]", key, ruleUpdated));
             ruleConditionCache = new RuleConditionKafkaCache(rule, interval, kafkaConfig);
             ruleConditionCache.setMonitorClient(monitor, globalTags);
             ruleConditionCaches.put(key, ruleConditionCache);

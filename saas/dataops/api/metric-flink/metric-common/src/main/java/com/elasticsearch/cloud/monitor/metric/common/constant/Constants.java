@@ -50,8 +50,8 @@ public class Constants {
     public static final String RULE_REFRESH_SHUFFLE = "rule.refresh.shuffle";
     public static final String RULE_FOR_EMON = "rule.for.emon";
 
-    public static long RULE_REFRESH_PERIOD_DEF = 90000;
-    public static long RULE_REFRESH_SHUFFLE_DEF = 60000;
+    public static long RULE_REFRESH_PERIOD_DEF = 600000;
+    public static long RULE_REFRESH_SHUFFLE_DEF = 600000;
 
     /**
      * minio rule

@@ -36,4 +36,14 @@ done
 /app/mc cp --recursive /app/framework-builds sw/resource/
 
 
+ls /app/infos/|while read line
+do
+  name=$(echo $line|awk -F '.' '{print $1}')
+  curl "http://prod-upload-filemanage/sreworksFile/get?name=${name}&category=opsscaffold" -s |grep $name
+  if [ $? -ne 0 ]; then
+    echo "${name} not exist"
+    exit 1
+  fi
+done
+
 

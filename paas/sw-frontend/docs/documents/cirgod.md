@@ -182,4 +182,6 @@ body参数
 
 <a name="OeE1E"></a>
 ### 2.3 平台架构
-![image.png](/pictures/1645435949305-0405bd48-2955-4165-9cd7-59db31a03a91.png)<br />![image.png](/pictures/1645435799812-a2fbf28e-1af9-464a-8148-337114e71bc8.png)
+![image.png](/pictures/1645435949305-0405bd48-2955-4165-9cd7-59db31a03a91.png)
+
+![image.png](/pictures/1648564100901-9117f12f-7bc2-4be6-b024-edbb7556d4ca.png)

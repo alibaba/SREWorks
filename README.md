@@ -126,7 +126,7 @@ helm install sreworks ./ \
     --create-namespace --namespace sreworks \
     --set global.accessMode="nodePort" \
     --set appmanager.home.url="http://NODE_IP:30767" \
-    --set global.storageClass="alicloud-disk-available"
+    --set global.storageClass="local"
 ```
 
 # 联系我们

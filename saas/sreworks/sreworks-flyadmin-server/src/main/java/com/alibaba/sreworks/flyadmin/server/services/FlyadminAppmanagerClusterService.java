@@ -12,13 +12,16 @@ import com.alibaba.sreworks.domain.DO.Cluster;
 import com.alibaba.tesla.web.constant.HttpHeaderNames;
 
 import io.kubernetes.client.openapi.ApiException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class FlyadminAppmanagerClusterService {
 
     public void create(Cluster cluster, String user) throws IOException, ApiException {
         String name = String.format("%s#%s#%s", cluster.getTeamId(), cluster.getAccountId(), cluster.getName());
+        log.info(AppmanagerServiceUtil.getEndpoint() + "/clusters");
         new Requests(AppmanagerServiceUtil.getEndpoint() + "/clusters")
             .postJson(
                 "clusterId", cluster.getId() + "id",
@@ -30,7 +33,9 @@ public class FlyadminAppmanagerClusterService {
                 "masterFlag", false
             )
             .headers(HttpHeaderNames.X_EMPL_ID, user)
-            .post().isSuccessful();
+            .post()
+            .isSuccessful();
+
     }
 
     public void delete(Long clusterId, String user) throws IOException, ApiException {

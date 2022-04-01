@@ -16,8 +16,12 @@ import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Request.Builder;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
+
+import com.alibaba.tesla.appmanager.client.AppManagerClient;
 
 /**
  * @author yangjinghua
@@ -27,8 +31,32 @@ import okhttp3.Response;
 @NoArgsConstructor
 public class Requests {
 
-    private static final OkHttpClient HTTP_CLIENT =
-        new OkHttpClient.Builder().connectionPool(new ConnectionPool()).build();
+    private static AppManagerClient APPMANAGER_HTTP_CLIENT = null;
+
+    private static OkHttpClient HTTP_CLIENT = null;
+
+    static {
+        if (System.getenv("APPMANAGER_ENDPOINT") != null) {
+            APPMANAGER_HTTP_CLIENT = new AppManagerClient(
+                System.getenv("APPMANAGER_ENDPOINT"),
+                System.getenv("APPMANAGER_USERNAME"),
+                System.getenv("APPMANAGER_PASSWORD"),
+                System.getenv("APPMANAGER_CLIENT_ID"),
+                System.getenv("APPMANAGER_CLIENT_SECRET")
+            );
+        } else {
+            HTTP_CLIENT = new OkHttpClient.Builder().connectionPool(new ConnectionPool()).build();
+        }
+    }
+
+    private void sendRequest(Builder requestBuilder) throws IOException {
+        if (APPMANAGER_HTTP_CLIENT != null) {
+            response = APPMANAGER_HTTP_CLIENT.sendRequestSimple(requestBuilder);
+        } else {
+            response = HTTP_CLIENT.newCall(requestBuilder.build()).execute();
+        }
+        responseBodyString = Objects.requireNonNull(response.body()).string();
+    }
 
     private static Request.Builder createRequestBuilder(String url, JSONObject params, JSONObject headers) {
         HttpUrl.Builder queryUrl = Objects.requireNonNull(HttpUrl.parse(url)).newBuilder();
@@ -103,21 +131,38 @@ public class Requests {
 
     public Response response;
 
+    public String responseBodyString;
+
     public Requests isSuccessful() throws IOException {
         if (!response.isSuccessful()) {
             throw new IOException(String.format(
                 "response is not successful: %s; retBody: %s", response.toString(), getString()
             ));
         }
+
+        ResponseBody body = response.body();
+        if (body != null) {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject = JSONObject.parseObject(responseBodyString);
+            } catch (Exception ignored) {
+            }
+            log.info(JSONObject.toJSONString(jsonObject));
+            if (jsonObject.getLongValue("code") >= 300) {
+                throw new IOException(String.format(
+                    "response is not successful: %s; retBody: %s", response.toString(), getString()
+                ));
+            }
+        }
+
         return this;
     }
 
-    public String getString() throws IOException {
-        String responseBody = response.body() == null ? "" : Objects.requireNonNull(response.body()).string();
+    public String getString() {
         if (this.showLog) {
-            log.info("SHOW_RESPONSE: " + responseBody);
+            log.info("SHOW_RESPONSE: " + responseBodyString);
         }
-        return responseBody;
+        return responseBodyString;
     }
 
     public <T> T getObject(Class<T> clazz) throws IOException {
@@ -142,46 +187,34 @@ public class Requests {
 
     public Requests get() throws IOException {
         Request.Builder requestBuilder = createRequestBuilder(url, params, headers);
-        Request request = requestBuilder
-            .get()
-            .build();
-        response = HTTP_CLIENT.newCall(request).execute();
+        sendRequest(requestBuilder.get());
         return this;
     }
 
     public Requests post() throws IOException {
         Request.Builder requestBuilder = createRequestBuilder(url, params, headers);
-        Request request = requestBuilder
-            .post(RequestBody.create(MediaType.parse("application/json"), postJson))
-            .build();
-        response = HTTP_CLIENT.newCall(request).execute();
+        sendRequest(requestBuilder
+            .post(RequestBody.create(MediaType.parse("application/json"), postJson)));
         return this;
     }
 
     public Requests upload(File file) throws IOException {
         Request.Builder requestBuilder = createRequestBuilder(url, params, headers);
-        Request request = requestBuilder
-            .post(RequestBody.create(MediaType.parse("application/octet-stream"), file))
-            .build();
-        response = HTTP_CLIENT.newCall(request).execute();
+        sendRequest(requestBuilder
+            .post(RequestBody.create(MediaType.parse("application/octet-stream"), file)));
         return this;
     }
 
     public Requests put() throws IOException {
         Request.Builder requestBuilder = createRequestBuilder(url, params, headers);
-        Request request = requestBuilder
-            .put(RequestBody.create(MediaType.parse("application/json"), postJson))
-            .build();
-        response = HTTP_CLIENT.newCall(request).execute();
+        sendRequest(requestBuilder
+            .put(RequestBody.create(MediaType.parse("application/json"), postJson)));
         return this;
     }
 
     public Requests delete() throws IOException {
         Request.Builder requestBuilder = createRequestBuilder(url, params, headers);
-        Request request = requestBuilder
-            .delete()
-            .build();
-        response = HTTP_CLIENT.newCall(request).execute();
+        sendRequest(requestBuilder.delete());
         return this;
     }
 

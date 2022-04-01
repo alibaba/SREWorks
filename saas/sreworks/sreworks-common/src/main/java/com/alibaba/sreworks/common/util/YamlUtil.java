@@ -15,6 +15,9 @@ import org.checkerframework.checker.units.qual.K;
 public class YamlUtil {
 
     public static String toJson(String yaml) throws JsonProcessingException {
+        if (StringUtil.isEmpty(yaml)) {
+            return "";
+        }
         ObjectMapper yamlReader = new ObjectMapper(new YAMLFactory());
         Object obj = yamlReader.readValue(yaml, Object.class);
 

@@ -2,6 +2,7 @@ package com.alibaba.sreworks.flyadmin.server.services;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSONArray;
@@ -18,7 +19,6 @@ import com.alibaba.sreworks.domain.repository.TeamRegistryRepository;
 import com.alibaba.sreworks.domain.repository.TeamRepoRepository;
 import com.alibaba.tesla.web.constant.HttpHeaderNames;
 
-import com.google.common.base.Throwables;
 import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,10 +71,10 @@ public class FlyadminAppmanagerPackageService {
             .getString("data");
     }
 
-    private String getComponentLastVersion(Long appId, String componentName, String user) {
+    private String getComponentLastVersion(Long appId, String componentType, String componentName, String user) {
         try {
             return new Requests(AppmanagerServiceUtil.getEndpoint()
-                + "/apps/" + appmanagerId(appId) + "/component-packages/K8S_MICROSERVICE/" + componentName
+                + "/apps/" + appmanagerId(appId) + "/component-packages/" + componentType + "/" + componentName
                 + "/latest-version")
                 .headers(HttpHeaderNames.X_EMPL_ID, user)
                 .get().isSuccessful()
@@ -85,37 +85,69 @@ public class FlyadminAppmanagerPackageService {
         }
     }
 
-    public JSONObject start(Long appId, Long teamRegistryId, Long teamRepoId, String version, String user)
-        throws IOException, ApiException {
-        TeamRegistry teamRegistry = teamRegistryRepository.findFirstById(teamRegistryId);
-        TeamRepo teamRepo = teamRepoRepository.findFirstById(teamRepoId);
+    public JSONObject getConfig(Long appId, String version) {
         List<AppComponent> appComponentList = appComponentRepository.findAllByAppId(appId);
-        JSONObject postJson = JsonUtil.map(
+        return JsonUtil.map(
             "tags", JsonUtil.list("sreworks=true"),
             "version", version,
-            "components", appComponentList.stream().map(component -> JsonUtil.map(
-                "componentName", component.getName(),
-                "componentType", "K8S_MICROSERVICE",
-                "version", getComponentLastVersion(appId, component.getName(), user),
-                "useRawOptions", true,
-                "options", JsonUtil.map(
-                    "containers", JsonUtil.list(JsonUtil.map(
-                        "name", component.getName(),
-                        "ports", JsonUtil.list(),
-                        "build", JsonUtil.map(
-                            "args", JsonUtil.map(),
-                            "dockerfileTemplateArgs", JsonUtil.map(),
-                            "dockerfileTemplate", component.repoDetail().getDockerfileTemplate(),
-                            "branch", component.repoDetail().getBranch(),
-                            "repo", component.repoDetail().getUrl(),
-                            "ciToken", teamRepo.getCiToken(),
-                            "imagePush", true,
-                            "imagePushRegistry", teamRegistry.getUrl(),
-                            "imagePushAuth", teamRegistry.getAuth()
-                        )
-                    ))
-                )
-            )).collect(Collectors.toList()));
+            "components", appComponentList.stream()
+                .map(component -> {
+                    switch (component.type()) {
+                        case REPO:
+                            TeamRegistry teamRegistry = teamRegistryRepository.findFirstById(
+                                component.repoDetail().getTeamRegistryId()
+                            );
+                            TeamRepo teamRepo = teamRepoRepository.findFirstById(
+                                component.repoDetail().getTeamRepoId()
+                            );
+                            return JsonUtil.map(
+                                "componentName", component.getName(),
+                                "componentType", "K8S_MICROSERVICE",
+                                "version", version,
+                                "useRawOptions", true,
+                                "options", JsonUtil.map(
+                                    "kind", "CloneSet",
+                                    "containers", JsonUtil.list(JsonUtil.map(
+                                        "name", component.getName(),
+                                        "ports", JsonUtil.list(),
+                                        "build", JsonUtil.map(
+                                            "args", JsonUtil.map(),
+                                            "dockerfileTemplateArgs", JsonUtil.map(),
+                                            "dockerfileTemplate", component.repoDetail().getDockerfileTemplate(),
+                                            "branch", component.repoDetail().getBranch(),
+                                            "repo", component.repoDetail().getUrl(),
+                                            "ciToken", teamRepo.getCiToken(),
+                                            "imagePush", true,
+                                            "imagePushRegistry", teamRegistry.getUrl(),
+                                            "imagePushAuth", teamRegistry.getAuth()
+                                        )
+                                    ))
+                                )
+                            );
+                        case HELM:
+                            return JsonUtil.map(
+                                "componentName", component.getName(),
+                                "componentType", "HELM",
+                                "version", version,
+                                "useRawOptions", true,
+                                "options", JsonUtil.map(
+                                    "chartUrl", component.helmDetail().getChartUrl(),
+                                    "repoUrl", component.helmDetail().getRepoUrl(),
+                                    "chartName", component.helmDetail().getChartName(),
+                                    "chartVersion", component.helmDetail().getChartVersion()
+                                )
+                            );
+                        default:
+                            return null;
+                    }
+
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList()));
+    }
+
+    public JSONObject start(Long appId, String version, String user) throws IOException, ApiException {
+        JSONObject postJson = getConfig(appId, version);
         log.info(JSONObject.toJSONString(postJson, true));
         return new Requests(
             AppmanagerServiceUtil.getEndpoint() + "/apps/" + appmanagerId(appId) + "/app-package-tasks")
@@ -165,6 +197,19 @@ public class FlyadminAppmanagerPackageService {
             logs.put(item.getString("componentName"), log);
         }
         return logs;
+    }
+
+    public void releaseAsCustom(AppPackage appPackage, String user) throws IOException, ApiException {
+
+        String url = AppmanagerServiceUtil.getEndpoint() + "/apps/" + appmanagerId(appPackage.getAppId())
+            + "/app-packages/" + appPackage.getAppPackageId() + "/release-as-custom";
+        new Requests(url)
+            .headers(HttpHeaderNames.X_EMPL_ID, user)
+            .postJson(
+                "addonId", appPackage.app().getName(),
+                "addonVersion", appPackage.getSimpleVersion()
+            )
+            .post().isSuccessful();
     }
 
 }

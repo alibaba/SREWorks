@@ -22,11 +22,16 @@ import com.alibaba.sreworks.domain.DTO.Volume;
 import com.alibaba.sreworks.domain.repository.AppComponentRepository;
 import com.alibaba.sreworks.domain.repository.AppPackageRepository;
 import com.alibaba.sreworks.domain.repository.ClusterResourceRepository;
+import com.alibaba.sreworks.flyadmin.server.services.FlyadminAppmanagerDeploy.FlyadminAppmanagerDeployAppPackageAcService;
+import com.alibaba.sreworks.flyadmin.server.services.FlyadminAppmanagerDeploy.FlyadminAppmanagerDeployHelmAcService;
+import com.alibaba.sreworks.flyadmin.server.services.FlyadminAppmanagerDeploy.FlyadminAppmanagerDeployRepoAcService;
 import com.alibaba.tesla.web.constant.HttpHeaderNames;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.implementation.auxiliary.AuxiliaryType.SignatureRelevant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -50,8 +55,14 @@ public class FlyadminAppmanagerDeployService {
     @Autowired
     AppPackageRepository appPackageRepository;
 
-    @Value("${metric.image}")
-    private String metricImage;
+    @Autowired
+    FlyadminAppmanagerDeployRepoAcService flyadminAppmanagerDeployRepoAcService;
+
+    @Autowired
+    FlyadminAppmanagerDeployAppPackageAcService flyadminAppmanagerDeployAppPackageAcService;
+
+    @Autowired
+    FlyadminAppmanagerDeployHelmAcService flyadminAppmanagerDeployHelmAcService;
 
     public List<JSONObject> list(Long appId, String user) throws IOException, ApiException {
         return new Requests(AppmanagerServiceUtil.getEndpoint() + "/deployments")
@@ -60,6 +71,38 @@ public class FlyadminAppmanagerDeployService {
             .get().isSuccessful()
             .getJSONObject()
             .getJSONObject("data").getJSONArray("items").toJavaList(JSONObject.class);
+    }
+
+    public JSONObject listPagination(
+        Long appId, String user,
+        String page, String pageSize,
+        String stageIdWhiteList, String optionKey, String optionValue
+    ) throws IOException, ApiException {
+        JSONObject payload = new JSONObject();
+
+        if(appId != null){
+            payload.put("appId", appmanagerId(appId));
+        }
+        if(stageIdWhiteList != null) {
+            payload.put("stageIdWhiteList", stageIdWhiteList);
+        }
+        if(optionKey != null){
+            payload.put("optionKey", optionKey);
+        }
+        if(optionValue != null){
+            payload.put("optionValue", optionValue);
+
+        }
+        payload.put("page", page);
+        payload.put("pageSize", pageSize);
+
+        return new Requests(AppmanagerServiceUtil.getEndpoint() + "/deployments")
+            .params(payload)
+            .headers(HttpHeaderNames.X_EMPL_ID, user)
+            .get().isSuccessful()
+            .getJSONObject()
+            .getJSONObject("data");
+//            .getJSONObject("data").getJSONArray("items").toJavaList(JSONObject.class);
     }
 
     public JSONObject get(String deployId, String user) throws IOException, ApiException {
@@ -89,262 +132,64 @@ public class FlyadminAppmanagerDeployService {
                 "annotations", JsonUtil.map(
                     "appId", appmanagerId(appInstance.getAppId()),
                     "appPackageId", appPackageRepository.findFirstById(appInstance.getAppPackageId()).getAppPackageId(),
-                    //"clusterId", "master",
                     "clusterId", appInstance.getClusterId() + "id",
                     "namespaceId", appInstance.namespace(),
                     "stageId", appInstance.getStageId()
                 )
             ),
             "spec", JsonUtil.map(
+                "parameterValues", JsonUtil.list(
+                    JsonUtil.map(
+                        "name", "CLUSTER_ID",
+                        "value", appInstance.getClusterId() + "id"
+                    ),
+                    JsonUtil.map(
+                        "name", "NAMESPACE_ID",
+                        "value", appInstance.namespace()
+                    ),
+                    JsonUtil.map(
+                        "name", "STAGE_ID",
+                        "value", appInstance.getStageId()
+                    ),
+                    JsonUtil.map(
+                        "name", "ABM_CLUSTER",
+                        "value", "default-cluster"
+                    ),
+                    JsonUtil.map(
+                        "name", "CLOUD_TYPE",
+                        "value", "PaaS"
+                    ),
+                    JsonUtil.map(
+                        "name", "ENV_TYPE",
+                        "value", "PaaS"
+                    ),
+                    JsonUtil.map(
+                        "name", "ENDPOINT_PAAS_PRODUCTOPS",
+                        "value", "prod-flycore-paas-productops"
+                    )
+                ),
                 "components", new JSONArray()
             )
         );
     }
 
-    private void patchAcSpecComponent(
-        JSONArray components, AppInstance appInstance, AppComponentInstance appComponentInstance) {
-        components.add(JsonUtil.map(
-            "dataInputs", new JSONArray(),
-            "dataOutputs", new JSONArray(),
-            "dependencies", new JSONArray(),
-            "parameterValues", new JSONArray(),
-            "revisionName", "K8S_MICROSERVICE|" + appComponentInstance.getName() + "|_",
-            "scopes", JsonUtil.list(
-                JsonUtil.map(
-                    "scopeRef", JsonUtil.map(
-                        "apiVersion", "flyadmin.alibaba.com/v1alpha1",
-                        "kind", "Namespace",
-                        "name", appInstance.namespace()
-                    )
-                ),
-                JsonUtil.map(
-                    "scopeRef", JsonUtil.map(
-                        "apiVersion", "flyadmin.alibaba.com/v1alpha1",
-                        "kind", "Cluster",
-                        //"name", "master"
-                        "name", appInstance.getClusterId() + "id"
-                    )
-                ),
-                JsonUtil.map(
-                    "scopeRef", JsonUtil.map(
-                        "apiVersion", "flyadmin.alibaba.com/v1alpha1",
-                        "kind", "Stage",
-                        "name", appInstance.getStageId()
-                    )
-                )
-            ),
-            "traits", new JSONArray()
-        ));
-    }
-
-    private JSONObject getServiceTrait(AppComponentInstanceDetail appComponentInstanceDetail) {
-        List<Port> ports = appComponentInstanceDetail.ports();
-        ports.add(Port.builder().name("metric").value(10080L).build());
-        return JsonUtil.map(
-            "name", "service.trait.abm.io",
-            "runtime", "post",
-            "spec", JsonUtil.map(
-                "labels", JsonUtil.map(
-                    "sreworks", appComponentInstanceDetail.metricOn() ? "metric" : "metricOff"
-                ),
-                "ports", ports.stream().map(port -> JsonUtil.map(
-                    "name", port.getName(),
-                    "protocol", "TCP",
-                    "port", port.getValue(),
-                    "targetPort", port.getValue()
-                )).collect(Collectors.toList())
-            )
-        );
-    }
-
-    private JSONObject getMetricContainer() {
-        return JsonUtil.map(
-            "name", "metric",
-            "image", metricImage,
-            "resources", JsonUtil.map(
-                "limits", JsonUtil.map(
-                    "cpu", "0",
-                    "memory", "0G"
-                ),
-                "requests", JsonUtil.map(
-                    "cpu", "0",
-                    "memory", "0G"
-                )
-            )
-        );
-    }
-
-    private JSONObject getIntegrateTraitContainer(AppComponentInstance appComponentInstance) {
-        AppComponentInstanceDetail appComponentInstanceDetail = appComponentInstance.detail();
-        return JsonUtil.map(
-            "env", appComponentInstanceDetail.envs(),
-            "resources", JsonUtil.map(
-                "limits", JsonUtil.map(
-                    "cpu", appComponentInstance.detail().getResource().getLimits().getCpu(),
-                    "memory", appComponentInstance.detail().getResource().getLimits().getMemory()
-                ),
-                "requests", JsonUtil.map(
-                    "cpu", appComponentInstance.detail().getResource().getRequests().getCpu(),
-                    "memory", appComponentInstance.detail().getResource().getRequests().getMemory()
-                )
-            )
-        );
-    }
-
-    private void patchAcSpecComponentTraits(JSONArray traits,
-        AppComponentInstance appComponentInstance) {
-        AppComponentInstanceDetail appComponentInstanceDetail = appComponentInstance.detail();
-        traits.add(JsonUtil.map(
-            "name", "integrate.trait.abm.io",
-            "runtime", "pre",
-            "spec", JsonUtil.map(
-                "content", JsonUtil.map(
-                    "replicas", appComponentInstanceDetail.getReplicas(),
-                    "containers", JsonUtil.list(
-                        getIntegrateTraitContainer(appComponentInstance),
-                        getMetricContainer()
-                    )
-                ),
-                "others", new JSONArray()
-            )
-        ));
-        traits.add(getServiceTrait(appComponentInstanceDetail));
-    }
-
-    private void patchVolume(JSONObject integrateContent, JSONArray integrateOthers,
-        AppInstance appInstance, AppComponentInstance appComponentInstance) {
-
-        JSONObject container = integrateContent.getJSONArray("containers").getJSONObject(0);
-        if (!integrateContent.containsKey("volumes")) {
-            integrateContent.put("volumes", new JSONArray());
-        }
-        if (!container.containsKey("volumeMounts")) {
-            container.put("volumeMounts", new JSONArray());
-        }
-        AppComponentInstanceDetail appComponentInstanceDetail = appComponentInstance.detail();
-        List<Volume> volumes = appComponentInstanceDetail.volumes();
-        for (Volume volume : volumes) {
-            container.getJSONArray("volumeMounts").add(JsonUtil.map(
-                "mountPath", volume.getPath(),
-                "name", volume.getName()
-            ));
-            integrateContent.getJSONArray("volumes").add(JsonUtil.map(
-                "name", volume.getName(),
-                "persistentVolumeClaim", JsonUtil.map(
-                    "claimName", volume.getName()
-                )
-            ));
-            integrateOthers.add(JsonUtil.map(
-                "apiVersion", "v1",
-                "kind", "PersistentVolumeClaim",
-                "metadata", JsonUtil.map(
-                    "name", volume.getName(),
-                    "namespace", appInstance.namespace()
-                ),
-                "spec", JsonUtil.map(
-                    "accessModes", JsonUtil.list("ReadWriteMany"),
-                    "resources", JsonUtil.map(
-                        "requests", JsonUtil.map(
-                            "storage", volume.getStorage()
-                        )
-                    ),
-                    "storageClassName", volume.getStorageClassName()
-                )
-            ));
-        }
-
-    }
-
-    private void patchConfig(JSONObject integrateContent, JSONArray integrateOthers,
-        AppInstance appInstance, AppComponentInstance appComponentInstance) {
-        JSONObject container = integrateContent.getJSONArray("containers").getJSONObject(0);
-        if (!container.containsKey("volumeMounts")) {
-            container.put("volumeMounts", new JSONArray());
-        }
-        if (!integrateContent.containsKey("volumes")) {
-            integrateContent.put("volumes", new JSONArray());
-        }
-        AppComponentInstanceDetail appComponentInstanceDetail = appComponentInstance.detail();
-        List<Config> configs = appComponentInstanceDetail.configs();
-        for (Config config : configs) {
-            String name = UuidUtil.shortUuid();
-            container.getJSONArray("volumeMounts").add(JsonUtil.map(
-                "mountPath", config.getParentPath(),
-                "name", name
-            ));
-            integrateContent.getJSONArray("volumes").add(JsonUtil.map(
-                "name", name,
-                "configMap", JsonUtil.map(
-                    "name", name
-                )
-            ));
-            integrateOthers.add(JsonUtil.map(
-                "apiVersion", "v1",
-                "kind", "ConfigMap",
-                "metadata", JsonUtil.map(
-                    "name", name,
-                    "namespace", appInstance.namespace()
-                ),
-                "data", JsonUtil.map(
-                    config.getName(), config.getContent()
-                )
-            ));
-        }
-
-    }
-
-    private void patchClusterResourceEnvConfig(JSONObject integrateContent, JSONArray integrateOthers,
-        AppInstance appInstance) {
-        String name = UuidUtil.shortUuid();
-        JSONObject container = integrateContent.getJSONArray("containers").getJSONObject(0);
-        if (!container.containsKey("envFrom")) {
-            container.put("envFrom", new JSONArray());
-        }
-        List<Long> clusterResourceIdList = appInstance.detail().clusterResourceIdList();
-        if (CollectionUtils.isEmpty(clusterResourceIdList)) {
-            return;
-        }
-        container.getJSONArray("envFrom").add(JsonUtil.map(
-            "configMapRef", JsonUtil.map(
-                "name", name
-            )
-        ));
-        JSONObject data = new JSONObject();
-        for (Long clusterResourceId : clusterResourceIdList) {
-            ClusterResource clusterResource = clusterResourceRepository.findFirstById(clusterResourceId);
-            for (Entry<String, Object> entry : clusterResource.usageDetail().entrySet()) {
-                data.put(
-                    clusterResource.getName() + "_" + entry.getKey(),
-                    entry.getValue()
-                );
-            }
-        }
-
-        integrateOthers.add(JsonUtil.map(
-            "apiVersion", "v1",
-            "kind", "ConfigMap",
-            "metadata", JsonUtil.map(
-                "name", name,
-                "namespace", appInstance.namespace()
-            ),
-            "data", data
-        ));
-    }
-
-    private String getAc(AppInstance appInstance, List<AppComponentInstance> appComponentInstanceList)
-        throws JsonProcessingException {
+    public String getAc(AppInstance appInstance, List<AppComponentInstance> appComponentInstanceList)
+        throws IOException, ApiException {
         JSONObject acJsonObject = getAcMeta(appInstance);
         JSONArray components = acJsonObject.getJSONObject("spec").getJSONArray("components");
         for (AppComponentInstance appComponentInstance : appComponentInstanceList) {
-            patchAcSpecComponent(components, appInstance, appComponentInstance);
-            JSONArray traits = components.getJSONObject(components.size() - 1).getJSONArray("traits");
-            patchAcSpecComponentTraits(traits, appComponentInstance);
-
-            JSONObject integrateContent = traits.getJSONObject(0).getJSONObject("spec").getJSONObject("content");
-            JSONArray integrateOthers = traits.getJSONObject(0).getJSONObject("spec").getJSONArray("others");
-            patchConfig(integrateContent, integrateOthers, appInstance, appComponentInstance);
-            patchVolume(integrateContent, integrateOthers, appInstance, appComponentInstance);
-            patchClusterResourceEnvConfig(integrateContent, integrateOthers, appInstance);
+            switch (appComponentInstance.type()) {
+                case REPO:
+                    flyadminAppmanagerDeployRepoAcService.patchAc(components, appInstance, appComponentInstance);
+                    break;
+                case APP_PACKAGE:
+                    flyadminAppmanagerDeployAppPackageAcService.patchAc(components, appInstance, appComponentInstance);
+                    break;
+                case HELM:
+                    flyadminAppmanagerDeployHelmAcService.patchAc(components, appInstance, appComponentInstance);
+                default:
+                    break;
+            }
         }
         log.info(YamlUtil.toYaml(acJsonObject));
         return YamlUtil.toYaml(acJsonObject);

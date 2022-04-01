@@ -20,10 +20,9 @@ public interface AppComponentRepository
 
     List<AppComponent> findAllByAppId(Long appId);
 
-    List<AppComponent> findAllByNameIn(List<String> nameList);
-
     @Modifying
     @Transactional(rollbackOn = Exception.class)
     void deleteByAppId(Long appId);
 
+    int countByAppId(Long appId);
 }

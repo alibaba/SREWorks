@@ -1,6 +1,7 @@
 package com.alibaba.sreworks.flyadmin.server.services;
 
 import com.alibaba.sreworks.common.util.AppmanagerServiceUtil;
+import com.alibaba.sreworks.common.util.JsonUtil;
 import com.alibaba.sreworks.common.util.Requests;
 import com.alibaba.sreworks.domain.DO.App;
 import com.alibaba.tesla.web.constant.HttpHeaderNames;
@@ -17,7 +18,13 @@ public class FlyadminAppmanagerAppService {
 
     public void create(App app) throws Exception {
         new Requests(AppmanagerServiceUtil.getEndpoint() + "/apps")
-            .postJson("appId", appmanagerId(app.getId()), "appName", app.getName())
+            .postJson(
+                "appId", appmanagerId(app.getId()),
+                "options", JsonUtil.map(
+                    "name", app.getName(),
+                    "source", "app"
+                )
+            )
             .headers(HttpHeaderNames.X_EMPL_ID, app.getCreator())
             .post().isSuccessful();
     }

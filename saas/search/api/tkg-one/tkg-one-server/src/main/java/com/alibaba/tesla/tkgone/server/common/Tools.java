@@ -133,7 +133,7 @@ public final class Tools {
 
             String valueStr = value == null ? "" : value.toString();
             // 小括号替换 防止正则匹配异常
-            valueStr = valueStr.replaceAll("\\(", "{").replaceAll("\\)", "}");
+            valueStr = valueStr.replaceAll("\\(", "<<<<<<").replaceAll("\\)", ">>>>>>");
 
             m.appendReplacement(sb, Matcher.quoteReplacement(valueStr));
         }

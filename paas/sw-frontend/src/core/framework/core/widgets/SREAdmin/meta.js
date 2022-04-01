@@ -13,7 +13,7 @@ export default {
         "logos": {
             "large": "",
             "small": require("./icon.svg"),
-            "fontClass":"DESIGNER_WORKBENCH"
+            "fontClass":"BuiltInBusiness"
         },
         "build": {
             "time": "",

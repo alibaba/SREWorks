@@ -1008,7 +1008,6 @@ class OamAction extends React.Component {
             }
             if (displayType === 'tabFilter') {
                 if (!dispalyItems.length) return null;
-                console.log(displayType, 'tabFilter===displayType');
                 return (
                     <TabFilter
                         items={dispalyItems}

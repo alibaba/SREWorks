@@ -162,7 +162,7 @@ export default class DropDownUser extends React.Component {
       </div>
     );
     return <Dropdown placement="bottomRight" overlay={
-      <Menu mode="horizontal" style={{ width: 280 }}>
+      <Menu style={{ width: 280 }}>
         {!isOnlyLogout && <MenuItemGroup title={localeHelper.get("common.theme.setting", "主题设置")}>
           <Menu.Item key="theme">
             <Switch onChange={this.onSwitchTheme}

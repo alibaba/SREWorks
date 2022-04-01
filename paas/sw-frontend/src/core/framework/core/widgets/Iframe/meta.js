@@ -17,7 +17,8 @@ export default  {
         "links": [],
         "logos": {
             "large": "",
-            "small": require('./icon.svg')
+            "small": require('./icon.svg'),
+            "fontClass":"Iframe"
         },
         "build": {
             "time": "",

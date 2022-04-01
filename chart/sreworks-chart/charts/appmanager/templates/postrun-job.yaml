@@ -6,7 +6,7 @@ metadata:
   labels:
     name: appmanager-postrun
 spec:
-  ttlSecondsAfterFinished: 86400
+  backoffLimit: 1000000
   template:
     metadata:
       name: appmanager-postrun

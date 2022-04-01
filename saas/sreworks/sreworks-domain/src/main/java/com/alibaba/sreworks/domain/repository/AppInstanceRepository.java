@@ -19,7 +19,11 @@ public interface AppInstanceRepository extends JpaRepository<AppInstance, Long>,
     List<AppInstance> findAllByStatusNotIn(List<String> statusList);
 
     @Query(value = ""
-        + "select app_instance.*, app.name as app_name, cluster.name as cluster_name, team.name as team_name "
+        + "select app_instance.*, "
+        + "     app.name as app_name, "
+        + "     app.labels as app_labels, "
+        + "     cluster.name as cluster_name, "
+        + "     team.name as team_name "
         + "from app_instance app_instance "
         + "left join app app on app_instance.app_id = app.id "
         + "left join cluster cluster on app_instance.cluster_id = cluster.id "

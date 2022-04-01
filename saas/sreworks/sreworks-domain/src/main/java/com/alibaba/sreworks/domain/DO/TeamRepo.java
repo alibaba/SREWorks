@@ -53,6 +53,9 @@ public class TeamRepo {
     private String url;
 
     @Column
+    private String ciAccount;
+
+    @Column
     private String ciToken;
 
     @Column(columnDefinition = "longtext")

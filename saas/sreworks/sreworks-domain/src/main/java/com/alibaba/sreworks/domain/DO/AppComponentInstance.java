@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.common.util.AppmanagerServiceUtil;
 import com.alibaba.sreworks.domain.DTO.AppComponentInstanceDetail;
+import com.alibaba.sreworks.domain.DTO.AppComponentType;
 import com.alibaba.sreworks.domain.utils.AppUtil;
 
 import lombok.AllArgsConstructor;
@@ -53,6 +54,9 @@ public class AppComponentInstance {
     private Long appComponentId;
 
     @Column
+    private String type;
+
+    @Column
     private String name;
 
     @Column(columnDefinition = "text")
@@ -67,6 +71,10 @@ public class AppComponentInstance {
         this.appComponentId = appComponent.getId();
         this.name = appComponent.getName();
         this.detail = appComponent.getDetail();
+    }
+
+    public AppComponentType type() {
+        return AppComponentType.valueOf(type);
     }
 
     public AppComponentInstanceDetail detail() {

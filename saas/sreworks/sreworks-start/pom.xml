@@ -27,36 +27,20 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <artifactId>sreworks-teammanage-server</artifactId>
+            <artifactId>sreworks-server</artifactId>
             <groupId>com.alibaba.sreworks</groupId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <artifactId>sreworks-clustermanage-server</artifactId>
+            <artifactId>sreworks-common</artifactId>
             <groupId>com.alibaba.sreworks</groupId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <artifactId>sreworks-avatarmanage-server</artifactId>
+            <artifactId>sreworks-domain</artifactId>
             <groupId>com.alibaba.sreworks</groupId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <artifactId>sreworks-appcenter-server</artifactId>
-            <groupId>com.alibaba.sreworks</groupId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <artifactId>sreworks-appdev-server</artifactId>
-            <groupId>com.alibaba.sreworks</groupId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <artifactId>sreworks-appmarket-server</artifactId>
-            <groupId>com.alibaba.sreworks</groupId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-
         <!-- alibaba dependency -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

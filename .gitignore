@@ -1,2 +1,5 @@
 paas/swcli/builtin_package/
 
+
+mvn_deploy.sh
+mvn_install.sh

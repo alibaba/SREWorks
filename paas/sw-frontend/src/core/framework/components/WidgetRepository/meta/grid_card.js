@@ -12,7 +12,8 @@ export default {
         "links": [],
         "logos": {
             "large": "",
-            "small": require('./icons/grid_card.svg')
+            "small": require('./icons/grid_card.svg'),
+            "fontClass":'GRID_CARD'
         },
         "build": {
             "time": "",

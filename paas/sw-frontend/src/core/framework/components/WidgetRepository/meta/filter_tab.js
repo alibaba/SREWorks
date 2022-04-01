@@ -16,7 +16,8 @@
         "links": [],
         "logos": {
             "large": "",
-            "small": require('./icons/filter_tab.svg')
+            "small": require('./icons/filter_tab.svg'),
+            "fontClass":'FILTER_TAB'
         },
         "build": {
             "time": "",

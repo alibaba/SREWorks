@@ -85,7 +85,7 @@ export default class HomeWorkspace extends React.Component {
             appendDots: dots => (
                 <div style={{ display: "flex", justifyContent: "center", color: "#fff" }}>
                     <div className="switch-handle"><LeftCircleOutlined className="icon" onClick={() => this.slider.prev()} /></div>
-                    <div><ul> {dots} </ul></div>
+                    <div><ul className="switch-handle-content"> {dots} </ul></div>
                     <div className="switch-handle"><RightCircleOutlined className="icon" onClick={() => this.slider.next()} /></div>
                 </div>
             )

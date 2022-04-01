@@ -16,7 +16,9 @@ export default  {
         "links": [],
         "logos": {
             "large": "",
-            "small": require('./icons/filter-bar.svg')
+            "small": require('./icons/filter-bar.svg'),
+            "fontClass":'FILTER_BAR'
+            
         },
         "build": {
             "time": "",

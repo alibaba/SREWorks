@@ -13,6 +13,7 @@ export default {
         "logos": {
             "large": "",
             "small": require("./icon.svg"),
+            "fontClass":"OPS_DESKTOP"
         },
         "build": {
             "time": "",

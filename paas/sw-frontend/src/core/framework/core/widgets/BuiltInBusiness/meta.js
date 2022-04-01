@@ -18,6 +18,7 @@ export default {
         "logos": {
             "large": "",
             "small": require("./icon.svg"),
+            "fontClass":"BuiltInBusiness"
         },
         "build": {
             "time": "",

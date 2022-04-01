@@ -26,7 +26,6 @@ class TabFilter extends Component {
     }
     render() {
         const { action } = this.state, { mode } = this.props;
-        console.log('tabFilter excute')
         if (!action) {
             return <Spin />
         }

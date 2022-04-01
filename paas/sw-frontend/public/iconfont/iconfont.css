@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3290880 */
-  src: url('iconfont.woff2?t=1648639459057') format('woff2'),
-       url('iconfont.woff?t=1648639459057') format('woff'),
-       url('iconfont.ttf?t=1648639459057') format('truetype');
+  src: url('iconfont.woff2?t=1648795371190') format('woff2'),
+       url('iconfont.woff?t=1648795371190') format('woff'),
+       url('iconfont.ttf?t=1648795371190') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,18 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.sre-CarouselComp:before {
+  content: "\e647";
+}
+
+.sre-SwitchCard:before {
+  content: "\e646";
+}
+
+.sre-MarkdownComp:before {
+  content: "\e645";
 }
 
 .sre-HoverableCard:before {

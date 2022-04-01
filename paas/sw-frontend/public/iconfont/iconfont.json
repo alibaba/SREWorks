@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "28679245",
+      "name": "CarouselComp",
+      "font_class": "CarouselComp",
+      "unicode": "e647",
+      "unicode_decimal": 58951
+    },
+    {
+      "icon_id": "28678177",
+      "name": "SwitchCard",
+      "font_class": "SwitchCard",
+      "unicode": "e646",
+      "unicode_decimal": 58950
+    },
+    {
+      "icon_id": "28677199",
+      "name": "MarkdownComp",
+      "font_class": "MarkdownComp",
+      "unicode": "e645",
+      "unicode_decimal": 58949
+    },
+    {
       "icon_id": "28624899",
       "name": "HoverableCard",
       "font_class": "HoverableCard",

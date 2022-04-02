@@ -1,3 +1,9 @@
+# SREWorks
+
+[![GitHub](https://img.shields.io/github/license/alibaba/sreworks)](./LICENSE)
+
+中文 
+
 # SREWorks 介绍
 
 
@@ -19,8 +25,6 @@ SREWorks 作为阿里云大数据SRE团队对SRE理念的工程实践，专注�
 回归到运维领域的需求，无论上层产品和业务形态怎么变化，运维本质上解决的还是“质量、成本、效率、安全”相关需求。SREWorks 用一个运维 SaaS 应用界面来支撑上述需求，同时以“数智”思想为内核驱动 SaaS 能力，具体包括交付、监测、管理、控制、运营、服务六部分。
 
 ![image.png](/paas/sw-frontend/docs/pictures/1627890956935-488725a3-68e9-429f-8671-2371a27a8161.png)
-
-
 
 
 # SREWorks 快速部署
@@ -101,8 +105,9 @@ kubectl delete namespace sreworks
 ## 5. 常见问题
 
 - 1. [SREWorks帮助文档](https://www.yuque.com/sreworks-doc/docs)
-- 2. 需要使用非默认的kubeconfig，请在helm命令中加入`--kubeconfig`指定目标集群的kubeconfig文件的路径
-- 3. 如果遇到长时间Pod处于ContainerCreating，请执行 `kubectl describe pod `命令查看Pod的异常事件
+- 2. [云原生技术公开课](https://edu.aliyun.com/roadmap/cloudnative)
+- 3. 需要使用非默认的kubeconfig，请在helm命令中加入`--kubeconfig`指定目标集群的kubeconfig文件的路径
+- 4. 如果遇到长时间Pod处于ContainerCreating，请执行 `kubectl describe pod `命令查看Pod的异常事件
    - 异常事件中出现 `InvalidInstanceType.NotSupportDiskCategory`，说明当前的Node不支持挂载这种云盘类型，请在helm命令中加入 `--set global.storageClass="alicloud-disk-essd"` 进行指定，默认为`alicloud-disk-available`
 
 ## 6. 快速部署案例

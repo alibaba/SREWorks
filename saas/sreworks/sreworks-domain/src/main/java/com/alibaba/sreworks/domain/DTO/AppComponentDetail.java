@@ -3,6 +3,8 @@ package com.alibaba.sreworks.domain.DTO;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.fastjson.JSONObject;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,6 +32,8 @@ public class AppComponentDetail {
 
     private Boolean metricOn;
 
+    private String values;
+
     public List<Env> envs() {
         return envs == null ? new ArrayList<>() : envs;
     }
@@ -48,5 +52,9 @@ public class AppComponentDetail {
 
     public boolean metricOn() {
         return metricOn != null && metricOn;
+    }
+
+    public String values() {
+        return values == null ? "" : values;
     }
 }

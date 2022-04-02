@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.sreworks.domain.DTO.TeamUserRole;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,6 +48,9 @@ public class TeamUser {
     private String user;
 
     @Column
+    private String role;
+
+    @Column
     private String creator;
 
     @Column
@@ -54,6 +58,10 @@ public class TeamUser {
 
     @Column
     private Integer isConcern;
+
+    public TeamUserRole role() {
+        return TeamUserRole.valueOf(getRole());
+    }
 
     public TeamUser(Long teamId, String user) {
         this.gmtCreate = System.currentTimeMillis() / 1000;

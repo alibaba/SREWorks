@@ -6,7 +6,6 @@ const { TabPane } = Tabs;
 class TabFilter extends Component {
     constructor(props) {
         super(props);
-        console.log(props.widgetData, 'tabfilter-fortab')
         let { scenes = [], items } = props, defaultFilter;
         items.forEach(ni => {
             let { defModel = {} } = ni;

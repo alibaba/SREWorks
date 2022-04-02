@@ -17,6 +17,7 @@ export default {
     "logos": {
       "large": "",
       "small": require("./icon.svg"),
+      "fontClass":"CopyRight"
     },
     "build": {
       "time": "",

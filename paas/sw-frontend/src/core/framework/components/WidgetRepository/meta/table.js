@@ -15,7 +15,8 @@ export default  {
         "links": [],
         "logos": {
             "large": "",
-            "small": require('./icons/table.svg')
+            "small": require('./icons/table.svg'),
+            "fontClass":'TABLE'
         },
         "build": {
             "time": "",

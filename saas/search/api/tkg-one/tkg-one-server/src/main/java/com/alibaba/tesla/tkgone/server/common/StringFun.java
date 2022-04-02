@@ -64,7 +64,9 @@ public class StringFun {
             throw new Exception("不可能出现这个错误，如果出现说明代码逻辑有问题，请关注!!!");
         }
         String funName = m.group(1);
-        List<String> funArgs = Arrays.stream(m.group(2).split(argsSplitSymbol))
+        String args = m.group(2);
+        args = args.replaceAll("<<<<<<", "(").replaceAll(">>>>>>", ")");
+        List<String> funArgs = Arrays.stream(args.split(argsSplitSymbol))
             .map(StringUtils::strip).collect(Collectors.toList());
         if (!funName.startsWith(funNameStartString)) {
             return string;
@@ -78,8 +80,8 @@ public class StringFun {
                 return etlDate2TimeStamp(funArgs);
             case "etlDate2TimeStampMillion":
                 return etlDate2TimeStampMillion(funArgs);
-            case "etlTimestamp2Data":
-                return etlTimestamp2Data(funArgs);
+            case "etlTimestamp2Date":
+                return etlTimestamp2Date(funArgs);
             case "etlExpression2Long":
                 return ExpressionToLong.stringToRes(funArgs.get(0));
             case "etlSwitch":
@@ -100,12 +102,12 @@ public class StringFun {
                 return StringUtils.lowerCase(funArgs.get(0));
             case "etlReplace":
                 return StringUtils.replace(funArgs.get(0), funArgs.get(1), funArgs.get(2));
-            case "etlRedisHget":
-                Jedis jedis = RedisHelper.getJedis(funArgs.get(0), Integer.parseInt(funArgs.get(1)), funArgs.get(2), 0);
-                String value = jedis.hget(funArgs.get(3), funArgs.get(4));
-                value = value == null ? "" : value;
-                jedis.close();
-                return value;
+//            case "etlRedisHget":
+//                Jedis jedis = RedisHelper.getJedis(funArgs.get(0), Integer.parseInt(funArgs.get(1)), funArgs.get(2), 0);
+//                String value = jedis.hget(funArgs.get(3), funArgs.get(4));
+//                value = value == null ? "" : value;
+//                jedis.close();
+//                return value;
             default:
                 return string;
         }
@@ -139,7 +141,7 @@ public class StringFun {
         return Tools.date2TimeStamp(funArgs.get(0), funArgs.get(1));
     }
 
-    private static String etlTimestamp2Data(List<String> funArgs) {
+    private static String etlTimestamp2Date(List<String> funArgs) {
         if (funArgs.size() == 1) {
             return Tools.timeStamp2Date(funArgs.get(0));
         }

@@ -41,4 +41,25 @@ public class FlyadminAppmanagerService {
             .getJSONObject()
             .getJSONObject("data").getJSONArray("items").toJavaList(JSONObject.class);
     }
+
+    public JSONObject k8sMicroservice(String user, String appId, String componentTypeList) throws IOException {
+        return new Requests(AppmanagerServiceUtil.getEndpoint() + "/apps/" + appId + "/k8s-microservices")
+            .params(
+                "appId", appId,
+                "componentTypeList", componentTypeList
+            )
+            .headers(HttpHeaderNames.X_EMPL_ID, user)
+            .get().isSuccessful()
+            .getJSONObject()
+            .getJSONObject("data");
+    }
+
+    public JSONObject helm(String user, String appId) throws IOException {
+        return new Requests(AppmanagerServiceUtil.getEndpoint() + "/apps/" + appId + "/helm")
+            .params()
+            .headers(HttpHeaderNames.X_EMPL_ID, user)
+            .get().isSuccessful()
+            .getJSONObject()
+            .getJSONObject("data");
+    }
 }

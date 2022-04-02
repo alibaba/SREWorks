@@ -9,12 +9,14 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.common.util.K8sUtil;
 import com.alibaba.sreworks.common.util.Requests;
 import com.alibaba.sreworks.domain.DO.Cluster;
 import com.alibaba.sreworks.domain.DO.TeamAccount;
 import com.alibaba.sreworks.domain.repository.TeamAccountRepository;
 import com.alibaba.sreworks.flyadmin.server.DTO.PluginCluster;
+import com.alibaba.sreworks.flyadmin.server.DTO.PluginComponent;
 import com.alibaba.tesla.web.constant.HttpHeaderNames;
 
 import io.kubernetes.client.openapi.ApiException;
@@ -69,6 +71,9 @@ public class PluginClusterService {
 
     public List<PluginCluster> list(Long accountId, String user) throws IOException {
         TeamAccount teamAccount = teamAccountRepository.findFirstById(accountId);
+        log.info(JSONObject.toJSONString(accountId));
+        log.info(JSONObject.toJSONString(teamAccount));
+        log.info(JSONObject.toJSONString(serviceMap.get(teamAccount.getType())));
         return new Requests(serviceMap.get(teamAccount.getType()) + "/list")
             .postJson("account", teamAccount.detail())
             .headers(HttpHeaderNames.X_EMPL_ID, user)
@@ -100,4 +105,17 @@ public class PluginClusterService {
 
     }
 
+    public List<PluginComponent> getComponent(Cluster cluster, String user) throws IOException {
+
+        TeamAccount teamAccount = teamAccountRepository.findFirstById(cluster.getAccountId());
+        return new Requests(serviceMap.get(teamAccount.getType()) + "/getComponent", false)
+            .postJson(
+                "account", teamAccount.detail(),
+                "name", cluster.getClusterName()
+            )
+            .headers(HttpHeaderNames.X_EMPL_ID, user)
+            .post().isSuccessful()
+            .getJSONArray(PluginComponent.class);
+
+    }
 }

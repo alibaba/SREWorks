@@ -1,5 +1,6 @@
 package com.alibaba.sreworks.common.util;
 
+import java.lang.reflect.InvocationHandler;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
@@ -60,4 +61,14 @@ public class RegularUtil {
         list.forEach(RegularUtil::underscoreToCamel);
     }
 
-}
+    public static <T> void changeValue(JSONObject jsonObject, String key, Class<T> clazz) {
+        jsonObject.put(key, JSONObject.parseObject(jsonObject.getString(key), clazz));
+    }
+
+    public static <T> void changeValue(List<JSONObject> list, String key, Class<T> clazz) {
+        for (JSONObject jsonObject : list) {
+            changeValue(jsonObject, key, clazz);
+        }
+    }
+
+}                                                                                      

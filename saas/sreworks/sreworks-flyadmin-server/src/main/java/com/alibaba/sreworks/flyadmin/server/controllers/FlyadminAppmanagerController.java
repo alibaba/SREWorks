@@ -53,4 +53,18 @@ public class FlyadminAppmanagerController extends BaseController {
         RegularUtil.gmt2Date(ret);
         return buildSucceedResult(ret);
     }
+
+    @ApiOperation(value = "k8sMicroservice")
+    @RequestMapping(value = "k8sMicroservice", method = RequestMethod.GET)
+    public TeslaBaseResult k8sMicroservice(String appId, String componentTypeList) throws IOException {
+        return buildSucceedResult(
+            flyadminAppmanagerService.k8sMicroservice(getUserEmployeeId(), appId, componentTypeList)
+        );
+    }
+
+    @ApiOperation(value = "helm")
+    @RequestMapping(value = "helm", method = RequestMethod.GET)
+    public TeslaBaseResult helm(String appId) throws IOException {
+        return buildSucceedResult(flyadminAppmanagerService.helm(getUserEmployeeId(), appId));
+    }
 }

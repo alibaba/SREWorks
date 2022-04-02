@@ -1,7 +1,3 @@
-/**
- * Created by caoshuaibiao on 2021/3/2.
- * 过滤项作为一行,一行占满的时候自动换行
- */
 export default  {
     "id": "FILTER_BAR",
     "type": "FILTER_BAR",
@@ -16,7 +12,9 @@ export default  {
         "links": [],
         "logos": {
             "large": "",
-            "small": require('./icons/filter-bar.svg')
+            "small": require('./icons/filter-bar.svg'),
+            "fontClass":'FILTER_BAR'
+            
         },
         "build": {
             "time": "",

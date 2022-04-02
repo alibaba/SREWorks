@@ -21,6 +21,38 @@ public interface ClusterRepository extends JpaRepository<Cluster, Long>, JpaSpec
     @Query(value = ""
         + "SELECT "
         + "    cluster.*, "
+        + "    team.name AS team_name, "
+        + "    ta.name AS account_name,  "
+        + "    ta.type AS account_type  "
+        + "FROM "
+        + "    cluster cluster "
+        + "LEFT JOIN team "
+        + "ON cluster.team_id = team.id "
+        + "LEFT JOIN team_account ta "
+        + "ON cluster.account_id = ta.id  "
+        + "WHERE cluster.id = ?1 "
+        , nativeQuery = true)
+    JSONObject findObjectById(Long id);
+
+    @Query(value = ""
+        + "SELECT "
+        + "    cluster.*, "
+        + "    tu.name AS team_name, "
+        + "    ta.name AS account_name,  "
+        + "    ta.type AS account_type  "
+        + "FROM "
+        + "    cluster cluster "
+        + "LEFT JOIN "
+        + "    (SELECT team.* FROM team team JOIN team_user tu ON team.id = tu.team_id) tu "
+        + "ON cluster.team_id = tu.id  "
+        + "LEFT JOIN team_account ta "
+        + "ON cluster.account_id = ta.id  "
+        , nativeQuery = true)
+    List<JSONObject> findObject();
+
+    @Query(value = ""
+        + "SELECT "
+        + "    cluster.*, "
         + "    tu.name AS team_name, "
         + "    ta.name AS account_name,  "
         + "    ta.type AS account_type  "

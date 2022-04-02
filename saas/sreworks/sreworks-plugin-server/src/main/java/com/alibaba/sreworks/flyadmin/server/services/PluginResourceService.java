@@ -42,10 +42,20 @@ public class PluginResourceService {
 
     @PostConstruct
     public void postConstruct() throws ApiException {
-        refreshService();
+        try {
+            refreshService();
+        } catch (ApiException e) {
+            log.error("response Code: {} Headers: {} Body: {}",
+                e.getCode(), e.getResponseHeaders(), e.getResponseBody());
+            log.error("", e);
+        }
         SCHEDULE_POOL_EXECUTOR.scheduleAtFixedRate(() -> {
             try {
                 refreshService();
+            } catch (ApiException e) {
+                log.error("response Code: {} Headers: {} Body: {}",
+                    e.getCode(), e.getResponseHeaders(), e.getResponseBody());
+                log.error("", e);
             } catch (Exception e) {
                 log.error("", e);
             }

@@ -82,6 +82,7 @@ public class KubernetesClientFactory {
                 newClient = new DefaultKubernetesClient(config);
             } else if (StringUtils.isNotEmpty(kube)) {
                 Config config = getKubeConfig(kube);
+                config.setNamespace(null);
                 newClient = new DefaultKubernetesClient(config);
             } else {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS,

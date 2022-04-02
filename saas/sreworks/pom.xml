@@ -154,15 +154,10 @@
     </distributionManagement>
     <modules>
         <module>sreworks-domain</module>
-        <module>sreworks-start</module>
         <module>sreworks-common</module>
         <module>sreworks-plugin-server</module>
+        <module>sreworks-server</module>
         <module>sreworks-flyadmin-server</module>
-        <module>sreworks-teammanage-server</module>
-        <module>sreworks-appcenter-server</module>
-        <module>sreworks-appdev-server</module>
-        <module>sreworks-appmarket-server</module>
-        <module>sreworks-avatarmanage-server</module>
-        <module>sreworks-clustermanage-server</module>
+        <module>sreworks-start</module>
     </modules>
 </project>

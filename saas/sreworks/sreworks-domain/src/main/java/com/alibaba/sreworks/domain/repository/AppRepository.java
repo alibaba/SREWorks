@@ -21,7 +21,7 @@ public interface AppRepository extends JpaRepository<App, Long>, JpaSpecificatio
         + "from app app "
         + "left join team team on app.team_id = team.id "
         + "left join team_user tu on tu.team_id = team.id "
-        + "where tu.user = ?1 and app.name like ?2 "
+        + "where tu.user = ?1 and app.name like ?2 and app.display = 1 "
         + "order by app.id desc "
         , nativeQuery = true)
     List<JSONObject> findObjectByUser(String user, String name);
@@ -30,8 +30,11 @@ public interface AppRepository extends JpaRepository<App, Long>, JpaSpecificatio
         + "select app.*, team.name as team_name "
         + "from app app "
         + "left join team team on app.team_id = team.id "
-        + "where app.id = ?1 "
+        + "left join team_user tu on tu.team_id = team.id "
+        + "order by app.id desc "
         , nativeQuery = true)
-    JSONObject findObjectById(Long id);
+    List<JSONObject> findObject();
+
+    List<App> findAllByTeamIdAndDisplay(Long teamId, Long display);
 
 }

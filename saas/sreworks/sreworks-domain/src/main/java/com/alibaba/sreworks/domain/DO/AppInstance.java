@@ -15,6 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.StringUtils;
 
 /**
  * @author jinghua.yjh
@@ -45,6 +46,9 @@ public class AppInstance {
     private String lastModifier;
 
     @Column
+    private String name;
+
+    @Column
     private Long teamId;
 
     @Column
@@ -71,13 +75,16 @@ public class AppInstance {
     @Column(columnDefinition = "text")
     private String description;
 
+    @Column(columnDefinition = "longtext")
+    private String ac;
+
     public AppInstanceDetail detail() {
         AppInstanceDetail detail = JSONObject.parseObject(this.detail, AppInstanceDetail.class);
         return detail == null ? new AppInstanceDetail() : detail;
     }
 
     public String namespace() {
-        return String.format("%s-%s", getStageId(), getId());
+        return StringUtils.isEmpty(name) ? String.format("%s-%s", getStageId(), getId()) : name;
     }
 
     public JSONObject toJsonObject() {

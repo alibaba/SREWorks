@@ -16,7 +16,8 @@ export default  {
         "links": [],
         "logos": {
             "large": "",
-            "small": require('./icons/step_action.svg')
+            "small": require('./icons/step_action.svg'),
+            "fontClass":'STEP_ACTION'
         },
         "build": {
             "time": "",

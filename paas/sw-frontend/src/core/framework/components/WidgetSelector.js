@@ -8,6 +8,7 @@ import service from '../../services/appMenuTreeService';
 //import debounce from 'lodash.debounce';
 
 import './index.less';
+import './widgetSelector.less';
 import { cloneDeep } from 'lodash';
 
 const { Panel } = Collapse;
@@ -160,7 +161,7 @@ export default class WidgetSelector extends React.Component {
                                         renderItem={widgetMeta => {
                                             {
                                                 const { info = { logos: {} } } = widgetMeta;
-                                                const { small = "", large = "" } = info.logos;
+                                                const { small = "", large = "",fontClass="" } = info.logos;
                                                 let icon = null, src = null, pic = small || large;
                                                 if (pic.includes("http") || pic.includes(".png") || pic.startsWith("data:")) {
                                                     src = pic
@@ -176,7 +177,8 @@ export default class WidgetSelector extends React.Component {
                                                             >
                                                                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                                                                     <div>
-                                                                        <Avatar shape="square" style={{ margin: "0px 14px" }} size={52} icon={<LegacyIcon type={icon} />} src={src} />
+                                                                        { !fontClass && <Avatar shape="square" style={{ margin: "0px 14px" }} size={52} icon={<LegacyIcon type={icon} />} src={src} />}
+                                                                        {fontClass && <span className={`iconfont sre-${fontClass}`}></span>}
                                                                     </div>
                                                                     <div style={{ transform: "scale(1)", marginTop: 0, maxWidth: 120 }} className="text-overflow">{widgetMeta.title}</div>
                                                                 </div>

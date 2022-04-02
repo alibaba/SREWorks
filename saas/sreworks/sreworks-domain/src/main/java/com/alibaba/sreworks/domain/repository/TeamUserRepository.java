@@ -23,7 +23,7 @@ public interface TeamUserRepository extends JpaRepository<TeamUser, Long>, JpaSp
         + "select a.*, IFNULL(b.user_num, 0) as user_num, IFNULL(c.account_num, 0) as account_num "
         + "from  "
         + "( "
-        + "    select id, gmt_create, name, description "
+        + "    select id, gmt_create, name, description, visible_scope, avatar "
         + "    from team where id in (select team_id from team_user where user = ?1) and name like ?2 "
         + ") a "
         + "left join "
@@ -57,5 +57,7 @@ public interface TeamUserRepository extends JpaRepository<TeamUser, Long>, JpaSp
     @Query(value = "update team_user set gmt_access = now() where team_id = ?1 and user = ?2"
         , nativeQuery = true)
     void updateGmtAccessByTeamIdAndUser(Long teamId, String user);
+
+    List<TeamUser> findAllByUser(String user);
 
 }

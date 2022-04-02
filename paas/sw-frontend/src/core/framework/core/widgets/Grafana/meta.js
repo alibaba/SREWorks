@@ -17,6 +17,7 @@ export default {
     "logos": {
       "large": "",
       "small": require("./icon.svg"),
+      "fontClass":"Grafana"
     },
     "build": {
       "time": "",

@@ -138,13 +138,15 @@ body参数
 <a name="Ppto7"></a>
 #### 1.4.3 数据服务
 
-数据消费通过数据接口将数据仓库的生成数据API，让数据用起来，目前优先支持mysql和es两种数据源。<br />开箱服务中，已经内置了30+数据接口。用户可以根据需要和页面提示自由添加所需数据接口。接口使用方式，数据集dataset的service([http://prod-dataops-dataset.sreworks-dataops.svc.cluster.local:80](http://prod-dataops-dataset.sreworks-dataops.svc.cluster.local:80))作为host，接口path作为url_path。
+数据消费通过数据接口将数据仓库的生成数据API，让数据用起来，目前优先支持mysql和es两种数据源。<br />开箱服务中，已经内置了30+数据接口。用户可以根据需要和页面提示自由添加所需数据接口。<br />![image.png](/pictures/1648697682246-aadfa57a-5f3b-4b75-a586-872e4ae81ad3.png)
 
-![image.png](/pictures/1647328945945-ea48b1d2-840f-40a3-96e3-93a35980809b.png)
+接口使用方式
 
+服务内访问：数据集dataset的service([http://prod-dataops-dataset.sreworks-dataops.svc.cluster.local:80](http://prod-dataops-dataset.sreworks-dataops.svc.cluster.local:80))作为host，接口path作为url_path。
 
+SREWorks站点网关访问：<br />![image.png](/pictures/1648697800262-33961a6d-6b66-48a6-a7f7-11bf00c3ae13.png)<br />![image.png](/pictures/1648697822272-025ef1ba-1a6b-44b9-a824-c0420a49b836.png)
 
-**补充说明：所有的开箱内置数据原则是上不放开给用户修改。**
+**补充说明：所有的开箱内置数据原则是上不放开给用户修改；出于安全考虑，数据服务接口未提供开放给外部可直接使用的形式，只提供给SREWorks中的前端或服务调用**。
 
 
 <a name="wAki5"></a>

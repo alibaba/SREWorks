@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.common.util.StringUtil;
@@ -49,7 +51,7 @@ public class App {
     @Column
     private Long teamId;
 
-    @Column
+    @Column(unique = true)
     private String name;
 
     @Column(columnDefinition = "text")
@@ -58,9 +60,26 @@ public class App {
     @Column(columnDefinition = "text")
     private String description;
 
+    @Column(columnDefinition = "longtext")
+    private String annotations;
+
+    @Column(columnDefinition = "longtext")
+    private String labels;
+
+    @Column
+    private Long display;
+
     public AppDetail detail() {
         AppDetail detail = JSONObject.parseObject(this.detail, AppDetail.class);
         return detail == null ? new AppDetail() : detail;
+    }
+
+    public JSONObject annotations() {
+        return JSONObject.parseObject(annotations);
+    }
+
+    public JSONObject labels() {
+        return JSONObject.parseObject(labels);
     }
 
     public JSONObject toJsonObject() {

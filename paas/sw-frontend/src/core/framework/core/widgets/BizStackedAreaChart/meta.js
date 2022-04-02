@@ -13,6 +13,7 @@ export default {
       "logos": {
         "large": "",
         "small": require("./icon.svg"),
+        "fontClass":"BizStackedAreaChart"
       },
       "build": {
         "time": "",

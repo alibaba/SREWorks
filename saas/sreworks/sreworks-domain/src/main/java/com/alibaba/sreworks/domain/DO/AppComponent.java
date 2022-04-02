@@ -7,11 +7,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.sreworks.common.util.YamlUtil;
+import com.alibaba.sreworks.domain.DTO.AppComponentAppPackageDetail;
 import com.alibaba.sreworks.domain.DTO.AppComponentDetail;
+import com.alibaba.sreworks.domain.DTO.AppComponentHelmDetail;
 import com.alibaba.sreworks.domain.DTO.AppComponentRepoDetail;
+import com.alibaba.sreworks.domain.DTO.AppComponentType;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -51,13 +52,16 @@ public class AppComponent {
     private Long appId;
 
     @Column
+    private String type;
+
+    @Column
     private String name;
 
     @Column
     private Long exId;
 
     @Column(columnDefinition = "text")
-    private String repoDetail;
+    private String typeDetail;
 
     @Column(columnDefinition = "text")
     private String detail;
@@ -65,9 +69,24 @@ public class AppComponent {
     @Column(columnDefinition = "text")
     private String description;
 
+    public AppComponentType type() {
+        return AppComponentType.valueOf(type);
+    }
+
     public AppComponentRepoDetail repoDetail() {
-        AppComponentRepoDetail repoDetail = JSONObject.parseObject(this.repoDetail, AppComponentRepoDetail.class);
+        AppComponentRepoDetail repoDetail = JSONObject.parseObject(this.typeDetail, AppComponentRepoDetail.class);
         return repoDetail == null ? new AppComponentRepoDetail() : repoDetail;
+    }
+
+    public AppComponentHelmDetail helmDetail() {
+        AppComponentHelmDetail helmDetail = JSONObject.parseObject(this.typeDetail, AppComponentHelmDetail.class);
+        return helmDetail == null ? new AppComponentHelmDetail() : helmDetail;
+    }
+
+    public AppComponentAppPackageDetail appPackageDetail() {
+        AppComponentAppPackageDetail appPackageDetail = JSONObject.parseObject(
+            this.typeDetail, AppComponentAppPackageDetail.class);
+        return appPackageDetail == null ? new AppComponentAppPackageDetail() : appPackageDetail;
     }
 
     public AppComponentDetail detail() {

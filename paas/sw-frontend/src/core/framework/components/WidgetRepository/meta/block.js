@@ -16,7 +16,8 @@ export default  {
         "links": [],
         "logos": {
             "large": "",
-            "small": require('./icons/block.svg')
+            "small": require('./icons/block.svg'),
+            "fontClass":'BLOCK'
         },
         "build": {
             "time": "",

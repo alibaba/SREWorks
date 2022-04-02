@@ -9,7 +9,7 @@ import com.alibaba.tesla.appmanager.kubernetes.KubernetesClientFactory;
 import com.alibaba.tesla.appmanager.spring.util.SpringBeanUtil;
 import com.alibaba.tesla.appmanager.trait.BaseTrait;
 import com.google.common.collect.ImmutableMap;
-import io.fabric8.kubernetes.api.model.networking.v1beta1.Ingress;
+import io.fabric8.kubernetes.api.model.extensions.Ingress;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.dsl.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -50,12 +50,12 @@ public class MultipleClusterIngressTrait extends BaseTrait {
 
         // 应用到集群
         try {
-            Resource<Ingress> resource = client.network().v1beta1().ingresses()
+            Resource<Ingress> resource = client.extensions().ingresses()
                     .load(new ByteArrayInputStream(cr.toJSONString().getBytes(StandardCharsets.UTF_8)));
-            Ingress current = client.network().v1beta1().ingresses().inNamespace(namespace).withName(name).get();
+            Ingress current = client.extensions().ingresses().inNamespace(namespace).withName(name).get();
             // 如果存在的话，先删除再创建
             if (current != null) {
-                client.network().v1beta1().ingresses().inNamespace(namespace).withName(name).delete();
+                client.extensions().ingresses().inNamespace(namespace).withName(name).delete();
             }
             try {
                 Thread.sleep(5000);

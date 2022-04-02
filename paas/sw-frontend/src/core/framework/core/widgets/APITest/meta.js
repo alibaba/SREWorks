@@ -6,13 +6,14 @@ export default {
     "info": {
         "author": {
             "name": "",
-            "url": "",
+            "url": ""
         },
         "description": "智能服务测试",
         "links": [],
         "logos": {
             "large": "",
             "small": require("./icon.svg"),
+            "fontClass":"BuiltInBusiness"
         },
         "build": {
             "time": "",

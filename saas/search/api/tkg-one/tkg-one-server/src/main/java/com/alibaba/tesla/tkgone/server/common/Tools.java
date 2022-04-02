@@ -117,7 +117,6 @@ public final class Tools {
     }
 
     public static String processTemplateString(String template, Map<String, Object> params) {
-
         if (template == null) {
             template = "";
         }
@@ -138,7 +137,8 @@ public final class Tools {
             m.appendReplacement(sb, Matcher.quoteReplacement(valueStr));
         }
         m.appendTail(sb);
-        return StringFun.runWithOutException(sb.toString());
+        String result = StringFun.runWithOutException(sb.toString());
+        return result.replaceAll("<<<<<<", "(").replaceAll(">>>>>>", ")");
     }
 
     public static String timeStamp2Date(String seconds, String format) {

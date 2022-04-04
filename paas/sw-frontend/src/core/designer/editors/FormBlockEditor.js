@@ -97,7 +97,6 @@ export default class FormBlockEditor extends PureComponent {
     constructor(props) {
         super(props);
         let { editorData } = props;
-        console.log("form editor data-------->", editorData);
         let parameterDefiner = editorData.parameterDefiner || { bindingParamTree: [], paramMapping: [] };
         parameterDefiner.extConfig = {
             tabTitle: "表单设计",
@@ -166,7 +165,6 @@ export default class FormBlockEditor extends PureComponent {
             };
         }
         let parameterDefiner = this.editor.getParameterDefiner();
-        //console.log("parameterDefiner------>",parameterDefiner);
         let { extConfig, ...parameterDefinerJson } = parameterDefiner;
         return {
             ...editorData,

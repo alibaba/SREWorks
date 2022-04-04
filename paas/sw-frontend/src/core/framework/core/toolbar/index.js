@@ -23,7 +23,7 @@ class ToolBarAdapter extends Component {
         const { widgetModel, widgetConfig, configIndex = "toolbar", hasLeftTab = false } = props;
         const { nodeModel } = widgetModel;
         let { toolbar } = widgetConfig, toolbarData = null, docs = null, actionBar = null;
-        let { filter = '', type, actionList = [], docList = [], customRender } = widgetConfig[configIndex] || {};
+        let { filter = '', type,label='', actionList = [], docList = [], customRender } = widgetConfig[configIndex] || {};
         console.log(widgetConfig[configIndex], 'filter==')
         let vActions = [], hActions = [];
         if (docList.length > 0) {
@@ -59,11 +59,11 @@ class ToolBarAdapter extends Component {
                     ...hActions,
                     {
                         "btnType": "",
-                        "label": "更多",
+                        "label": label || "更多",
                         "children": [
                             ...vActions
                         ],
-                        "icon": "more"
+                        "icon": ""
                     },
                 ]
             }
@@ -74,11 +74,11 @@ class ToolBarAdapter extends Component {
                 actions: [
                     {
                         "btnType": "",
-                        "label": "操作",
+                        "label": label || "操作",
                         "children": [
                             ...vActions
                         ],
-                        "icon": "down"
+                        "icon": ""
                     },
                 ]
             }

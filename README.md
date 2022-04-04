@@ -1,13 +1,13 @@
 # SREWorks
 
 [![GitHub](https://img.shields.io/github/license/alibaba/sreworks)](./LICENSE)
+[![GitHub](https://img.shields.io/github/repo-size/alibaba/sreworks)](#)
 
 中文 
 
 # SREWorks 介绍
 
-
-阿里巴巴云原生大数据运维平台 SREWorks，沉淀了团队近10年经过内部业务锤炼的 SRE 工程实践，秉承“数据化、智能化”运维思想，帮助运维行业更多的从业者采用“数智”思想做好高效运维。
+阿里巴巴大数据SRE团队云原生运维平台 SREWorks，沉淀了团队近10年经过内部业务锤炼的 SRE 工程实践，秉承“数据化、智能化”运维思想，帮助运维行业更多的从业者采用“数智”思想做好高效运维。
 
 
 ## SREWorks 是什么？

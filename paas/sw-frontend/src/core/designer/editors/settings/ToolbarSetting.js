@@ -22,7 +22,7 @@ class ToolbarSetting extends React.Component {
         super(props);
         let { widgetModel, config, noFilter, noHelp, configIndex = "toolbar" } = props;
         let paramsDef = [], toolbar = config[configIndex];
-        let { filter, type = "button", actionList = [], docList = [], customRender } = toolbar || {}, filterBlocks = [], actionBlocks = [];
+        let { filter, type = "button",label="操作", actionList = [], docList = [], customRender } = toolbar || {}, filterBlocks = [], actionBlocks = [];
         console.log(widgetModel.nodeModel.getBlocks(), 'widgetModel.nodeModel.getBlocks()');
         widgetModel.nodeModel.getBlocks().forEach(block => {
             console.log(block, 'block=============> action 区块列表')
@@ -58,6 +58,12 @@ class ToolbarSetting extends React.Component {
                     {
                         type: FormElementType.RADIO, name: 'type', initValue: type, required: false, label: "展示样式",
                         optionValues: [{ value: 'button', label: '按钮' }, { value: "link", label: '超链' }],
+                        layout: {
+                            span: 24
+                        }
+                    },
+                    {
+                        type: FormElementType.INPUT, name: 'label', initValue: label, required: false, label: "展示标签",
                         layout: {
                             span: 24
                         }

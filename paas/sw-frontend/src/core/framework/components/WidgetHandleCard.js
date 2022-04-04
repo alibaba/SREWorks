@@ -31,6 +31,7 @@ import widgetLoader from '../core/WidgetLoader';
 import { getLegacyWidgetMeta } from './WidgetRepository';
 import Constants from '../model/Constants';
 import uuidv4 from 'uuid/v4';
+import Bus from '../../../utils/eventBus';
 
 import './index.less';
 
@@ -56,7 +57,15 @@ export default class WidgetHandleCard extends React.Component {
         let { widgetModel } = this.props;
         this.loadWidgetMeta(widgetModel);
     }
-
+    componentDidMount() {
+        Bus.on('closeOtherDrawer',(flag)=> {
+           if(!flag) {
+               this.setState({
+                   visible: flag
+               });
+           } 
+        })
+    }
     loadWidgetMeta(widgetModel) {
         if (widgetModel) {
             return widgetLoader.getWidgetMeta(widgetModel).then(widgetMeta => {
@@ -79,6 +88,7 @@ export default class WidgetHandleCard extends React.Component {
     };
 
     show = () => {
+        Bus.emit('closeOtherDrawer',false);
         this.setState({
             visible: !this.state.visible,
         });
@@ -104,7 +114,6 @@ export default class WidgetHandleCard extends React.Component {
 
 
     editorChange = (json) => {
-        console.log("editorChange------>", json);
         this.copyWidgetJson = json;
     };
 
@@ -180,7 +189,6 @@ export default class WidgetHandleCard extends React.Component {
     render() {
         let { visible, selectKey, prevKey, widgetModel, prevModel, widgetMeta } = this.state, { cardHeight, exclude, include, filterType } = this.props;
         let editTitle = "";
-        console.log(widgetModel,'handleCard-model')
         if (widgetModel && widgetModel.type === 'CustomComp') {
             editTitle = widgetModel.name || widgetModel.compName;
         } else {

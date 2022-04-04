@@ -77,7 +77,6 @@ export default class Workbench extends React.Component {
     };
 
     handleSaveItem=(item)=>{
-        console.log("save json form ------->",item);
         let {nodeModel}=this.state;
         this.setState({
             contentLoading:true,
@@ -209,6 +208,7 @@ export default class Workbench extends React.Component {
                                          style={{height: stageHeight, zIndex: 100, marginLeft: 2}}>
                                     {editorType === "MAIN_PAGE" &&
                                     <PageEditor {...otherProps}
+                                                contentLoading={contentLoading}
                                                 height={stageHeight}
                                                 nodeData={nodeData}
                                                 routeData={nodeData}

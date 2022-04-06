@@ -34,6 +34,7 @@ core:
 saas:
   init: true
   stageId: prod
+  onlyBase: false
   list:
   - cluster
   - app
@@ -49,6 +50,14 @@ saas:
   - help
   - upload
   - demoapp
+  baseList:
+  - cluster
+  - app
+  - team
+  - system
+  - help
+  - upload
+  - demoapp 
   dataops:
     dbPassword: cb56b5is5e21_c359b42223 
   grafana:

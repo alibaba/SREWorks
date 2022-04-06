@@ -47,7 +47,14 @@ spec:
 {{- $swcliBuiltinPackage := include "images.swcliBuiltinPackage" . -}}
 
 {{ if .Values.saas.init }}
-{{ range .Values.saas.list }}
+
+{{ $saasList := .Values.saas.list }}
+
+{{ if .Values.saas.onlyBase }}
+{{ $saasList = .Values.saas.baseList }}
+{{ end }}
+
+{{ range $saasList }}
 apiVersion: batch/v1
 kind: Job
 metadata: 

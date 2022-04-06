@@ -17,15 +17,6 @@
 {{- end -}}
 
 
-{{- define "domain.base.ingress" -}}
-{{- $domain := (split "://" .Values.appmanager.home.url)._1  -}}
-{{- (splitn "." 2 $domain)._1 -}}
-{{- end -}}
-
-{{- define "domain.base.ingress.networkProtocol" -}}
-{{- (split "://" .Values.appmanager.home.url)._0 | quote -}}
-{{- end -}}
-
 {{- define "nodePort" -}}
 {{- if eq .Values.global.accessMode "ingress" -}}
 "80"

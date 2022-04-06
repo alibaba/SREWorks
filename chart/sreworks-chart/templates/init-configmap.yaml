@@ -41,9 +41,6 @@ data:
 
   SAAS_STAGE_ID: {{ .Values.saas.stageId }}
   
-  DOMAIN_BASE_INGRESS: {{ template "domain.base.ingress" . }}
-  DOMAIN_NETWORK_PROTOCOL: {{ template "domain.base.ingress.networkProtocol" . }}
-
   PLATFORM_NAME: {{ .Values.platformName }}
   PLATFORM_LOGO: {{ .Values.platformLogo }}
 

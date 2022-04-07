@@ -13,7 +13,7 @@ export default {
         "logos": {
             "large": "",
             "small": require("./icon.svg"),
-            "fontClass":"BuiltInBusiness"
+            "fontClass": "BuiltInBusiness"
         },
         "build": {
             "time": "",
@@ -30,21 +30,27 @@ export default {
     "latestVersion": "1.0",
     "configSchema": {
         "defaults": {
-            "type": "OPS_DESKTOP",
+            "type": "Desktop",
             "config": {
-                "businessConfig": {
-                },
+                "searchConfig": true
             },
         },
         "schema": {
             "type": "object",
             "properties": {
-                "businessConfig": {
-                    "description": "业务字段配置",
-                    "title": "业务字段配置",
+                "searchConfig": {
+                    "description": "搜索框可根据业务需求配置是否展示",
+                    "title": "搜索框",
                     "required": false,
                     "type": "string",
-                    "x-component": "JSON"
+                    "x-component": "Radio",
+                    "initValue":true,
+                    "x-component-props": {
+                        "options": [
+                            { "value": false, "label": "无" },
+                            { "value": true, "label": "有" }
+                        ],
+                    },
                 }
             },
         },

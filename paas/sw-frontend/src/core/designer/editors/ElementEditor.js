@@ -152,7 +152,6 @@ export default class ElementEditor extends React.Component {
     }
     render() {
         let { widgetModel, widgetMeta, isJsonEdit } = this.state;
-        console.log(this.isAction, this.isFilter, this.isBlock, widgetMeta, isJsonEdit, widgetMeta, 'jlk')
         let { configWrapper, customList } = this.state;
         let CommonTabContent = null, tabContentStyle = { height: 'calc(45vh - 10px)', overflowY: "auto", overflowX: "none" };
         // if(this.isFilter){

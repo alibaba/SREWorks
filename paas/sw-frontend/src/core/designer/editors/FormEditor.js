@@ -112,9 +112,9 @@ class FormEditor extends PureComponent {
        })
        console.log(dragIndex,hoverIndex,parameters,'sortOrder');
        onChange && onChange(parameters); 
-    //    this.setState({
-    //     parameters: parameters
-    //    })
+       this.setState({
+        parameters: parameters
+       })
     }
     render() {
         let { parameters, activeKey } = this.state, panes = [], { title, tabPosition } = this.props;

@@ -1,11 +1,13 @@
 package com.alibaba.sreworks.flyadmin.server.services;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.common.util.AppmanagerServiceUtil;
 import com.alibaba.sreworks.common.util.JsonUtil;
 import com.alibaba.sreworks.common.util.Requests;
 import com.alibaba.sreworks.domain.DO.App;
 import com.alibaba.tesla.web.constant.HttpHeaderNames;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import static com.alibaba.sreworks.domain.utils.AppUtil.appmanagerId;
@@ -13,6 +15,7 @@ import static com.alibaba.sreworks.domain.utils.AppUtil.appmanagerId;
 /**
  * @author jinghua.yjh
  */
+@Slf4j
 @Service
 public class FlyadminAppmanagerAppService {
 
@@ -35,4 +38,13 @@ public class FlyadminAppmanagerAppService {
             .delete().isSuccessful();
     }
 
+    public JSONObject getByAppmanagerId(String appmanId) throws Exception {
+        String url = AppmanagerServiceUtil.getEndpoint() + "/apps/" + appmanId;
+        log.info("FlyadminAppmanagerAppService.getByAppmanagerId url: {}", url);
+        return new Requests(url)
+                .get()
+                .headers(HttpHeaderNames.X_EMPL_ID, "")
+                .get().isSuccessful().getJSONObject()
+                .getJSONObject("data");
+    }
 }

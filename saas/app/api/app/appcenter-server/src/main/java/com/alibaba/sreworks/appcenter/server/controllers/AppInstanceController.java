@@ -17,12 +17,14 @@ import com.alibaba.sreworks.common.util.RegularUtil;
 import com.alibaba.sreworks.common.util.StringUtil;
 import com.alibaba.sreworks.common.util.YamlUtil;
 import com.alibaba.sreworks.domain.DO.AppInstance;
+import com.alibaba.sreworks.domain.DTO.AppComponentInstanceDetail;
 import com.alibaba.sreworks.domain.repository.AppInstanceRepository;
 import com.alibaba.sreworks.domain.repository.AppRepository;
 import com.alibaba.sreworks.domain.repository.ClusterResourceRepository;
 import com.alibaba.sreworks.domain.repository.ClusterRepository;
 import com.alibaba.sreworks.domain.utils.AppUtil;
 import com.alibaba.sreworks.flyadmin.server.services.FlyadminAppmanagerAppInstanceService;
+import com.alibaba.sreworks.flyadmin.server.services.FlyadminAppmanagerAppService;
 import com.alibaba.sreworks.flyadmin.server.services.FlyadminAuthproxyUserService;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.alibaba.tesla.web.controller.BaseController;
@@ -57,6 +59,9 @@ public class AppInstanceController extends BaseController {
 
     @Autowired
     FlyadminAppmanagerAppInstanceService flyadminAppmanagerAppInstanceService;
+
+    @Autowired
+    FlyadminAppmanagerAppService flyadminAppmanagerAppService;
 
     //@Autowired
     //AppUpdateService appUpdateService;
@@ -225,6 +230,19 @@ public class AppInstanceController extends BaseController {
         RegularUtil.underscoreToCamel(ret);
         RegularUtil.gmt2Date(ret);
         return buildSucceedResult(ret);
+    }
+
+    @ApiOperation(value = "getByInstanceId")
+    @RequestMapping(value = "getByInstanceId", method = RequestMethod.GET)
+    public TeslaBaseResult get(String instanceId) throws Exception {
+        JSONObject instanceInfo = flyadminAppmanagerAppInstanceService.get(instanceId);
+        try {
+            JSONObject dataopsInfo = flyadminAppmanagerAppService.getByAppmanagerId("dataops");
+            instanceInfo.put("dataopsInfo", dataopsInfo);
+        } catch (Exception e) {
+            instanceInfo.put("dataopsInfo", null);
+        }
+        return buildSucceedResult(instanceInfo);
     }
 
     @ApiOperation(value = "getResource")

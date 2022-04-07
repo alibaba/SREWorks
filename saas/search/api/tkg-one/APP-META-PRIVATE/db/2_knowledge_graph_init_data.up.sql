@@ -12,9 +12,9 @@ INSERT INTO `config` VALUES
 (2,'2019-02-28 01:27:56','2019-02-28 01:27:56','__category','__nrType','__nrId','numberOfShards','','1'),
 (3,'2019-02-28 01:27:56','2019-02-28 01:27:56','__category','__nrType','__nrId','numberOfReplicas','','0'),
 
-(4,'2019-02-28 01:27:56','2019-02-28 01:27:56','__category','.relation','__nrId','elasticsearchIndexAnalysis','','{"analyzer": {},"tokenizer": {}}'),
-(5,'2019-02-28 01:27:56','2019-02-28 01:27:56','__category','.relation','__nrId','elasticsearchIndexExAnalyzers','','[]'),
-(6,'2019-02-28 01:27:56','2019-02-28 01:27:56','__category','.relation','__nrId','elasticsearchProperties','','{"v": {"type": "double"},"time": {"type": "long"}}'),
+-- (4,'2019-02-28 01:27:56','2019-02-28 01:27:56','__category','.relation','__nrId','elasticsearchIndexAnalysis','','{"analyzer": {},"tokenizer": {}}'),
+-- (5,'2019-02-28 01:27:56','2019-02-28 01:27:56','__category','.relation','__nrId','elasticsearchIndexExAnalyzers','','[]'),
+-- (6,'2019-02-28 01:27:56','2019-02-28 01:27:56','__category','.relation','__nrId','elasticsearchProperties','','{"v": {"type": "double"},"time": {"type": "long"}}'),
 
 (7,'2019-02-28 01:19:27','2019-02-28 01:19:36','__category','tesla_base_common_web_component_config','__nrId','adjustJsonObjectToEs','','pool'),
 (8, '2019-02-28 01:19:27','2019-02-28 01:19:36','__category','standard_app','__nrId','adjustJsonObjectToEs','','pool'),
@@ -84,7 +84,7 @@ INSERT INTO `config` (`id`,`gmt_create`,`gmt_modified`,`category`,`nr_type`,`nr_
 INSERT INTO `config` (`id`,`gmt_create`,`gmt_modified`,`category`,`nr_type`,`nr_id`,`name`,`modifier`,`content`) VALUES (14002,'2020-03-24 22:46:53','2020-04-03 00:57:40','sreworks-search','sreworks_productops_node','__nrId','categoryTypeIdUrlKey','sreworks','etlJsonGet(${config}, url)');
 INSERT INTO `config` (`id`,`gmt_create`,`gmt_modified`,`category`,`nr_type`,`nr_id`,`name`,`modifier`,`content`) VALUES (14003,'2020-03-24 22:46:53','2020-04-03 00:57:40','sreworks-search','sreworks_cluster','__nrId','categoryTypeIdUrlKey','sreworks','cluster/single_cluster/summary?clusterId=${__id}');
 INSERT INTO `config` (`id`,`gmt_create`,`gmt_modified`,`category`,`nr_type`,`nr_id`,`name`,`modifier`,`content`) VALUES (14004,'2020-03-24 22:46:53','2020-04-03 00:57:40','sreworks-search','sreworks_team','__nrId','categoryTypeIdUrlKey','sreworks','team/single_team/summary?teamId=${__id}');
-INSERT INTO `config` (`id`,`gmt_create`,`gmt_modified`,`category`,`nr_type`,`nr_id`,`name`,`modifier`,`content`) VALUES (14005,'2020-03-24 22:46:53','2020-04-03 00:57:40','sreworks-search','sreworks_app','__nrId','categoryTypeIdUrlKey','sreworks','app/single-app-instance/summary?appInstanceId=${__id}');
+INSERT INTO `config` (`id`,`gmt_create`,`gmt_modified`,`category`,`nr_type`,`nr_id`,`name`,`modifier`,`content`) VALUES (14005,'2020-03-24 22:46:53','2020-04-03 00:57:40','sreworks-search','sreworks_app','__nrId','categoryTypeIdUrlKey','sreworks','app/app-instance-detail/summary?appInstanceId=${__id}');
 INSERT INTO `config` (`id`,`gmt_create`,`gmt_modified`,`category`,`nr_type`,`nr_id`,`name`,`modifier`,`content`) VALUES (14006,'2020-03-24 22:46:53','2020-04-03 00:57:40','sreworks-search','sreworks_metric','__nrId','categoryTypeIdUrlKey','sreworks','app/single-app-tmpl/indicator?appId=etlJsonGet(${labels}, app_id)&appName=etlJsonGet(${labels}, app_name)');
 INSERT INTO `config` (`id`,`gmt_create`,`gmt_modified`,`category`,`nr_type`,`nr_id`,`name`,`modifier`,`content`) VALUES (14007,'2020-03-24 22:46:53','2020-04-03 00:57:40','sreworks-search','sreworks_event','__nrId','categoryTypeIdUrlKey','sreworks','app/single-app-tmpl/health?appId=etlReplace(${app_id}, sreworks, )&appName=${app_name}');
 

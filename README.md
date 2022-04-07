@@ -32,7 +32,7 @@ SREWorks 作为阿里云大数据SRE团队对SRE理念的工程实践，专注�
 ## 1. 前提条件
 
 - Kubernetes 的版本需要大于等于 **1.20**
-- 硬件：由于内置了Elasticsearch的开源版默认亲和性原因，建议至少3台节点（配置为4 核 CPU，16G 内存），存储需要300G以上空间。
+- 硬件：1台节点(配置为4 核 CPU，16G 内存)，存储需要300G以上空间
 
 
 ## 2. 安装部署
@@ -79,13 +79,15 @@ helm install sreworks ./ \
 git clone http://github.com/alibaba/sreworks.git sreworks
 cd sreworks/chart/sreworks-chart
 
-# 安装SREWorks
+# 安装SREWorks 
+# 替换NODE_IP为某个节点的浏览器可访问IP
+# 替换STORAGE_CLASS为可用的存储集
 helm install sreworks ./ \
     --kubeconfig="****" \
     --create-namespace --namespace sreworks \
     --set global.accessMode="nodePort" \
     --set appmanager.home.url="http://NODE_IP:30767" \
-    --set global.storageClass="alicloud-disk-available"
+    --set global.storageClass="STORAGE_CLASS"
 ```
 
 ## 3. 验证安装
@@ -127,6 +129,7 @@ git clone http://github.com/alibaba/sreworks.git sreworks
 cd sreworks/chart/sreworks-chart
 
 # 安装SREWorks
+# 替换NODE_IP为某个节点的浏览器可访问IP
 helm install sreworks ./ \
     --create-namespace --namespace sreworks \
     --set global.accessMode="nodePort" \

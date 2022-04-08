@@ -62,7 +62,6 @@ export default class DraggableTabs extends React.Component {
 
         newOrder.splice(dragIndex, 1);
         newOrder.splice(hoverIndex, 0, dragKey);
-        console.log(dragIndex,hoverIndex,this.state.order,'key-drag-key')
         this.setState({
             order: newOrder,
         },()=> {

@@ -167,7 +167,6 @@ export default class ElementEditor extends React.Component {
         let editTitle = ""
         if (widgetModel.type === 'CustomComp') {
             editTitle = widgetModel.compName || widgetModel.name;
-            console.log(customList, widgetModel, 'widgetMeta-customComp')
             if (widgetMeta && widgetModel.name) {
                 widgetMeta['configSchema']['schema']['properties']['compName']['initValue'] = widgetModel.name;
                 widgetMeta['configSchema']['schema']['properties']['compDescribtion']['initValue'] = (widgetModel.info && widgetModel.info.description) || ''

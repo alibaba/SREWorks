@@ -269,7 +269,6 @@ export default class Parameter {
         if (loader) {
             return loader.then(result => {
                 //最大程度的兼容老接口
-                console.log(result, 'result-data-initValues')
                 let initValue = result.initValue || result.defaultValue || '';
                 //存在数据转换
                 if (transform) {

@@ -110,7 +110,7 @@ class FormEditor extends PureComponent {
             item.order = dragIndex
            }
        })
-       console.log(dragIndex,hoverIndex,parameters,'sortOrder');
+       parameters = this.sortParameters(parameters);
        onChange && onChange(parameters); 
        this.setState({
         parameters: parameters
@@ -128,28 +128,6 @@ class FormEditor extends PureComponent {
         //替换为可拖拽tab
         return (
             <div className="draggable-form-item">
-                {/* <Tabs activeKey={activeKey}
-                      tabPosition={tabPosition}
-                      hideAdd
-                      animated
-                      renderTabBar={(props, DefaultTabBar)=>
-                      {
-                          return (
-                              <div>
-                                  {title&&<h4  style={{float:"left",marginRight:16,marginTop:8}}>{title}</h4>}
-                                  <DefaultTabBar {...props}/>
-                              </div>
-                          )
-                      }
-                      }
-                      tabBarExtraContent={<div style={{display:"flex"}}><a onClick={()=>this.onEdit(null,'add')} style={{marginRight:12,fontSize:16}}><PlusOutlined /><span style={{fontSize:14}}>添加</span></a></div>}
-                      type="editable-card"
-                      onEdit={this.onEdit}
-                      tabBarGutter={2}
-                      onChange={this.onTabChange}
-                >
-                    {panes}
-                </Tabs> */}
                 <DraggableTabs
                     activeKey={activeKey}
                     tabPosition={tabPosition}

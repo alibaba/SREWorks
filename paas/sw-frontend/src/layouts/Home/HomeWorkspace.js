@@ -33,7 +33,6 @@ export default class HomeWorkspace extends React.Component {
     }
 
     handleNext = (from, to) => {
-        console.log(to);
         const { dispatch } = this.props;
         dispatch({ type: "home/setDesktopIndex", desktopIndex: to });
     };

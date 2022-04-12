@@ -46,10 +46,12 @@
     "rc-queue-anim": "^1.2.2",
     "rc-scroll-anim": "2.7.4",
     "rc-tween-one": "^1.7.3",
-    "react": "16.13.1",
+    "react": "16.14.0",
     "react-ace": "7.0.5",
     "react-color": "^2.19.3",
-    "react-dom": "16.13.1",
+    "react-dnd": "^16.0.0",
+    "react-dnd-html5-backend": "^16.0.0",
+    "react-dom": "16.14.0",
     "react-grid-layout": "1.2.4",
     "react-highlight": "^0.10.0",
     "react-highlight-words": "^0.15.1",
@@ -192,7 +194,7 @@
   },
   "homepage": "./",
   "resolutions": {
-    "react": "16.13.1",
-    "react-dom": "16.13.1"
+    "react": "16.14.0",
+    "react-dom": "16.14.0"
   }
 }

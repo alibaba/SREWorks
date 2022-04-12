@@ -10,6 +10,7 @@ public class Example {
             .addHeader("x-auth-app", "{{ app }}")       // 用自己的鉴权，替换x-auth-app字段。
             .addHeader("x-auth-key", "{{ key }}")       // 用自己的鉴权，替换x-auth-key字段。
             .addHeader("x-auth-user", "{{ user }}")     // 用自己的鉴权，替换x-auth-user字段。
+            .addHeader("x-biz-app", "aiops,sreworks,prod")    
             .addHeader("x-auth-passwd", "{{ passwd }}") // 一天有效，请用自己的鉴权，替换x-auth-passwd字段！
             .post(RequestBody.create(MediaType.parse("application/json"), body))
             .build();

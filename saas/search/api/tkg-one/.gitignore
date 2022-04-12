@@ -34,3 +34,4 @@ test.sh
 *test.properties
 *dev.properties
 *pre.properties
+*.log

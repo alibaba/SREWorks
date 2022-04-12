@@ -42,7 +42,7 @@ export default class Parameter {
         //参数模型补充,老数据类型是string,新数据类型为json对象,因此需要做个兼容
         this.defModel = ((typeof (paramData.defModel) === 'string') ? JSON.parse(paramData.defModel) : paramData.defModel) || {};
         //参数次序
-        this.order = paramData.order || '';
+        this.order = paramData.order || 0;
         //参数初始值和可选值URL定义
         this.initApi = paramData.initApi || '';
         //公共配置属性在此解析
@@ -82,7 +82,7 @@ export default class Parameter {
         }
         paramMetaDef.push({ type: FormElementType.SELECT_TAG, name: 'validValue', initValue: this.validValue, required: false, label: localeHelper.get('paramMap.effectiveValue', "有效值"), inputTip: localeHelper.get('paramMap.selectMsg', '定义单选/多选形式的可选值,可直接输入选项') });
         paramMetaDef.push({ type: FormElementType.INPUT, name: 'toolTip', initValue: this.toolTip, required: false, label: localeHelper.get('paramMap.paramHint', "参数提示") });
-        paramMetaDef.push({ type: FormElementType.INPUT, name: 'order', initValue: this.order, required: false, label: localeHelper.get('paramMap.paramSerial', "参数序号"), validateType: "number", inputTip: localeHelper.get('paramMap.paramSerialMsg', "数字类型,定义此参数在表单中的顺序位置,不存在时按照tab页顺序") });
+        paramMetaDef.push({ type: FormElementType.DISABLED_INPUT, name: 'order', initValue: this.order, required: false, label: localeHelper.get('paramMap.paramSerial', "参数序号"), validateType: "number", inputTip: localeHelper.get('paramMap.paramSerialMsg', "数字类型,定义此参数在表单中的顺序位置,不存在时按照tab页顺序") });
         paramMetaDef.push({ type: FormElementType.INPUT, name: 'validateReg', initValue: this.validateReg, required: false, label: "校验正则", inputTip: '合法值的正则表达式' });
         paramMetaDef.push({ type: FormElementType.INPUT, name: 'initApi', initValue: this.initApi, required: false, label: "参数接口", inputTip: '定义参数的初始值和下拉值的接口地址,返回格式{initValue:xxx,options:[...]}' });
         paramMetaDef.push({ type: FormElementType.INPUT, name: 'visibleExp', initValue: this.visibleExp, required: false, label: "可见表达式", inputTip: "直接用formValues.参数名来引用表单其他参数值" });
@@ -269,7 +269,6 @@ export default class Parameter {
         if (loader) {
             return loader.then(result => {
                 //最大程度的兼容老接口
-                console.log(result, 'result-data-initValues')
                 let initValue = result.initValue || result.defaultValue || '';
                 //存在数据转换
                 if (transform) {

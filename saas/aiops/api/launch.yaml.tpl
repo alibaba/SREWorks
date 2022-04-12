@@ -58,13 +58,15 @@ spec:
           value: local
         - name: Global.DB_HOST
           value: '{{Global.STAGE_ID}}-dataops-mysql.sreworks-dataops'
-        - name: Gloabal.ACCOUNT_SUPER_CLIENT_ID
+        - name: Global.ACCOUNT_SUPER_CLIENT_ID
           value: "${ACCOUNT_SUPER_CLIENT_ID}"
-        - name: Gloabal.ACCOUNT_SUPER_CLIENT_SECRET
+        - name: Global.ACCOUNT_SUPER_CLIENT_SECRET
           value: "${ACCOUNT_SUPER_CLIENT_SECRET}"
-        - name: Gloabal.ACCOUNT_SUPER_ACCESS_ID
-          value: "test-access-id"
-        - name: Gloabal.ACCOUNT_SUPER_SECRET_KEY
+        - name: Global.ACCOUNT_SUPER_ACCESS_ID
+          value: "admin"
+        - name: Global.ACCOUNT_SUPER_SECRET_KEY
+          value: "test-super-secret-key"
+        - name: Global.ACCOUNT_SUPER_ACCESS_KEY
           value: "test-super-secret-key"
 
 

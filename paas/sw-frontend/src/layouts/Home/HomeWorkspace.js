@@ -33,7 +33,6 @@ export default class HomeWorkspace extends React.Component {
     }
 
     handleNext = (from, to) => {
-        console.log(to);
         const { dispatch } = this.props;
         dispatch({ type: "home/setDesktopIndex", desktopIndex: to });
     };
@@ -47,6 +46,8 @@ export default class HomeWorkspace extends React.Component {
 
     renderWorkspace = () => {
         let { home } = this.props;
+        let {widgetConfig} = this.props;
+        let {searchConfig} = widgetConfig;
         const { workspaces, desktopIndex } = home;
         const { currentUser } = this.props.global;
         workspaces.forEach((item,index )=> {
@@ -58,7 +59,7 @@ export default class HomeWorkspace extends React.Component {
             return (
                 <div key={workspace.type} style={{ width: '100%', height: 'calc(95vh)' }}>
                     {
-                        workspace.hasSearch &&
+                        workspace.hasSearch && searchConfig &&
                         <div className="search-content">
                             <SRESearch teslaSearchPath={"gateway/v2/foundation/kg"}
                                 userEmpId={currentUser.empId}

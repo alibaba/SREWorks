@@ -63,7 +63,7 @@ spec:
         - name: Global.ACCOUNT_SUPER_CLIENT_SECRET
           value: "${ACCOUNT_SUPER_CLIENT_SECRET}"
         - name: Global.ACCOUNT_SUPER_ACCESS_ID
-          value: "test-access-id"
+          value: "admin"
         - name: Global.ACCOUNT_SUPER_SECRET_KEY
           value: "test-super-secret-key"
 

@@ -162,7 +162,7 @@ class SimpleTable extends React.Component  {
                 elementId:mode.elementId,
                 parameters:parameters,
             };
-            return httpClient.post("gateway/v2/common/productops/frontend/nodes/elements/data",params);
+            return Promise.resolve([]);
         }else{
             let apiString=JSON.stringify(api);
             if(apiString.indexOf("$")>=0){
@@ -497,7 +497,7 @@ class SimpleTable extends React.Component  {
                         />
                         : <PagingTable key={tableKey}
                                 ref={r => this.paging_table = r}
-                                dataUrl={apiConf&&apiConf.url?apiConf.url:properties.apiEndpoint+"gateway/v2/common/productops/frontend/nodes/elements/data"}
+                                dataUrl={apiConf&&apiConf.url?apiConf.url:""}
                                 params={tableParams}
                                 columns={columns}
                                 data={data}

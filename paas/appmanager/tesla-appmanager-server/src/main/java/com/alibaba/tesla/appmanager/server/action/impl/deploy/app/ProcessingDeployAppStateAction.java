@@ -196,13 +196,25 @@ public class ProcessingDeployAppStateAction implements DeployAppStateAction, App
             // 所有的入边全部连接到 mirror component 上
             addEdgeByDataInputs(providerMapping, edges, mirrorComponentId, componentDataInputs);
             String lastTraitId = null;
+            Set<String> traitUsedSet = new HashSet<>();
             for (int i = 0; i < component.getTraits().size(); i++) {
                 DeployAppSchema.SpecComponentTrait trait = component.getTraits().get(i);
                 String traitId = trait.getUniqueId(componentRevision);
+
+                // 重复 trait 检查
+                if (traitUsedSet.contains(traitId)) {
+                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                            String.format("duplicate trait %s", traitId));
+                }
+                traitUsedSet.add(traitId);
+
                 List<DeployAppSchema.DataInput> traitDataInputs = trait.getDataInputs();
                 addEdgeByDataInputs(providerMapping, edges, traitId, traitDataInputs);
+                // 如果 trait 没有设置 runtime，默认为 pre
+                if (StringUtils.isEmpty(trait.getRuntime())) {
+                    trait.setRuntime(TraitRuntimeConstant.RUNTIME_PRE);
+                }
                 // 每个 trait，直接加一条到当前 component 的边，根据 pre/post 调整边的方向
-                assert !StringUtils.isEmpty(trait.getRuntime());
                 switch (trait.getRuntime()) {
                     case TraitRuntimeConstant.RUNTIME_PRE:
                         // pre trait 需要 mirror -> trait -> self 建立两条边

@@ -67,7 +67,6 @@ class OamAction extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log(props, 'oamAction-props')
         let { actionData, userInfo, product, nodeParams, userParams, actionParams } = props, action = null;
         let actionInitParams = Object.assign({}, nodeParams, util.getUrlParams(), userParams, actionParams);
         //config中存在变量占位,需要进行替换

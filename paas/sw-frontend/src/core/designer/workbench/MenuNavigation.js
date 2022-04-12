@@ -462,7 +462,6 @@ class MenuNavigation extends React.Component {
         {loop(this.state.dirTree)}
       </DirectoryTree>;
     };
-    console.log(this.node,'this.node.config')
     return (
       <div style={this.props.style}>
         <Spin spinning={this.state.loading}>

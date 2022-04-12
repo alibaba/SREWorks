@@ -48,12 +48,6 @@ spec:
 
         ingress:
           enabled: false
-          annotations: {}
-          hosts:
-            - host: kibana.${DOMAIN_BASE_INGRESS}
-              paths:
-                - path: /
-          tls: []
 
         image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kibana
 

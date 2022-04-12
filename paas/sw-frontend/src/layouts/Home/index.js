@@ -90,7 +90,7 @@ class HomeLayout extends React.Component {
   };
 
   render() {
-    const { global, children, location, app, home } = this.props;
+    const { global, children, location, app, home,widgetConfig={} } = this.props;
     const { workspaces, desktopIndex, imgList } = home;
     let backgroundImgeUrl = ''
     if (workspaces[desktopIndex] && workspaces[desktopIndex].background) {
@@ -112,7 +112,7 @@ class HomeLayout extends React.Component {
           <HomeHeader />
           <Layout style={{ background: "transparent" }}>
             <Content className="workspace">
-              <Spin spinning={loading}>{!loading && <HomeWorkspace />}</Spin>
+              <Spin spinning={loading}>{!loading && <HomeWorkspace widgetConfig={widgetConfig}/>}</Spin>
               <WorkspaceSetting />
             </Content>
           </Layout>

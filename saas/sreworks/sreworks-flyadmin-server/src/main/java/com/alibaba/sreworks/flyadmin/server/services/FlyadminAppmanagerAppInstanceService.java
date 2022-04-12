@@ -35,4 +35,14 @@ public class FlyadminAppmanagerAppInstanceService {
             .getJSONObject("data");
     }
 
+    public JSONObject get(String appInstanceId) throws Exception {
+            String url = AppmanagerServiceUtil.getEndpoint() + "/realtime/app-instances/" + appInstanceId;
+            log.info("FlyadminAppmanagerAppInstanceService.get url: {}", url);
+            return new Requests(url)
+                    .get()
+                    .headers(HttpHeaderNames.X_EMPL_ID, "")
+                    .get().isSuccessful().getJSONObject()
+                    .getJSONObject("data");
+    }
+
 }

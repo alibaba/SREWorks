@@ -29,7 +29,6 @@ import FlyAdminDeployComDetail from "./flyadmin/flyadmin-deploy/deploy-component
 //flyadmin站点相关功能
 
 //运维桌面
-import OPSDesktop from "./Homepage";
 import CompositionWidget from "./CompositionWidget/CompositionWidget";
 import AsyncAntdAlert from "./AsyncAntdAlert";
 import APITest from '../../core/widgets/APITest';

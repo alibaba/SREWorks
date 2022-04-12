@@ -35,28 +35,33 @@ public class HeartBeatService {
     private Long serverPort;
 
     @PostConstruct
-    public void init() throws Exception {
+    public void init() {
         report();
     }
 
     @Scheduled(fixedRate = 10000)
-    public void report() throws Exception {
-
+    public void report() {
         String address = String.format("http://%s:%s", HostUtil.LOCAL_HOST, serverPort);
-        HttpResponse<String> response = Requests.post(
-            sreworksJobProperties.getMasterEndpoint() + "/listen/worker",
-            null,
-            null,
-            JsonUtil.map(
-                "address", address,
-                "execTypeList", taskHandlerService.taskHandlerMap.keySet()
-            ).toJSONString()
-        );
-        Requests.checkResponseStatus(response);
+        HttpResponse<String> response;
+        try {
+            response = Requests.post(
+                    sreworksJobProperties.getMasterEndpoint() + "/listen/worker",
+                    null,
+                    null,
+                    JsonUtil.map(
+                            "address", address,
+                            "execTypeList", taskHandlerService.taskHandlerMap.keySet()
+                    ).toJSONString()
+            );
+            Requests.checkResponseStatus(response);
+        } catch (Exception ex) {
+            throw new RuntimeException(String.format("job worker[host:%s] heartbeat report error: %s",
+                    HostUtil.LOCAL_HOST, ex));
+        }
+
         String body = response.body();
         int poolSize = JSONObject.parseObject(body).getJSONObject("data").getIntValue("poolSize");
         taskInstanceService.runningExecutor.setCorePoolSize(poolSize);
         taskInstanceService.runningExecutor.setMaxPoolSize(poolSize);
     }
-
 }

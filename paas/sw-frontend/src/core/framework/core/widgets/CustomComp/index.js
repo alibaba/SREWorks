@@ -16,8 +16,8 @@ export default class index extends Component {
     }
     componentWillMount() {
         let { widgetData, widgetModel, widgetConfig } = this.props;
-        console.log(widgetModel, this.props, 'widgetModel-custom')
         service.getCustomList().then(customList => {
+            console.log(customList,'customList-customList')
             customList && customList.forEach(element => {
                 if (element.name === widgetModel.compName || element.name === widgetModel.name || element.name === widgetConfig.compName) {
                     this.setState({
@@ -30,6 +30,7 @@ export default class index extends Component {
     }
     componentWillReceiveProps(nextProps) {
         let { widgetConfig, widgetModel } = nextProps;
+        let {customList } = this.state;
         customList && customList.forEach(element => {
             if (element.name === widgetModel.compName || element.name === widgetModel.name || element.name === widgetConfig.compName) {
                 this.setState({

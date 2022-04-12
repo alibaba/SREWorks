@@ -66,6 +66,8 @@ spec:
           value: "admin"
         - name: Global.ACCOUNT_SUPER_SECRET_KEY
           value: "test-super-secret-key"
+        - name: Global.ACCOUNT_SUPER_ACCESS_KEY
+          value: "test-super-secret-key"
 
 
     #- revisionName: K8S_MICROSERVICE|drilldown|_

@@ -28,6 +28,8 @@ import './index.less';
 import ContentLayout from "../../framework/components/ContentLayout";
 import AceViewer from '../../../components/FormBuilder/FormItem/AceViewer';
 import FluidContentLayoutDesigner from "../../framework/components/FluidContentLayoutDesigner";
+import appMenuTreeService from '../../services/appMenuTreeService';
+import {page_template_meta} from './TemplateConstant';
 
 const { Step } = Steps;
 const { TabPane } = Tabs;
@@ -181,9 +183,17 @@ export default class PageEditor extends React.Component {
     handleChangeTab = res => {
         this.setState({ activeKey: res })
     }
-
+    handleSaveAs= ()=> {
+        let {nodeData} = this.props;
+        let newParam = _.cloneDeep(page_template_meta);
+        newParam.serviceType = nodeData.serviceType;
+        newParam.config.name = nodeData.config.name;
+        newParam.config.label = nodeData.config.label;
+        appMenuTreeService.insertNode(newParam);
+    }
     render() {
-        let { pageModel, showPreview, openDrawer, showJson, activeKey } = this.state, { height = 620, nodeData,contentLoading } = this.props;
+        let { pageModel, showPreview, openDrawer, showJson, activeKey } = this.state, { height = 620, nodeData, contentLoading } = this.props;
+        console.log(nodeData,'nodeData-nameAndPanel')
         let tabEditorContentStyle = { height: height - 42, overflowY: "auto", overflowX: "none" }, { config } = nodeData;
         let { pageLayoutType = Constants.PAGE_LAYOUT_TYPE_CUSTOM } = config, containerModel = pageModel.getRootWidgetModel();
         return (
@@ -202,6 +212,9 @@ export default class PageEditor extends React.Component {
                                     <span className="text">添加</span>
                                 </div>
                             </Button>}
+                        {/* <Button size="small" style={{position:'relative',top:-3}} type="primary" onClick={this.handleSaveAs}>
+                            另存为模板
+                        </Button> */}
                         <Button size="small" className="feature-button" onClick={this.handlePreview}>
                             <div className="wrapper">
                                 <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="31824" width="16" height="16">

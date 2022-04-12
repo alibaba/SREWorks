@@ -167,7 +167,7 @@ class GridCard extends React.Component {
                 elementId: mode.elementId,
                 parameters: parameters,
             };
-            return httpClient.post("gateway/v2/common/productops/frontend/nodes/elements/data", params);
+            return Promise.resolve([]);
         } else {
             if (widgetConfig.dataSourceMeta) {
                 beforeRequestHandler = widgetConfig.dataSourceMeta['beforeRequestHandler']

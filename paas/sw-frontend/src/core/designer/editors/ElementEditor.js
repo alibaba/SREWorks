@@ -52,7 +52,6 @@ export default class ElementEditor extends React.Component {
         super(props);
         let { widgetModel } = props;
         this.commonConfig = JSON.parse(JSON.stringify(widgetModel.config));
-        console.log(this.commonConfig, 'commonConfig');
         this.state = {
             widgetModel: widgetModel,
             widgetMeta: null,
@@ -69,14 +68,11 @@ export default class ElementEditor extends React.Component {
 
     componentWillMount() {
         let { widgetModel } = this.props;
-        console.log(widgetModel, 'widgetModel-widgetMeta')
         widgetLoader.getWidgetMeta(widgetModel).then(widgetMeta => {
             //旧组件适配,带逐步替换
-            console.log(widgetMeta, 'widgetMeta--willmount')
             if (!widgetMeta) {
                 widgetMeta = getLegacyWidgetMeta(widgetModel);
             }
-            console.log(widgetMeta, 'widgetMeta--willmount-legacy')
             this.setState({
                 widgetMeta: widgetMeta,
             });
@@ -92,6 +88,7 @@ export default class ElementEditor extends React.Component {
         })
     }
     setCommonConfig = (cfg) => {
+        console.log(cfg, 'custom-update')
         this.commonConfig = Object.assign(this.commonConfig, cfg);
         if (cfg.hasWrapper) {
             this.setState({
@@ -126,6 +123,7 @@ export default class ElementEditor extends React.Component {
         let { widgetModel } = this.state, { onSave } = this.props;
         let config = Object.assign({}, this.commonConfig);
         widgetModel.updateConfig(config);
+        console.log(widgetModel, config, 'widgetModel-update');
         onSave && onSave(widgetModel);
     };
 
@@ -170,6 +168,13 @@ export default class ElementEditor extends React.Component {
             if (widgetMeta && widgetModel.name) {
                 widgetMeta['configSchema']['schema']['properties']['compName']['initValue'] = widgetModel.name;
                 widgetMeta['configSchema']['schema']['properties']['compDescribtion']['initValue'] = (widgetModel.info && widgetModel.info.description) || ''
+                let obj = {
+                    compDescribtion: (widgetModel.info && widgetModel.info.description) || '',
+                    compName: widgetModel.name
+                }
+                this.commonConfig = Object.assign(this.commonConfig, obj);
+                let config = Object.assign({}, this.commonConfig);
+                widgetModel.updateConfig(config);
             }
         } else {
             editTitle = (widgetMeta && widgetMeta.title) || ''

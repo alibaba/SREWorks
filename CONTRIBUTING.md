@@ -1,5 +1,4 @@
-# Contributing to SREWorks
-
+# CONTRIBUTING Guide
 
 
 

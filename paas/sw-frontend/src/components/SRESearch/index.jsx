@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from 'react-dom';
 // import {  Search } from '@alife/next';
 
-import { Select, Tooltip, Divider, Badge, Input } from "antd";
+import { Select, Tooltip, Divider, Badge, Input,message } from "antd";
 import { SearchOutlined } from '@ant-design/icons';
 import PropTypes from "prop-types";
 
@@ -45,7 +45,8 @@ class SRESearch extends React.Component {
       isNeedSuggestion: false,
       isloading: false,
       textValue: '',
-      suggestList: []
+      suggestList: [],
+      searchServiceFlag: true,
     };
     this.onSearchKeyword = this.onSearchKeyword.bind(this);
     this.onSearch = this.onSearch.bind(this);
@@ -56,7 +57,15 @@ class SRESearch extends React.Component {
     // this.getSuggestionList = this.getSuggestionList.bind(this);
     // this.getSuggestionListDebounce = _.debounce(this.getSuggestionList, 150);
   }
-
+  checkSearchService=()=> {
+    appService.testSearchService().then(res => {
+      if(res && res.version && res.version === 'v1') {
+        this.setState({
+          searchServiceFlag: false
+        })
+      }
+    })
+  }
   getRelationSuggestList = () => {
     const { textValue } = this.state;
     if (!textValue) {
@@ -71,6 +80,10 @@ class SRESearch extends React.Component {
   }
   getHotKeywords = () => {
     const { userEmpId, teslaSearchPath, category } = this.props;
+    if(!this.state.searchServiceFlag) {
+      message.warn("搜索服务未部署");
+      return false
+    }
     SearchService.getHotKeywords(userEmpId, teslaSearchPath, category, 10)
       .then(res => {
         this.setState({
@@ -83,6 +96,10 @@ class SRESearch extends React.Component {
   getSuggestionList() {
     const { userEmpId, teslaSearchPath, category } = this.props;
     const { textValue } = this.state;
+    if(!this.state.searchServiceFlag) {
+      message.warn("搜索服务未部署");
+      return false
+    }
     if (textValue !== "") {
       SearchService.searchSuggestions(userEmpId, teslaSearchPath, category, textValue, 1, 10)
         .then(res => {
@@ -131,6 +148,10 @@ class SRESearch extends React.Component {
     }
   };
   enterSearch = () => {
+    if(!this.state.searchServiceFlag) {
+      message.warn("搜索服务未部署");
+      return false
+    }
     this.navType = '';
     this.getAllSuggetPathList();
     this.setState({
@@ -173,10 +194,8 @@ class SRESearch extends React.Component {
   }
 
   focusChange = () => {
-    console.log('focus-inout-method')
     const { textValue } = this.state;
     if (!textValue) {
-      console.log(textValue, 'focus-inout-method')
       this.getHotKeywords();
     }
     this.setState({
@@ -186,11 +205,16 @@ class SRESearch extends React.Component {
   }
   componentDidMount() {
     let { includeSearchBtn = true } = this.props;
+    this.checkSearchService()
     setTimeout(function () {
       $(`.biz-tSearch-deskstop.${this.props.className} input`).css({ width: includeSearchBtn ? "100%" : '484px' }).after("<i class=\"anticon anticon-search ant-input-search-icon\"></i>");
     }.bind(this), 0);
   }
   getAllSuggetPathList = (value) => {
+    if(!this.state.searchServiceFlag) {
+      message.warn("搜索服务未部署");
+      return false
+    }
     const { textValue } = this.state;
     const { userEmpId, category } = this.props;
     appService.desktopKeySearch(userEmpId, category, textValue, this.navType).then(res => {

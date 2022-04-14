@@ -243,9 +243,9 @@ class PagedTable extends Component {
         },
     });
     render() {
-        const { style, scrollX, scrollY, className, columns, renderComponents, openAction, handleParamsChanged, dataUrl, extParams = {}, ...otherTableProps } = this.props;
+        const { style, scrollX, scrollY, className, columns, renderComponents, openAction, handleParamsChanged, dataUrl, extParams = {},widgetConfig, ...otherTableProps } = this.props;
         const { page, pageSize, pageSizeOptions, data, loading, total } = this.state;
-        console.log(columns, 'pre-columns')
+        let {emptyText} = widgetConfig;
         let tableColumns = columns && columns.map(c => {
             let columnDef = Object.assign({ ...this.getColumnSearch(c.dataIndex, c) }, c);
             // if(c.filters){
@@ -291,13 +291,16 @@ class PagedTable extends Component {
             <div style={style || {}} className={className ? className : "globalBackground"}>
                 <Table
                     rowKey="__row_uuid"
+                    locale={{
+                        emptyText:emptyText ? <JSXRender  {...this.props} jsx={emptyText} /> : null
+                      }}
                     bordered={true}
                     loading={loading}
                     columns={tableColumns}
                     size="small"
                     scroll={{ x: scrollX || 'max-content', y: scrollY }}
                     pagination={paginationProps}
-                    dataSource={Array.isArray(data) ? data : [data]}
+                    dataSource={Array.isArray(data) ? data : []}
                     {...otherTableProps}
                 />
             </div>

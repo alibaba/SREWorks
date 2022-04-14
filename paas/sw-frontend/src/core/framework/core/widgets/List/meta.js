@@ -117,6 +117,14 @@ export default {
           "x-component": "Text",
           "type": "string",
         },
+        "emptyText": {
+          "description": "支持空数据自定义文案",
+          "title": "空数据文案",
+          "required": false,
+          "x-component": "Text",
+          "initValue":"",
+          "type": "string",
+        },
         "listItem": {
           "type": "object",
           "title": "行信息属性",

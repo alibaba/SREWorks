@@ -30,3 +30,4 @@ export const page_template_meta = {
     }
 
 }
+export const template_app_id = 'template'

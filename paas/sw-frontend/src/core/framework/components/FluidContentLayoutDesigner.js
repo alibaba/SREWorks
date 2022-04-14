@@ -33,7 +33,7 @@ class FluidContentLayoutDesigner extends Component {
                     rows: []
                 }
             })
-            props.containerModel.widgets.push(fluidWidget);
+         props.containerModel.widgets.push(fluidWidget);
         }
         //bad small
         fluidWidget.config && fluidWidget.config.rows && fluidWidget.config.rows.map(row => {
@@ -45,7 +45,6 @@ class FluidContentLayoutDesigner extends Component {
         });
         this.fluidWidget = fluidWidget;
         let rows = (fluidWidget.config && fluidWidget.config.rows) || [];
-        console.log(rows, '已有row')
         this.state = {
             rows: rows
         };
@@ -67,7 +66,7 @@ class FluidContentLayoutDesigner extends Component {
         };
         let { rows } = this.state;
         Modal.confirm({
-            title: '行属性',
+            title: ' 添加行布局',
             icon: '',
             width: 640,
             content: <div><RowSetting row={defaultRow} onValuesChange={(changedValues, allValues) => Object.assign(defaultRow, allValues)} /></div>,
@@ -128,7 +127,7 @@ class FluidContentLayoutDesigner extends Component {
                         <RowContainerHandler {...this.props} pageLayoutType={Constants.PAGE_LAYOUT_TYPE_FLUID} key={row.uniqueKey} row={row} onRemove={() => this.handleRemoveRow(row)} onUpdate={(upRow) => this.handleRowUpdate(upRow)} mode={Constants.WIDGET_MODE_EDIT} />
                     ))}
                 </ReactSortable>
-                <Button className="add_handler_button" type="dashed" icon={<PlusOutlined />} onClick={this.handleAddRow}>添加一行</Button>
+                <Button className="add_handler_button" type="solid" icon={<PlusOutlined />} onClick={this.handleAddRow}>添加行容器</Button>
             </div>
         );
     }

@@ -159,7 +159,15 @@ export default  {
                         "options":[{"value":true,"label":"是"},{"value":false,"label":"否"}],
                         "defaultValue":true
                     }
-                }
+                },
+                "emptyText": {
+                    "description": "支持空数据自定义文案",
+                    "title": "空数据文案",
+                    "required": false,
+                    "x-component": "Text",
+                    "initValue":"",
+                    "type": "string",
+                  },
             }
         },
         "supportItemToolbar":true,

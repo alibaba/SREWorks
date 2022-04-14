@@ -22,6 +22,8 @@ import PageModel from '../../framework/model/PageModel';
 import Constants from '../../framework/model/Constants';
 import DataSourceEditor from "./DataSourceEditor";
 import PageContent from "../../framework/core/PageContent";
+import * as util from '../../../utils/utils';
+import _ from 'lodash';
 
 import '../workbench/index.less';
 import './index.less';
@@ -184,16 +186,19 @@ export default class PageEditor extends React.Component {
         this.setState({ activeKey: res })
     }
     handleSaveAs= ()=> {
-        let {nodeData} = this.props;
+        let {nodeData,saveAs} = this.props;
         let newParam = _.cloneDeep(page_template_meta);
-        newParam.serviceType = nodeData.serviceType;
+        let templateServiceType = util.generateId();
+        newParam.serviceType = templateServiceType;
         newParam.config.name = nodeData.config.name;
         newParam.config.label = nodeData.config.label;
-        appMenuTreeService.insertNode(newParam);
+        appMenuTreeService.insertNode(newParam).then(res => {
+            saveAs && saveAs(templateServiceType)
+        });
+        
     }
     render() {
         let { pageModel, showPreview, openDrawer, showJson, activeKey } = this.state, { height = 620, nodeData, contentLoading } = this.props;
-        console.log(nodeData,'nodeData-nameAndPanel')
         let tabEditorContentStyle = { height: height - 42, overflowY: "auto", overflowX: "none" }, { config } = nodeData;
         let { pageLayoutType = Constants.PAGE_LAYOUT_TYPE_CUSTOM } = config, containerModel = pageModel.getRootWidgetModel();
         return (
@@ -249,7 +254,7 @@ export default class PageEditor extends React.Component {
                     </TabPane>
                     <TabPane tab={<span><SettingOutlined style={{ marginRight: 8 }} />设置</span>} key="setting">
                         <Tabs tabPosition={"left"} animated tabBarGutter={2}>
-                            <TabPane tab={<span><CodeOutlined style={{ marginRight: 8 }} />源JSON</span>} key="dev">
+                            <TabPane tab={<span><CodeOutlined style={{ marginRight: 8 }} />源码</span>} key="dev">
                                 <AceViewer model={{
                                     showDiff: false,
                                     defModel: { height: height - 48, disableShowDiff: true, mode: "json" },
@@ -268,7 +273,7 @@ export default class PageEditor extends React.Component {
                     </TabPane>
                 </Tabs>
                 <Drawer
-                    title={showJson ? "源JSON" : "页面预览"}
+                    title={showJson ? "页面源码" : "页面预览"}
                     bodyStyle={showJson ? undefined : { padding: "0px" }}
                     placement="right"
                     destroyOnClose={true}

@@ -13,6 +13,7 @@ import WidgetSelector from "./WidgetSelector";
 import RowSetting from "./RowSetting";
 import WidgetModel from "../model/WidgetModel";
 import service from '../../services/appMenuTreeService';
+import uuidv4 from "uuid/v4";
 
 import './index.less';
 
@@ -55,6 +56,7 @@ class RowContainerHandler extends React.Component {
         let { row } = this.state, { nodeModel, onUpdate } = this.props;
         let { elements } = row;
         let copyedModel = JSON.parse(model);
+        copyedModel.uniqueKey = uuidv4();
         service.getWidgetRepository().then(category => {
             let allCompMeta = []
             category.forEach(cate => {
@@ -77,15 +79,16 @@ class RowContainerHandler extends React.Component {
         try {
             if (!navigator.clipboard) {
                 let strModel = this.getClipboard()
+                strModel.uniqueKey = uuidv4();
                 strModel && this.initCopyedModel(strModel, currentIndex)
             } else {
                 navigator.clipboard.readText().then(clText => this.initCopyedModel(clText, currentIndex)
                 ).catch(error => {
-                    message.warn("请先复制组件源json")
+                    message.warn("请先复制组件源码")
                 })
             }
         } catch (e) {
-            message.warn("请先复制组件源json")
+            message.warn("请先复制组件源码")
         }
     }
     openSelector = (currentIndex) => {
@@ -172,7 +175,7 @@ class RowContainerHandler extends React.Component {
                         </PopoverConfirm>
                     </span>
                 </div>
-                <div className="row_container_wrapper" style={{ height: rowHeight, minHeight: rowMinHeight }}>
+                <div className="row_container_wrapper" style={{ height: rowHeight, minHeight: rowMinHeight,paddingTop:20 }}>
                     <Row gutter={Constants.WIDGET_DEFAULT_MARGIN}>
                         {
                             spans.split(",").map((span, index) => {

@@ -207,7 +207,7 @@ export default class FormBlockEditor extends PureComponent {
                 <Tabs defaultActiveKey="base" size="small"
                     tabBarExtraContent={
                         <div className="feature-bar">
-                            <Button size="small" className="feature-button" onClick={this.showJson}>源JSON</Button>
+                            <Button size="small" className="feature-button" onClick={this.showJson}>源码</Button>
                             <Button size="small" onClick={this.onPreview} className="feature-button">
                                 预览
                             </Button>

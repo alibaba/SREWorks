@@ -281,8 +281,8 @@ class PagingTable extends Component {
         console.log(nextProps.nodeParams, 'nextProps.nodeParams')
     }
     render() {
-        console.log(this.props.columns, this.props, 'this.props.columns---pagingTable')
-        const { pagination, data, loading } = this.state, { style, scrollX, scrollY, className, columns, renderComponents, openAction, handleParamsChanged, dataUrl, extParams = {}, ...otherTableProps } = this.props;
+        const { pagination, data, loading } = this.state, { style, scrollX, scrollY, className, columns, renderComponents, openAction, handleParamsChanged, dataUrl, extParams = {},widgetConfig, ...otherTableProps } = this.props;
+        let { emptyText } = widgetConfig;
         const tableColumns = columns && columns.map(c => {
             let columnDef = Object.assign({ ...this.getColumnSearch(c.dataIndex, c) }, c);
             if (c.filters) {
@@ -322,9 +322,12 @@ class PagingTable extends Component {
             <div style={style || {}} className={className ? className : "globalBackground"}>
                 <Table
                     rowKey="__row_uuid"
+                    locale={{
+                        emptyText:emptyText ? <JSXRender  {...this.props} jsx={emptyText} /> : null
+                      }}
                     columns={tableColumns}
                     size="small"
-                    dataSource={Array.isArray(data) ? data : [data]}
+                    dataSource={Array.isArray(data) ? data : []}
                     pagination={pagination}
                     loading={loading}
                     scroll={{ x: scrollX, y: scrollY }}

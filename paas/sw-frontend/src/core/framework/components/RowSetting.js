@@ -36,7 +36,7 @@ class RowSetting extends React.Component {
         let { spans = "12,12", height, rang = [0, 24] } = row;
         let paramsDef = [];
         paramsDef.push({
-            type: 15, name: 'rang', initValue: rang, required: true, label: "行分割", tooltip: "拖动首尾handle进行列的划分",
+            type: 15, name: 'rang', initValue: rang, required: true, label: "布局属性", tooltip: "拖动首尾handle进行列的划分",
             defModel: {
                 range: true,
                 defaultValue: [0, 24],

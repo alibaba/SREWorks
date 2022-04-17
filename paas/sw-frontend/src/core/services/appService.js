@@ -329,6 +329,9 @@ class AppService {
     desktopKeySearch(userEmpId,category,query,type,currentPage=1,size=10) {
         return httpClient.get(`gateway/v2/foundation/kg/sreworkssearch/query/query_simple_nodes_from_size?__userEmpId=${userEmpId}&category=${category}&query=${query}&type=${type}&page=${currentPage}&size=${size}`)
     }
+    testSearchService() {
+        return httpClient.get('/gateway/v2/foundation/appmanager/apps/search/version')
+    }
 
 }
 

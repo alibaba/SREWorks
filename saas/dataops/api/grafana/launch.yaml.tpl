@@ -46,6 +46,14 @@ spec:
           server:
             root_url: /gateway/dataops-grafana/
             serve_from_sub_path: true
+          auth.proxy:
+            enabled: true
+            auto_sign_up: true
+            enable_login_token: false
+            ldap_sync_ttl: 60
+            sync_ttl: 60
+            header_name: x-auth-user
+            headers: "Name:x-auth-user Email:x-auth-email-addr"
           auth.anonymous:
             enabled: true
         image: 

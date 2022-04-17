@@ -131,6 +131,7 @@ export default class BlockEditor extends React.Component {
         super(props);
         let { editorData = { config: {} }, nodeModel } = props, pageModel;
         if (editorData) {
+            console.log(editorData,'editorData-editorData');
             pageModel = new PageModel(editorData);
         } else {
             pageModel = PageModel.CREATE_DEFAULT_INSTANCE();
@@ -304,7 +305,7 @@ export default class BlockEditor extends React.Component {
                                     <BlockSettingForm config={this.blockConfig} onValuesChange={(changedField, allValue) => this.blockConfig = allValue} />
                                 </div>
                             </TabPane>
-                            <TabPane tab={<span><CodeOutlined style={{ marginRight: 8 }} />&nbsp;源JSON</span>} key="json">
+                            <TabPane tab={<span><CodeOutlined style={{ marginRight: 8 }} />&nbsp;源码</span>} key="json">
                                 <AceViewer model={{
                                     showDiff: false,
                                     defModel: { height: height - 48, disableShowDiff: true, mode: "json" },

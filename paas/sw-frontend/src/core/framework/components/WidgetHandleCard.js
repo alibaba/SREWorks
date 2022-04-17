@@ -205,7 +205,7 @@ export default class WidgetHandleCard extends React.Component {
                             </Tooltip>
                         </a>
                         <a className="action-icon" onClick={this.onCopy}>
-                            <Tooltip title="复制组件源JSON">
+                            <Tooltip title="复制组件源码">
                                 <CopyOutlined />
                             </Tooltip>
                         </a>

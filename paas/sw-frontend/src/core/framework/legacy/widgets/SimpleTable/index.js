@@ -457,7 +457,6 @@ class SimpleTable extends React.Component  {
         if(api&&api.method==='POST'){
             dynamiConf.dataMethod='POST';
         }
-        console.log(mode.__template.config.expandedRow,'expanded_row')
         if(expandedRow&&Object.keys(expandedRow).length){
             dynamiConf.expandedRowRender=record => <OamWidget openAction={openAction} widget={mode.__template.config.expandedRow} parameters={parameters} nodeParams={nodeParams} nodeId={nodeId} rowData={record} widgetParams={record}/>
         }
@@ -468,7 +467,6 @@ class SimpleTable extends React.Component  {
         if(wrapper==="none"||wrapper==='transparent'){
             dyClass=dyClass+" no_wrapper_table_pagination";
         }
-        console.log(widgetConfig,'widgetConfig-expanded-row')
         return (
             <div className={dyClass}>
                 {filterForm}
@@ -512,6 +510,7 @@ class SimpleTable extends React.Component  {
                                 extParams={allParams}
                                 size={size}
                                 nodeParams={nodeParams}
+                                widgetConfig={widgetConfig}
                                 bordered={bordered}
                                 {...dynamiConf}
                         />

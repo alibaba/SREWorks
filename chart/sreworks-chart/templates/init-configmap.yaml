@@ -59,6 +59,7 @@ data:
   ACCOUNT_SUPER_SECRET_KEY: {{ .Values.appmanager.gateway.account_super_secret_key }}
 
   HOME_BUILD: {{ .Values.build.isHome | quote }}
+  ONLY_BASE: {{ .Values.saas.onlyBase | quote }}
 
 
 kind: ConfigMap

@@ -199,7 +199,7 @@ export default class ElementEditor extends React.Component {
                                   <Button size="small" type="primary"  onClick={this.onSave} style={{ marginRight: 8 }}>
                                       保存
                                   </Button>*/}
-                                <div style={{ marginRight: '10px', height: '40px', lineHeight: '40px', display: 'inline-block' }}>{isJsonEdit ? 'JSON编辑' : '可视化编辑'}</div>
+                                <div style={{ marginRight: '10px', height: '40px', lineHeight: '40px', display: 'inline-block' }}>{isJsonEdit ? '源码编辑' : '可视化编辑'}</div>
                                 <Switch style={{ marginRight: '30px', display: 'inline-block' }} defaultChecked checked={isJsonEdit} onChange={this.switchUpdateRule} />
                                 <a onClick={this.onClose}>
                                     <CloseOutlined />
@@ -299,7 +299,7 @@ export default class ElementEditor extends React.Component {
                     }
                     {
                         isJsonEdit &&
-                        <TabPane key="widget" tab={<span>源JSON</span>}>
+                        <TabPane key="widget" tab={<span>源码</span>}>
                             <Row gutter={8}>
                                 <Col span={12}>
                                     {/*<JsonEditor json={Object.assign({},widgetModel.config,this.commonConfig)} mode="code" readOnly={false} onChange={this.onConfigChanged} changeInterval={500} style={{height:"calc(50vh - 100px)"}}/>*/}

@@ -84,12 +84,15 @@ export default class ListRender extends Component {
   }
   render() {
     let { widgetData = [], widgetConfig = {}, actionParams, ...otherProps } = this.props;
-    let { bordered, header, footer, listItem, itemLayout, itemToolbar, columns = [] } = widgetConfig;
+    let { bordered, header, footer, listItem, itemLayout, itemToolbar, columns = [],emptyText } = widgetConfig;
     let { title, description, avatar, extra, href, content } = listItem;
     let { total, pageSize, currentPage, splitData } = this.state;
     return <div style={{ width: '100%' }}>
       <List
         bordered={bordered}
+        locale={{
+          emptyText:emptyText ? <JSXRender  {...this.props} jsx={emptyText} /> : null
+        }}
         itemLayout={itemLayout}
         className="card-list-ant"
         dataSource={splitData || []}

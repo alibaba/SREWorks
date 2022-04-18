@@ -15,7 +15,7 @@ SREWorks focuses on the application-centric one-stop "cloud native" and "data in
 
 Alibaba Cloud Big Data SRE team has been working hard to practice the "data intelligence" O & M concept, the industry's DataOps (data operation and maintenance) first proposed by the team, is naturally close to big data and AI, is very familiar with Big Data & AI technology, and has the big data and AI computing power resources on demand, has been working hard to practice the "data intelligence" O & M concept, the industry's DataOps Standard O & M warehouses, data O & M platforms, and operation centers are among the end-to-end DataOps closed-loop engineering methods in the SREWorks.
 
-There are many excellent open-source O&M platforms that reflect cloud-native scenarios in the traditional IT O&M field. There are currently no systematic O & M solutions available. With the rise of the cloud-native era, the Alibaba Cloud Big Data SRE team will open-source its O&M platform, SREWorks, in the hopes of providing O&M engineers with an out-of-the-box experience.
+There are many excellent open-source O & M platforms that reflect cloud-native scenarios in the traditional IT O&M field. There are currently no systematic O & M solutions available. With the rise of the cloud-native era, the Alibaba Cloud Big Data SRE team will open-source its O & M platform, SREWorks, in the hopes of providing O & M engineers with an out-of-the-box experience.
 
 ![image.png](paas/sw-frontend/docs/pictures/1650211430987-0df2e965-cb01-4509-a1fd-20b248db6a84.png)
 

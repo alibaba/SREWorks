@@ -24,15 +24,15 @@ Any problem in the code, you can submit a Pull Request to participate, including
 - document incorrect
 - redundant code
 - ugly code
-- feature Enhancement
+- feature enhancement
 - performance optimization
 - and so on
 
 ## 4. Best practices contribution
 
-SREWorks is a cloud-native operation platform center that we expect to support as many cases as possible. If you have a best practice based on SREWorks implementation, you can directly email us dataops@service.alibaba.com tell us or submit an issue. We use the SREWorks platform to promote your best practices.
+SREWorks is a cloud-native O & M platform center that we expect to support as many cases as possible. If you have a best practice based on SREWorks implementation, you can directly email us dataops@service.alibaba.com tell us or submit an issue. We use the SREWorks platform to promote your best practices.
 Best practices include and are not limited to the following:
-- an operation and maintenance solution for an open source software
+- An operation and maintenance solution for an open source software
 - Integrate the data operation and maintenance practices of some open source software
 
 ## 5. Operations and maintenance application contribution

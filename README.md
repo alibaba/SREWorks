@@ -44,4 +44,4 @@ We'd love to accept your patches and contributions to SREWorks. Please refer to 
 
 ## Code of Conduct
 
-[CODE_OF_CONDUCT](CODE_OF_CONDUCT.md)
+Contributions to the SREWorks are expected to adhere to our [Code of Conduct](CODE_OF_CONDUCT.md).

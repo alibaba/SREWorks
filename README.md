@@ -7,7 +7,7 @@ English | [中文](README-CN.md)
 
 ## Introduction
 
-SREWorks: Alibaba Cloud Big Data SRE team's cloud-native operation and maintenance (O & M) platform was born out of nearly a decade of internal business training, adhering to the "Data intelligence" O & M thinking, to help more practitioners in the O & M field adopt this thinking and do a good job in efficient O & M.
+SREWorks: Alibaba Cloud Big Data SRE team's cloud-native operation and maintenance (O & M) platform was born out of nearly a decade of internal business training, adhering to the "data intelligence" O & M thinking, to help more practitioners in the O & M field adopt this thinking and do a good job in efficient O & M.
 
 Google suggested a job title of SRE (Site Reliability Engineer) in 2003. It consists of a team of software engineers and system administrators who place a premium on O & M personnel's development skills, forcing them to devote less than half of their time to daily tasks and the other half to the creation of automation technologies to decrease labor needs.
 

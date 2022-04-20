@@ -15,6 +15,7 @@ import { page_template_meta,template_app_id } from '../editors/TemplateConstant'
 import appMenuTreeService from '../../services/appMenuTreeService';
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
+import PageModel from '../../framework/model/PageModel';
 
 import './index.less';
 import service from '../../framework/legacy/widgets/flyadmin/service';
@@ -37,12 +38,13 @@ export default class Workbench extends React.Component {
             nodeTypeId:null,
             nodeGroupData:props.nodeGroupData
         }
+        this.cloneGroupData = []
     }
 
     componentDidMount() {
         //this.loadNodeModel("xxx");
     }
-    loadNodeModel=(nodeTypeId,nodeData)=>{
+    loadNodeModel=(nodeTypeId,nodeData,resetTemplate)=>{
         if(nodeTypeId===this.state.nodeTypeId){
             return ;
         }
@@ -51,10 +53,10 @@ export default class Workbench extends React.Component {
             nodeData:nodeData,
             contentLoading:true
         });
-        console.log(nodeTypeId,'nodeTypeId');
         if(nodeTypeId){
             let nodeModel=new NodeModel({nodeId:nodeTypeId});
             nodeModel.load('dev').then(result=>{
+                let { originNodeTypeId } = this.state;
                 this.setState({
                     nodeModel:nodeModel,
                     currentEditorData:nodeModel.getPageModel(),
@@ -62,7 +64,10 @@ export default class Workbench extends React.Component {
                     editorKey:"MAIN_PAGE",
                     nodeTypeId:nodeTypeId,
                     contentLoading:false,
+                    originNodeTypeId: originNodeTypeId ? originNodeTypeId : nodeTypeId,
                     nodeGroupData:nodeModel.getGroupData()
+                },()=> {
+                    resetTemplate && resetTemplate()
                 });
             })
         }
@@ -89,7 +94,7 @@ export default class Workbench extends React.Component {
         nodeModel.saveItem(item).then(result=>{
             this.setState({
                 contentLoading:false,
-                nodeGroupData:nodeModel.getGroupData()
+                nodeGroupData:nodeModel.getGroupData(),
             });
         });
     };
@@ -144,22 +149,34 @@ export default class Workbench extends React.Component {
         });
     };
     saveAsTemplate=(templateServiceType)=> {
-        let {nodeModel}=this.state;
+        let {nodeModel,nodeGroupData}=this.state;
         let unKey = uuidv4();
         let newParam = nodeModel.getPageModel().toJSON();
         let cloneParams = _.cloneDeep(newParam);
-        let excReg = new RegExp("/"+this.props.appId+"/g");
-        console.log(cloneParams,'cloneParams-cloneParams')
-        cloneParams.nodeTypePath = page_template_meta.parentNodeTypePath + `::${templateServiceType}`;
+        this.cloneGroupData = _.cloneDeep(nodeGroupData);
         cloneParams.name = unKey;
         cloneParams.label = unKey;
         cloneParams.id = unKey;
-        // cloneParams = JSON.parse(JSON.stringify(cloneParams).replace(excReg,template_app_id))
+        cloneParams.nodeTypePath = page_template_meta.parentNodeTypePath + `::${templateServiceType}`;
+        let appIdReg = new RegExp(this.props.appId,'g');
+        let cloneParamsStr = JSON.stringify(cloneParams);
+        if(this.cloneGroupData[0] && this.cloneGroupData[0].items) {
+            this.cloneGroupData[0].items.forEach(item=> {
+                let oldUuid = item.name;
+                let newBlockId = uuidv4();
+                let newToolBarBlockId = template_app_id + ":BLOCK:" + newBlockId;
+                let toolBarBlockIdRegExp = new RegExp(this.props.appId+":BLOCK:"+oldUuid,'g');
+                cloneParamsStr = cloneParamsStr.replace(toolBarBlockIdRegExp,newToolBarBlockId);
+                item.name = newBlockId;
+                item.id =  newBlockId;
+            })
+        }
+        cloneParams = JSON.parse(cloneParamsStr.replace(appIdReg,template_app_id));
         this.setState({
             contentLoading:true
         });
         appMenuTreeService.saveMainPage(cloneParams).then(res => {
-            this.saveAsBlocks(templateServiceType);
+            this.saveAsBlocks(templateServiceType,cloneParams);
             this.setState({
                 contentLoading:false
             });
@@ -171,22 +188,29 @@ export default class Workbench extends React.Component {
 
     }
     saveAsBlocks=(templateServiceType)=> {
-        let { nodeGroupData } = this.state;
-        let cloneGroupData = _.cloneDeep(nodeGroupData),paramsArray = [];
-        console.log(cloneGroupData,cloneGroupData[0],cloneGroupData[0].items,'cloneGroupData-cloneGroupData')
-        cloneGroupData[0] && cloneGroupData[0].items.forEach(item => {
-            item.nodeTypePath = page_template_meta.parentNodeTypePath + `::${templateServiceType}`
-            item.appId = template_app_id;
-            let newBlockId = uuidv4();
-            let {appId,nodeTypePath,type,version,config,name} = item;
-            config.id = newBlockId;
-            config.name = newBlockId;
+        let paramsArray = [];
+        this.cloneGroupData[0] && this.cloneGroupData[0].items.forEach(item => {
+            let pageModelItem = new PageModel(item);
+            let pageJsonItem = pageModelItem.toJSON();
+            let blockConfig = { label: pageModelItem.label, name: pageModelItem.name || pageModelItem.id, category: pageModelItem.category, tags: pageModelItem.tags };
             let obj = {
-                appId,nodeTypePath,type,version,config,name:newBlockId
+                ...item,
+                ...pageJsonItem,
+                ...blockConfig
             }
-            paramsArray.push(obj);
+            let params = {
+                appId: template_app_id,
+                name: item.name,
+                nodeTypePath: page_template_meta.parentNodeTypePath + `::${templateServiceType}`,
+                id: item.id,
+                elementId: template_app_id+':BLOCK:'+item.name,
+            }
+            obj = Object.assign(obj,params)
+            obj.config = {
+                ...obj
+            }
+            paramsArray.push(obj);  
         })
-        console.log(paramsArray,'cloneGroupData-cloneGroupData-2')
         paramsArray.forEach(obj=> {
             let {nodeTypePath} = obj;
             appMenuTreeService.saveElement(obj).then(res => {
@@ -201,10 +225,23 @@ export default class Workbench extends React.Component {
             window.dispatchEvent(event);
         },500)*/
     };
+    // 从模板创建
+    createFromTemplate=(nodeTypeId,nodeData)=> {
+        this.loadNodeModel(nodeTypeId,nodeData);
+    }
+    // 重置模板uuid 并保存
+    resetTemplate=()=> {
+        let {nodeModel} = this.state;
+        nodeModel.updatePageModelFromTemplate()
+        this.setState({
+            nodeModel: nodeModel,
+            currentEditorData: nodeModel.getPageModel,
+            nodeGroupData: nodeModel.getGroupData
+        })
+    }
     render() {
         let {menuFold,tabFold,currentEditorData,editorType,nodeGroupData,nodeTypeId,editorKey,contentLoading,nodeModel,nodeData}=this.state,{stageHeight=660,style,...otherProps}=this.props;
         let contentHeight=stageHeight-40;
-        console.log(nodeGroupData,'nodeGroupData-nodeGroupData')
         return (
                 <Layout className="abm_frontend_designer" style={{height:stageHeight}}>
                 <Sider trigger={null} collapsible collapsed={menuFold} width={170} collapsedWidth={32}>
@@ -271,6 +308,7 @@ export default class Workbench extends React.Component {
                                                 pageModel={nodeModel.getPageModel()} key={editorKey}
                                                 nodeModel={nodeModel}
                                                 saveAs={this.saveAsTemplate}
+                                                createFromTemplate={this.createFromTemplate}
                                                 onSave={this.handleSaveMainPage}/>}
                                     {editorType === "FORM" &&
                                     <FormBlockEditor {...otherProps} editorData={currentEditorData}

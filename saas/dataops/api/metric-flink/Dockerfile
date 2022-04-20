@@ -27,9 +27,12 @@ COPY --from=build ${BUILD_JAR} /app/sbin/${JAR_NAME}
 COPY ./sbin/ /app/sbin/
 RUN chmod +x /app/sbin/entrypoint.sh
 
+# minio-client
+RUN wget https://sreworks.oss-cn-beijing.aliyuncs.com/bin/mc-linux-amd64 -O /app/sbin/mc
+RUN chmod +x /app/sbin/mc
+
 # kafka init
 RUN apk add gcc python3 python3-dev py3-pip musl-dev librdkafka-dev
 RUN pip3 install -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com confluent_kafka
 
 ENTRYPOINT ["/bin/sh", "/app/sbin/entrypoint.sh"]
-

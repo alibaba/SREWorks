@@ -127,3 +127,8 @@ kafka:
     servers: "sreworks-zookeeper:2181"
 
 
+openebs:
+  enabled: true
+
+
+

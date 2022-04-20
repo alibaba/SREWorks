@@ -113,4 +113,20 @@ public class TraitServiceImpl implements TraitService {
         TraitHandler handler = handlerFactory.get(TraitHandler.class, DynamicScriptKindEnum.TRAIT.toString(), name);
         handler.reconcile(payload);
     }
+
+    /**
+     * 调用指定 Trait 的 reconcile 过程
+     *
+     * @param name   Trait 唯一名称
+     * @param object Reconcile Object
+     * @param properties Reconcile Config
+     */
+    @Override
+    public void reconcile(String name, JSONObject object, JSONObject properties) {
+        TraitHandler handler = handlerFactory.get(TraitHandler.class, DynamicScriptKindEnum.TRAIT.toString(), name);
+        JSONObject payload = new JSONObject();
+        payload.put("object", object);
+        payload.put("properties", properties);
+        handler.reconcile(payload);
+    }
 }

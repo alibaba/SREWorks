@@ -38,6 +38,16 @@ public class AppOptionConstant {
     public static final String APP_SOURCE = "appSource";
 
     /**
+     * 可读名称
+     */
+    public static final String APP_NAME_CN = "nameCn";
+
+    /**
+     * 导航链接
+     */
+    public static final String APP_NAV_LINK = "navLink";
+
+    /**
      * 应用配置 Key 类型映射字典
      */
     public static final Map<String, AppOptionTypeEnum> VALUE_TYPE_MAP =
@@ -59,11 +69,11 @@ public class AppOptionConstant {
                 // 所属分类
                 put(APP_CATEGORY, AppOptionTypeEnum.STRING);
                 // 可读名称
-                put("nameCn", AppOptionTypeEnum.STRING);
+                put(APP_NAME_CN, AppOptionTypeEnum.STRING);
                 // 产品链接
                 put("productLink", AppOptionTypeEnum.STRING);
                 // 导航跳转地址
-                put("navLink", AppOptionTypeEnum.STRING);
+                put(APP_NAV_LINK, AppOptionTypeEnum.STRING);
                 // 应用 Secret 配置
                 put("secret", AppOptionTypeEnum.STRING);
                 // Logo 图像地址

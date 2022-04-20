@@ -113,4 +113,16 @@ public class TraitProviderImpl implements TraitProvider {
     public void reconcile(String name, JSONObject payload) {
         traitService.reconcile(name, payload);
     }
+
+    /**
+     * 调用指定 Trait 的 reconcile 过程
+     *
+     * @param name   Trait 唯一名称
+     * @param object Reconcile Object
+     * @param properties Reconcile Properties
+     */
+    @Override
+    public void reconcile(String name, JSONObject object, JSONObject properties) {
+        traitService.reconcile(name, object, properties);
+    }
 }

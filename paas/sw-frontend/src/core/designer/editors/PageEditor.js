@@ -3,7 +3,7 @@
  * 节点页面编辑器
  */
 import React from 'react';
-import { BuildOutlined, CodeOutlined, DatabaseOutlined, SettingOutlined } from '@ant-design/icons';
+import { BuildOutlined, CodeOutlined, DatabaseOutlined, SettingOutlined, SnippetsOutlined } from '@ant-design/icons';
 import {
     Layout,
     Menu,
@@ -16,7 +16,9 @@ import {
     List,
     Tabs,
     Drawer,
+    Modal,
     Tooltip,
+    Image
 } from "antd";
 import PageModel from '../../framework/model/PageModel';
 import Constants from '../../framework/model/Constants';
@@ -24,6 +26,7 @@ import DataSourceEditor from "./DataSourceEditor";
 import PageContent from "../../framework/core/PageContent";
 import * as util from '../../../utils/utils';
 import _ from 'lodash';
+import html2canvas from "html2canvas";
 
 import '../workbench/index.less';
 import './index.less';
@@ -31,7 +34,7 @@ import ContentLayout from "../../framework/components/ContentLayout";
 import AceViewer from '../../../components/FormBuilder/FormItem/AceViewer';
 import FluidContentLayoutDesigner from "../../framework/components/FluidContentLayoutDesigner";
 import appMenuTreeService from '../../services/appMenuTreeService';
-import {page_template_meta} from './TemplateConstant';
+import { page_template_meta, template_app_id } from './TemplateConstant';
 
 const { Step } = Steps;
 const { TabPane } = Tabs;
@@ -61,6 +64,11 @@ export default class PageEditor extends React.Component {
             openDrawer: false,
             current: 0,
             activeKey: "dev",
+            showTemplateList: false,
+            confirmLoading: false,
+            templateList: [],
+            activeTarget: '',
+            operFlag: 'save'
         };
     }
 
@@ -185,22 +193,78 @@ export default class PageEditor extends React.Component {
     handleChangeTab = res => {
         this.setState({ activeKey: res })
     }
-    handleSaveAs= ()=> {
-        let {nodeData,saveAs} = this.props;
+    handleSaveAs = () => {
+        let { nodeData, saveAs } = this.props;
         let newParam = _.cloneDeep(page_template_meta);
         let templateServiceType = util.generateId();
         newParam.serviceType = templateServiceType;
         newParam.config.name = nodeData.config.name;
         newParam.config.label = nodeData.config.label;
-        appMenuTreeService.insertNode(newParam).then(res => {
-            saveAs && saveAs(templateServiceType)
-        });
-        
+        try {
+            html2canvas(document.querySelector("#capture")).then(canvas => {
+                newParam.config.capture = canvas.toDataURL("image/png");
+                appMenuTreeService.insertNode(newParam).then(res => {
+                    this.setState({
+                        showTemplateList: false
+                    })
+                    saveAs && saveAs(templateServiceType)
+                });
+            });
+        } catch (error) {
+            appMenuTreeService.insertNode(newParam).then(res => {
+                this.setState({
+                    showTemplateList: false
+                })
+                saveAs && saveAs(templateServiceType)
+            });
+        }
+    }
+    // 从模板创建
+    handleCreateFromTemplate = () => {
+        let {templateList,activeTarget} = this.state;
+        let groupData = templateList.find(item=> item.serviceType === activeTarget);
+        let nodeTypeId = groupData && groupData.nodeTypePath;
+        let { createFromTemplate } = this.props;
+        createFromTemplate && createFromTemplate(nodeTypeId,groupData);
+    }
+    handleCancel = () => {
+        this.setState({
+            showTemplateList: false,
+
+        })
+    }
+    getTemplateList = () => {
+        appMenuTreeService.getMenuTree(template_app_id).then(res => {
+            let sunMenuTree = res.children.find(item => item.name === 'home') || {};
+            this.setState({
+                templateList: sunMenuTree.children || []
+            })
+        })
+    }
+    showTemlateListModal = (operFlag) => {
+        this.getTemplateList()
+        this.setState({
+            showTemplateList: true,
+            operFlag: operFlag,
+            activeTarget: '',
+        })
+    }
+    setActive=(item)=>{
+        this.setState({
+            activeTarget: item.serviceType
+        })
     }
     render() {
-        let { pageModel, showPreview, openDrawer, showJson, activeKey } = this.state, { height = 620, nodeData, contentLoading } = this.props;
+        let { pageModel, showPreview, openDrawer, showJson, activeKey, showTemplateList, confirmLoading, templateList,activeTarget,operFlag } = this.state, { height = 620, nodeData,contentLoading } = this.props;
         let tabEditorContentStyle = { height: height - 42, overflowY: "auto", overflowX: "none" }, { config } = nodeData;
         let { pageLayoutType = Constants.PAGE_LAYOUT_TYPE_CUSTOM } = config, containerModel = pageModel.getRootWidgetModel();
+        
+        let saveOrCreat = false, bleanWedgets = containerModel.widgets; //动态展示保存模板/从模板创建
+        if (bleanWedgets && bleanWedgets.length && bleanWedgets[0].rows.length) {
+            saveOrCreat = true;
+        } else {
+            saveOrCreat = false
+        }
         return (
             <div className={"globalBackground page_small_tabs abm-frontend-designer-page-editor"}>
                 <Tabs activeKey={activeKey} onChange={this.handleChangeTab} size="small" tabBarExtraContent={
@@ -217,9 +281,16 @@ export default class PageEditor extends React.Component {
                                     <span className="text">添加</span>
                                 </div>
                             </Button>}
-                        {/* <Button size="small" style={{position:'relative',top:-3}} type="primary" onClick={this.handleSaveAs}>
-                            另存为模板
-                        </Button> */}
+                        {
+                            saveOrCreat && <Button size="small" icon={<SnippetsOutlined />} style={{ position: 'relative', top: -3 }} type="primary" onClick={()=>this.showTemlateListModal('save')}>
+                                另存为模板
+                            </Button>
+                        }
+                        {
+                            !saveOrCreat && <Button size="small" icon={<SnippetsOutlined />} style={{ position: 'relative', top: -3 }} type="primary" onClick={()=>this.showTemlateListModal('create')}>
+                                从模板创建
+                            </Button>
+                        }
                         <Button size="small" className="feature-button" onClick={this.handlePreview}>
                             <div className="wrapper">
                                 <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="31824" width="16" height="16">
@@ -241,7 +312,7 @@ export default class PageEditor extends React.Component {
                     </div>
                 }>
                     <TabPane tab={<span><BuildOutlined style={{ marginRight: 8 }} />画布</span>} key="dev">
-                        <div style={tabEditorContentStyle}>
+                        <div id="capture" style={tabEditorContentStyle}>
                             {
                                 pageLayoutType === Constants.PAGE_LAYOUT_TYPE_FLUID &&
                                 <FluidContentLayoutDesigner {...this.props} containerModel={containerModel} />
@@ -286,6 +357,38 @@ export default class PageEditor extends React.Component {
                         <PageContent pageModel={pageModel} pageLayoutType={pageLayoutType} />
                     </div>
                 </Drawer>
+                <Modal
+                    title="模板列表"
+                    visible={showTemplateList}
+                    width={810}
+                    confirmLoading={confirmLoading}
+                    onCancel={this.handleCancel}
+                    footer={
+                        <div>
+                            <Button onClick={this.handleCancel} type="default">取消</Button>
+                            {
+                                operFlag === 'save'? <Button onClick={this.handleSaveAs} type="primary">{activeTarget? '覆盖当前选中模板': '新增模板'}</Button> : <Button onClick={this.handleCreateFromTemplate} type="primary">确定</Button>
+                            }
+                        </div>
+                    }
+                >
+                    <section className='template-pane'>
+                            {
+                                templateList.map((item) => {
+                                    return <div onClick={()=>this.setActive(item)} class={item.serviceType=== activeTarget? 'template-item-active' : 'template-item'}>
+                                        <div className="template-logo" style={{backgroundImage: `url(${item.capture})`, backgroundPosition: 'center center',backgroundSize:'contain', backgroundRepeat: 'no-repeat',}}>
+                                            <Image onClick={(e)=> e.stopPropagation()} height={20} width={20} src={item.capture}/>
+                                        </div>
+                                        <div className="template-label">
+                                            <Tooltip placement="top" title={item.label}>
+                                                {item.label}
+                                            </Tooltip>
+                                        </div>
+                                    </div>
+                                })
+                            }
+                        </section>
+                </Modal>
             </div>
         );
     }

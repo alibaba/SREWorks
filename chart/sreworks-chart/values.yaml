@@ -59,7 +59,7 @@ saas:
   - upload
   - demoapp 
   dataops:
-    dbHost: '{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-mysql'
+    dbHost: '\{\{ Global.STAGE_ID \}\}-\{\{ Global.APP_ID \}\}-mysql'
     dbPassword: cb56b5is5e21_c359b42223
     dbUser: root
     dbPort: 3306

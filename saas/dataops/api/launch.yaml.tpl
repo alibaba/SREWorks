@@ -60,11 +60,11 @@ spec:
         - name: Global.DATA_DB_DATASOURCE_NAME
           value: "sw_saas_datasource"
         - name: Global.DATA_DB_HOST
-          value: "{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-mysql"
+          value: "${DATAOPS_DB_HOST}"
         - name: Global.DATA_DB_PORT
-          value: "3306"
+          value: "${DATAOPS_DB_PORT}"
         - name: Global.DATA_DB_USER
-          value: "root"
+          value: "${DATAOPS_DB_USER}"
         - name: Global.DATA_DB_PASSWORD
           value: "${DATAOPS_DB_PASSWORD}"
         - name: Global.DATA_ES_HOST
@@ -148,11 +148,11 @@ spec:
         - name: Global.DATA_DB_PMDB_NAME
           value: "pmdb"
         - name: Global.DATA_DB_HOST
-          value: "{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-mysql"
+          value: "${DATAOPS_DB_HOST}"
         - name: Global.DATA_DB_PORT
-          value: "3306"
+          value: "${DATAOPS_DB_PORT}"
         - name: Global.DATA_DB_USER
-          value: "root"
+          value: "${DATAOPS_DB_USER}"
         - name: Global.DATA_DB_PASSWORD
           value: "${DATAOPS_DB_PASSWORD}"
         - name: Global.DATA_SKYW_HOST
@@ -205,11 +205,11 @@ spec:
         - name: Global.DATA_DB_WAREHOUSE_NAME
           value: "sw_saas_warehouse"
         - name: Global.DATA_DB_HOST
-          value: "{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-mysql"
+          value: "${DATAOPS_DB_HOST}"
         - name: Global.DATA_DB_PORT
-          value: "3306"
+          value: "${DATAOPS_DB_PORT}"
         - name: Global.DATA_DB_USER
-          value: "root"
+          value: "${DATAOPS_DB_USER}"
         - name: Global.DATA_DB_PASSWORD
           value: "${DATAOPS_DB_PASSWORD}"
  
@@ -237,11 +237,11 @@ spec:
         - name: Global.HEALTH_ENDPOINT
           value: "{{ Global.STAGE_ID }}-health-health.sreworks.svc.cluster.local:80"
         - name: Global.DATA_DB_HOST
-          value: "{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-mysql"
+          value: "${DATAOPS_DB_HOST}"
         - name: Global.DATA_DB_PORT
-          value: "3306"
+          value: "${DATAOPS_DB_PORT}"
         - name: Global.DATA_DB_USER
-          value: "root"
+          value: "${DATAOPS_DB_USER}"
         - name: Global.DATA_DB_PASSWORD
           value: "${DATAOPS_DB_PASSWORD}"
         - name: Global.MINIO_ENDPOINT

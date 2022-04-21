@@ -50,7 +50,10 @@ data:
   IMPORT_FRONTEND: {{ .Values.build.importFrontend | quote }}
   IMAGE_BUILD_ENABLE: {{ .Values.build.enable | quote }}
 
+  DATAOPS_DB_HOST: {{ .Values.saas.dataops.dbHost }}
   DATAOPS_DB_PASSWORD: {{ .Values.saas.dataops.dbPassword }}
+  DATAOPS_DB_PORT: {{ .Values.saas.dataops.dbPort }}
+  DATAOPS_DB_USER: {{ .Values.saas.dataops.dbUser }}
   GRAFANA_ADMIN_PASSWORD: {{ .Values.saas.grafana.password }} 
 
   ACCOUNT_SUPER_CLIENT_ID: {{ .Values.appmanager.gateway.account_super_client_id }}

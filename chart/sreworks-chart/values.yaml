@@ -59,7 +59,10 @@ saas:
   - upload
   - demoapp 
   dataops:
-    dbPassword: cb56b5is5e21_c359b42223 
+    dbHost: '{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-mysql'
+    dbPassword: cb56b5is5e21_c359b42223
+    dbUser: root
+    dbPort: 3306
   grafana:
     password: "sreworks123456"
 

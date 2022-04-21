@@ -262,7 +262,7 @@ export default class Workbench extends React.Component {
                 <div onClick={(e)=>{this.setState({menuFold:!menuFold},()=>this.handleContentResize())}} className="collapsed-btn-front-menu globalBackground">
                     <LegacyIcon type={menuFold ? 'right' : 'left'}/>
                 </div>
-                <Content className={!nodeTypeId?"globalBackground":""} style={{height: stageHeight}}>
+                <Content id="capture" className={!nodeTypeId?"globalBackground":""} style={{height: stageHeight}}>
                     <Spin spinning={contentLoading}>
                         {
                             nodeTypeId &&

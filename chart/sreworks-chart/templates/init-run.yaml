@@ -345,8 +345,9 @@ data:
 
 
     # mysql地址如果从外部传入就不拉起mysql
-    if [[ $DATAOPS_DB_HOST =~ '{{ Global.STAGE_ID }}' ]]
+    if [[ "$DATAOPS_DB_HOST" == "default-mysql" ]]
     then
+      export DATAOPS_DB_HOST='\{\{ Global.STAGE_ID \}\}-\{\{ Global.APP_ID \}\}-mysql'
       envsubst < /root/saas/dataops/api/mysql/build.yaml.tpl > tmp-build.yaml
       envsubst < /root/saas/dataops/api/mysql/launch.yaml.tpl > tmp-launch.yaml
       split

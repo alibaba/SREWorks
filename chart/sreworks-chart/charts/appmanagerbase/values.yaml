@@ -129,6 +129,11 @@ kafka:
 
 openebs:
   enabled: true
+  localprovisioner:
+    deviceClass:
+      enabled: false
+    hostpathClass:
+      name: sreworks-hostpath
 
 
 

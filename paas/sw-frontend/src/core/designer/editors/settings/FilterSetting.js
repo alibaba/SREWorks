@@ -32,10 +32,9 @@ class FilterSetting extends React.Component {
     constructor(props) {
         super(props);
         let { widgetModel, config } = props;
-        console.log(config, 'filterSetting');
         this.isFilterForm = widgetModel.type === 'FILTER_FORM';
         this.isTabFilter = widgetModel.type === 'FILTER_TAB';
-        let paramsDef = [], { outputName = '', form, column, labelSpan, autoSubmit, enterSubmit, hasBackground = false, showSearch = true, tabType = "Button", tabSize = "default", tabPosition = 'left', scenes = [] } = config;
+        let paramsDef = [], { outputName = '', form, column, labelSpan, autoSubmit, enterSubmit, hasBackground = false, showSearch = true, tabType = "Button", tabSize = "default", tabPosition = 'left', scenes = [],visibleExpression='' } = config;
         paramsDef.push({ type: FormElementType.INPUT, name: 'outputName', initValue: outputName, required: false, label: "输出对象名称", tooltip: "过滤器表单值输出到填写的参数名对象中,为空时表单项值全部独立输出到节点参数域中" });
         if (this.isFilterForm) {
             paramsDef.push({
@@ -59,38 +58,44 @@ class FilterSetting extends React.Component {
             type: FormElementType.RADIO, name: 'showSearch', initValue: showSearch === true || false, required: false, label: "显示查询按钮",
             optionValues: [{ value: true, label: '是' }, { value: false, label: '否' }]
         });
-        if (!this.isTabFilter) {
-            paramsDef.push({
-                type: FormElementType.RADIO, name: 'hasBackground', initValue: hasBackground, required: false, label: "具有包装容器",
-                optionValues: [{ value: true, label: '是' }, { value: false, label: '否' }]
-            });
-        }
+        paramsDef.push({
+            type: FormElementType.RADIO, name: 'hasBackground', initValue: hasBackground, required: false, label: "具有包装容器",
+            optionValues: [{ value: true, label: '是' }, { value: false, label: '否' }]
+        });
         paramsDef.push({
             type: 83, name: 'scenes', initValue: scenes || "[]", required: false, label: "快捷过滤定义",
             height: "calc(50vh - 100px)",
             showDiff: false,
             defModel: { height: "calc(50vh - 100px)", disableShowDiff: true, mode: "json", width: 360 },
             tooltip: "预先设定好过滤器的过滤值,进行快捷查询。数组的每个元素包含 values、title、category(可选用于分类)三个key，values为过滤器中的表单项值,title为过滤项名称,category启用场景分组"
-        }
-        );
+        });
+        paramsDef.push({
+            type: FormElementType.INPUT, name: 'visibleExpression', initValue: visibleExpression, required: false, label: "可见表达式",
+            tooltip: "通过表达式条件来实现对过滤器区块进行隐藏/展示",inputTip: "直接用nodeParams.参数名或$(参数名)来引用参数阈其他参数值" 
+        })
         if (this.isTabFilter) {
-            paramsDef.push({
-                type: FormElementType.RADIO, name: 'tabPosition', initValue: tabPosition, required: false, label: "tab展示位置",
-                optionValues: [{ value: 'left', label: 'left' }, { value: 'right', label: 'right' }],
-                tooltip: "tab的展示位置,left表示紧随标题,right表示居右"
-            });
-        }
-        if (this.isTabFilter) {
-            paramsDef.push({
-                type: FormElementType.RADIO, name: 'tabSize', initValue: tabSize, required: false, label: "tab展示大小",
-                optionValues: [{ value: 'small', label: 'small' }, { value: 'default', label: 'default' }, { value: 'large', label: 'large' }],
-                tooltip: "tab的Size大小"
-            });
-            paramsDef.push({
-                type: FormElementType.RADIO, name: 'tabType', initValue: tabType, required: false, label: "tab展示类型",
-                optionValues: [{ value: 'Button', label: 'Button' }, { value: 'Tab', label: 'Tab' }, { value: 'Switch', label: 'Switch' }],
-                tooltip: "tab过滤器呈现的渲染形式"
-            });
+            paramsDef = [
+                { type: FormElementType.INPUT, name: 'outputName', initValue: outputName, required: false, label: "输出对象名称", tooltip: "过滤器表单值输出到填写的参数名对象中,为空时表单项值全部独立输出到节点参数域中" },
+                {
+                    type: FormElementType.RADIO, name: 'tabPosition', initValue: tabPosition, required: false, label: "tab展示位置",
+                    optionValues: [{ value: 'left', label: 'left' }, { value: 'right', label: 'right' }],
+                    tooltip: "tab的展示位置,left表示紧随标题,right表示居右"
+                },
+                {
+                    type: FormElementType.RADIO, name: 'tabSize', initValue: tabSize, required: false, label: "tab展示大小",
+                    optionValues: [{ value: 'small', label: 'small' }, { value: 'default', label: 'default' }, { value: 'large', label: 'large' }],
+                    tooltip: "tab的Size大小"
+                },
+                {
+                    type: FormElementType.RADIO, name: 'tabType', initValue: tabType, required: false, label: "tab展示类型",
+                    optionValues: [{ value: 'Button', label: 'Button' }, { value: 'Tab', label: 'Tab' }, { value: 'Switch', label: 'Switch' }],
+                    tooltip: "tab过滤器呈现的渲染形式"
+                },
+                {
+                    type: FormElementType.INPUT, name: 'visibleExpression', initValue: visibleExpression, required: false, label: "可见表达式",
+                    tooltip: "直接用nodeParams.参数名或$(参数名)来引用参数阈其他参数值",inputTip: "直接用nodeParams.参数名或$(参数名)来引用参数阈其他参数值" 
+                }
+            ]
         }
         this.itemDef = paramsDef;
 
@@ -100,30 +105,57 @@ class FilterSetting extends React.Component {
     buildingFormElements = () => {
         let { form } = this.props;
         let formChildrens = this.itemDef.map(item => FormElementFactory.createFormItem(item, form, formItemLayout));
-        return (
-            <Row>
+        if (this.isTabFilter) {
+            return <Row>
+                <Col span={9}>
+                    {formChildrens}
+                </Col>
+                <Col span={9}></Col>
+            </Row>
+        }
+        if (this.isFilterForm) {
+            return <Row>
                 <Col span={9}>
                     {
                         [
                             formChildrens[0],
-                            this.isTabFilter && formChildrens[formChildrens.length - 3],
-                            this.isTabFilter && formChildrens[formChildrens.length - 2],
-                            this.isTabFilter && formChildrens[formChildrens.length - 1],
-                            !this.isTabFilter && formChildrens[1],
-                            !this.isTabFilter && formChildrens[2],
-                            !this.isTabFilter && formChildrens[3],
-                            !this.isTabFilter && formChildrens[4],
-                            this.isFilterForm && formChildrens[4],
-                            this.isFilterForm && formChildrens[5],
+                            formChildrens[1],
+                            formChildrens[2],
+                            formChildrens[3],
+                            formChildrens[4],
+                            formChildrens[5]
                         ]
                     }
                 </Col>
                 <Col span={9}>
                     {
                         [
-
-                            this.isFilterForm && formChildrens[6],
-                            !this.isFilterForm && !this.isTabFilter && formChildrens[5],
+                            formChildrens[6],
+                            formChildrens[8],
+                            formChildrens[7],
+                        ]
+                    }
+                </Col>
+            </Row>
+        }
+        return (
+            <Row>
+                <Col span={9}>
+                    {
+                        [
+                            formChildrens[0],
+                            formChildrens[1],
+                            formChildrens[2],
+                            formChildrens[3],
+                            formChildrens[4],
+                        ]
+                    }
+                </Col>
+                <Col span={9}>
+                    {
+                        [
+                            formChildrens[6],
+                            formChildrens[5]
                         ]
                     }
                 </Col>

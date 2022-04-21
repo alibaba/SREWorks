@@ -290,7 +290,7 @@ export default class ElementEditor extends React.Component {
                         </TabPane>
                     }
                     {
-                        !this.isAction && !this.isFilter && ((configWrapper && configWrapper !== Constants.CARD_WRAPPER_NONE) || (widgetMeta && widgetMeta.configSchema.supportToolbar)) && !isJsonEdit &&
+                        !this.isAction && !this.isFilter && (configWrapper && configWrapper !== Constants.CARD_WRAPPER_NONE) && (widgetMeta && widgetMeta.configSchema.supportToolbar) && !isJsonEdit &&
                         <TabPane key="toolbar" tab={<span>工具栏</span>}>
                             <div style={tabContentStyle}>
                                 <ToolbarSetting widgetModel={widgetModel} config={Object.assign({}, this.commonConfig)} onValuesChange={(changedField, allValue) => this.setCommonConfig({ toolbar: allValue })} />

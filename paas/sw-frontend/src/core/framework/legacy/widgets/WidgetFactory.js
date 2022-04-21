@@ -38,7 +38,6 @@ export default class WidgetFactory {
 
     static createWidget(mode, widgetProps) {
         let type = mode.type || mode.dataType;
-        console.log(widgetProps, 'mode.type');
         switch (type) {
             case 'DESIGNER_WORKBENCH':
                 return <WebDesignerWorkbench {...widgetProps} mode={mode} />;

@@ -57,7 +57,7 @@ spec:
         - name: Global.CACHE_TYPE
           value: local
         - name: Global.DB_HOST
-          value: '{{Global.STAGE_ID}}-dataops-mysql.sreworks-dataops'
+          value: '${DATAOPS_DB_HOST}'
         - name: Global.ACCOUNT_SUPER_CLIENT_ID
           value: "${ACCOUNT_SUPER_CLIENT_ID}"
         - name: Global.ACCOUNT_SUPER_CLIENT_SECRET

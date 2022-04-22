@@ -7,7 +7,7 @@ global:
 
   images:
     registry: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks
-    tag: v0.5
+    tag: v1.0
 
   accessMode: ingress
 
@@ -73,7 +73,7 @@ swcli:
   clientSecret: stLCjCPKbWmki65DsAj2jPoeBLPimpJa
 
 source:
-  branch: master
+  branch: v1.0
   repo: https://code.aliyun.com/sreworks_public/mirror.git
 
 appmanagerbase:

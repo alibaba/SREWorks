@@ -347,7 +347,7 @@ data:
     # mysql地址如果从外部传入就不拉起mysql
     if [[ "$DATAOPS_DB_HOST" == "default-mysql" ]]
     then
-      DATAOPS_DB_HOST='\{\{ Global.STAGE_ID \}\}-\{\{ Global.APP_ID \}\}-mysql'
+      DATAOPS_DB_HOST='\{\{ Global.STAGE_ID \}\}-\{\{ Global.APP_ID \}\}-mysql.sreworks-dataops'
       export DATAOPS_DB_HOST=$(echo $DATAOPS_DB_HOST|sed 's/\\//g')
       envsubst < /root/saas/dataops/api/mysql/build.yaml.tpl > tmp-build.yaml
       envsubst < /root/saas/dataops/api/mysql/launch.yaml.tpl > tmp-launch.yaml
@@ -488,6 +488,12 @@ data:
     sh /app/core-deploy-check.sh
     export NAMESPACE_ID=${NAMESPACE_AIOPS}
 
+    if [[ "$DATAOPS_DB_HOST" == "default-mysql" ]]
+    then
+      DATAOPS_DB_HOST='\{\{ Global.STAGE_ID \}\}-\{\{ Global.APP_ID \}\}-mysql.sreworks-dataops'
+      export DATAOPS_DB_HOST=$(echo $DATAOPS_DB_HOST|sed 's/\\//g')
+    fi 
+
     envsubst < /root/saas/aiops/api/build.yaml.tpl > /root/saas/aiops/api/build.yaml
     envsubst < /root/saas/aiops/api/launch.yaml.tpl > /root/saas/aiops/api/launch.yaml
     envsubst < /root/saas/aiops/ui/launch-v2.yaml.tpl > /root/saas/aiops/ui/launch.yaml
@@ -615,6 +621,12 @@ data:
     cd /root
     
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+
+    if [[ "$DATAOPS_DB_HOST" == "default-mysql" ]]
+    then
+      DATAOPS_DB_HOST='\{\{ Global.STAGE_ID \}\}-\{\{ Global.APP_ID \}\}-mysql.sreworks-dataops'
+      export DATAOPS_DB_HOST=$(echo $DATAOPS_DB_HOST|sed 's/\\//g')
+    fi
 
     envsubst < /root/saas/health/api/build.yaml.tpl > /root/saas/health/api/build.yaml
     envsubst < /root/saas/health/api/launch.yaml.tpl > /root/saas/health/api/launch.yaml

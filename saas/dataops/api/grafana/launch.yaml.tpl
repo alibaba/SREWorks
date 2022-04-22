@@ -46,6 +46,8 @@ spec:
           server:
             root_url: /gateway/dataops-grafana/
             serve_from_sub_path: true
+          auth.basic:
+            enabled: false
           auth.proxy:
             enabled: true
             auto_sign_up: true

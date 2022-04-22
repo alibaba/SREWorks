@@ -15,7 +15,7 @@
 <a name="naB3D"></a>
 ## 拉取 SREWorks 项目源码
 ```shell
-git clone http://github.com/alibaba/sreworks.git sreworks
+git clone http://github.com/alibaba/sreworks.git -b v1.0 sreworks
 cd sreworks
 SW_ROOT=$(pwd)
 ```
@@ -45,7 +45,7 @@ helm install sreworks $SW_ROOT/chart/sreworks-chart \
     --create-namespace --namespace sreworks \
     --set appmanager.home.url="https://your-website.***.com" \
     --set build.enable=true \
-    --tag global.images.tag="v1.0" \
+    --set global.images.tag="v1.0" \
     --set global.images.registry=$SW_REPO
 
 ```

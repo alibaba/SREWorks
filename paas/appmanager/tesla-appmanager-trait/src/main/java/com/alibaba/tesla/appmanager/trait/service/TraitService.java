@@ -54,4 +54,13 @@ public interface TraitService {
      * @param payload 请求 Payload
      */
     void reconcile(String name, JSONObject payload);
+
+    /**
+     * 调用指定 Trait 的 reconcile 过程
+     *
+     * @param name   Trait 唯一名称
+     * @param object Reconcile Object
+     * @param properties Reconcile Properties
+     */
+    void reconcile(String name, JSONObject object, JSONObject properties);
 }

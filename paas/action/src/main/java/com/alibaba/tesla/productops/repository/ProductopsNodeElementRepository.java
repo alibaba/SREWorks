@@ -28,6 +28,10 @@ public interface ProductopsNodeElementRepository
     @Transactional(rollbackOn = Exception.class)
     void deleteByNodeTypePathAndElementIdAndStageId(String nodeTypePath, String elementId, String stageId);
 
+    @Modifying
+    @Transactional(rollbackOn = Exception.class)
+    void deleteByNodeTypePathAndStageId(String nodeTypePath, String stageId);
+
     ProductopsNodeElement findFirstByNodeTypePathAndElementIdAndStageId(
         String nodeTypePath, String elementId, String stageId);
 

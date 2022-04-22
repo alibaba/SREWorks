@@ -106,6 +106,7 @@ public class AppOptionServiceImpl implements AppOptionService {
 
         List<AppOptionDO> options = getOptions(appId);
         redisTemplate.opsForValue().set(key, JSONObject.toJSONString(options), 10, TimeUnit.MINUTES);
+        log.info("set cached options|appId={}|options={}", appId, JSONObject.toJSONString(options));
         return options;
     }
 

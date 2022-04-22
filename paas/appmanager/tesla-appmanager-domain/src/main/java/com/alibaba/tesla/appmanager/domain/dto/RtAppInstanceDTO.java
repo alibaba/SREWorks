@@ -131,5 +131,15 @@ public class RtAppInstanceDTO {
          * Logo
          */
         private String logoImg;
+
+        /**
+         * 中文名称
+         */
+        private String nameCn;
+
+        /**
+         * 导航链接
+         */
+        private String navLink;
     }
 }

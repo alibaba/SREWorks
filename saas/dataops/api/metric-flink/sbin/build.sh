@@ -17,6 +17,3 @@ export MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
 envsubst < /app/sbin/common.properties.tpl > /app/sbin/common.properties
 
 cd /app/sbin && jar uvf metric-alarm-1.2-SNAPSHOT.jar common.properties
-
-wget https://sreworks.oss-cn-beijing.aliyuncs.com/bin/mc-linux-amd64 -O $SW_ROOT/mc
-chmod +x $SW_ROOT/mc

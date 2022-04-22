@@ -196,7 +196,7 @@ export default class WidgetHandleCard extends React.Component {
         }
         if (widgetModel) {
             return (
-                <div style={{ width: '100%', overflow: "auto", padding: "8px", border: "1px dashed #d9d9d9", borderRadius: 5, height: cardHeight }}>
+                <div style={{ width: '100%', overflow: "auto", padding: "8px", border: "1px dashed #d9d9d9", borderRadius: 5, height: cardHeight,paddingTop:12 }}>
                     <div className="code-box-title">
                         <span>{editTitle}</span>
                         <a onClick={this.show} className="action-icon">

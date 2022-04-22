@@ -186,8 +186,13 @@ class FilterForm extends PureComponent {
             let { defModel = {} } = item;
             let isVisable = true, { displayType } = defModel;
             initParams[item.name] = item.initValue;
-            if (item.visibleExp && item.visibleExp.length > 4) {
-                isVisable = safeEval(item.visibleExp, { formValues: Object.assign(initParams, nodeParam, form.getFieldsValue()) });
+            try {
+                if (item.visibleExp && item.visibleExp.length > 4) {
+                    isVisable = safeEval(item.visibleExp, { formValues: Object.assign(initParams, nodeParam, form.getFieldsValue()) });
+                }
+            } catch(e) {
+                isVisable = true;
+                return true
             }
             if (displayType === 'advanced' && displayMode === 'base') {
                 this.hasType = true;
@@ -321,7 +326,6 @@ class FilterFormContainer extends React.Component {
     }
     render() {
         const { actionData } = this.props;
-        console.log(actionData, this.props, 'filter-form-action')
         if (actionData && actionData.config.hasBackground) {
             return <Card>
                 <FilterForm {...this.props} />

@@ -171,6 +171,7 @@ export default  {
             }
         },
         "supportItemToolbar":true,
+        "supportToolbar":true,
         "dataMock": {}
     },
     "catgory": "base"

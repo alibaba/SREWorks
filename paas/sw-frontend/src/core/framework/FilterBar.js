@@ -149,13 +149,17 @@ class FilterBar extends PureComponent {
         if (!defaultFilter) return null;
         //把高级查询条件放置到最后
         let initParams = {};
-        console.log(scenes, base, 'scenes === scenes')
         items.forEach(item => {
             let { defModel = {} } = item;
             let isVisable = true, { displayType } = defModel;
             initParams[item.name] = item.initValue;
-            if (item.visibleExp && item.visibleExp.length > 4) {
-                isVisable = safeEval(item.visibleExp, { formValues: Object.assign(initParams, nodeParam, form.getFieldsValue()) });
+            try {
+                if (item.visibleExp && item.visibleExp.length > 4) {
+                    isVisable = safeEval(item.visibleExp, { formValues: Object.assign(initParams, nodeParam, form.getFieldsValue()) });
+                }
+            } catch(e) {
+                isVisable = true;
+                return true
             }
             if (displayType === 'advanced' && displayMode === 'base') {
                 this.hasType = true;

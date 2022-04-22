@@ -5,6 +5,9 @@
 import service from '../../services/appMenuTreeService';
 import PageModel from './PageModel';
 import Constants from './Constants';
+import uuid4 from 'uuid/v4';
+import { page_template_meta, template_app_id } from '../../../core/designer/editors/TemplateConstant';
+
 
 
 
@@ -19,6 +22,7 @@ export default class NodeModel {
     }
 
     initFromJson(nodeData) {
+        console.log(nodeData,'nodeData.blocks')
         this.blocks = nodeData.blocks || [];
         this.forms = nodeData.forms || [];
         this.pageModel = nodeData.pageData ? new PageModel(nodeData.pageData) : PageModel.CREATE_DEFAULT_INSTANCE();
@@ -194,8 +198,27 @@ export default class NodeModel {
     getForm(formKey) {
         return this.forms.filter(formMeta => formMeta.elementId === formKey)[0];
     }
-
-
-
+    /**
+     * 更新主节点主页面模型,一般用于模板创建
+     */
+     updatePageModelFromTemplate(originNodeTypeId){
+         this.nodeId = originNodeTypeId;
+         let originAppId = originNodeTypeId && originNodeTypeId.split("|")[0];
+         let pageModelStr = JSON.stringify(this.pageModel);
+         let oldPageModelName = this.pageModel.name;
+         let oldPageModelNameRegExp = new RegExp(oldPageModelName,'g');
+         this.blocks.forEach(item => {
+            let newBlockId = uuid4();
+            let toolbarBlockRegExp = new RegExp(template_app_id+":BLOCK:"+item.name,'g');
+            let oldUuidRegExp = new RegExp(item.name,'g');
+            let oldTypePathRegExp = new RegExp(item.nodeTypePath,'g');
+            let oldAppIdRegExp = new RegExp(item.appId,'g');
+            let newToolbarBlockId = originAppId+":BLOCK:"+newBlockId;
+            item = JSON.parse(JSON.stringify(item).replace(toolbarBlockRegExp,newToolbarBlockId).replace(oldUuidRegExp,newBlockId).replace(oldTypePathRegExp,originNodeTypeId).replace(oldAppIdRegExp,originAppId))
+            pageModelStr = pageModelStr.replace(toolbarBlockRegExp,newToolbarBlockId).replace(oldUuidRegExp,newBlockId).replace(oldTypePathRegExp,originNodeTypeId).replace(oldAppIdRegExp,originAppId);
+         })
+         this.pageModel = JSON.parse(pageModelStr.replace(oldPageModelNameRegExp,uuid4()));
+         return this.pageModel;
+     }
 
 }

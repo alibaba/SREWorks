@@ -61,7 +61,6 @@ class PagingTable extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        console.log('执行刷新操作')
         let { params = {}, data, dataUrl } = this.props, { pagination } = this.state;
         if (!_.isEqual(prevProps.params || {}, params) || prevProps.dataUrl !== dataUrl || !_.isEqual(prevProps.data, data)) {
             this.loadData(Object.assign({}, params, { page: params.page ? params.page : 1, pageSize: params.pageSize ? params.pageSize : pagination.pageSize || 10 }));
@@ -278,7 +277,6 @@ class PagingTable extends Component {
         this.props.onChange && this.props.onChange(pagination, filters, sorter);
     };
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps.nodeParams, 'nextProps.nodeParams')
     }
     render() {
         const { pagination, data, loading } = this.state, { style, scrollX, scrollY, className, columns, renderComponents, openAction, handleParamsChanged, dataUrl, extParams = {},widgetConfig, ...otherTableProps } = this.props;

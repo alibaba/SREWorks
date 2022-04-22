@@ -70,9 +70,7 @@ class OamAction extends React.Component {
         let { actionData, userInfo, product, nodeParams, userParams, actionParams } = props, action = null;
         let actionInitParams = Object.assign({}, nodeParams, util.getUrlParams(), userParams, actionParams);
         //config中存在变量占位,需要进行替换
-        //console.log("actionData.config---->",actionData.config);
         let configMetaConf = actionData.config, runtimeData = actionData.runtimeData, configMeta;
-        //console.log("configMetaConf---->",configMetaConf);
         if (configMetaConf) {
             configMeta = util.renderTemplateJsonObject(configMetaConf, actionInitParams, false);
         }
@@ -136,13 +134,11 @@ class OamAction extends React.Component {
             beforeOpenWait: configMeta.beforeHandler && configMeta.beforeHandler.length > 150,
             cacheEffectValue: {}
         };
-        console.log(this.state, 'this.state --- Oamaction', 'paramsMaping --7');
     }
 
     componentDidMount() {
         let { mode } = this.props, { action } = this.state;
         //this.previewAction();
-        console.log(this.props, this.props.mode, 'props=== OamAction')
         if ((mode === 'custom' || mode === 'step') && action) {
             this.previewAction();
         }
@@ -202,7 +198,6 @@ class OamAction extends React.Component {
         let { beforeHandler } = configMeta, preExecute = this.preExecute;
         //定义了前置处理器,因内置了自定义的模板函数,因此只有大于模板长度再进行计算
         if (beforeHandler && beforeHandler.length > 150) {
-            console.log(actionParams, actionParams['alertRuleConfig']['duration'], 'actionParams--')
             let result = safeEval("(" + beforeHandler + ")(mergeNodeParams)", { mergeNodeParams: Object.assign({}, nodeParams, userParams, actionParams, remoteParams) });
             let { message, transformParams, pass, dynamicItems, feedbacks } = result, beforeResults = {};
             //存在参数转换或者动态表单项
@@ -270,7 +265,6 @@ class OamAction extends React.Component {
     executeAction = (params, actionButton) => {
         //如果是输出类型的直接调用输出
         let { action, remoteParams, dispalyItems } = this.state, { nodeParams, userParams, actionParams, execCallBack, history, mode, stepsFormValues = {} } = this.props;
-        console.log("executeAction dispalyItems------->", dispalyItems);
         if (mode === 'step') {
             Object.assign(params, stepsFormValues);
         }
@@ -499,15 +493,11 @@ class OamAction extends React.Component {
         });
         let { action, remoteParams, dynamicItems } = this.state, { nodeParams, userParams, actionParams, displayType } = this.props, urlParams = util.getUrlParams();
         let defaultParams = Object.assign({}, nodeParams, urlParams, userParams, actionParams, remoteParams);
-        console.log(this.state.dispalyItems, 'preExecute 内部 初始 dispalyItems')
-        console.log("获取到的默认参数集合----->", defaultParams);
         window.__DEBUGGER_CURRENT_ACTION_PARAMS = Object.assign({}, defaultParams);
         action.setDefaultParams(defaultParams);
         let { approveGroupName } = defaultParams;
-        console.log(approveGroupName, 'approveGroupName == after action');
         action.getInputParamDef(approveGroupName).then(defs => {
             let dispalyItems = defs, initParams = {}, effectItemMapping = false;
-            console.log(dispalyItems, 'preexcute====action dispalyItems');
             if (dynamicItems && dynamicItems.length > 0) {
                 dynamicItems.forEach(di => {
                     let diString = JSON.stringify(di);
@@ -556,7 +546,6 @@ class OamAction extends React.Component {
                 }
                 //存在影响其他表单的函数
                 if (di.effectHandler && di.effectHandler.length > 10) {
-                    console.log(di, 'di.effectHandler==');
                     effectItemMapping = effectItemMapping || {};
                     effectItemMapping[di.name] = di.effectHandler;
                     // 兼容关联分组模式
@@ -775,7 +764,6 @@ class OamAction extends React.Component {
      * @param allValues
      */
     handleItemEffect = (changedValues, allValues) => {
-        console.log(changedValues, allValues, 'changedValues-effect')
         let { dispalyItems } = this.state;
         if (this.action_form_container) {
             let { remoteParams } = this.state, { nodeParams, userParams, actionParams } = this.props;
@@ -787,7 +775,6 @@ class OamAction extends React.Component {
                     let result = safeEval("(" + effectItemMapping[field] + ")(nodeParams,formValues,httpClient)", { nodeParams: allNodeParams, formValues: allValues, httpClient: httpClient });
                     if (Object.prototype.toString.call(result) === "[object Promise]") {
                         result.then((value) => {
-                            console.log(value === this.action_form_container.getFieldsValue(), this.action_form_container.getFieldsValue(), value, 'istrue');
                             if (JSON.stringify(value) === JSON.stringify(this.state.cacheEffectValue)) {
                                 return
                             } else {
@@ -823,6 +810,7 @@ class OamAction extends React.Component {
     render() {
         let { actionData, mode, displayType, nodeParams, advanced, showScenes, addScene, showSearch, filterConfig, widgetConfig, ...contentProps } = this.props;
         let { action, dockVisible, dispalyItems, loading, feedbackVisible, feedbacks, showHistory, sceneTitle, scenes, beforeOpenWait, effectItemMapping } = this.state;
+        console.log(displayType,this.props,'filter-displayType');
         if (beforeOpenWait) return null;
         if (!action || !dispalyItems) return <Spin />;
         let execInfo = action.getExecuteInfo();
@@ -932,8 +920,13 @@ class OamAction extends React.Component {
                     if (addScene) actionButtons.push(<Button size="small" key="_a_b_quick" style={{ marginLeft: 12 }} onClick={() => { let values = this.action_form_container.getFieldsValue(); this.handleAddScene(values) }}>存为场景</Button>);
                 }
             }
-            if (visibleExpression && visibleExpression.length > 10) {
-                formVisible = safeEval(visibleExpression, { nodeParams: allNodeParams });
+            try {
+                if (visibleExpression && visibleExpression.length > 10) {
+                    formVisible = safeEval(visibleExpression, { nodeParams: allNodeParams });
+                }
+            } catch(e) {
+                formVisible = true;
+                return true;
             }
             if (displayType === 'filter') {
                 if (!dispalyItems.length) return null;
@@ -1034,7 +1027,6 @@ class OamAction extends React.Component {
                     actionButtons.unshift(<Button style={{ marginRight: 12 }} size="small" key="_a_b_prev" onClick={() => { onPrev() }}>{localeHelper.get('previous', '上一步')}</Button>)
                 }
             }
-            console.log(dispalyItems, 'action.isDrawer')
             actionContent = (
                 <div>
                     {

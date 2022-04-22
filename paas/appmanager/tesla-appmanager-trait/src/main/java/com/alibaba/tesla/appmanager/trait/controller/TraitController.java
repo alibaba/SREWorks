@@ -5,9 +5,11 @@ import com.alibaba.tesla.appmanager.api.provider.TraitProvider;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.domain.dto.TraitDTO;
 import com.alibaba.tesla.appmanager.domain.req.trait.TraitQueryReq;
+import com.alibaba.tesla.appmanager.domain.req.trait.TraitReconcileReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.alibaba.tesla.web.controller.BaseController;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -141,6 +143,37 @@ public class TraitController extends BaseController {
         TraitQueryReq req = TraitQueryReq.builder().name(name).build();
         int response = trait.delete(req, "SYSTEM");
         return buildSucceedResult(response);
+    }
+
+    /**
+     * @api {post} /traits/reconcile Kubernetes Reconcile Callback API
+     * @apiName PostTraitReconcile
+     * @apiGroup Trait API
+     *
+     * @apiParam (Path Parameters) {String} name Trait 名称
+     *
+     * @apiSuccessExample 示例返回
+     * {
+     *     "code": 200,
+     *     "message": "SUCCESS",
+     *     "data": {}
+     * }
+     */
+    // 获取指定的 Trait
+    @PostMapping("/reconcile")
+    @ResponseBody
+    public TeslaBaseResult reconcile(@RequestBody TraitReconcileReq request) {
+        JSONObject properties = request.getProperties();
+        if (properties == null) {
+            return buildClientErrorResult("properties cannot be null");
+        }
+        String traitName = properties.getString("traitName");
+        if (StringUtils.isEmpty(traitName)) {
+            return buildClientErrorResult("traitName is required in properties");
+        }
+        JSONObject object = request.getObject();
+        trait.reconcile(traitName, object, properties);
+        return buildSucceedResult(DefaultConstant.EMPTY_OBJ);
     }
 
     /**

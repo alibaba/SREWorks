@@ -16,6 +16,8 @@ dependencies:
   condition: kruise.enabled
 - name: kafka
   condition: kafka.enabled
+- name: openebs
+  condition: openebs.enabled
 keywords:
   - bigdata
 maintainers:

@@ -41,6 +41,8 @@ public class RtAppInstanceDtoConvert extends BaseDtoConvert<RtAppInstanceDTO, Rt
         String appDescription = appId;
         String appCategory = "";
         String appLogoImg = "";
+        String appNameCn = "";
+        String appNavLink = "";
         for (AppOptionDO option : options) {
             if (AppOptionConstant.APP_NAME_KEY.equals(option.getKey())) {
                 appName = option.getValue();
@@ -50,6 +52,10 @@ public class RtAppInstanceDtoConvert extends BaseDtoConvert<RtAppInstanceDTO, Rt
                 appCategory = option.getValue();
             } else if (AppOptionConstant.APP_LOGO_IMG.equals(option.getKey())) {
                 appLogoImg = option.getValue();
+            } else if (AppOptionConstant.APP_NAME_CN.equals(option.getKey())) {
+                appNameCn = option.getValue();
+            } else if (AppOptionConstant.APP_NAV_LINK.equals(option.getKey())) {
+                appNavLink = option.getValue();
             }
         }
         String version = appInstance.getVersion();
@@ -73,6 +79,8 @@ public class RtAppInstanceDtoConvert extends BaseDtoConvert<RtAppInstanceDTO, Rt
                         .description(appDescription)
                         .category(appCategory)
                         .logoImg(appLogoImg)
+                        .nameCn(appNameCn)
+                        .navLink(appNavLink)
                         .build())
                 .gmtCreate(appInstance.getGmtCreate())
                 .gmtModified(appInstance.getGmtModified())

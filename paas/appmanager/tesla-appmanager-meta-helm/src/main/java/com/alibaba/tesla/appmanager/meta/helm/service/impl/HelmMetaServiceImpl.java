@@ -83,7 +83,7 @@ public class HelmMetaServiceImpl implements HelmMetaService {
         JSONArray parameterValues = new JSONArray();
         JSONObject valuesObject = new JSONObject();
         if (StringUtils.isNotBlank(defaultValuesYaml)){
-            JSONObject defaultValuesObject = SchemaUtil.createYaml().loadAs(defaultValuesYaml, JSONObject.class);
+            JSONObject defaultValuesObject = SchemaUtil.createYaml(JSONObject.class).loadAs(defaultValuesYaml, JSONObject.class);
             JSONArray toFieldPaths = new JSONArray();
             toFieldPaths.add("spec.values");
 
@@ -143,7 +143,7 @@ public class HelmMetaServiceImpl implements HelmMetaService {
         configObject.put("traits", traits);
         configObject.put("scopes", scopes);
 
-        Yaml yaml = SchemaUtil.createYaml();
+        Yaml yaml = SchemaUtil.createYaml(JSONObject.class);
         String typeId = new DeployConfigTypeId(ComponentTypeEnum.HELM, record.getHelmPackageId()).toString();
         deployConfigService.update(DeployConfigUpdateReq.builder()
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)

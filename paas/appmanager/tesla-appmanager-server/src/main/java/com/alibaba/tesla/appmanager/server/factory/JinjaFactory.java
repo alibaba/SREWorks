@@ -49,7 +49,7 @@ public class JinjaFactory {
         private final Yaml yaml;
 
         public DictRenderFilter() {
-            yaml = SchemaUtil.createYaml();
+            yaml = SchemaUtil.createYaml(Object.class);
         }
 
         @Override
@@ -80,7 +80,7 @@ public class JinjaFactory {
         private final Yaml yaml;
 
         public YamlRenderFilter() {
-            yaml = SchemaUtil.createYaml();
+            yaml = SchemaUtil.createYaml(Object.class);
         }
 
         @Override

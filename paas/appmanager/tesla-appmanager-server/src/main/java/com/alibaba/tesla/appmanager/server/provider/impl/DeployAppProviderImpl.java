@@ -478,12 +478,12 @@ public class DeployAppProviderImpl implements DeployAppProvider {
 
         deployAppSchema.setSpec(spec);
 
-        Yaml yaml = SchemaUtil.createYaml();
+        Yaml yaml = SchemaUtil.createYaml(DeployAppSchema.class);
         return yaml.dumpAsMap(deployAppSchema);
     }
 
     private Schema getSchema(String appId, ComponentBinder componentBinder) {
-        Yaml yaml = SchemaUtil.createYaml();
+        Yaml yaml = SchemaUtil.createYaml(ComponentSchema.class);
         if (componentBinder.getComponentType() == ComponentTypeEnum.RESOURCE_ADDON) {
             AppAddonQueryCondition condition = AppAddonQueryCondition.builder().appId(appId).addonName(
                     componentBinder.getComponentName()).build();
@@ -597,9 +597,9 @@ public class DeployAppProviderImpl implements DeployAppProvider {
                 return Collections.emptyList();
             }
 
-            TraitDO traitMetaDO = traitMetaDOPage.getItems().get(0);
-            Yaml yaml = SchemaUtil.createYaml();
-            TraitDefinition traitDefinition = yaml.loadAs(traitMetaDO.getTraitDefinition(), TraitDefinition.class);
+            //TraitDO traitMetaDO = traitMetaDOPage.getItems().get(0);
+            //Yaml yaml = SchemaUtil.createYaml();
+            //TraitDefinition traitDefinition = yaml.loadAs(traitMetaDO.getTraitDefinition(), TraitDefinition.class);
             //traitDefinition.getSpec().getWorkload().getDataOutputs().forEach(addonDataOutput -> {
             //    DataOutput dataOutput = new DataOutput();
             //    dataOutput.setName(

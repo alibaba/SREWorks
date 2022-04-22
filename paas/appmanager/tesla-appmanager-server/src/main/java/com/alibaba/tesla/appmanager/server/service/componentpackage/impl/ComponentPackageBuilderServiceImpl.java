@@ -38,6 +38,7 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Map;
 
 @Service
@@ -107,7 +108,7 @@ public class ComponentPackageBuilderServiceImpl implements ComponentPackageBuild
                 "componentName", componentName,
                 "options", packageOptions
         );
-        Yaml yaml = SchemaUtil.createYaml();
+        Yaml yaml = SchemaUtil.createYaml(Arrays.asList(Map.class, Object.class));
         String metaYaml = yaml.dumpAsMap(metaMap);
 
         // 准备本地临时文件

@@ -24,10 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.Yaml;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * K8S 微服务元信息 Controller
@@ -126,7 +123,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
             return buildClientErrorResult("invalid type parameter");
         }
 
-        Yaml yaml = SchemaUtil.createYaml();
+        Yaml yaml = SchemaUtil.createYaml(Arrays.asList(Iterable.class, Object.class));
         Iterable<Object> iterable = yaml.loadAll(body);
         List<K8sMicroServiceMetaUpdateReq> k8sMicroServiceMetaUpdateReqList = new ArrayList<>();
         for (Object object : iterable) {

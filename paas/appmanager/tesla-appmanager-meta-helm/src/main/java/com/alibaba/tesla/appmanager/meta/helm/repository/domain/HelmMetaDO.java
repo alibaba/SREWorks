@@ -79,7 +79,7 @@ public class HelmMetaDO {
     private String options;
 
     public JSONObject getJSONOptions(List<EnvMetaDTO> appEnvList) {
-        Yaml yaml = SchemaUtil.createYaml();
+        Yaml yaml = SchemaUtil.createYaml(JSONObject.class);
         JSONObject root = yaml.loadAs(options, JSONObject.class);
         JSONObject optionsJson = root.getJSONObject("options");
 
@@ -114,7 +114,7 @@ public class HelmMetaDO {
         JSONObject result = new JSONObject();
         result.put("options", options);
 
-        Yaml yaml = SchemaUtil.createYaml();
+        Yaml yaml = SchemaUtil.createYaml(JSONObject.class);
         this.options = yaml.dumpAsMap(result);
     }
 }

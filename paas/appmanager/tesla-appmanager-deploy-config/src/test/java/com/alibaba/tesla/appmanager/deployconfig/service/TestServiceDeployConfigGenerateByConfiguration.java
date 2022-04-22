@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.deployconfig.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
@@ -79,7 +80,7 @@ public class TestServiceDeployConfigGenerateByConfiguration {
                 .envId("")
                 .apiVersion(API_VERSION)
                 .currentRevision(0)
-                .config(SchemaUtil.toYamlStr(schema.getSpec().getParameterValues()))
+                .config(SchemaUtil.toYamlStr(schema.getSpec().getParameterValues(), DeployAppSchema.ParameterValue.class))
                 .enabled(true)
                 .inherit(false)
                 .build());
@@ -124,8 +125,8 @@ public class TestServiceDeployConfigGenerateByConfiguration {
         Assertions.assertThat(generatedSchema.getMetadata().getAnnotations().getNamespaceId()).isEqualTo(NAMESPACE_ID);
         Assertions.assertThat(generatedSchema.getMetadata().getAnnotations().getStageId()).isEqualTo(STAGE_ID);
         Assertions.assertThat(generatedSchema.getMetadata().getAnnotations().getAppPackageId()).isEqualTo(APP_PACKAGE_ID);
-        Assertions.assertThat(SchemaUtil.toYamlStr(generatedSchema.getSpec().getParameterValues()))
-                .isEqualTo(SchemaUtil.toYamlStr(schema.getSpec().getParameterValues()));
+        Assertions.assertThat(SchemaUtil.toYamlStr(generatedSchema.getSpec().getParameterValues(), DeployAppSchema.ParameterValue.class))
+                .isEqualTo(SchemaUtil.toYamlStr(schema.getSpec().getParameterValues(), DeployAppSchema.ParameterValue.class));
         Assertions.assertThat(generatedSchema.getSpec().getComponents().get(0).getScopes().get(0).getScopeRef().getName()).isEqualTo(CLUSTER_ID);
         Assertions.assertThat(generatedSchema.getSpec().getComponents().get(0).getScopes().get(1).getScopeRef().getName()).isEqualTo(NAMESPACE_ID);
         Assertions.assertThat(generatedSchema.getSpec().getComponents().get(0).getScopes().get(2).getScopeRef().getName()).isEqualTo(STAGE_ID);
@@ -148,7 +149,7 @@ public class TestServiceDeployConfigGenerateByConfiguration {
                                         .envId("")
                                         .apiVersion(API_VERSION)
                                         .currentRevision(0)
-                                        .config(SchemaUtil.toYamlStr(schema.getSpec().getParameterValues()))
+                                        .config(SchemaUtil.toYamlStr(schema.getSpec().getParameterValues(), DeployAppSchema.ParameterValue.class))
                                         .enabled(true)
                                         .inherit(false)
                                         .build(),
@@ -210,8 +211,8 @@ public class TestServiceDeployConfigGenerateByConfiguration {
         Assertions.assertThat(generatedSchema.getMetadata().getAnnotations().getNamespaceId()).isEqualTo(NAMESPACE_ID);
         Assertions.assertThat(generatedSchema.getMetadata().getAnnotations().getStageId()).isEqualTo(STAGE_ID);
         Assertions.assertThat(generatedSchema.getMetadata().getAnnotations().getAppPackageId()).isEqualTo(APP_PACKAGE_ID);
-        Assertions.assertThat(SchemaUtil.toYamlStr(generatedSchema.getSpec().getParameterValues()))
-                .isEqualTo(SchemaUtil.toYamlStr(schema.getSpec().getParameterValues()));
+        Assertions.assertThat(SchemaUtil.toYamlStr(generatedSchema.getSpec().getParameterValues(), DeployAppSchema.ParameterValue.class))
+                .isEqualTo(SchemaUtil.toYamlStr(schema.getSpec().getParameterValues(), DeployAppSchema.ParameterValue.class));
         Assertions.assertThat(generatedSchema.getSpec().getComponents().get(0).getScopes().get(0).getScopeRef().getName()).isEqualTo(CLUSTER_ID);
         Assertions.assertThat(generatedSchema.getSpec().getComponents().get(0).getScopes().get(1).getScopeRef().getName()).isEqualTo(NAMESPACE_ID);
         Assertions.assertThat(generatedSchema.getSpec().getComponents().get(0).getScopes().get(2).getScopeRef().getName()).isEqualTo(STAGE_ID);

@@ -129,7 +129,7 @@ public class TestServiceDeployConfigApplyTemplate {
                 .envId("")
                 .apiVersion(API_VERSION)
                 .revision(11)
-                .config(SchemaUtil.toYamlStr(schema.getSpec().getParameterValues()))
+                .config(SchemaUtil.toYamlStr(schema.getSpec().getParameterValues(), DeployAppSchema.ParameterValue.class))
                 .inherit(false)
                 .deleted(false)
                 .build());
@@ -149,7 +149,7 @@ public class TestServiceDeployConfigApplyTemplate {
                         .envId("")
                         .apiVersion(API_VERSION)
                         .currentRevision(11)
-                        .config(SchemaUtil.toYamlStr(schema.getSpec().getParameterValues()))
+                        .config(SchemaUtil.toYamlStr(schema.getSpec().getParameterValues(), DeployAppSchema.ParameterValue.class))
                         .enabled(true)
                         .inherit(false)
                         .build(),
@@ -205,7 +205,7 @@ public class TestServiceDeployConfigApplyTemplate {
                 .envId("")
                 .apiVersion(API_VERSION)
                 .revision(0)
-                .config(SchemaUtil.toYamlStr(schema.getSpec().getParameterValues()))
+                .config(SchemaUtil.toYamlStr(schema.getSpec().getParameterValues(), DeployAppSchema.ParameterValue.class))
                 .inherit(false)
                 .deleted(false)
                 .build());
@@ -225,7 +225,7 @@ public class TestServiceDeployConfigApplyTemplate {
                 .envId("")
                 .apiVersion(API_VERSION)
                 .currentRevision(0)
-                .config(SchemaUtil.toYamlStr(schema.getSpec().getParameterValues()))
+                .config(SchemaUtil.toYamlStr(schema.getSpec().getParameterValues(), DeployAppSchema.ParameterValue.class))
                 .inherit(false)
                 .enabled(true)
                 .build());

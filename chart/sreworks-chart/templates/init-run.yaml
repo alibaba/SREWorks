@@ -348,7 +348,7 @@ data:
     if [[ "$DATAOPS_DB_HOST" == "default-mysql" ]]
     then
       DATAOPS_DB_HOST='\{\{ Global.STAGE_ID \}\}-\{\{ Global.APP_ID \}\}-mysql'
-      export DATAOPS_DB_HOST=$(cat $DATAOPS_DB_HOST|sed 's/\\//g')
+      export DATAOPS_DB_HOST=$(echo $DATAOPS_DB_HOST|sed 's/\\//g')
       envsubst < /root/saas/dataops/api/mysql/build.yaml.tpl > tmp-build.yaml
       envsubst < /root/saas/dataops/api/mysql/launch.yaml.tpl > tmp-launch.yaml
       split

@@ -9,13 +9,19 @@
 <a name="SPAql"></a>
 ### SREWorks v1.1
 
-- 提供基础版/数智版两种安装模式，进一步减少在最小资源部署限制
+- 提供基础版/数智版两种安装模式，进一步减少最小资源部署限制
 - mysql/es/minio/kafka 组件兼容外部插拔
 - 前端编辑器支持页面模板保存和使用
+- 增加基于openebs的默认LocalPV支持
 
 <a name="bC9In"></a>
 ### SREWorks v1.2
 
 - ChatOps机器人基础框架集成
 - 应用/插件市场
+- 实例化搜索服务
 
+<a name="glYir"></a>
+### SREWorks v1.3
+
+- 应用/插件市场增加组件类型

@@ -175,6 +175,39 @@ target_swcli(){
     fi 
 }
 
+download_packages(){
+   PKG_URL="https://sreworks.oss-cn-beijing.aliyuncs.com/packages/${tag}"
+
+   mkdir -p $SW_ROOT/saas/desktop/ui/ && wget "${PKG_URL}/saas/desktop/ui/desktop-auto.zip" -O $SW_ROOT/saas/desktop/ui/desktop-auto.zip
+   mkdir -p $SW_ROOT/saas/swadmin/ui/ && wget "${PKG_URL}/saas/swadmin/ui/swadmin-auto.zip" -O $SW_ROOT/saas/swadmin/ui/swadmin-auto.zip
+   mkdir -p $SW_ROOT/saas/system/ui/ && wget "${PKG_URL}/saas/system/ui/system-auto.zip" -O $SW_ROOT/saas/system/ui/system-auto.zip
+   mkdir -p $SW_ROOT/saas/upload/ui/ && wget "${PKG_URL}/saas/upload/ui/upload-auto.zip" -O $SW_ROOT/saas/upload/ui/upload-auto.zip
+   mkdir -p $SW_ROOT/saas/team/ui/ && wget "${PKG_URL}/saas/team/ui/team-auto.zip" -O $SW_ROOT/saas/team/ui/team-auto.zip
+   mkdir -p $SW_ROOT/saas/search/ui/ && wget "${PKG_URL}/saas/search/ui/search-auto.zip" -O $SW_ROOT/saas/search/ui/search-auto.zip
+   mkdir -p $SW_ROOT/saas/ocenter/ui/ && wget "${PKG_URL}/saas/ocenter/ui/ocenter-auto.zip" -O $SW_ROOT/saas/ocenter/ui/ocenter-auto.zip
+   mkdir -p $SW_ROOT/saas/aiops/ui/ && wget "${PKG_URL}/saas/aiops/ui/aiops-auto.zip" -O $SW_ROOT/saas/aiops/ui/aiops-auto.zip
+   mkdir -p $SW_ROOT/saas/app/ui/ && wget "${PKG_URL}/saas/app/ui/app-auto.zip" -O $SW_ROOT/saas/app/ui/app-auto.zip
+   mkdir -p $SW_ROOT/saas/cluster/ui/ && wget "${PKG_URL}/saas/cluster/ui/cluster-auto.zip" -O $SW_ROOT/saas/cluster/ui/cluster-auto.zip
+   mkdir -p $SW_ROOT/saas/dataops/ui/data/ && wget "${PKG_URL}/saas/dataops/ui/data/data-auto.zip" -O $SW_ROOT/saas/dataops/ui/data/data-auto.zip
+   mkdir -p $SW_ROOT/saas/healing/ui/ && wget "${PKG_URL}/saas/healing/ui/healing-auto.zip" -O $SW_ROOT/saas/healing/ui/healing-auto.zip
+   mkdir -p $SW_ROOT/saas/health/ui/ && wget "${PKG_URL}/saas/health/ui/health-auto.zip" -O $SW_ROOT/saas/health/ui/health-auto.zip
+   mkdir -p $SW_ROOT/saas/help/ui/ && wget "${PKG_URL}/saas/help/ui/help-auto.zip" -O $SW_ROOT/saas/help/ui/help-auto.zip
+   mkdir -p $SW_ROOT/saas/job/ui/ && wget "${PKG_URL}/saas/job/ui/job-auto.zip" -O $SW_ROOT/saas/job/ui/job-auto.zip
+
+   wget "${PKG_URL}/saas/aiops/aiops.zip" -O $SW_ROOT/saas/aiops/aiops.zip
+   wget "${PKG_URL}/saas/app/app.zip" -O $SW_ROOT/saas/app/app.zip
+   wget "${PKG_URL}/saas/cluster/cluster.zip" -O $SW_ROOT/saas/cluster/cluster.zip
+   wget "${PKG_URL}/saas/dataops/data.zip" -O $SW_ROOT/saas/dataops/data.zip
+   wget "${PKG_URL}/saas/health/health.zip" -O $SW_ROOT/saas/health/health.zip
+   wget "${PKG_URL}/saas/job/job.zip" -O $SW_ROOT/saas/job/job.zip
+   wget "${PKG_URL}/saas/search/search.zip" -O $SW_ROOT/saas/search/search.zip
+   wget "${PKG_URL}/saas/swcore/flycore.zip" -O $SW_ROOT/saas/swcore/flycore.zip
+   wget "${PKG_URL}/saas/system/system.zip" -O $SW_ROOT/saas/system/system.zip
+   wget "${PKG_URL}/saas/team/team.zip" -O $SW_ROOT/saas/team/team.zip
+   wget "${PKG_URL}/saas/upload/upload.zip" -O $SW_ROOT/saas/upload/upload.zip
+
+}
+
 target_swcli_builtin_package(){
     [ -n "$TAG" ] && tag=$TAG || tag="latest"    
     if [ -n "$BUILD" ]; then
@@ -183,7 +216,7 @@ target_swcli_builtin_package(){
             rm -rf $SW_ROOT/paas/swcli/builtin_package
         fi
         mkdir $SW_ROOT/paas/swcli/builtin_package
-        #cp -r $SW_ROOT/build $SW_ROOT/paas/swcli/builtin_package/build
+        download_packages
         cp -r $SW_ROOT/saas $SW_ROOT/paas/swcli/builtin_package/saas
         cp -r $SW_ROOT/chart $SW_ROOT/paas/swcli/builtin_package/chart
         docker build -t swcli-builtin-package:$tag -f $SW_ROOT/paas/swcli/Dockerfile_builtin_package $SW_ROOT/paas/swcli
@@ -202,6 +235,15 @@ target_base(){
     target_migrate
     target_openjdk8
     target_postrun
+}
+
+target_appmanager_base(){
+    target_appmanager_db_migration
+    target_appmanager_postrun
+    target_appmanager_cluster_init
+    target_appmanager_kind_operator
+    target_swcli
+    target_swcli_builtin_package
 }
 
 target_appmanager(){
@@ -278,6 +320,9 @@ else
         ;;
     appmanager)
         target_appmanager
+        ;;
+    appmanager_base)
+        target_appmanager_base
         ;;
     *)
         eval "target_${TARGET//\-/\_}"

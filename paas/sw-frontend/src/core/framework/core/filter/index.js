@@ -5,7 +5,9 @@
 import React, { Component } from 'react';
 import OamAction from '../../OamAction';
 import { Spin, message } from 'antd';
+import * as Utils from "../../../../utils/utils";
 import _ from 'lodash';
+import safeEval from ".././../../../utils/SafeEval";
 //过滤器类型进行显示类型映射
 
 const displayTypeMapping = {
@@ -22,6 +24,7 @@ class Filter extends Component {
         super(props);
         this.state = {
             actionData: null,
+            visible:true
         }
     }
 
@@ -30,7 +33,7 @@ class Filter extends Component {
         const { widgetModel, widgetConfig } = this.props;
         const { nodeModel } = widgetModel;
         const config = widgetConfig;
-        let { parameters } = config;
+        let { parameters,visibleExpression } = config;
         if (parameters && parameters.length) {
             //为了复用参数定义映射而拼装parameterDefiner
             let parameterDefiner = {
@@ -57,6 +60,7 @@ class Filter extends Component {
                     tabType: config.tabType || '',
                     tabSize: config.tabSize || 'default',
                     tabPosition: config.tabPosition || 'left',
+                    visibleExpression: config.visibleExpression || '',
                     hasBackground: config.hasBackground,
                 },
                 elementId: config.uniqueKey
@@ -66,15 +70,42 @@ class Filter extends Component {
         }
 
     }
-
+    componentDidMount() {
+        let nowProps = this.props;
+        this.changeVisilbleFromExpression(nowProps)
+    }
+    componentWillReceiveProps(nextProps) {
+        this.changeVisilbleFromExpression(nextProps)
+    }
+    // 根据通用配置表达式配置过滤器是否可见
+    changeVisilbleFromExpression=(props)=> {
+        let {widgetConfig={}, nodeParams={}, userParams={}, actionParams={}} = props;
+        let { visibleExpression } = widgetConfig,globalParams=Object.assign({},nodeParams,userParams,actionParams);
+        let isVisable = true;
+        try {
+            if(visibleExpression && visibleExpression.length > 4) {
+                if (visibleExpression.includes('$')) {
+                    visibleExpression = Utils.renderTemplateString(visibleExpression,globalParams)
+                }
+                isVisable = safeEval(visibleExpression,{nodeParams:globalParams});
+            }
+            this.setState({
+                visible: isVisable
+            })
+        } catch(error) {
+            this.setState({
+                visible: isVisable
+            })
+        }
+    }
     render() {
-        const { actionData } = this.state, { mode, widgetModel } = this.props;
-        console.log(widgetModel, 'widgetModel===INDEX');
+        const { actionData,visible } = this.state, { mode, widgetModel } = this.props;
+        console.log(this.props, 'widgetModel===INDEX');
         if (!actionData) {
             return <div style={{ width: "100%", height: "100%", justifyContent: "center", alignItems: "center", display: "flex" }}><h3>请定义过滤项</h3></div>
         }
         return (
-            <OamAction {...this.props}
+            visible && <OamAction {...this.props}
                 key={actionData.elementId}
                 actionId={actionData.elementId}
                 actionData={actionData}

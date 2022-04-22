@@ -127,3 +127,13 @@ kafka:
     servers: "sreworks-zookeeper:2181"
 
 
+openebs:
+  enabled: true
+  localprovisioner:
+    deviceClass:
+      enabled: false
+    hostpathClass:
+      name: sreworks-hostpath
+
+
+

@@ -1,5 +1,5 @@
 global:
-  storageClass: "alicloud-disk-available"
+  storageClass: "sreworks-hostpath"
 
   minio:
     accessKey: 'XmizyTRKhgYTrVkK'
@@ -59,7 +59,10 @@ saas:
   - upload
   - demoapp 
   dataops:
-    dbPassword: cb56b5is5e21_c359b42223 
+    dbHost: 'default-mysql'
+    dbPassword: cb56b5is5e21_c359b42223
+    dbUser: root
+    dbPort: 3306
   grafana:
     password: "sreworks123456"
 

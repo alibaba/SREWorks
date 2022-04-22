@@ -92,7 +92,8 @@ export default {
                 }
             },
         },
-        "dataMock": {}
+        "dataMock": {},
+        "supportToolbar":true,
     },
     "catgory": "base"
 };

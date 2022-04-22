@@ -215,8 +215,13 @@ class MixFilterBar extends PureComponent {
         items.forEach(item => {
             let { defModel = {} } = item;
             let isVisable = true, { displayType } = defModel;
-            if (item.visibleExp && item.visibleExp.length > 4) {
-                isVisable = safeEval(item.visibleExp, { formValues: Object.assign(nodeParam, form.getFieldsValue()) });
+            try {
+                if (item.visibleExp && item.visibleExp.length > 4) {
+                    isVisable = safeEval(item.visibleExp, { formValues: Object.assign(nodeParam, form.getFieldsValue()) });
+                }
+            } catch(e) {
+                isVisable = true;
+                return true
             }
             if (displayType === 'advanced' && displayMode === 'base') {
                 this.hasType = true;

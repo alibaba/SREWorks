@@ -66,6 +66,12 @@ public class NodeElementController extends BaseController {
         return buildSucceedResult("ok");
     }
 
+    @DeleteMapping(value = "elements")
+    public TeslaBaseResult deletes(@RequestBody NodeElementDeleteParam param, String stageId) {
+        productopsNodeElementRepository.deleteByNodeTypePathAndStageId(param.getNodeTypePath(), stageId);
+        return buildSucceedResult("ok");
+    }
+
     @PutMapping(value = "element")
     public TeslaBaseResult put(@RequestBody NodeElementUpsertParam param, String stageId) {
         ProductopsNodeElement nodeElement = productopsNodeElementRepository

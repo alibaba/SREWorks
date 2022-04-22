@@ -132,8 +132,13 @@ class SimpleForm extends PureComponent {
             let { layout, defModel = {} } = item;
             let isVisable = true, { displayType } = defModel;
             initParams[item.name] = item.initValue;
-            if (item.visibleExp && item.visibleExp.length > 4) {
-                isVisable = safeEval(item.visibleExp, { formValues: Object.assign(initParams, nodeParam, form.getFieldsValue()) });
+            try {
+                if (item.visibleExp && item.visibleExp.length > 4) {
+                    isVisable = safeEval(item.visibleExp, { formValues: Object.assign(initParams, nodeParam, form.getFieldsValue()) });
+                }
+            } catch (error) {
+                isVisable = true;
+                return true
             }
             if (displayType === 'advanced' && displayMode === 'base' && advanced !== false) {
                 this.hasType = true;

@@ -17,6 +17,7 @@
         <!--spring-->
         <spring.boot.dependencies.version>2.3.9.RELEASE</spring.boot.dependencies.version>
         <spring.cloud.dependencies.version>Hoxton.SR10</spring.cloud.dependencies.version>
+        <spring-beans.version>5.3.18</spring-beans.version>
         <!-- alibaba-->
         <spring.cloud.alibaba.version>2.1.2.RELEASE</spring.cloud.alibaba.version>
         <!-- tesla-->
@@ -41,6 +42,11 @@
                 <version>${spring.cloud.dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>${spring-beans.version}</version>
             </dependency>
 
             <!-- alibaba & tesla -->

@@ -104,6 +104,9 @@ class Filter extends Component {
         if (!actionData) {
             return <div style={{ width: "100%", height: "100%", justifyContent: "center", alignItems: "center", display: "flex" }}><h3>请定义过滤项</h3></div>
         }
+        if(!visible) {
+            return <div></div>
+        }
         return (
             visible && <OamAction {...this.props}
                 key={actionData.elementId}

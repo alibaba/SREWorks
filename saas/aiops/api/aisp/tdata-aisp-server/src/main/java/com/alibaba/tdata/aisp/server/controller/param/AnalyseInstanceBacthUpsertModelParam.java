@@ -5,7 +5,10 @@ import javax.validation.constraints.NotNull;
 import com.alibaba.fastjson.JSONObject;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @ClassName: AnalyseInstanceBacthUpsertParam
@@ -14,6 +17,9 @@ import lombok.Data;
  * @Description:
  **/
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AnalyseInstanceBacthUpsertModelParam {
     @NotNull(message = "sceneCode can not be null!")
     @ApiModelProperty(notes = "场景Code", required = true)

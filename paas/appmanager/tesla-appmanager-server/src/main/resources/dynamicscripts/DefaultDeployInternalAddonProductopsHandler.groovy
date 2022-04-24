@@ -54,7 +54,7 @@ class DefaultDeployInternalAddonProductopsHandler implements DeployComponentHand
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 9
+    public static final Integer REVISION = 10
 
     private static final String IMPORT_TMP_FILE = "productops_tmp_import.zip"
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
@@ -288,6 +288,7 @@ class DefaultDeployInternalAddonProductopsHandler implements DeployComponentHand
             String namespaceId, String envId) {
         def httpClient = HttpClientFactory.getHttpClient()
         def times = 2
+        def cloudType = System.getenv("CLOUD_TYPE")
         while (true) {
             def urlPrefix = String.format("%s/maintainer/upload", endpoint)
             def urlBuilder = Objects.requireNonNull(HttpUrl.parse(urlPrefix)).newBuilder()
@@ -296,7 +297,10 @@ class DefaultDeployInternalAddonProductopsHandler implements DeployComponentHand
                 resetVersion = "false"
             }
             urlBuilder.addQueryParameter("resetVersion", resetVersion)
-            if (StringUtils.isNotEmpty(namespaceId) || "OXS" == System.getenv("CLOUD_TYPE")) {
+            if (StringUtils.isNotEmpty(namespaceId)
+                    || "OXS" == cloudType
+                    || "ApsaraStack" == cloudType
+                    || "ApsaraStackAgility" == cloudType) {
                 urlBuilder.addQueryParameter("envId", envId)
             }
             def body = new MultipartBody.Builder()

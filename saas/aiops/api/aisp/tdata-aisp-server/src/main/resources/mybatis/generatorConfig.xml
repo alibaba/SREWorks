@@ -85,16 +85,16 @@
 <!--               enableUpdateByExample="true" enableDeleteByExample="true"-->
 <!--               enableSelectByExample="true" >-->
 <!--        </table>-->
-<!--        <table schema="tdata_aisp" tableName="aisp_analyse_instance"-->
-<!--               domainObjectName="InstanceDO" enableCountByExample="true"-->
-<!--               enableUpdateByExample="true" enableDeleteByExample="true"-->
-<!--               enableSelectByExample="true" >-->
-<!--        </table>-->
-        <table schema="tdata_aisp" tableName="aisp_analyse_task"
-               domainObjectName="TaskDO" enableCountByExample="true"
+        <table schema="tdata_aisp" tableName="aisp_analyse_instance"
+               domainObjectName="InstanceDO" enableCountByExample="true"
                enableUpdateByExample="true" enableDeleteByExample="true"
                enableSelectByExample="true" >
         </table>
+<!--        <table schema="tdata_aisp" tableName="aisp_analyse_task"-->
+<!--               domainObjectName="TaskDO" enableCountByExample="true"-->
+<!--               enableUpdateByExample="true" enableDeleteByExample="true"-->
+<!--               enableSelectByExample="true" >-->
+<!--        </table>-->
 
     </context>
 </generatorConfiguration>

@@ -30,11 +30,11 @@ import static com.alibaba.tdata.aisp.server.common.factory.AispResponseFactory.b
  * @DATE: 2021-11-15
  * @Description:
  **/
-@Api(tags = "检测实例接口")
+@Api(tags = "检测Entity接口")
 @Slf4j
 @RestController
-@RequestMapping("/instance/")
-public class AnalyseInstanceController {
+@RequestMapping("/entity/")
+public class AnalyseEntityController {
     @Autowired
     private AnalyseInstanceService instanceService;
 

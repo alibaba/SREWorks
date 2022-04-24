@@ -100,9 +100,12 @@ public class CacheConfiguration {
             .keyPrefix("aisp:")
             .expireAfterWrite(cacheProperties.getExpire(), TimeUnit.SECONDS)
             .loader((key) -> {
-                TaskDO taskDO = taskRepository.queryByIdWithBlobs((String)key);
-                if (taskDO!=null && !StringUtils.isEmpty(taskDO.getTaskResult())){
+                String taskUuid = TaskCacheUtil.cleanKey((String)key);
+                TaskDO taskDO = taskRepository.queryByIdWithBlobs(taskUuid);
+                if (taskDO!=null && ((String)key).endsWith("_result") && !StringUtils.isEmpty(taskDO.getTaskResult())){
                     return JSONObject.parseObject(taskDO.getTaskResult());
+                } else if (taskDO!=null && ((String)key).endsWith("_req") && !StringUtils.isEmpty(taskDO.getTaskReq())) {
+                    return JSONObject.parseObject(taskDO.getTaskReq());
                 } else{
                     return null;
                 }

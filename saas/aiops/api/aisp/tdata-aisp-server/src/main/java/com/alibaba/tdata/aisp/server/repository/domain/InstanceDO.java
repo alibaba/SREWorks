@@ -20,6 +20,8 @@ public class InstanceDO implements Serializable {
 
     private String modelParam;
 
+    private String recentFeedback;
+
     private static final long serialVersionUID = 1L;
 
     public String getInstanceCode() {
@@ -78,6 +80,14 @@ public class InstanceDO implements Serializable {
         this.modelParam = modelParam == null ? null : modelParam.trim();
     }
 
+    public String getRecentFeedback() {
+        return recentFeedback;
+    }
+
+    public void setRecentFeedback(String recentFeedback) {
+        this.recentFeedback = recentFeedback == null ? null : recentFeedback.trim();
+    }
+
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -96,7 +106,8 @@ public class InstanceDO implements Serializable {
             && (this.getSceneCode() == null ? other.getSceneCode() == null : this.getSceneCode().equals(other.getSceneCode()))
             && (this.getDetectorCode() == null ? other.getDetectorCode() == null : this.getDetectorCode().equals(other.getDetectorCode()))
             && (this.getEntityId() == null ? other.getEntityId() == null : this.getEntityId().equals(other.getEntityId()))
-            && (this.getModelParam() == null ? other.getModelParam() == null : this.getModelParam().equals(other.getModelParam()));
+            && (this.getModelParam() == null ? other.getModelParam() == null : this.getModelParam().equals(other.getModelParam()))
+            && (this.getRecentFeedback() == null ? other.getRecentFeedback() == null : this.getRecentFeedback().equals(other.getRecentFeedback()));
     }
 
     @Override
@@ -110,6 +121,7 @@ public class InstanceDO implements Serializable {
         result = prime * result + ((getDetectorCode() == null) ? 0 : getDetectorCode().hashCode());
         result = prime * result + ((getEntityId() == null) ? 0 : getEntityId().hashCode());
         result = prime * result + ((getModelParam() == null) ? 0 : getModelParam().hashCode());
+        result = prime * result + ((getRecentFeedback() == null) ? 0 : getRecentFeedback().hashCode());
         return result;
     }
 
@@ -126,6 +138,7 @@ public class InstanceDO implements Serializable {
         sb.append(", detectorCode=").append(detectorCode);
         sb.append(", entityId=").append(entityId);
         sb.append(", modelParam=").append(modelParam);
+        sb.append(", recentFeedback=").append(recentFeedback);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
@@ -138,7 +151,8 @@ public class InstanceDO implements Serializable {
         sceneCode("scene_code", "sceneCode", "VARCHAR", false),
         detectorCode("detector_code", "detectorCode", "VARCHAR", false),
         entityId("entity_id", "entityId", "VARCHAR", false),
-        modelParam("model_param", "modelParam", "LONGVARCHAR", false);
+        modelParam("model_param", "modelParam", "LONGVARCHAR", false),
+        recentFeedback("recent_feedback", "recentFeedback", "LONGVARCHAR", false);
 
         private static final String BEGINNING_DELIMITER = "\"";
 

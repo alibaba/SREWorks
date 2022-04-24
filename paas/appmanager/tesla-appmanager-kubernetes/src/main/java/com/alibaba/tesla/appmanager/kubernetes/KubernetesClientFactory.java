@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -43,10 +44,40 @@ public class KubernetesClientFactory {
     private ClusterProvider clusterProvider;
 
     /**
+     * 根据 kubeconfig 获取 kubernetes client
+     *
+     * @param base64KubeConfig base64 编码后的 kubeconfig
+     * @return Kubernetes Client
+     */
+    public DefaultKubernetesClient getByKubeConfig(String base64KubeConfig) {
+        DefaultKubernetesClient client = clientMap.get(base64KubeConfig);
+        if (client != null) {
+            return client;
+        }
+
+        synchronized (clientMap) {
+            // double check
+            client = clientMap.get(base64KubeConfig);
+            if (client != null) {
+                return client;
+            }
+
+            DefaultKubernetesClient newClient;
+            Base64.Decoder decoder = Base64.getDecoder();
+            Config config = getKubeConfig(new String(decoder.decode(base64KubeConfig)));
+            config.setNamespace(null);
+            newClient = new DefaultKubernetesClient(config);
+            clientMap.put(base64KubeConfig, newClient);
+            log.info("kubernetes client for key {} has put into client map", base64KubeConfig);
+            return newClient;
+        }
+    }
+
+    /**
      * 获取指定集群的 Kubernetes Client
      *
      * @param clusterId 集群 ID
-     * @return OkHttpClient
+     * @return Kubernetes Client
      */
     public DefaultKubernetesClient get(String clusterId) {
         ClusterDTO clusterDTO = clusterProvider.get(clusterId);

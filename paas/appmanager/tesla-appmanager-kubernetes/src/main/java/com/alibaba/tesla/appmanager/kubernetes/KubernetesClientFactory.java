@@ -16,6 +16,7 @@ import io.fabric8.kubernetes.client.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -64,7 +65,14 @@ public class KubernetesClientFactory {
 
             DefaultKubernetesClient newClient;
             Base64.Decoder decoder = Base64.getDecoder();
-            Config config = getKubeConfig(new String(decoder.decode(base64KubeConfig)));
+            Config config;
+            try {
+                config = getKubeConfig(new String(decoder.decode(base64KubeConfig)));
+            } catch (Exception e) {
+                throw new AppException(AppErrorCode.DEPLOY_ERROR,
+                        String.format("cannot decode base64 kubeconfig|kubeconfig=%s|exception=%s",
+                                base64KubeConfig, ExceptionUtils.getStackTrace(e)));
+            }
             config.setNamespace(null);
             newClient = new DefaultKubernetesClient(config);
             clientMap.put(base64KubeConfig, newClient);

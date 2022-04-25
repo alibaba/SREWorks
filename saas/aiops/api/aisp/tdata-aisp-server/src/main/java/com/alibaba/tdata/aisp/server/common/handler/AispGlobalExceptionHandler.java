@@ -6,6 +6,7 @@ import com.alibaba.tdata.aisp.server.common.constant.AispResult;
 import com.alibaba.tdata.aisp.server.common.exception.DetectorException;
 import com.alibaba.tdata.aisp.server.common.exception.PlatformInternalException;
 
+import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -62,6 +63,14 @@ public class AispGlobalExceptionHandler {
     @ResponseBody
     public AispResult handBadException(HttpMessageNotReadableException e) {
         log.warn("#global HttpMessageNotReadableException handler!:", e);
+        return buildResult(null, 400, e.getMessage());
+    }
+
+    @ExceptionHandler({InvalidDefinitionException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public AispResult handBadException(InvalidDefinitionException e) {
+        log.warn("#global InvalidDefinitionException handler!:", e);
         return buildResult(null, 400, e.getMessage());
     }
 

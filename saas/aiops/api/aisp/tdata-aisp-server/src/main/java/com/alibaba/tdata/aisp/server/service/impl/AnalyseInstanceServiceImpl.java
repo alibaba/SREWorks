@@ -2,6 +2,7 @@ package com.alibaba.tdata.aisp.server.service.impl;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tdata.aisp.server.common.condition.InstanceQueryCondition;
 import com.alibaba.tdata.aisp.server.common.utils.ClassUtil;
@@ -141,9 +142,24 @@ public class AnalyseInstanceServiceImpl implements AnalyseInstanceService {
         if (instanceDO==null){
             throw new IllegalArgumentException("action=feedback || Can not find instance by param:"+param);
         }
-        JSONObject modelParam = JSONObject.parseObject(instanceDO.getModelParam());
-        modelParam.put("feedback", param.getFeedback());
-        instanceDO.setModelParam(modelParam.toJSONString());
+        if (CollectionUtils.isEmpty(param.getFeedback())) {
+            return 0;
+        }
+        if (StringUtils.isEmpty(instanceDO.getRecentFeedback())) {
+            JSONArray recentFeedback = new JSONArray();
+            recentFeedback.add(param.getFeedback());
+            instanceDO.setRecentFeedback(recentFeedback.toJSONString());
+        } else {
+            JSONArray recentFeedback = JSONArray.parseArray(instanceDO.getRecentFeedback());
+            if (recentFeedback.size()>100) {
+                List<Object> subFeedback = recentFeedback.subList(recentFeedback.size() - 100, recentFeedback.size() - 1);
+                subFeedback.add(param.getFeedback());
+                instanceDO.setRecentFeedback(JSONArray.toJSONString(subFeedback));
+            } else {
+                recentFeedback.add(param.getFeedback());
+                instanceDO.setRecentFeedback(recentFeedback.toJSONString());
+            }
+        }
         return instanceRepository.updateById(instanceDO);
     }
 

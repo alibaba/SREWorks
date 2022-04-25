@@ -10,6 +10,7 @@ import com.alibaba.tesla.appmanager.trait.BaseTrait;
 import lombok.extern.slf4j.Slf4j;
 import org.yaml.snakeyaml.Yaml;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ public class Str2ObjTrait extends BaseTrait {
 
     @Override
     public void execute() {
-        Yaml yaml = SchemaUtil.createYaml();
+        Yaml yaml = SchemaUtil.createYaml(Arrays.asList(Object.class, JSONObject.class));
         JSONObject spec = getSpec();
         Map<String, Object> mid = new HashMap<>();
         for (Map.Entry<String, Object> entry : spec.entrySet()) {

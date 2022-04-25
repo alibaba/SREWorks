@@ -255,7 +255,7 @@ public class K8sMicroServiceMetaDO implements Serializable {
         JSONObject result = new JSONObject();
         result.put("options", options);
 
-        Yaml yaml = SchemaUtil.createYaml();
+        Yaml yaml = SchemaUtil.createYaml(JSONObject.class);
         return yaml.dumpAsMap(result);
     }
 
@@ -505,7 +505,7 @@ public class K8sMicroServiceMetaDO implements Serializable {
     }
 
     public JSONObject getOptionsAndReplaceBranch(String branch, List<EnvMetaDTO> appEnvList) {
-        Yaml yaml = SchemaUtil.createYaml();
+        Yaml yaml = SchemaUtil.createYaml(JSONObject.class);
         JSONObject root = yaml.loadAs(options, JSONObject.class);
         JSONObject optionsJson = root.getJSONObject("options");
         optionsJson.putIfAbsent("kind", "AdvancedStatefulSet");

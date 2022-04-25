@@ -245,7 +245,7 @@ class PagedTable extends Component {
     render() {
         const { style, scrollX, scrollY, className, columns, renderComponents, openAction, handleParamsChanged, dataUrl, extParams = {},widgetConfig, ...otherTableProps } = this.props;
         const { page, pageSize, pageSizeOptions, data, loading, total } = this.state;
-        let {emptyText} = widgetConfig;
+        let {emptyText=''} = widgetConfig;
         let tableColumns = columns && columns.map(c => {
             let columnDef = Object.assign({ ...this.getColumnSearch(c.dataIndex, c) }, c);
             // if(c.filters){

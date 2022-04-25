@@ -80,7 +80,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
         // 保存 parameterValues 配置
         String parameterTypeId = new DeployConfigTypeId(DeployConfigTypeId.TYPE_PARAMETER_VALUES).toString();
         items.add(applySingleConfig(apiVersion, appId, parameterTypeId, envId,
-                SchemaUtil.toYamlStr(schema.getSpec().getParameterValues()), enabled, false));
+                SchemaUtil.toYamlStr(schema.getSpec().getParameterValues(), DeployAppSchema.ParameterValue.class),
+                enabled, false));
         // 保存 components 配置
         for (DeployAppSchema.SpecComponent component : schema.getSpec().getComponents()) {
             DeployAppRevisionName revision = DeployAppRevisionName.valueOf(component.getRevisionName());

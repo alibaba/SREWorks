@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.server.dag.helper;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.autoconfig.SystemProperties;
@@ -314,8 +315,9 @@ public class DeployAppHelper {
                         break;
                 }
             }
-            Yaml yaml = SchemaUtil.createYaml();
             try {
+                Yaml yaml = SchemaUtil.createYaml(Arrays.asList(
+                        JSONObject.class, JSONArray.class, JSON.class, Object.class));
                 if (value instanceof JSONObject) {
                     Object putValue = yaml.load(renderByJinjaStr(parameters, SchemaUtil.toYamlMapStr(value)));
                     parameters.put(nameList.get(0), putValue);

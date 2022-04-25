@@ -313,7 +313,7 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
         configObject.put("traits", traits);
         configObject.put("scopes", scopes);
 
-        Yaml yaml = SchemaUtil.createYaml();
+        Yaml yaml = SchemaUtil.createYaml(JSONObject.class);
         String typeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE, metaDO.getMicroServiceId()).toString();
         deployConfigService.update(DeployConfigUpdateReq.builder()
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)

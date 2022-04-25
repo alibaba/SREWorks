@@ -84,7 +84,7 @@ export default class ListRender extends Component {
   }
   render() {
     let { widgetData = [], widgetConfig = {}, actionParams, ...otherProps } = this.props;
-    let { bordered, header, footer, listItem, itemLayout, itemToolbar, columns = [],emptyText } = widgetConfig;
+    let { bordered, header, footer, listItem, itemLayout, itemToolbar, columns = [],emptyText='' } = widgetConfig;
     let { title, description, avatar, extra, href, content } = listItem;
     let { total, pageSize, currentPage, splitData } = this.state;
     return <div style={{ width: '100%' }}>

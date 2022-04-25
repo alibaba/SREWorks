@@ -119,7 +119,7 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
         }
         checkExecParam(param);
         AnalyseTaskCreateParamBuilder taskBuilder = AnalyseTaskCreateParam.builder().reqParam(param);
-        JSONObject modelParam = new JSONObject();
+        JSONObject modelParam = param.containsKey("modelParam")?param.getJSONObject("modelParam"):new JSONObject();
         // 加入场景级别参数
         if (!StringUtils.isEmpty(sceneConfigDO.getSceneModelParam())) {
             modelParam.putAll(JSONObject.parseObject(sceneConfigDO.getSceneModelParam()));
@@ -140,12 +140,24 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
                 if (!StringUtils.isEmpty(instanceDO.getModelParam())) {
                     modelParam.putAll(JSONObject.parseObject(instanceDO.getModelParam()));
                 }
+                // 加入用户最近反馈信息
+                if (!StringUtils.isEmpty(instanceDO.getRecentFeedback())) {
+                    JSONArray recentFeedback = JSONArray.parseArray(instanceDO.getRecentFeedback());
+                    if (modelParam.containsKey("feedback")) {
+                        JSONArray feedback = modelParam.getJSONArray("feedback");
+                        feedback.addAll(recentFeedback);
+                        modelParam.put("feedback", feedback);
+                    } else {
+                        modelParam.put("feedback", recentFeedback);
+                    }
+                }
                 taskBuilder.instanceCode(instanceDO.getInstanceCode());
             }
         }
+        param.put("modelParam", modelParam);
         assert StringUtils.isEmpty(param.getString("taskType"));
         AnalyseTaskTypeEnum taskTypeEnum = AnalyseTaskTypeEnum.fromValue(param.getString("taskType"));
-        taskService.create(taskBuilder
+        taskService.create(taskBuilder.reqParam(param)
             .taskUUID(taskUUID)
             .sceneCode(sceneCode)
             .detectorCode(detectorCode)
@@ -154,10 +166,10 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
             .build());
         switch (taskTypeEnum) {
             case SYNC: {
-                return syncExec(taskUUID, modelParam, detectorCode, param);
+                return syncExec(taskUUID, detectorCode, param);
             }
             case ASYNC: {
-                return asyncExec(taskUUID, modelParam, detectorCode, param);
+                return asyncExec(taskUUID, detectorCode, param);
             }
             default:
                 throw new IllegalArgumentException("action=exec|| Can not find task type:" + taskTypeEnum);
@@ -198,8 +210,7 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
         return detectorService.getDoc(detectorCode);
     }
 
-    private JSONObject syncExec(String taskUUID, JSONObject modelParam, String detectorCode,
-        JSONObject param) {
+    private JSONObject syncExec(String taskUUID, String detectorCode, JSONObject param) {
         String detectorUrl = System.getenv(detectorCode);
         if (StringUtils.isEmpty(detectorUrl)){
             DetectorConfigDO detectorConfigDO = detectorService.queryById(detectorCode);
@@ -210,7 +221,6 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
             detectorUrl = detectorConfigDO.getDetectorUrl();
         }
         JSONObject postJson = JSONObject.parseObject(JSONObject.toJSONString(param));
-        postJson.put("modelParam", modelParam);
         postJson.put("taskUUID", taskUUID);
         taskResultCache.put(TaskCacheUtil.genReqKey(taskUUID), postJson);
         OkHttpClient syncHttpClient = getSyncHttpClient();
@@ -227,10 +237,10 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
                 String bodyStr = response.body().string();
                 JSONObject result = JSONObject.parseObject(bodyStr);
                 taskResultCache.put(TaskCacheUtil.genResultKey(taskUUID), result);
+                log.info("action=syncExec || detector http code:{} !", response.code());
                 if (response.code()==200){
                     completeTask(taskUUID, AnalyseTaskStatusEnum.SUCCESS, result);
                 }
-                result.remove("modelParam");
                 result.put("taskUUID", taskUUID);
                 return result;
             } else {
@@ -262,6 +272,7 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
     }
 
     private void completeTask(String taskUUID, AnalyseTaskStatusEnum taskStatusEnum, JSONObject result) {
+        log.info("action=completeTask|| taskUuid: {}, status:{} !", taskUUID, taskStatusEnum.getValue());
         TaskDO taskDO = taskRepository.queryById(taskUUID);
         assert taskDO != null;
         Date now = new Date();
@@ -271,17 +282,17 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
         taskDO.setCostTime(cost);
         taskDO.setTaskResult(result.toJSONString());
         taskRepository.updateSelectiveById(taskDO);
-        JSONObject newModelParam = result.getJSONObject("modelParam");
+        JSONObject newModelParam = result.getJSONObject("data").getJSONObject("modelParam");
+        result.getJSONObject("data").remove("modelParam");
         String instanceCode = taskDO.getInstanceCode();
-        if (newModelParam!=null && StringUtils.isEmpty(instanceCode)){
+        if (newModelParam!=null && !StringUtils.isEmpty(instanceCode)){
             InstanceDO instanceDO = instanceService.queryById(instanceCode);
             instanceDO.setModelParam(JSONObject.toJSONString(newModelParam));
             instanceRepository.updateById(instanceDO);
         }
     }
 
-    private JSONObject asyncExec(String taskUUID, JSONObject modelParam, String detectorCode,
-        JSONObject param) {
+    private JSONObject asyncExec(String taskUUID, String detectorCode, JSONObject param) {
         String detectorUrl = System.getenv(detectorCode);
         if (StringUtils.isEmpty(detectorUrl)){
             DetectorConfigDO detectorConfigDO = detectorService.queryById(detectorCode);
@@ -292,7 +303,6 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
             detectorUrl = detectorConfigDO.getDetectorUrl();
         }
         JSONObject postJson = JSONObject.parseObject(JSONObject.toJSONString(param));
-        postJson.put("modelParam", modelParam);
         postJson.put("taskUUID", taskUUID);
         taskResultCache.put(TaskCacheUtil.genReqKey(taskUUID), postJson);
         OkHttpClient asyncHttpClient = getAsyncHttpClient();

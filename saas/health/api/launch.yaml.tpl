@@ -59,7 +59,7 @@ spec:
         - name: Global.DATA_DB_NAME
           value: "sw_saas_health" 
         - name: Global.DATA_DB_HOST
-          value: "{{ Global.STAGE_ID }}-dataops-mysql.sreworks-dataops"
+          value: "${DATAOPS_DB_HOST}"
         - name: Global.DATA_DB_PORT
           value: "3306"
         - name: Global.DATA_DB_USER

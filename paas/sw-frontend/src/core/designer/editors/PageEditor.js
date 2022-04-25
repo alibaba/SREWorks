@@ -21,7 +21,11 @@ import {
     Image,
     Spin,
     Collapse,
-    Space
+    Space,
+    Form,
+    Input,
+    Select,
+    Message
 } from "antd";
 import PageModel from '../../framework/model/PageModel';
 import Constants from '../../framework/model/Constants';
@@ -42,6 +46,7 @@ import { page_template_meta, template_app_id } from './TemplateConstant';
 const { Step } = Steps;
 const { TabPane } = Tabs;
 const { Panel } = Collapse;
+const { Option } = Select;
 const steps = [
     {
         title: '选择类型',
@@ -62,6 +67,7 @@ export default class PageEditor extends React.Component {
     constructor(props) {
         super(props);
         let pageModel = props.pageModel || PageModel.CREATE_DEFAULT_INSTANCE();
+        this.formRef = React.createRef();
         this.state = {
             pageModel: pageModel,
             showPreview: false,
@@ -72,11 +78,16 @@ export default class PageEditor extends React.Component {
             confirmLoading: false,
             templateList: [],
             activeTarget: '',
-            operFlag: 'save',
+            targetParentServiceType:'',
             getTemplateLoading: false,
             saveOrCreat: false.FluidContentLayoutDesigner,
             categoryList: [],//模板类别
             activePanel: '',
+            templateModal: false,
+            templateForm: {
+                label: '',
+                serviceType: ''
+            }
         };
     }
 
@@ -221,6 +232,14 @@ export default class PageEditor extends React.Component {
         newParam.serviceType = templateServiceType;
         newParam.config.name = nodeData.config.name;
         newParam.config.label = nodeData.config.label;
+        let categoryAndServiceType = '';
+        this.formRef.current.validateFields().then((values)=> {
+            if(values) {
+                categoryAndServiceType = values['serviceType'] + `::${templateServiceType}`
+                newParam.config.label = values['label'] || nodeData.config.label;
+                newParam.parentNodeTypePath = newParam.parentNodeTypePath + values['serviceType']
+            }
+        })
         this.setState({
             confirmLoading: true
         })
@@ -229,27 +248,34 @@ export default class PageEditor extends React.Component {
                 newParam.config.capture = canvas.toDataURL("image/png");
                 appMenuTreeService.insertNode(newParam).then(res => {
                     this.setState({
-                        showTemplateList: false,
-                        confirmLoading: false
+                        templateModal: false,
+                        confirmLoading: false,
+                        openDrawer: false
                     })
-                    saveAs && saveAs(templateServiceType)
+                    saveAs && saveAs(categoryAndServiceType)
                 });
             });
         } catch (error) {
             appMenuTreeService.insertNode(newParam).then(res => {
                 this.setState({
-                    showTemplateList: false,
-                    confirmLoading: false
+                    templateModal: false,
+                    confirmLoading: false,
+                    openDrawer: false
                 })
-                saveAs && saveAs(templateServiceType)
+                saveAs && saveAs(categoryAndServiceType)
             });
         }
     }
     // 从模板创建
     handleCreateFromTemplate = () => {
+        if(!this.state.activeTarget) {
+            Message.info('请选择要引用的模板')
+            return false
+        }
         this.setState({ confirmLoading: true })
-        let { templateList, activeTarget } = this.state;
-        let groupData = templateList.find(item => item.serviceType === activeTarget);
+        let { templateList, activeTarget,targetParentServiceType } = this.state;
+        let category = templateList.find(item => item.serviceType === targetParentServiceType);
+        let groupData = category && category.children.find(item => item.serviceType === activeTarget);
         let nodeTypeId = groupData && groupData.nodeTypePath;
         let { createFromTemplate } = this.props;
         createFromTemplate && createFromTemplate(nodeTypeId, groupData);
@@ -290,15 +316,27 @@ export default class PageEditor extends React.Component {
     }
     showTemlateListModal = (operFlag) => {
         this.getTemplateList()
-        this.setState({
-            showTemplateList: true,
-            operFlag: operFlag,
-            activeTarget: '',
-        })
+        if(operFlag === 'save') {
+            this.setState({
+                openDrawer: true
+            },()=> {
+                this.setState({
+                    templateModal: true
+            },()=>
+            this.formRef.current.resetFields())
+            })
+        } else {
+            this.setState({
+                showTemplateList: true,
+                activeTarget: '',
+                targetParentServiceType:''
+            })
+        }
     }
-    setActive = (item) => {
+    setActive = (templateCate,item) => {
         let { activeTarget } = this.state;
         this.setState({
+            targetParentServiceType: (templateCate && templateCate.serviceType) || '',
             activeTarget: item.serviceType === activeTarget ? '' : item.serviceType
         })
     }
@@ -308,7 +346,7 @@ export default class PageEditor extends React.Component {
         });
     };
     render() {
-        let { pageModel, showPreview, openDrawer, showJson, activeKey, showTemplateList, confirmLoading, templateList, activeTarget, operFlag, getTemplateLoading, saveOrCreat, activePanel } = this.state, { height = 620, nodeData, contentLoading } = this.props;
+        let { pageModel, showPreview, openDrawer, showJson, activeKey, showTemplateList, confirmLoading, templateList, activeTarget, getTemplateLoading, saveOrCreat, activePanel, categoryList, templateForm, templateModal } = this.state, { height = 620, nodeData, contentLoading } = this.props;
         let tabEditorContentStyle = { height: height - 42, overflowY: "auto", overflowX: "none" }, { config } = nodeData;
         let { pageLayoutType = Constants.PAGE_LAYOUT_TYPE_CUSTOM } = config, containerModel = pageModel.getRootWidgetModel();
         return (
@@ -356,7 +394,7 @@ export default class PageEditor extends React.Component {
                         <div style={tabEditorContentStyle}>
                             {
                                 pageLayoutType === Constants.PAGE_LAYOUT_TYPE_FLUID &&
-                                <FluidContentLayoutDesigner changeButtonStatus={this.changeButtonStatus} {...this.props} containerModel={containerModel} />
+                                <FluidContentLayoutDesigner showTemlateListModal={this.showTemlateListModal} changeButtonStatus={this.changeButtonStatus} {...this.props} containerModel={containerModel} />
                             }
                             {
                                 pageLayoutType === Constants.PAGE_LAYOUT_TYPE_CUSTOM &&
@@ -394,21 +432,21 @@ export default class PageEditor extends React.Component {
                     onClose={this.onClose}
                     visible={openDrawer}
                 >
-                    <div>
-                        <PageContent pageModel={pageModel} pageLayoutType={pageLayoutType} />
+                    <div id='capture'>
+                        <PageContent  pageModel={pageModel} pageLayoutType={pageLayoutType} />
                     </div>
                 </Drawer>
                 <Drawer
                     title={`模板列表`}
                     placement="right"
-                    width={'90vw'}
+                    width={'92vw'}
                     onClose={this.handleCancel}
                     visible={showTemplateList}
                     extra={
                         <Space>
                             <Button onClick={this.handleCancel}>取消</Button>
                             {
-                                operFlag === 'save' ? <Button loading={confirmLoading} onClick={this.handleSaveAs} type="primary">{activeTarget ? '覆盖当前选中模板' : '新增模板'}</Button> : <Button loading={confirmLoading} onClick={this.handleCreateFromTemplate} type="primary">确定</Button>
+                                <Button loading={confirmLoading} onClick={this.handleCreateFromTemplate} type="primary">确定</Button>
                             }
                         </Space>
                     }
@@ -421,7 +459,7 @@ export default class PageEditor extends React.Component {
                                         <div className='template-pane'>
                                             {
                                                 templateCate.children.map((item) => {
-                                                    return <div onClick={() => this.setActive(item)} class={item.serviceType === activeTarget ? 'template-item-active' : 'template-item'}>
+                                                    return <div onClick={() => this.setActive(templateCate,item)} key={item.serviceType} class={item.serviceType === activeTarget ? 'template-item-active' : 'template-item'}>
                                                         <div className="template-logo" style={{ backgroundImage: `url(${item.capture})`, backgroundPosition: 'center center', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', }}>
                                                             <Image onClick={(e) => e.stopPropagation()} height={20} width={20} src={item.capture} />
                                                         </div>
@@ -441,9 +479,56 @@ export default class PageEditor extends React.Component {
                     </section>
                 </Drawer>
                 <Modal
-                    
+                    visible={templateModal}
+                    title="模板存储"
+                    confirmLoading={confirmLoading}
+                    onOk={this.handleSaveAs}
+                    onCancel={() => this.setState({ templateModal: false,openDrawer:false })}
                 >
-
+                    <Form
+                        name="basic"
+                        ref={this.formRef}
+                        labelCol={{
+                            span: 4,
+                        }}
+                        wrapperCol={{
+                            span: 20,
+                        }}
+                        initialValues={{
+                            remember: true,
+                        }}
+                        autoComplete="off"
+                    >
+                        <Form.Item
+                            label="模板名称"
+                            name="label"
+                            rules={[
+                                {
+                                    required: false,
+                                },
+                            ]}
+                        >
+                            <Input placeholder={'对模板进行重命名，非必填'} />
+                        </Form.Item>
+                        <Form.Item
+                            label="模板类别"
+                            name="serviceType"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: '请至少选择一个模板类别',
+                                },
+                            ]}
+                        >
+                            <Select allowClear>
+                                {
+                                    categoryList.map(category => {
+                                        return <Option key={category.serviceType} value={category.serviceType}>{category.label}</Option>
+                                    })
+                                }
+                            </Select>
+                        </Form.Item>
+                    </Form>
                 </Modal>
             </div>
         );

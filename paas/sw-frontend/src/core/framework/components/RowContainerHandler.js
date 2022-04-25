@@ -133,7 +133,6 @@ class RowContainerHandler extends React.Component {
             onOk: () => {
                 //let cloneRow={...row};
                 onUpdate && onUpdate(row);
-                console.log(row, '已有row3')
                 this.setState({
                     // row:cloneRow,
                     reload: reload++

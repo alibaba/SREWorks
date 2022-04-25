@@ -19,7 +19,9 @@ import {
     Modal,
     Tooltip,
     Image,
-    Spin
+    Spin,
+    Collapse,
+    Space
 } from "antd";
 import PageModel from '../../framework/model/PageModel';
 import Constants from '../../framework/model/Constants';
@@ -39,6 +41,7 @@ import { page_template_meta, template_app_id } from './TemplateConstant';
 
 const { Step } = Steps;
 const { TabPane } = Tabs;
+const { Panel } = Collapse;
 const steps = [
     {
         title: '选择类型',
@@ -70,11 +73,23 @@ export default class PageEditor extends React.Component {
             templateList: [],
             activeTarget: '',
             operFlag: 'save',
-            getTemplateLoading: false
+            getTemplateLoading: false,
+            saveOrCreat: false.FluidContentLayoutDesigner,
+            categoryList: [],//模板类别
+            activePanel: '',
         };
     }
 
-
+    componentDidMount() {
+        let { pageModel } = this.state;
+        let containerModel = pageModel.getRootWidgetModel();
+        let bleanWedgets = containerModel.widgets; //动态展示保存模板/从模板创建
+        if (bleanWedgets && bleanWedgets.length && bleanWedgets[0].rows.length) {
+            this.setState({ saveOrCreat: true });
+        } else {
+            this.setState({ saveOrCreat: false });
+        }
+    }
     next() {
         const { mode } = this.state;
         const current = this.state.current + 1;
@@ -99,7 +114,11 @@ export default class PageEditor extends React.Component {
         });
     };
 
-
+    changeButtonStatus = (flag) => {
+        this.setState({
+            saveOrCreat: flag
+        })
+    }
     renderWizard = () => {
         let { current, pageModel, mode } = this.state;
         return (
@@ -228,7 +247,7 @@ export default class PageEditor extends React.Component {
     }
     // 从模板创建
     handleCreateFromTemplate = () => {
-        this.setState({confirmLoading: true})
+        this.setState({ confirmLoading: true })
         let { templateList, activeTarget } = this.state;
         let groupData = templateList.find(item => item.serviceType === activeTarget);
         let nodeTypeId = groupData && groupData.nodeTypePath;
@@ -250,12 +269,20 @@ export default class PageEditor extends React.Component {
             getTemplateLoading: true
         })
         appMenuTreeService.getMenuTree(template_app_id).then(res => {
-            let sunMenuTree = res.children.find(item => item.name === 'home') || {};
-            this.setState({
-                templateList: sunMenuTree.children || [],
-                getTemplateLoading: false
+            console.log(res, 'res-menuTree');
+            // let sunMenuTree = res.children.find(item => item.name === 'home') || {};
+            let categoryList = [];
+            res && res.children.forEach(item => {
+                let { label, serviceType } = item;
+                categoryList.push({ label, serviceType });
             })
-        }).finally(()=> {
+            let sunMenuTree = res.children;
+            this.setState({
+                templateList: sunMenuTree || [],
+                getTemplateLoading: false,
+                categoryList: categoryList
+            })
+        }).finally(() => {
             this.setState({
                 getTemplateLoading: false
             })
@@ -270,22 +297,20 @@ export default class PageEditor extends React.Component {
         })
     }
     setActive = (item) => {
-        let {activeTarget} = this.state;
+        let { activeTarget } = this.state;
         this.setState({
-            activeTarget: item.serviceType === activeTarget? '' : item.serviceType
+            activeTarget: item.serviceType === activeTarget ? '' : item.serviceType
         })
     }
+    handleCategoryClicked = (keys) => {
+        this.setState({
+            activePanel: keys,
+        });
+    };
     render() {
-        let { pageModel, showPreview, openDrawer, showJson, activeKey, showTemplateList, confirmLoading, templateList, activeTarget, operFlag,getTemplateLoading } = this.state, { height = 620, nodeData, contentLoading } = this.props;
+        let { pageModel, showPreview, openDrawer, showJson, activeKey, showTemplateList, confirmLoading, templateList, activeTarget, operFlag, getTemplateLoading, saveOrCreat, activePanel } = this.state, { height = 620, nodeData, contentLoading } = this.props;
         let tabEditorContentStyle = { height: height - 42, overflowY: "auto", overflowX: "none" }, { config } = nodeData;
         let { pageLayoutType = Constants.PAGE_LAYOUT_TYPE_CUSTOM } = config, containerModel = pageModel.getRootWidgetModel();
-
-        let saveOrCreat = false, bleanWedgets = containerModel.widgets; //动态展示保存模板/从模板创建
-        if (bleanWedgets && bleanWedgets.length && bleanWedgets[0].rows.length) {
-            saveOrCreat = true;
-        } else {
-            saveOrCreat = false
-        }
         return (
             <div className={"globalBackground page_small_tabs abm-frontend-designer-page-editor"}>
                 <Tabs activeKey={activeKey} onChange={this.handleChangeTab} size="small" tabBarExtraContent={
@@ -305,11 +330,6 @@ export default class PageEditor extends React.Component {
                         {
                             saveOrCreat && <Button size="small" icon={<SnippetsOutlined />} style={{ position: 'relative', top: -3 }} type="primary" onClick={() => this.showTemlateListModal('save')}>
                                 另存为模板
-                            </Button>
-                        }
-                        {
-                            !saveOrCreat && <Button size="small" icon={<SnippetsOutlined />} style={{ position: 'relative', top: -3 }} type="primary" onClick={() => this.showTemlateListModal('create')}>
-                                从模板创建
                             </Button>
                         }
                         <Button size="small" className="feature-button" onClick={this.handlePreview}>
@@ -336,13 +356,13 @@ export default class PageEditor extends React.Component {
                         <div style={tabEditorContentStyle}>
                             {
                                 pageLayoutType === Constants.PAGE_LAYOUT_TYPE_FLUID &&
-                                <FluidContentLayoutDesigner {...this.props} containerModel={containerModel} />
+                                <FluidContentLayoutDesigner changeButtonStatus={this.changeButtonStatus} {...this.props} containerModel={containerModel} />
                             }
                             {
                                 pageLayoutType === Constants.PAGE_LAYOUT_TYPE_CUSTOM &&
                                 <ContentLayout {...this.props} height={height - 42} containerModel={containerModel} />
                             }
-                        </div> 
+                        </div>
                     </TabPane>
                     <TabPane tab={<span><SettingOutlined style={{ marginRight: 8 }} />设置</span>} key="setting">
                         <Tabs tabPosition={"left"} animated tabBarGutter={2}>
@@ -378,38 +398,52 @@ export default class PageEditor extends React.Component {
                         <PageContent pageModel={pageModel} pageLayoutType={pageLayoutType} />
                     </div>
                 </Drawer>
-                <Modal
-                    title="模板列表"
+                <Drawer
+                    title={`模板列表`}
+                    placement="right"
+                    width={'90vw'}
+                    onClose={this.handleCancel}
                     visible={showTemplateList}
-                    width={810}
-                    confirmLoading={confirmLoading}
-                    onCancel={this.handleCancel}
-                    footer={
-                        <div>
-                            <Button onClick={this.handleCancel} type="default">取消</Button>
+                    extra={
+                        <Space>
+                            <Button onClick={this.handleCancel}>取消</Button>
                             {
                                 operFlag === 'save' ? <Button loading={confirmLoading} onClick={this.handleSaveAs} type="primary">{activeTarget ? '覆盖当前选中模板' : '新增模板'}</Button> : <Button loading={confirmLoading} onClick={this.handleCreateFromTemplate} type="primary">确定</Button>
                             }
-                        </div>
+                        </Space>
                     }
                 >
-                    <section className='template-pane'>
-                    <Spin spinning={getTemplateLoading} />
-                        {
-                            templateList.map((item) => {
-                                return <div onClick={() => this.setActive(item)} class={item.serviceType === activeTarget ? 'template-item-active' : 'template-item'}>
-                                    <div className="template-logo" style={{ backgroundImage: `url(${item.capture})`, backgroundPosition: 'center center', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', }}>
-                                        <Image onClick={(e) => e.stopPropagation()} height={20} width={20} src={item.capture} />
-                                    </div>
-                                    <div className="template-label">
-                                        <Tooltip placement="top" title={item.label}>
-                                            {item.label}
-                                        </Tooltip>
-                                    </div>
-                                </div>
-                            })
-                        }
+                    <section className='template-parent-pane'>
+                        <Collapse activeKey={activePanel} bordered={false} onChange={this.handleCategoryClicked}>
+                            {
+                                templateList.map(templateCate => {
+                                    return <Panel header={templateCate.label} style={{ minWidth: 500 }} key={templateCate.serviceType}>
+                                        <div className='template-pane'>
+                                            {
+                                                templateCate.children.map((item) => {
+                                                    return <div onClick={() => this.setActive(item)} class={item.serviceType === activeTarget ? 'template-item-active' : 'template-item'}>
+                                                        <div className="template-logo" style={{ backgroundImage: `url(${item.capture})`, backgroundPosition: 'center center', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', }}>
+                                                            <Image onClick={(e) => e.stopPropagation()} height={20} width={20} src={item.capture} />
+                                                        </div>
+                                                        <div className="template-label">
+                                                            <Tooltip placement="top" title={item.label}>
+                                                                {item.label}
+                                                            </Tooltip>
+                                                        </div>
+                                                    </div>
+                                                })
+                                            }
+                                        </div>
+                                    </Panel>
+                                })
+                            }
+                        </Collapse>
                     </section>
+                </Drawer>
+                <Modal
+                    
+                >
+
                 </Modal>
             </div>
         );

@@ -11,6 +11,7 @@
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.alibaba.tdata.aisp.server.repository.domain.InstanceDO">
     <result column="model_param" jdbcType="LONGVARCHAR" property="modelParam" />
+    <result column="recent_feedback" jdbcType="LONGVARCHAR" property="recentFeedback" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -74,7 +75,7 @@
     instance_code, gmt_create, gmt_modified, scene_code, detector_code, entity_id
   </sql>
   <sql id="Blob_Column_List">
-    model_param
+    model_param, recent_feedback
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.alibaba.tdata.aisp.server.repository.domain.InstanceDOExample" resultMap="ResultMapWithBLOBs">
     select
@@ -127,10 +128,10 @@
   <insert id="insert" parameterType="com.alibaba.tdata.aisp.server.repository.domain.InstanceDO">
     insert into aisp_analyse_instance (instance_code, gmt_create, gmt_modified, 
       scene_code, detector_code, entity_id, 
-      model_param)
+      model_param, recent_feedback)
     values (#{instanceCode,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
       #{sceneCode,jdbcType=VARCHAR}, #{detectorCode,jdbcType=VARCHAR}, #{entityId,jdbcType=VARCHAR}, 
-      #{modelParam,jdbcType=LONGVARCHAR})
+      #{modelParam,jdbcType=LONGVARCHAR}, #{recentFeedback,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.alibaba.tdata.aisp.server.repository.domain.InstanceDO">
     insert into aisp_analyse_instance
@@ -156,6 +157,9 @@
       <if test="modelParam != null">
         model_param,
       </if>
+      <if test="recentFeedback != null">
+        recent_feedback,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="instanceCode != null">
@@ -178,6 +182,9 @@
       </if>
       <if test="modelParam != null">
         #{modelParam,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="recentFeedback != null">
+        #{recentFeedback,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
@@ -211,6 +218,9 @@
       <if test="record.modelParam != null">
         model_param = #{record.modelParam,jdbcType=LONGVARCHAR},
       </if>
+      <if test="record.recentFeedback != null">
+        recent_feedback = #{record.recentFeedback,jdbcType=LONGVARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -224,7 +234,8 @@
       scene_code = #{record.sceneCode,jdbcType=VARCHAR},
       detector_code = #{record.detectorCode,jdbcType=VARCHAR},
       entity_id = #{record.entityId,jdbcType=VARCHAR},
-      model_param = #{record.modelParam,jdbcType=LONGVARCHAR}
+      model_param = #{record.modelParam,jdbcType=LONGVARCHAR},
+      recent_feedback = #{record.recentFeedback,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -262,6 +273,9 @@
       <if test="modelParam != null">
         model_param = #{modelParam,jdbcType=LONGVARCHAR},
       </if>
+      <if test="recentFeedback != null">
+        recent_feedback = #{recentFeedback,jdbcType=LONGVARCHAR},
+      </if>
     </set>
     where instance_code = #{instanceCode,jdbcType=VARCHAR}
   </update>
@@ -272,7 +286,8 @@
       scene_code = #{sceneCode,jdbcType=VARCHAR},
       detector_code = #{detectorCode,jdbcType=VARCHAR},
       entity_id = #{entityId,jdbcType=VARCHAR},
-      model_param = #{modelParam,jdbcType=LONGVARCHAR}
+      model_param = #{modelParam,jdbcType=LONGVARCHAR},
+      recent_feedback = #{recentFeedback,jdbcType=LONGVARCHAR}
     where instance_code = #{instanceCode,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.alibaba.tdata.aisp.server.repository.domain.InstanceDO">
@@ -316,13 +331,14 @@
   </select>
   <insert id="batchInsert" parameterType="map">
     insert into aisp_analyse_instance
-    (instance_code, gmt_create, gmt_modified, scene_code, detector_code, entity_id, model_param
-      )
+    (instance_code, gmt_create, gmt_modified, scene_code, detector_code, entity_id, model_param, 
+      recent_feedback)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.instanceCode,jdbcType=VARCHAR}, #{item.gmtCreate,jdbcType=TIMESTAMP}, #{item.gmtModified,jdbcType=TIMESTAMP}, 
         #{item.sceneCode,jdbcType=VARCHAR}, #{item.detectorCode,jdbcType=VARCHAR}, #{item.entityId,jdbcType=VARCHAR}, 
-        #{item.modelParam,jdbcType=LONGVARCHAR})
+        #{item.modelParam,jdbcType=LONGVARCHAR}, #{item.recentFeedback,jdbcType=LONGVARCHAR}
+        )
     </foreach>
   </insert>
   <insert id="batchInsertSelective" parameterType="map">
@@ -356,6 +372,9 @@
         <if test="'model_param'.toString() == column.value">
           #{item.modelParam,jdbcType=LONGVARCHAR}
         </if>
+        <if test="'recent_feedback'.toString() == column.value">
+          #{item.recentFeedback,jdbcType=LONGVARCHAR}
+        </if>
       </foreach>
       )
     </foreach>
@@ -384,6 +403,9 @@
       <if test="modelParam != null">
         model_param,
       </if>
+      <if test="recentFeedback != null">
+        recent_feedback,
+      </if>
     </trim>
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -407,6 +429,9 @@
       </if>
       <if test="modelParam != null">
         #{modelParam,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="recentFeedback != null">
+        #{recentFeedback,jdbcType=LONGVARCHAR},
       </if>
     </trim>
     on duplicate key update 
@@ -432,6 +457,9 @@
       <if test="modelParam != null">
         model_param = #{modelParam,jdbcType=LONGVARCHAR},
       </if>
+      <if test="recentFeedback != null">
+        recent_feedback = #{recentFeedback,jdbcType=LONGVARCHAR},
+      </if>
     </trim>
   </insert>
   <insert id="upsert" parameterType="com.alibaba.tdata.aisp.server.repository.domain.InstanceDO">
@@ -451,12 +479,12 @@
   </insert>
   <insert id="upsertWithBLOBs" parameterType="com.alibaba.tdata.aisp.server.repository.domain.InstanceDO">
     insert into aisp_analyse_instance
-    (instance_code, gmt_create, gmt_modified, scene_code, detector_code, entity_id, model_param
-      )
+    (instance_code, gmt_create, gmt_modified, scene_code, detector_code, entity_id, model_param, 
+      recent_feedback)
     values
     (#{instanceCode,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
       #{sceneCode,jdbcType=VARCHAR}, #{detectorCode,jdbcType=VARCHAR}, #{entityId,jdbcType=VARCHAR}, 
-      #{modelParam,jdbcType=LONGVARCHAR})
+      #{modelParam,jdbcType=LONGVARCHAR}, #{recentFeedback,jdbcType=LONGVARCHAR})
     on duplicate key update 
     instance_code = #{instanceCode,jdbcType=VARCHAR}, 
     gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}, 
@@ -464,6 +492,7 @@
     scene_code = #{sceneCode,jdbcType=VARCHAR}, 
     detector_code = #{detectorCode,jdbcType=VARCHAR}, 
     entity_id = #{entityId,jdbcType=VARCHAR}, 
-    model_param = #{modelParam,jdbcType=LONGVARCHAR}
+    model_param = #{modelParam,jdbcType=LONGVARCHAR}, 
+    recent_feedback = #{recentFeedback,jdbcType=LONGVARCHAR}
   </insert>
 </mapper>

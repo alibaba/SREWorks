@@ -315,7 +315,7 @@ public class ProductReleaseServiceImpl implements ProductReleaseService {
      * @return List of ComponentBinder
      */
     private List<ComponentBinder> buildYamlToComponentBinderList(Path dir, String buildPath) {
-        Yaml yaml = SchemaUtil.createYaml();
+        Yaml yaml = SchemaUtil.createYaml(Arrays.asList(Iterable.class, Object.class));
         Path actualPath = dir.resolve(buildPath);
         Iterable<Object> iterable;
         try {

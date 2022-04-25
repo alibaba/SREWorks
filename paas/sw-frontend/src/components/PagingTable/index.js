@@ -279,8 +279,8 @@ class PagingTable extends Component {
     componentWillReceiveProps(nextProps) {
     }
     render() {
-        const { pagination, data, loading } = this.state, { style, scrollX, scrollY, className, columns, renderComponents, openAction, handleParamsChanged, dataUrl, extParams = {},widgetConfig, ...otherTableProps } = this.props;
-        let { emptyText } = widgetConfig;
+        const { pagination, data, loading } = this.state, { style, scrollX, scrollY, className, columns, renderComponents, openAction, handleParamsChanged, dataUrl, extParams = {},widgetConfig={}, ...otherTableProps } = this.props;
+        let { emptyText='' } = widgetConfig;
         const tableColumns = columns && columns.map(c => {
             let columnDef = Object.assign({ ...this.getColumnSearch(c.dataIndex, c) }, c);
             if (c.filters) {
@@ -321,7 +321,7 @@ class PagingTable extends Component {
                 <Table
                     rowKey="__row_uuid"
                     locale={{
-                        emptyText:emptyText ? <JSXRender  {...this.props} jsx={emptyText} /> : null
+                        emptyText:emptyText ? <JSXRender  {...this.props} jsx={emptyText} /> : ''
                       }}
                     columns={tableColumns}
                     size="small"

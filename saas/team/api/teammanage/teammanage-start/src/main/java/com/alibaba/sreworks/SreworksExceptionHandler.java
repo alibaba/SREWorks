@@ -6,10 +6,8 @@ import com.alibaba.tesla.common.base.TeslaResultFactory;
 import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @ControllerAdvice
@@ -28,6 +26,17 @@ public class SreworksExceptionHandler {
             e.getLocalizedMessage(),
             e.getResponseBody()
         );
+    }
+
+    static private boolean initialized = false;
+
+    @InitBinder
+    public void setAllowedFields(WebDataBinder dataBinder) {
+        if (!initialized) {
+            System.out.println("[Info] your spring is safe now.");
+            initialized = true;
+        }
+        dataBinder.setDisallowedFields("class.*", "Class.*", "*.class.*", "*.Class.*");
     }
 
 }

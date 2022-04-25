@@ -162,7 +162,7 @@ public class AppAddonController extends AppManagerBaseController {
         AppAddonDTO appAddonDTO = appAddonProvider.get(appId, addonName);
         AddonMetaDTO addonMetaDTO = addonMetaProvider.get(appAddonDTO.getAddonId(), appAddonDTO.getAddonVersion());
 
-        Yaml yaml = SchemaUtil.createYaml();
+        Yaml yaml = SchemaUtil.createYaml(ComponentSchema.class);
         ComponentSchema addonSchema = yaml.loadAs(addonMetaDTO.getAddonSchema(), ComponentSchema.class);
         List<WorkloadResource.DataOutput> dataOutputs = addonSchema.getSpec().getWorkload().getDataOutputs();
         return buildSucceedResult(dataOutputs);

@@ -1,9 +1,8 @@
-package com.alibaba.sreworks;
+package com.alibaba.sreworks.job;
 
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.alibaba.tesla.common.base.TeslaResultFactory;
 
-import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.WebDataBinder;
@@ -15,19 +14,6 @@ public class SreworksExceptionHandler {
 
     public SreworksExceptionHandler() {
     }
-
-    @ExceptionHandler({ApiException.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public TeslaBaseResult handApiException(ApiException e) {
-        log.error("ApiException: \n" + e.getResponseBody(), e);
-        return TeslaResultFactory.buildResult(
-            HttpStatus.INTERNAL_SERVER_ERROR.value(),
-            e.getLocalizedMessage(),
-            e.getResponseBody()
-        );
-    }
-
     static private boolean initialized = false;
 
     @InitBinder

@@ -82,7 +82,7 @@ export default class TableItem extends React.Component {
         }
         return (
             <div>
-                <PagingTable columns={this.config.columns} data={data} />
+                <PagingTable columns={this.config.columns} data={data} {...this.props} />
             </div>
         )
     }

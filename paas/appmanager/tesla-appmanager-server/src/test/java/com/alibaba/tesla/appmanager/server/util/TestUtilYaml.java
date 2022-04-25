@@ -3,6 +3,7 @@ package com.alibaba.tesla.appmanager.server.util;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
+import com.alibaba.tesla.appmanager.domain.schema.ComponentSchema;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
@@ -35,7 +36,7 @@ public class TestUtilYaml {
         content.getJSONObject("options").put("d", new JSONObject());
         content.getJSONObject("options").getJSONObject("d").put("d1", "d2");
         content.getJSONObject("options").getJSONObject("d").put("d3", "d4");
-        Yaml yaml = SchemaUtil.createYaml();
+        Yaml yaml = SchemaUtil.createYaml(JSONObject.class);
         String yamlContent = yaml.dump(content);
         int indent = 6;
         String preSpace = String.join("", Collections.nCopies(indent, " "));

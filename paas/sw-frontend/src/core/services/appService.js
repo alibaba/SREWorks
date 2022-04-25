@@ -60,7 +60,7 @@ class AppService {
             req.headers.common['X-Biz-App'] = util.getNewBizApp(app);
             return req;
         });
-        return httpClient.get(authPrefix+'auth/user/info?appId=bcc&noCache=1').then(resp=>{
+        return httpClient.get(authPrefix+'auth/user/info').then(resp=>{
             if(resp.code===401){
                 return resp;
             }
@@ -316,7 +316,7 @@ class AppService {
         return httpClient.put(`gateway/v2/foundation/appmanager/profile?namespaceId=${namespaceId}&stageId=${stageId}`, params);
     }
     isLogined() {
-        return httpClient.get('gateway/v2/common/authProxy/auth/user/info?appId=bcc&noCache=1')
+        return httpClient.get('gateway/v2/common/authProxy/auth/user/info')
     }
     // // 更新桌面背景图片列表
     updateDesktopBackgroundList(params) {

@@ -14,8 +14,8 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.java.version>1.8</project.java.version>
     <!--spring-->
-    <spring.boot.dependencies.version>2.3.9.RELEASE</spring.boot.dependencies.version>
-    <spring.cloud.dependencies.version>Hoxton.SR10</spring.cloud.dependencies.version>
+    <spring.boot.dependencies.version>2.5.12</spring.boot.dependencies.version>
+    <spring.cloud.dependencies.version>2020.0.5</spring.cloud.dependencies.version>
     <!-- other -->
     <lombok.version>1.18.8</lombok.version>
     <junit.version>4.12</junit.version>

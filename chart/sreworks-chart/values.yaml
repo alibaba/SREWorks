@@ -65,6 +65,8 @@ saas:
     dbPort: 3306
     esHost: 'prod-dataops-elasticsearch-master.sreworks-dataops'
     esPort: 9200
+    esUser: ""
+    esPassword: ""
   grafana:
     password: "sreworks123456"
 

@@ -354,9 +354,13 @@ data:
       split
     fi
 
-    envsubst < /root/saas/dataops/api/elasticsearch/build.yaml.tpl > tmp-build.yaml
-    envsubst < /root/saas/dataops/api/elasticsearch/launch.yaml.tpl > tmp-launch.yaml
-    split
+    if [[ "$DATAOPS_ES_HOST" == "prod-dataops-elasticsearch-master.sreworks-dataops" ]]
+    then
+       envsubst < /root/saas/dataops/api/elasticsearch/build.yaml.tpl > tmp-build.yaml
+       envsubst < /root/saas/dataops/api/elasticsearch/launch.yaml.tpl > tmp-launch.yaml
+       split
+    fi
+
 
     envsubst < /root/saas/dataops/api/grafana/build.yaml.tpl > tmp-build.yaml
     envsubst < /root/saas/dataops/api/grafana/launch.yaml.tpl > tmp-launch.yaml

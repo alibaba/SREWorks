@@ -57,6 +57,9 @@ data:
   GRAFANA_ADMIN_PASSWORD: {{ .Values.saas.grafana.password | quote }} 
   DATAOPS_ES_HOST: {{ .Values.saas.dataops.esHost | quote }}
   DATAOPS_ES_PORT: {{ .Values.saas.dataops.esPort | quote }}
+  DATAOPS_ES_USER: {{ .Values.saas.dataops.esUser | quote }}
+  DATAOPS_ES_PASSWORD: {{ .Values.saas.dataops.esPassword | quote }}
+
 
   ACCOUNT_SUPER_CLIENT_ID: {{ .Values.appmanager.gateway.account_super_client_id }}
   ACCOUNT_SUPER_CLIENT_SECRET: {{ .Values.appmanager.gateway.account_super_client_secret }}

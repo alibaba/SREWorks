@@ -182,6 +182,9 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
             if(launchObject.getGatewayRouteOrder() != null){
                 gatewaySpec.put("order", launchObject.getGatewayRouteOrder());
             }
+            if(launchObject.getGatewayAuthEnabled() != null){
+                gatewaySpec.put("authEnabled", launchObject.getGatewayAuthEnabled());
+            }
 
             traits.add(gatewayTrait);
         }

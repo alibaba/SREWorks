@@ -8,7 +8,7 @@ import  httpClient from '../../utils/httpClient';
 }*/
 const apiPrefix="gateway/v2/common/authProxy/";
 export function loginUserData(){
-    return httpClient.get(apiPrefix+'auth/user/info?appId=bcc&noCache=1').then((res)=>{
+    return httpClient.get(apiPrefix+'auth/user/info').then((res)=>{
         return res ? res : []
     })
 }

@@ -44,49 +44,53 @@
   }
 
 }
-.template-pane {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  padding-bottom:60px;
+.template-parent-pane {
   overflow-y: scroll;
-  .template-item {
-    margin-right: 26px;
-    margin-top:16px;
-    cursor: pointer;
-    .template-logo {
-      text-align: center;
-      border-radius: 10px;
-      width: 100px;
-      height:140px;
-      line-height: 140px;
-      vertical-align: middle;
-      border: 1px solid lightgray;
-    }
-    .template-label{
-      text-align: center;
-      margin-top:16px;
-    }
+  .ant-collapse > .ant-collapse-item {
+    border-bottom: none;
   }
-  .template-item-active {
-    margin-right: 26px;
-    margin-top:16px;
-    cursor: pointer;
-    .template-logo {
-      text-align: center;
-      border-radius: 10px;
-      width: 100px;
-      height:140px;
-      line-height: 140px;
-      vertical-align: middle;
-      border: 2px solid var(--PrimaryColor);
+  .template-pane {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    .template-item {
+      margin-right: 20px;
+      margin-top:8px;
+      cursor: pointer;
+      .template-logo {
+        text-align: center;
+        border-radius: 8px;
+        width: 280px;
+        height:200px;
+        line-height: 200px;
+        vertical-align: middle;
+        border: 1px solid lightgray;
+      }
+      .template-label{
+        text-align: center;
+        margin-top:16px;
+      }
     }
-    .template-label{
-      text-align: center;
-      background-color: var(--PrimaryColor);
-      border-radius: 6px;
-      color: white;
-      margin-top:16px;
+    .template-item-active {
+      margin-right: 20px;
+      margin-top:8px;
+      cursor: pointer;
+      .template-logo {
+        text-align: center;
+        border-radius: 8px;
+        width: 280px;
+        height:200px;
+        line-height: 200px;
+        vertical-align: middle;
+        border: 2px solid var(--PrimaryColor);
+      }
+      .template-label{
+        text-align: center;
+        background-color: var(--PrimaryColor);
+        border-radius: 6px;
+        color: white;
+        margin-top:16px;
+      }
     }
   }
 }

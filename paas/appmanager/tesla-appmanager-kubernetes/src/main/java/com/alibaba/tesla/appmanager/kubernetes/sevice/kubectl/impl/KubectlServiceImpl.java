@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.kubernetes.sevice.kubectl.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
@@ -9,11 +10,16 @@ import com.alibaba.tesla.appmanager.kubernetes.KubernetesClientFactory;
 import com.alibaba.tesla.appmanager.kubernetes.sevice.kubectl.KubectlService;
 import io.fabric8.kubernetes.api.model.DeletionPropagation;
 import io.fabric8.kubernetes.api.model.HasMetadata;
+import io.fabric8.kubernetes.api.model.Namespace;
+import io.fabric8.kubernetes.api.model.NamespaceList;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.api.model.batch.v1.JobList;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
+import io.fabric8.kubernetes.client.dsl.NonNamespaceOperation;
+import io.fabric8.kubernetes.client.dsl.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +34,20 @@ public class KubectlServiceImpl implements KubectlService {
 
     @Autowired
     private KubernetesClientFactory kubernetesClientFactory;
+
+    /**
+     * 获取当前的所有 namespaces
+     */
+    @Override
+    public JSONObject listNamespace(KubectlListNamespaceReq request, String empId) {
+        String clusterId = request.getClusterId();
+        if (StringUtils.isEmpty(clusterId)) {
+            clusterId = "master";
+        }
+        DefaultKubernetesClient client = kubernetesClientFactory.get(clusterId);
+        NamespaceList namespaces = client.namespaces().list();
+        return JSONObject.parseObject(JSONObject.toJSONString(namespaces));
+    }
 
     /**
      * 应用 Yaml

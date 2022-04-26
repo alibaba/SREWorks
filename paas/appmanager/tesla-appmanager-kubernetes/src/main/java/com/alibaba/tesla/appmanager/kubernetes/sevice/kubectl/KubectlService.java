@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.kubernetes.sevice.kubectl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.domain.req.kubectl.*;
 
 /**
@@ -8,6 +9,11 @@ import com.alibaba.tesla.appmanager.domain.req.kubectl.*;
  * @author yaoxing.gyx@alibaba-inc.com
  */
 public interface KubectlService {
+
+    /**
+     * 获取当前的所有 namespaces
+     */
+    JSONObject listNamespace(KubectlListNamespaceReq request, String empId);
 
     /**
      * 应用 Yaml

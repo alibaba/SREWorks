@@ -172,7 +172,11 @@ public class GatewayTrait extends BaseTrait {
                 log.info("gateway check route [url] not pass:{} ", resp.getJSONObject("data").toJSONString());
                 return false;
             }
-            if(!resp.getJSONObject("data").getString("stageId").equals(stageId)){
+            if(resp.getJSONObject("data").getString("stageId") == null){
+                if(!StringUtils.equals(stageId, "prod")){
+                    log.info("gateway check route [noStageId] not pass:{} ", resp.getJSONObject("data").toJSONString());
+                }
+            } else if (!resp.getJSONObject("data").getString("stageId").equals(stageId)){
                 log.info("gateway check route [stageId] not pass:{} ", resp.getJSONObject("data").toJSONString());
                 return false;
             }
@@ -245,7 +249,7 @@ public class GatewayTrait extends BaseTrait {
             routeJson.put("stageId", stageId);
         }
         String authPasswd = getAuthPasswdHash(username, password);
-        log.info("gateway auth headers: x-auth-app={} x-auth-key={} x-auth-user={} x-auth-passwd={}", clientId, clientSecret, username, authPasswd);
+        log.info("gateway routeJson: {}", routeJson.toJSONString());
 
         if (mode.equals("insert")){
 

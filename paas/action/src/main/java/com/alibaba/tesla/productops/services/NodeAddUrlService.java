@@ -1,7 +1,6 @@
 package com.alibaba.tesla.productops.services;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,16 +47,13 @@ public class NodeAddUrlService {
         String appId = "";
         try {
             appId = node.getNodeTypePath().split("\\|")[0];
-        } catch (Exception ignored) {
-
-        }
+        } catch (Exception ignored) {}
         JSONObject config = JSONObject.parseObject(node.getConfig());
         config.put("url", appId + "/" + getUrl(node, nodeTypePathMap, ""));
-        node.setConfig(JSONObject.toJSONString(config));
-        productopsNodeRepository.saveAndFlush(node);
+        productopsNodeRepository.updateConfigWhereId(node.getId(), JSONObject.toJSONString(config));
     }
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedDelay = 60000)
     public void addUrls() {
         List<ProductopsNode> nodes = productopsNodeRepository.findAll();
         Map<String, List<ProductopsNode>> stageIdNodesMap = new HashMap<>();

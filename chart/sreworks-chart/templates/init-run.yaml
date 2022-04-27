@@ -72,6 +72,14 @@ data:
         /root/swcli --config /swcli/swcli.yaml deployment launch --app-id swadmin --path /root/saas/swadmin/launch.yaml --stage=prod --namespace=${NAMESPACE_ID} --app-package-id $result --arch x86 --wait=true --cluster master
         /root/swcli --config /swcli/swcli.yaml deployment launch --app-id swadmin --path /root/saas/swadmin/launch-dev.yaml --stage dev --namespace=${NAMESPACE_ID} --app-package-id $result --arch x86 --wait=true --cluster master
 
+        # import&launch saas template
+        envsubst < /root/saas/template/launch-v2.yaml.tpl > /root/saas/template/launch.yaml
+        envsubst < /root/saas/template/launch-v2-dev.yaml.tpl > /root/saas/template/launch-dev.yaml
+        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id template --filepath /root/saas/template/ui/template-auto.zip --print-only-app-package-id=true --reset-version=true)
+        /root/swcli --config /swcli/swcli.yaml deployment launch --app-id template --path /root/saas/template/launch.yaml --stage=prod --namespace=${NAMESPACE_ID} --app-package-id $result --arch x86 --wait=true --cluster master
+        /root/swcli --config /swcli/swcli.yaml deployment launch --app-id template --path /root/saas/template/launch-dev.yaml --stage dev --namespace=${NAMESPACE_ID} --app-package-id $result --arch x86 --wait=true --cluster master
+
+
     fi
      
 

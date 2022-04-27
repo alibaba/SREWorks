@@ -69,10 +69,10 @@ spec:
             datasources:
             - name: elasticsearch-metricbeat
               type: elasticsearch
-              url: http://${DATA_ES_HOST}:${DATA_ES_PORT}
+              url: http://${DATAOPS_ES_HOST}:${DATAOPS_ES_PORT}
               database: "[metricbeat]*"
-              basic_auth_user: "${DATA_ES_USER}"
-              basic_auth_password: "${DATA_ES_PASSWORD}"
+              basic_auth_user: "${DATAOPS_ES_USER}"
+              basic_auth_password: "${DATAOPS_ES_PASSWORD}"
               access: proxy
               isDefault: true
               jsonData:

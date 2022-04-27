@@ -91,8 +91,10 @@ spec:
             setup.template.pattern: "filebeat-*"
             
             output.elasticsearch:
-              hosts: '${ELASTICSEARCH_HOSTS:{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-elasticsearch-master:9200}'
+              hosts: '${DATA_ES_HOST}:${DATA_ES_PORT}'
               index: "filebeat-%{+yyyy.MM.dd}"
+              username: "${DATA_ES_USER}"
+              password: "${DATA_ES_PASSWORD}"
 
       toFieldPaths:
       - "spec.values"

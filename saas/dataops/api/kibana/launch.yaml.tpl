@@ -40,7 +40,7 @@ spec:
     parameterValues:
     - name: "values"
       value:
-        elasticsearchHosts: "http://{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-elasticsearch-master.{{ Global.NAMESPACE_ID }}.svc.cluster.local:9200"
+        elasticsearchHosts: "http://${DATA_ES_HOST}:${DATA_ES_PORT}"
 
         #kibanaConfig: 
         #   kibana.yml: |

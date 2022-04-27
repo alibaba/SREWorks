@@ -69,8 +69,10 @@ spec:
             datasources:
             - name: elasticsearch-metricbeat
               type: elasticsearch
-              url: http://{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-elasticsearch-master.{{ Global.NAMESPACE_ID }}:9200
+              url: http://${DATA_ES_HOST}:${DATA_ES_PORT}
               database: "[metricbeat]*"
+              basic_auth_user: "${DATA_ES_USER}"
+              basic_auth_password: "${DATA_ES_PASSWORD}"
               access: proxy
               isDefault: true
               jsonData:
@@ -79,8 +81,10 @@ spec:
                 esVersion: 70
             - name: elasticsearch-filebeat
               type: elasticsearch
-              url: http://{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-elasticsearch-master.{{ Global.NAMESPACE_ID }}:9200
+              url: http://${DATA_ES_HOST}:${DATA_ES_PORT}
               database: "[filebeat]*"
+              basic_auth_user: "${DATA_ES_USER}"
+              basic_auth_password: "${DATA_ES_PASSWORD}"
               access: proxy
               isDefault: false
               jsonData:

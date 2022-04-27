@@ -24,7 +24,7 @@ spec:
     - name: REDIS_DB
       value: "0"
     - name: ES_ENDPOINT
-      value: "http://${DATAOPS_ES_HOST}:${DATAOPS_ES_PORT}"
+      value: "http://${DATA_ES_HOST}:${DATA_ES_PORT}"
     - name: ES_USERNAME
       value: ""
     - name: ES_PASSWORD

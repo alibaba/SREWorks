@@ -53,9 +53,11 @@ spec:
         elasticsearch:
           enabled: false
           config:
-            host: "{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-elasticsearch-master.{{ Global.NAMESPACE_ID }}.svc.cluster.local"
+            host: "${DATA_ES_HOST}"
             port:
-              http: 9200
+              http: ${DATA_ES_PORT}
+            user: "{DATA_ES_USER}"
+            password: "{{DATA_ES_PASSWORD}}"
 
       toFieldPaths:
       - "spec.values"

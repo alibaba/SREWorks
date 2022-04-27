@@ -8,7 +8,12 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.InitializingBean;
@@ -97,8 +102,13 @@ public class ESClient implements InitializingBean {
         }
 
         JSONObject connectConfig = dsObject.getJSONObject("connectConfig");
+
+        final CredentialsProvider credentialsProvider = buildCredentialsProvider(connectConfig.getString("username"), connectConfig.getString("password"));
+
         RestClient client = RestClient.builder(
                 new HttpHost(connectConfig.getString("host"), connectConfig.getIntValue("port"), connectConfig.getString("schema"))
+        ).setHttpClientConfigCallback(
+                httpAsyncClientBuilder -> httpAsyncClientBuilder.setDefaultCredentialsProvider(credentialsProvider)
         ).build();
 
         dataSourceCache.put(dataSourceId, client);
@@ -114,14 +124,29 @@ public class ESClient implements InitializingBean {
         }
 
         JSONObject connectConfig = dsObject.getJSONObject("connectConfig");
+
+        final CredentialsProvider credentialsProvider = buildCredentialsProvider(connectConfig.getString("username"), connectConfig.getString("password"));
+
         RestHighLevelClient hlClient = new RestHighLevelClient(
             RestClient.builder(
                     new HttpHost(connectConfig.getString("host"), connectConfig.getIntValue("port"), connectConfig.getString("schema"))
-            ).setHttpClientConfigCallback(requestConfig -> requestConfig.setKeepAliveStrategy((response, context) -> TimeUnit.MINUTES.toMillis(10)))
+            ).setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
+                    .setDefaultCredentialsProvider(credentialsProvider)
+                    .setKeepAliveStrategy((response, context) -> TimeUnit.MINUTES.toMillis(10)))
         );
 
         hlDataSourceCache.put(dataSourceId, hlClient);
 
         return hlClient;
+    }
+
+    private CredentialsProvider buildCredentialsProvider(String username, String password) {
+        CredentialsProvider credentialsProvider = null;
+        if (StringUtils.isNotEmpty(username) && StringUtils.isNotEmpty(password)) {
+            credentialsProvider = new BasicCredentialsProvider();
+            credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
+        }
+        return credentialsProvider;
+
     }
 }

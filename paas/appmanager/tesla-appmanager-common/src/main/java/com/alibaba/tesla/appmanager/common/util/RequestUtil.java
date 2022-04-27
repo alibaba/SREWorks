@@ -66,6 +66,14 @@ public class RequestUtil {
         return httpClient;
     }
 
+    public static OkHttpClient newHttpClient(OkHttpClient.Builder builder) {
+        return builder
+                .connectionPool(new ConnectionPool())
+                .sslSocketFactory(TRUST_ALL_SSL_SOCKET_FACTORY, (X509TrustManager)TRUST_ALL_CERTS[0])
+                .hostnameVerifier((hostname, session) -> true)
+                .build();
+    }
+
     private static Request.Builder createRequestBuilder(String url, JSONObject params, JSONObject headers) {
         if (params == null) {
             params = new JSONObject();
@@ -123,6 +131,16 @@ public class RequestUtil {
         return response.body().string();
     }
 
+    public static String post(OkHttpClient client, String url, JSONObject params, String postJson, JSONObject headers)
+            throws IOException {
+        Request.Builder requestBuilder = createRequestBuilder(url, params, headers);
+        Request request = requestBuilder.post(RequestBody.create(MediaType.parse("application/json"),
+                postJson)).build();
+        Response response = client.newCall(request).execute();
+        assert response.body() != null;
+        return response.body().string();
+    }
+
     public static <T> T post(String url, JSONObject params, String postJson, JSONObject headers, Class<T> tClass)
         throws Exception {
         String resp = post(url, params, postJson, headers);
@@ -131,6 +149,11 @@ public class RequestUtil {
 
     public static <T> T post(String url, String postJson, Class<T> tClass) throws Exception {
         String resp = post(url, new JSONObject(), postJson, new JSONObject());
+        return transfer(resp, tClass);
+    }
+
+    public static <T> T post(OkHttpClient client, String url, String postJson, Class<T> tClass) throws Exception {
+        String resp = post(client, url, new JSONObject(), postJson, new JSONObject());
         return transfer(resp, tClass);
     }
 

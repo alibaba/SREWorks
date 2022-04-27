@@ -1,6 +1,6 @@
 export const page_template_meta = {
     category: "node",
-    parentNodeTypePath: "template|app|T:",
+    parentNodeTypePath: "template|app|T:CjtHd7Y1O",
     version: 0,
     serviceType:"",
     config: {

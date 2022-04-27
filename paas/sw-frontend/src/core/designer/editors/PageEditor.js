@@ -78,7 +78,7 @@ export default class PageEditor extends React.Component {
             confirmLoading: false,
             templateList: [],
             activeTarget: '',
-            targetParentServiceType:'',
+            targetParentServiceType: '',
             getTemplateLoading: false,
             saveOrCreat: false.FluidContentLayoutDesigner,
             categoryList: [],//模板类别
@@ -233,11 +233,11 @@ export default class PageEditor extends React.Component {
         newParam.config.name = nodeData.config.name;
         newParam.config.label = nodeData.config.label;
         let categoryAndServiceType = '';
-        this.formRef.current.validateFields().then((values)=> {
-            if(values) {
+        this.formRef.current.validateFields().then((values) => {
+            if (values) {
                 categoryAndServiceType = values['serviceType'] + `::${templateServiceType}`
                 newParam.config.label = values['label'] || nodeData.config.label;
-                newParam.parentNodeTypePath = newParam.parentNodeTypePath + values['serviceType']
+                newParam.parentNodeTypePath = newParam.parentNodeTypePath + "::" + values['serviceType']
             }
         })
         this.setState({
@@ -268,12 +268,12 @@ export default class PageEditor extends React.Component {
     }
     // 从模板创建
     handleCreateFromTemplate = () => {
-        if(!this.state.activeTarget) {
+        if (!this.state.activeTarget) {
             Message.info('请选择要引用的模板')
             return false
         }
         this.setState({ confirmLoading: true })
-        let { templateList, activeTarget,targetParentServiceType } = this.state;
+        let { templateList, activeTarget, targetParentServiceType } = this.state;
         let category = templateList.find(item => item.serviceType === targetParentServiceType);
         let groupData = category && category.children.find(item => item.serviceType === activeTarget);
         let nodeTypeId = groupData && groupData.nodeTypePath;
@@ -296,15 +296,15 @@ export default class PageEditor extends React.Component {
         })
         appMenuTreeService.getMenuTree(template_app_id).then(res => {
             console.log(res, 'res-menuTree');
-            // let sunMenuTree = res.children.find(item => item.name === 'home') || {};
+            let sunMenuTree = [];
+            sunMenuTree = (res && res.children && res.children.find(item => item.nodeTypePath === page_template_meta.parentNodeTypePath)) || {};
             let categoryList = [];
-            res && res.children.forEach(item => {
+            sunMenuTree && sunMenuTree.children.forEach(item => {
                 let { label, serviceType } = item;
                 categoryList.push({ label, serviceType });
             })
-            let sunMenuTree = res.children;
             this.setState({
-                templateList: sunMenuTree || [],
+                templateList: (sunMenuTree && sunMenuTree.children) || [],
                 getTemplateLoading: false,
                 categoryList: categoryList
             })
@@ -316,24 +316,24 @@ export default class PageEditor extends React.Component {
     }
     showTemlateListModal = (operFlag) => {
         this.getTemplateList()
-        if(operFlag === 'save') {
+        if (operFlag === 'save') {
             this.setState({
                 openDrawer: true
-            },()=> {
+            }, () => {
                 this.setState({
                     templateModal: true
-            },()=>
-            this.formRef.current.resetFields())
+                }, () =>
+                    this.formRef.current.resetFields())
             })
         } else {
             this.setState({
                 showTemplateList: true,
                 activeTarget: '',
-                targetParentServiceType:''
+                targetParentServiceType: ''
             })
         }
     }
-    setActive = (templateCate,item) => {
+    setActive = (templateCate, item) => {
         let { activeTarget } = this.state;
         this.setState({
             targetParentServiceType: (templateCate && templateCate.serviceType) || '',
@@ -433,7 +433,7 @@ export default class PageEditor extends React.Component {
                     visible={openDrawer}
                 >
                     <div id='capture'>
-                        <PageContent  pageModel={pageModel} pageLayoutType={pageLayoutType} />
+                        <PageContent pageModel={pageModel} pageLayoutType={pageLayoutType} />
                     </div>
                 </Drawer>
                 <Drawer
@@ -458,8 +458,8 @@ export default class PageEditor extends React.Component {
                                     return <Panel header={templateCate.label} style={{ minWidth: 500 }} key={templateCate.serviceType}>
                                         <div className='template-pane'>
                                             {
-                                                templateCate.children.map((item) => {
-                                                    return <div onClick={() => this.setActive(templateCate,item)} key={item.serviceType} class={item.serviceType === activeTarget ? 'template-item-active' : 'template-item'}>
+                                                templateCate.children && templateCate.children.map((item) => {
+                                                    return <div onClick={() => this.setActive(templateCate, item)} key={item.serviceType} class={item.serviceType === activeTarget ? 'template-item-active' : 'template-item'}>
                                                         <div className="template-logo" style={{ backgroundImage: `url(${item.capture})`, backgroundPosition: 'center center', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', }}>
                                                             <Image onClick={(e) => e.stopPropagation()} height={20} width={20} src={item.capture} />
                                                         </div>
@@ -483,7 +483,7 @@ export default class PageEditor extends React.Component {
                     title="模板存储"
                     confirmLoading={confirmLoading}
                     onOk={this.handleSaveAs}
-                    onCancel={() => this.setState({ templateModal: false,openDrawer:false })}
+                    onCancel={() => this.setState({ templateModal: false, openDrawer: false })}
                 >
                     <Form
                         name="basic"

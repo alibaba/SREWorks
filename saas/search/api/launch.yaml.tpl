@@ -72,6 +72,6 @@ spec:
         #- name: Global.CONTAINER_IP_LIST
         #  value: "prod-sreworks-flycore-paas-tkgone-0.prod-sreworks-flycore-paas-tkgone,prod-sreworks-flycore-paas-tkgone-1.prod-sreworks-flycore-paas-tkgone"
         - name: Global.ELASTICSEARCH_HOST
-          value: "${DATAOPS_ES_HOST}"
+          value: "${DATA_ES_HOST}"
         - name: Global.ELASTICSEARCH_PORT
-          value: "${DATAOPS_ES_PORT}"
+          value: "${DATA_ES_PORT}"

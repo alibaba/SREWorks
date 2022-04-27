@@ -95,7 +95,7 @@ export default class PageEditor extends React.Component {
         let { pageModel } = this.state;
         let containerModel = pageModel.getRootWidgetModel();
         let bleanWedgets = containerModel.widgets; //动态展示保存模板/从模板创建
-        if (bleanWedgets && bleanWedgets.length && bleanWedgets[0].rows.length) {
+        if (bleanWedgets && bleanWedgets.length && bleanWedgets[0].rows && bleanWedgets[0].rows.length) {
             this.setState({ saveOrCreat: true });
         } else {
             this.setState({ saveOrCreat: false });

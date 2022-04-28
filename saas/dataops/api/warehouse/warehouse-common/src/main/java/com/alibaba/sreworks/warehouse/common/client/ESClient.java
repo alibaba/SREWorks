@@ -7,6 +7,10 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.InitializingBean;
@@ -30,11 +34,15 @@ public class ESClient implements InitializingBean {
     @Autowired
     ApplicationProperties properties;
 
+    private final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+
     private transient Cache<String, RestHighLevelClient> hlDataSourceCache;
     private transient Cache<String, RestClient> dataSourceCache;
 
     @Override
     public void afterPropertiesSet() {
+        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(properties.getEsUsername(), properties.getEsPassword()));
+
 //        dataSourceCache = CacheBuilder.newBuilder().expireAfterAccess(Constant.CACHE_EXPIRE_SECONDS, TimeUnit.SECONDS).maximumSize(Constant.CACHE_MAX_SIZE).build();
         hlDataSourceCache = CacheBuilder.newBuilder().expireAfterAccess(Constant.CACHE_EXPIRE_SECONDS, TimeUnit.SECONDS).maximumSize(Constant.CACHE_MAX_SIZE).removalListener(buildCacheRemoveListener()).build();
     }
@@ -70,6 +78,8 @@ public class ESClient implements InitializingBean {
         log.info("====reconstructESRestLowLevelClient====");
         RestClient client = RestClient.builder(
                 new HttpHost(properties.getEsHost(), properties.getEsPort(), properties.getEsProtocol())
+        ).setHttpClientConfigCallback(
+                httpAsyncClientBuilder -> httpAsyncClientBuilder.setDefaultCredentialsProvider(credentialsProvider)
         ).build();
 
         dataSourceCache.put(Constant.DW_DB_NAME, client);
@@ -83,6 +93,8 @@ public class ESClient implements InitializingBean {
         RestHighLevelClient hlClient = new RestHighLevelClient(
             RestClient.builder(
                     new HttpHost(properties.getEsHost(), properties.getEsPort(), properties.getEsProtocol())
+            ).setHttpClientConfigCallback(
+                    httpAsyncClientBuilder -> httpAsyncClientBuilder.setDefaultCredentialsProvider(credentialsProvider)
             )
         );
 

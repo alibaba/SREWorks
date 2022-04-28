@@ -157,7 +157,7 @@ export default class Workbench extends React.Component {
         cloneParams.name = unKey;
         cloneParams.label = unKey;
         cloneParams.id = unKey;
-        cloneParams.nodeTypePath = page_template_meta.parentNodeTypePath + `::${templateServiceType}`;
+        cloneParams.nodeTypePath = page_template_meta.parentNodeTypePath +"::"+ templateServiceType;
         let appIdReg = new RegExp(this.props.appId,'g');
         let cloneParamsStr = JSON.stringify(cloneParams);
         if(this.cloneGroupData[0] && this.cloneGroupData[0].items) {
@@ -201,7 +201,7 @@ export default class Workbench extends React.Component {
             let params = {
                 appId: template_app_id,
                 name: item.name,
-                nodeTypePath: page_template_meta.parentNodeTypePath + `::${templateServiceType}`,
+                nodeTypePath: page_template_meta.parentNodeTypePath+"::"+ templateServiceType,
                 id: item.id,
                 elementId: template_app_id+':BLOCK:'+item.name,
             }
@@ -262,7 +262,7 @@ export default class Workbench extends React.Component {
                 <div onClick={(e)=>{this.setState({menuFold:!menuFold},()=>this.handleContentResize())}} className="collapsed-btn-front-menu globalBackground">
                     <LegacyIcon type={menuFold ? 'right' : 'left'}/>
                 </div>
-                <Content id="capture" className={!nodeTypeId?"globalBackground":""} style={{height: stageHeight}}>
+                <Content  className={!nodeTypeId?"globalBackground":""} style={{height: stageHeight}}>
                     <Spin spinning={contentLoading}>
                         {
                             nodeTypeId &&

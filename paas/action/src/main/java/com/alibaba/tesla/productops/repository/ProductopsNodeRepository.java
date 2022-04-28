@@ -9,6 +9,7 @@ import com.alibaba.tesla.productops.DO.ProductopsNode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 /**
  * @author jinghua.yjh
@@ -31,5 +32,10 @@ public interface ProductopsNodeRepository
     @Modifying
     @Transactional(rollbackOn = Exception.class)
     void deleteByNodeTypePathLikeAndStageId(String s, String stageId);
+
+    @Modifying
+    @Transactional(rollbackOn = Exception.class)
+    @Query(value = "update productops_node set config=?2 where id = ?1", nativeQuery = true)
+    void updateConfigWhereId(Long id, String config);
 
 }

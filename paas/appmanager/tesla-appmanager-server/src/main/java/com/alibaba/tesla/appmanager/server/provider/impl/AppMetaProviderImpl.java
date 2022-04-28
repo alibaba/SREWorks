@@ -176,7 +176,6 @@ public class AppMetaProviderImpl implements AppMetaProvider {
                 .addonId(item.getAddonId())
                 .addonName(item.getName())
                 .build()));
-        appAddonService.delete(condition);
     }
 
     private void deleteK8sMicroServiceMeta(String appId) {

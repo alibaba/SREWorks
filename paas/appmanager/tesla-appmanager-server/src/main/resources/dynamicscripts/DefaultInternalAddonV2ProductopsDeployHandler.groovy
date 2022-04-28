@@ -1,5 +1,6 @@
 package dynamicscripts
 
+
 import com.alibaba.fastjson.JSONObject
 import com.alibaba.tesla.appmanager.autoconfig.SystemProperties
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant
@@ -20,15 +21,23 @@ import com.alibaba.tesla.appmanager.kubernetes.KubernetesClientFactory
 import com.alibaba.tesla.appmanager.server.provider.impl.ClusterProviderImpl
 import com.alibaba.tesla.appmanager.server.service.deploy.handler.DeployComponentHandler
 import com.alibaba.tesla.appmanager.server.service.rtcomponentinstance.RtComponentInstanceService
+import okhttp3.OkHttpClient
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLSocketFactory
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 import java.nio.file.Files
 import java.nio.file.Paths
-
+import java.security.KeyManagementException
+import java.security.NoSuchAlgorithmException
+import java.security.cert.CertificateException
+import java.util.concurrent.TimeUnit
 /**
  * 默认构建 ProductOps V2 Groovy Handler
  *
@@ -53,7 +62,7 @@ class ProductopsDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 20
+    public static final Integer REVISION = 21
 
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
     private static final String ANNOTATIONS_COMPONENT_INSTANCE_ID = "annotations.appmanager.oam.dev/componentInstanceId"
@@ -142,12 +151,15 @@ class ProductopsDeployHandler implements DeployComponentHandler {
             stageId = "prod"
         }
         def importUrl = "http://" + targetEndpoint + "/frontend/exImport/import?stageId=" + stageId
-        def ret = RequestUtil.post(importUrl, contentJsonContent, String.class)
+        def httpClientBuilder = new OkHttpClient.Builder()
+                .readTimeout(30, TimeUnit.MINUTES)
+                .writeTimeout(30, TimeUnit.MINUTES)
+        def httpClient = RequestUtil.newHttpClient(httpClientBuilder)
+        def ret = RequestUtil.post(httpClient, importUrl, contentJsonContent, String.class)
         log.info("import frontend-service {} {}", importUrl, contentJsonContent)
         def retJson = JSONObject.parseObject(ret)
         if (retJson.getIntValue("code") != 200) {
             throw new Exception("apply productops error with ret: " + ret)
         }
     }
-
 }

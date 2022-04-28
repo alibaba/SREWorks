@@ -157,6 +157,15 @@ spec:
           value: "true"
         - name: Global.KAFKA_ENDPOINT
           value: "${KAFKA_ENDPOINT}:9092"
+        - name: Global.DATA_ES_HOST
+          value: "${DATA_ES_HOST}"
+        - name: Global.DATA_ES_PORT
+          value: "${DATA_ES_PORT}"
+        - name: Global.DATA_ES_USER
+          value: "${DATA_ES_USER}"
+        - name: Global.DATA_ES_PASSWORD
+          value: "${DATA_ES_PASSWORD}"
+ 
 
     - revisionName: K8S_MICROSERVICE|warehouse|_
       scopes:

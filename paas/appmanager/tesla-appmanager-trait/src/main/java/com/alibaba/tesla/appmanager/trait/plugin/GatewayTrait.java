@@ -73,13 +73,17 @@ public class GatewayTrait extends BaseTrait {
         if (getSpec().getInteger("order") != null){
             order = getSpec().getInteger("order");
         }
+        boolean authEnabled = true;
+        if (getSpec().getBoolean("authEnabled") != null ){
+            authEnabled = getSpec().getBoolean("authEnabled");
+        }
         /*
           2. apply route config to gateway
          */
         try {
             for (int i = 0; i < 300; i++) {
                 try {
-                    JSONObject applyResult = applyGatewayRoute(routeId, stageId, gatewayEndpoint, path, serviceName, servicePort, order);
+                    JSONObject applyResult = applyGatewayRoute(routeId, stageId, gatewayEndpoint, path, serviceName, servicePort, order, authEnabled);
                     log.info("apply gateway conf {}", applyResult.toJSONString());
                 }catch (Exception throwable) {
                     if (i == 299) {
@@ -97,7 +101,7 @@ public class GatewayTrait extends BaseTrait {
 
         try {
             for (int i = 0; i < 3; i++) {
-                if (checkGatewayRoute(routeId, stageId, gatewayEndpoint, path, serviceName, servicePort, order)) {
+                if (checkGatewayRoute(routeId, stageId, gatewayEndpoint, path, serviceName, servicePort, order, authEnabled)) {
                     break;
                 }
                 if (i == 2){
@@ -138,7 +142,7 @@ public class GatewayTrait extends BaseTrait {
      * @return boolean
      * */
 
-    private boolean checkGatewayRoute(String routeId, String stageId, String gatewayEndpoint, String path, String serviceName, int servicePort, int order) throws Exception {
+    private boolean checkGatewayRoute(String routeId, String stageId, String gatewayEndpoint, String path, String serviceName, int servicePort, int order, boolean authEnabled) throws Exception {
         String username = System.getenv("ACCOUNT_SUPER_ID");
         String password = System.getenv("ACCOUNT_SUPER_SECRET_KEY");
         String clientId = System.getenv("ACCOUNT_SUPER_CLIENT_ID");
@@ -168,12 +172,20 @@ public class GatewayTrait extends BaseTrait {
                 log.info("gateway check route [url] not pass:{} ", resp.getJSONObject("data").toJSONString());
                 return false;
             }
-            if(!resp.getJSONObject("data").getString("stageId").equals(stageId)){
+            if(resp.getJSONObject("data").getString("stageId") == null){
+                if(!StringUtils.equals(stageId, "prod")){
+                    log.info("gateway check route [noStageId] not pass:{} ", resp.getJSONObject("data").toJSONString());
+                }
+            } else if (!resp.getJSONObject("data").getString("stageId").equals(stageId)){
                 log.info("gateway check route [stageId] not pass:{} ", resp.getJSONObject("data").toJSONString());
                 return false;
             }
             if(resp.getJSONObject("data").getInteger("order") != order){
                 log.info("gateway check route [order] not pass:{} ", resp.getJSONObject("data").toJSONString());
+                return false;
+            }
+            if(resp.getJSONObject("data").getBoolean("authCheck") != authEnabled){
+                log.info("gateway check route [authCheck] not pass:{} ", resp.getJSONObject("data").toJSONString());
                 return false;
             }
             return true;
@@ -191,7 +203,7 @@ public class GatewayTrait extends BaseTrait {
      * @param servicePort     服务端口
      * @return JSONObject
      */
-    private JSONObject applyGatewayRoute(String routeId, String stageId, String gatewayEndpoint, String path, String serviceName, int servicePort, int order) throws Exception {
+    private JSONObject applyGatewayRoute(String routeId, String stageId, String gatewayEndpoint, String path, String serviceName, int servicePort, int order, boolean authEnabled) throws Exception {
 
         String username = System.getenv("ACCOUNT_SUPER_ID");
         String password = System.getenv("ACCOUNT_SUPER_SECRET_KEY");
@@ -217,9 +229,9 @@ public class GatewayTrait extends BaseTrait {
 
         JSONObject routeJson = JsonUtil.map(
                 "appId", routeId,
-                "authCheck", true,
-                "authHeader", true,
-                "authLogin", true,
+                "authCheck", authEnabled,
+                "authHeader", authEnabled,
+                "authLogin", authEnabled,
                 "enable", true,
                 "enableFunction", false,
                 "enableSwaggerDoc", false,
@@ -228,12 +240,16 @@ public class GatewayTrait extends BaseTrait {
                 "routeId", routeId,
                 "routeType", "PATH",
                 "serverType", "PAAS",
-                "stageId", stageId,
+//                "stageId", stageId,
                 "order", order,
                 "url", String.format("http://%s:%s/", serviceName, servicePort)
         );
+        // 当前stageId=prod时候，不增加stageId，作为默认路由
+        if (!StringUtils.equals(stageId, "prod")){
+            routeJson.put("stageId", stageId);
+        }
         String authPasswd = getAuthPasswdHash(username, password);
-        log.info("gateway auth headers: x-auth-app={} x-auth-key={} x-auth-user={} x-auth-passwd={}", clientId, clientSecret, username, authPasswd);
+        log.info("gateway routeJson: {}", routeJson.toJSONString());
 
         if (mode.equals("insert")){
 

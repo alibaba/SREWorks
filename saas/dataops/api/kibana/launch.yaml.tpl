@@ -40,11 +40,13 @@ spec:
     parameterValues:
     - name: "values"
       value:
-        elasticsearchHosts: "http://{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-elasticsearch-master.{{ Global.NAMESPACE_ID }}.svc.cluster.local:9200"
+        elasticsearchHosts: "http://${DATA_ES_HOST}:${DATA_ES_PORT}"
 
-        #kibanaConfig: 
-        #   kibana.yml: |
-        #     server.defaultRoute: /gateway/dataops-kibana 
+        kibanaConfig:
+           kibana.yml: |
+           elasticsearch.username: ${DATA_ES_USER}
+           elasticsearch.password: ${DATA_ES_PASSWORD}
+           #  server.defaultRoute: /gateway/dataops-kibana
 
         ingress:
           enabled: false

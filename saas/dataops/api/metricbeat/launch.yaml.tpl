@@ -166,8 +166,10 @@ spec:
               setup.template.pattern: "metricbeat-*"
 
               output.elasticsearch:
-                hosts: '${ELASTICSEARCH_HOSTS:{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-elasticsearch-master:9200}'
+                hosts: '${DATA_ES_HOST}:${DATA_ES_PORT}'
                 index: "metricbeat-%{+yyyy.MM.dd}"
+                username: "${DATA_ES_USER}"
+                password: "${DATA_ES_PASSWORD}"
 
           resources:
             requests:

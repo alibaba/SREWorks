@@ -67,12 +67,6 @@ spec:
           value: "${DATAOPS_DB_USER}"
         - name: Global.DATA_DB_PASSWORD
           value: "${DATAOPS_DB_PASSWORD}"
-        - name: Global.DATA_ES_HOST
-          value: "{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-elasticsearch-master"
-        - name: Global.DATA_ES_PORT
-          value: "9200"
-        - name: Global.DATA_ES_INDEX
-          value: "metricbeat-7.13.0"
         - name: Global.DATA_SKYW_HOST
           value: "{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-skywalking-oap" 
         - name: Global.DATA_SKYW_PORT
@@ -212,6 +206,14 @@ spec:
           value: "${DATAOPS_DB_USER}"
         - name: Global.DATA_DB_PASSWORD
           value: "${DATAOPS_DB_PASSWORD}"
+        - name: Global.DATA_ES_HOST
+          value: "${DATA_ES_HOST}"
+        - name: Global.DATA_ES_PORT
+          value: "${DATA_ES_PORT}"
+        - name: Global.DATA_ES_USER
+          value: "${DATA_ES_USER}"
+        - name: Global.DATA_ES_PASSWORD
+          value: "${DATA_ES_PASSWORD}"
  
 
     - revisionName: K8S_JOB|metric-flink-init|_

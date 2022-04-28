@@ -23,6 +23,11 @@ public class LaunchDTO {
     private Integer gatewayRouteOrder;
 
     /**
+     * 网关是否启用鉴权
+     */
+    private Boolean gatewayAuthEnabled;
+
+    /**
      * 服务端口
      */
     private Integer servicePort;
@@ -56,5 +61,6 @@ public class LaunchDTO {
      * Namespace资源限制
      */
     private JSONObject namespaceResourceLimit;
+
 
 }

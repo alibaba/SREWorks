@@ -99,7 +99,6 @@ const RowSettingForm = Form.create({
             spans: newSpans.join(","),
             elements: elements
         })
-        console.log("allValues------->", changedValues, allValues);
         props.onValuesChange && props.onValuesChange(changedValues, allValues)
     }
 })(RowSetting);

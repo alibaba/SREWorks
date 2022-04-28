@@ -39,9 +39,6 @@
         <mockito-all.version>1.10.19</mockito-all.version>
         <mybatis-starter.version>1.1.1</mybatis-starter.version>
         <lombok.version>1.18.2</lombok.version>
-        <elasticsearch>7.13.0</elasticsearch>
-        <elasticsearch-hl-client>7.13.0</elasticsearch-hl-client>
-        <elasticsearch-client>7.13.0</elasticsearch-client>
 
         <fastjson.version>1.2.68</fastjson.version>
         <jackson.version>2.9.10.6</jackson.version>
@@ -89,25 +86,6 @@
                 <version>${tesla-webmvc.version}</version>
             </dependency>
 
-            <!-- alibaba dependencies -->
-<!--            <dependency>-->
-<!--                <groupId>com.alibaba.middleware</groupId>-->
-<!--                <artifactId>mtop-uncenter-sdk</artifactId>-->
-<!--                <version>${alibaba.middleware.version}</version>-->
-<!--            </dependency>-->
-
-<!--            <dependency>-->
-<!--                <groupId>com.alibaba.security</groupId>-->
-<!--                <artifactId>security-facade</artifactId>-->
-<!--                <version>${security-facade.version}</version>-->
-<!--                <exclusions>-->
-<!--                    <exclusion>-->
-<!--                        <groupId>com.sun</groupId>-->
-<!--                        <artifactId>tools</artifactId>-->
-<!--                    </exclusion>-->
-<!--                </exclusions>-->
-<!--            </dependency>-->
-
             <!-- common dependencies -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -123,22 +101,6 @@
                 <version>${spring.cloud.dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.elasticsearch</groupId>
-                <artifactId>elasticsearch</artifactId>
-                <version>${elasticsearch}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.elasticsearch.client</groupId>
-                <artifactId>elasticsearch-rest-high-level-client</artifactId>
-                <version>${elasticsearch-hl-client}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.elasticsearch.client</groupId>
-                <artifactId>elasticsearch-rest-client</artifactId>
-                <version>${elasticsearch-client}</version>
             </dependency>
 
             <dependency>

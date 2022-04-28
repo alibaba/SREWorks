@@ -1,5 +1,5 @@
 paas/swcli/builtin_package/
-
+paas/action/test.sh
 
 mvn_deploy.sh
 mvn_install.sh

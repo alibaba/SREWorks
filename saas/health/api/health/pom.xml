@@ -47,9 +47,6 @@
         <okhttp.version>3.14.9</okhttp.version>
         <google.guava.version>23.0</google.guava.version>
         <kafka.client.version>2.8.0</kafka.client.version>
-        <elasticsearch>7.13.0</elasticsearch>
-        <elasticsearch-client>7.13.0</elasticsearch-client>
-        <elasticsearch-hl-client>7.13.0</elasticsearch-hl-client>
 
         <apache.curator.version>2.13.0</apache.curator.version>
         <apache.httpcomponents.version>4.5.13</apache.httpcomponents.version>
@@ -87,25 +84,6 @@
                 <artifactId>tesla-webmvc-spring-boot-starter</artifactId>
                 <version>${tesla-webmvc.version}</version>
             </dependency>
-
-            <!-- alibaba dependencies -->
-            <!--            <dependency>-->
-            <!--                <groupId>com.alibaba.middleware</groupId>-->
-            <!--                <artifactId>mtop-uncenter-sdk</artifactId>-->
-            <!--                <version>${alibaba.middleware.version}</version>-->
-            <!--            </dependency>-->
-
-            <!--            <dependency>-->
-            <!--                <groupId>com.alibaba.security</groupId>-->
-            <!--                <artifactId>security-facade</artifactId>-->
-            <!--                <version>${security-facade.version}</version>-->
-            <!--                <exclusions>-->
-            <!--                    <exclusion>-->
-            <!--                        <groupId>com.sun</groupId>-->
-            <!--                        <artifactId>tools</artifactId>-->
-            <!--                    </exclusion>-->
-            <!--                </exclusions>-->
-            <!--            </dependency>-->
 
             <!-- common dependencies -->
             <dependency>
@@ -215,21 +193,6 @@
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka-clients</artifactId>
                 <version>${kafka.client.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.elasticsearch</groupId>
-                <artifactId>elasticsearch</artifactId>
-                <version>${elasticsearch}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.elasticsearch.client</groupId>
-                <artifactId>elasticsearch-rest-high-level-client</artifactId>
-                <version>${elasticsearch-hl-client}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.elasticsearch.client</groupId>
-                <artifactId>elasticsearch-rest-client</artifactId>
-                <version>${elasticsearch-client}</version>
             </dependency>
             <dependency>
                 <groupId>com.hubspot.jinjava</groupId>

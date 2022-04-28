@@ -80,7 +80,7 @@ target_appmanager_server(){
     [ -n "$TAG" ] && tag=$TAG || tag="develop"
     if [ -n "$BUILD" ]; then
         echo "-- build appmanager server --" >&2
-        docker build -t sw-paas-appmanager:$tag --no-cache -f $SW_ROOT/paas/appmanager/Dockerfile_sreworks $SW_ROOT/paas/appmanager
+        docker build -t sw-paas-appmanager:$tag -f $SW_ROOT/paas/appmanager/Dockerfile_sreworks $SW_ROOT/paas/appmanager
         docker tag sw-paas-appmanager:$tag sw-paas-appmanager:latest
     fi
     if [ -n "$PUSH_REPO" ]; then
@@ -193,6 +193,7 @@ download_packages(){
    mkdir -p $SW_ROOT/saas/health/ui/ && wget "${PKG_URL}/saas/health/ui/health-auto.zip" -O $SW_ROOT/saas/health/ui/health-auto.zip
    mkdir -p $SW_ROOT/saas/help/ui/ && wget "${PKG_URL}/saas/help/ui/help-auto.zip" -O $SW_ROOT/saas/help/ui/help-auto.zip
    mkdir -p $SW_ROOT/saas/job/ui/ && wget "${PKG_URL}/saas/job/ui/job-auto.zip" -O $SW_ROOT/saas/job/ui/job-auto.zip
+   mkdir -p $SW_ROOT/saas/template/ui/ && wget "${PKG_URL}/saas/template/ui/template-auto.zip" -O $SW_ROOT/saas/template/ui/template-auto.zip
 
    wget "${PKG_URL}/saas/aiops/aiops.zip" -O $SW_ROOT/saas/aiops/aiops.zip
    wget "${PKG_URL}/saas/app/app.zip" -O $SW_ROOT/saas/app/app.zip

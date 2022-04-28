@@ -21,12 +21,18 @@ public class ApplicationProperties {
     @Value("${spring.datasource.password}")
     private String datasetPassword;
 
-    @Value("${spring.elasticsearch.protocol}")
+    @Value("${spring.elasticsearch.rest.protocol}")
     private String esProtocol;
 
-    @Value("${spring.elasticsearch.host}")
+    @Value("${spring.elasticsearch.rest.host}")
     private String esHost;
 
-    @Value("${spring.elasticsearch.port}")
+    @Value("${spring.elasticsearch.rest.port}")
     private Integer esPort;
+
+    @Value("${spring.elasticsearch.rest.username}")
+    private String esUsername;
+
+    @Value("${spring.elasticsearch.rest.password}")
+    private String esPassword;
 }

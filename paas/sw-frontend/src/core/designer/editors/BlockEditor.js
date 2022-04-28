@@ -289,7 +289,7 @@ export default class BlockEditor extends React.Component {
                             <div style={tabEditorContentStyle}>
                                 {
                                     pageLayoutType === Constants.PAGE_LAYOUT_TYPE_FLUID &&
-                                    <FluidContentLayoutDesigner {...this.props} include={this.include} exclude={this.exclude} filterType={this.filterType} containerModel={containerModel} />
+                                    <FluidContentLayoutDesigner editType={'block'} {...this.props} include={this.include} exclude={this.exclude} filterType={this.filterType} containerModel={containerModel} />
                                 }
                                 {
                                     pageLayoutType === Constants.PAGE_LAYOUT_TYPE_CUSTOM &&

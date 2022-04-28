@@ -215,4 +215,9 @@ options:
     - HOLO_MANAGER_PORT
     - NACOS_NAMESPACE
     - NACOS_ENDPOINT
-
+    - DATA_DB_HOST
+    - DATA_DB_PORT
+    - DATA_DB_USER
+    - DATA_DB_PASSWORD
+ 
+ 

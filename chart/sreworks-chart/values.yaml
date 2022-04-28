@@ -59,7 +59,7 @@ saas:
   - upload
   - demoapp 
   dataops:
-    dbHost: 'default-mysql'
+    dbHost: 'prod-dataops-mysql.sreworks-dataops'
     dbPassword: cb56b5is5e21_c359b42223
     dbUser: root
     dbPort: 3306

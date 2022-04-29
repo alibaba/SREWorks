@@ -17,7 +17,7 @@ data:
   SOURCE_CI_TOKEN: {{ .Values.source.ciToken | default "" | quote }}
 
   ZOOKEEPER_ENDPOINT: {{ .Release.Name }}-zookeeper
-  ENDPOINT_PAAS_MINIO: {{ .Release.Name }}-minio.{{ .Release.Namespace }}
+  ENDPOINT_PAAS_MINIO: {{ template "minio.endpoint" . }}
   APPMANAGER_ENDPOINT: {{ .Release.Name }}-appmanager
   KAFKA_ENDPOINT: {{ .Release.Name }}-kafka.{{ .Release.Namespace }}
   AUTHPROXY_ENDPOINT: {{ .Values.core.stageId }}-{{ .Values.core.appId }}-paas-authproxy

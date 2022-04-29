@@ -3,12 +3,13 @@
  * 节点页面编辑器
  */
 import React from 'react';
-import { BuildOutlined, CodeOutlined, DatabaseOutlined, SettingOutlined, SnippetsOutlined } from '@ant-design/icons';
+import { BuildOutlined, CodeOutlined, DatabaseOutlined, SettingOutlined, SnippetsOutlined, QuestionCircleOutlined,PlusOutlined } from '@ant-design/icons';
 import {
     Layout,
     Menu,
     Dropdown,
     Tree,
+    Popconfirm,
     Steps,
     Button,
     Card,
@@ -25,7 +26,8 @@ import {
     Form,
     Input,
     Select,
-    Message
+    Message,
+    message
 } from "antd";
 import PageModel from '../../framework/model/PageModel';
 import Constants from '../../framework/model/Constants';
@@ -68,6 +70,7 @@ export default class PageEditor extends React.Component {
         super(props);
         let pageModel = props.pageModel || PageModel.CREATE_DEFAULT_INSTANCE();
         this.formRef = React.createRef();
+        this.categoryRef = React.createRef();
         this.state = {
             pageModel: pageModel,
             showPreview: false,
@@ -87,7 +90,8 @@ export default class PageEditor extends React.Component {
             templateForm: {
                 label: '',
                 serviceType: ''
-            }
+            },
+            editCategory: ''
         };
     }
 
@@ -225,6 +229,14 @@ export default class PageEditor extends React.Component {
     handleChangeTab = res => {
         this.setState({ activeKey: res })
     }
+    addCategory = () => {
+        let { editCategory } = this.state;
+        let newParam = _.cloneDeep(page_template_meta);
+        let templateServiceType = util.generateId();
+        newParam.serviceType = templateServiceType;
+        // newParam.config.name = nodeData.config.name;
+        // newParam.config.label = editCategory;
+    }
     handleSaveAs = () => {
         let { nodeData, saveAs } = this.props;
         let newParam = _.cloneDeep(page_template_meta);
@@ -345,6 +357,72 @@ export default class PageEditor extends React.Component {
             activePanel: keys,
         });
     };
+    addCategoryForm = () => (
+        <Form
+            name="basic"
+            ref={this.categoryRef}
+            labelCol={{
+                span: 8,
+            }}
+            wrapperCol={{
+                span: 16,
+            }}
+            initialValues={{
+                label: '',
+                name: ''
+            }}
+            width={400}
+            autoComplete="off"
+        >
+            <Form.Item
+                label="类别id"
+                name="name"
+                rules={[{
+                    required: true,
+                    validator: (rule, value, callback) => {
+                        if (!value) {
+                            callback(new Error("请输入菜单路径"))
+                        }
+                        let regE = new RegExp('^[0-9a-zA-Z_-]{1,}$');
+                        if (!regE.test(value)) {
+                            callback(new Error('路径只限输入数字、字母、下划线、中短横'))
+                        } else {
+                            callback()
+                        }
+                    }
+                }]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="类别名称"
+                name="label"
+                rules={[
+                    {
+                        required: true,
+                        message: '请输入类别名称',
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+        </Form>
+    )
+    addTemplateCategory = () => {
+        let newParam = _.cloneDeep(page_template_meta);
+        let templateServiceType = util.generateId();
+        newParam.serviceType = templateServiceType;
+        this.categoryRef.current.validateFields().then((values) => {
+            if (values) {
+                newParam.config.name = values['name'];
+                newParam.config.label = values['label'];
+                appMenuTreeService.insertNode(newParam).then(res => {
+                    this.getTemplateList()
+                    message.info("类别添加成功")
+                });
+            }
+        })
+    }
     render() {
         let { pageModel, showPreview, openDrawer, showJson, activeKey, showTemplateList, confirmLoading, templateList, activeTarget, getTemplateLoading, saveOrCreat, activePanel, categoryList, templateForm, templateModal } = this.state, { height = 620, nodeData, contentLoading } = this.props;
         let tabEditorContentStyle = { height: height - 42, overflowY: "auto", overflowX: "none" }, { config } = nodeData;
@@ -480,9 +558,12 @@ export default class PageEditor extends React.Component {
                 </Drawer>
                 <Modal
                     visible={templateModal}
+                    maskClosable={false}
                     title="模板存储"
                     confirmLoading={confirmLoading}
                     onOk={this.handleSaveAs}
+                    width={620}
+                    bodyStyle={{ paddingBottom: 40, paddingLeft: 40, paddingRight: 100, paddingTop: 40, }}
                     onCancel={() => this.setState({ templateModal: false, openDrawer: false })}
                 >
                     <Form
@@ -495,7 +576,7 @@ export default class PageEditor extends React.Component {
                             span: 20,
                         }}
                         initialValues={{
-                            remember: true,
+                            label: nodeData.config.label,
                         }}
                         autoComplete="off"
                     >
@@ -529,6 +610,14 @@ export default class PageEditor extends React.Component {
                             </Select>
                         </Form.Item>
                     </Form>
+                    <div style={{ position: 'relative', left: 496, top: -48 }}>
+                        <Popconfirm placement="right" icon={<QuestionCircleOutlined style={{ visibility: 'hidden' }} />} title={this.addCategoryForm} onConfirm={this.addTemplateCategory} okText="确认" cancelText="取消">
+                            <Tooltip title="新增类别">
+                                <Button type="primary" shape="circle" icon={<PlusOutlined />} />
+                            </Tooltip>
+                        </Popconfirm>
+
+                    </div>
                 </Modal>
             </div>
         );

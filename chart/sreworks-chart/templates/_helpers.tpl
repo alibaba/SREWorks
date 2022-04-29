@@ -34,8 +34,8 @@
 {{- end -}}
 
 {{- define "minio.endpoint" -}}
-{{- if .Values.server.package.endpoint -}}
-{{- .Values.server.package.endpoint | quote -}}
+{{- if .Values.appmanager.server.package.endpoint -}}
+{{- .Values.appmanager.server.package.endpoint | quote -}}
 {{- else -}}
 {{ .Release.Name }}-minio.{{ .Release.Namespace }}
 {{- end -}}

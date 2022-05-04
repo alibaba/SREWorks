@@ -33,6 +33,7 @@ import com.hubspot.jinjava.Jinjava;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -49,13 +50,10 @@ public class DeployAppTraitNode extends AbstractLocalNodeBase {
 
     @Override
     public DagInstNodeRunRet run() throws Exception {
-        DeployAppService deployAppService = BeanUtil.getBean(DeployAppService.class);
-        TraitFactory traitFactory = BeanUtil.getBean(TraitFactory.class);
-        DeployComponentService deployComponentService = BeanUtil.getBean(DeployComponentService.class);
-        GroovyHandlerFactory groovyHandlerFactory = BeanUtil.getBean(GroovyHandlerFactory.class);
-        assert traitFactory != null
-                && deployComponentService != null
-                && groovyHandlerFactory != null;
+        DeployAppService deployAppService = getDeployAppService();
+        TraitFactory traitFactory = getTraitFactory();
+        DeployComponentService deployComponentService = getDeployComponentService();
+        GroovyHandlerFactory groovyHandlerFactory = getGroovyHandlerFactory();
 
         Long deployAppId = Long.valueOf(globalVariable.get(AppFlowVariableKey.DEPLOY_ID).toString());
         log.info("enter the execution process of DeployAppTraitNode|deployAppId={}|nodeId={}|" +
@@ -78,7 +76,7 @@ public class DeployAppTraitNode extends AbstractLocalNodeBase {
         // 获取当前的 Trait 配置及绑定的 ComponentOptions，准备填充参数数据
         DeployAppSchema configuration = SchemaUtil.toSchema(DeployAppSchema.class,
                 globalVariable.get(AppFlowVariableKey.CONFIGURATION).toString());
-        JSONObject parameters = (JSONObject) globalParams
+        JSONObject parameters = globalParams
                 .getJSONObject(AppFlowParamKey.OVERWRITE_PARAMETER_VALUES).clone();
         ComponentTrait componentTrait = DeployAppHelper.findComponentTrait(nodeId, configuration);
         for (DeployAppSchema.ParameterValue parameterValue : componentTrait.getTrait().getParameterValues()) {
@@ -87,45 +85,12 @@ public class DeployAppTraitNode extends AbstractLocalNodeBase {
             DeployAppHelper.recursiveSetParameters(parameters, null, Arrays.asList(key.split("\\.")), value,
                     ParameterValueSetPolicy.OVERWRITE_ON_CONFILICT);
         }
+        componentTrait.setComponent(DeployAppHelper.renderDeployAppComponent(parameters, componentTrait.getComponent()));
         componentTrait.setTrait(DeployAppHelper.renderDeployAppTrait(parameters, componentTrait.getTrait()));
 
         // 获取关联的 ComponentSchema 及 Trait
         JSONObject traitSpec = DeployAppHelper.renderJsonObject(parameters, componentTrait.getTrait().getSpec());
-//        DocumentContext workloadContext = JsonPath.parse(traitSpec.toJSONString());
-//        findParameterValues(globalParams, componentTrait.getTrait())
-//            .forEach(item -> item.getToFieldPaths()
-//                .forEach(toFieldPath -> {
-//                    String logSuffix = String.format("name=%s|value=%s|toFieldPath=%s|deployAppId=%d|traitId=%s",
-//                        item.getName(), item.getValue(), toFieldPath, deployAppId, nodeId);
-//                    try {
-//                        workloadContext.set(DefaultConstant.JSONPATH_PREFIX + toFieldPath, item.getValue());
-//                        log.info("set dataInput value success|{}", logSuffix);
-//                    } catch (Exception e) {
-//                        log.warn("set dataInput value failed|{}|exception={}",
-//                            logSuffix, ExceptionUtils.getStackTrace(e));
-//                        throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-//                            "set parameter value failed|" + logSuffix, e);
-//                    }
-//                }));
-//        traitSpec = JSONObject.parseObject(workloadContext.jsonString());
         ComponentSchema componentSchema;
-        String clusterId = componentTrait.getComponent().getClusterId();
-        String namespaceId = componentTrait.getComponent().getNamespaceId();
-        String stageId = componentTrait.getComponent().getStageId();
-        if (StringUtils.isNotEmpty(clusterId) && clusterId.contains("{{")) {
-            clusterId = DeployAppHelper.renderByJinjaStr(parameters, clusterId);
-        }
-        if (StringUtils.isNotEmpty(namespaceId) && namespaceId.contains("{{")) {
-            namespaceId = DeployAppHelper.renderByJinjaStr(parameters, namespaceId);
-        }
-        if (StringUtils.isNotEmpty(stageId) && stageId.contains("{{")) {
-            stageId = DeployAppHelper.renderByJinjaStr(parameters, stageId);
-        }
-        componentTrait.getComponent().setClusterId(clusterId);
-        componentTrait.getComponent().setNamespaceId(namespaceId);
-        componentTrait.getComponent().setStageId(stageId);
-        log.info("get cluster/namespace/stage info for trait {}|clusterId={}|namespaceId={}|stageId={}",
-                traitName, clusterId, namespaceId, stageId);
         Date start = new Date();
         try {
             WorkloadResource traitComponentWorkload;
@@ -204,9 +169,9 @@ public class DeployAppTraitNode extends AbstractLocalNodeBase {
                     .deployType(DeployComponentTypeEnum.TRAIT.toString())
                     .identifier(nodeId)
                     .appId(globalVariable.getString(AppFlowVariableKey.APP_ID))
-                    .clusterId(clusterId)
-                    .namespaceId(namespaceId)
-                    .stageId(stageId)
+                    .clusterId(componentTrait.getComponent().getClusterId())
+                    .namespaceId(componentTrait.getComponent().getNamespaceId())
+                    .stageId(componentTrait.getComponent().getStageId())
                     .gmtStart(start)
                     .gmtEnd(end)
                     .deployStatus(DeployComponentStateEnum.SUCCESS.toString())
@@ -229,9 +194,9 @@ public class DeployAppTraitNode extends AbstractLocalNodeBase {
                     .deployType(DeployComponentTypeEnum.TRAIT.toString())
                     .identifier(nodeId)
                     .appId(globalVariable.getString(AppFlowVariableKey.APP_ID))
-                    .clusterId(clusterId)
-                    .namespaceId(namespaceId)
-                    .stageId(stageId)
+                    .clusterId(componentTrait.getComponent().getClusterId())
+                    .namespaceId(componentTrait.getComponent().getNamespaceId())
+                    .stageId(componentTrait.getComponent().getStageId())
                     .gmtStart(start)
                     .gmtEnd(end)
                     .deployStatus(DeployComponentStateEnum.FAILURE.toString())
@@ -290,5 +255,21 @@ public class DeployAppTraitNode extends AbstractLocalNodeBase {
         assert deployComponentList.size() == 1;
         return SchemaUtil.toSchema(ComponentSchema.class,
                 deployComponentList.get(0).getAttrMap().get(DeployComponentAttrTypeEnum.COMPONENT_SCHEMA.toString()));
+    }
+
+    public DeployAppService getDeployAppService() {
+        return BeanUtil.getBean(DeployAppService.class);
+    }
+
+    public TraitFactory getTraitFactory() {
+        return BeanUtil.getBean(TraitFactory.class);
+    }
+
+    public DeployComponentService getDeployComponentService() {
+        return BeanUtil.getBean(DeployComponentService.class);
+    }
+
+    public GroovyHandlerFactory getGroovyHandlerFactory() {
+        return BeanUtil.getBean(GroovyHandlerFactory.class);
     }
 }

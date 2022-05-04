@@ -33,11 +33,14 @@ import java.lang.reflect.Constructor;
 @Slf4j
 public class TraitFactory {
 
-    @Autowired
-    private TraitService traitService;
+    private final TraitService traitService;
 
-    @Autowired
-    private DefinitionSchemaService definitionSchemaService;
+    private final DefinitionSchemaService definitionSchemaService;
+
+    public TraitFactory(TraitService traitService, DefinitionSchemaService definitionSchemaService) {
+        this.traitService = traitService;
+        this.definitionSchemaService = definitionSchemaService;
+    }
 
     /**
      * 获取 Trait 对象

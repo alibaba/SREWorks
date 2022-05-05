@@ -99,7 +99,11 @@ spec:
           value: "${MINIO_ACCESS_KEY}"
         - name: Global.MINIO_SECRET_KEY
           value: "${MINIO_SECRET_KEY}"
- 
+        - name: Global.DATA_ES_USER
+          value: "${DATA_ES_USER}"
+        - name: Global.DATA_ES_PASSWORD
+          value: "${DATA_ES_PASSWORD}"
+
 
     - revisionName: K8S_MICROSERVICE|pmdb|_
       scopes:

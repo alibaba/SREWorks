@@ -95,6 +95,7 @@ public class NodeElementController extends BaseController {
         nodeElement.setTags(param.getTags());
         nodeElement.setNodeOrder(param.getOrder());
         nodeElement.setConfig(JSONObject.toJSONString(param.getConfig()));
+        nodeElement.setIsImport(0);
         productopsNodeElementRepository.saveAndFlush(nodeElement);
         return buildSucceedResult(nodeElement);
     }

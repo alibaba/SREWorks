@@ -47,7 +47,7 @@ spec:
           blobStorage:
             baseUri: s3://vvp
             s3:
-              endpoint: http://${ENDPOINT_PAAS_MINIO}:9000
+              endpoint: http://${ENDPOINT_PAAS_MINIO}
         
           globalDeploymentDefaults: |
             spec:

@@ -37,7 +37,7 @@
 {{- if .Values.appmanager.server.package.endpoint -}}
 {{- .Values.appmanager.server.package.endpoint | quote -}}
 {{- else -}}
-{{ .Release.Name }}-minio.{{ .Release.Namespace }}
+{{- printf "%s-%s.%s:%s" .Release.Name "minio" .Release.Namespace "9000" | quote -}}
 {{- end -}}
 {{- end -}}
 

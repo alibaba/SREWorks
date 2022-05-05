@@ -94,7 +94,7 @@ spec:
       traits: []
       parameterValues:
         - name: Global.MINIO_ENDPOINT
-          value: "${ENDPOINT_PAAS_MINIO}:9000"
+          value: "${ENDPOINT_PAAS_MINIO}"
         - name: Global.MINIO_ACCESS_KEY
           value: "${MINIO_ACCESS_KEY}"
         - name: Global.MINIO_SECRET_KEY
@@ -256,7 +256,7 @@ spec:
         - name: Global.DATA_DB_PASSWORD
           value: "${DATAOPS_DB_PASSWORD}"
         - name: Global.MINIO_ENDPOINT
-          value: "${ENDPOINT_PAAS_MINIO}:9000"
+          value: "${ENDPOINT_PAAS_MINIO}"
         - name: Global.MINIO_ACCESS_KEY
           value: "${MINIO_ACCESS_KEY}"
         - name: Global.MINIO_SECRET_KEY

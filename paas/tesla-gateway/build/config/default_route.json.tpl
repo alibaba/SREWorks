@@ -279,7 +279,7 @@
         "name": "minio",
         "routeId": "minio",
         "path": "/minio/**",
-        "url": "http://${ENDPOINT_PAAS_MINIO}:9000",
+        "url": "http://${ENDPOINT_PAAS_MINIO}",
         "routeType": "PATH",
         "enable": true,
         "authLogin": false,

@@ -219,5 +219,7 @@ options:
     - DATA_DB_PORT
     - DATA_DB_USER
     - DATA_DB_PASSWORD
- 
- 
+    - DATA_ES_HOST
+    - DATA_ES_PORT
+    - DATA_ES_USER
+    - DATA_ES_PASSWORD 

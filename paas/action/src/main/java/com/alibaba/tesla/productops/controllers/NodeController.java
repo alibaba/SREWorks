@@ -75,6 +75,7 @@ public class NodeController extends BaseController {
             .serviceType(param.getServiceType())
             .nodeTypePath(nodeTypePath)
             .version(param.getVersion())
+            .isImport(0)
             .config(JSONObject.toJSONString(param.getConfig()))
             .build();
 

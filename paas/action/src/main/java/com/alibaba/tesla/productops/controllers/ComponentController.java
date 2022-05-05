@@ -53,6 +53,7 @@ public class ComponentController extends BaseController {
                 .alias(param.getAlias())
                 .config(JSONObject.toJSONString(param.getConfig()))
                 .componentId(param.getComponentId())
+                .isImport(0)
                 .interfaces(JSONObject.toJSONString(param.getInterfaces()))
                 .build();
 

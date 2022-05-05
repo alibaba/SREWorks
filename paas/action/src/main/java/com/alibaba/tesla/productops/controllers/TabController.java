@@ -63,6 +63,7 @@ public class TabController extends BaseController {
         tab.setNodeTypePath(param.getNodeTypePath());
         tab.setLabel(param.getLabel());
         tab.setName(param.getName());
+        tab.setIsImport(0);
         System.out.println(JSONObject.toJSONString(tab, true));
         if (log.isDebugEnabled()) {
             log.debug(JSONObject.toJSONString(tab, true));

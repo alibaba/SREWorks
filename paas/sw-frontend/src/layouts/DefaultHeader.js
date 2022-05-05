@@ -260,9 +260,7 @@ const DefaultHeader = ({ siderFold, siderRespons, theme, siderOpenKeys, menuResp
                 <SiteLogo />
             </div>
             <div className="center">
-                <div>
-                    <ModuleMenu />
-                </div>
+            <ModuleMenu />
             </div>
             <div className="right">
                 <TopBar />

@@ -385,14 +385,14 @@ export default class PageEditor extends React.Component {
                         }
                         let regE = new RegExp('^[0-9a-zA-Z_-]{1,}$');
                         if (!regE.test(value)) {
-                            callback(new Error('路径只限输入数字、字母、下划线、中短横'))
+                            callback(new Error('类别只限输入数字、字母、下划线、中短横'))
                         } else {
                             callback()
                         }
                     }
                 }]}
             >
-                <Input />
+                <Input placeholder={'请输入数字、字母、下划线、中短横'} />
             </Form.Item>
             <Form.Item
                 label="类别名称"
@@ -530,10 +530,10 @@ export default class PageEditor extends React.Component {
                     }
                 >
                     <section className='template-parent-pane'>
-                        <Collapse activeKey={activePanel} bordered={false} onChange={this.handleCategoryClicked}>
+                        <Tabs defaultActiveKey={activePanel} tabPosition={'left'} onChange={this.handleCategoryClicked}>
                             {
                                 templateList.map(templateCate => {
-                                    return <Panel header={templateCate.label} style={{ minWidth: 500 }} key={templateCate.serviceType}>
+                                    return <TabPane tab={templateCate.label} style={{ minWidth: 500 }} key={templateCate.serviceType}>
                                         <div className='template-pane'>
                                             {
                                                 templateCate.children && templateCate.children.map((item) => {
@@ -550,10 +550,10 @@ export default class PageEditor extends React.Component {
                                                 })
                                             }
                                         </div>
-                                    </Panel>
+                                    </TabPane>
                                 })
                             }
-                        </Collapse>
+                        </Tabs>
                     </section>
                 </Drawer>
                 <Modal

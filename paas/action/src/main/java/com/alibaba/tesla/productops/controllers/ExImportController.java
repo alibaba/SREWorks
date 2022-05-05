@@ -53,8 +53,8 @@ public class ExImportController extends BaseController {
         jsonObject.remove("lastModifier");
 
         // 导出时候将is_import全部设置为1
-        if(jsonObject.getInteger("is_import") != null){
-            jsonObject.put("is_import", 1);
+        if(jsonObject.getInteger("isImport") != null){
+            jsonObject.put("isImport", 1);
         }
         return jsonObject;
     }

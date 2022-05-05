@@ -51,6 +51,11 @@ public class ExImportController extends BaseController {
         jsonObject.remove("gmtCreate");
         jsonObject.remove("gmtModified");
         jsonObject.remove("lastModifier");
+
+        // 导出时候将is_import全部设置为1
+        if(jsonObject.getInteger("is_import") != null){
+            jsonObject.put("is_import", 1);
+        }
         return jsonObject;
     }
 
@@ -102,7 +107,7 @@ public class ExImportController extends BaseController {
         productopsApp.setStageId(stageId);
         productopsAppRepository.save(productopsApp);
 
-        productopsNodeElementRepository.deleteByAppIdAndStageId(app.getAppId(), stageId);
+        productopsNodeElementRepository.deleteByAppIdAndStageIdAndIsImport(app.getAppId(), stageId, 1);
         for (ProductopsNodeElement nodeElement : neList) {
             nodeElement.setGmtCreate(System.currentTimeMillis());
             ProductopsNodeElement productopsNodeElement = productopsNodeElementRepository
@@ -117,7 +122,7 @@ public class ExImportController extends BaseController {
         }
         productopsNodeElementRepository.flush();
 
-        productopsElementRepository.deleteByAppIdAndStageId(app.getAppId(), stageId);
+        productopsElementRepository.deleteByAppIdAndStageIdAndIsImport(app.getAppId(), stageId, 1);
         for (ProductopsElement element : eList) {
             element.setGmtCreate(System.currentTimeMillis());
             ProductopsElement productopsElement = productopsElementRepository
@@ -132,7 +137,7 @@ public class ExImportController extends BaseController {
         }
         productopsElementRepository.flush();
 
-        productopsNodeRepository.deleteByNodeTypePathLikeAndStageId(app.getAppId() + "|%", stageId);
+        productopsNodeRepository.deleteByNodeTypePathLikeAndStageIdAndIsImport(app.getAppId() + "|%", stageId, 1);
         for (ProductopsNode node : nodeList) {
             node.setGmtCreate(System.currentTimeMillis());
             ProductopsNode productopsNode = productopsNodeRepository
@@ -147,7 +152,7 @@ public class ExImportController extends BaseController {
         }
         productopsNodeRepository.flush();
 
-        productopsTabRepository.deleteByNodeTypePathLikeAndStageId(app.getAppId() + "|%", stageId);
+        productopsTabRepository.deleteByNodeTypePathLikeAndStageIdAndIsImport(app.getAppId() + "|%", stageId, 1);
         for (ProductopsTab tab : tabList) {
             tab.setGmtCreate(System.currentTimeMillis());
             ProductopsTab productopsTab = productopsTabRepository
@@ -165,7 +170,7 @@ public class ExImportController extends BaseController {
         if(jsonObject.getJSONArray("componentList") != null){
             List<ProductopsComponent> productopsComponentList = jsonObject.getJSONArray("componentList").toJavaList(ProductopsComponent.class);
 
-            productopsComponentRepository.deleteByStageId(stageId);
+            productopsComponentRepository.deleteByStageIdAndIsImport(stageId, 1);
             for (ProductopsComponent component : productopsComponentList) {
                 component.setGmtCreate(System.currentTimeMillis());
                 ProductopsComponent productopsComponent = productopsComponentRepository

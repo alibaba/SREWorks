@@ -52,6 +52,9 @@ public class ProductopsComponent {
     @Column
     private String stageId;
 
+    @Column
+    private Integer isImport;
+
     public JSONObject toJSONObject() {
         JSONObject jsonObject = JSONObject.parseObject(JSONObject.toJSONString(this));
         jsonObject.put("configObject", JSONObject.parseObject(this.config));

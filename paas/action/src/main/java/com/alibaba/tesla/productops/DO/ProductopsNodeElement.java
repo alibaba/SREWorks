@@ -67,6 +67,9 @@ public class ProductopsNodeElement {
     @Column(columnDefinition = "longtext")
     private String config;
 
+    @Column
+    private Integer isImport;
+
     public JSONObject toJSONObject() {
         JSONObject jsonObject = JSONObject.parseObject(JSONObject.toJSONString(this));
         jsonObject.put("name", nodeName);

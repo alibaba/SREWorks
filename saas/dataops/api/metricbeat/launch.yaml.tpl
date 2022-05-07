@@ -48,8 +48,6 @@ spec:
             k8s-app: metricbeat
           enabled: true
           extraEnvs:
-            - name: ELASTICSEARCH_HOSTS
-              value: "{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-elasticsearch-master.{{ Global.NAMESPACE_ID }}.svc.cluster.local"
             - name: NODE_NAME
               valueFrom:
                 fieldRef:

@@ -1,16 +1,25 @@
 package com.alibaba.tesla.productops.controllers;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.action.common.TeslaBaseResult;
 import com.alibaba.tesla.action.controller.BaseController;
+import com.alibaba.tesla.productops.DO.ProductopsElement;
 import com.alibaba.tesla.productops.DO.ProductopsNode;
+import com.alibaba.tesla.productops.DO.ProductopsNodeElement;
+import com.alibaba.tesla.productops.DO.ProductopsTab;
 import com.alibaba.tesla.productops.common.StringUtil;
+import com.alibaba.tesla.productops.params.NodeCloneParam;
 import com.alibaba.tesla.productops.params.NodeDeleteParam;
 import com.alibaba.tesla.productops.params.NodeInsertParam;
 import com.alibaba.tesla.productops.params.NodeUpdateParam;
+import com.alibaba.tesla.productops.repository.ProductopsElementRepository;
+import com.alibaba.tesla.productops.repository.ProductopsNodeElementRepository;
 import com.alibaba.tesla.productops.repository.ProductopsNodeRepository;
+import com.alibaba.tesla.productops.repository.ProductopsTabRepository;
 import com.alibaba.tesla.productops.services.NodeAddUrlService;
 import com.alibaba.tesla.productops.services.NodeService;
 
@@ -25,6 +34,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.transaction.Transactional;
+
 /**
  * @author jinghua.yjh
  */
@@ -37,10 +48,19 @@ public class NodeController extends BaseController {
     ProductopsNodeRepository productopsNodeRepository;
 
     @Autowired
+    ProductopsTabRepository productopsTabRepository;
+
+    @Autowired
     NodeService nodeService;
 
     @Autowired
     NodeAddUrlService nodeAddUrlService;
+
+    @Autowired
+    ProductopsNodeElementRepository productopsNodeElementRepository;
+
+    @Autowired
+    ProductopsElementRepository productopsElementRepository;
 
     private String getNodeTypePath(NodeInsertParam param) {
         String parentNodeTypePath = param.getParentNodeTypePath();
@@ -57,6 +77,174 @@ public class NodeController extends BaseController {
         String nodeTypePath = appId + "|app|T:";
         JSONObject tree = nodeService.tree(nodeTypePath, appId, stageId);
         return buildSucceedResult(tree);
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    @PostMapping(value = "/clone")
+    public TeslaBaseResult clone(@RequestBody NodeCloneParam param, String stageId) {
+//        ProductopsNode sourceNode = nodeService.getNode(param.getSourceNodeTypePath(), stageId);
+        ProductopsNode node = nodeService.getNode(param.getTargetNodeTypePath(), stageId);
+
+        ProductopsTab sourceTab = productopsTabRepository.findFirstByNodeTypePathAndStageId(param.getSourceNodeTypePath(), stageId);
+
+        String targetApp = param.getTargetNodeTypePath().split("\\|")[0];
+
+        // clone tab
+        String tabId = UUID.randomUUID().toString();
+        ProductopsTab tab = ProductopsTab.builder()
+                .stageId(stageId)
+                .gmtCreate(System.currentTimeMillis())
+                .build();
+
+        tab.setTabId(tabId);
+        tab.setGmtModified(System.currentTimeMillis());
+        tab.setLastModifier(getUserEmployeeId());
+        tab.setConfig(sourceTab.getConfig());
+        tab.setElements(sourceTab.getElements());
+        tab.setNodeTypePath(param.getTargetNodeTypePath());
+        tab.setLabel(tabId);
+        tab.setName(tabId);
+        tab.setIsImport(0);
+
+        // clone elements
+        List<ProductopsNodeElement> sourceNodeElements = productopsNodeElementRepository.findAllByNodeTypePathLikeAndStageId(
+           param.getSourceNodeTypePath(), stageId);
+
+        Map<String, ProductopsNodeElement> sourceNodeElementMap = sourceNodeElements.stream().collect(Collectors.toMap(
+           ProductopsNodeElement::getElementId, x-> x
+        ));
+
+        List<String> elementIdList = sourceNodeElements.stream().map(x -> x.getElementId()).collect(Collectors.toList());
+        List<ProductopsElement> elements = productopsElementRepository.findAllByElementIdInAndStageId(elementIdList, stageId);
+
+        List<ProductopsElement> newElements = new ArrayList<>();
+        List<ProductopsNodeElement> newNodeElements = new ArrayList<>();
+        Map<String, String> elementsIdMaps = new HashMap<>();
+
+        for(ProductopsElement element : elements){
+
+            ProductopsNodeElement sourceNodeElement = sourceNodeElementMap.get(element.getElementId());
+
+            String newUuid = UUID.randomUUID().toString();
+            String newElementId = targetApp + ":" + sourceNodeElement.getElementId().split(":")[1] + ":" + newUuid;
+            elementsIdMaps.put(element.getElementId(), newElementId);
+
+            ProductopsNodeElement newNodeElement = ProductopsNodeElement.builder()
+                    .stageId(stageId)
+                    .gmtCreate(System.currentTimeMillis())
+                    .build();
+
+            newNodeElement.setGmtModified(System.currentTimeMillis());
+            newNodeElement.setLastModifier(getUserEmployeeId());
+            newNodeElement.setNodeTypePath(param.getTargetNodeTypePath());
+            newNodeElement.setElementId(newElementId);
+            newNodeElement.setNodeName(sourceNodeElement.getNodeName());
+            newNodeElement.setType(sourceNodeElement.getType());
+            newNodeElement.setAppId(targetApp);
+            newNodeElement.setTags(sourceNodeElement.getTags());
+            newNodeElement.setNodeOrder(sourceNodeElement.getNodeOrder());
+            newNodeElement.setConfig(sourceNodeElement.getConfig());
+            newNodeElement.setIsImport(0);
+
+            newNodeElements.add(newNodeElement);
+
+            ProductopsElement newElement = ProductopsElement.builder()
+                    .elementId(newElementId)
+                    .stageId(stageId)
+                    .gmtCreate(System.currentTimeMillis())
+                    .build();
+
+            newElement.setGmtModified(System.currentTimeMillis());
+            newElement.setLastModifier(getUserEmployeeId());
+            newElement.setName(newUuid);
+            newElement.setVersion(element.getVersion());
+            newElement.setAppId(targetApp);
+            newElement.setType(element.getType());
+            newElement.setConfig(element.getConfig());
+            newElement.setIsImport(0);
+
+            newElements.add(newElement);
+        }
+
+        log.info("elementsIdMaps: {}", elementsIdMaps);
+
+        String newTabElements = tab.getElements();
+        // 开始进行element引用关系替换
+        for(String oldElementId: elementsIdMaps.keySet()){
+            String newElementId = elementsIdMaps.get(oldElementId);
+            newTabElements = newTabElements.replaceAll(oldElementId, newElementId);
+        }
+        tab.setElements(newTabElements);
+
+        for(ProductopsElement newElement : newElements){
+
+            JSONObject newElementConfig = JSONObject.parseObject(newElement.getConfig());
+
+            newElementConfig.put("elementId", newElement.getElementId());
+            newElementConfig.put("appId", newElement.getAppId());
+            newElementConfig.put("name", newElement.getName());
+            newElementConfig.put("id", newElement.getName());
+
+            String newElementConfigRaw = newElementConfig.toJSONString();
+            for(String oldElementId: elementsIdMaps.keySet()){
+                String newElementId = elementsIdMaps.get(oldElementId);
+                newElementConfigRaw = newElementConfigRaw.replaceAll(oldElementId, newElementId);
+            }
+            newElement.setConfig(newElementConfigRaw);
+
+        }
+
+        productopsTabRepository.saveAndFlush(tab);
+
+        productopsNodeElementRepository.saveAll(newNodeElements);
+        productopsNodeElementRepository.flush();
+
+        productopsElementRepository.saveAll(newElements);
+        productopsElementRepository.flush();
+
+
+
+//        param.getSourceNodeTypePath()
+
+
+//        JSONObject newNodeConfig = JSONObject.parseObject(sourceNode.getConfig());
+
+
+////        String nodeConfig = sourceNode.getConfig();
+//        JSONObject newNodeConfig = JSONObject.parseObject(sourceNode.getConfig());
+//        JSONObject targetNodeConfig = JSONObject.parseObject(node.getConfig());
+//        newNodeConfig.put("label", targetNodeConfig.getString("label"));
+//        newNodeConfig.put("url", targetNodeConfig.getString("url"));
+//        newNodeConfig.put("name", targetNodeConfig.getString("name"));
+//        node.setConfig(JSONObject.toJSONString(newNodeConfig));
+
+//        String[] targetNodeTypePaths = param.getTargetNodeTypePath().split(":");
+//        String targetServiceType = targetNodeTypePaths[targetNodeTypePaths.length - 1];
+//        String targetParentNodeTypePath = param.getTargetNodeTypePath().replace(":" + targetServiceType, "");
+//        if(targetParentNodeTypePath.endsWith(":")){
+//            targetParentNodeTypePath = targetParentNodeTypePath.substring(0, targetParentNodeTypePath.length() - 1);
+//        }
+//
+//        ProductopsNode node = ProductopsNode.builder()
+//                .gmtCreate(System.currentTimeMillis())
+//                .gmtModified(System.currentTimeMillis())
+//                .lastModifier(getUserEmployeeId())
+//                .stageId(stageId)
+//                .category(sourceNode.getCategory())
+//                .parentNodeTypePath(targetParentNodeTypePath)
+//                .serviceType(targetServiceType)
+//                .nodeTypePath(param.getTargetNodeTypePath())
+//                .version(sourceNode.getVersion())
+//                .isImport(0)
+//                .config(nodeConfig)
+//                .build();
+
+//        productopsNodeRepository.saveAndFlush(node);
+//        nodeAddUrlService.addUrl(node);
+
+        return buildSucceedResult(node);
+
+
     }
 
     @PostMapping(value = "/structure")

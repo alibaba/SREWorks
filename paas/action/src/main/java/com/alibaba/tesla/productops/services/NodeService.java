@@ -42,6 +42,11 @@ public class NodeService {
         }
     }
 
+    public ProductopsNode getNode(String nodeTypePath, String stageId){
+        ProductopsNode node = productopsNodeRepository.findFirstByNodeTypePathAndStageId(nodeTypePath, stageId);
+        return node;
+    }
+
     public JSONObject tree(String nodeTypePath, String appId, String stageId) {
         JSONObject tree = productopsAppRepository.findFirstByAppIdAndStageId(appId, stageId).toJsonObject();
         ProductopsNode node = productopsNodeRepository.findFirstByNodeTypePathAndStageId(nodeTypePath, stageId);

@@ -22,6 +22,8 @@ public interface ProductopsTabRepository
 
     ProductopsTab findFirstByTabIdAndStageId(String tabId, String stageId);
 
+    ProductopsTab findFirstByNodeTypePathAndStageId(String tabId, String stageId);
+
     List<ProductopsTab> findAllByNodeTypePathAndStageId(String nodeTypePath, String stageId);
 
     List<ProductopsTab> findAllByNodeTypePathLikeAndStageId(String s, String stageId);

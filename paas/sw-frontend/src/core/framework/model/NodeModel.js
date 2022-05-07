@@ -6,6 +6,7 @@ import service from '../../services/appMenuTreeService';
 import PageModel from './PageModel';
 import Constants from './Constants';
 import uuidv4 from 'uuid/v4';
+import _ from 'lodash';
 import { page_template_meta, template_app_id } from '../../../core/designer/editors/TemplateConstant';
 
 
@@ -59,7 +60,6 @@ export default class NodeModel {
             );
         }
     }
-
 
     /**
      * 获取节点上的区块和表单分组数据
@@ -162,7 +162,7 @@ export default class NodeModel {
 
     savePageModel() {
         let pageData = this.pageModel.toJSON();
-        console.log(pageData,'pageData-init')
+        console.log(pageData, 'pageData-init')
         pageData.nodeTypePath = this.nodeId;
         return service.saveMainPage(pageData)
     }
@@ -199,37 +199,67 @@ export default class NodeModel {
     getForm(formKey) {
         return this.forms.filter(formMeta => formMeta.elementId === formKey)[0];
     }
+    // 从模板创建,json序列化替换appId等，规避类对象变为平面对象
+    loadFromTemplate(stageId, originNodeTypeId) {
+        let originAppId = originNodeTypeId && originNodeTypeId.split("|")[0];
+        console.log(originNodeTypeId,originAppId,'originNodeTypeId')
+        if (this.nodeId) {
+            return Promise.all([service.getMainPage(this.nodeId, stageId), service.getElements(this.nodeId, stageId)]).then(result => {
+                let blocks = [], forms = [];
+                let clonePageModel = _.cloneDeep(result[0]);
+                let pageModelStr = JSON.stringify(clonePageModel);
+                result[1].forEach(item => {
+                    let newBlockId = uuidv4();
+                    item.name = newBlockId;
+                    item.id = newBlockId;
+                    item.elementId = originAppId + ":BLOCK:" + newBlockId;
+                    item.appId = originAppId;
+                    let toolbarBlockRegExp = new RegExp(template_app_id + ":BLOCK:" + item.name, 'g');
+                    let newToolbarBlockId = originAppId + ":BLOCK:" + newBlockId;
+                    let cloneItem = _.cloneDeep(item);
+                    let itemStr = JSON.stringify(cloneItem);
+                    itemStr = itemStr.replace(toolbarBlockRegExp, newToolbarBlockId);
+                    item = JSON.parse(itemStr);
+                    pageModelStr = pageModelStr.replace(toolbarBlockRegExp, newToolbarBlockId);
+                })
+                console.log(pageModelStr,'pageModelStr-pageModelStr')
+                let replacedPageModel = JSON.parse(pageModelStr)
+                let newPageId = uuidv4();
+                replacedPageModel.id = newPageId;
+                replacedPageModel.tabId = newPageId;
+                replacedPageModel.label = newPageId;
+                replacedPageModel.name = newPageId;
+                replacedPageModel.nodeTypePath = originNodeTypeId;
+                console.log(pageModelStr,replacedPageModel,originNodeTypeId,'pageModelStr-pageModelStr')
+                result[1].forEach(item => {
+                    let { config, ...other } = item, itemData = {};
+                    itemData = {
+                        ...other,
+                        ...config
+                    };
+                    if (item.type === Constants.BLOCK_TYPE_BLOCK) {
+                        blocks.push(itemData);
+                    } else if (item.type === Constants.BLOCK_TYPE_FORM) {
+                        forms.push(itemData);
+                    }
+                });
+                this.nodeId = originNodeTypeId;
+                this.initFromJson({
+                    pageData: replacedPageModel,
+                    blocks: blocks,
+                    forms: forms
+                });
+            })
+        } else {
+            return new Promise(
+                function (resolve, reject) {
+                    return reject({ success: false, message: "加载失败" });
+                }
+            );
+        }
+    }
     /**
      * 更新主节点主页面模型,一般用于模板创建
      */
-     updatePageModelFromTemplate(originNodeTypeId){
-         this.nodeId = originNodeTypeId;
-         let originAppId = originNodeTypeId && originNodeTypeId.split("|")[0];
-         let pageModelStr = JSON.stringify(this.pageModel);
-         let oldPageModelName = this.pageModel.name;
-         let oldPageModelNameRegExp = new RegExp(oldPageModelName,'g');
-         this.blocks.forEach(item => {
-            let newBlockId = uuidv4();
-            item.name = newBlockId;
-            item.id = newBlockId;
-            item.elementId = originAppId+":BLOCK:"+newBlockId;
-            item.appId = originAppId;
-            let toolbarBlockRegExp = new RegExp(template_app_id+":BLOCK:"+item.name,'g');
-            let oldUuidRegExp = new RegExp(item.name,'g');
-            let oldTypePathRegExp = new RegExp(item.nodeTypePath,'g');
-            let oldAppIdRegExp = new RegExp(item.appId,'g');
-            let newToolbarBlockId = originAppId+":BLOCK:"+newBlockId;
-            let cloneItem = _.cloneDeep(item);
-            let itemStr = JSON.stringify(cloneItem);
-            itemStr = itemStr.replace(toolbarBlockRegExp,newToolbarBlockId);
-            item = JSON.parse(itemStr);
-            // item = JSON.parse(JSON.stringify(item).replace(toolbarBlockRegExp,newToolbarBlockId).replace(oldUuidRegExp,newBlockId).replace(oldTypePathRegExp,originNodeTypeId).replace(oldAppIdRegExp,originAppId))
-            // pageModelStr = pageModelStr.replace(toolbarBlockRegExp,newToolbarBlockId).replace(oldUuidRegExp,newBlockId).replace(oldTypePathRegExp,originNodeTypeId).replace(oldAppIdRegExp,originAppId);
-            // console.log(pageModelStr,item,'pageModelStr')
-         })
-         console.log(this.pageModel,this.nodeData,'pageModelStr')
-        //  this.pageModel = JSON.parse(pageModelStr.replace(oldPageModelNameRegExp,uuidv4()));
-         return this.pageModel;
-     }
 
 }

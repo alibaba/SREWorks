@@ -48,6 +48,7 @@ export default class Workbench extends React.Component {
         if(nodeTypeId===this.state.nodeTypeId){
             return ;
         }
+        let originId = this.state.nodeTypeId;
         this.setState({
             nodeTypeId:null,
             nodeData:nodeData,
@@ -55,22 +56,35 @@ export default class Workbench extends React.Component {
         });
         if(nodeTypeId){
             let nodeModel=new NodeModel({nodeId:nodeTypeId});
-            nodeModel.load('dev').then(result=>{
-                let { originNodeTypeId } = this.state;
-                this.setState({
-                    nodeModel:nodeModel,
-                    currentEditorData:nodeModel.getPageModel(),
-                    editorType:"MAIN_PAGE",
-                    editorKey:"MAIN_PAGE",
-                    nodeTypeId:nodeTypeId,
-                    contentLoading:false,
-                    originNodeTypeId: originNodeTypeId ? originNodeTypeId : nodeTypeId,
-                    nodeGroupData:nodeModel.getGroupData()
-                },()=> {
-                    console.log(result,this.props,'result')
-                    // resetTemplateFlag && this.resetTemplate(this.state.nodeTypeId)
-                });
-            })
+            if(resetTemplateFlag) {
+                nodeModel.loadFromTemplate('dev',originId).then(result=>{
+                    let { originNodeTypeId } = this.state;
+                    this.setState({
+                        nodeModel:nodeModel,
+                        currentEditorData:nodeModel.getPageModel(),
+                        editorType:"MAIN_PAGE",
+                        editorKey:"MAIN_PAGE",
+                        nodeTypeId:nodeTypeId,
+                        contentLoading:false,
+                        originNodeTypeId: originNodeTypeId ? originNodeTypeId : nodeTypeId,
+                        nodeGroupData:nodeModel.getGroupData()
+                    });
+                })
+            } else {
+                nodeModel.load('dev').then(result=>{
+                    let { originNodeTypeId } = this.state;
+                    this.setState({
+                        nodeModel:nodeModel,
+                        currentEditorData:nodeModel.getPageModel(),
+                        editorType:"MAIN_PAGE",
+                        editorKey:"MAIN_PAGE",
+                        nodeTypeId:nodeTypeId,
+                        contentLoading:false,
+                        originNodeTypeId: originNodeTypeId ? originNodeTypeId : nodeTypeId,
+                        nodeGroupData:nodeModel.getGroupData()
+                    });
+                })
+            }
         }
     };
 
@@ -84,7 +98,7 @@ export default class Workbench extends React.Component {
     };
 
     onNodeClick = (nodeTypeId,nodeData) => {
-        console.log(nodeTypeId,'click-nodeTypeId')
+        console.log(nodeTypeId,nodeData,'click-nodeTypeId')
         this.setState({
             nodeTypeId: nodeTypeId
         })
@@ -130,6 +144,7 @@ export default class Workbench extends React.Component {
     };
 
     handleItemClick=(item)=>{
+        console.log(item,'click-item')
         this.setState({
             currentEditorData:item,
             editorKey:item.id,
@@ -165,21 +180,28 @@ export default class Workbench extends React.Component {
         cloneParams.nodeTypePath = page_template_meta.parentNodeTypePath +"::"+ templateServiceType;
         let appIdReg = new RegExp(this.props.appId,'g');
         let cloneParamsStr = JSON.stringify(cloneParams);
-        let cloneGroupDataStr = JSON.stringify(this.this.cloneGroupData);
+        let regArr = []
         if(this.cloneGroupData[0] && this.cloneGroupData[0].items) {
-            this.cloneGroupData[0].items.forEach(item=> {
+            this.cloneGroupData[0].items.forEach((item,i)=> {
                 let oldUuid = item.name;
                 let newBlockId = uuidv4();
                 let newToolBarBlockId = template_app_id + ":BLOCK:" + newBlockId;
                 let toolBarBlockIdRegExp = new RegExp(this.props.appId+":BLOCK:"+oldUuid,'g');
                 cloneParamsStr = cloneParamsStr.replace(toolBarBlockIdRegExp,newToolBarBlockId);
-                cloneGroupDataStr = cloneGroupDataStr.replace(toolBarBlockIdRegExp,newToolBarBlockId);
                 item.name = newBlockId;
                 item.id =  newBlockId;
+                regArr.push({
+                    oldBlockId:toolBarBlockIdRegExp,
+                    newBlockId:newToolBarBlockId
+                })
             })
         }
-        this.cloneGroupData = JSON.parse(cloneGroupDataStr);
         cloneParams = JSON.parse(cloneParamsStr.replace(appIdReg,template_app_id));
+        let cloneGroupDataStr = JSON.stringify(this.cloneGroupData[0].items);
+        regArr.forEach(item => {
+            cloneGroupDataStr = cloneGroupDataStr.replace(item.oldBlockId,item.newBlockId)
+        })
+        this.cloneGroupData[0].items = JSON.parse(cloneGroupDataStr);
         this.setState({
             contentLoading:true
         });
@@ -197,6 +219,7 @@ export default class Workbench extends React.Component {
     }
     saveAsBlocks=(templateServiceType)=> {
         let paramsArray = [];
+        console.log(this.cloneGroupData[0],'this.cloneGroupData[0]')
         this.cloneGroupData[0] && this.cloneGroupData[0].items.forEach(item => {
             let pageModelItem = new PageModel(item);
             let pageJsonItem = pageModelItem.toJSON();
@@ -235,12 +258,18 @@ export default class Workbench extends React.Component {
     };
     // 从模板创建
     createFromTemplate=(nodeTypeId,nodeData)=> {
-        this.loadNodeModel(nodeTypeId,nodeData,true);
+        // this.loadNodeModel(nodeTypeId,nodeData,true);
+        let params = {
+            sourceNodeTypePath: nodeTypeId,
+            targetNodeTypePath: this.state.nodeTypeId,
+        }
+        appMenuTreeService.createFromTemplateByClone(params).then(res=> {
+            window.location.reload();
+        })
     }
     // 重置模板uuid 并保存
     resetTemplate=(nodeTypeId)=> {
         let {nodeModel} = this.state;
-        nodeModel.updatePageModelFromTemplate(nodeTypeId);
         this.setState({
             nodeModel: nodeModel,
             currentEditorData: nodeModel.getPageModel,

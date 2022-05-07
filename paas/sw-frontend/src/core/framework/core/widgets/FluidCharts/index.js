@@ -47,6 +47,9 @@ export default class FluidCharts extends Component {
         }
         let data = 2600;
         let finalData = chartData || widgetData || data;
+        if(chartData=== 0 || widgetData === 0) {
+            finalData = 0
+        }
         let advConf = {};
         if (advancedConfig && advancedConfig.length > 40) {
             advConf = safeEval("(" + advancedConfig + ")(widgetData)", { widgetData: finalData });

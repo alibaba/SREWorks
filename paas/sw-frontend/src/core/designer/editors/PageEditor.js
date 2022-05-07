@@ -537,7 +537,7 @@ export default class PageEditor extends React.Component {
                                         <div className='template-pane'>
                                             {
                                                 templateCate.children && templateCate.children.map((item) => {
-                                                    return <div onClick={() => this.setActive(templateCate, item)} key={item.serviceType} class={item.serviceType === activeTarget ? 'template-item-active' : 'template-item'}>
+                                                    return <div onClick={() => this.setActive(templateCate, item)} key={item.serviceType} className={item.serviceType === activeTarget ? 'template-item-active' : 'template-item'}>
                                                         <div className="template-logo" style={{ backgroundImage: `url(${item.capture})`, backgroundPosition: 'center center', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', }}>
                                                             <Image onClick={(e) => e.stopPropagation()} height={20} width={20} src={item.capture} />
                                                         </div>

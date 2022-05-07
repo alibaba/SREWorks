@@ -91,7 +91,7 @@ class GroupFormItem extends PureComponent {
 
     render() {
         let formChildrens = this.buildingFormElements();
-        let { groups } = this.props.model;
+        let { groups=[] } = this.props.model;
         if (this.inline) {
             return <div>{formChildrens}</div>;
         }

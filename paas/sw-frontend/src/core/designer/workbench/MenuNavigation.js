@@ -468,7 +468,7 @@ class MenuNavigation extends React.Component {
           {menuFold && <Popover placement="right" content={this.state.dirTree.length && tree()}>
             <div style={{textAlign: "center", marginTop: 10}}><SettingOutlined /></div>
           </Popover>}
-          {!menuFold && this.state.dirTree.length && tree()}
+          {!menuFold && (this.state.dirTree.length !==0) && tree()}
         </Spin>
         {this.node && <Modal
           width={800}

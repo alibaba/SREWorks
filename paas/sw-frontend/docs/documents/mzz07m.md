@@ -52,8 +52,7 @@ helm install sreworks $SW_ROOT/chart/sreworks-chart \
 
 <a name="jPt3U"></a>
 # 3. Helm安装参数清单
-
-- 1. 如果需要构建完的运维应用上传到自定义容器镜像仓库，请在执行helm安装命令时候传入以下的参数
+如果需要构建完的运维应用上传到自定义容器镜像仓库，请在执行helm安装命令时候传入以下的参数
 ```shell
 # 平台名称
 --set platformName="SREWorks"

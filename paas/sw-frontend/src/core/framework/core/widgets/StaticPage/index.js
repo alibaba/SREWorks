@@ -1,4 +1,3 @@
-import { render } from 'bizcharts/lib/g-components';
 import React, { Component } from 'react';
 import JSXRender from "../../JSXRender";
 import properties from '../../../../../properties';

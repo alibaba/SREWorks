@@ -3,7 +3,7 @@
  * 节点页面编辑器
  */
 import React from 'react';
-import { BuildOutlined, CodeOutlined, DatabaseOutlined, SettingOutlined, SnippetsOutlined, QuestionCircleOutlined,PlusOutlined } from '@ant-design/icons';
+import { BuildOutlined, CodeOutlined, DatabaseOutlined, SettingOutlined, SnippetsOutlined, QuestionCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import {
     Layout,
     Menu,
@@ -204,6 +204,7 @@ export default class PageEditor extends React.Component {
 
     handleSave = () => {
         let { pageModel } = this.state, { onSave } = this.props;
+        console.log(pageModel, 'pageModel-save')
         onSave && onSave(pageModel)
     };
 
@@ -237,7 +238,7 @@ export default class PageEditor extends React.Component {
         // newParam.config.name = nodeData.config.name;
         // newParam.config.label = editCategory;
     }
-    handleSaveAs = () => {
+    handleSaveAs = async () => {
         let { nodeData, saveAs } = this.props;
         let newParam = _.cloneDeep(page_template_meta);
         let templateServiceType = util.generateId();
@@ -245,13 +246,19 @@ export default class PageEditor extends React.Component {
         newParam.config.name = nodeData.config.name;
         newParam.config.label = nodeData.config.label;
         let categoryAndServiceType = '';
-        this.formRef.current.validateFields().then((values) => {
-            if (values) {
-                categoryAndServiceType = values['serviceType'] + `::${templateServiceType}`
-                newParam.config.label = values['label'] || nodeData.config.label;
-                newParam.parentNodeTypePath = newParam.parentNodeTypePath + "::" + values['serviceType']
-            }
-        })
+        let goFlag = true;
+        let values = {}
+        try {
+            values = await this.formRef.current.validateFields();
+            categoryAndServiceType = values['serviceType'] + `::${templateServiceType}`
+            newParam.config.label = values['label'] || nodeData.config.label;
+            newParam.parentNodeTypePath = newParam.parentNodeTypePath + "::" + values['serviceType']
+        } catch (err) {
+            goFlag = false
+        }
+        if (!goFlag) {
+            return false
+        }
         this.setState({
             confirmLoading: true
         })
@@ -577,6 +584,7 @@ export default class PageEditor extends React.Component {
                         }}
                         initialValues={{
                             label: nodeData.config.label,
+                            serviceType: ''
                         }}
                         autoComplete="off"
                     >
@@ -597,6 +605,7 @@ export default class PageEditor extends React.Component {
                             rules={[
                                 {
                                     required: true,
+                                    warningOnly: false,
                                     message: '请至少选择一个模板类别',
                                 },
                             ]}

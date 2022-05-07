@@ -13,22 +13,28 @@ def read_routes():
 def update_route(route):
     update_route_url = '%s/v2/common/gateway/route/%s' % (get_gateway_endpoint(), route['routeId'])
     print("update_route_url: %s" % update_route_url)
-    res = requests.put(update_route_url, json=route, headers=gen_auth_headers())
-    print(res.content)
-    if res.status_code == 200:
-        if json.loads(res.content)['code'] == 200:
+    for i in range(3):
+        res = requests.put(update_route_url, json=route, headers=gen_auth_headers())
+        print(res.content)
+        if res.status_code == 200 and json.loads(res.content)['code'] == 200:
             return True
-    raise RuntimeError('insert route failed, status_code=%s, content=%s' % (res.status_code, res.content))
+        else:
+            print('update route failed status_code=%s, content=%s' % (res.status_code, res.content))
+            time.sleep(1)
+    raise RuntimeError('update route failed, status_code=%s, content=%s' % (res.status_code, res.content))
 
 
 def insert_route(route):
     insert_route_url = '%s/v2/common/gateway/route' % get_gateway_endpoint()
     print("insert_route_url: %s" % insert_route_url)
-    res = requests.post(insert_route_url, json=route, headers=gen_auth_headers())
-    print(res.content)
-    if res.status_code == 200:
-        if json.loads(res.content)['code'] == 200:
+    for i in range(3):
+        res = requests.post(insert_route_url, json=route, headers=gen_auth_headers())
+        print(res.content)
+        if res.status_code == 200 and json.loads(res.content)['code'] == 200:
             return True
+        else:
+            print('insert route failed status_code=%s, content=%s' % (res.status_code, res.content))
+            time.sleep(1)
     raise RuntimeError('insert route failed, status_code=%s, content=%s' % (res.status_code, res.content))
 
 

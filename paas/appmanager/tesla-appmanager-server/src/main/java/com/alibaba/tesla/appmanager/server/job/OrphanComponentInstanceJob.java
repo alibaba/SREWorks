@@ -3,6 +3,7 @@ package com.alibaba.tesla.appmanager.server.job;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.AppInstanceStatusEnum;
+import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.DeployAppStateEnum;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.InstanceIdUtil;
@@ -52,6 +53,14 @@ public class OrphanComponentInstanceJob {
                 String clusterId = componentInstance.getClusterId();
                 String namespaceId = componentInstance.getNamespaceId();
                 String stageId = componentInstance.getStageId();
+
+                // 针对 appmeta / deploymentmeta 两个特殊的 INTERNAL_ADDON component, 不进行应用实例的创建
+                String componentType = componentInstance.getComponentType();
+                String componentName = componentInstance.getComponentName();
+                if (ComponentTypeEnum.INTERNAL_ADDON.toString().equals(componentType)
+                        && ("appmeta".equals(componentName) || "deploymentmeta".equals(componentName))) {
+                    continue;
+                }
 
                 // 检查 app instance 是否存在，如果不存在，则创建
                 Pagination<DeployAppBO> deployAppList = deployAppService.list(DeployAppQueryCondition.builder()

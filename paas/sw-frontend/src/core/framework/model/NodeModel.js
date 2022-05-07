@@ -5,7 +5,7 @@
 import service from '../../services/appMenuTreeService';
 import PageModel from './PageModel';
 import Constants from './Constants';
-import uuid4 from 'uuid/v4';
+import uuidv4 from 'uuid/v4';
 import { page_template_meta, template_app_id } from '../../../core/designer/editors/TemplateConstant';
 
 
@@ -18,11 +18,11 @@ export default class NodeModel {
             throw new Error("节点缺失无法初始化设计器!");
         }
         this.nodeId = nodeData.nodeId;
+        this.nodeData = nodeData;
         this.initFromJson(nodeData);
     }
 
     initFromJson(nodeData) {
-        console.log(nodeData,'nodeData.blocks')
         this.blocks = nodeData.blocks || [];
         this.forms = nodeData.forms || [];
         this.pageModel = nodeData.pageData ? new PageModel(nodeData.pageData) : PageModel.CREATE_DEFAULT_INSTANCE();
@@ -162,6 +162,7 @@ export default class NodeModel {
 
     savePageModel() {
         let pageData = this.pageModel.toJSON();
+        console.log(pageData,'pageData-init')
         pageData.nodeTypePath = this.nodeId;
         return service.saveMainPage(pageData)
     }
@@ -208,16 +209,26 @@ export default class NodeModel {
          let oldPageModelName = this.pageModel.name;
          let oldPageModelNameRegExp = new RegExp(oldPageModelName,'g');
          this.blocks.forEach(item => {
-            let newBlockId = uuid4();
+            let newBlockId = uuidv4();
+            item.name = newBlockId;
+            item.id = newBlockId;
+            item.elementId = originAppId+":BLOCK:"+newBlockId;
+            item.appId = originAppId;
             let toolbarBlockRegExp = new RegExp(template_app_id+":BLOCK:"+item.name,'g');
             let oldUuidRegExp = new RegExp(item.name,'g');
             let oldTypePathRegExp = new RegExp(item.nodeTypePath,'g');
             let oldAppIdRegExp = new RegExp(item.appId,'g');
             let newToolbarBlockId = originAppId+":BLOCK:"+newBlockId;
-            item = JSON.parse(JSON.stringify(item).replace(toolbarBlockRegExp,newToolbarBlockId).replace(oldUuidRegExp,newBlockId).replace(oldTypePathRegExp,originNodeTypeId).replace(oldAppIdRegExp,originAppId))
-            pageModelStr = pageModelStr.replace(toolbarBlockRegExp,newToolbarBlockId).replace(oldUuidRegExp,newBlockId).replace(oldTypePathRegExp,originNodeTypeId).replace(oldAppIdRegExp,originAppId);
+            let cloneItem = _.cloneDeep(item);
+            let itemStr = JSON.stringify(cloneItem);
+            itemStr = itemStr.replace(toolbarBlockRegExp,newToolbarBlockId);
+            item = JSON.parse(itemStr);
+            // item = JSON.parse(JSON.stringify(item).replace(toolbarBlockRegExp,newToolbarBlockId).replace(oldUuidRegExp,newBlockId).replace(oldTypePathRegExp,originNodeTypeId).replace(oldAppIdRegExp,originAppId))
+            // pageModelStr = pageModelStr.replace(toolbarBlockRegExp,newToolbarBlockId).replace(oldUuidRegExp,newBlockId).replace(oldTypePathRegExp,originNodeTypeId).replace(oldAppIdRegExp,originAppId);
+            // console.log(pageModelStr,item,'pageModelStr')
          })
-         this.pageModel = JSON.parse(pageModelStr.replace(oldPageModelNameRegExp,uuid4()));
+         console.log(this.pageModel,this.nodeData,'pageModelStr')
+        //  this.pageModel = JSON.parse(pageModelStr.replace(oldPageModelNameRegExp,uuidv4()));
          return this.pageModel;
      }
 

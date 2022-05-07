@@ -38,6 +38,7 @@ class SimpleTable extends React.Component  {
             footChecked:false,
             footIndete:false
         };
+        console.log(props.widgetData,'widgetConfig-dataSourceMeta')
     }
 
     getApiConf=()=>{
@@ -467,6 +468,7 @@ class SimpleTable extends React.Component  {
         if(wrapper==="none"||wrapper==='transparent'){
             dyClass=dyClass+" no_wrapper_table_pagination";
         }
+        console.log(widgetConfig,'widgetConfig-dataSourceMeta')
         return (
             <div className={dyClass}>
                 {filterForm}

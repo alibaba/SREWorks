@@ -44,7 +44,7 @@ export default class Workbench extends React.Component {
     componentDidMount() {
         //this.loadNodeModel("xxx");
     }
-    loadNodeModel=(nodeTypeId,nodeData,resetTemplate)=>{
+    loadNodeModel=(nodeTypeId,nodeData,resetTemplateFlag)=>{
         if(nodeTypeId===this.state.nodeTypeId){
             return ;
         }
@@ -67,7 +67,8 @@ export default class Workbench extends React.Component {
                     originNodeTypeId: originNodeTypeId ? originNodeTypeId : nodeTypeId,
                     nodeGroupData:nodeModel.getGroupData()
                 },()=> {
-                    resetTemplate && resetTemplate()
+                    console.log(result,this.props,'result')
+                    // resetTemplateFlag && this.resetTemplate(this.state.nodeTypeId)
                 });
             })
         }
@@ -83,6 +84,10 @@ export default class Workbench extends React.Component {
     };
 
     onNodeClick = (nodeTypeId,nodeData) => {
+        console.log(nodeTypeId,'click-nodeTypeId')
+        this.setState({
+            nodeTypeId: nodeTypeId
+        })
         this.loadNodeModel(nodeTypeId,nodeData);
     };
 
@@ -160,6 +165,7 @@ export default class Workbench extends React.Component {
         cloneParams.nodeTypePath = page_template_meta.parentNodeTypePath +"::"+ templateServiceType;
         let appIdReg = new RegExp(this.props.appId,'g');
         let cloneParamsStr = JSON.stringify(cloneParams);
+        let cloneGroupDataStr = JSON.stringify(this.this.cloneGroupData);
         if(this.cloneGroupData[0] && this.cloneGroupData[0].items) {
             this.cloneGroupData[0].items.forEach(item=> {
                 let oldUuid = item.name;
@@ -167,10 +173,12 @@ export default class Workbench extends React.Component {
                 let newToolBarBlockId = template_app_id + ":BLOCK:" + newBlockId;
                 let toolBarBlockIdRegExp = new RegExp(this.props.appId+":BLOCK:"+oldUuid,'g');
                 cloneParamsStr = cloneParamsStr.replace(toolBarBlockIdRegExp,newToolBarBlockId);
+                cloneGroupDataStr = cloneGroupDataStr.replace(toolBarBlockIdRegExp,newToolBarBlockId);
                 item.name = newBlockId;
                 item.id =  newBlockId;
             })
         }
+        this.cloneGroupData = JSON.parse(cloneGroupDataStr);
         cloneParams = JSON.parse(cloneParamsStr.replace(appIdReg,template_app_id));
         this.setState({
             contentLoading:true
@@ -227,12 +235,12 @@ export default class Workbench extends React.Component {
     };
     // 从模板创建
     createFromTemplate=(nodeTypeId,nodeData)=> {
-        this.loadNodeModel(nodeTypeId,nodeData);
+        this.loadNodeModel(nodeTypeId,nodeData,true);
     }
     // 重置模板uuid 并保存
-    resetTemplate=()=> {
+    resetTemplate=(nodeTypeId)=> {
         let {nodeModel} = this.state;
-        nodeModel.updatePageModelFromTemplate()
+        nodeModel.updatePageModelFromTemplate(nodeTypeId);
         this.setState({
             nodeModel: nodeModel,
             currentEditorData: nodeModel.getPageModel,

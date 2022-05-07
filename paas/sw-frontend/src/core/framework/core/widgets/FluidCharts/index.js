@@ -45,7 +45,7 @@ export default class FluidCharts extends Component {
         if (appendPadding && appendPadding.indexOf(',') > -1) {
             appendPadding = appendPadding.split(',').map(item => Number(item))
         }
-        let data = 0;
+        let data = 2600;
         let finalData = chartData || widgetData || data;
         let advConf = {};
         if (advancedConfig && advancedConfig.length > 40) {

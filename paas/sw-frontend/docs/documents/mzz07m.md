@@ -15,7 +15,7 @@
 <a name="naB3D"></a>
 ## 拉取 SREWorks 项目源码
 ```shell
-git clone http://github.com/alibaba/sreworks.git -b v1.0 sreworks
+git clone http://github.com/alibaba/sreworks.git -b v1.1 sreworks
 cd sreworks
 SW_ROOT=$(pwd)
 ```
@@ -24,7 +24,7 @@ SW_ROOT=$(pwd)
 ## 构建 SREWorks 底座容器镜像
 在sreworks目录下，直接在本地执行构建脚本：
 ```shell
-./build.sh --target all --build --tag v1.0
+./build.sh --target all --build --tag v1.1
 ```
 
 <a name="us2zd"></a>
@@ -33,7 +33,7 @@ SW_ROOT=$(pwd)
 ```shell
 SW_REPO="your-registry.***.com/sreworks"
 docker login --username=sre****s your-registry.***.com
-./build.sh --target all --push $SW_REPO --tag v1.0
+./build.sh --target all --push $SW_REPO --tag v1.1
 ```
 
 <a name="jiRmc"></a>
@@ -45,7 +45,7 @@ helm install sreworks $SW_ROOT/chart/sreworks-chart \
     --create-namespace --namespace sreworks \
     --set appmanager.home.url="https://your-website.***.com" \
     --set build.enable=true \
-    --set global.images.tag="v1.0" \
+    --set global.images.tag="v1.1" \
     --set global.images.registry=$SW_REPO
 
 ```

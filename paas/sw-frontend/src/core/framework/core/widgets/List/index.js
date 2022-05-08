@@ -22,7 +22,7 @@ export default class ListRender extends Component {
       pageSize: 20,
       total: (widgetData && widgetData.length) || 0,
       currentPage: 1,
-      splitData: []
+      splitData: widgetData
     }
   }
   componentWillMount() {

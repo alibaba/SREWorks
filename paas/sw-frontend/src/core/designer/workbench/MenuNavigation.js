@@ -12,6 +12,7 @@ import {
   QuestionCircleOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
+import Bus from '../../../utils/eventBus'
 
 import { Form, Icon as LegacyIcon } from '@ant-design/compatible';
 import '@ant-design/compatible/assets/index.css';
@@ -90,7 +91,14 @@ class MenuNavigation extends React.Component {
     this._getDirTree();
     this.getRootRoles();
   }
-
+  componentDidMount(){
+    Bus.on('refreshDirTree', (msg) => {
+      this._getDirTree()
+    });
+  }
+  componentWillUnmount() {
+    Bus.off('refreshDirTree',(msg) => {});
+}
   componentWillReceiveProps(nextProps, nextContext) {
     if (!_.isEqual(this.props.bizKey, nextProps.bizKey) || !_.isEqual(this.props.parentId, nextProps.parentId)) {
       this._getDirTree();

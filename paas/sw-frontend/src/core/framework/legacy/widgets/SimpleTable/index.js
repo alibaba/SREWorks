@@ -134,7 +134,7 @@ class SimpleTable extends React.Component  {
             loading: false,
             data:this.state.data||(noPaging?[]:false),
         });
-        if(noPaging){
+        if(noPaging && widgetConfig.dataSourceMeta && widgetConfig.dataSourceMeta.api){
             this.loadAllData(api).then(data=>{
                 let dataIndex=mode.config.dataIndex,tdata=data&&data.items||data||[];
                 if(dataIndex) tdata=data[dataIndex]||[];

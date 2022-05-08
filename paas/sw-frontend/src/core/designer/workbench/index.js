@@ -16,6 +16,7 @@ import appMenuTreeService from '../../services/appMenuTreeService';
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 import PageModel from '../../framework/model/PageModel';
+import Bus from '../../../utils/eventBus';
 
 import './index.less';
 import service from '../../framework/legacy/widgets/flyadmin/service';
@@ -39,10 +40,14 @@ export default class Workbench extends React.Component {
             nodeGroupData:props.nodeGroupData
         }
         this.cloneGroupData = []
+        this.childRef = null;
     }
 
     componentDidMount() {
         //this.loadNodeModel("xxx");
+    }
+    setRef=(ref)=> {
+        this.childRef= ref
     }
     loadNodeModel=(nodeTypeId,nodeData,resetTemplateFlag)=>{
         if(nodeTypeId===this.state.nodeTypeId){
@@ -264,7 +269,7 @@ export default class Workbench extends React.Component {
             targetNodeTypePath: this.state.nodeTypeId,
         }
         appMenuTreeService.createFromTemplateByClone(params).then(res=> {
-            window.location.reload();
+            Bus.emit('refreshDirTree', true);
         })
     }
     // 重置模板uuid 并保存
@@ -292,7 +297,7 @@ export default class Workbench extends React.Component {
                             </div>
                         </div>
                         <div style={{overflowY:"auto",height:contentHeight}}>
-                            <MenuNavigation appId={this.props.appId || "front-dev"} menuFold={menuFold} onNodeClick={this.onNodeClick} />
+                            <MenuNavigation ref={this.setRef}  appId={this.props.appId || "front-dev"} menuFold={menuFold} onNodeClick={this.onNodeClick} />
                         </div>
                     </div>
                 </Sider>

@@ -3,12 +3,13 @@
  * 节点页面编辑器
  */
 import React from 'react';
-import { BuildOutlined, CodeOutlined, DatabaseOutlined, SettingOutlined, SnippetsOutlined } from '@ant-design/icons';
+import { BuildOutlined, CodeOutlined, DatabaseOutlined, SettingOutlined, SnippetsOutlined, QuestionCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import {
     Layout,
     Menu,
     Dropdown,
     Tree,
+    Popconfirm,
     Steps,
     Button,
     Card,
@@ -25,7 +26,8 @@ import {
     Form,
     Input,
     Select,
-    Message
+    Message,
+    message
 } from "antd";
 import PageModel from '../../framework/model/PageModel';
 import Constants from '../../framework/model/Constants';
@@ -68,6 +70,7 @@ export default class PageEditor extends React.Component {
         super(props);
         let pageModel = props.pageModel || PageModel.CREATE_DEFAULT_INSTANCE();
         this.formRef = React.createRef();
+        this.categoryRef = React.createRef();
         this.state = {
             pageModel: pageModel,
             showPreview: false,
@@ -87,7 +90,8 @@ export default class PageEditor extends React.Component {
             templateForm: {
                 label: '',
                 serviceType: ''
-            }
+            },
+            editCategory: ''
         };
     }
 
@@ -200,6 +204,7 @@ export default class PageEditor extends React.Component {
 
     handleSave = () => {
         let { pageModel } = this.state, { onSave } = this.props;
+        console.log(pageModel, 'pageModel-save')
         onSave && onSave(pageModel)
     };
 
@@ -225,7 +230,15 @@ export default class PageEditor extends React.Component {
     handleChangeTab = res => {
         this.setState({ activeKey: res })
     }
-    handleSaveAs = () => {
+    addCategory = () => {
+        let { editCategory } = this.state;
+        let newParam = _.cloneDeep(page_template_meta);
+        let templateServiceType = util.generateId();
+        newParam.serviceType = templateServiceType;
+        // newParam.config.name = nodeData.config.name;
+        // newParam.config.label = editCategory;
+    }
+    handleSaveAs = async () => {
         let { nodeData, saveAs } = this.props;
         let newParam = _.cloneDeep(page_template_meta);
         let templateServiceType = util.generateId();
@@ -233,13 +246,19 @@ export default class PageEditor extends React.Component {
         newParam.config.name = nodeData.config.name;
         newParam.config.label = nodeData.config.label;
         let categoryAndServiceType = '';
-        this.formRef.current.validateFields().then((values) => {
-            if (values) {
-                categoryAndServiceType = values['serviceType'] + `::${templateServiceType}`
-                newParam.config.label = values['label'] || nodeData.config.label;
-                newParam.parentNodeTypePath = newParam.parentNodeTypePath + "::" + values['serviceType']
-            }
-        })
+        let goFlag = true;
+        let values = {}
+        try {
+            values = await this.formRef.current.validateFields();
+            categoryAndServiceType = values['serviceType'] + `::${templateServiceType}`
+            newParam.config.label = values['label'] || nodeData.config.label;
+            newParam.parentNodeTypePath = newParam.parentNodeTypePath + "::" + values['serviceType']
+        } catch (err) {
+            goFlag = false
+        }
+        if (!goFlag) {
+            return false
+        }
         this.setState({
             confirmLoading: true
         })
@@ -345,6 +364,72 @@ export default class PageEditor extends React.Component {
             activePanel: keys,
         });
     };
+    addCategoryForm = () => (
+        <Form
+            name="basic"
+            ref={this.categoryRef}
+            labelCol={{
+                span: 8,
+            }}
+            wrapperCol={{
+                span: 16,
+            }}
+            initialValues={{
+                label: '',
+                name: ''
+            }}
+            width={400}
+            autoComplete="off"
+        >
+            <Form.Item
+                label="类别id"
+                name="name"
+                rules={[{
+                    required: true,
+                    validator: (rule, value, callback) => {
+                        if (!value) {
+                            callback(new Error("请输入菜单路径"))
+                        }
+                        let regE = new RegExp('^[0-9a-zA-Z_-]{1,}$');
+                        if (!regE.test(value)) {
+                            callback(new Error('类别只限输入数字、字母、下划线、中短横'))
+                        } else {
+                            callback()
+                        }
+                    }
+                }]}
+            >
+                <Input placeholder={'请输入数字、字母、下划线、中短横'} />
+            </Form.Item>
+            <Form.Item
+                label="类别名称"
+                name="label"
+                rules={[
+                    {
+                        required: true,
+                        message: '请输入类别名称',
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+        </Form>
+    )
+    addTemplateCategory = () => {
+        let newParam = _.cloneDeep(page_template_meta);
+        let templateServiceType = util.generateId();
+        newParam.serviceType = templateServiceType;
+        this.categoryRef.current.validateFields().then((values) => {
+            if (values) {
+                newParam.config.name = values['name'];
+                newParam.config.label = values['label'];
+                appMenuTreeService.insertNode(newParam).then(res => {
+                    this.getTemplateList()
+                    message.info("类别添加成功")
+                });
+            }
+        })
+    }
     render() {
         let { pageModel, showPreview, openDrawer, showJson, activeKey, showTemplateList, confirmLoading, templateList, activeTarget, getTemplateLoading, saveOrCreat, activePanel, categoryList, templateForm, templateModal } = this.state, { height = 620, nodeData, contentLoading } = this.props;
         let tabEditorContentStyle = { height: height - 42, overflowY: "auto", overflowX: "none" }, { config } = nodeData;
@@ -452,14 +537,14 @@ export default class PageEditor extends React.Component {
                     }
                 >
                     <section className='template-parent-pane'>
-                        <Collapse activeKey={activePanel} bordered={false} onChange={this.handleCategoryClicked}>
+                        <Tabs defaultActiveKey={activePanel} tabPosition={'left'} onChange={this.handleCategoryClicked}>
                             {
                                 templateList.map(templateCate => {
-                                    return <Panel header={templateCate.label} style={{ minWidth: 500 }} key={templateCate.serviceType}>
+                                    return <TabPane tab={templateCate.label} style={{ minWidth: 500 }} key={templateCate.serviceType}>
                                         <div className='template-pane'>
                                             {
                                                 templateCate.children && templateCate.children.map((item) => {
-                                                    return <div onClick={() => this.setActive(templateCate, item)} key={item.serviceType} class={item.serviceType === activeTarget ? 'template-item-active' : 'template-item'}>
+                                                    return <div onClick={() => this.setActive(templateCate, item)} key={item.serviceType} className={item.serviceType === activeTarget ? 'template-item-active' : 'template-item'}>
                                                         <div className="template-logo" style={{ backgroundImage: `url(${item.capture})`, backgroundPosition: 'center center', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', }}>
                                                             <Image onClick={(e) => e.stopPropagation()} height={20} width={20} src={item.capture} />
                                                         </div>
@@ -472,17 +557,20 @@ export default class PageEditor extends React.Component {
                                                 })
                                             }
                                         </div>
-                                    </Panel>
+                                    </TabPane>
                                 })
                             }
-                        </Collapse>
+                        </Tabs>
                     </section>
                 </Drawer>
                 <Modal
                     visible={templateModal}
+                    maskClosable={false}
                     title="模板存储"
                     confirmLoading={confirmLoading}
                     onOk={this.handleSaveAs}
+                    width={620}
+                    bodyStyle={{ paddingBottom: 40, paddingLeft: 40, paddingRight: 100, paddingTop: 40, }}
                     onCancel={() => this.setState({ templateModal: false, openDrawer: false })}
                 >
                     <Form
@@ -495,7 +583,8 @@ export default class PageEditor extends React.Component {
                             span: 20,
                         }}
                         initialValues={{
-                            remember: true,
+                            label: nodeData.config.label,
+                            serviceType: ''
                         }}
                         autoComplete="off"
                     >
@@ -516,6 +605,7 @@ export default class PageEditor extends React.Component {
                             rules={[
                                 {
                                     required: true,
+                                    warningOnly: false,
                                     message: '请至少选择一个模板类别',
                                 },
                             ]}
@@ -529,6 +619,14 @@ export default class PageEditor extends React.Component {
                             </Select>
                         </Form.Item>
                     </Form>
+                    <div style={{ position: 'relative', left: 496, top: -48 }}>
+                        <Popconfirm placement="right" icon={<QuestionCircleOutlined style={{ visibility: 'hidden' }} />} title={this.addCategoryForm} onConfirm={this.addTemplateCategory} okText="确认" cancelText="取消">
+                            <Tooltip title="新增类别">
+                                <Button type="primary" shape="circle" icon={<PlusOutlined />} />
+                            </Tooltip>
+                        </Popconfirm>
+
+                    </div>
                 </Modal>
             </div>
         );

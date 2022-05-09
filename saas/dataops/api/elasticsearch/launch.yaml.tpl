@@ -60,9 +60,13 @@ spec:
         extraEnvs:
           - name: cluster.initial_master_nodes
             value: ""
+          - name: ELASTIC_PASSWORD
+            value: "${DATA_ES_PASSWORD}"
+          - name: ELASTIC_USERNAME
+            value: "${DATA_ES_USER}"
         esConfig:
           elasticsearch.yml: |
-            xpack.security.enabled: false
+            xpack.security.enabled: true
             discovery.type: single-node
             path.data: /usr/share/elasticsearch/data
         volumeClaimTemplate:

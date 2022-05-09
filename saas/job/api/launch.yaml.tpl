@@ -26,9 +26,9 @@ spec:
     - name: ES_ENDPOINT
       value: "http://${DATA_ES_HOST}:${DATA_ES_PORT}"
     - name: ES_USERNAME
-      value: ""
+      value: "${DATA_ES_USER}"
     - name: ES_PASSWORD
-      value: ""
+      value: "${DATA_ES_PASSWORD}"
   components:
     - revisionName: K8S_MICROSERVICE|job-master|_
       scopes:

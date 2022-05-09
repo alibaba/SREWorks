@@ -22,12 +22,14 @@ public interface ProductopsTabRepository
 
     ProductopsTab findFirstByTabIdAndStageId(String tabId, String stageId);
 
+    ProductopsTab findFirstByNodeTypePathAndStageId(String tabId, String stageId);
+
     List<ProductopsTab> findAllByNodeTypePathAndStageId(String nodeTypePath, String stageId);
 
     List<ProductopsTab> findAllByNodeTypePathLikeAndStageId(String s, String stageId);
 
     @Modifying
     @Transactional(rollbackOn = Exception.class)
-    void deleteByNodeTypePathLikeAndStageId(String s, String stageId);
+    void deleteByNodeTypePathLikeAndStageIdAndIsImport(String s, String stageId, Integer isImport);
 
 }

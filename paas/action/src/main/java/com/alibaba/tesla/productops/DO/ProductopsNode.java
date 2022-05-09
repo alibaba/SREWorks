@@ -62,6 +62,9 @@ public class ProductopsNode {
     @Column(columnDefinition = "longtext")
     private String config;
 
+    @Column
+    private Integer isImport;
+
     public Long order() {
         JSONObject config = JSONObject.parseObject(this.config);
         return config.getLongValue("order");

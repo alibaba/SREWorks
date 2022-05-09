@@ -92,7 +92,7 @@ const DefaultHeader = ({ siderFold, siderRespons, theme, siderOpenKeys, menuResp
     const UserMenu = () => (
         <div style={{ display: "flex", alignItems: "center" }}>
             <Dropdown placement="bottomRight" overlay={
-                <Menu mode="horizontal" style={{ width: 240}}>
+                <Menu mode="horizontal" style={{ width: 240 }}>
                     <MenuItemGroup title={localeHelper.get("common.theme.setting", "主题设置")}>
                         <Menu.Item key="theme">
                             <Switch onChange={onSwitchTheme}
@@ -103,7 +103,7 @@ const DefaultHeader = ({ siderFold, siderRespons, theme, siderOpenKeys, menuResp
                     </MenuItemGroup>
                     <MenuItemGroup title={localeHelper.get("common.language.setting", "语言设置")}>
                         <Menu.Item key="language">
-                            <Switch onChange={onLanguageChange}  checked={localStorage.getItem("t_lang_locale") === 'zh_CN'} size="small" checkedChildren={localeHelper.get("common.language.zh_CN", "中文")} unCheckedChildren={localeHelper.get("common.language.en_US", "英文")} />
+                            <Switch onChange={onLanguageChange} checked={localStorage.getItem("t_lang_locale") === 'zh_CN'} size="small" checkedChildren={localeHelper.get("common.language.zh_CN", "中文")} unCheckedChildren={localeHelper.get("common.language.en_US", "英文")} />
                         </Menu.Item>
                     </MenuItemGroup>
                     <MenuItemGroup title={localeHelper.get("common.switchEnv", "环境切换")}>
@@ -198,57 +198,55 @@ const DefaultHeader = ({ siderFold, siderRespons, theme, siderOpenKeys, menuResp
             })
         }
         return (
-            <div>
-                <Menu mode="horizontal"
-                    id="abm-menu"
-                    defaultSelectedKeys={keys}
-                    selectedKeys={keys}
-                >
-                    {
-                        moduleData.filter(md => (md.group === currentModule.group || !md.group) && (md.config.hidden !== true && md.config.hidden !== "true")).map(m => {
-                            if (m.layout === 'popup' && m.children && m.children.length) {
-                                return (
-                                    <SubMenu
-                                        title={<span style={{ color: 'rgba(255,255,255,0.8)' }}>{m.icon ? <LegacyIcon type={m.icon} /> : null}{m.label}<DownOutlined style={{ fontSize: 12, marginRight: 0, transform: 'scale(0.8)' }} /></span>}
-                                        key={m.path}
-                                    >
-                                        {
-                                            m.children.map((child, index) => {
-                                                let { config } = child, cItems = [];
-                                                if (config && (config.hidden === true || config.hidden === "true")) return null;
-                                                let { redirect } = config || {};
-                                                if (redirect && redirect.path) {
-                                                    cItems.push(
-                                                        <Item key={child.path}>
-                                                            <RedirectLink redirect={redirect} label={child.label} icon={child.icon} />
-                                                        </Item>
-                                                    );
-                                                } else {
-                                                    cItems.push(<Item key={child.path}><Link to={child.path} /><span>{child.icon ? <LegacyIcon type={child.icon} /> : null}{child.label}</span></Item>);
-                                                }
-                                                if ((m.children.length - 1) > index) {
-                                                    cItems.push(<Menu.Divider key={child.name + "_divider"} />);
-                                                }
-                                                return cItems;
-                                            })
-                                        }
-                                    </SubMenu>
-                                );
-                            }
-                            let { redirect } = m.config || {};
-                            if (redirect && redirect.path) {
-                                return (
-                                    <Item key={m.name}>
-                                        <RedirectLink redirect={redirect} label={m.label} icon={m.icon} />
-                                    </Item>
-                                );
-                            }
-                            return <Item key={m.name}><Link to={m.path} /><span style={{ color: 'rgba(255,255,255,0.8)' }}>{m.icon ? <LegacyIcon type={m.icon} /> : null}{m.label}</span></Item>;
+            <Menu mode="horizontal"
+                id="abm-menu"
+                defaultSelectedKeys={keys}
+                selectedKeys={keys}
+            >
+                {
+                    moduleData.filter(md => (md.group === currentModule.group || !md.group) && (md.config.hidden !== true && md.config.hidden !== "true")).map(m => {
+                        if (m.layout === 'popup' && m.children && m.children.length) {
+                            return (
+                                <SubMenu
+                                    title={<span style={{ color: 'rgba(255,255,255,0.8)' }}>{m.icon ? <LegacyIcon type={m.icon} /> : null}{m.label}<DownOutlined style={{ fontSize: 12, marginRight: 0, transform: 'scale(0.8)' }} /></span>}
+                                    key={m.path}
+                                >
+                                    {
+                                        m.children.map((child, index) => {
+                                            let { config } = child, cItems = [];
+                                            if (config && (config.hidden === true || config.hidden === "true")) return null;
+                                            let { redirect } = config || {};
+                                            if (redirect && redirect.path) {
+                                                cItems.push(
+                                                    <Item key={child.path}>
+                                                        <RedirectLink redirect={redirect} label={child.label} icon={child.icon} />
+                                                    </Item>
+                                                );
+                                            } else {
+                                                cItems.push(<Item key={child.path}><Link to={child.path} /><span>{child.icon ? <LegacyIcon type={child.icon} /> : null}{child.label}</span></Item>);
+                                            }
+                                            if ((m.children.length - 1) > index) {
+                                                cItems.push(<Menu.Divider key={child.name + "_divider"} />);
+                                            }
+                                            return cItems;
+                                        })
+                                    }
+                                </SubMenu>
+                            );
                         }
-                        )
+                        let { redirect } = m.config || {};
+                        if (redirect && redirect.path) {
+                            return (
+                                <Item key={m.name}>
+                                    <RedirectLink redirect={redirect} label={m.label} icon={m.icon} />
+                                </Item>
+                            );
+                        }
+                        return <Item key={m.name}><Link to={m.path} /><span style={{ color: 'rgba(255,255,255,0.8)' }}>{m.icon ? <LegacyIcon type={m.icon} /> : null}{m.label}</span></Item>;
                     }
-                </Menu>
-            </div>
+                    )
+                }
+            </Menu>
         );
     };
 
@@ -260,7 +258,7 @@ const DefaultHeader = ({ siderFold, siderRespons, theme, siderOpenKeys, menuResp
                 <SiteLogo />
             </div>
             <div className="center">
-                <div>
+                <div style={{ minWidth: 200 }}>
                     <ModuleMenu />
                 </div>
             </div>

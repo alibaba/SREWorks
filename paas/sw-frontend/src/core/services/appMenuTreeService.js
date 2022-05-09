@@ -237,6 +237,9 @@ class Service {
     getCustomList () {
         return httpClient.get('/gateway/v2/foundation/frontend-service/frontend/component/list?stageId=prod')
     }
+    createFromTemplateByClone(params) {
+        return httpClient.post('/gateway/v2/foundation/frontend-service/frontend/appTrees/clone?stageId=dev',params)
+    }
 
 }
 

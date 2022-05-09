@@ -7,7 +7,7 @@ global:
 
   images:
     registry: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks
-    tag: v1.0
+    tag: v1.1
 
   accessMode: ingress
 
@@ -65,8 +65,8 @@ saas:
     dbPort: 3306
     esHost: 'prod-dataops-elasticsearch-master.sreworks-dataops'
     esPort: 9200
-    esUser: "default"
-    esPassword: "default"
+    esUser: "elastic"
+    esPassword: "sreworkses123."
   grafana:
     password: "sreworks123456"
 
@@ -77,7 +77,7 @@ swcli:
   clientSecret: stLCjCPKbWmki65DsAj2jPoeBLPimpJa
 
 source:
-  branch: v1.0
+  branch: v1.1
   repo: https://code.aliyun.com/sreworks_public/mirror.git
 
 appmanagerbase:

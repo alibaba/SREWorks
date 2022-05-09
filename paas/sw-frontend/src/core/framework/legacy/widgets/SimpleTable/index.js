@@ -38,6 +38,7 @@ class SimpleTable extends React.Component  {
             footChecked:false,
             footIndete:false
         };
+        console.log(props.widgetData,'widgetConfig-dataSourceMeta')
     }
 
     getApiConf=()=>{
@@ -133,7 +134,7 @@ class SimpleTable extends React.Component  {
             loading: false,
             data:this.state.data||(noPaging?[]:false),
         });
-        if(noPaging){
+        if(noPaging && widgetConfig.dataSourceMeta && widgetConfig.dataSourceMeta.api){
             this.loadAllData(api).then(data=>{
                 let dataIndex=mode.config.dataIndex,tdata=data&&data.items||data||[];
                 if(dataIndex) tdata=data[dataIndex]||[];
@@ -467,6 +468,7 @@ class SimpleTable extends React.Component  {
         if(wrapper==="none"||wrapper==='transparent'){
             dyClass=dyClass+" no_wrapper_table_pagination";
         }
+        console.log(widgetConfig,'widgetConfig-dataSourceMeta')
         return (
             <div className={dyClass}>
                 {filterForm}

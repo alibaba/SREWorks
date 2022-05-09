@@ -75,3 +75,26 @@ spec:
           value: "${DATA_ES_HOST}"
         - name: Global.ELASTICSEARCH_PORT
           value: "${DATA_ES_PORT}"
+        - name: Global.ELASTICSEARCH_USER
+          value: "${DATA_ES_USER}"
+        - name: Global.ELASTICSEARCH_PASSWORD
+          value: "${DATA_ES_PASSWORD}"
+        - name: Global.DATA_DB_HOST
+          value: "${DATAOPS_DB_HOST}"
+        - name: Global.DATA_DB_PORT
+          value: "${DATAOPS_DB_PORT}"
+        - name: Global.DATA_DB_USER
+          value: "${DATAOPS_DB_USER}"
+        - name: Global.DATA_DB_PASSWORD
+          value: "${DATAOPS_DB_PASSWORD}" 
+        - name: Global.DATA_ES_HOST
+          value: "${DATA_ES_HOST}"
+        - name: Global.DATA_ES_PORT
+          value: "${DATA_ES_PORT}"
+        - name: Global.DATA_ES_USER
+          value: "${DATA_ES_USER}"
+        - name: Global.DATA_ES_PASSWORD
+          value: "${DATA_ES_PASSWORD}"
+ 
+
+

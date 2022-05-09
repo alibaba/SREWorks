@@ -95,66 +95,68 @@ export default class NodeTabsNavigation extends React.Component {
 
     renderItemGroups=(groups=[])=>{
         let {visible,createKey}=this.state,setSettingForm=this.setSettingForm;
-       return groups.map(group=>{
-           let {items,icon,type,label, tooltip}=group;
-           return (
-               <Menu.ItemGroup key={type}
-                               group={group}
-                               title={
-                                   <div style={{position:"relative"}}>
-                                       <label>
-                                           {label}&nbsp;
-                                           {tooltip && <em className="optional">
-                                               <Tooltip title={tooltip}>
-                                                   <QuestionCircleOutlined />
-                                               </Tooltip>
-                                           </em>}
-                                       </label>
-                                       <span style={{position:'absolute',right:8}}>
-                                           <Popover placement="right" title={"选择区块类型"}
-                                                    visible={visible}
-                                                    onVisibleChange={this.handleVisibleChange}
-                                                    overlayStyle={{width:660}}
-                                                    content={
-                                                        <div  style={{overflow:"hidden"}}>
-                                                            <div>
-                                                                <BlockPropsSettingForm  key={createKey} wrappedComponentRef={(form) => setSettingForm(form)} config={{category:Constants.BLOCK_CATEGORY_ACTION,name:uuidv4()}} onValuesChange={(changedField,allValue)=>this.currentCreateConf=allValue}/>
-                                                            </div>
-                                                            <div style={{float: "right"}}>
-                                                                <Button style={{marginRight: 10}} onClick={this.close}
-                                                                        size="small">取消</Button>
-                                                                <Button size="small" type="primary"
-                                                                        onClick={this.addElement}>确认</Button>
-                                                            </div>
-
-                                                        </div>
-                                                    } trigger="click">
-                                               <a style={{cursor: "pointer"}}><PlusCircleOutlined /></a>
-                                            </Popover>
-                                       </span>
-                                   </div>
-                               }>
-                   {
-                       items.map(item=>{
-                           let {id,label,name,category}=item;
-                           return (
-                               <Menu.Item key={id}>
-                                   <span style={{marginLeft:15}}>
-                                       <Tooltip title={`${label}`}>
-                                         {category===Constants.BLOCK_CATEGORY_ACTION&&<ToolOutlined />}
-                                         {category===Constants.BLOCK_CATEGORY_FILTER&&<FilterOutlined />}
-                                         {category===Constants.BLOCK_CATEGORY_PAGE&&<PicRightOutlined />}
-                                         {category===Constants.BLOCK_CATEGORY_FORM&&<FormOutlined />}
-                                         {label}
-                                       </Tooltip>
-                                   </span>
-                               </Menu.Item>
-                           );
-                       })
-                   }
-               </Menu.ItemGroup>
-           );
-        });
+        if(groups && groups.length) {
+            return groups.map(group=>{
+                let {items,icon,type,label, tooltip}=group;
+                return (
+                    <Menu.ItemGroup key={type}
+                                    group={group}
+                                    title={
+                                        <div style={{position:"relative"}}>
+                                            <label>
+                                                {label}&nbsp;
+                                                {tooltip && <em className="optional">
+                                                    <Tooltip title={tooltip}>
+                                                        <QuestionCircleOutlined />
+                                                    </Tooltip>
+                                                </em>}
+                                            </label>
+                                            <span style={{position:'absolute',right:8}}>
+                                                <Popover placement="right" title={"选择区块类型"}
+                                                         visible={visible}
+                                                         onVisibleChange={this.handleVisibleChange}
+                                                         overlayStyle={{width:660}}
+                                                         content={
+                                                             <div  style={{overflow:"hidden"}}>
+                                                                 <div>
+                                                                     <BlockPropsSettingForm  key={createKey} wrappedComponentRef={(form) => setSettingForm(form)} config={{category:Constants.BLOCK_CATEGORY_ACTION,name:uuidv4()}} onValuesChange={(changedField,allValue)=>this.currentCreateConf=allValue}/>
+                                                                 </div>
+                                                                 <div style={{float: "right"}}>
+                                                                     <Button style={{marginRight: 10}} onClick={this.close}
+                                                                             size="small">取消</Button>
+                                                                     <Button size="small" type="primary"
+                                                                             onClick={this.addElement}>确认</Button>
+                                                                 </div>
+     
+                                                             </div>
+                                                         } trigger="click">
+                                                    <a style={{cursor: "pointer"}}><PlusCircleOutlined /></a>
+                                                 </Popover>
+                                            </span>
+                                        </div>
+                                    }>
+                        {
+                            items.map(item=>{
+                                let {id,label,name,category}=item;
+                                return (
+                                    <Menu.Item key={id}>
+                                        <span style={{marginLeft:15}}>
+                                            <Tooltip title={`${label}`}>
+                                              {category===Constants.BLOCK_CATEGORY_ACTION&&<ToolOutlined />}
+                                              {category===Constants.BLOCK_CATEGORY_FILTER&&<FilterOutlined />}
+                                              {category===Constants.BLOCK_CATEGORY_PAGE&&<PicRightOutlined />}
+                                              {category===Constants.BLOCK_CATEGORY_FORM&&<FormOutlined />}
+                                              {label}
+                                            </Tooltip>
+                                        </span>
+                                    </Menu.Item>
+                                );
+                            })
+                        }
+                    </Menu.ItemGroup>
+                );
+             });
+        }
     };
 
     handleClick=(menu)=>{

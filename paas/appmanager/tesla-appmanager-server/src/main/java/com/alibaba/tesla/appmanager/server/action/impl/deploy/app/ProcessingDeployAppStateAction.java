@@ -314,6 +314,13 @@ public class ProcessingDeployAppStateAction implements DeployAppStateAction, App
             if (StringUtils.isEmpty(appInstanceName)) {
                 appInstanceName = appInstanceId;
             }
+            // 针对 appmeta / deploymentmeta 两个特殊的 INTERNAL_ADDON component, 默认不进行应用实例的创建
+            DeployAppRevisionName revision = DeployAppRevisionName.valueOf(specComponent.getRevisionName());
+            if (ComponentTypeEnum.INTERNAL_ADDON.equals(revision.getComponentType())
+                    && ("appmeta".equals(revision.getComponentName())
+                    || "deploymentmeta".equals(revision.getComponentName()))) {
+                continue;
+            }
             RtAppInstanceDO appInstance = rtAppInstanceService.getOrCreate(RtAppInstanceQueryCondition.builder()
                     .appId(order.getAppId())
                     .clusterId(componentClusterId)

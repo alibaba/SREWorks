@@ -122,6 +122,7 @@ class ContentWithMenus extends React.Component {
                                     : null
                             }
                             <Menu
+                                style={{ minWidth: 200 }}
                                 selectedKeys={selectKeys}
                                 mode="horizontal"
                             >

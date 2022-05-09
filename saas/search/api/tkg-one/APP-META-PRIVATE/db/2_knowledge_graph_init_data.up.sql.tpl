@@ -11,11 +11,6 @@ INSERT INTO `config` VALUES
 (1,'2019-02-28 01:19:27','2019-02-28 01:19:36','__category','__nrType','__nrId','elasticsearchProperties','','{}'),
 (2,'2019-02-28 01:27:56','2019-02-28 01:27:56','__category','__nrType','__nrId','numberOfShards','','1'),
 (3,'2019-02-28 01:27:56','2019-02-28 01:27:56','__category','__nrType','__nrId','numberOfReplicas','','0'),
-
--- (4,'2019-02-28 01:27:56','2019-02-28 01:27:56','__category','.relation','__nrId','elasticsearchIndexAnalysis','','{"analyzer": {},"tokenizer": {}}'),
--- (5,'2019-02-28 01:27:56','2019-02-28 01:27:56','__category','.relation','__nrId','elasticsearchIndexExAnalyzers','','[]'),
--- (6,'2019-02-28 01:27:56','2019-02-28 01:27:56','__category','.relation','__nrId','elasticsearchProperties','','{"v": {"type": "double"},"time": {"type": "long"}}'),
-
 (7,'2019-02-28 01:19:27','2019-02-28 01:19:36','__category','tesla_base_common_web_component_config','__nrId','adjustJsonObjectToEs','','pool'),
 (8, '2019-02-28 01:19:27','2019-02-28 01:19:36','__category','standard_app','__nrId','adjustJsonObjectToEs','','pool'),
 (9, '2019-02-28 01:19:27','2019-02-28 01:19:36','__category','standard_service','__nrId','adjustJsonObjectToEs','','pool'),
@@ -133,7 +128,7 @@ INSERT INTO `config` (`id`,`gmt_create`,`gmt_modified`,`category`,`nr_type`,`nr_
 -- Consumer init
 -- ----------------------------
 REPLACE INTO `consumer`(`id`,`gmt_create`,`gmt_modified`,`modifier`,`creator`,`import_config`,`source_info`,`source_type`,`offset`,`name`,`enable`,`user_import_config`)
-VALUES (1,'2021-09-29 09:51:13','2021-09-29 11:51:19','{{x-empid}}','{{x-empid}}','[[{"__type":"sreworks_productops_node","__id":"${id}","__gmt_create":"${gmt_create}","__gmt_modified":"${gmt_modified}","__label":"站点 导航 站点导航 前端","config":"${config}","node_type_path":"${node_type_path}","parent_node_type_path":"${parent_node_type_path}"}]]','{"startPeriod":0,"password":"${DB_PASSWORD}","port":${DB_PORT},"isPartition":false,"host":"${DB_HOST}","interval":900,"db":"abm_paas_action","username":"${DB_USER}","sql":"select * from productops_node where stage_id=\'prod\' and config not like \'%detail%\';"}','mysqlTable','0','sreworks_productops_node','true','{}');
+VALUES (1,'2021-09-29 09:51:13','2021-09-29 11:51:19','{{x-empid}}','{{x-empid}}','[[{"__type":"sreworks_productops_node","__id":"${id}","__gmt_create":"${gmt_create}","__gmt_modified":"${gmt_modified}","__label":"站点 导航 站点导航 前端","config":"${config}","node_type_path":"${node_type_path}","parent_node_type_path":"${parent_node_type_path}"}]]','{"startPeriod":0,"password":"${DB_PASSWORD}","port":${DB_PORT},"isPartition":false,"host":"${DB_HOST}","interval":900,"db":"abm_paas_action","username":"${DB_USER}","sql":"select * from productops_node where stage_id=\'prod\' and config not like \'%\\"hidden\\":true%\' and config not like \'%detail%\';"}','mysqlTable','0','sreworks_productops_node','true','{}');
 
 REPLACE INTO `consumer`(`id`,`gmt_create`,`gmt_modified`,`modifier`,`creator`,`import_config`,`source_info`,`source_type`,`offset`,`name`,`enable`,`user_import_config`)
 VALUES (2,'2021-09-29 09:51:13','2021-09-29 11:51:19','{{x-empid}}','{{x-empid}}','[[{"__type":"sreworks_cluster","__id":"${id}","__gmt_create":"${gmt_create}","__gmt_modified":"${gmt_modified}","__label":"集群 集群实体","account_id":"${account_id}","cluster_name":"${cluster_name}","name":"${name}","team_id":"${team_id}","description":"${description}"}]]','{"startPeriod":0,"password":"${DB_PASSWORD}","port":${DB_PORT},"isPartition":false,"host":"${DB_HOST}","interval":900,"db":"sreworks_meta","username":"${DB_USER}","sql":"select * from cluster;"}','mysqlTable','0','sreworks_cluster','true','{}');

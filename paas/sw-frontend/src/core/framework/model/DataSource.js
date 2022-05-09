@@ -130,7 +130,6 @@ export class JSONDataSource extends DataSource {
     constructor(sourceMeta) {
         super(sourceMeta);
     }
-
     query(nodeParams) {
         let renderSource = util.renderTemplateJsonObject(this.sourceMeta, nodeParams);
         let json = renderSource.JSON || null;

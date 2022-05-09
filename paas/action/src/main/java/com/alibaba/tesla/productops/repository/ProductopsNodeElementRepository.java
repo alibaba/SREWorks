@@ -22,7 +22,7 @@ public interface ProductopsNodeElementRepository
 
     @Modifying
     @Transactional(rollbackOn = Exception.class)
-    void deleteByAppIdAndStageId(String appId, String stageId);
+    void deleteByAppIdAndStageIdAndIsImport(String appId, String stageId, Integer isImport);
 
     @Modifying
     @Transactional(rollbackOn = Exception.class)

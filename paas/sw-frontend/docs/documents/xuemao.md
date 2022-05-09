@@ -12,7 +12,7 @@ java.lang.OutOfMemoryError: unable to create native thread
 
 <a name="LYcu3"></a>
 ### 3. Helm安装参数清单
-```
+```shell
 # 平台名称
 --set platformName="SREWorks"
 

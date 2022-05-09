@@ -56,8 +56,8 @@ spec:
             host: "${DATA_ES_HOST}"
             port:
               http: ${DATA_ES_PORT}
-            user: "{DATA_ES_USER}"
-            password: "{{DATA_ES_PASSWORD}}"
+            user: "${DATA_ES_USER}"
+            password: "${DATA_ES_PASSWORD}"
 
       toFieldPaths:
       - "spec.values"

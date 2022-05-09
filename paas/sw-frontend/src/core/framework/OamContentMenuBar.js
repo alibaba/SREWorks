@@ -302,6 +302,7 @@ class OamContentMenuBar extends React.Component {
                     {menus.length > 0 ?
                         <div key="__node_menus" className="content-top-menu-bar" style={{ marginLeft: 0 }}>
                             <Menu
+                                style={{minWidth:200}}
                                 selectedKeys={selectKeys}
                                 mode="horizontal"
                             >

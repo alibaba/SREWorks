@@ -45,6 +45,7 @@ public class ElementController extends BaseController {
         element.setAppId(param.getAppId());
         element.setType(param.getType());
         element.setConfig(JSONObject.toJSONString(param.getConfig()));
+        element.setIsImport(0);
         productopsElementRepository.saveAndFlush(element);
         return buildSucceedResult(element);
     }

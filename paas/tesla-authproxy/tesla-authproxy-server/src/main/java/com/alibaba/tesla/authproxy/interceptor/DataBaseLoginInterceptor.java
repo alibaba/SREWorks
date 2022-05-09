@@ -9,6 +9,7 @@ import com.alibaba.tesla.authproxy.service.TeslaUserService;
 import com.alibaba.tesla.authproxy.util.*;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -87,13 +88,20 @@ public class DataBaseLoginInterceptor implements LoginInterceptor {
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, String callback) {
-        String topDomain = CookieUtil.getCookieDomain(request, authProperties.getCookieDomain());
+        String cookieDomain = authProperties.getCookieDomain();
+        String topDomain = CookieUtil.getCookieDomain(request, cookieDomain);
         CookieUtil.cleanDomainCookie(request, response, Constants.COOKIE_DATABASE_LOGIN_TOKEN, topDomain, "/");
         CookieUtil.cleanDomainCookie(request, response, Constants.COOKIE_DATABASE_LOGIN_USER_ID, topDomain, "/");
         CookieUtil.cleanDomainCookie(request, response, Constants.COOKIE_LANG, topDomain, "/");
         CookieUtil.cleanDomainCookie(request, response, Constants.COOKIE_COUNTRY, topDomain, "/");
+
+        String redirectUrl = authProperties.getNetworkProtocol() + "://" + cookieDomain;
+        String homeUrl = System.getenv("HOME_URL");
+        if (StringUtils.isNotEmpty(homeUrl)) {
+            redirectUrl = homeUrl;
+        }
         try {
-            response.sendRedirect(authProperties.getNetworkProtocol() + "://" + authProperties.getCookieDomain());
+            response.sendRedirect(redirectUrl);
         } catch (Exception ignored) {}
     }
 

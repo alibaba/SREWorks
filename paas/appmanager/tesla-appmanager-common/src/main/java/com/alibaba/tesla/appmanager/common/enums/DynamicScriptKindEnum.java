@@ -98,6 +98,16 @@ public enum DynamicScriptKindEnum {
     DEPLOY_IA_APP_META_COMPONENT,
 
     /**
+     * 构建 AbmOperatorTvd 组件
+     */
+    BUILD_ABM_OPERATOR_TVD_COMPONENT,
+
+    /**
+     * 部署 AbmOperatorTvd 组件
+     */
+    DEPLOY_ABM_OPERATOR_TVD_COMPONENT,
+
+    /**
      * 部署 DevelopmentMeta 组件
      */
     DEPLOY_IA_DEVELOPMENT_META_COMPONENT,

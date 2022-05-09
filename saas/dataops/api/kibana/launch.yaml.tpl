@@ -43,9 +43,9 @@ spec:
         elasticsearchHosts: "http://${DATA_ES_HOST}:${DATA_ES_PORT}"
 
         kibanaConfig:
-           kibana.yml: |
-           elasticsearch.username: ${DATA_ES_USER}
-           elasticsearch.password: ${DATA_ES_PASSWORD}
+           kibana.yml: |-
+             elasticsearch.username: ${DATA_ES_USER}
+             elasticsearch.password: ${DATA_ES_PASSWORD}
            #  server.defaultRoute: /gateway/dataops-kibana
 
         ingress:

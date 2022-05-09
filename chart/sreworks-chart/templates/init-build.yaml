@@ -24,7 +24,7 @@ data:
     res=$(/root/swcli --config /swcli/swcli.yaml app-package build --app-id=cluster --tags="release=sreworks/x86_64" -j -d)
  
     package_name=$(echo $res | python -c 'import sys;import json;print(json.loads(sys.stdin.read())["packageVersion"])')
-    /root/mc alias set sw http://${ENDPOINT_PAAS_MINIO}:9000 ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}
+    /root/mc alias set sw http://${ENDPOINT_PAAS_MINIO} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}
 
     /root/mc share download sw/abm-oxs-appmanager-daily/apps/cluster/${package_name}.zip|grep 'Share'|awk '{print $2}'
 

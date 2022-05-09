@@ -14,7 +14,7 @@ export default class StatusSummary extends Component {
 
   render() {
     let {widgetData = {}, widgetConfig = {}, actionParams, ...otherProps} = this.props;
-    let {itemToolbar, formatList, statusList, segmentTitle} = widgetConfig;
+    let {itemToolbar, formatList, statusList, segmentTitle,minHeight} = widgetConfig;
     let dataList = [];
     console.log(widgetData,'状态概览数据')
     statusList && statusList.map(item => {
@@ -27,7 +27,7 @@ export default class StatusSummary extends Component {
     console.log(dataList,formatList,'状态概览数据2')
     dataList = dataList.sort((a, b) => b.value - a.value);
     return (
-      <div style={{padding: 10}}>
+      <div style={{padding: 10,minHeight:minHeight}}>
         <Row gutter={8}>
           {formatList && formatList.map((item) => {
             let itemRender = _.get(widgetData, item.dataIndex) + (item.unit || '');

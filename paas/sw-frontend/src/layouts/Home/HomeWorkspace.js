@@ -101,7 +101,7 @@ export default class HomeWorkspace extends React.Component {
         return (
             <div>
                 {
-                    workspaces.length &&
+                    (workspaces.length !==0) &&
                     <Carousel beforeChange={this.handleNext} {...settings} ref={slider => (this.slider = slider)}>
                         {cachedComp}
                     </Carousel>

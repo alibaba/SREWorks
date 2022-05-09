@@ -90,6 +90,9 @@ options:
     - MINIO_ENDPOINT
     - MINIO_ACCESS_KEY
     - MINIO_SECRET_KEY
+    - DATA_ES_USER
+    - DATA_ES_PASSWORD
+
 
 ---
 
@@ -142,7 +145,10 @@ options:
     - DATA_SKYW_PORT
     - DATA_SKYW_ENABLE
     - KAFKA_ENDPOINT
- 
+    - DATA_ES_HOST
+    - DATA_ES_PORT
+    - DATA_ES_USER
+    - DATA_ES_PASSWORD
 
 
 ---

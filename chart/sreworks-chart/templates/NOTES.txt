@@ -3,7 +3,7 @@
 
 Now open the following URL in your browser:
 
-   {{ .Values.appmanager.home.url }}
+   {{ .Values.appmanager.home.url }}/#/
 
    account: admin
    password: 12345678

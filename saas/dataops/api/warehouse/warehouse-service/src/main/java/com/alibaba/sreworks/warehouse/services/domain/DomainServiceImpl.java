@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 数据域服务类
@@ -38,7 +38,7 @@ public class DomainServiceImpl implements DomainService {
     @Override
     public JSONObject getDoaminById(Integer id) {
         SwDomain swDomain = domainMapper.selectByPrimaryKey(id);
-        return convertToJSONObject(swDomain);
+        return relateModelCount(convertToJSONObject(swDomain));
     }
 
     @Override
@@ -47,9 +47,9 @@ public class DomainServiceImpl implements DomainService {
         example.createCriteria().andNameEqualTo(name);
         List<SwDomain> swDomains = domainMapper.selectByExampleWithBLOBs(example);
         if (CollectionUtils.isEmpty(swDomains)) {
-            convertToJSONObject(null);
+            return convertToJSONObject(null);
         }
-        return convertToJSONObject(swDomains.get(0));
+        return relateModelCount(convertToJSONObject(swDomains.get(0)));
     }
 
     @Override
@@ -58,9 +58,9 @@ public class DomainServiceImpl implements DomainService {
         example.createCriteria().andAbbreviationEqualTo(abbreviation);
         List<SwDomain> swDomains = domainMapper.selectByExampleWithBLOBs(example);
         if (CollectionUtils.isEmpty(swDomains)) {
-            convertToJSONObject(null);
+            return convertToJSONObject(null);
         }
-        return convertToJSONObject(swDomains.get(0));
+        return relateModelCount(convertToJSONObject(swDomains.get(0)));
     }
 
     @Override
@@ -68,13 +68,13 @@ public class DomainServiceImpl implements DomainService {
         SwDomainExample example = new SwDomainExample();
         example.createCriteria().andSubjectEqualTo(subject);
         List<SwDomain> swDomains = domainMapper.selectByExampleWithBLOBs(example);
-        return convertToJSONObjects(swDomains);
+        return relateModelCounts(convertToJSONObjects(swDomains));
     }
 
     @Override
     public List<JSONObject> getDomains() {
         List<SwDomain> swDomains = domainMapper.selectByExampleWithBLOBs(new SwDomainExample());
-        return convertToJSONObjects(swDomains);
+        return relateModelCounts(convertToJSONObjects(swDomains));
     }
 
     @Override
@@ -97,6 +97,45 @@ public class DomainServiceImpl implements DomainService {
         }
 
         return swDomain.getId();
+    }
+
+    private JSONObject relateModelCount(JSONObject result) {
+        if (CollectionUtils.isEmpty(result)) {
+            return result;
+        }
+
+        SwModelExample example = new SwModelExample();
+        example.createCriteria().andDomainIdEqualTo(result.getInteger("id"));
+        long modelCount = modelMapper.countByExample(example);
+        result.put("modelCount", modelCount);
+        return result;
+    }
+
+    private List<JSONObject> relateModelCounts(List<JSONObject> results) {
+        if (CollectionUtils.isEmpty(results)) {
+            return results;
+        }
+
+        Set<Integer> domainIds = results.stream().map(result -> result.getInteger("id")).collect(Collectors.toSet());
+        SwModelExample example = new SwModelExample();
+        example.createCriteria().andDomainIdIn(new ArrayList<>(domainIds));
+        List<SwModel> models = modelMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(models)) {
+            return results;
+        }
+
+        Map<Integer, Integer> domainModelMap =  new HashMap<>();
+        models.forEach(model -> {
+            Integer domainId = model.getDomainId();
+            if (domainModelMap.containsKey(domainId)) {
+                domainModelMap.put(domainId, domainModelMap.get(domainId) + 1);
+            } else {
+                domainModelMap.put(domainId, 1);
+            }
+        });
+
+        results.forEach(result -> result.put("modelCount", domainModelMap.getOrDefault(result.getInteger("id"), 0)));
+        return results;
     }
 
     private SwDomain buildSwDomain(DomainBaseReq req) {

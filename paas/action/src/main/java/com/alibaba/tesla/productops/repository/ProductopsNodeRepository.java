@@ -31,7 +31,7 @@ public interface ProductopsNodeRepository
 
     @Modifying
     @Transactional(rollbackOn = Exception.class)
-    void deleteByNodeTypePathLikeAndStageId(String s, String stageId);
+    void deleteByNodeTypePathLikeAndStageIdAndIsImport(String s, String stageId, Integer isImport);
 
     @Modifying
     @Transactional(rollbackOn = Exception.class)

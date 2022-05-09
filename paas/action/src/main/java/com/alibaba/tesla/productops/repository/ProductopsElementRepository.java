@@ -22,8 +22,9 @@ public interface ProductopsElementRepository
 
     List<ProductopsElement> findAllByAppIdAndStageId(String appId, String stageId);
 
+
     @Modifying
     @Transactional(rollbackOn = Exception.class)
-    void deleteByAppIdAndStageId(String appId, String stageId);
+    void deleteByAppIdAndStageIdAndIsImport(String appId, String stageId, Integer isImport);
 
 }

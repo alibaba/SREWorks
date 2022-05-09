@@ -1,38 +1,17 @@
-# 7.1 常见问题
-
-
-<a name="p33wx"></a>
-### 1. 部署SREWorks的基础条件？
-您需要一套Kubernetes可用，SREWorks专为云原生下的运维而生，同时SREWorks自身也是基于云原生架构理念实现。
-
-<a name="hLnGq"></a>
-### 2. 数据运维平台（dataops）应用默认部署的组件有哪些？
-开源版SREWorks中基于流行的业界开源软件构筑了运维数仓及数据采集加工等相关能力，其中以Elasticsearch和vvp（flink的云原生版本）为主。<br />![image.png](/pictures/1645442412377-0cb61359-cf2c-4ada-b61b-e769bb41be9b.png)
-
-<a name="biXgt"></a>
-### 3. v1.1版本支持数据组件可插拔能力会带来哪些变化？
-数据组件可插拔功能即可以给用户带来更大灵活性，也使得SREWorks易用性得到极大提高。新版本将ElasticSearch、MySQL以及MinIO等通过抽取部署变量方式实现组件的可插拔能力。<br />**ElasticSearch**:
-
-   - v1.0版本内置ES默认不开启用户认证，V1.1新版本内置ES实例默认开启内置用户(elastic)认证功能，后续用户在使用ES服务时需要带认证信息访问。
-```shell
-curl --output /dev/null -u "elastic:${ELASTICSEARCH_PASSWORD}" "http://localhost:9200"
-```
-
-   - 内置ES实例，默认安装elasticsearch-analysis-ik分词器，用于站点搜索服务。替换成用户自定义ES实例后，需要手工安装该插件，否则搜索服务无法正常使用，[移步安装指南](https://github.com/medcl/elasticsearch-analysis-ik)
-   - 推荐ES实例版本 7.0+
+# 2.3 常见问题
 
 <a name="cB4Be"></a>
-### 4. 如何填写组件中的HELM社区仓库
-![image.png](/pictures/1650904677037-7c5838ab-098f-4948-aabe-9b73dc6e305d.png)
+### 1. 如何填写组件中的HELM社区仓库
+![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2022/png/2748/1650904677037-7c5838ab-098f-4948-aabe-9b73dc6e305d.png#clientId=u62befdae-b400-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=419&id=uc6a9a00b&margin=%5Bobject%20Object%5D&name=image.png&originHeight=838&originWidth=2208&originalType=binary&ratio=1&rotation=0&showTitle=false&size=299004&status=done&style=none&taskId=u7477c582-7231-4b7d-948a-72eda646290&title=&width=1104)
 <a name="pyyIT"></a>
-### 5. Appmanager运行报错，无法创建新线程
+### 2. Appmanager运行报错，无法创建新线程
 ```
 java.lang.OutOfMemoryError: unable to create native thread
 ```
 需要将 /var/lib/kubelet/config.yaml 中的 `podPidsLimit: 1000` 改为 `podPidsLimit: -1`
 
 <a name="LYcu3"></a>
-### 6. Helm安装参数清单
+### 3. Helm安装参数清单
 ```shell
 # 平台名称
 --set platformName="SREWorks"

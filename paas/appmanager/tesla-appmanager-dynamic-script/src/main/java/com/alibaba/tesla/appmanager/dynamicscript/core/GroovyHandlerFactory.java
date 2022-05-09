@@ -183,6 +183,16 @@ public class GroovyHandlerFactory {
                             DynamicScriptKindEnum.DEPLOY_JOB_COMPONENT.toString(),
                             DefaultConstant.DEFAULT_GROOVY_HANDLER);
                 }
+            case ABM_OPERATOR_TVD:
+                if (ComponentActionEnum.BUILD.equals(action)) {
+                    return get(scriptClass,
+                            DynamicScriptKindEnum.BUILD_ABM_OPERATOR_TVD_COMPONENT.toString(),
+                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                } else {
+                    return get(scriptClass,
+                            DynamicScriptKindEnum.DEPLOY_ABM_OPERATOR_TVD_COMPONENT.toString(),
+                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                }
             case HELM:
                 if (ComponentActionEnum.BUILD.equals(action)) {
                     return get(scriptClass,

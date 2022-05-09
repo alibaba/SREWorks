@@ -61,6 +61,9 @@ public class ProductopsTab {
     @Column(length = 1024)
     private String name;
 
+    @Column
+    private Integer isImport;
+
     public JSONObject toJSONObject() {
         JSONObject ret = JSONObject.parseObject(JSONObject.toJSONString(this));
         ret.put("elements", JSONObject.parse(elements));

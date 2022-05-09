@@ -33,7 +33,12 @@
 {{- printf "%s-%s" .Release.Namespace "aiops" -}}
 {{- end -}}
 
-
-
+{{- define "minio.endpoint" -}}
+{{- if .Values.appmanager.server.package.endpoint -}}
+{{- .Values.appmanager.server.package.endpoint | quote -}}
+{{- else -}}
+{{- printf "%s-%s.%s:%s" .Release.Name "minio" .Release.Namespace "9000" | quote -}}
+{{- end -}}
+{{- end -}}
 
 

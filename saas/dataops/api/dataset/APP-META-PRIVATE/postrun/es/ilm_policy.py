@@ -1,6 +1,8 @@
 # coding: utf-8
 
+import os
 import requests
+from requests.auth import HTTPBasicAuth
 from common.constant import host
 
 headers = {
@@ -16,7 +18,7 @@ ilm_policy = {
                 "actions": {
                     "rollover": {
                         "max_size": "35gb",
-                        "max_age": "7d"
+                        "max_age": "15d"
                     }
                 }
             },
@@ -36,7 +38,7 @@ ilm_policy = {
                 "actions": {
                     "rollover": {
                         "max_size": "25gb",
-                        "max_age": "7d"
+                        "max_age": "15d"
                     }
                 }
             },
@@ -52,8 +54,17 @@ ilm_policy = {
 
 
 def set_ilm_policy():
+    username = os.getenv("DATA_ES_USER", None)
+    password = os.getenv("DATA_ES_PASSWORD", None)
+    auth = None
+    if username and password:
+        auth = HTTPBasicAuth(username, password)
+
     url = host["kibana"] + "/api/index_lifecycle_management/policies"
     for policy_name, policy_config in ilm_policy.items():
-        r = requests.post(url, headers=headers, json=policy_config)
+        if auth:
+            r = requests.post(url, headers=headers, auth=auth, json=policy_config)
+        else:
+            r = requests.post(url, headers=headers, json=policy_config)
         print(r.status_code)
 

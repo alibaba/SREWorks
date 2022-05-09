@@ -94,12 +94,16 @@ spec:
       traits: []
       parameterValues:
         - name: Global.MINIO_ENDPOINT
-          value: "${ENDPOINT_PAAS_MINIO}:9000"
+          value: "${ENDPOINT_PAAS_MINIO}"
         - name: Global.MINIO_ACCESS_KEY
           value: "${MINIO_ACCESS_KEY}"
         - name: Global.MINIO_SECRET_KEY
           value: "${MINIO_SECRET_KEY}"
- 
+        - name: Global.DATA_ES_USER
+          value: "${DATA_ES_USER}"
+        - name: Global.DATA_ES_PASSWORD
+          value: "${DATA_ES_PASSWORD}"
+
 
     - revisionName: K8S_MICROSERVICE|pmdb|_
       scopes:
@@ -157,6 +161,15 @@ spec:
           value: "true"
         - name: Global.KAFKA_ENDPOINT
           value: "${KAFKA_ENDPOINT}:9092"
+        - name: Global.DATA_ES_HOST
+          value: "${DATA_ES_HOST}"
+        - name: Global.DATA_ES_PORT
+          value: "${DATA_ES_PORT}"
+        - name: Global.DATA_ES_USER
+          value: "${DATA_ES_USER}"
+        - name: Global.DATA_ES_PASSWORD
+          value: "${DATA_ES_PASSWORD}"
+ 
 
     - revisionName: K8S_MICROSERVICE|warehouse|_
       scopes:
@@ -247,7 +260,7 @@ spec:
         - name: Global.DATA_DB_PASSWORD
           value: "${DATAOPS_DB_PASSWORD}"
         - name: Global.MINIO_ENDPOINT
-          value: "${ENDPOINT_PAAS_MINIO}:9000"
+          value: "${ENDPOINT_PAAS_MINIO}"
         - name: Global.MINIO_ACCESS_KEY
           value: "${MINIO_ACCESS_KEY}"
         - name: Global.MINIO_SECRET_KEY

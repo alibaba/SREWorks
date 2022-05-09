@@ -53,6 +53,11 @@ public enum ComponentTypeEnum {
     CUSTOM_ADDON,
 
     /**
+     * ABM Operator TVD
+     */
+    ABM_OPERATOR_TVD,
+
+    /**
      * ABM-Chart
      */
     ABM_CHART;

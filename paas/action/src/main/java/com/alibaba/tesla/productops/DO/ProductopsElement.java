@@ -61,6 +61,9 @@ public class ProductopsElement {
     @Column(columnDefinition = "longtext")
     private String config;
 
+    @Column
+    private Integer isImport;
+
     public JSONObject toJSONObject() {
         JSONObject ret = JSONObject.parseObject(JSONObject.toJSONString(this));
         ret.put("config", JSONObject.parse(config));

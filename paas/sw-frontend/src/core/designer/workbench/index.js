@@ -44,9 +44,11 @@ export default class Workbench extends React.Component {
 
     componentDidMount() {
         Bus.on('returnTreeData', (res) => {
-            console.log(res,'childRef')
             this.findTargetNodeAndRefresh(res);
         })
+    }
+    componentWillUnmount(){
+        Bus.off('returnTreeData')
     }
     // 遍历树形结构，定位激活节点
     findTargetNodeAndRefresh = (treeData) => {

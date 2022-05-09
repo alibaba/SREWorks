@@ -53,6 +53,15 @@ export default {
     "schema": {
       "type": "object",
       "properties": {
+        "minHeight": {
+          "type": "string",
+          "description": "数字类型,单位(px)",
+          "title": "组件最小高度",
+          "required": false,
+          "initValue":50,
+          "x-validateType": "number",
+          "x-component": "Input",
+        },
         "size": {
           "description": "列表尺寸",
           "title": "列表尺寸",

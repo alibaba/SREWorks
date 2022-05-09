@@ -73,7 +73,7 @@ helm install sreworks $SW_ROOT/chart/sreworks-chart \
 --set appmanager.server.docker.namespace="builds"
 
 # 源码构建模式的源码仓库来源
---set source.branch="master"
+--set source.branch="v1.1"
 --set source.repo="https://code.aliyun.com/sreworks_public/mirror.git"
 
 ```

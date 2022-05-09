@@ -2,7 +2,7 @@
  * Created by wangkaihua on 2021/4/26.
  * 组件的元数据信息定义,包括类型、logo、配置Schema等，是组件的描述信息定义
  */
-export default  {
+export default {
   "id": "StatusSummary",
   "type": "StatusSummary",
   "name": "StatusSummary",
@@ -17,7 +17,7 @@ export default  {
     "logos": {
       "large": "",
       "small": require('./icon.svg'),
-      "fontClass":"StatusSummary"
+      "fontClass": "StatusSummary"
     },
     "build": {
       "time": "",
@@ -80,35 +80,44 @@ export default  {
           },
 
         ],
-        "segmentTitle":"作业状态",
+        "segmentTitle": "作业状态",
         "bordered": false,
         "colon": true,
         "layout": "horizontal",
-        "labelStyle":{},
+        "labelStyle": {},
         "descriptionStyle": {
           "fontSize:": 16,
         },
-        "column": {xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1},
+        "column": { xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 },
       },
-      "type":"StatusSummary"
+      "type": "StatusSummary"
     },
     "schema": {
       "type": "object",
       "properties": {
+        "minHeight": {
+          "type": "string",
+          "description": "数字类型,单位(px)",
+          "title": "组件最小高度",
+          "required": false,
+          "initValue":100,
+          "x-validateType": "number",
+          "x-component": "Input",
+        },
         "formatList": {
           "type": "string",
           "title": "数据展示",
           "required": true,
-          "enableScroll":true,
+          "enableScroll": true,
           "description": "参数有label（参数的名称）,dataIndex(参数key),span（占据的位置，默认1列）,href（配置该参数后变为链接形式），render（可配置自定义渲染内容）",
           "x-component": "EditTable",
-          "x-component-props":{
+          "x-component-props": {
             "columns": [
               {
                 "editProps": {
                   "required": true,
                   "type": 1,
-                  "inputTip":"参数的名称",
+                  "inputTip": "参数的名称",
                 },
                 "dataIndex": "label",
                 "title": "名称"
@@ -116,7 +125,7 @@ export default  {
               {
                 "editProps": {
                   "required": true,
-                  "inputTip":"参数key",
+                  "inputTip": "参数key",
                   "type": 1
                 },
                 "dataIndex": "dataIndex",
@@ -125,7 +134,7 @@ export default  {
               {
                 "editProps": {
                   "required": false,
-                  "inputTip":"ToolTip描述信息",
+                  "inputTip": "ToolTip描述信息",
                   "type": 1
                 },
                 "dataIndex": "description",
@@ -134,7 +143,7 @@ export default  {
               {
                 "editProps": {
                   "required": false,
-                  "inputTip":"",
+                  "inputTip": "",
                   "type": 1
                 },
                 "dataIndex": "unit",
@@ -144,7 +153,7 @@ export default  {
                 "editProps": {
                   "required": false,
                   "type": 1,
-                  "inputTip":"配置该参数后变为链接形式",
+                  "inputTip": "配置该参数后变为链接形式",
                 },
                 "dataIndex": "href",
                 "title": "跳转链接"
@@ -153,7 +162,7 @@ export default  {
                 "editProps": {
                   "required": false,
                   "type": 1,
-                  "inputTip":"可配置自定义渲染内容",
+                  "inputTip": "可配置自定义渲染内容",
                 },
                 "dataIndex": "render",
                 "title": "render"
@@ -167,13 +176,13 @@ export default  {
           "required": false,
           "description": "参数有label（参数的名称）,dataIndex(参数key),color（圆圈显示颜色）",
           "x-component": "EditTable",
-          "x-component-props":{
+          "x-component-props": {
             "columns": [
               {
                 "editProps": {
                   "required": true,
                   "type": 1,
-                  "inputTip":"参数的名称",
+                  "inputTip": "参数的名称",
                 },
                 "dataIndex": "label",
                 "title": "名称"
@@ -181,7 +190,7 @@ export default  {
               {
                 "editProps": {
                   "required": true,
-                  "inputTip":"参数key",
+                  "inputTip": "参数key",
                   "type": 1
                 },
                 "dataIndex": "dataIndex",
@@ -190,7 +199,7 @@ export default  {
               {
                 "editProps": {
                   "required": false,
-                  "inputTip":"",
+                  "inputTip": "",
                   "type": 1
                 },
                 "dataIndex": "color",
@@ -199,7 +208,7 @@ export default  {
             ]
           }
         },
-        "segmentTitle":{
+        "segmentTitle": {
           "description": "",
           "title": "图表标题",
           "required": false,
@@ -208,7 +217,7 @@ export default  {
         },
       }
     },
-    "supportItemToolbar":false,
+    "supportItemToolbar": false,
     "dataMock": {}
   },
   "catgory": "base"

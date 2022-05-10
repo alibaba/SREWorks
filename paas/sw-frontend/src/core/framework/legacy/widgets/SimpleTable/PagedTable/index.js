@@ -245,7 +245,7 @@ class PagedTable extends Component {
     render() {
         const { style, scrollX, scrollY, className, columns, renderComponents, openAction, handleParamsChanged, dataUrl, extParams = {},widgetConfig, ...otherTableProps } = this.props;
         const { page, pageSize, pageSizeOptions, data, loading, total } = this.state;
-        let {emptyText=''} = widgetConfig;
+        let {emptyText='',bordered,size="small"} = widgetConfig;
         let tableColumns = columns && columns.map(c => {
             let columnDef = Object.assign({ ...this.getColumnSearch(c.dataIndex, c) }, c);
             // if(c.filters){
@@ -294,10 +294,10 @@ class PagedTable extends Component {
                     locale={{
                         emptyText:emptyText ? <JSXRender  {...this.props} jsx={emptyText} /> : null
                       }}
-                    bordered={true}
+                    bordered={bordered}
                     loading={loading}
                     columns={tableColumns}
-                    size="small"
+                    size={size||"small"}
                     scroll={{ x: scrollX || 'max-content', y: scrollY }}
                     pagination={paginationProps}
                     dataSource={Array.isArray(data) ? data : []}

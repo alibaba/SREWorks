@@ -12,9 +12,9 @@ export default class DescriptionList extends Component {
 
   render() {
     let { widgetData = {}, widgetConfig = {}, actionParams, ...otherProps } = this.props;
-    let { itemToolbar, formatList, title, bordered, size, column, colon, layout, labelStyle = {}, descriptionStyle = {},minHeight } = widgetConfig;
+    let { itemToolbar, formatList, describeTitle, bordered, size, column, colon, layout, labelStyle = {}, descriptionStyle = {},minHeight } = widgetConfig;
     return (
-      <Descriptions colon={colon} layout={layout} bordered={bordered} size={size || "small"} style={{minHeight:minHeight}}
+      <Descriptions colon={colon} title={describeTitle||''} layout={layout} bordered={bordered} size={size || "small"} style={{minHeight:minHeight,margin:22}}
       >
         {
           formatList.map((item, index) => {

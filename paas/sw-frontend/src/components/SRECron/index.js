@@ -11,6 +11,7 @@ class SRECron extends Component {
             cronModalVisible: false,
             cronText: '0 0 0 * * ? *',
         }
+        console.log("刷新执行10")
     }
     componentDidMount(){
         const { getFieldDecorator, setFieldsValue, getFieldValue } = this.props.form;
@@ -25,13 +26,12 @@ class SRECron extends Component {
         const { model = {} } = this.props;
         let targetName = model.name;
         let { cronText} = this.state;
+        console.log(model,"刷新执行2")
         return (
             <div>
                 <Form.Item key={model.name} style={{ display: 'inline-block' }}>
                     {<div>
-                        {getFieldDecorator(targetName)(
-                            <Input style={{ width: 170, marginRight: 2 }} placeholder={localeHelper.get('cron.expression', '定时表达式')} />
-                        )}
+                        <Input style={{ width: 170, marginRight: 2 }} initValue={model.initValue} value={cronText} placeholder={localeHelper.get('cron.expression', '定时表达式')} />
                         <Button onClick={() => this.setState({ cronModalVisible: true })}>{localeHelper.get('cron.autogen', '帮我配置')}</Button>
                         <Button onClick={() =>
                             httpClient.get(`gateway/sreworks-job/quartz/checkCron?cron=${cronText}`).then((res) => {

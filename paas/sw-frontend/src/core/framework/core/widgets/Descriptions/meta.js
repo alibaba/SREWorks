@@ -147,7 +147,7 @@ export default  {
             ]
           }
         },
-        "title": {
+        "describeTitle": {
           "description": "页面标题",
           "title": "页面标题",
           "required": false,

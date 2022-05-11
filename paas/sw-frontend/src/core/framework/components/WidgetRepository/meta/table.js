@@ -139,8 +139,8 @@ export default  {
                     }
                 },
                 "size": {
-                    "description": "设定表格的行高大小",
-                    "title": "行高",
+                    "description": "设定表格的size大小",
+                    "title": "size",
                     "required": false,
                     "type": "string",
                     "x-component": "Radio",
@@ -155,11 +155,22 @@ export default  {
                     "required": false,
                     "type": "string",
                     "x-component": "Radio",
+                    "initValue":false,
                     "x-component-props":{
                         "options":[{"value":true,"label":"是"},{"value":false,"label":"否"}],
-                        "defaultValue":true
                     }
                 },
+                "bordered": {
+                    "description": "表格是否带有外框和竖边框",
+                    "title": "是否边框",
+                    "type": "string",
+                    "required": false,
+                    "x-component": "Radio",
+                    "initValue":true,
+                    "x-component-props":{
+                        "options":[{"value":true,"label":"是"},{"value":false,"label":"否"}],
+                    }
+                  },
                 "emptyText": {
                     "description": "支持空数据自定义文案",
                     "title": "空数据文案",

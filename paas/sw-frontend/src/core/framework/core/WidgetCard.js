@@ -244,7 +244,7 @@ export default class WidgetCard extends React.Component {
                 bodyStyle={{
                     overflow: widgetModel.config.gridPos ? "auto" : "none",
                     height: cardHeight === 'auto' ? 'auto' : (calcHeight - (toolbarItem ? 46 : 42)),
-                    padding: 8,
+                    padding:8,
                     backgroundColor: backgroundColor ? backgroundColor : undefined,
                     display: fold ? 'none' : undefined
                 }}

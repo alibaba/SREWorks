@@ -70,6 +70,7 @@ class SimpleTable extends React.Component  {
         if(this.props.widgetConfig && this.props.widgetConfig.dataSourceMeta) {
             paging = (this.props.widgetConfig && this.props.widgetConfig.paging) || false
         }
+        let {apiConf} = this.state;
         columns=mode.config.columns.map(mc => {
             mc.title = mc.label||mc.title;
             mc.key = mc.dataIndex;
@@ -134,7 +135,7 @@ class SimpleTable extends React.Component  {
             loading: false,
             data:this.state.data||(noPaging?[]:false),
         });
-        if(noPaging && widgetConfig.dataSourceMeta && widgetConfig.dataSourceMeta.api){
+        if(noPaging && ((widgetConfig.dataSourceMeta && widgetConfig.dataSourceMeta.api)|| (apiConf && apiConf.url))){
             this.loadAllData(api).then(data=>{
                 let dataIndex=mode.config.dataIndex,tdata=data&&data.items||data||[];
                 if(dataIndex) tdata=data[dataIndex]||[];
@@ -356,7 +357,6 @@ class SimpleTable extends React.Component  {
             tableParams.filters=filterParams
         }
         //console.log("tableParams------->",tableParams);
-        console.log(mode,'mode.config');
         let dynamiConf={},{outputs,selectable={},checkbox,border,headerActions,headerLinks,title,api,footerActions,customPagination={},expandedRow,size="small",bordered=false}=mode.config;
         if(outputs&&(checkbox!==false&&checkbox!=='false')&&outputs.length){
             let rowSelection={};
@@ -468,7 +468,6 @@ class SimpleTable extends React.Component  {
         if(wrapper==="none"||wrapper==='transparent'){
             dyClass=dyClass+" no_wrapper_table_pagination";
         }
-        console.log(widgetConfig,'widgetConfig-dataSourceMeta')
         return (
             <div className={dyClass}>
                 {filterForm}
@@ -489,7 +488,6 @@ class SimpleTable extends React.Component  {
                                  handleParamsChanged={handleParamsChanged}
                                  dataIndex={mode.config.dataIndex}
                                  extParams={allParams}
-                                 bordered={bordered}
                                  size={size}
                                  nodeParams={nodeParams}
                                  widgetConfig={widgetConfig}
@@ -513,7 +511,6 @@ class SimpleTable extends React.Component  {
                                 size={size}
                                 nodeParams={nodeParams}
                                 widgetConfig={widgetConfig}
-                                bordered={bordered}
                                 {...dynamiConf}
                         />
                     

@@ -61,9 +61,9 @@ spec:
         - name: Global.DATA_DB_HOST
           value: "${DATAOPS_DB_HOST}"
         - name: Global.DATA_DB_PORT
-          value: "3306"
+          value: "${DATAOPS_DB_PORT}"
         - name: Global.DATA_DB_USER
-          value: "root"
+          value: "${DATAOPS_DB_USER}"
         - name: Global.DATA_DB_PASSWORD
           value: "${DATAOPS_DB_PASSWORD}"
         - name: Global.KAFKA_ENDPOINT

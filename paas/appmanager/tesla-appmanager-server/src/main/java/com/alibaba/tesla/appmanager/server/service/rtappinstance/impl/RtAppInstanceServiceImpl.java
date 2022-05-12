@@ -12,12 +12,10 @@ import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.VersionUtil;
 import com.alibaba.tesla.appmanager.domain.req.destroy.DestroyComponentInstanceReq;
-import com.alibaba.tesla.appmanager.dynamicscript.core.GroovyHandler;
 import com.alibaba.tesla.appmanager.dynamicscript.core.GroovyHandlerFactory;
 import com.alibaba.tesla.appmanager.kubernetes.KubernetesClientFactory;
 import com.alibaba.tesla.appmanager.server.dynamicscript.handler.ComponentDestroyHandler;
 import com.alibaba.tesla.appmanager.server.dynamicscript.handler.ComponentHandler;
-import com.alibaba.tesla.appmanager.server.dynamicscript.handler.ComponentWatchCronHandler;
 import com.alibaba.tesla.appmanager.server.repository.RtAppInstanceHistoryRepository;
 import com.alibaba.tesla.appmanager.server.repository.RtAppInstanceRepository;
 import com.alibaba.tesla.appmanager.server.repository.RtComponentInstanceRepository;
@@ -357,10 +355,17 @@ public class RtAppInstanceServiceImpl implements RtAppInstanceService {
         for (RtComponentInstanceDO componentInstance : componentInstances) {
             String componentInstanceId = componentInstance.getComponentInstanceId();
             String componentType = componentInstance.getComponentType();
+            String componentName = componentInstance.getComponentName();
             ComponentHandler componentHandler;
             try {
-                componentHandler = groovyHandlerFactory
-                        .get(ComponentHandler.class, DynamicScriptKindEnum.COMPONENT.toString(), componentType);
+                if (ComponentTypeEnum.INTERNAL_ADDON.toString().equals(componentType)) {
+                    componentHandler = groovyHandlerFactory.get(
+                            ComponentHandler.class, DynamicScriptKindEnum.COMPONENT.toString(),
+                            String.format("%s_%s", componentType, componentName));
+                } else {
+                    componentHandler = groovyHandlerFactory
+                            .get(ComponentHandler.class, DynamicScriptKindEnum.COMPONENT.toString(), componentType);
+                }
                 String destroyName = componentHandler.destroyName();
                 if (StringUtils.isEmpty(destroyName)) {
                     continue;
@@ -378,6 +383,16 @@ public class RtAppInstanceServiceImpl implements RtAppInstanceService {
                         .namespaceId(componentInstance.getNamespaceId())
                         .stageId(componentInstance.getStageId())
                         .build());
+            } catch (AppException e) {
+                if (AppErrorCode.INVALID_USER_ARGS.equals(e.getErrorCode())) {
+                    log.info("cannot use component type handler to delete component instance, skip|componentType={}|" +
+                                    "componentName={}|componentInstanceId={}", componentType, componentName,
+                            componentInstanceId);
+                } else {
+                    log.warn("cannot use component type handler to delete component instance, skip|componentType={}|" +
+                                    "componentName={}|componentInstanceId={}|errorMessage={}", componentType,
+                            componentName, componentInstanceId, e.getErrorMessage());
+                }
             } catch (Exception e) {
                 log.warn("cannot use component type handler to delete component instance, skip|componentType={}|" +
                         "componentInstanceId={}|exception={}", componentType, componentInstanceId,

@@ -3,7 +3,6 @@ package com.alibaba.tesla.appmanager.common.enums;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.google.common.base.Enums;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * 组件类型 Enum
@@ -60,7 +59,12 @@ public enum ComponentTypeEnum {
     /**
      * ABM-Chart
      */
-    ABM_CHART;
+    ABM_CHART,
+
+    /**
+     * ASI Component
+     */
+    ASI_COMPONENT;
 
     public static ComponentTypeEnum parse(String value) {
         ComponentTypeEnum result = Enums.getIfPresent(ComponentTypeEnum.class, value).orNull();

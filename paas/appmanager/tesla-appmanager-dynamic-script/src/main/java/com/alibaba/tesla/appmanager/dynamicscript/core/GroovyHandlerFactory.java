@@ -14,7 +14,6 @@ import groovy.lang.GroovyClassLoader;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -211,6 +210,16 @@ public class GroovyHandlerFactory {
                 } else {
                     return get(scriptClass,
                             DynamicScriptKindEnum.DEPLOY_ABM_CHART_COMPONENT.toString(),
+                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                }
+            case ASI_COMPONENT:
+                if (ComponentActionEnum.BUILD.equals(action)) {
+                    return get(scriptClass,
+                            DynamicScriptKindEnum.BUILD_ASI_COMPONENT.toString(),
+                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                } else {
+                    return get(scriptClass,
+                            DynamicScriptKindEnum.DEPLOY_ASI_COMPONENT.toString(),
                             DefaultConstant.DEFAULT_GROOVY_HANDLER);
                 }
             case INTERNAL_ADDON:

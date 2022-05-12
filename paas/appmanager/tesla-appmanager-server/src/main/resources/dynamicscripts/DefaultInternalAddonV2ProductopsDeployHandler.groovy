@@ -1,10 +1,8 @@
 package dynamicscripts
 
-
 import com.alibaba.fastjson.JSONObject
 import com.alibaba.tesla.appmanager.autoconfig.SystemProperties
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant
-import com.alibaba.tesla.appmanager.common.enums.ComponentInstanceStatusEnum
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentStateEnum
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode
@@ -12,7 +10,6 @@ import com.alibaba.tesla.appmanager.common.exception.AppException
 import com.alibaba.tesla.appmanager.common.util.NetworkUtil
 import com.alibaba.tesla.appmanager.common.util.RequestUtil
 import com.alibaba.tesla.appmanager.common.util.ZipUtil
-import com.alibaba.tesla.appmanager.domain.req.componentinstance.ReportRtComponentInstanceStatusReq
 import com.alibaba.tesla.appmanager.domain.req.deploy.GetDeployComponentHandlerReq
 import com.alibaba.tesla.appmanager.domain.req.deploy.LaunchDeployComponentHandlerReq
 import com.alibaba.tesla.appmanager.domain.res.deploy.GetDeployComponentHandlerRes
@@ -28,15 +25,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 
-import javax.net.ssl.SSLContext
-import javax.net.ssl.SSLSocketFactory
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.security.KeyManagementException
-import java.security.NoSuchAlgorithmException
-import java.security.cert.CertificateException
 import java.util.concurrent.TimeUnit
 /**
  * 默认构建 ProductOps V2 Groovy Handler
@@ -62,7 +52,7 @@ class ProductopsDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 21
+    public static final Integer REVISION = 22
 
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
     private static final String ANNOTATIONS_COMPONENT_INSTANCE_ID = "annotations.appmanager.oam.dev/componentInstanceId"
@@ -90,23 +80,6 @@ class ProductopsDeployHandler implements DeployComponentHandler {
         }
 
         apply(request, targetEndpoint, packageDir)
-
-        // 上报状态
-        def annotations = (JSONObject) componentSchema.getSpec().getWorkload().getMetadata().getAnnotations()
-        String version = annotations.getOrDefault(ANNOTATIONS_VERSION, "")
-        String componentInstanceId = annotations.getOrDefault(ANNOTATIONS_COMPONENT_INSTANCE_ID, "")
-        componentInstanceService.report(ReportRtComponentInstanceStatusReq.builder()
-                .componentInstanceId(componentInstanceId)
-                .clusterId(request.getClusterId())
-                .namespaceId(request.getNamespaceId())
-                .stageId(request.getStageId())
-                .appId(request.getAppId())
-                .componentType(request.getComponentType())
-                .componentName(request.getComponentName())
-                .version(version)
-                .status(ComponentInstanceStatusEnum.COMPLETED.toString())
-                .conditions(new ArrayList<>())
-                .build())
 
         try {
             FileUtils.deleteDirectory(Paths.get(packageDir).toFile())

@@ -136,6 +136,11 @@ options:
         ciToken: ${SOURCE_CI_TOKEN}
 
   env:
+    - DB_HOST
+    - DB_PORT
+    - DB_USER
+    - DB_PASSWORD
+    - DB_NAME
     - DATA_DB_HOST
     - DATA_DB_PORT
     - DATA_DB_USER

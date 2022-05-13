@@ -352,7 +352,7 @@ class DefaultLayout extends React.Component {
                     <Layout style={{ height: `calc(100vh - ${hasTop ? 90 : 60}px)`, overflowY: 'scroll', overflowX: 'hidden' }} id="__MAIN_CONTENT__">
                         <NoticeBar />
                         <Content>
-                            <Layout>
+                            <Layout className="mixin-background">
                                 <LeftSiderMenus key={currentModule.name} {...menuProps} />
                                 <Content
                                     style={{ padding: header.type === "brief" ? "12px 15vw 0 15vw" : (contentPadding ? contentPadding : "8px 8px 0px 8px") }}>

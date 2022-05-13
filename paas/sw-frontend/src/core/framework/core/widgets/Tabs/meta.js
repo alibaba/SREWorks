@@ -167,6 +167,7 @@ export default {
       },
     },
     "dataMock": {},
+    "supportToolbar":true,
   },
   "catgory": "layout",
 };

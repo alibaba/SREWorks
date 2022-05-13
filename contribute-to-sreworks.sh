@@ -43,6 +43,7 @@ rm -rf /tmp/tmp_sw_project
 mkdir -p /tmp/tmp_sw_project
 cp -r ./ /tmp/tmp_sw_project/
 rm -rf /tmp/tmp_sw_project/.git
+rm -rf /tmp/tmp_sw_project/node_modules/
 
 mv /tmp/tmp_sw_project ${SW_ROOT}/${TARGET_PATH}/../
 mv ${SW_ROOT}/${TARGET_PATH}/../tmp_sw_project ${SW_ROOT}/${TARGET_PATH}.bak

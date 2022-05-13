@@ -103,7 +103,7 @@ export default class Desktop extends React.Component {
           width={220}
           style={{ marginTop: top || 48, height: "calc(100% - 50px)" }}
           bodyStyle={
-            this.props.theme !== "dark" ? { top: 0, padding: 0 } : { background: "#001529", color: "#fff", top: 0, padding: 0 }
+            this.props.theme !== "dark" ? { top: 0, padding: 0 } : {  top: 0, padding: 0 }
           }
         >
           <div className="abm-toggle-menu-sider">

@@ -71,6 +71,13 @@
         <!-- deploy config -->
         <mapper resource="mybatis/DeployConfigDOMapper.xml"/>
         <mapper resource="mybatis/DeployConfigHistoryDOMapper.xml"/>
+        <!-- workflow -->
+        <mapper resource="mybatis/TaskHostRegistryDOMapper.xml"/>
+        <mapper resource="mybatis/WorkflowDefinitionDOMapper.xml"/>
+        <mapper resource="mybatis/PolicyDefinitionDOMapper.xml"/>
+        <mapper resource="mybatis/WorkflowInstanceDOMapper.xml"/>
+        <mapper resource="mybatis/WorkflowTaskDOMapper.xml"/>
+        <mapper resource="mybatis/WorkflowSnapshotDOMapper.xml"/>
         <!-- dag -->
         <mapper resource="mybatis/DagBatchMapper.xml"/>
         <mapper resource="mybatis/DagDOMapper.xml"/>

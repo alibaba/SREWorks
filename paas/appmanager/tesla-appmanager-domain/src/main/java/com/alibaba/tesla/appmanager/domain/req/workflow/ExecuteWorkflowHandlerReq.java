@@ -28,7 +28,27 @@ public class ExecuteWorkflowHandlerReq implements Serializable {
     /**
      * Workflow Instance ID
      */
-    private Long workflowInstanceId;
+    private Long instanceId;
+
+    /**
+     * Workflow Task ID
+     */
+    private Long taskId;
+
+    /**
+     * 任务类型
+     */
+    private String taskType;
+
+    /**
+     * 任务运行阶段
+     */
+    private String taskStage;
+
+    /**
+     * 任务属性
+     */
+    private JSONObject taskProperties;
 
     /**
      * 上下文

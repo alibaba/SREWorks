@@ -1,7 +1,7 @@
 package com.alibaba.tesla.appmanager.workflow.service;
 
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
-import com.alibaba.tesla.appmanager.domain.req.CreateWorkflowSnapshotReq;
+import com.alibaba.tesla.appmanager.domain.req.UpdateWorkflowSnapshotReq;
 import com.alibaba.tesla.appmanager.domain.req.DeleteWorkflowSnapshotReq;
 import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowSnapshotQueryCondition;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowSnapshotDO;
@@ -30,12 +30,12 @@ public interface WorkflowSnapshotService {
     Pagination<WorkflowSnapshotDO> list(WorkflowSnapshotQueryCondition condition);
 
     /**
-     * 创建一个 Workflow 快照
+     * 更新一个 Workflow 快照
      *
-     * @param request 创建 Workflow 快照请求
-     * @return 创建后的 WorkflowSnapshot 对象
+     * @param request 更新 Workflow 快照请求
+     * @return 更新后的 WorkflowSnapshot 对象
      */
-    WorkflowSnapshotDO create(CreateWorkflowSnapshotReq request);
+    WorkflowSnapshotDO update(UpdateWorkflowSnapshotReq request);
 
     /**
      * 根据条件删除 Workflow 快照

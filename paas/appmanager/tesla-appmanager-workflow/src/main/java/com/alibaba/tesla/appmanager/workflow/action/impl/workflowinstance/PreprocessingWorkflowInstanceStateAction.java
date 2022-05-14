@@ -8,6 +8,7 @@ import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.NetworkUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.option.WorkflowInstanceOption;
+import com.alibaba.tesla.appmanager.domain.req.UpdateWorkflowSnapshotReq;
 import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
 import com.alibaba.tesla.appmanager.dynamicscript.core.GroovyHandlerFactory;
 import com.alibaba.tesla.appmanager.workflow.action.WorkflowInstanceStateAction;
@@ -15,7 +16,9 @@ import com.alibaba.tesla.appmanager.workflow.event.WorkflowInstanceEvent;
 import com.alibaba.tesla.appmanager.workflow.event.WorkflowTaskEvent;
 import com.alibaba.tesla.appmanager.workflow.event.loader.WorkflowInstanceStateActionLoadedEvent;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
+import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowSnapshotDO;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO;
+import com.alibaba.tesla.appmanager.workflow.service.WorkflowSnapshotService;
 import com.alibaba.tesla.appmanager.workflow.service.WorkflowTaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -43,6 +46,9 @@ public class PreprocessingWorkflowInstanceStateAction implements WorkflowInstanc
 
     @Autowired
     private WorkflowTaskService workflowTaskService;
+
+    @Autowired
+    private WorkflowSnapshotService workflowSnapshotService;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -76,6 +82,16 @@ public class PreprocessingWorkflowInstanceStateAction implements WorkflowInstanc
             WorkflowTaskDO firstTask = tasks.get(0);
             log.info("all workflow tasks has created, prepare to run first task|appId={}|workflowInstanceId={}|" +
                     "firstTask={}", appId, workflowInstanceId, JSONObject.toJSONString(firstTask));
+
+            // 创建一个空的快照到第一个 task 上
+            WorkflowSnapshotDO snapshot = workflowSnapshotService.update(UpdateWorkflowSnapshotReq.builder()
+                    .workflowInstanceId(firstTask.getWorkflowInstanceId())
+                    .workflowTaskId(firstTask.getId())
+                    .context(new JSONObject())
+                    .build());
+            log.info("workflow snapshot has created|workflowInstanceId={}|workflowTaskId={}|workflowSnapshotId={}|" +
+                            "context={}", snapshot.getWorkflowInstanceId(), snapshot.getWorkflowTaskId(),
+                    snapshot.getId(), snapshot.getSnapshotContext());
 
             // 触发第一个 task 的启动执行
             WorkflowTaskEvent event = new WorkflowTaskEvent(this, WorkflowTaskEventEnum.START, firstTask);

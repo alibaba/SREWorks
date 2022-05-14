@@ -10,22 +10,28 @@ import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.option.WorkflowInstanceOption;
+import com.alibaba.tesla.appmanager.domain.req.UpdateWorkflowSnapshotReq;
 import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
 import com.alibaba.tesla.appmanager.workflow.event.WorkflowInstanceEvent;
 import com.alibaba.tesla.appmanager.workflow.event.WorkflowTaskEvent;
 import com.alibaba.tesla.appmanager.workflow.repository.WorkflowInstanceRepository;
 import com.alibaba.tesla.appmanager.workflow.repository.WorkflowTaskRepository;
 import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowInstanceQueryCondition;
+import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowSnapshotQueryCondition;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
+import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowSnapshotDO;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO;
 import com.alibaba.tesla.appmanager.workflow.service.WorkflowInstanceService;
+import com.alibaba.tesla.appmanager.workflow.service.WorkflowSnapshotService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * 工作流实例服务
@@ -48,6 +54,9 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
     @Autowired
     private WorkflowTaskRepository workflowTaskRepository;
 
+    @Autowired
+    private WorkflowSnapshotService workflowSnapshotService;
+
     /**
      * 根据 Workflow 实例 ID 获取对应的 Workflow 实例
      *
@@ -57,19 +66,22 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
      */
     @Override
     public WorkflowInstanceDO get(Long workflowInstanceId, boolean withExt) {
-        return null;
+        return workflowInstanceRepository.getByCondition(WorkflowInstanceQueryCondition.builder()
+                .instanceId(workflowInstanceId)
+                .withBlobs(withExt)
+                .build());
     }
 
     /**
      * 根据条件过滤 Workflow 实例列表
      *
      * @param condition 过滤条件
-     * @param withExt   是否包含扩展信息
      * @return List
      */
     @Override
-    public Pagination<WorkflowInstanceDO> list(WorkflowInstanceQueryCondition condition, boolean withExt) {
-        return null;
+    public Pagination<WorkflowInstanceDO> list(WorkflowInstanceQueryCondition condition) {
+        List<WorkflowInstanceDO> result = workflowInstanceRepository.selectByCondition(condition);
+        return Pagination.valueOf(result, Function.identity());
     }
 
     /**
@@ -142,11 +154,36 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
             return;
         }
 
-        // 否则执行获取到的 nextPendingTask
-        log.info("found the next workflow task to run|workflowInstanceId={}|nextTaskId={}|appId={}|taskType={}|" +
-                        "taskStage={}|clientHostname={}", instance.getId(),
-                nextPendingTask.getId(), nextPendingTask.getAppId(), nextPendingTask.getTaskType(),
-                nextPendingTask.getTaskStage(), nextPendingTask.getClientHostname());
+        // 否则执行获取到的 nextPendingTask，并在触发执行前先行写入当前的 workflow snapshot
+        WorkflowSnapshotQueryCondition condition = WorkflowSnapshotQueryCondition.builder()
+                .instanceId(nextPendingTask.getWorkflowInstanceId())
+                .taskId(workflowTaskId)
+                .build();
+        Pagination<WorkflowSnapshotDO> snapshots = workflowSnapshotService.list(condition);
+        if (snapshots.getItems().size() != 1) {
+            throw new AppException(AppErrorCode.UNKNOWN_ERROR,
+                    String.format("system error, expected 1 snapshot found|workflowInstanceId=%d|workflowTaskId=%d|" +
+                            "size=%d", nextPendingTask.getWorkflowInstanceId(), workflowTaskId,
+                            snapshots.getItems().size()));
+        }
+        WorkflowSnapshotDO snapshot = snapshots.getItems().get(0);
+        String snapshotContextStr = snapshot.getSnapshotContext();
+        if (StringUtils.isEmpty(snapshotContextStr)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("empty snapshot context found|workflowInstanceId=%d|workflowTaskId=%d",
+                            nextPendingTask.getWorkflowInstanceId(), workflowTaskId));
+        }
+        JSONObject snapshotContext = JSONObject.parseObject(snapshotContextStr);
+        workflowSnapshotService.update(UpdateWorkflowSnapshotReq.builder()
+                .workflowInstanceId(nextPendingTask.getWorkflowInstanceId())
+                .workflowTaskId(nextPendingTask.getId())
+                .context(snapshotContext)
+                .build());
+        log.info("found the next workflow task to run, and the snapshot context has set|workflowInstanceId={}|" +
+                        "currentTaskId={}|nextTaskId={}|appId={}|taskType={}|taskStage={}|clientHostname={}|context={}",
+                instance.getId(), workflowTaskId, nextPendingTask.getId(), nextPendingTask.getAppId(),
+                nextPendingTask.getTaskType(), nextPendingTask.getTaskStage(), nextPendingTask.getClientHostname(),
+                snapshotContextStr);
         publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.START, nextPendingTask));
     }
 

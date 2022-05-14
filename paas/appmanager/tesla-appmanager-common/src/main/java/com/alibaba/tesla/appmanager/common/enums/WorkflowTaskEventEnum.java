@@ -60,5 +60,10 @@ public enum WorkflowTaskEventEnum {
     /**
      * 重试
      */
-    OP_RETRY
+    OP_RETRY,
+
+    /**
+     * 重试当前步骤
+     */
+    TRIGGER_UPDATE,
 }

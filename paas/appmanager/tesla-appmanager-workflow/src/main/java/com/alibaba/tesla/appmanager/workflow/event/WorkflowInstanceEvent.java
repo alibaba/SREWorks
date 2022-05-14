@@ -1,6 +1,7 @@
 package com.alibaba.tesla.appmanager.workflow.event;
 
 import com.alibaba.tesla.appmanager.common.enums.WorkflowInstanceEventEnum;
+import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
@@ -15,11 +16,11 @@ public class WorkflowInstanceEvent extends ApplicationEvent {
     protected WorkflowInstanceEventEnum event;
 
     @Getter
-    protected Long workflowInstanceId;
+    protected WorkflowInstanceDO instance;
 
-    public WorkflowInstanceEvent(Object source, WorkflowInstanceEventEnum event, Long workflowInstanceId) {
+    public WorkflowInstanceEvent(Object source, WorkflowInstanceEventEnum event, WorkflowInstanceDO instance) {
         super(source);
         this.event = event;
-        this.workflowInstanceId = workflowInstanceId;
+        this.instance = instance;
     }
 }

@@ -72,6 +72,18 @@ public class WorkflowTaskRepositoryImpl implements WorkflowTaskRepository {
         return mapper.updateByPrimaryKeySelective(updateDate(record));
     }
 
+    /**
+     * 获取指定 workflowInstance 中指定 workflowTask 的下一个 PENDING 待运行任务
+     *
+     * @param workflowInstanceId Workflow Instance ID
+     * @param workflowTaskId     Workflow Task ID
+     * @return 待运行 Workflow 任务
+     */
+    @Override
+    public WorkflowTaskDO nextPendingTask(Long workflowInstanceId, Long workflowTaskId) {
+        return mapper.nextPendingTask(workflowInstanceId, workflowTaskId);
+    }
+
     private WorkflowTaskDOExample buildExample(WorkflowTaskQueryCondition condition) {
         WorkflowTaskDOExample example = new WorkflowTaskDOExample();
         WorkflowTaskDOExample.Criteria criteria = example.createCriteria();

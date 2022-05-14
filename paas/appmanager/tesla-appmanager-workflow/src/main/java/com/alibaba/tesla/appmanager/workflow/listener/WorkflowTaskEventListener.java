@@ -65,7 +65,10 @@ public class WorkflowTaskEventListener implements ApplicationListener<WorkflowTa
         String logSuffix = String.format("|workflowTaskId=%d|fromStatus=%s|toStatus=%s|errorMessage=%s",
                 workflowTaskId, status, nextStatus, event.getTask().getTaskErrorMessage());
         task.setTaskStatus(nextStatus.toString());
-        task.setTaskErrorMessage(event.getTask().getTaskErrorMessage());
+        // maybe "", it's ok
+        if (event.getTask().getTaskErrorMessage() != null) {
+            task.setTaskErrorMessage(event.getTask().getTaskErrorMessage());
+        }
         if (event.getTask().getDeployAppId() != null && event.getTask().getDeployAppId() > 0) {
             task.setDeployAppId(event.getTask().getDeployAppId());
             logSuffix += String.format("|deployAppId=%d", event.getTask().getDeployAppId());

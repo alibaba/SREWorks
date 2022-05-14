@@ -3,7 +3,9 @@ package com.alibaba.tesla.appmanager.workflow.action.impl.workflowtask;
 import com.alibaba.tesla.appmanager.common.enums.WorkflowTaskStateEnum;
 import com.alibaba.tesla.appmanager.workflow.action.WorkflowTaskStateAction;
 import com.alibaba.tesla.appmanager.workflow.event.loader.WorkflowTaskStateActionLoadedEvent;
+import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO;
+import com.alibaba.tesla.appmanager.workflow.service.WorkflowInstanceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -20,6 +22,9 @@ public class ExceptionWorkflowTaskStateAction implements WorkflowTaskStateAction
     @Autowired
     private ApplicationEventPublisher publisher;
 
+    @Autowired
+    private WorkflowInstanceService workflowInstanceService;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         publisher.publishEvent(new WorkflowTaskStateActionLoadedEvent(
@@ -29,10 +34,13 @@ public class ExceptionWorkflowTaskStateAction implements WorkflowTaskStateAction
     /**
      * 自身处理逻辑
      *
-     * @param instance Workflow 实例
+     * @param task Workflow Task
      */
     @Override
-    public void run(WorkflowTaskDO instance) {
-        log.info(STATE.toString());
+    public void run(WorkflowTaskDO task) {
+        log.info("the current workflow task enters the EXCEPTION state|workflowInstanceId={}|workflowTaskId={}",
+                task.getWorkflowInstanceId(), task.getId());
+        WorkflowInstanceDO instance = workflowInstanceService.get(task.getWorkflowInstanceId(), false);
+        workflowInstanceService.triggerException(instance, task.getTaskErrorMessage());
     }
 }

@@ -33,6 +33,7 @@ public class TerminatedWorkflowInstanceStateAction implements WorkflowInstanceSt
      */
     @Override
     public void run(WorkflowInstanceDO instance) {
-        log.info(STATE.toString());
+        log.info("the current workflow instance has entered the TERMINATED state|workflowInstanceId={}|appId={}",
+                instance.getId(), instance.getAppId());
     }
 }

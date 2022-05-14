@@ -33,6 +33,7 @@ public class ExceptionWorkflowInstanceStateAction implements WorkflowInstanceSta
      */
     @Override
     public void run(WorkflowInstanceDO instance) {
-        log.info(STATE.toString());
+        log.info("the current workflow instance has entered the EXCEPTION state|workflowInstanceId={}|appId={}",
+                instance.getId(), instance.getAppId());
     }
 }

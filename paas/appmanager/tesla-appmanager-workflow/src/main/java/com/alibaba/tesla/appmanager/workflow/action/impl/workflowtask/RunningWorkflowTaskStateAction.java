@@ -38,11 +38,11 @@ public class RunningWorkflowTaskStateAction implements WorkflowTaskStateAction, 
     /**
      * 自身处理逻辑
      *
-     * @param instance Workflow 实例
+     * @param task Workflow 实例
      */
     @Override
-    public void run(WorkflowTaskDO instance) {
-        WorkflowTaskDO res = workflowTaskService.execute(instance);
+    public void run(WorkflowTaskDO task) {
+        WorkflowTaskDO res = workflowTaskService.execute(task);
         WorkflowTaskStateEnum status = Enums.getIfPresent(WorkflowTaskStateEnum.class, res.getTaskStatus()).orNull();
         if (status == null) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,

@@ -92,7 +92,7 @@ public class PreprocessingWorkflowInstanceStateAction implements WorkflowInstanc
 
         // 触发自身流转到下一状态
         publisher.publishEvent(new WorkflowInstanceEvent(this,
-                WorkflowInstanceEventEnum.PREPROCESS_FINISHED, workflowInstanceId));
+                WorkflowInstanceEventEnum.PREPROCESS_FINISHED, instance));
     }
 
     /**

@@ -33,6 +33,7 @@ public class SuccessWorkflowInstanceStateAction implements WorkflowInstanceState
      */
     @Override
     public void run(WorkflowInstanceDO instance) {
-        log.info(STATE.toString());
+        log.info("the current workflow instance has entered the SUCCESS state|workflowInstanceId={}|appId={}",
+                instance.getId(), instance.getAppId());
     }
 }

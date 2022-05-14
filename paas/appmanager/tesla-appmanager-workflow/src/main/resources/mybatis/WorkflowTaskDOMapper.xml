@@ -328,4 +328,16 @@
     </set>
     where id = #{id,jdbcType=BIGINT} AND lock_version = #{lockVersion,jdbcType=INTEGER}
   </update>
+
+  <!-- 获取指定 workflowInstance 中指定 workflowTask 的下一个 PENDING 待运行任务 -->
+  <select id="nextPendingTask" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from am_workflow_task
+    where workflow_instance_id = #{workflowInstanceId,jdbcType=BIGINT} and id > #{workflowTaskId,jdbcType=BIGINT} and task_status = 'PENDING'
+    order by id
+    limit 1
+  </select>
 </mapper>

@@ -41,7 +41,7 @@ public class WorkflowInstanceEventListener implements ApplicationListener<Workfl
     @Async
     @Override
     public void onApplicationEvent(WorkflowInstanceEvent event) {
-        Long workflowInstanceId = event.getWorkflowInstanceId();
+        Long workflowInstanceId = event.getInstance().getId();
         WorkflowInstanceEventEnum currentEvent = event.getEvent();
         String logPre = String.format("action=event.app.%s|message=", currentEvent.toString());
         WorkflowInstanceDO workflow = workflowInstanceService.get(workflowInstanceId, false);
@@ -63,6 +63,10 @@ public class WorkflowInstanceEventListener implements ApplicationListener<Workfl
 
         // 状态转移
         workflow.setWorkflowStatus(nextStatus.toString());
+        // maybe "", it's ok
+        if (event.getInstance().getWorkflowErrorMessage() != null) {
+            workflow.setWorkflowErrorMessage(event.getInstance().getWorkflowErrorMessage());
+        }
         String logSuffix = String.format("|workflowInstanceId=%d|fromStatus=%s|toStatus=%s",
                 workflowInstanceId, status, nextStatus);
         try {

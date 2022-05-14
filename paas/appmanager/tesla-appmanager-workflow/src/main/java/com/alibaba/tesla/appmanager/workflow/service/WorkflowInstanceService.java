@@ -53,11 +53,26 @@ public interface WorkflowInstanceService {
      * <p>
      * 该方法用于 WorkflowInstanceTask 在以 SUCCESS 完成时触发下一个 Task 的执行，并更新 Workflow 实例状态
      *
-     * @param workflowInstanceId Workflow 实例 ID
-     * @param currentTaskId      workflowInstanceId 下的目前已经执行 SUCCESS 的 taskId
-     * @return 更新状态后的 Workflow 实例
+     * @param instance       Workflow 实例
+     * @param workflowTaskId 当前 Workflow Instance 下已经执行成功的最后一个 workflowTaskId
      */
-    WorkflowInstanceDO triggerNextTask(Long workflowInstanceId, String currentTaskId);
+    void triggerNextPendingTask(WorkflowInstanceDO instance, Long workflowTaskId);
+
+    /**
+     * 对指定 workflow instance 触发失败事件
+     *
+     * @param instance     WorkflowInstance
+     * @param errorMessage 错误信息
+     */
+    void triggerFailure(WorkflowInstanceDO instance, String errorMessage);
+
+    /**
+     * 对指定 workflow instance 触发异常事件
+     *
+     * @param instance     WorkflowInstance
+     * @param errorMessage 错误信息
+     */
+    void triggerException(WorkflowInstanceDO instance, String errorMessage);
 
     /**
      * 触发指定 Workflow 实例的状态更新，根据当前所有子 Task 的状态进行汇聚更新

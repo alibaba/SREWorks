@@ -29,10 +29,12 @@ public class WaitingSuspendWorkflowTaskStateAction implements WorkflowTaskStateA
     /**
      * 自身处理逻辑
      *
-     * @param instance Workflow 实例
+     * @param task Workflow 实例
      */
     @Override
-    public void run(WorkflowTaskDO instance) {
-        log.info(STATE.toString());
+    public void run(WorkflowTaskDO task) {
+        // 不需要做事情，恢复唤醒会由外界事件触发自动转换状态
+        log.info("the current workflow task enters the WAITING_SUSPEND state|workflowInstanceId={}|workflowTaskId={}",
+                task.getWorkflowInstanceId(), task.getId());
     }
 }

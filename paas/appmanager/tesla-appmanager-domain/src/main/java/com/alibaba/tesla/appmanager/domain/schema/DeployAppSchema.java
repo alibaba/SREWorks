@@ -13,9 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * 应用部署单 Schema 定义 (yaml 转换)
@@ -118,7 +116,7 @@ public class DeployAppSchema implements Schema, Serializable {
 
         /**
          * ImageTar 替换对象 (将各个 ComponentSchema 对象中的 image 替换为 actualImage)
-         *
+         * <p>
          * 示例 [{"image": "reg.docker.alibaba-inc.com/abm-aone/a:b", "actualImage": "reg.env.com/abm/c:d"}]
          */
         private String imageTars = "";
@@ -309,16 +307,87 @@ public class DeployAppSchema implements Schema, Serializable {
         @JSONField(serialize = false)
         public String getUniqueId(DeployAppRevisionName componentRevisionContainer) {
             DeployAppRevisionName container = DeployAppRevisionName.builder()
-                .componentType(ComponentTypeEnum.TRAIT_ADDON)
-                .componentName(String.join("~", Arrays.asList(
-                    componentRevisionContainer.getComponentType().toString(),
-                    componentRevisionContainer.getComponentName(),
-                    name
-                )))
-                .version("_")
-                .build();
+                    .componentType(ComponentTypeEnum.TRAIT_ADDON)
+                    .componentName(String.join("~", Arrays.asList(
+                            componentRevisionContainer.getComponentType().toString(),
+                            componentRevisionContainer.getComponentName(),
+                            name
+                    )))
+                    .version("_")
+                    .build();
             return container.revisionName();
         }
+    }
+
+    /**
+     * Workflow Step
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class WorkflowStep implements Serializable {
+
+        private static final long serialVersionUID = 5432694768211587402L;
+
+        /**
+         * Workflow 任务类型
+         */
+        private String type;
+
+        /**
+         * Workflow 任务运行时机 (pre-render/post-render/post-deploy)
+         */
+        private String stage;
+
+        /**
+         * Workflow 任务运行参数
+         */
+        private JSONObject properties = new JSONObject();
+    }
+
+    /**
+     * Workflow 定义
+     */
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Workflow implements Serializable {
+
+        private static final long serialVersionUID = 196441839737994761L;
+
+        /**
+         * Workflow 任务步骤列表
+         */
+        private List<WorkflowStep> steps = new ArrayList<>();
+    }
+
+    /**
+     * Policy 定义
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Policy implements Serializable {
+
+        private static final long serialVersionUID = 3453423526119849890L;
+
+        /**
+         * Policy 类型
+         */
+        private String type;
+
+        /**
+         * Policy 名称
+         */
+        private String name;
+
+        /**
+         * Policy 配置
+         */
+        private JSONObject properties = new JSONObject();
     }
 
     /**
@@ -329,6 +398,8 @@ public class DeployAppSchema implements Schema, Serializable {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SpecComponent implements Serializable {
+
+        private static final long serialVersionUID = 5887854562121408752L;
 
         /**
          * revision 名称 (格式：$componentType|$componentName|$version)
@@ -519,5 +590,15 @@ public class DeployAppSchema implements Schema, Serializable {
          * 全局变量
          */
         private List<ParameterValue> parameterValues = new ArrayList<>();
+
+        /**
+         * Workflow
+         */
+        private Workflow workflow = new Workflow();
+
+        /**
+         * 全局策略
+         */
+        private List<Policy> policies = new ArrayList<>();
     }
 }

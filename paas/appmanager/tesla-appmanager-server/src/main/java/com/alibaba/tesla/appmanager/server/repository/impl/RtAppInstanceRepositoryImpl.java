@@ -82,25 +82,6 @@ public class RtAppInstanceRepositoryImpl implements RtAppInstanceRepository {
     @Override
     public int updateByCondition(RtAppInstanceDO record, RtAppInstanceQueryCondition condition) {
         return mapper.updateByExampleSelective(updateDate(record), buildExample(condition));
-//        RtAppInstanceHistoryQueryCondition historyCondition = RtAppInstanceHistoryQueryCondition.builder()
-//            .appInstanceId(condition.getAppInstanceId())
-//            .build();
-//        RtAppInstanceHistoryDO latestHistoryRecord = historyRepository.getLatestByCondition(historyCondition);
-//        if (latestHistoryRecord == null
-//            || !record.getVersion().equals(latestHistoryRecord.getVersion())
-//            || !record.getStatus().equals(latestHistoryRecord.getStatus())) {
-//            historyRepository.insert(RtAppInstanceHistoryDO.builder()
-//                .appInstanceId(record.getAppInstanceId())
-//                .status(record.getStatus())
-//                .version(record.getVersion())
-//                .build());
-//            int cleaned = historyRepository.deleteExpiredRecords(record.getAppInstanceId(),
-//                systemProperties.getInstanceHistoryKeepDays());
-//            if (cleaned > 0) {
-//                log.info("action=deleteExpiredAppInstanceHistory|appInstanceId={}|cleaned={}",
-//                    record.getAppId(), cleaned);
-//            }
-//        }
     }
 
     private RtAppInstanceDOExample buildExample(RtAppInstanceQueryCondition condition) {

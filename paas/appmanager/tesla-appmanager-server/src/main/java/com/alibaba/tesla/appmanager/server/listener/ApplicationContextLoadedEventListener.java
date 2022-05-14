@@ -69,7 +69,8 @@ public class ApplicationContextLoadedEventListener implements ApplicationListene
             "/dynamicscripts/HelmComponentHandler.groovy",
             "/dynamicscripts/HelmComponentDestroyHandler.groovy",
             "/dynamicscripts/InternalAddonV2ProductopsComponentHandler.groovy",
-            "/dynamicscripts/InternalAddonV2ProductopsComponentDestroyHandler.groovy"
+            "/dynamicscripts/InternalAddonV2ProductopsComponentDestroyHandler.groovy",
+            "/dynamicscripts/WorkflowDeployHandler.groovy"
     );
 
     private final GroovyClassLoader groovyClassLoader = new GroovyClassLoader();

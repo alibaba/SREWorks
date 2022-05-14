@@ -25,10 +25,9 @@ public interface WorkflowInstanceService {
      * 根据条件过滤 Workflow 实例列表
      *
      * @param condition 过滤条件
-     * @param withExt   是否包含扩展信息
      * @return List
      */
-    Pagination<WorkflowInstanceDO> list(WorkflowInstanceQueryCondition condition, boolean withExt);
+    Pagination<WorkflowInstanceDO> list(WorkflowInstanceQueryCondition condition);
 
     /**
      * 启动一个 Workflow 实例

@@ -1,7 +1,9 @@
 package com.alibaba.tesla.appmanager.workflow.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowTaskQueryCondition;
+import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO;
 
 /**
@@ -47,10 +49,12 @@ public interface WorkflowTaskService {
     /**
      * 触发执行一个 Workflow Task 任务，并等待其完成 (PENDING -> RUNNING)
      *
-     * @param task Workflow 任务实例
+     * @param instance Workflow 实例
+     * @param task     Workflow 任务
+     * @param context  上下文信息
      * @return 携带运行信息的 WorkflowTaskDO 实例 (未落库，实例 DO 仅在 events 转换时落库)
      */
-    WorkflowTaskDO execute(WorkflowTaskDO task);
+    WorkflowTaskDO execute(WorkflowInstanceDO instance, WorkflowTaskDO task, JSONObject context);
 
     /**
      * 终止指定 Workflow 任务 (x -> TERMINATED)

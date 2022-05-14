@@ -11,5 +11,5 @@ import com.alibaba.tesla.appmanager.dynamicscript.core.GroovyHandler;
  */
 public interface WorkflowHandler extends GroovyHandler {
 
-    ExecuteWorkflowHandlerRes execute(ExecuteWorkflowHandlerReq request);
+    ExecuteWorkflowHandlerRes execute(ExecuteWorkflowHandlerReq request) throws InterruptedException;
 }

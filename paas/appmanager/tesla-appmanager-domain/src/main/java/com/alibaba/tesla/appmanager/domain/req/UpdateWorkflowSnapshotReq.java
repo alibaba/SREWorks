@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateWorkflowSnapshotReq {
+public class UpdateWorkflowSnapshotReq {
 
     /**
      * Workflow 实例 ID (reference am_workflow_instance.id)

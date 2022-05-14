@@ -45,14 +45,6 @@ public interface WorkflowTaskProvider {
     WorkflowTaskDTO create(WorkflowTaskDTO task);
 
     /**
-     * 触发执行一个 Workflow Task 任务，并等待其完成 (PENDING -> RUNNING)
-     *
-     * @param task Workflow 任务实例
-     * @return 携带运行信息的 WorkflowTaskDTO 实例 (未落库，实例 DO 仅在 events 转换时落库)
-     */
-    WorkflowTaskDTO execute(WorkflowTaskDTO task);
-
-    /**
      * 终止指定 Workflow 任务 (x -> TERMINATED)
      *
      * @param workflowTaskId WorkflowTaskID

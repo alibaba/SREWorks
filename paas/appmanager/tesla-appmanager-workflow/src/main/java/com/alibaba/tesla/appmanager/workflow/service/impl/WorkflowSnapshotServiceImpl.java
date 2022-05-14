@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
-import com.alibaba.tesla.appmanager.domain.req.CreateWorkflowSnapshotReq;
+import com.alibaba.tesla.appmanager.domain.req.UpdateWorkflowSnapshotReq;
 import com.alibaba.tesla.appmanager.domain.req.DeleteWorkflowSnapshotReq;
 import com.alibaba.tesla.appmanager.workflow.repository.WorkflowSnapshotRepository;
 import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowSnapshotQueryCondition;
@@ -56,21 +56,40 @@ public class WorkflowSnapshotServiceImpl implements WorkflowSnapshotService {
     }
 
     /**
-     * 创建一个 Workflow 快照
+     * 更新一个 Workflow 快照
      *
-     * @param request 创建 Workflow 快照请求
-     * @return 创建后的 WorkflowSnapshot 对象
+     * @param request 更新 Workflow 快照请求
+     * @return 更新后的 WorkflowSnapshot 对象
      */
     @Override
-    public WorkflowSnapshotDO create(CreateWorkflowSnapshotReq request) {
-        WorkflowSnapshotDO record = WorkflowSnapshotDO.builder()
-                .workflowInstanceId(request.getWorkflowInstanceId())
-                .workflowTaskId(request.getWorkflowTaskId())
-                .snapshotContext(JSONObject.toJSONString(request.getContext()))
-                .snapshotTask(null)
-                .snapshotWorkflow(null)
+    public WorkflowSnapshotDO update(UpdateWorkflowSnapshotReq request) {
+        WorkflowSnapshotQueryCondition condition = WorkflowSnapshotQueryCondition.builder()
+                .instanceId(request.getWorkflowInstanceId())
+                .taskId(request.getWorkflowTaskId())
                 .build();
-        workflowSnapshotRepository.insert(record);
+        Pagination<WorkflowSnapshotDO> snapshots = list(condition);
+        if (snapshots.getItems().size() > 1) {
+            throw new AppException(AppErrorCode.UNKNOWN_ERROR,
+                    String.format("multiple workflow snapshots found|condition=%s",
+                            JSONObject.toJSONString(condition)));
+        }
+        WorkflowSnapshotDO record;
+        if (snapshots.isEmpty()) {
+            record = WorkflowSnapshotDO.builder()
+                    .workflowInstanceId(request.getWorkflowInstanceId())
+                    .workflowTaskId(request.getWorkflowTaskId())
+                    .snapshotContext(JSONObject.toJSONString(request.getContext()))
+                    .snapshotWorkflow(null)
+                    .snapshotTask(null)
+                    .build();
+            workflowSnapshotRepository.insert(record);
+        } else {
+            record = snapshots.getItems().get(0);
+            record.setSnapshotContext(JSONObject.toJSONString(request.getContext()));
+            record.setSnapshotWorkflow(null);
+            record.setSnapshotTask(null);
+            workflowSnapshotRepository.updateByCondition(record, condition);
+        }
         return get(record.getId());
     }
 

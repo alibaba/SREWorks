@@ -41,9 +41,17 @@ fi
 # 将当前代码拷贝到一个临时目录，移除.git文件
 rm -rf /tmp/tmp_sw_project
 mkdir -p /tmp/tmp_sw_project
-cp -r ./ /tmp/tmp_sw_project/
-rm -rf /tmp/tmp_sw_project/.git
-rm -rf /tmp/tmp_sw_project/node_modules/
+which rsync
+if [ $? -eq 0 ]; then
+    rsync -r --exclude="node_modules" --exclude=".git" ./ /tmp/tmp_sw_project/
+    if [[ "$TARGET_PATH" =~ "sw-frontend" ]]; then
+        mv ${SW_ROOT}/${TARGET_PATH}/docs /tmp/tmp_sw_project/docs
+    fi
+else
+    cp -r ./ /tmp/tmp_sw_project/
+    rm -rf /tmp/tmp_sw_project/.git
+    rm -rf /tmp/tmp_sw_project/node_modules/
+fi
 
 mv /tmp/tmp_sw_project ${SW_ROOT}/${TARGET_PATH}/../
 mv ${SW_ROOT}/${TARGET_PATH}/../tmp_sw_project ${SW_ROOT}/${TARGET_PATH}.bak

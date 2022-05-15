@@ -1,6 +1,7 @@
 package com.alibaba.tesla.appmanager.domain.req;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,4 +32,9 @@ public class UpdateWorkflowSnapshotReq {
      * Workflow 运行上下文
      */
     private JSONObject context;
+
+    /**
+     * Workflow 运行 Configuration 渲染后对象
+     */
+    private DeployAppSchema configuration;
 }

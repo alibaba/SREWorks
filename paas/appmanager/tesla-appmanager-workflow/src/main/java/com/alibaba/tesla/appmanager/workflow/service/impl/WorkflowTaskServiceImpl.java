@@ -212,6 +212,7 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
                 .workflowTaskId(task.getId())
                 .workflowInstanceId(task.getWorkflowInstanceId())
                 .context(output.getContext())
+                .configuration(output.getConfiguration())
                 .build());
         log.info("workflow snapshot has updated|workflowInstanceId={}|workflowTaskId={}|workflowSnapshotId={}|" +
                         "context={}", snapshot.getWorkflowInstanceId(), snapshot.getWorkflowTaskId(), snapshot.getId(),

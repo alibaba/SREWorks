@@ -59,4 +59,9 @@ public class ExecuteWorkflowHandlerReq implements Serializable {
      * Workflow 配置信息
      */
     private DeployAppSchema configuration;
+
+    /**
+     * 创建者
+     */
+    private String creator;
 }

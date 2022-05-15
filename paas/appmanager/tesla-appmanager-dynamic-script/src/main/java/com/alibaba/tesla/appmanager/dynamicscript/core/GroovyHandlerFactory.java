@@ -119,6 +119,22 @@ public class GroovyHandlerFactory {
     }
 
     /**
+     * 判断指定的 kind+name 对应的 Groovy 脚本是否存在
+     *
+     * @param kind 类型
+     * @param name 名称
+     * @return true or flase
+     */
+    public boolean exists(String kind, String name) {
+        if (Objects.isNull(kind) || StringUtils.isEmpty(name)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "name cannot be empty");
+        }
+
+        String key = keyGenerator(kind, name);
+        return HANDLER_INSTANCES.containsKey(key);
+    }
+
+    /**
      * 获取 Handler
      *
      * @param scriptClass 脚本 Class

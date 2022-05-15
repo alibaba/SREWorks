@@ -1,9 +1,15 @@
 package com.alibaba.tesla.appmanager.server.action.impl.deploy.app;
 
+import com.alibaba.tesla.appmanager.api.provider.WorkflowTaskProvider;
 import com.alibaba.tesla.appmanager.common.enums.DeployAppStateEnum;
+import com.alibaba.tesla.appmanager.common.enums.WorkflowTaskEventEnum;
+import com.alibaba.tesla.appmanager.common.pagination.Pagination;
+import com.alibaba.tesla.appmanager.domain.dto.WorkflowTaskDTO;
+import com.alibaba.tesla.appmanager.domain.req.workflow.WorkflowTaskListReq;
 import com.alibaba.tesla.appmanager.server.action.DeployAppStateAction;
 import com.alibaba.tesla.appmanager.server.event.loader.DeployAppStateActionLoadedEvent;
 import com.alibaba.tesla.appmanager.server.repository.domain.DeployAppDO;
+import com.alibaba.tesla.appmanager.workflow.event.WorkflowTaskEvent;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
@@ -15,7 +21,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -40,6 +45,9 @@ public class SuccessDeployAppStateAction implements DeployAppStateAction, Applic
     @Autowired
     private MeterRegistry meterRegistry;
 
+    @Autowired
+    private WorkflowTaskProvider workflowTaskProvider;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         timer = meterRegistry.timer("deploy.app.status.success.timer");
@@ -63,5 +71,22 @@ public class SuccessDeployAppStateAction implements DeployAppStateAction, Applic
         counter.increment();
         log.info("deploy app has reached success state|deployAppId={}|appPackageId={}|cost={}",
                 order.getId(), order.getAppPackageId(), cost);
+
+        // 如果 workflow 中存在关联项，那么发送事件，触发工作流继续进行
+        WorkflowTaskListReq req = WorkflowTaskListReq.builder()
+                .deployAppId(order.getId())
+                .build();
+        Pagination<WorkflowTaskDTO> workflowTasks = workflowTaskProvider.list(req);
+        if (workflowTasks.getItems().size() == 0) {
+            log.info("no associated workflow tasks found, skip|deployAppId={}", order.getId());
+            return;
+        }
+
+        for (WorkflowTaskDTO item : workflowTasks.getItems()) {
+            log.info("find associated workflow task, publish TRIGGER_UPDATE to it|workflowInstanceId={}|" +
+                    "workflowTaskId={}|deployAppId={}|deployStatus={}", item.getWorkflowInstanceId(),
+                    item.getId(), order.getId(), order.getDeployStatus());
+            publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.TRIGGER_UPDATE, item));
+        }
     }
 }

@@ -160,5 +160,15 @@ public enum DynamicScriptKindEnum {
     /**
      * V2: 组件 Watch (CRON)
      */
-    COMPONENT_WATCH_CRON
+    COMPONENT_WATCH_CRON,
+
+    /**
+     * V2: Workflow
+     */
+    WORKFLOW,
+
+    /**
+     * V2: Policy
+     */
+    POLICY
 }

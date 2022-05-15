@@ -12,7 +12,7 @@ public interface WorkflowTaskStateAction {
     /**
      * 自身处理逻辑
      *
-     * @param instance Workflow 实例
+     * @param task Workflow Task
      */
-    void run(WorkflowTaskDO instance);
+    void run(WorkflowTaskDO task);
 }

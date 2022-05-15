@@ -1,17 +1,15 @@
-package com.alibaba.tesla.appmanager.workflow.service;
+package com.alibaba.tesla.appmanager.api.provider;
 
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
-import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowTaskQueryCondition;
-import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
-import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO;
+import com.alibaba.tesla.appmanager.domain.dto.WorkflowTaskDTO;
+import com.alibaba.tesla.appmanager.domain.req.workflow.WorkflowTaskListReq;
 
 /**
- * 工作流任务 服务
+ * 工作流任务 Provider
  *
  * @author yaoxing.gyx@alibaba-inc.com
  */
-public interface WorkflowTaskService {
+public interface WorkflowTaskProvider {
 
     /**
      * 根据 WorkflowTaskID 获取对应的 WorkflowTask 对象
@@ -20,15 +18,15 @@ public interface WorkflowTaskService {
      * @param withExt        是否包含扩展信息
      * @return WorkflowTask 对象，不存在则返回 null
      */
-    WorkflowTaskDO get(Long workflowTaskId, boolean withExt);
+    WorkflowTaskDTO get(Long workflowTaskId, boolean withExt);
 
     /**
      * 根据条件过滤 Workflow 任务列表
      *
-     * @param condition 过滤条件
+     * @param request 过滤条件
      * @return List of WorkflowTask
      */
-    Pagination<WorkflowTaskDO> list(WorkflowTaskQueryCondition condition);
+    Pagination<WorkflowTaskDTO> list(WorkflowTaskListReq request);
 
     /**
      * 更新指定的 Workflow 任务实例
@@ -36,7 +34,7 @@ public interface WorkflowTaskService {
      * @param task Workflow 任务实例
      * @return 更新行数
      */
-    int update(WorkflowTaskDO task);
+    int update(WorkflowTaskDTO task);
 
     /**
      * 创建一个 Workflow Task 任务 (不触发)
@@ -44,17 +42,7 @@ public interface WorkflowTaskService {
      * @param task Workflow 任务实例
      * @return 创建后的 WorkflowTask 对象
      */
-    WorkflowTaskDO create(WorkflowTaskDO task);
-
-    /**
-     * 触发执行一个 Workflow Task 任务，并等待其完成 (PENDING -> RUNNING)
-     *
-     * @param instance Workflow 实例
-     * @param task     Workflow 任务
-     * @param context  上下文信息
-     * @return 携带运行信息的 WorkflowTaskDO 实例 (未落库，实例 DO 仅在 events 转换时落库)
-     */
-    WorkflowTaskDO execute(WorkflowInstanceDO instance, WorkflowTaskDO task, JSONObject context);
+    WorkflowTaskDTO create(WorkflowTaskDTO task);
 
     /**
      * 终止指定 Workflow 任务 (x -> TERMINATED)

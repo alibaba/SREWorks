@@ -480,12 +480,22 @@ public class DeployAppSchema implements Schema, Serializable {
          */
         @JSONField(serialize = false)
         public void setNamespaceId(String namespaceId) {
+            boolean found = false;
             for (SpecComponentScope scope : scopes) {
                 SpecComponentScopeRef ref = scope.getScopeRef();
                 if (!"Namespace".equals(ref.getKind())) {
                     continue;
                 }
                 ref.setName(namespaceId);
+            }
+            if (!found) {
+                scopes.add(SpecComponentScope.builder()
+                        .scopeRef(SpecComponentScopeRef.builder()
+                                .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                                .kind("Namespace")
+                                .name(namespaceId)
+                                .build())
+                        .build());
             }
         }
 
@@ -513,12 +523,23 @@ public class DeployAppSchema implements Schema, Serializable {
          */
         @JSONField(serialize = false)
         public void setClusterId(String clusterId) {
+            boolean found = false;
             for (SpecComponentScope scope : scopes) {
                 SpecComponentScopeRef ref = scope.getScopeRef();
                 if (!"Cluster".equals(ref.getKind())) {
                     continue;
                 }
                 ref.setName(clusterId);
+                found = true;
+            }
+            if (!found) {
+                scopes.add(SpecComponentScope.builder()
+                        .scopeRef(SpecComponentScopeRef.builder()
+                                .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                                .kind("Cluster")
+                                .name(clusterId)
+                                .build())
+                        .build());
             }
         }
 
@@ -546,12 +567,22 @@ public class DeployAppSchema implements Schema, Serializable {
          */
         @JSONField(serialize = false)
         public void setStageId(String stageId) {
+            boolean found = false;
             for (SpecComponentScope scope : scopes) {
                 SpecComponentScopeRef ref = scope.getScopeRef();
                 if (!"Stage".equals(ref.getKind())) {
                     continue;
                 }
                 ref.setName(stageId);
+            }
+            if (!found) {
+                scopes.add(SpecComponentScope.builder()
+                        .scopeRef(SpecComponentScopeRef.builder()
+                                .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                                .kind("Stage")
+                                .name(stageId)
+                                .build())
+                        .build());
             }
         }
 

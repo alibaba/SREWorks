@@ -29,10 +29,11 @@ public class TerminatedWorkflowTaskStateAction implements WorkflowTaskStateActio
     /**
      * 自身处理逻辑
      *
-     * @param instance Workflow 实例
+     * @param task Workflow 实例
      */
     @Override
-    public void run(WorkflowTaskDO instance) {
-        log.info(STATE.toString());
+    public void run(WorkflowTaskDO task) {
+        log.info("the current workflow task enters the TERMINATED state|workflowInstanceId={}|workflowTaskId={}",
+                task.getWorkflowInstanceId(), task.getId());
     }
 }

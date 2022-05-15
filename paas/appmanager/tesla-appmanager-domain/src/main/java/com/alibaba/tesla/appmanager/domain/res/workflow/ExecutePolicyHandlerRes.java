@@ -1,6 +1,7 @@
 package com.alibaba.tesla.appmanager.domain.res.workflow;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +21,12 @@ import java.io.Serializable;
 public class ExecutePolicyHandlerRes implements Serializable {
 
     /**
-     * 修改后的上下文 context 信息，如果不传递，则默认取 ExecuteWorkflowHandlerReq 中的传入值作为传出值
+     * 修改后的上下文 context 信息
      */
     private JSONObject context;
+
+    /**
+     * 修改后的 configuration 部署配置信息
+     */
+    private DeployAppSchema configuration;
 }

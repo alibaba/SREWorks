@@ -1,17 +1,23 @@
 package com.alibaba.tesla.appmanager.workflow.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum;
 import com.alibaba.tesla.appmanager.common.enums.WorkflowTaskStateEnum;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
-import com.alibaba.tesla.appmanager.domain.req.CreateWorkflowSnapshotReq;
+import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
+import com.alibaba.tesla.appmanager.domain.req.UpdateWorkflowSnapshotReq;
+import com.alibaba.tesla.appmanager.domain.req.workflow.ExecuteWorkflowHandlerReq;
 import com.alibaba.tesla.appmanager.domain.res.workflow.ExecuteWorkflowHandlerRes;
+import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
+import com.alibaba.tesla.appmanager.dynamicscript.core.GroovyHandlerFactory;
+import com.alibaba.tesla.appmanager.workflow.dynamicscript.WorkflowHandler;
 import com.alibaba.tesla.appmanager.workflow.repository.WorkflowTaskRepository;
 import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowTaskQueryCondition;
+import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowSnapshotDO;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO;
 import com.alibaba.tesla.appmanager.workflow.service.WorkflowSnapshotService;
 import com.alibaba.tesla.appmanager.workflow.service.WorkflowTaskService;
-import com.alibaba.tesla.appmanager.workflow.service.thread.ExecuteWorkflowTask;
 import com.alibaba.tesla.appmanager.workflow.service.thread.ExecuteWorkflowTaskResult;
 import com.alibaba.tesla.appmanager.workflow.service.thread.ExecuteWorkflowTaskWaitingObject;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +62,9 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
 
     @Autowired
     private WorkflowTaskRepository workflowTaskRepository;
+
+    @Autowired
+    private GroovyHandlerFactory groovyHandlerFactory;
 
     /**
      * 根据 WorkflowTaskID 获取对应的 WorkflowTask 对象
@@ -113,13 +122,54 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
     /**
      * 触发执行一个 Workflow Task 任务，并等待其完成 (PENDING -> RUNNING)
      *
-     * @param task Workflow 任务实例
+     * @param instance Workflow 实例
+     * @param task     Workflow 任务
+     * @param context  上下文信息
      * @return 携带运行信息的 WorkflowTaskDO 实例 (未落库，实例 DO 仅在 events 转换时落库)
      */
     @Override
-    public WorkflowTaskDO execute(WorkflowTaskDO task) {
+    public WorkflowTaskDO execute(WorkflowInstanceDO instance, WorkflowTaskDO task, JSONObject context) {
+        DeployAppSchema configuration = SchemaUtil.toSchema(DeployAppSchema.class, instance.getWorkflowConfiguration());
         ExecuteWorkflowTaskWaitingObject waitingObject = ExecuteWorkflowTaskWaitingObject.create(task.getId());
-        threadPoolExecutor.submit(new ExecuteWorkflowTask(task));
+        threadPoolExecutor.submit(() -> {
+            WorkflowHandler handler;
+            try {
+                handler = groovyHandlerFactory.get(WorkflowHandler.class,
+                        DynamicScriptKindEnum.WORKFLOW.toString(), task.getTaskType());
+            } catch (Exception e) {
+                log.warn("cannot find workflow handler by taskType {}|workflowInstanceId={}|workflowTaskId={}",
+                        task.getTaskType(), task.getWorkflowInstanceId(), task.getId());
+                ExecuteWorkflowTaskWaitingObject.triggerFinished(
+                        task.getId(),
+                        ExecuteWorkflowTaskResult.builder().success(false).extMessage(e.toString()).build());
+                return;
+            }
+            ExecuteWorkflowHandlerReq req = ExecuteWorkflowHandlerReq.builder()
+                    .appId(task.getAppId())
+                    .instanceId(task.getWorkflowInstanceId())
+                    .taskId(task.getId())
+                    .taskType(task.getTaskType())
+                    .taskStage(task.getTaskStage())
+                    .taskProperties(JSONObject.parseObject(task.getTaskProperties()))
+                    .context(context)
+                    .configuration(configuration)
+                    .build();
+            ExecuteWorkflowHandlerRes res;
+            try {
+                res = handler.execute(req);
+            } catch (InterruptedException e) {
+                ExecuteWorkflowTaskWaitingObject.triggerTerminated(task.getId(), "terminated by InterruptedException");
+                return;
+            } catch (Throwable e) {
+                ExecuteWorkflowTaskWaitingObject.triggerFinished(
+                        task.getId(),
+                        ExecuteWorkflowTaskResult.builder().task(task).success(false).extMessage(e.toString()).build());
+                return;
+            }
+            ExecuteWorkflowTaskWaitingObject.triggerFinished(
+                    task.getId(),
+                    ExecuteWorkflowTaskResult.builder().task(task).success(true).output(res).build());
+        });
         ExecuteWorkflowTaskResult result;
 
         // 等待 Task 任务运行完成
@@ -156,17 +206,17 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
         if (output.getDeployAppId() != null && output.getDeployAppId() > 0) {
             returnedTask.setDeployAppId(output.getDeployAppId());
         }
-        JSONObject context = output.getContext();
 
         // 保存 Workflow 快照
-        WorkflowSnapshotDO snapshot = workflowSnapshotService.create(CreateWorkflowSnapshotReq.builder()
+        WorkflowSnapshotDO snapshot = workflowSnapshotService.update(UpdateWorkflowSnapshotReq.builder()
                 .workflowTaskId(task.getId())
                 .workflowInstanceId(task.getWorkflowInstanceId())
-                .context(context)
+                .context(output.getContext())
+                .configuration(output.getConfiguration())
                 .build());
-        log.info("workflow snapshot has created|workflowInstanceId={}|workflowTaskId={}|workflowSnapshotId={}|" +
-                "context={}", snapshot.getWorkflowInstanceId(), snapshot.getWorkflowTaskId(), snapshot.getId(),
-                JSONObject.toJSONString(context));
+        log.info("workflow snapshot has updated|workflowInstanceId={}|workflowTaskId={}|workflowSnapshotId={}|" +
+                        "context={}", snapshot.getWorkflowInstanceId(), snapshot.getWorkflowTaskId(), snapshot.getId(),
+                JSONObject.toJSONString(output.getContext()));
         return returnedTask;
     }
 

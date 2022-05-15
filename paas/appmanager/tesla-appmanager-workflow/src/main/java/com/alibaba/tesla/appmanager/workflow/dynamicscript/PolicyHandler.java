@@ -11,5 +11,5 @@ import com.alibaba.tesla.appmanager.dynamicscript.core.GroovyHandler;
  */
 public interface PolicyHandler extends GroovyHandler {
 
-    ExecutePolicyHandlerRes execute(ExecutePolicyHandlerReq request);
+    ExecutePolicyHandlerRes execute(ExecutePolicyHandlerReq request) throws InterruptedException;
 }

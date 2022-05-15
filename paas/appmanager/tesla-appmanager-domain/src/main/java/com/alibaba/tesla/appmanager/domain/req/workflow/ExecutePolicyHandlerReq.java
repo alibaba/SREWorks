@@ -28,7 +28,17 @@ public class ExecutePolicyHandlerReq implements Serializable {
     /**
      * Workflow Instance ID
      */
-    private Long workflowInstanceId;
+    private Long instanceId;
+
+    /**
+     * Workflow Task ID
+     */
+    private Long taskId;
+
+    /**
+     * Policy Properties
+     */
+    private JSONObject policyProperties;
 
     /**
      * 上下文

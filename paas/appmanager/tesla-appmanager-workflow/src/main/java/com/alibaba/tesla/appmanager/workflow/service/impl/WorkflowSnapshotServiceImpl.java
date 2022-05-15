@@ -4,8 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
-import com.alibaba.tesla.appmanager.domain.req.UpdateWorkflowSnapshotReq;
+import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.req.DeleteWorkflowSnapshotReq;
+import com.alibaba.tesla.appmanager.domain.req.UpdateWorkflowSnapshotReq;
 import com.alibaba.tesla.appmanager.workflow.repository.WorkflowSnapshotRepository;
 import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowSnapshotQueryCondition;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowSnapshotDO;
@@ -79,15 +80,15 @@ public class WorkflowSnapshotServiceImpl implements WorkflowSnapshotService {
                     .workflowInstanceId(request.getWorkflowInstanceId())
                     .workflowTaskId(request.getWorkflowTaskId())
                     .snapshotContext(JSONObject.toJSONString(request.getContext()))
+                    .snapshotTask(SchemaUtil.toYamlMapStr(request.getConfiguration()))
                     .snapshotWorkflow(null)
-                    .snapshotTask(null)
                     .build();
             workflowSnapshotRepository.insert(record);
         } else {
             record = snapshots.getItems().get(0);
             record.setSnapshotContext(JSONObject.toJSONString(request.getContext()));
+            record.setSnapshotTask(SchemaUtil.toYamlMapStr(request.getConfiguration()));
             record.setSnapshotWorkflow(null);
-            record.setSnapshotTask(null);
             workflowSnapshotRepository.updateByCondition(record, condition);
         }
         return get(record.getId());

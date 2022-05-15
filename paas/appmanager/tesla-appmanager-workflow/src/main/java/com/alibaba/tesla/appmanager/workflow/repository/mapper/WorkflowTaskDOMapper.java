@@ -22,4 +22,15 @@ public interface WorkflowTaskDOMapper {
     int updateByExampleSelective(@Param("record") WorkflowTaskDO record, @Param("example") WorkflowTaskDOExample example);
 
     int updateByPrimaryKeySelective(WorkflowTaskDO record);
+
+    /**
+     * 获取指定 workflowInstance 中指定 workflowTask 的下一个 PENDING 待运行任务
+     *
+     * @param workflowInstanceId Workflow Instance ID
+     * @param workflowTaskId     Workflow Task ID
+     * @return 待运行 Workflow 任务
+     */
+    WorkflowTaskDO nextPendingTask(
+            @Param("workflowInstanceId") Long workflowInstanceId,
+            @Param("workflowTaskId") Long workflowTaskId);
 }

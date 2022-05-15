@@ -1,5 +1,7 @@
 package com.alibaba.tesla.appmanager.workflow.repository.impl;
 
+import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
+import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.DateUtil;
 import com.alibaba.tesla.appmanager.workflow.repository.WorkflowInstanceRepository;
 import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowInstanceQueryCondition;
@@ -34,6 +36,18 @@ public class WorkflowInstanceRepositoryImpl implements WorkflowInstanceRepositor
     @Override
     public int insert(WorkflowInstanceDO record) {
         return mapper.insertSelective(insertDate(record));
+    }
+
+    @Override
+    public WorkflowInstanceDO getByCondition(WorkflowInstanceQueryCondition condition) {
+        List<WorkflowInstanceDO> records = selectByCondition(condition);
+        if (records.size() == 0) {
+            return null;
+        } else if (records.size() == 1) {
+            return records.get(0);
+        } else {
+            throw new AppException(AppErrorCode.UNKNOWN_ERROR, "multiple workflow instance found");
+        }
     }
 
     @Override

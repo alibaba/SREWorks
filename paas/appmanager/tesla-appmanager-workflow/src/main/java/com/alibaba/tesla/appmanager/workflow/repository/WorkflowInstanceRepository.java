@@ -13,6 +13,8 @@ public interface WorkflowInstanceRepository {
 
     int insert(WorkflowInstanceDO record);
 
+    WorkflowInstanceDO getByCondition(WorkflowInstanceQueryCondition condition);
+
     List<WorkflowInstanceDO> selectByCondition(WorkflowInstanceQueryCondition condition);
 
     int updateByCondition(WorkflowInstanceDO record, WorkflowInstanceQueryCondition condition);

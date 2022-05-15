@@ -20,4 +20,13 @@ public interface WorkflowTaskRepository {
     int updateByCondition(WorkflowTaskDO record, WorkflowTaskQueryCondition condition);
 
     int updateByPrimaryKey(WorkflowTaskDO record);
+
+    /**
+     * 获取指定 workflowInstance 中指定 workflowTask 的下一个 PENDING 待运行任务
+     *
+     * @param workflowInstanceId Workflow Instance ID
+     * @param workflowTaskId     Workflow Task ID
+     * @return 待运行 Workflow 任务
+     */
+    WorkflowTaskDO nextPendingTask(Long workflowInstanceId, Long workflowTaskId);
 }

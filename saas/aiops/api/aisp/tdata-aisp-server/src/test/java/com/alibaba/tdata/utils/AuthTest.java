@@ -24,11 +24,11 @@ public class AuthTest {
     public void test() throws IOException, NoSuchAlgorithmException {
         OkHttpClient httpClient = new OkHttpClient().newBuilder().build();
         String body = "{\"taskType\":\"sync\",\"series\":[[1635216096000,23.541],[1635216097000,33.541]]}";
-        Request request = new Request.Builder().url("http://gateway-pre.tesla.alibaba-inc.com/v2/foundation/aisp/bentoml_test/bentoml_test/analyze")
+        Request request = new Request.Builder().url("")
             .addHeader("x-auth-app", "tdata_aisp")       // 用自己的鉴权，替换x-auth-app字段。
-            .addHeader("x-auth-key", "50a241ec-4181-4294-ad68-f8a81a52ddac")       // 用自己的鉴权，替换x-auth-key字段。
+            .addHeader("x-auth-key", "")       // 用自己的鉴权，替换x-auth-key字段。
             .addHeader("x-auth-user", "tdata_aisp")     // 用自己的鉴权，替换x-auth-user字段。
-            .addHeader("x-auth-passwd", "a145a7fc782601fba609d779eae0c1fe") // 一天有效，请用自己的鉴权，替换x-auth-passwd字段！
+            .addHeader("x-auth-passwd", "") // 一天有效，请用自己的鉴权，替换x-auth-passwd字段！
             .post(RequestBody.create(MediaType.parse("application/json"), body))
             .build();
         Response response = httpClient.newCall(request).execute();

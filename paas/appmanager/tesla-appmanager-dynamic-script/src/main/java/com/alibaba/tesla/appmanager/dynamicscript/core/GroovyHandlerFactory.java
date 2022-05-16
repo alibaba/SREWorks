@@ -14,7 +14,6 @@ import groovy.lang.GroovyClassLoader;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,6 +119,22 @@ public class GroovyHandlerFactory {
     }
 
     /**
+     * 判断指定的 kind+name 对应的 Groovy 脚本是否存在
+     *
+     * @param kind 类型
+     * @param name 名称
+     * @return true or flase
+     */
+    public boolean exists(String kind, String name) {
+        if (Objects.isNull(kind) || StringUtils.isEmpty(name)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "name cannot be empty");
+        }
+
+        String key = keyGenerator(kind, name);
+        return HANDLER_INSTANCES.containsKey(key);
+    }
+
+    /**
      * 获取 Handler
      *
      * @param scriptClass 脚本 Class
@@ -211,6 +226,16 @@ public class GroovyHandlerFactory {
                 } else {
                     return get(scriptClass,
                             DynamicScriptKindEnum.DEPLOY_ABM_CHART_COMPONENT.toString(),
+                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                }
+            case ASI_COMPONENT:
+                if (ComponentActionEnum.BUILD.equals(action)) {
+                    return get(scriptClass,
+                            DynamicScriptKindEnum.BUILD_ASI_COMPONENT.toString(),
+                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                } else {
+                    return get(scriptClass,
+                            DynamicScriptKindEnum.DEPLOY_ASI_COMPONENT.toString(),
                             DefaultConstant.DEFAULT_GROOVY_HANDLER);
                 }
             case INTERNAL_ADDON:

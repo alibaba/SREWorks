@@ -54,7 +54,7 @@ let options = {
     '@scrollbarBackground2',
     '@scrollbarBorder',
     '@header-bg-color',
-    '@nprogress-color',
+    '@nprogress-color'
   ],
 };
 // 本地开发生成样式文件

@@ -71,6 +71,10 @@
             <groupId>com.alibaba.tesla</groupId>
             <artifactId>tesla-appmanager-deploy-config</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba.tesla</groupId>
+            <artifactId>tesla-appmanager-workflow</artifactId>
+        </dependency>
 
         <!-- spring -->
         <dependency>

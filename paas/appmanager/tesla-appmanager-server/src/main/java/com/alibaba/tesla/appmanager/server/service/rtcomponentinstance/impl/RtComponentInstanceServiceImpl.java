@@ -18,7 +18,6 @@ import com.alibaba.tesla.appmanager.server.repository.condition.RtComponentInsta
 import com.alibaba.tesla.appmanager.server.repository.domain.RtAppInstanceDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.RtComponentInstanceDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.RtComponentInstanceHistoryDO;
-import com.alibaba.tesla.appmanager.server.service.deploy.DeployAppService;
 import com.alibaba.tesla.appmanager.server.service.rtappinstance.RtAppInstanceService;
 import com.alibaba.tesla.appmanager.server.service.rtcomponentinstance.RtComponentInstanceService;
 import lombok.extern.slf4j.Slf4j;
@@ -46,9 +45,6 @@ public class RtComponentInstanceServiceImpl implements RtComponentInstanceServic
 
     @Autowired
     private RtAppInstanceService rtAppInstanceService;
-
-    @Autowired
-    private DeployAppService deployAppService;
 
     @Autowired
     private GroovyHandlerFactory groovyHandlerFactory;

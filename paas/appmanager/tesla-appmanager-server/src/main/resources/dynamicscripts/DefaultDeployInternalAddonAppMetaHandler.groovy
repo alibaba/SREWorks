@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject
 import com.alibaba.tesla.appmanager.api.provider.AppMetaProvider
 import com.alibaba.tesla.appmanager.autoconfig.SystemProperties
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant
-import com.alibaba.tesla.appmanager.common.enums.ComponentInstanceStatusEnum
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentStateEnum
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode
@@ -12,7 +11,6 @@ import com.alibaba.tesla.appmanager.common.exception.AppException
 import com.alibaba.tesla.appmanager.common.util.NetworkUtil
 import com.alibaba.tesla.appmanager.common.util.ZipUtil
 import com.alibaba.tesla.appmanager.domain.req.AppMetaUpdateReq
-import com.alibaba.tesla.appmanager.domain.req.componentinstance.ReportRtComponentInstanceStatusReq
 import com.alibaba.tesla.appmanager.domain.req.deploy.GetDeployComponentHandlerReq
 import com.alibaba.tesla.appmanager.domain.req.deploy.LaunchDeployComponentHandlerReq
 import com.alibaba.tesla.appmanager.domain.res.deploy.GetDeployComponentHandlerRes
@@ -54,7 +52,7 @@ class DefaultDeployInternalAddonAppMetaHandler implements DeployComponentHandler
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 8
+    public static final Integer REVISION = 9
 
     private static final String EXPORT_OPTION_FILE = "option.json"
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
@@ -103,25 +101,6 @@ class DefaultDeployInternalAddonAppMetaHandler implements DeployComponentHandler
         def response = appMetaProvider.save(data)
         log.info("import app meta config success|appId={}|response={}",
                 request.getAppId(), JSONObject.toJSONString(response))
-
-        // 上报状态
-        def annotations = (JSONObject) componentSchema.getSpec().getWorkload().getMetadata().getAnnotations()
-        def version = annotations.getOrDefault(ANNOTATIONS_VERSION, "")
-        def componentInstanceId = annotations.getOrDefault(ANNOTATIONS_COMPONENT_INSTANCE_ID, "")
-        def appInstanceName = annotations.getOrDefault(ANNOTATIONS_APP_INSTANCE_NAME, "")
-        componentInstanceService.report(ReportRtComponentInstanceStatusReq.builder()
-                .componentInstanceId(componentInstanceId)
-                .appInstanceName(appInstanceName)
-                .clusterId(request.getClusterId())
-                .namespaceId(request.getNamespaceId())
-                .stageId(request.getStageId())
-                .appId(request.getAppId())
-                .componentType(request.getComponentType())
-                .componentName(request.getComponentName())
-                .version(version)
-                .status(ComponentInstanceStatusEnum.COMPLETED.toString())
-                .conditions(new ArrayList<>())
-                .build())
 
         // 资源清理
         try {

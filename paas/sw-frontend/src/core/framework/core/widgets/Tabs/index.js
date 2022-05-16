@@ -72,7 +72,7 @@ export default class TabsRender extends Component {
     const { widgetConfig } = this.props;
     let toolbarItem = null;
     let { centered, tabPosition, size, title, tabType = "default" } = widgetConfig;
-    if (widgetConfig.toolbar && Object.keys(widgetConfig.toolbar).length > 0) {
+    if (widgetConfig.toolbar && Object.keys(widgetConfig.toolbar).length > 0 && widgetConfig.hasWrapper && widgetConfig.hasWrapper ==='none') {
       toolbarItem = <ToolBar {...this.props} widgetConfig={widgetConfig} />;
     }
     return <div className="tab-panel-widgets">

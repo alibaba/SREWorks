@@ -7,8 +7,7 @@
             "repo": "http://gitlab.alibaba-inc.com/pe3/appmanager-python-demo.git",
             "branch": "develop",
             "imagePush": true,
-            "imagePushRegistry": "reg.docker.alibaba-inc.com/abm-oxs",
-            "imagePushUseBranchAsTag": true
+            "imagePushRegistry": "192.168.64.155:5000/abm-oxs"
         },
         "name": "job"
     },

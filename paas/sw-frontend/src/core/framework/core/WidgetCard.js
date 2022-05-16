@@ -110,7 +110,6 @@ export default class WidgetCard extends React.Component {
         if ((!widgetModel.isVisible(nodeParams)) || close) {
             return <div />
         }
-        console.log(this.props, 'hasbacground-未定义')
         if (loading || dataLoading || !widgetModel.isReady(nodeParams)) return <Spin wrapperClassName="abm_frontend_widget_component_spin" />;
         const WidgetComponent = this.WidgetComponent;
         let { title } = widgetModel.config, cardContent, toolbarItem = null, { style, ...otherProps } = this.props;

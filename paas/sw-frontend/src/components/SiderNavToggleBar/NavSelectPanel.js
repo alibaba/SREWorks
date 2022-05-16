@@ -157,7 +157,12 @@ export default class NavSelectPanel extends React.Component {
                             item.children && (item.children || []).map((child, i) => {
                                 let IconRender = null;
                                 if (child.logoUrl) {
-                                    IconRender = <img className="small-icon" style={{ width: 28, height: 28 }} src={child.logoUrl} />
+                                    // 兼容处理本地开发环境logo展示
+                                    let logoUrl = child.logoUrl
+                                    if(process.env.NODE_ENV === 'local'){
+                                        logoUrl = properties.baseUrl + logoUrl
+                                    }
+                                    IconRender = <img className="small-icon" style={{ width: 28, height: 28 }} src={logoUrl} />
                                 } else {
                                     IconRender = <Avatar size={20} style={{
                                         backgroundColor: colors[i % 10],

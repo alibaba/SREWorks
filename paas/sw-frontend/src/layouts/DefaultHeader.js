@@ -150,7 +150,11 @@ const DefaultHeader = ({ siderFold, siderRespons, theme, siderOpenKeys, menuResp
 
 
     const SiteLogo = () => {
-        const { platformName, platformLogo } = properties
+        let { platformName, platformLogo } = properties
+        if(process.env.NODE_ENV === 'local'){
+            platformLogo = properties.baseUrl + platformLogo
+        }
+        console.log(platformLogo,process.env.NODE_ENV,'platformLogo-plateform')
         const logo = (
             <div className="left-logo">
                 <div>

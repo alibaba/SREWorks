@@ -16,6 +16,14 @@ spec:
       value: "PaaS"
     - name: APP_ID
       value: "dataops" 
+    - name: DB_HOST
+      value: "{{ env.APPMANAGER_DB_HOST }}"
+    - name: DB_PORT
+      value: "{{ env.APPMANAGER_DB_PORT }}"
+    - name: DB_USER
+      value: "{{ env.APPMANAGER_DB_USER }}"
+    - name: DB_PASSWORD
+      value: "{{ env.APPMANAGER_DB_PASSWORD }}"
   components:
     - revisionName: K8S_MICROSERVICE|dataset|_
       scopes:

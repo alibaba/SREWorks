@@ -40,7 +40,7 @@ public class NetworkUtil {
             fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
         } catch (IOException e) {
             throw new AppException(AppErrorCode.NETWORK_ERROR,
-                String.format("Download file from %s to %s failed", remoteUrl, localPath), e);
+                    String.format("Download file from %s to %s failed", remoteUrl, localPath), e);
         }
     }
 
@@ -54,6 +54,19 @@ public class NetworkUtil {
             return InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
             throw new AppException(AppErrorCode.NETWORK_ERROR, "Cannot get current ip address", e);
+        }
+    }
+
+    /**
+     * 获取当前本机 Hostname 地址
+     *
+     * @return 本机 Hostname 地址
+     */
+    public static String getCurrentHostnameAddress() {
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            throw new AppException(AppErrorCode.NETWORK_ERROR, "Cannot get current hostname address", e);
         }
     }
 
@@ -96,7 +109,7 @@ public class NetworkUtil {
      * @return 返回 body 的 JSONObject
      */
     public static Response sendRequestSimple(OkHttpClient httpClient, Request.Builder requestBuilder, String authToken)
-        throws IOException {
+            throws IOException {
         Request request;
         if (!StringUtils.isEmpty(authToken)) {
             request = requestBuilder.header("Authorization", "Bearer " + authToken).build();
@@ -114,7 +127,7 @@ public class NetworkUtil {
      * @return 返回 body 的 JSONObject
      */
     public static JSONObject sendRequest(OkHttpClient httpClient, Request.Builder requestBuilder, String authToken)
-        throws IOException {
+            throws IOException {
         Request request;
         if (!StringUtils.isEmpty(authToken)) {
             request = requestBuilder.header("Authorization", "Bearer " + authToken).build();
@@ -129,19 +142,19 @@ public class NetworkUtil {
         String bodyStr = responseBody.string();
         if (response.code() != 200) {
             throw new AppException(AppErrorCode.DEPLOY_ERROR,
-                String.format("send request failed, http status not 200|response=%s", bodyStr));
+                    String.format("send request failed, http status not 200|response=%s", bodyStr));
         }
         JSONObject body;
         try {
             body = JSONObject.parseObject(bodyStr);
         } catch (Exception e) {
             throw new AppException(AppErrorCode.DEPLOY_ERROR,
-                String.format("send request failed, response not json|response=%s", bodyStr));
+                    String.format("send request failed, response not json|response=%s", bodyStr));
         }
         int code = body.getIntValue("code");
         if (code != 200) {
             throw new AppException(AppErrorCode.DEPLOY_ERROR,
-                String.format("send request failed, response code not 200|response=%s", bodyStr));
+                    String.format("send request failed, response code not 200|response=%s", bodyStr));
         }
         return body;
     }

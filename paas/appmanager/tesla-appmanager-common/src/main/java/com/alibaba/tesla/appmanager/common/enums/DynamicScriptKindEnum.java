@@ -48,6 +48,16 @@ public enum DynamicScriptKindEnum {
     DEPLOY_ABM_CHART_COMPONENT,
 
     /**
+     * 构建 ASI 模块
+     */
+    BUILD_ASI_COMPONENT,
+
+    /**
+     * 部署 ASI 模块
+     */
+    DEPLOY_ASI_COMPONENT,
+
+    /**
      * 通用构建 Resource Addon 模块
      */
     BUILD_RESOURCE_ADDON_COMPONENT,
@@ -150,5 +160,15 @@ public enum DynamicScriptKindEnum {
     /**
      * V2: 组件 Watch (CRON)
      */
-    COMPONENT_WATCH_CRON
+    COMPONENT_WATCH_CRON,
+
+    /**
+     * V2: Workflow
+     */
+    WORKFLOW,
+
+    /**
+     * V2: Policy
+     */
+    POLICY
 }

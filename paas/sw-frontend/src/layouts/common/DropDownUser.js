@@ -99,6 +99,7 @@ export default class DropDownUser extends React.Component {
   };
   setPrimaryColor = (targetObj) => {
     let color = targetObj.hex;
+    let fadeColor = color+'21';
     this.setState({
       selectedColor: color
     })
@@ -111,7 +112,9 @@ export default class DropDownUser extends React.Component {
       obj['@link-color'] = color;
       window.less.modifyVars(obj).then(res => {
         document.documentElement.style.setProperty('--PrimaryColor', color);
+        document.documentElement.style.setProperty('--PrimaryBackColor', fadeColor);
         localStorage.setItem("theme_color", color);
+        localStorage.setItem("back_color", fadeColor);
       })
     }
   }
@@ -120,7 +123,8 @@ export default class DropDownUser extends React.Component {
     if (!window.less) {
       return
     }
-    let color = localStorage.getItem("theme_color") || '#00c1de';
+    let color = localStorage.getItem("theme_color") || '#00bcd4';
+    let backColor = localStorage.getItem("back_color") || '#00bcd421';
     this.setState({
       selectedColor: color
     })
@@ -129,8 +133,9 @@ export default class DropDownUser extends React.Component {
     obj['@link-color'] = color;
     window.less.modifyVars(obj).then(res => {
       document.documentElement.style.setProperty('--PrimaryColor', color);
+      document.documentElement.style.setProperty('--PrimaryBackColor', backColor);
       localStorage.setItem("theme_color", color);
-      console.log(res, 'window.less.modifyVars,执行了2')
+      localStorage.setItem("back_color", backColor);
     })
   }
   render() {
@@ -139,7 +144,7 @@ export default class DropDownUser extends React.Component {
     const roles = currentUser.roles, cacheRole = cacheRepository.getRole(currentProduct.productId);
     const currentRole = roles.filter(role => role.roleId === cacheRole)[0];
     const UserTitle = () => (
-      <div style={{ maxWidth: 100, display: "flex", alignItems: "center", height: 50, marginLeft: 10 }}>
+      <div style={{ maxWidth: 100, display: "flex", alignItems: "center", height: 50, marginLeft: 10,marginRight:20 }}>
         <Avatar
           style={{ verticalAlign: "middle" }}
           size={24}

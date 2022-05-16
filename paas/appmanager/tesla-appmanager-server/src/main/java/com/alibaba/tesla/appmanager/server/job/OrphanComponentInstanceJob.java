@@ -54,11 +54,11 @@ public class OrphanComponentInstanceJob {
                 String namespaceId = componentInstance.getNamespaceId();
                 String stageId = componentInstance.getStageId();
 
-                // 针对 appmeta / deploymentmeta 两个特殊的 INTERNAL_ADDON component, 不进行应用实例的创建
+                // 针对 appmeta / developmentmeta 两个特殊的 INTERNAL_ADDON component, 不进行应用实例的创建
                 String componentType = componentInstance.getComponentType();
                 String componentName = componentInstance.getComponentName();
                 if (ComponentTypeEnum.INTERNAL_ADDON.toString().equals(componentType)
-                        && ("appmeta".equals(componentName) || "deploymentmeta".equals(componentName))) {
+                        && ("appmeta".equals(componentName) || "developmentmeta".equals(componentName))) {
                     continue;
                 }
 

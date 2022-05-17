@@ -34,7 +34,7 @@ class WorkflowDeployHandler implements WorkflowHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 2
+    public static final Integer REVISION = 3
 
     /**
      * 执行逻辑

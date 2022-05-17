@@ -32,6 +32,8 @@ spec:
         name: deploy-local-1
         properties:
           policies: [ "topology-local-cluster" ]
+      - type: suspend
+        name: wait-for-user-approval
       - type: deploy
         name: deploy-local-2
         properties:

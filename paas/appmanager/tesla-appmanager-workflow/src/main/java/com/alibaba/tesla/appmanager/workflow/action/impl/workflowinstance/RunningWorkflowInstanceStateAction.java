@@ -4,6 +4,7 @@ import com.alibaba.tesla.appmanager.common.enums.WorkflowInstanceStateEnum;
 import com.alibaba.tesla.appmanager.workflow.action.WorkflowInstanceStateAction;
 import com.alibaba.tesla.appmanager.workflow.event.loader.WorkflowInstanceStateActionLoadedEvent;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
+import com.alibaba.tesla.appmanager.workflow.service.WorkflowTaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -20,6 +21,9 @@ public class RunningWorkflowInstanceStateAction implements WorkflowInstanceState
     @Autowired
     private ApplicationEventPublisher publisher;
 
+    @Autowired
+    private WorkflowTaskService workflowTaskService;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         publisher.publishEvent(new WorkflowInstanceStateActionLoadedEvent(
@@ -35,6 +39,5 @@ public class RunningWorkflowInstanceStateAction implements WorkflowInstanceState
     public void run(WorkflowInstanceDO instance) {
         log.info("the current workflow instance has entered the RUNNING state, waiting for all subtasks to complete|" +
                 "workflowInstanceId={}|appId={}", instance.getId(), instance.getAppId());
-        // TODO: foreach all subtasks
     }
 }

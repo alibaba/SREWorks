@@ -174,7 +174,7 @@ class RowContainerHandler extends React.Component {
                         </PopoverConfirm>
                     </span>
                 </div>
-                <div className="row_container_wrapper" style={{ height: rowHeight, minHeight: rowMinHeight,paddingTop:20 }}>
+                <div className="row_container_wrapper" style={{ height: rowHeight, minHeight: rowMinHeight, paddingTop: 20 }}>
                     <Row gutter={Constants.WIDGET_DEFAULT_MARGIN}>
                         {
                             spans.split(",").map((span, index) => {
@@ -195,12 +195,28 @@ class RowContainerHandler extends React.Component {
                                     return (
                                         <Col span={parseInt(span)} key={index}>
                                             <div className="blank_widget_placeholder" style={{ height: handleCardHeight, minHeight: rowMinHeight }}>
-                                                <Button type="dashed" icon={<BarChartOutlined />} onClick={() => this.openSelector(index)}>
-                                                    选择组件
-                                                </Button>
-                                                <Button type="dashed" icon={<BarChartOutlined />} onClick={() => this.pasteComp(index)}>
-                                                    粘贴组件
-                                                </Button>
+                                                {
+                                                    parseInt(span) >= 6 && <Button type="dashed" icon={<BarChartOutlined />} onClick={() => this.openSelector(index)}>
+                                                        选择组件
+                                                    </Button>
+                                                }
+                                                {
+                                                    parseInt(span) < 6 && <Tooltip placement="topLeft" title={'选择组件'}>
+                                                        <Button type="dashed" icon={<BarChartOutlined />} onClick={() => this.openSelector(index)}>
+                                                        </Button>
+                                                    </Tooltip>
+                                                }
+                                                {
+                                                    parseInt(span) >= 6 && <Button type="dashed" icon={<SnippetsOutlined />} onClick={() => this.pasteComp(index)}>
+                                                        粘贴组件
+                                                    </Button>
+                                                }
+                                                {
+                                                    parseInt(span) < 6 && <Tooltip placement="topLeft" title={'粘贴组件'}>
+                                                        <Button type="dashed" icon={<SnippetsOutlined />} onClick={() => this.pasteComp(index)}>
+                                                        </Button>
+                                                    </Tooltip>
+                                                }
                                             </div>
                                         </Col>
                                     )

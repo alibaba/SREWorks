@@ -54,3 +54,8 @@ options:
     - APPMANAGER_CLIENT_SECRET
     - AUTHPROXY_ENDPOINT
 
+---
+
+componentType: RESOURCE_ADDON
+componentName: system-env@system-env
+options: {}

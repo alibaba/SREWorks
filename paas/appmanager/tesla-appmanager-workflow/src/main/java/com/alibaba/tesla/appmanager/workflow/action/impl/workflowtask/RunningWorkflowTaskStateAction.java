@@ -102,6 +102,9 @@ public class RunningWorkflowTaskStateAction implements WorkflowTaskStateAction, 
             case RUNNING_SUSPEND:
                 publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.PAUSE, res));
                 break;
+            case WAITING_SUSPEND:
+                publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.PROCESS_SUSPEND, res));
+                break;
             default:
                 String errorMessage = String.format("invalid workflow task status found in " +
                         "RunningWorkflowTaskStateAction|workflowInstanceId=%d|status=%s", res.getId(), status);

@@ -34,7 +34,7 @@ class WorkflowDeployHandler implements WorkflowHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 2
+    public static final Integer REVISION = 3
 
     /**
      * 执行逻辑
@@ -70,7 +70,7 @@ class WorkflowDeployHandler implements WorkflowHandler {
                     configuration = res.getConfiguration();
                 }
                 log.info("policy has exeucted in workflow task|workflowInstanceId={}|workflowTaskId={}|appId={}|" +
-                        "context={}|configuration={}", request.getInstanceId(), request.getAppId(),
+                        "context={}|configuration={}", request.getInstanceId(), request.getTaskId(), request.getAppId(),
                         JSONObject.toJSONString(context), JSONObject.toJSONString(configuration))
             }
         }

@@ -38,6 +38,11 @@ public enum WorkflowTaskEventEnum {
     PROCESS_UNKNOWN_ERROR,
 
     /**
+     * 处理过程中进入休眠状态
+     */
+    PROCESS_SUSPEND,
+
+    /**
      * 等待过程成功
      */
     WAITING_FINISHED,

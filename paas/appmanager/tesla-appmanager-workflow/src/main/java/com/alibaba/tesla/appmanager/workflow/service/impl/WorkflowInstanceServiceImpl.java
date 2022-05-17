@@ -5,6 +5,7 @@ import com.alibaba.tesla.appmanager.common.constants.WorkflowConstant;
 import com.alibaba.tesla.appmanager.common.enums.WorkflowInstanceEventEnum;
 import com.alibaba.tesla.appmanager.common.enums.WorkflowInstanceStateEnum;
 import com.alibaba.tesla.appmanager.common.enums.WorkflowTaskEventEnum;
+import com.alibaba.tesla.appmanager.common.enums.WorkflowTaskStateEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
@@ -18,11 +19,14 @@ import com.alibaba.tesla.appmanager.workflow.repository.WorkflowInstanceReposito
 import com.alibaba.tesla.appmanager.workflow.repository.WorkflowTaskRepository;
 import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowInstanceQueryCondition;
 import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowSnapshotQueryCondition;
+import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowTaskQueryCondition;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowSnapshotDO;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO;
 import com.alibaba.tesla.appmanager.workflow.service.WorkflowInstanceService;
 import com.alibaba.tesla.appmanager.workflow.service.WorkflowSnapshotService;
+import com.alibaba.tesla.appmanager.workflow.service.WorkflowTaskService;
+import com.google.common.base.Enums;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -56,6 +60,9 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
 
     @Autowired
     private WorkflowSnapshotService workflowSnapshotService;
+
+    @Autowired
+    private WorkflowTaskService workflowTaskService;
 
     /**
      * 根据 Workflow 实例 ID 获取对应的 Workflow 实例
@@ -234,11 +241,40 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
      * 恢复处于 SUSPEND 状态的 Workflow 实例
      *
      * @param workflowInstanceId Workflow 实例 ID
-     * @return 更新状态后的 Workflow 实例
      */
     @Override
-    public WorkflowInstanceDO resume(Long workflowInstanceId) {
-        return null;
+    public void resume(Long workflowInstanceId) {
+        WorkflowInstanceDO instance = get(workflowInstanceId, true);
+        if (instance == null) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "workflow instance not exists");
+        }
+        String appId = instance.getAppId();
+        log.info("prepare to resume the workflow instance|workflowInstanceId={}|appId={}", workflowInstanceId, appId);
+        publisher.publishEvent(new WorkflowInstanceEvent(this, WorkflowInstanceEventEnum.RESUME, instance));
+        log.info("the RESUME event has sent to workflow instance|workflowInstanceId={}|appId={}",
+                workflowInstanceId, appId);
+
+        // 遍历所有子任务，对于当前仍然处于 RUNNING_SUSPEND 或 WAITING_SUSPEND 状态的，进行 RESUME 事件发送
+        Pagination<WorkflowTaskDO> tasks = workflowTaskService.list(WorkflowTaskQueryCondition.builder()
+                .instanceId(instance.getId())
+                .withBlobs(false)
+                .build());
+        for (WorkflowTaskDO task : tasks.getItems()) {
+            WorkflowTaskStateEnum status = Enums
+                    .getIfPresent(WorkflowTaskStateEnum.class, task.getTaskStatus()).orNull();
+            if (status == null) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                        String.format("invalid workflow task status|workflowInstanceId=%d|workflowTaskId=%d|" +
+                                "taskStatus=%s", instance.getId(), task.getId(), task.getTaskStatus()));
+            }
+            if (WorkflowTaskStateEnum.RUNNING_SUSPEND.equals(status)
+                    || WorkflowTaskStateEnum.WAITING_SUSPEND.equals(status)) {
+                publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.RESUME, task));
+                log.info("the RESUME event has sent to workflow task|workflowInstanceId={}|workflowTaskId={}|" +
+                                "taskType={}|clientHostname={}|appId={}|previousStatus={}", workflowInstanceId,
+                        task.getId(), task.getTaskType(), task.getClientHostname(), appId, status);
+            }
+        }
     }
 
     /**

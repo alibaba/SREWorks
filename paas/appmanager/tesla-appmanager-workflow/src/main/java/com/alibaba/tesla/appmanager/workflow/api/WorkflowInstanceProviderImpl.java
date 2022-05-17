@@ -77,12 +77,10 @@ public class WorkflowInstanceProviderImpl implements WorkflowInstanceProvider {
      * 恢复处于 SUSPEND 状态的 Workflow 实例
      *
      * @param workflowInstanceId Workflow 实例 ID
-     * @return 更新状态后的 Workflow 实例
      */
     @Override
-    public WorkflowInstanceDTO resume(Long workflowInstanceId) {
-        WorkflowInstanceDO instance = workflowInstanceService.resume(workflowInstanceId);
-        return convert.to(instance);
+    public void resume(Long workflowInstanceId) {
+        workflowInstanceService.resume(workflowInstanceId);
     }
 
     /**

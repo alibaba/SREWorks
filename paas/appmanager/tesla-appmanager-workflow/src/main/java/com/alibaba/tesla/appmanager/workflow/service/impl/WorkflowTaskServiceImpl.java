@@ -184,7 +184,7 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
                 } else {
                     log.info("workflow task has been reported heartbeat|workflowTaskId={}", task.getId());
                 }
-            }, 10, TimeUnit.SECONDS);
+            }, 5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             return markAbnormalWorkflowTask(task.getId(), WorkflowTaskStateEnum.EXCEPTION, e.toString());
         }
@@ -198,10 +198,14 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
             return markAbnormalWorkflowTask(task.getId(), WorkflowTaskStateEnum.FAILURE, result.getExtMessage());
         }
 
-        // 创建返回结果
+        // 创建返回结果；如果 workflow task 节点主动触发 suspend，那么直接触发进入 WAITING_SUSPEND
         ExecuteWorkflowHandlerRes output = result.getOutput();
         WorkflowTaskDO returnedTask = get(task.getId(), true);
-        returnedTask.setTaskStatus(WorkflowTaskStateEnum.SUCCESS.toString());
+        if (output.isSuspend()) {
+            returnedTask.setTaskStatus(WorkflowTaskStateEnum.WAITING_SUSPEND.toString());
+        } else {
+            returnedTask.setTaskStatus(WorkflowTaskStateEnum.SUCCESS.toString());
+        }
         returnedTask.setTaskErrorMessage("");
         if (output.getDeployAppId() != null && output.getDeployAppId() > 0) {
             returnedTask.setDeployAppId(output.getDeployAppId());

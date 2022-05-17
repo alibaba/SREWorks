@@ -43,9 +43,8 @@ public interface WorkflowInstanceProvider {
      * 恢复处于 SUSPEND 状态的 Workflow 实例
      *
      * @param workflowInstanceId Workflow 实例 ID
-     * @return 更新状态后的 Workflow 实例
      */
-    WorkflowInstanceDTO resume(Long workflowInstanceId);
+    void resume(Long workflowInstanceId);
 
     /**
      * 终止当前 Workflow 实例，并下发 InterruptedException 到 Task 侧

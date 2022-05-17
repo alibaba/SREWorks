@@ -16,7 +16,6 @@ class BChart extends Component {
       nodeParams: _.cloneDeep(props.nodeParams)
     }
     this.timerInterval = null
-    console.log(props, 'BCprops')
   }
   componentDidMount() {
     let { widgetConfig = {} } = this.props;
@@ -87,7 +86,6 @@ class BChart extends Component {
         value: 13,
       },
     ];
-    console.log(chartData, widgetData, 'BC-widgetData')
     let finalData = chartData || widgetData || data;
     let advConf = {};
     if (advancedConfig && advancedConfig.length > 40) {

@@ -36,6 +36,6 @@ public enum WorkflowStageEnum {
                 return item;
             }
         }
-        throw new IllegalArgumentException("No constant with text " + text + " found");
+        return PRE_RENDER;
     }
 }

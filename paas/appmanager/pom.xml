@@ -26,6 +26,7 @@
         <module>tesla-appmanager-server</module>
         <module>tesla-appmanager-start-standalone</module>
         <module>tesla-appmanager-workflow</module>
+        <module>tesla-appmanager-market</module>
     </modules>
 
     <name>tesla-appmanager</name>
@@ -172,6 +173,11 @@
             <dependency>
                 <groupId>com.alibaba.tesla</groupId>
                 <artifactId>tesla-appmanager-workflow</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.tesla</groupId>
+                <artifactId>tesla-appmanager-market</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

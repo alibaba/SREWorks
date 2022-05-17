@@ -3,7 +3,6 @@ package com.alibaba.tesla.appmanager.server.action.impl.deploy.app;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.tesla.appmanager.common.constants.AppFlowParamKey;
 import com.alibaba.tesla.appmanager.common.constants.AppFlowVariableKey;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.constants.TraitRuntimeConstant;
@@ -47,7 +46,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -314,11 +312,11 @@ public class ProcessingDeployAppStateAction implements DeployAppStateAction, App
             if (StringUtils.isEmpty(appInstanceName)) {
                 appInstanceName = appInstanceId;
             }
-            // 针对 appmeta / deploymentmeta 两个特殊的 INTERNAL_ADDON component, 默认不进行应用实例的创建
+            // 针对 appmeta / developmentmeta 两个特殊的 INTERNAL_ADDON component, 默认不进行应用实例的创建
             DeployAppRevisionName revision = DeployAppRevisionName.valueOf(specComponent.getRevisionName());
             if (ComponentTypeEnum.INTERNAL_ADDON.equals(revision.getComponentType())
                     && ("appmeta".equals(revision.getComponentName())
-                    || "deploymentmeta".equals(revision.getComponentName()))) {
+                    || "developmentmeta".equals(revision.getComponentName()))) {
                 continue;
             }
             RtAppInstanceDO appInstance = rtAppInstanceService.getOrCreate(RtAppInstanceQueryCondition.builder()

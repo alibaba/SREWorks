@@ -487,6 +487,7 @@ public class DeployAppSchema implements Schema, Serializable {
                     continue;
                 }
                 ref.setName(namespaceId);
+                found = true;
             }
             if (!found) {
                 scopes.add(SpecComponentScope.builder()
@@ -574,6 +575,7 @@ public class DeployAppSchema implements Schema, Serializable {
                     continue;
                 }
                 ref.setName(stageId);
+                found = true;
             }
             if (!found) {
                 scopes.add(SpecComponentScope.builder()

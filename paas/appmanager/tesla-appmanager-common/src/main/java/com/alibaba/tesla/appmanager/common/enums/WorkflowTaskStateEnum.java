@@ -92,6 +92,8 @@ public enum WorkflowTaskStateEnum {
                     return FAILURE;
                 } else if (WorkflowTaskEventEnum.WAITING_UNKNOWN_ERROR.equals(event)) {
                     return EXCEPTION;
+                } else if (WorkflowTaskEventEnum.TRIGGER_UPDATE.equals(event)) {
+                    return WAITING;
                 }
                 break;
             case WAITING_SUSPEND:

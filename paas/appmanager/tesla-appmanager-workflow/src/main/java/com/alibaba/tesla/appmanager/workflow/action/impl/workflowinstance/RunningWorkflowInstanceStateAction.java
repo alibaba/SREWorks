@@ -35,5 +35,6 @@ public class RunningWorkflowInstanceStateAction implements WorkflowInstanceState
     public void run(WorkflowInstanceDO instance) {
         log.info("the current workflow instance has entered the RUNNING state, waiting for all subtasks to complete|" +
                 "workflowInstanceId={}|appId={}", instance.getId(), instance.getAppId());
+        // TODO: foreach all subtasks
     }
 }

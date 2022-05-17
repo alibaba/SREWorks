@@ -90,15 +90,15 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
      * @param appId         应用 ID
      * @param configuration 启动配置
      * @param options       Workflow 配置项
-     * @param creator       创建者
      * @return 启动后的 Workflow 实例
      */
     @Override
     public WorkflowInstanceDO launch(
-            String appId, String configuration, WorkflowInstanceOption options, String creator) {
+            String appId, String configuration, WorkflowInstanceOption options) {
         String configurationSha256 = DigestUtils.sha256Hex(configuration);
         DeployAppSchema configurationSchema = SchemaUtil.toSchema(DeployAppSchema.class, configuration);
         enrichConfigurationSchema(configurationSchema);
+        String creator = options.getCreator();
         WorkflowInstanceDO record = WorkflowInstanceDO.builder()
                 .appId(appId)
                 .workflowStatus(WorkflowInstanceStateEnum.PENDING.toString())
@@ -163,7 +163,7 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
         if (snapshots.getItems().size() != 1) {
             throw new AppException(AppErrorCode.UNKNOWN_ERROR,
                     String.format("system error, expected 1 snapshot found|workflowInstanceId=%d|workflowTaskId=%d|" +
-                            "size=%d", nextPendingTask.getWorkflowInstanceId(), workflowTaskId,
+                                    "size=%d", nextPendingTask.getWorkflowInstanceId(), workflowTaskId,
                             snapshots.getItems().size()));
         }
         WorkflowSnapshotDO snapshot = snapshots.getItems().get(0);
@@ -273,11 +273,11 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
      * 该方法会获取 taskId 对应的快照内容，以此为输入进行重试
      *
      * @param workflowInstanceId Workflow 实例 ID
-     * @param taskId             Workflow Instance Task ID
+     * @param workflowTaskId     Workflow Task ID
      * @return 更新状态后的 Workflow 实例
      */
     @Override
-    public WorkflowInstanceDO retryFromTask(Long workflowInstanceId, String taskId) {
+    public WorkflowInstanceDO retryFromTask(Long workflowInstanceId, Long workflowTaskId) {
         return null;
     }
 

@@ -57,6 +57,7 @@ export default class ElementEditor extends React.Component {
             widgetMeta: null,
             isJsonEdit: false,
             configWrapper: JSON.parse(JSON.stringify(widgetModel.config)),
+            hasWrapper:JSON.parse(JSON.stringify(widgetModel.config)),
             customList: []
         };
         this.isFilter = widgetModel.isFilter();
@@ -92,7 +93,8 @@ export default class ElementEditor extends React.Component {
         this.commonConfig = Object.assign(this.commonConfig, cfg);
         if (cfg.hasWrapper) {
             this.setState({
-                configWrapper: cfg.wrapper || cfg
+                configWrapper: cfg.wrapper || cfg,
+                hasWrapper: cfg.hasWrapper || cfg
             })
         }
         // dispatch({ type: 'global/switchBtnLoading',payload:{btnLoading: true}});
@@ -150,7 +152,7 @@ export default class ElementEditor extends React.Component {
     }
     render() {
         let { widgetModel, widgetMeta, isJsonEdit } = this.state;
-        let { configWrapper, customList } = this.state;
+        let { configWrapper,customList,hasWrapper } = this.state;
         let CommonTabContent = null, tabContentStyle = { height: 'calc(45vh - 10px)', overflowY: "auto", overflowX: "none" };
         // if(this.isFilter){
         //      CommonTabContent=(props)=><FilterSetting {...props}/>;
@@ -290,7 +292,7 @@ export default class ElementEditor extends React.Component {
                         </TabPane>
                     }
                     {
-                        !this.isAction && !this.isFilter && (configWrapper && configWrapper !== Constants.CARD_WRAPPER_NONE) && (widgetMeta && widgetMeta.configSchema.supportToolbar) && !isJsonEdit &&
+                        !this.isAction && !this.isFilter && !(hasWrapper && hasWrapper === Constants.CARD_WRAPPER_NONE) && (widgetMeta && widgetMeta.configSchema.supportToolbar) && !isJsonEdit &&
                         <TabPane key="toolbar" tab={<span>工具栏</span>}>
                             <div style={tabContentStyle}>
                                 <ToolbarSetting widgetModel={widgetModel} config={Object.assign({}, this.commonConfig)} onValuesChange={(changedField, allValue) => this.setCommonConfig({ toolbar: allValue })} />

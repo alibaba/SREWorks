@@ -95,13 +95,13 @@ spec:
         - scopeRef:
             apiVersion: core.oam.dev/v1alpha2
             kind: Stage
-            name: ''
+            name: "{{ Global.STAGE_ID }}"
         - scopeRef:
             apiVersion: core.oam.dev/v1alpha2
             kind: Cluster
-            spec: {}
+            name: "{{ Global.CLUSTER_ID }}" 
         - scopeRef:
             apiVersion: core.oam.dev/v1alpha2
             kind: Namespace
-            spec: {}
+            name: "{{ Global.NAMESPACE_ID }}"
 

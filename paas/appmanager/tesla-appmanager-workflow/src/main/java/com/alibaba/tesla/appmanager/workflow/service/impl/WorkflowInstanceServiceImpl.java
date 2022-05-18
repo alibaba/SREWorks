@@ -9,10 +9,10 @@ import com.alibaba.tesla.appmanager.common.enums.WorkflowTaskStateEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
-import com.alibaba.tesla.appmanager.common.util.NetworkUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.option.WorkflowInstanceOption;
 import com.alibaba.tesla.appmanager.domain.req.UpdateWorkflowSnapshotReq;
+import com.alibaba.tesla.appmanager.domain.res.workflow.WorkflowInstanceOperationRes;
 import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
 import com.alibaba.tesla.appmanager.workflow.event.WorkflowInstanceEvent;
 import com.alibaba.tesla.appmanager.workflow.event.WorkflowTaskEvent;
@@ -27,15 +27,21 @@ import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO;
 import com.alibaba.tesla.appmanager.workflow.service.WorkflowInstanceService;
 import com.alibaba.tesla.appmanager.workflow.service.WorkflowSnapshotService;
 import com.alibaba.tesla.appmanager.workflow.service.WorkflowTaskService;
+import com.alibaba.tesla.appmanager.workflow.service.pubsub.WorkflowInstanceMessageConfig;
+import com.alibaba.tesla.appmanager.workflow.service.pubsub.WorkflowInstanceOperationCommand;
+import com.alibaba.tesla.appmanager.workflow.service.pubsub.WorkflowInstanceOperationCommandWaitingObject;
+import com.alibaba.tesla.appmanager.workflow.util.WorkflowNetworkUtil;
 import com.google.common.base.Enums;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
@@ -64,6 +70,12 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
 
     @Autowired
     private WorkflowTaskService workflowTaskService;
+
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+
+    @Autowired
+    private WorkflowNetworkUtil workflowNetworkUtil;
 
     /**
      * 根据 Workflow 实例 ID 获取对应的 Workflow 实例
@@ -114,6 +126,7 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
                 .workflowSha256(configurationSha256)
                 .workflowOptions(JSONObject.toJSONString(options))
                 .workflowCreator(options.getCreator())
+                .clientHost(workflowNetworkUtil.getClientHost())
                 .build();
         workflowInstanceRepository.insert(record);
         Long workflowInstanceId = record.getId();
@@ -264,18 +277,188 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
     }
 
     /**
-     * 恢复处于 SUSPEND 状态的 Workflow 实例
+     * 广播操作: 发送给当前 Workflow 实例命令
+     * <p>
+     * 等待结果最长 5s。如果没有响应，那么尝试将当前 workflow instance Owner 更新为自身
+     * <p>
+     * 如果更新 Owner 成功，开始本地命令执行；更新 Owner 失败则报错 (可能网络分区)
      *
      * @param workflowInstanceId Workflow 实例 ID
+     * @param command            命令
+     * @return 操作执行结果
      */
     @Override
-    public void resume(Long workflowInstanceId) {
-        WorkflowInstanceDO instance = get(workflowInstanceId, true);
-        if (instance == null) {
-            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "workflow instance not exists");
+    public WorkflowInstanceOperationRes broadcastCommand(Long workflowInstanceId, String command) {
+        WorkflowInstanceDO workflowInstance = get(workflowInstanceId, true);
+        if (workflowInstance == null) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("cannot find workflow instance by id %d", workflowInstanceId));
         }
+
+        // 发送广播信号并等待某节点回应
+        log.info("prepare to {} workflow instance and send the broadcast message to all nodes|" +
+                "workflowInstanceId={}", command, workflowInstanceId);
+        WorkflowInstanceOperationCommandWaitingObject waitingObject = WorkflowInstanceOperationCommandWaitingObject
+                .create(workflowInstanceId, command);
+        broadcastCommandMessage(command, workflowInstanceId);
+        log.info("broadcast message of {} workflow instance has sent to redis channel|workflowInstanceId={}",
+                command, workflowInstanceId);
+        WorkflowInstanceOperationRes executeResult;
+        try {
+            executeResult = waitingObject.wait(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            throw new AppException(AppErrorCode.COMMAND_ERROR,
+                    String.format("%s failed because of InterruptedException", command));
+        }
+
+        // 如果等到回来的广播消息，那么直接返回
+        if (executeResult != null) {
+            log.info("waiting for the execution of the {} command to complete, and the execution result " +
+                            "message has returned|workflowInstanceId={}|result={}", command, workflowInstanceId,
+                    JSONObject.toJSONString(executeResult));
+            return executeResult;
+        }
+
+        // 没有等到返回，说明可能该任务可能因为意外已经失去托管，那么尝试更新 workflow instance Owner 到自身
+        log.info("waiting for the execution of the {} command to complete failed, prepare to take control " +
+                "of the workflow instance|workflowInstanceId={}", command, workflowInstanceId);
+        String clientHost = workflowNetworkUtil.getClientHost();
+        workflowInstance.setClientHost(clientHost);
+        try {
+            update(workflowInstance);
+        } catch (AppException e) {
+            if (e.getErrorCode().equals(AppErrorCode.LOCKER_VERSION_EXPIRED)) {
+                throw new AppException(AppErrorCode.COMMAND_ERROR,
+                        "waiting broadcast message timeout and fight for owner failed");
+            } else {
+                throw e;
+            }
+        }
+
+        // 更新 owner 成功，则直接执行本地命令 (true 为响应信号; false 为其他可静默情况, 如多次并发执行)
+        log.info("workflow instance control has been acquired, prepare to {} it in local node|" +
+                "workflowInstanceId={}", command, workflowInstanceId);
+        boolean success;
+        if (WorkflowInstanceOperationCommand.COMMAND_TERMINATE.equals(command)) {
+            success = localTerminate(workflowInstance);
+        } else if (WorkflowInstanceOperationCommand.COMMAND_RESUME.equals(command)) {
+            success = localResume(workflowInstance);
+        } else if (WorkflowInstanceOperationCommand.COMMAND_RETRY.equals(command)) {
+            success = localRetry(workflowInstance);
+        } else {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "invalid command " + command);
+        }
+        if (success) {
+            return WorkflowInstanceOperationRes.builder()
+                    .command(command)
+                    .workflowInstanceId(workflowInstanceId)
+                    .clientHost(clientHost)
+                    .success(true)
+                    .message("")
+                    .build();
+        } else {
+            return WorkflowInstanceOperationRes.builder()
+                    .command(command)
+                    .workflowInstanceId(workflowInstanceId)
+                    .clientHost(clientHost)
+                    .success(false)
+                    .message("")
+                    .build();
+        }
+    }
+
+    /**
+     * 当前节点操作: 终止当前 Workflow 实例
+     *
+     * @param instance Workflow 实例
+     * @return 是否成功 (本地存在任务且响应了终止信号返回 true，其他可静默情况返回 false，非法情况抛异常)
+     */
+    @Override
+    public boolean localTerminate(WorkflowInstanceDO instance) {
+        // 如果当前 workflow instance 实例的 client_host 不属于自己，那么直接返回 false 表终止失败
+        if (!workflowNetworkUtil.getClientHost().equals(instance.getClientHost())) {
+            return false;
+        }
+
+        // 明确了所有权之后开始扫描并执行操作，幂等，状态不管怎么变，都返回 true（出现未知异常除外）
+        Long workflowInstanceId = instance.getId();
+        WorkflowInstanceStateEnum instanceStatus = Enums
+                .getIfPresent(WorkflowInstanceStateEnum.class, instance.getWorkflowStatus()).orNull();
+        if (instanceStatus == null) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("[local] invalid workflow instance status|workflowInstanceId=%d|instanceStatus=%s",
+                            instance.getId(), instance.getWorkflowStatus()));
+        }
+        if (instanceStatus.isFinalState()) {
+            log.info("[local] the workflow instance is already in final state and cannot be terminated again|" +
+                    "workflowInstanceId={}", workflowInstanceId);
+            return true;
+        }
+
+        // 对当前所有该 workflow instance 下面的 tasks 中处于 RUNNING 的发送终止信号
+        Pagination<WorkflowTaskDO> tasks = workflowTaskService.list(WorkflowTaskQueryCondition.builder()
+                .instanceId(instance.getId())
+                .withBlobs(false)
+                .build());
+        boolean found = false;
+        for (WorkflowTaskDO task : tasks.getItems()) {
+            WorkflowTaskStateEnum taskStatus = Enums
+                    .getIfPresent(WorkflowTaskStateEnum.class, task.getTaskStatus()).orNull();
+            if (taskStatus == null) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                        String.format("[local] invalid workflow task status|workflowInstanceId=%d|workflowTaskId=%d|" +
+                                "taskStatus=%s", instance.getId(), task.getId(), task.getTaskStatus()));
+            }
+
+            if (workflowTaskService.terminate(task.getId(), "terminated")) {
+                log.info("[local] interrupt has sent to running workflow task|workflowInstanceId={}|workflowTaskId={}",
+                        workflowInstanceId, task.getId());
+                found = true;
+            }
+        }
+
+        // 如果发现存在 tasks 响应了终止信号，说明存在流程会自动触发后续的 workflow instance 的状态更新
+        if (found) {
+            log.info("[local] terminate success, return immediately|workflowInstanceId={}", workflowInstanceId);
+            return true;
+        }
+
+        // 如果没有发现任何 tasks 可发送终止信号，那么尝试直接发送 OP_TERMINATE 到每个非终态的 tasks
+        log.info("[local] cannot find any subtasks to send interrupt signal, prepare to send OP_TERMINATE to all " +
+                "subtasks|workflowInstanceId={}", instance.getId());
+        for (WorkflowTaskDO task : tasks.getItems()) {
+            WorkflowTaskStateEnum taskStatus = Enums
+                    .getIfPresent(WorkflowTaskStateEnum.class, task.getTaskStatus()).orNull();
+            if (taskStatus != null && !taskStatus.isFinalState() && !taskStatus.equals(WorkflowTaskStateEnum.PENDING)) {
+                log.info("[local] prepare to send OP_TERMINATE event to workflow task|workflowInstanceId={}|" +
+                        "workflowTaskId={}", workflowInstanceId, task.getId());
+                publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.OP_TERMINATE, task));
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 恢复处于 SUSPEND 状态的 Workflow 实例
+     *
+     * @param instance Workflow 实例
+     * @return 是否成功 (本地存在任务且响应了终止信号返回 true，其他可静默情况返回 false，非法情况抛异常)
+     */
+    @Override
+    public boolean localResume(WorkflowInstanceDO instance) {
+        // 如果当前 workflow instance 实例的 client_host 不属于自己，那么直接返回 false 表恢复失败
+        if (!workflowNetworkUtil.getClientHost().equals(instance.getClientHost())) {
+            return false;
+        }
+
+        Long workflowInstanceId = instance.getId();
         String appId = instance.getAppId();
         log.info("prepare to resume the workflow instance|workflowInstanceId={}|appId={}", workflowInstanceId, appId);
+
+        // 发送 RESUME 事件到 workflow instance
+        publisher.publishEvent(new WorkflowInstanceEvent(this, WorkflowInstanceEventEnum.RESUME, instance));
+        log.info("the RESUME event has sent to workflow instance|workflowInstanceId={}|appId={}|previousStatus={}",
+                workflowInstanceId, appId, instance.getWorkflowStatus());
 
         // 遍历所有子任务，对于当前仍然处于 RUNNING_SUSPEND 或 WAITING_SUSPEND 状态的，进行 RESUME 事件发送
         Pagination<WorkflowTaskDO> tasks = workflowTaskService.list(WorkflowTaskQueryCondition.builder()
@@ -298,73 +481,7 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
                         task.getId(), task.getTaskType(), appId, status);
             }
         }
-    }
-
-    /**
-     * 终止当前 Workflow 实例，并下发 InterruptedException 到 Task 侧
-     * <p>
-     * 注意当前函数仅为当前节点服务，上层 terminate 请求需要广播到所有节点才可以
-     *
-     * @param workflowInstanceId Workflow 实例 ID
-     */
-    @Override
-    public void terminate(Long workflowInstanceId) {
-        WorkflowInstanceDO instance = get(workflowInstanceId, true);
-        if (instance == null) {
-            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "workflow instance not exists");
-        }
-        WorkflowInstanceStateEnum instanceStatus = Enums
-                .getIfPresent(WorkflowInstanceStateEnum.class, instance.getWorkflowStatus()).orNull();
-        if (instanceStatus == null) {
-            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                    String.format("invalid workflow instance status|workflowInstanceId=%d|instanceStatus=%s",
-                            instance.getId(), instance.getWorkflowStatus()));
-        }
-        if (instanceStatus.isFinalState()) {
-            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                    "the workflow instance is already in final state and cannot be terminated again");
-        }
-
-        // 对当前所有该 workflow instance 下面的 tasks 中处于 RUNNING 的发送终止信号
-        Pagination<WorkflowTaskDO> tasks = workflowTaskService.list(WorkflowTaskQueryCondition.builder()
-                .instanceId(instance.getId())
-                .withBlobs(false)
-                .build());
-        boolean found = false;
-        for (WorkflowTaskDO task : tasks.getItems()) {
-            WorkflowTaskStateEnum taskStatus = Enums
-                    .getIfPresent(WorkflowTaskStateEnum.class, task.getTaskStatus()).orNull();
-            if (taskStatus == null) {
-                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                        String.format("invalid workflow task status|workflowInstanceId=%d|workflowTaskId=%d|" +
-                                "taskStatus=%s", instance.getId(), task.getId(), task.getTaskStatus()));
-            }
-
-            if (workflowTaskService.terminate(task.getId(), "terminated")) {
-                log.info("interrupt has sent to running workflow task|workflowInstanceId={}|workflowTaskId={}",
-                        workflowInstanceId, task.getId());
-                found = true;
-            }
-        }
-
-        // 如果发现存在 tasks 响应了终止信号，说明存在流程会自动触发后续的 workflow instance 的状态更新
-        if (found) {
-            log.info("terminate success, return immediately|workflowInstanceId={}", workflowInstanceId);
-            return;
-        }
-
-        // 如果没有发现任何 tasks 可发送终止信号，那么尝试直接发送 OP_TERMINATE 到每个非终态的 tasks
-        log.info("cannot find any subtasks to send interrupt signal, prepare to send OP_TERMINATE to all subtasks|" +
-                "workflowInstanceId={}", instance.getId());
-        for (WorkflowTaskDO task : tasks.getItems()) {
-            WorkflowTaskStateEnum taskStatus = Enums
-                    .getIfPresent(WorkflowTaskStateEnum.class, task.getTaskStatus()).orNull();
-            if (taskStatus != null && !taskStatus.isFinalState() && !taskStatus.equals(WorkflowTaskStateEnum.PENDING)) {
-                log.info("prepare to send OP_TERMINATE event to workflow task|workflowInstanceId={}|workflowTaskId={}",
-                        workflowInstanceId, task.getId());
-                publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.OP_TERMINATE, task));
-            }
-        }
+        return true;
     }
 
     /**
@@ -372,12 +489,19 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
      * <p>
      * 注意该方法将会从第一个节点开始，使用原始参数重新运行一遍当前 Workflow 实例
      *
-     * @param workflowInstanceId Workflow 实例 ID
-     * @return 更新状态后的 Workflow 实例
+     * @param instance Workflow 实例
+     * @return 是否成功 (本地存在任务且响应了终止信号返回 true，其他可静默情况返回 false，非法情况抛异常)
      */
     @Override
-    public WorkflowInstanceDO retry(Long workflowInstanceId) {
-        return null;
+    public boolean localRetry(WorkflowInstanceDO instance) {
+        // 如果当前 workflow instance 实例的 client_host 不属于自己，那么直接返回 false 表恢复失败
+        if (!workflowNetworkUtil.getClientHost().equals(instance.getClientHost())) {
+            return false;
+        }
+
+        // TODO
+
+        return true;
     }
 
     /**
@@ -392,7 +516,7 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
      * @return 更新状态后的 Workflow 实例
      */
     @Override
-    public WorkflowInstanceDO retryFromTask(Long workflowInstanceId, Long workflowTaskId) {
+    public WorkflowInstanceDO localRetryFromTask(Long workflowInstanceId, Long workflowTaskId) {
         return null;
     }
 
@@ -413,5 +537,19 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
                     .build();
             configurationSchema.getSpec().setWorkflow(defaultWorkflow);
         }
+    }
+
+    /**
+     * 发送广播命令消息
+     *
+     * @param command            命令
+     * @param workflowInstanceId Workflow Instance ID
+     */
+    private void broadcastCommandMessage(String command, Long workflowInstanceId) {
+        redisTemplate.convertAndSend(WorkflowInstanceMessageConfig.TOPIC_WORKFLOW_INSTANCE_OPERATION_COMMAND,
+                JSONObject.toJSONString(WorkflowInstanceOperationCommand.builder()
+                        .command(command)
+                        .workflowInstanceId(workflowInstanceId)
+                        .build()));
     }
 }

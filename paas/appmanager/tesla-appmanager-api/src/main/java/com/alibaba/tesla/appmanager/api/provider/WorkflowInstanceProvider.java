@@ -4,6 +4,7 @@ import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.WorkflowInstanceDTO;
 import com.alibaba.tesla.appmanager.domain.option.WorkflowInstanceOption;
 import com.alibaba.tesla.appmanager.domain.req.workflow.WorkflowInstanceListReq;
+import com.alibaba.tesla.appmanager.domain.res.workflow.WorkflowInstanceOperationRes;
 
 /**
  * Workflow 实例 Provider
@@ -43,15 +44,17 @@ public interface WorkflowInstanceProvider {
      * 恢复处于 SUSPEND 状态的 Workflow 实例
      *
      * @param workflowInstanceId Workflow 实例 ID
+     * @return 执行结果
      */
-    void resume(Long workflowInstanceId);
+    WorkflowInstanceOperationRes resume(Long workflowInstanceId);
 
     /**
      * 终止当前 Workflow 实例，并下发 InterruptedException 到 Task 侧
      *
      * @param workflowInstanceId Workflow 实例 ID
+     * @return 执行结果
      */
-    void terminate(Long workflowInstanceId);
+    WorkflowInstanceOperationRes terminate(Long workflowInstanceId);
 
     /**
      * 重试当前已经到达终态的 Workflow 实例 (SUCCESS/FAILURE/EXCEPTION/TERMINATED)
@@ -59,9 +62,9 @@ public interface WorkflowInstanceProvider {
      * 注意该方法将会从第一个节点开始，使用原始参数重新运行一遍当前 Workflow 实例
      *
      * @param workflowInstanceId Workflow 实例 ID
-     * @return 更新状态后的 Workflow 实例
+     * @return 执行结果
      */
-    WorkflowInstanceDTO retry(Long workflowInstanceId);
+    WorkflowInstanceOperationRes retry(Long workflowInstanceId);
 
     /**
      * 重试当前已经到达终态的 Workflow 实例 (SUCCESS/FAILURE/EXCEPTION/TERMINATED)

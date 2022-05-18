@@ -69,10 +69,15 @@
 //        ac = ac.replace("PLACEHOLDER_APP_PACKAGE_ID", String.valueOf(appPackageId));
 //        WorkflowInstanceDTO res = workflowInstanceProvider
 //                .launch(APP_ID, ac, WorkflowInstanceOption.builder().creator(OPERATOR).build());
+//        boolean terminated = false;
 //        for (int i = 0; i < 30; i++) {
 //            WorkflowInstanceDTO result = workflowInstanceProvider.get(res.getId(), true);
 //            WorkflowInstanceStateEnum status = Enums
 //                    .getIfPresent(WorkflowInstanceStateEnum.class, result.getWorkflowStatus()).orNull();
+//            if (!terminated && status.equals(WorkflowInstanceStateEnum.SUSPEND)) {
+//                workflowInstanceProvider.resume(result.getId());
+//                terminated = true;
+//            }
 //            assertThat(status).isNotNull();
 //            switch (status) {
 //                case FAILURE:

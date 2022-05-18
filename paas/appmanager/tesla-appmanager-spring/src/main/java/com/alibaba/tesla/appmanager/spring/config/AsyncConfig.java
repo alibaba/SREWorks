@@ -1,6 +1,6 @@
 package com.alibaba.tesla.appmanager.spring.config;
 
-import com.alibaba.tesla.appmanager.autoconfig.AsyncExecutorProperties;
+import com.alibaba.tesla.appmanager.autoconfig.ThreadPoolProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -25,14 +25,14 @@ public class AsyncConfig implements AsyncConfigurer {
     private static final String THREAD_NAME_PREFIX = "async-thread-";
 
     @Autowired
-    private AsyncExecutorProperties asyncExecutorProperties;
+    private ThreadPoolProperties threadPoolProperties;
 
     @Override
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
-        taskExecutor.setCorePoolSize(asyncExecutorProperties.getCoreSize());
-        taskExecutor.setMaxPoolSize(asyncExecutorProperties.getMaxSize());
-        taskExecutor.setQueueCapacity(asyncExecutorProperties.getQueueCapacity());
+        taskExecutor.setCorePoolSize(threadPoolProperties.getAsyncExecutorCoreSize());
+        taskExecutor.setMaxPoolSize(threadPoolProperties.getAsyncExecutorMaxSize());
+        taskExecutor.setQueueCapacity(threadPoolProperties.getAsyncExecutorQueueCapacity());
         taskExecutor.setThreadNamePrefix(THREAD_NAME_PREFIX);
         taskExecutor.initialize();
         return taskExecutor;

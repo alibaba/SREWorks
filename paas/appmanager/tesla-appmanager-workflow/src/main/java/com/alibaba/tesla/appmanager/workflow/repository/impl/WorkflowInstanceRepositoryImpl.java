@@ -53,7 +53,11 @@ public class WorkflowInstanceRepositoryImpl implements WorkflowInstanceRepositor
     @Override
     public List<WorkflowInstanceDO> selectByCondition(WorkflowInstanceQueryCondition condition) {
         condition.doPagination();
-        return mapper.selectByExample(buildExample(condition));
+        if (condition.isWithBlobs()) {
+            return mapper.selectByExampleWithBLOBs(buildExample(condition));
+        } else {
+            return mapper.selectByExample(buildExample(condition));
+        }
     }
 
     @Override

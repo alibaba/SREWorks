@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @EnableConfigurationProperties({
-    AppNacosProperties.class,
-    AsyncExecutorProperties.class,
-    PackageProperties.class,
-    ClusterProperties.class,
-    SystemProperties.class,
-    AuthProperties.class,
-    ImageBuilderProperties.class,
+        AppNacosProperties.class,
+        PackageProperties.class,
+        ClusterProperties.class,
+        SystemProperties.class,
+        AuthProperties.class,
+        ImageBuilderProperties.class,
+        ThreadPoolProperties.class,
 })
 @Component
 @ComponentScan(value = {"com.alibaba.tesla.appmanager.autoconfig"})

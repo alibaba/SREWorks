@@ -50,9 +50,8 @@ public interface WorkflowInstanceProvider {
      * 终止当前 Workflow 实例，并下发 InterruptedException 到 Task 侧
      *
      * @param workflowInstanceId Workflow 实例 ID
-     * @return 更新状态后的 Workflow 实例
      */
-    WorkflowInstanceDTO terminate(Long workflowInstanceId);
+    void terminate(Long workflowInstanceId);
 
     /**
      * 重试当前已经到达终态的 Workflow 实例 (SUCCESS/FAILURE/EXCEPTION/TERMINATED)

@@ -87,21 +87,45 @@ public enum WorkflowInstanceStateEnum {
                     return RUNNING;
                 } else if (WorkflowInstanceEventEnum.OP_TERMINATE.equals(event)) {
                     return TERMINATED;
+                } else if (WorkflowInstanceEventEnum.PROCESS_FINISHED.equals(event)) {
+                    return SUCCESS;
+                } else if (WorkflowInstanceEventEnum.PROCESS_FAILED.equals(event)) {
+                    return FAILURE;
+                } else if (WorkflowInstanceEventEnum.PROCESS_UNKNOWN_ERROR.equals(event)) {
+                    return EXCEPTION;
                 }
                 break;
             case SUCCESS:
             case FAILURE:
             case EXCEPTION:
+                if (WorkflowInstanceEventEnum.OP_RETRY.equals(event)) {
+                    return RUNNING;
+                }
+                break;
             case TERMINATED:
                 if (WorkflowInstanceEventEnum.OP_RETRY.equals(event)) {
                     return RUNNING;
+                } else if (WorkflowInstanceEventEnum.PAUSE.equals(event)) {
+                    return SUSPEND;
+                } else if (WorkflowInstanceEventEnum.OP_TERMINATE.equals(event)) {
+                    return TERMINATED;
+                } else if (WorkflowInstanceEventEnum.PROCESS_FINISHED.equals(event)) {
+                    return SUCCESS;
+                } else if (WorkflowInstanceEventEnum.PROCESS_FAILED.equals(event)) {
+                    return FAILURE;
+                } else if (WorkflowInstanceEventEnum.PROCESS_UNKNOWN_ERROR.equals(event)) {
+                    return EXCEPTION;
                 }
                 break;
         }
         return null;
     }
 
-    public Boolean isErrorState() {
+    public boolean isErrorState() {
         return this.equals(FAILURE) || this.equals(EXCEPTION) || this.equals(TERMINATED);
+    }
+
+    public boolean isFinalState() {
+        return this.equals(SUCCESS) || this.equals(FAILURE) || this.equals(EXCEPTION) || this.equals(TERMINATED);
     }
 }

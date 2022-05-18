@@ -108,12 +108,22 @@ public enum WorkflowTaskStateEnum {
             case SUCCESS:
             case FAILURE:
             case EXCEPTION:
-            case TERMINATED:
                 if (WorkflowTaskEventEnum.OP_RETRY.equals(event)) {
                     return RUNNING;
                 }
                 break;
+            case TERMINATED:
+                if (WorkflowTaskEventEnum.OP_RETRY.equals(event)) {
+                    return RUNNING;
+                } else if (WorkflowTaskEventEnum.OP_TERMINATE.equals(event)) {
+                    return TERMINATED;
+                }
+                break;
         }
         return null;
+    }
+
+    public boolean isFinalState() {
+        return this.equals(SUCCESS) || this.equals(FAILURE) || this.equals(EXCEPTION) || this.equals(TERMINATED);
     }
 }

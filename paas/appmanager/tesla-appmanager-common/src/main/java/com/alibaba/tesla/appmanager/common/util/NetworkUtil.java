@@ -58,19 +58,6 @@ public class NetworkUtil {
     }
 
     /**
-     * 获取当前本机 Hostname 地址
-     *
-     * @return 本机 Hostname 地址
-     */
-    public static String getCurrentHostnameAddress() {
-        try {
-            return InetAddress.getLocalHost().getHostName();
-        } catch (UnknownHostException e) {
-            throw new AppException(AppErrorCode.NETWORK_ERROR, "Cannot get current hostname address", e);
-        }
-    }
-
-    /**
      * 拼接 URL 工具
      *
      * @param baseUrl   原 URL

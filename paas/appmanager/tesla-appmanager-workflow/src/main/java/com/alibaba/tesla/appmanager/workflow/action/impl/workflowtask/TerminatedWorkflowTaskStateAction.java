@@ -3,7 +3,9 @@ package com.alibaba.tesla.appmanager.workflow.action.impl.workflowtask;
 import com.alibaba.tesla.appmanager.common.enums.WorkflowTaskStateEnum;
 import com.alibaba.tesla.appmanager.workflow.action.WorkflowTaskStateAction;
 import com.alibaba.tesla.appmanager.workflow.event.loader.WorkflowTaskStateActionLoadedEvent;
+import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO;
+import com.alibaba.tesla.appmanager.workflow.service.WorkflowInstanceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -20,6 +22,9 @@ public class TerminatedWorkflowTaskStateAction implements WorkflowTaskStateActio
     @Autowired
     private ApplicationEventPublisher publisher;
 
+    @Autowired
+    private WorkflowInstanceService workflowInstanceService;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         publisher.publishEvent(new WorkflowTaskStateActionLoadedEvent(
@@ -35,5 +40,7 @@ public class TerminatedWorkflowTaskStateAction implements WorkflowTaskStateActio
     public void run(WorkflowTaskDO task) {
         log.info("the current workflow task enters the TERMINATED state|workflowInstanceId={}|workflowTaskId={}",
                 task.getWorkflowInstanceId(), task.getId());
+        WorkflowInstanceDO instance = workflowInstanceService.get(task.getWorkflowInstanceId(), true);
+        workflowInstanceService.triggerOpTerminate(instance, "terminated");
     }
 }

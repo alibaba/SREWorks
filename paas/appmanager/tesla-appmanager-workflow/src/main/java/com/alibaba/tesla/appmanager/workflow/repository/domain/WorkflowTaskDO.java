@@ -1,10 +1,11 @@
 package com.alibaba.tesla.appmanager.workflow.repository.domain;
 
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 /**
  * Workflow 任务表
@@ -63,11 +64,6 @@ public class WorkflowTaskDO {
      * Workflow 任务节点状态 (PENDING, RUNNING, WAITING[完成UserFunction后等待完成], SUSPEND, SUCCESS, FAILURE, EXCEPTION, TERMINATED)
      */
     private String taskStatus;
-
-    /**
-     * Workflow 任务当前所在执行节点 Hostname
-     */
-    private String clientHostname;
 
     /**
      * 部署单 ID

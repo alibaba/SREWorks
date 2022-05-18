@@ -1,6 +1,6 @@
 package com.alibaba.tesla.appmanager.server.job;
 
-import com.alibaba.tesla.appmanager.server.repository.domain.RtComponentInstanceDO;
+import com.alibaba.tesla.appmanager.autoconfig.ThreadPoolProperties;
 import com.alibaba.tesla.appmanager.server.service.rtappinstance.RtAppInstanceService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -25,18 +25,11 @@ import java.util.concurrent.*;
 @Slf4j
 public class RtAppInstanceStatusUpdateJob {
 
-    /**
-     * 应用实例更新线程池参数
-     * <p>
-     * TODO: 调整到 Properties 中供用户配置
-     */
-    private static final int CORE_POOL_SIZE = 20;
-    private static final int MAXIMUM_POOL_SIZE = 40;
-    private static final long KEEP_ALIVE_TIME = 60L;
-    private static final int QUEUE_SIZE = 150000;
-
     @Autowired
     private RtAppInstanceService rtAppInstanceService;
+
+    @Autowired
+    private ThreadPoolProperties threadPoolProperties;
 
     private ThreadPoolExecutor threadPoolExecutor;
 
@@ -46,8 +39,10 @@ public class RtAppInstanceStatusUpdateJob {
     public void init() {
         synchronized (threadPoolExecutorLock) {
             threadPoolExecutor = new ThreadPoolExecutor(
-                    CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS,
-                    new LinkedBlockingQueue<>(QUEUE_SIZE),
+                    threadPoolProperties.getRtAppInstanceStatusUpdateCoreSize(),
+                    threadPoolProperties.getRtAppInstanceStatusUpdateMaxSize(),
+                    threadPoolProperties.getRtAppInstanceStatusUpdateKeepAlive(), TimeUnit.SECONDS,
+                    new LinkedBlockingQueue<>(threadPoolProperties.getRtAppInstanceStatusUpdateQueueCapacity()),
                     r -> new Thread(r, "app-instance-status-update-" + r.hashCode()),
                     new ThreadPoolExecutor.AbortPolicy()
             );

@@ -51,24 +51,9 @@ public class WorkflowInstanceDO {
     private String workflowStatus;
 
     /**
-     * 工作流执行出错信息 (仅 workflow_status==EXCEPTION 下存在)
-     */
-    private String workflowErrorMessage;
-
-    /**
-     * Workflow Configuration
-     */
-    private String workflowConfiguration;
-
-    /**
      * Workflow Configuration SHA256
      */
     private String workflowSha256;
-
-    /**
-     * Workflow 启动选项 (JSON)
-     */
-    private String workflowOptions;
 
     /**
      * 创建人
@@ -79,4 +64,24 @@ public class WorkflowInstanceDO {
      * 乐观锁版本
      */
     private Integer lockVersion;
+
+    /**
+     * 当前工作 IP
+     */
+    private String clientHost;
+
+    /**
+     * 工作流执行出错信息 (仅 workflow_status==EXCEPTION 下存在)
+     */
+    private String workflowErrorMessage;
+
+    /**
+     * Workflow Configuration
+     */
+    private String workflowConfiguration;
+
+    /**
+     * Workflow 启动选项 (JSON)
+     */
+    private String workflowOptions;
 }

@@ -87,12 +87,11 @@ public class WorkflowInstanceProviderImpl implements WorkflowInstanceProvider {
      * 终止当前 Workflow 实例，并下发 InterruptedException 到 Task 侧
      *
      * @param workflowInstanceId Workflow 实例 ID
-     * @return 更新状态后的 Workflow 实例
      */
     @Override
-    public WorkflowInstanceDTO terminate(Long workflowInstanceId) {
-        WorkflowInstanceDO instance = workflowInstanceService.terminate(workflowInstanceId);
-        return convert.to(instance);
+    public void terminate(Long workflowInstanceId) {
+        // TODO: 广播发到所有节点
+        workflowInstanceService.terminate(workflowInstanceId);
     }
 
     /**

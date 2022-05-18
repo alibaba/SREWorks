@@ -62,11 +62,15 @@ public class ExecuteWorkflowTaskWaitingObject {
      * 触发指定 Workflow 任务运行对象的终止事件，通知外界可获取当前结果
      *
      * @param workflowTaskId Workflow 任务 ID
+     * @return boolean 是否存在该记录以发送终止信号
      */
-    public static void triggerTerminated(Long workflowTaskId, String extMessage) {
+    public static boolean triggerTerminated(Long workflowTaskId, String extMessage) {
         ExecuteWorkflowTaskWaitingObject task = TASK_MAP.remove(workflowTaskId);
         if (task != null) {
             task.onTerminated(extMessage);
+            return true;
+        } else {
+            return false;
         }
     }
 

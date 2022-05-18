@@ -58,8 +58,7 @@
 
         <!-- tesla -->
         <tesla.spring.boot.version>2.1.6-SNAPSHOT</tesla.spring.boot.version>
-        <tesla-check-dag-service.version>2.1.6-SNAPSHOT</tesla-check-dag-service.version>
-        <tesla-task-flow.version>1.0.9-SNAPSHOT</tesla-task-flow.version>
+        <task-flow-service.version>1.1.0</task-flow-service.version>
 
         <!-- other -->
         <jackson-annotations.version>2.13.2</jackson-annotations.version>
@@ -477,9 +476,9 @@
                 <version>${guava.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
-                <artifactId>tesla-task-flow-service</artifactId>
-                <version>${tesla-task-flow.version}</version>
+                <groupId>io.sreworks</groupId>
+                <artifactId>task-flow-service</artifactId>
+                <version>${task-flow-service.version}</version>
             </dependency>
 
             <!-- jsonpath -->

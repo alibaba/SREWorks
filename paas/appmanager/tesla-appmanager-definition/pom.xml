@@ -33,8 +33,8 @@
             <artifactId>tesla-webmvc-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
-            <artifactId>tesla-task-flow-service</artifactId>
+            <groupId>io.sreworks</groupId>
+            <artifactId>task-flow-service</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

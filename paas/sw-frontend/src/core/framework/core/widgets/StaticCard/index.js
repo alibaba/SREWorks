@@ -8,7 +8,7 @@ class StaticCard extends Component {
 
   render() {
     let { widgetData, widgetConfig = {} } = this.props;
-    let { renderAction, backgroundImg, cardTitle, cardWidth, cardHeight, cardIcon = '', bordered } = widgetConfig;
+    let { renderAction, backgroundImg,cardWidth, cardHeight, cardIcon = '', bordered=false } = widgetConfig;
     const data = [
       {
         value: 28,
@@ -57,14 +57,14 @@ class StaticCard extends Component {
         // }
         statistic={{
           title: (widgetData && widgetData.title) || undefined,
-          value: (widgetData && widgetData.value) || cardTitle || undefined,
+          value: (widgetData && widgetData.value) || undefined,
           icon:
             (backgroundImg || cardIcon || (widgetData && widgetData.icon)) ?
               <img
                 style={imgStyle}
                 src={backgroundImg || cardIcon || (widgetData && widgetData.icon)}
                 alt="icon"
-              /> : <Avatar style={{ fontSize: 26, width: 48, height: 48, lineHeight: "48px", backgroundColor: 'var(--PrimaryColor)', verticalAlign: 'middle' }} size="large">{(widgetData && widgetData.value && widgetData.value[0]) || (cardTitle && cardTitle[0])}</Avatar>
+              /> : <Avatar style={{ fontSize: 26, width: 48, height: 48, lineHeight: "48px", backgroundColor: 'var(--PrimaryColor)', verticalAlign: 'middle' }} size="large">{(widgetData && widgetData.value && widgetData.value[0])}</Avatar>
           ,
         }}
         footer={

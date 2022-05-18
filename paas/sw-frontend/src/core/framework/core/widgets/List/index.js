@@ -84,14 +84,14 @@ export default class ListRender extends Component {
   }
   render() {
     let { widgetData = [], widgetConfig = {}, actionParams, ...otherProps } = this.props;
-    let { bordered, header, footer, listItem, itemLayout, itemToolbar, columns = [],emptyText='',minHeight } = widgetConfig;
+    let { bordered, header, footer, listItem, itemLayout, itemToolbar, columns = [], emptyText = '', minHeight } = widgetConfig;
     let { title, description, avatar, extra, href, content } = listItem;
     let { total, pageSize, currentPage, splitData } = this.state;
-    return <div style={{ width: '100%',minHeight }}>
+    return <div style={{ width: '100%', minHeight }}>
       <List
         bordered={bordered}
         locale={{
-          emptyText:emptyText ? <JSXRender  {...this.props} jsx={emptyText} /> : null
+          emptyText: emptyText ? <JSXRender  {...this.props} jsx={emptyText} /> : null
         }}
         itemLayout={itemLayout}
         className="card-list-ant"
@@ -143,12 +143,12 @@ export default class ListRender extends Component {
                           {item[column.dataIndex] || '-'}
                         </Popover> */}
                         {
-                          column.isLink ? <a href={'#/'+item[column.dataIndex]} target='_blank'>{item[column.dataIndex]}</a> : 
-                          <Popover content={item[column.dataIndex] || '-'}>
-                          {item[column.dataIndex] || '-'}
-                        </Popover>
+                          column.isLink ? <a href={'#/' + item[column.dataIndex]} target='_blank'>{item[column.dataIndex]}</a> :
+                            <Popover content={item[column.dataIndex] || '-'}>
+                              {item[column.dataIndex] || '-'}
+                            </Popover>
                         }
-                        </div>
+                      </div>
                     </div>
                   </div>
                 }

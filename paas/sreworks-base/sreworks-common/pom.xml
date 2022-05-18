@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>sreworks</artifactId>
-        <groupId>com.alibaba.sreworks</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <artifactId>sreworks-base</artifactId>
+        <groupId>io.sreworks</groupId>
+        <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -87,20 +87,14 @@
             <version>2.6.1</version>
         </dependency>
         <dependency>
-            <groupId>com.cdancy</groupId>
-            <artifactId>jenkins-rest</artifactId>
-            <version>0.0.29</version>
-            <classifier>all</classifier>
-        </dependency>
-        <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20171018</version>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
-            <artifactId>tesla-appmanager-auth-client</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <groupId>io.sreworks</groupId>
+            <artifactId>appmanager-auth-client</artifactId>
+            <version>1.0.4</version>
         </dependency>
     </dependencies>
 

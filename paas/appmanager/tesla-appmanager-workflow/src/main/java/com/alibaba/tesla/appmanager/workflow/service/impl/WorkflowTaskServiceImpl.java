@@ -1,8 +1,11 @@
 package com.alibaba.tesla.appmanager.workflow.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.autoconfig.ThreadPoolProperties;
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum;
 import com.alibaba.tesla.appmanager.common.enums.WorkflowTaskStateEnum;
+import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
+import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.req.UpdateWorkflowSnapshotReq;
@@ -24,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -39,24 +43,6 @@ import java.util.function.Function;
 @Slf4j
 public class WorkflowTaskServiceImpl implements WorkflowTaskService {
 
-    /**
-     * Workflow Task 线程池参数
-     */
-    private static final int CORE_POOL_SIZE = 20;
-    private static final int MAXIMUM_POOL_SIZE = 40;
-    private static final long KEEP_ALIVE_TIME = 60L;
-    private static final int QUEUE_SIZE = 1000;
-
-    /**
-     * Workflow Task 线程池
-     */
-    private final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
-            CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS,
-            new LinkedBlockingQueue<>(QUEUE_SIZE),
-            r -> new Thread(r, "workflow-task-" + r.hashCode()),
-            new ThreadPoolExecutor.AbortPolicy()
-    );
-
     @Autowired
     private WorkflowSnapshotService workflowSnapshotService;
 
@@ -65,6 +51,30 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
 
     @Autowired
     private GroovyHandlerFactory groovyHandlerFactory;
+
+    @Autowired
+    private ThreadPoolProperties threadPoolProperties;
+
+    /**
+     * Workflow Task 线程池
+     */
+    private ThreadPoolExecutor threadPoolExecutor;
+
+    private final Object threadPoolExecutorLock = new Object();
+
+    @PostConstruct
+    public void init() {
+        synchronized (threadPoolExecutorLock) {
+            threadPoolExecutor = new ThreadPoolExecutor(
+                    threadPoolProperties.getWorkflowTaskCoreSize(),
+                    threadPoolProperties.getWorkflowTaskMaxSize(),
+                    threadPoolProperties.getWorkflowTaskKeepAlive(), TimeUnit.SECONDS,
+                    new LinkedBlockingQueue<>(threadPoolProperties.getWorkflowTaskQueueCapacity()),
+                    r -> new Thread(r, "workflow-task-" + r.hashCode()),
+                    new ThreadPoolExecutor.AbortPolicy()
+            );
+        }
+    }
 
     /**
      * 根据 WorkflowTaskID 获取对应的 WorkflowTask 对象
@@ -129,6 +139,12 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
      */
     @Override
     public WorkflowTaskDO execute(WorkflowInstanceDO instance, WorkflowTaskDO task, JSONObject context) {
+        synchronized (threadPoolExecutorLock) {
+            if (threadPoolExecutor == null) {
+                throw new AppException(AppErrorCode.NOT_READY, "system not ready");
+            }
+        }
+
         DeployAppSchema configuration = SchemaUtil.toSchema(DeployAppSchema.class, instance.getWorkflowConfiguration());
         ExecuteWorkflowTaskWaitingObject waitingObject = ExecuteWorkflowTaskWaitingObject.create(task.getId());
         threadPoolExecutor.submit(() -> {
@@ -231,8 +247,8 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
      * @param extMessage     终止时的扩展信息存储字符串
      */
     @Override
-    public void terminate(Long workflowTaskId, String extMessage) {
-        ExecuteWorkflowTaskWaitingObject.triggerTerminated(workflowTaskId, extMessage);
+    public boolean terminate(Long workflowTaskId, String extMessage) {
+        return ExecuteWorkflowTaskWaitingObject.triggerTerminated(workflowTaskId, extMessage);
     }
 
     /**

@@ -50,13 +50,6 @@ export default {
     "schema": {
       "type": "object",
       "properties": {
-        "cardTitle": {
-          "description": "卡片标题",
-          "title": "卡片标题",
-          "required": true,
-          "x-component": "Input",
-          "type": "string",
-        },
         "backgroundImg": {
           "description": "标题icon",
           "title": "标题icon",
@@ -70,7 +63,7 @@ export default {
           "title": "卡片边框",
           "required": false,
             "type": "string",
-            "initValue":true,
+            "initValue":false,
             "x-component": "Radio",
             "x-component-props": {
               "options": [{"value": false, "label": "否"}, {"value": true, "label": "是"}],
@@ -89,7 +82,7 @@ export default {
           "title": "卡片宽度",
           "required": false,
           "type": "string",
-          "x-component": "Input",
+          "x-component": "INPUT_NUMBER",
           "type": "string",
         },
         "cardHeight": {
@@ -97,17 +90,17 @@ export default {
           "title": "卡片高度",
           "required": false,
           "type": "string",
-          "x-component": "Input",
+          "x-component": "INPUT_NUMBER",
           "type": "string",
         },
-        "renderAction": {
-          "description": "卡片交互操作区域，在此为render",
-          "title": "操作",
-          "required": false,
-          "type": "string",
-          "x-component": "Text",
-          "type": "string",
-        },
+        // "renderAction": {
+        //   "description": "卡片交互操作区域，在此为render",
+        //   "title": "操作",
+        //   "required": false,
+        //   "type": "string",
+        //   "x-component": "Text",
+        //   "type": "string",
+        // },
       },
     },
     "supportItemToolbar": false,

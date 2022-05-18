@@ -11,12 +11,17 @@
     <result column="gmt_start" jdbcType="TIMESTAMP" property="gmtStart" />
     <result column="gmt_end" jdbcType="TIMESTAMP" property="gmtEnd" />
     <result column="workflow_status" jdbcType="VARCHAR" property="workflowStatus" />
-    <result column="workflow_error_message" jdbcType="LONGVARCHAR" property="workflowErrorMessage" />
-    <result column="workflow_configuration" jdbcType="LONGVARCHAR" property="workflowConfiguration" />
     <result column="workflow_sha256" jdbcType="VARCHAR" property="workflowSha256" />
-    <result column="workflow_options" jdbcType="LONGVARCHAR" property="workflowOptions" />
     <result column="workflow_creator" jdbcType="VARCHAR" property="workflowCreator" />
     <result column="lock_version" jdbcType="INTEGER" property="lockVersion" />
+    <result column="client_host" jdbcType="VARCHAR" property="clientHost" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO">
+    <!--@mbg.generated-->
+    <!--@Table am_workflow_instance-->
+    <result column="workflow_error_message" jdbcType="LONGVARCHAR" property="workflowErrorMessage" />
+    <result column="workflow_configuration" jdbcType="LONGVARCHAR" property="workflowConfiguration" />
+    <result column="workflow_options" jdbcType="LONGVARCHAR" property="workflowOptions" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <!--@mbg.generated-->
@@ -80,9 +85,30 @@
   </sql>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, gmt_create, gmt_modified, app_id, gmt_start, gmt_end, workflow_status, workflow_error_message, 
-    workflow_configuration, workflow_sha256, workflow_options, workflow_creator, lock_version
+    id, gmt_create, gmt_modified, app_id, gmt_start, gmt_end, workflow_status, workflow_sha256, 
+    workflow_creator, lock_version, client_host
   </sql>
+  <sql id="Blob_Column_List">
+    <!--@mbg.generated-->
+    workflow_error_message, workflow_configuration, workflow_options
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDOExample" resultMap="ResultMapWithBLOBs">
+    <!--@mbg.generated-->
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from am_workflow_instance
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
   <select id="selectByExample" parameterType="com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDOExample" resultMap="BaseResultMap">
     <!--@mbg.generated-->
     select
@@ -127,23 +153,26 @@
       <if test="workflowStatus != null">
         workflow_status,
       </if>
-      <if test="workflowErrorMessage != null">
-        workflow_error_message,
-      </if>
-      <if test="workflowConfiguration != null">
-        workflow_configuration,
-      </if>
       <if test="workflowSha256 != null">
         workflow_sha256,
-      </if>
-      <if test="workflowOptions != null">
-        workflow_options,
       </if>
       <if test="workflowCreator != null">
         workflow_creator,
       </if>
       <if test="lockVersion != null">
         lock_version,
+      </if>
+      <if test="clientHost != null">
+        client_host,
+      </if>
+      <if test="workflowErrorMessage != null">
+        workflow_error_message,
+      </if>
+      <if test="workflowConfiguration != null">
+        workflow_configuration,
+      </if>
+      <if test="workflowOptions != null">
+        workflow_options,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -165,23 +194,26 @@
       <if test="workflowStatus != null">
         #{workflowStatus,jdbcType=VARCHAR},
       </if>
-      <if test="workflowErrorMessage != null">
-        #{workflowErrorMessage,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="workflowConfiguration != null">
-        #{workflowConfiguration,jdbcType=LONGVARCHAR},
-      </if>
       <if test="workflowSha256 != null">
         #{workflowSha256,jdbcType=VARCHAR},
-      </if>
-      <if test="workflowOptions != null">
-        #{workflowOptions,jdbcType=LONGVARCHAR},
       </if>
       <if test="workflowCreator != null">
         #{workflowCreator,jdbcType=VARCHAR},
       </if>
       <if test="lockVersion != null">
         #{lockVersion,jdbcType=INTEGER},
+      </if>
+      <if test="clientHost != null">
+        #{clientHost,jdbcType=VARCHAR},
+      </if>
+      <if test="workflowErrorMessage != null">
+        #{workflowErrorMessage,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="workflowConfiguration != null">
+        #{workflowConfiguration,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="workflowOptions != null">
+        #{workflowOptions,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
@@ -216,20 +248,23 @@
       <if test="record.workflowStatus != null">
         workflow_status = #{record.workflowStatus,jdbcType=VARCHAR},
       </if>
+      <if test="record.workflowSha256 != null">
+        workflow_sha256 = #{record.workflowSha256,jdbcType=VARCHAR},
+      </if>
+      <if test="record.workflowCreator != null">
+        workflow_creator = #{record.workflowCreator,jdbcType=VARCHAR},
+      </if>
+      <if test="record.clientHost != null">
+        client_host = #{record.clientHost,jdbcType=VARCHAR},
+      </if>
       <if test="record.workflowErrorMessage != null">
         workflow_error_message = #{record.workflowErrorMessage,jdbcType=LONGVARCHAR},
       </if>
       <if test="record.workflowConfiguration != null">
         workflow_configuration = #{record.workflowConfiguration,jdbcType=LONGVARCHAR},
       </if>
-      <if test="record.workflowSha256 != null">
-        workflow_sha256 = #{record.workflowSha256,jdbcType=VARCHAR},
-      </if>
       <if test="record.workflowOptions != null">
         workflow_options = #{record.workflowOptions,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="record.workflowCreator != null">
-        workflow_creator = #{record.workflowCreator,jdbcType=VARCHAR},
       </if>
       lock_version = lock_version + 1,
     </set>
@@ -258,20 +293,23 @@
       <if test="workflowStatus != null">
         workflow_status = #{workflowStatus,jdbcType=VARCHAR},
       </if>
+      <if test="workflowSha256 != null">
+        workflow_sha256 = #{workflowSha256,jdbcType=VARCHAR},
+      </if>
+      <if test="workflowCreator != null">
+        workflow_creator = #{workflowCreator,jdbcType=VARCHAR},
+      </if>
+      <if test="clientHost != null">
+        client_host = #{clientHost,jdbcType=VARCHAR},
+      </if>
       <if test="workflowErrorMessage != null">
         workflow_error_message = #{workflowErrorMessage,jdbcType=LONGVARCHAR},
       </if>
       <if test="workflowConfiguration != null">
         workflow_configuration = #{workflowConfiguration,jdbcType=LONGVARCHAR},
       </if>
-      <if test="workflowSha256 != null">
-        workflow_sha256 = #{workflowSha256,jdbcType=VARCHAR},
-      </if>
       <if test="workflowOptions != null">
         workflow_options = #{workflowOptions,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="workflowCreator != null">
-        workflow_creator = #{workflowCreator,jdbcType=VARCHAR},
       </if>
       lock_version = lock_version + 1,
     </set>

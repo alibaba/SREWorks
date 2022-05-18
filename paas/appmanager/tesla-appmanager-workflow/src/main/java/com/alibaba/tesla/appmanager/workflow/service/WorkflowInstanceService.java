@@ -4,6 +4,7 @@ import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.option.WorkflowInstanceOption;
 import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowInstanceQueryCondition;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
+import com.alibaba.tesla.appmanager.domain.res.workflow.WorkflowInstanceOperationRes;
 
 /**
  * 工作流实例服务
@@ -62,7 +63,7 @@ public interface WorkflowInstanceService {
      * @param instance     WorkflowInstance
      * @param errorMessage 错误信息
      */
-    void triggerFailure(WorkflowInstanceDO instance, String errorMessage);
+    void triggerProcessFailed(WorkflowInstanceDO instance, String errorMessage);
 
     /**
      * 对指定 workflow instance 触发异常事件
@@ -70,7 +71,7 @@ public interface WorkflowInstanceService {
      * @param instance     WorkflowInstance
      * @param errorMessage 错误信息
      */
-    void triggerException(WorkflowInstanceDO instance, String errorMessage);
+    void triggerProcessUnknownError(WorkflowInstanceDO instance, String errorMessage);
 
     /**
      * 触发指定 Workflow 实例的状态更新，根据当前所有子 Task 的状态进行汇聚更新
@@ -83,32 +84,61 @@ public interface WorkflowInstanceService {
     WorkflowInstanceDO triggerUpdate(Long workflowInstanceId);
 
     /**
-     * 恢复处于 SUSPEND 状态的 Workflow 实例
+     * 对指定 workflow instance 触发终止事件
      *
-     * @param workflowInstanceId Workflow 实例 ID
+     * @param instance     WorkflowInstance
+     * @param errorMessage 错误信息
      */
-    void resume(Long workflowInstanceId);
+    void triggerOpTerminate(WorkflowInstanceDO instance, String errorMessage);
 
     /**
-     * 终止当前 Workflow 实例，并下发 InterruptedException 到 Task 侧
+     * 对指定 workflow instance 触发暂停事件
+     *
+     * @param instance WorkflowInstance
+     */
+    void triggerPause(WorkflowInstanceDO instance);
+
+    /**
+     * 广播操作: 终止当前 Workflow 实例
+     * <p>
+     * 等待结果最长 5s。如果没有响应，那么尝试将当前 workflow instance Owner 更新为自身
+     * <p>
+     * 如果更新 Owner 成功，执行强制终止；更新 Owner 失败则报错 (可能网络分区)
      *
      * @param workflowInstanceId Workflow 实例 ID
-     * @return 更新状态后的 Workflow 实例
+     * @param command 命令
+     * @return 操作执行结果
      */
-    WorkflowInstanceDO terminate(Long workflowInstanceId);
+    WorkflowInstanceOperationRes broadcastCommand(Long workflowInstanceId, String command);
+
+    /**
+     * 当前节点操作: 终止当前 Workflow 实例
+     *
+     * @param instance Workflow 实例
+     * @return 是否成功 (本地存在任务且响应了终止信号返回 true，其他可静默情况返回 false，非法情况抛异常)
+     */
+    boolean localTerminate(WorkflowInstanceDO instance);
+
+    /**
+     * 恢复处于 SUSPEND 状态的 Workflow 实例
+     *
+     * @param instance Workflow 实例
+     * @return 是否成功 (本地存在任务且响应了终止信号返回 true，其他可静默情况返回 false，非法情况抛异常)
+     */
+    boolean localResume(WorkflowInstanceDO instance);
 
     /**
      * 重试当前已经到达终态的 Workflow 实例 (SUCCESS/FAILURE/EXCEPTION/TERMINATED)
      * <p>
      * 注意该方法将会从第一个节点开始，使用原始参数重新运行一遍当前 Workflow 实例
      *
-     * @param workflowInstanceId Workflow 实例 ID
-     * @return 更新状态后的 Workflow 实例
+     * @param instance Workflow 实例
+     * @return 是否成功 (本地存在任务且响应了终止信号返回 true，其他可静默情况返回 false，非法情况抛异常)
      */
-    WorkflowInstanceDO retry(Long workflowInstanceId);
+    boolean localRetry(WorkflowInstanceDO instance);
 
     /**
-     * 重试当前已经到达终态的 Workflow 实例 (SUCCESS/FAILURE/EXCEPTION/TERMINATED)
+     * 当前节点操作: 重试当前已经到达终态的 Workflow 实例 (SUCCESS/FAILURE/EXCEPTION/TERMINATED)
      * <p>
      * 注意该方法从指定 taskId 开始进行重试，即重新运行 taskId 及之后的所有 WorkflowInstance 任务
      * <p>
@@ -118,5 +148,5 @@ public interface WorkflowInstanceService {
      * @param workflowTaskId     Workflow Task ID
      * @return 更新状态后的 Workflow 实例
      */
-    WorkflowInstanceDO retryFromTask(Long workflowInstanceId, Long workflowTaskId);
+    WorkflowInstanceDO localRetryFromTask(Long workflowInstanceId, Long workflowTaskId);
 }

@@ -9,6 +9,8 @@ import com.alibaba.tesla.appmanager.workflow.assembly.WorkflowInstanceDtoConvert
 import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowInstanceQueryCondition;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
 import com.alibaba.tesla.appmanager.workflow.service.WorkflowInstanceService;
+import com.alibaba.tesla.appmanager.domain.res.workflow.WorkflowInstanceOperationRes;
+import com.alibaba.tesla.appmanager.workflow.service.pubsub.WorkflowInstanceOperationCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -77,22 +79,24 @@ public class WorkflowInstanceProviderImpl implements WorkflowInstanceProvider {
      * 恢复处于 SUSPEND 状态的 Workflow 实例
      *
      * @param workflowInstanceId Workflow 实例 ID
+     * @return 执行结果
      */
     @Override
-    public void resume(Long workflowInstanceId) {
-        workflowInstanceService.resume(workflowInstanceId);
+    public WorkflowInstanceOperationRes resume(Long workflowInstanceId) {
+        return workflowInstanceService.broadcastCommand(workflowInstanceId,
+                WorkflowInstanceOperationCommand.COMMAND_RESUME);
     }
 
     /**
      * 终止当前 Workflow 实例，并下发 InterruptedException 到 Task 侧
      *
      * @param workflowInstanceId Workflow 实例 ID
-     * @return 更新状态后的 Workflow 实例
+     * @return 执行结果
      */
     @Override
-    public WorkflowInstanceDTO terminate(Long workflowInstanceId) {
-        WorkflowInstanceDO instance = workflowInstanceService.terminate(workflowInstanceId);
-        return convert.to(instance);
+    public WorkflowInstanceOperationRes terminate(Long workflowInstanceId) {
+        return workflowInstanceService.broadcastCommand(workflowInstanceId,
+                WorkflowInstanceOperationCommand.COMMAND_TERMINATE);
     }
 
     /**
@@ -101,12 +105,12 @@ public class WorkflowInstanceProviderImpl implements WorkflowInstanceProvider {
      * 注意该方法将会从第一个节点开始，使用原始参数重新运行一遍当前 Workflow 实例
      *
      * @param workflowInstanceId Workflow 实例 ID
-     * @return 更新状态后的 Workflow 实例
+     * @return 执行结果
      */
     @Override
-    public WorkflowInstanceDTO retry(Long workflowInstanceId) {
-        WorkflowInstanceDO instance = workflowInstanceService.retry(workflowInstanceId);
-        return convert.to(instance);
+    public WorkflowInstanceOperationRes retry(Long workflowInstanceId) {
+        return workflowInstanceService.broadcastCommand(workflowInstanceId,
+                WorkflowInstanceOperationCommand.COMMAND_RETRY);
     }
 
     /**
@@ -122,7 +126,7 @@ public class WorkflowInstanceProviderImpl implements WorkflowInstanceProvider {
      */
     @Override
     public WorkflowInstanceDTO retryFromTask(Long workflowInstanceId, Long workflowTaskId) {
-        WorkflowInstanceDO instance = workflowInstanceService.retryFromTask(workflowInstanceId, workflowTaskId);
+        WorkflowInstanceDO instance = workflowInstanceService.localRetryFromTask(workflowInstanceId, workflowTaskId);
         return convert.to(instance);
     }
 }

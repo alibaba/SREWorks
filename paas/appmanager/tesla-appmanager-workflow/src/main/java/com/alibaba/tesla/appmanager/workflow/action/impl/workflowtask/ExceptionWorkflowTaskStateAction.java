@@ -41,6 +41,6 @@ public class ExceptionWorkflowTaskStateAction implements WorkflowTaskStateAction
         log.info("the current workflow task enters the EXCEPTION state|workflowInstanceId={}|workflowTaskId={}",
                 task.getWorkflowInstanceId(), task.getId());
         WorkflowInstanceDO instance = workflowInstanceService.get(task.getWorkflowInstanceId(), false);
-        workflowInstanceService.triggerException(instance, task.getTaskErrorMessage());
+        workflowInstanceService.triggerProcessUnknownError(instance, task.getTaskErrorMessage());
     }
 }

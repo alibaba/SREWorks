@@ -31,6 +31,10 @@
         </dependency>
         <dependency>
             <groupId>com.alibaba.tesla</groupId>
+            <artifactId>tesla-appmanager-auth</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.tesla</groupId>
             <artifactId>tesla-appmanager-definition</artifactId>
         </dependency>
         <dependency>

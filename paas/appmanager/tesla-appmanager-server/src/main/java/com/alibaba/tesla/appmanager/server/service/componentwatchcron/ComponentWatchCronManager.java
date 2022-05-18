@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.server.service.componentwatchcron;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.autoconfig.ThreadPoolProperties;
 import com.alibaba.tesla.appmanager.common.enums.ComponentInstanceStatusEnum;
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
@@ -54,21 +55,6 @@ public class ComponentWatchCronManager {
     private static final Long BORDER_TIMES_5M = 1000000000L;
 
     /**
-     * 检查任务线程池配置
-     */
-    private static final int CORE_POOL_SIZE = 100;
-    private static final int MAXIMUM_POOL_SIZE = 150;
-    private static final long KEEP_ALIVE_TIME = 60L;
-    private static final int QUEUE_SIZE = 100000;
-
-    /**
-     * FAILED 状态检查任务线程池配置
-     */
-    private static final int FAILED_CORE_POOL_SIZE = 20;
-    private static final int FAILED_MAXIMUM_POOL_SIZE = 30;
-    private static final int FAILED_QUEUE_SIZE = 200000;
-
-    /**
      * 组件获取状态 (运行中) 常量
      */
     private static final List<String> RUNNING_STATUS_LIST = Arrays.asList(
@@ -102,20 +88,27 @@ public class ComponentWatchCronManager {
     @Autowired
     private GroovyHandlerFactory groovyHandlerFactory;
 
+    @Autowired
+    private ThreadPoolProperties threadPoolProperties;
+
     @PostConstruct
     public void init() {
         synchronized (threadPoolExecutorLock) {
             threadPoolExecutor = new ThreadPoolExecutor(
-                    CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS,
-                    new LinkedBlockingQueue<>(QUEUE_SIZE),
+                    threadPoolProperties.getComponentWatchCronManagerCoreSize(),
+                    threadPoolProperties.getComponentWatchCronManagerMaxSize(),
+                    threadPoolProperties.getComponentWatchCronManagerKeepAlive(), TimeUnit.SECONDS,
+                    new LinkedBlockingQueue<>(threadPoolProperties.getComponentWatchCronManagerQueueCapacity()),
                     r -> new Thread(r, "component-watch-cron-manager-" + r.hashCode()),
                     new ThreadPoolExecutor.AbortPolicy()
             );
         }
         synchronized (failedThreadPoolExecutorLock) {
             failedThreadPoolExecutor = new ThreadPoolExecutor(
-                    FAILED_CORE_POOL_SIZE, FAILED_MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS,
-                    new LinkedBlockingQueue<>(FAILED_QUEUE_SIZE),
+                    threadPoolProperties.getComponentWatchCronFailedTaskManagerCoreSize(),
+                    threadPoolProperties.getComponentWatchCronFailedTaskManagerMaxSize(),
+                    threadPoolProperties.getComponentWatchCronFailedTaskManagerKeepAlive(), TimeUnit.SECONDS,
+                    new LinkedBlockingQueue<>(threadPoolProperties.getComponentWatchCronFailedTaskManagerQueueCapacity()),
                     r -> new Thread(r, "component-watch-cron-manager-failed-" + r.hashCode()),
                     new ThreadPoolExecutor.AbortPolicy()
             );

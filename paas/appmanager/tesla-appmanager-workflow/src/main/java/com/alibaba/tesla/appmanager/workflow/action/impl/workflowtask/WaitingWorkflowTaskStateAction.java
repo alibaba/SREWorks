@@ -53,6 +53,7 @@ public class WaitingWorkflowTaskStateAction implements WorkflowTaskStateAction, 
             log.info("skip workflow task waiting process|workflowInstanceId={}|workflowTaskId={}|taskStatus={}",
                     task.getWorkflowInstanceId(), task.getId(), task.getTaskStatus());
             publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.WAITING_FINISHED, task));
+            return;
         }
 
         DeployAppGetReq request = DeployAppGetReq.builder().deployAppId(deployAppId).build();

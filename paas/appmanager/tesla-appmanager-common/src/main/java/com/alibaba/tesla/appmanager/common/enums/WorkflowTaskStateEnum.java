@@ -72,6 +72,8 @@ public enum WorkflowTaskStateEnum {
                     return FAILURE;
                 } else if (WorkflowTaskEventEnum.PROCESS_UNKNOWN_ERROR.equals(event)) {
                     return EXCEPTION;
+                } else if (WorkflowTaskEventEnum.PROCESS_SUSPEND.equals(event)) {
+                    return WAITING_SUSPEND;
                 }
                 break;
             case RUNNING_SUSPEND:
@@ -92,6 +94,8 @@ public enum WorkflowTaskStateEnum {
                     return FAILURE;
                 } else if (WorkflowTaskEventEnum.WAITING_UNKNOWN_ERROR.equals(event)) {
                     return EXCEPTION;
+                } else if (WorkflowTaskEventEnum.TRIGGER_UPDATE.equals(event)) {
+                    return WAITING;
                 }
                 break;
             case WAITING_SUSPEND:

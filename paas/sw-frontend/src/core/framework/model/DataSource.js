@@ -6,6 +6,7 @@ import * as util from '../../../utils/utils';
 import httpClient from '../../../utils/httpClient';
 import safeEval from '../../../utils/SafeEval';
 import Constants from './Constants';
+import { message } from 'antd';
 /**
  * 数据源父类,定义数据源的共性行为无实现
  */
@@ -75,8 +76,8 @@ export class ApiDataSource extends DataSource {
         //长度进行了判断是因为存在模板函数
         let reqParams = {};
         if (beforeRequestHandler && beforeRequestHandler.length > 50) {
-            reqParams = safeEval("(" + beforeRequestHandler + ")(nodeParams)", { nodeParams: nodeParams});
-            params = {...params,...reqParams}
+            reqParams = safeEval("(" + beforeRequestHandler + ")(nodeParams)", { nodeParams: nodeParams });
+            params = { ...params, ...reqParams }
         }
         let request = null;
         if (method === 'GET' && api) {
@@ -116,8 +117,12 @@ export class FunctionDataSource extends DataSource {
     }
     query(nodeParams) {
         let { } = this.sourceMeta
-        if (this.sourceMeta.function) {
-            return safeEval("(" + this.sourceMeta.function + ")(nodeParams)", { nodeParams: nodeParams });
+        try{
+            if (this.sourceMeta.function) {
+                return safeEval("(" + this.sourceMeta.function + ")(nodeParams)", { nodeParams: nodeParams });
+            }
+        } catch(err) {
+            message.warning('格式有误!')
         }
         return null;
     }
@@ -131,12 +136,18 @@ export class JSONDataSource extends DataSource {
         super(sourceMeta);
     }
     query(nodeParams) {
-        let renderSource = util.renderTemplateJsonObject(this.sourceMeta, nodeParams);
-        let json = renderSource.JSON || null;
-        if (typeof json === 'string') {
-            json = JSON.parse(json);
+        let json = {}
+        try {
+            let renderSource = util.renderTemplateJsonObject(this.sourceMeta, nodeParams);
+            let json = renderSource.JSON || null;
+            if (typeof json === 'string') {
+                json = JSON.parse(json);
+            }
+            return json;
+        } catch(err) {
+            json = {}
+            message.warning("数据格式有误!")
         }
-        return json;
     }
 }
 

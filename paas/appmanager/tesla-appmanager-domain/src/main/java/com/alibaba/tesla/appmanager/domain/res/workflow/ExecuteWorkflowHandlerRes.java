@@ -34,4 +34,9 @@ public class ExecuteWorkflowHandlerRes implements Serializable {
      * 如果当前 workflow 触发了部署，那么此处返回部署单 ID
      */
     private Long deployAppId;
+
+    /**
+     * 是否暂停
+     */
+    private boolean suspend;
 }

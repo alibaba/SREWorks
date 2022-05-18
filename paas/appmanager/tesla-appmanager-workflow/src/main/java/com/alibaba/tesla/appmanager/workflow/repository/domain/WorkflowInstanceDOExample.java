@@ -545,146 +545,6 @@ public class WorkflowInstanceDOExample {
             return (Criteria) this;
         }
 
-        public Criteria andWorkflowErrorMessageIsNull() {
-            addCriterion("workflow_error_message is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowErrorMessageIsNotNull() {
-            addCriterion("workflow_error_message is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowErrorMessageEqualTo(String value) {
-            addCriterion("workflow_error_message =", value, "workflowErrorMessage");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowErrorMessageNotEqualTo(String value) {
-            addCriterion("workflow_error_message <>", value, "workflowErrorMessage");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowErrorMessageGreaterThan(String value) {
-            addCriterion("workflow_error_message >", value, "workflowErrorMessage");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowErrorMessageGreaterThanOrEqualTo(String value) {
-            addCriterion("workflow_error_message >=", value, "workflowErrorMessage");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowErrorMessageLessThan(String value) {
-            addCriterion("workflow_error_message <", value, "workflowErrorMessage");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowErrorMessageLessThanOrEqualTo(String value) {
-            addCriterion("workflow_error_message <=", value, "workflowErrorMessage");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowErrorMessageLike(String value) {
-            addCriterion("workflow_error_message like", value, "workflowErrorMessage");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowErrorMessageNotLike(String value) {
-            addCriterion("workflow_error_message not like", value, "workflowErrorMessage");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowErrorMessageIn(List<String> values) {
-            addCriterion("workflow_error_message in", values, "workflowErrorMessage");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowErrorMessageNotIn(List<String> values) {
-            addCriterion("workflow_error_message not in", values, "workflowErrorMessage");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowErrorMessageBetween(String value1, String value2) {
-            addCriterion("workflow_error_message between", value1, value2, "workflowErrorMessage");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowErrorMessageNotBetween(String value1, String value2) {
-            addCriterion("workflow_error_message not between", value1, value2, "workflowErrorMessage");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowConfigurationIsNull() {
-            addCriterion("workflow_configuration is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowConfigurationIsNotNull() {
-            addCriterion("workflow_configuration is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowConfigurationEqualTo(String value) {
-            addCriterion("workflow_configuration =", value, "workflowConfiguration");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowConfigurationNotEqualTo(String value) {
-            addCriterion("workflow_configuration <>", value, "workflowConfiguration");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowConfigurationGreaterThan(String value) {
-            addCriterion("workflow_configuration >", value, "workflowConfiguration");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowConfigurationGreaterThanOrEqualTo(String value) {
-            addCriterion("workflow_configuration >=", value, "workflowConfiguration");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowConfigurationLessThan(String value) {
-            addCriterion("workflow_configuration <", value, "workflowConfiguration");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowConfigurationLessThanOrEqualTo(String value) {
-            addCriterion("workflow_configuration <=", value, "workflowConfiguration");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowConfigurationLike(String value) {
-            addCriterion("workflow_configuration like", value, "workflowConfiguration");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowConfigurationNotLike(String value) {
-            addCriterion("workflow_configuration not like", value, "workflowConfiguration");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowConfigurationIn(List<String> values) {
-            addCriterion("workflow_configuration in", values, "workflowConfiguration");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowConfigurationNotIn(List<String> values) {
-            addCriterion("workflow_configuration not in", values, "workflowConfiguration");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowConfigurationBetween(String value1, String value2) {
-            addCriterion("workflow_configuration between", value1, value2, "workflowConfiguration");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowConfigurationNotBetween(String value1, String value2) {
-            addCriterion("workflow_configuration not between", value1, value2, "workflowConfiguration");
-            return (Criteria) this;
-        }
-
         public Criteria andWorkflowSha256IsNull() {
             addCriterion("workflow_sha256 is null");
             return (Criteria) this;
@@ -752,76 +612,6 @@ public class WorkflowInstanceDOExample {
 
         public Criteria andWorkflowSha256NotBetween(String value1, String value2) {
             addCriterion("workflow_sha256 not between", value1, value2, "workflowSha256");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowOptionsIsNull() {
-            addCriterion("workflow_options is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowOptionsIsNotNull() {
-            addCriterion("workflow_options is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowOptionsEqualTo(String value) {
-            addCriterion("workflow_options =", value, "workflowOptions");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowOptionsNotEqualTo(String value) {
-            addCriterion("workflow_options <>", value, "workflowOptions");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowOptionsGreaterThan(String value) {
-            addCriterion("workflow_options >", value, "workflowOptions");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowOptionsGreaterThanOrEqualTo(String value) {
-            addCriterion("workflow_options >=", value, "workflowOptions");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowOptionsLessThan(String value) {
-            addCriterion("workflow_options <", value, "workflowOptions");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowOptionsLessThanOrEqualTo(String value) {
-            addCriterion("workflow_options <=", value, "workflowOptions");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowOptionsLike(String value) {
-            addCriterion("workflow_options like", value, "workflowOptions");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowOptionsNotLike(String value) {
-            addCriterion("workflow_options not like", value, "workflowOptions");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowOptionsIn(List<String> values) {
-            addCriterion("workflow_options in", values, "workflowOptions");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowOptionsNotIn(List<String> values) {
-            addCriterion("workflow_options not in", values, "workflowOptions");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowOptionsBetween(String value1, String value2) {
-            addCriterion("workflow_options between", value1, value2, "workflowOptions");
-            return (Criteria) this;
-        }
-
-        public Criteria andWorkflowOptionsNotBetween(String value1, String value2) {
-            addCriterion("workflow_options not between", value1, value2, "workflowOptions");
             return (Criteria) this;
         }
 
@@ -952,6 +742,76 @@ public class WorkflowInstanceDOExample {
 
         public Criteria andLockVersionNotBetween(Integer value1, Integer value2) {
             addCriterion("lock_version not between", value1, value2, "lockVersion");
+            return (Criteria) this;
+        }
+
+        public Criteria andClientHostIsNull() {
+            addCriterion("client_host is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andClientHostIsNotNull() {
+            addCriterion("client_host is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andClientHostEqualTo(String value) {
+            addCriterion("client_host =", value, "clientHost");
+            return (Criteria) this;
+        }
+
+        public Criteria andClientHostNotEqualTo(String value) {
+            addCriterion("client_host <>", value, "clientHost");
+            return (Criteria) this;
+        }
+
+        public Criteria andClientHostGreaterThan(String value) {
+            addCriterion("client_host >", value, "clientHost");
+            return (Criteria) this;
+        }
+
+        public Criteria andClientHostGreaterThanOrEqualTo(String value) {
+            addCriterion("client_host >=", value, "clientHost");
+            return (Criteria) this;
+        }
+
+        public Criteria andClientHostLessThan(String value) {
+            addCriterion("client_host <", value, "clientHost");
+            return (Criteria) this;
+        }
+
+        public Criteria andClientHostLessThanOrEqualTo(String value) {
+            addCriterion("client_host <=", value, "clientHost");
+            return (Criteria) this;
+        }
+
+        public Criteria andClientHostLike(String value) {
+            addCriterion("client_host like", value, "clientHost");
+            return (Criteria) this;
+        }
+
+        public Criteria andClientHostNotLike(String value) {
+            addCriterion("client_host not like", value, "clientHost");
+            return (Criteria) this;
+        }
+
+        public Criteria andClientHostIn(List<String> values) {
+            addCriterion("client_host in", values, "clientHost");
+            return (Criteria) this;
+        }
+
+        public Criteria andClientHostNotIn(List<String> values) {
+            addCriterion("client_host not in", values, "clientHost");
+            return (Criteria) this;
+        }
+
+        public Criteria andClientHostBetween(String value1, String value2) {
+            addCriterion("client_host between", value1, value2, "clientHost");
+            return (Criteria) this;
+        }
+
+        public Criteria andClientHostNotBetween(String value1, String value2) {
+            addCriterion("client_host not between", value1, value2, "clientHost");
             return (Criteria) this;
         }
     }

@@ -12,7 +12,7 @@ public class WorkflowConstant {
     /**
      * 默认 Workflow 类型
      */
-    public static final String DEFAULT_WORKFLOW_TYPE = "default-deploy";
+    public static final String DEFAULT_WORKFLOW_TYPE = "deploy";
 
     /**
      * 默认 Workflow 运行阶段

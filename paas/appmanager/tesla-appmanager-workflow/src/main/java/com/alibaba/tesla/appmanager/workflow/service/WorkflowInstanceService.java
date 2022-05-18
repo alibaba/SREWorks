@@ -62,7 +62,7 @@ public interface WorkflowInstanceService {
      * @param instance     WorkflowInstance
      * @param errorMessage 错误信息
      */
-    void triggerFailure(WorkflowInstanceDO instance, String errorMessage);
+    void triggerProcessFailed(WorkflowInstanceDO instance, String errorMessage);
 
     /**
      * 对指定 workflow instance 触发异常事件
@@ -70,7 +70,7 @@ public interface WorkflowInstanceService {
      * @param instance     WorkflowInstance
      * @param errorMessage 错误信息
      */
-    void triggerException(WorkflowInstanceDO instance, String errorMessage);
+    void triggerProcessUnknownError(WorkflowInstanceDO instance, String errorMessage);
 
     /**
      * 触发指定 Workflow 实例的状态更新，根据当前所有子 Task 的状态进行汇聚更新
@@ -83,6 +83,21 @@ public interface WorkflowInstanceService {
     WorkflowInstanceDO triggerUpdate(Long workflowInstanceId);
 
     /**
+     * 对指定 workflow instance 触发终止事件
+     *
+     * @param instance     WorkflowInstance
+     * @param errorMessage 错误信息
+     */
+    void triggerOpTerminate(WorkflowInstanceDO instance, String errorMessage);
+
+    /**
+     * 对指定 workflow instance 触发暂停事件
+     *
+     * @param instance     WorkflowInstance
+     */
+    void triggerPause(WorkflowInstanceDO instance);
+
+    /**
      * 恢复处于 SUSPEND 状态的 Workflow 实例
      *
      * @param workflowInstanceId Workflow 实例 ID
@@ -91,11 +106,12 @@ public interface WorkflowInstanceService {
 
     /**
      * 终止当前 Workflow 实例，并下发 InterruptedException 到 Task 侧
+     * <p>
+     * 注意当前函数仅为当前节点服务，上层 terminate 请求需要广播到所有节点才可以
      *
      * @param workflowInstanceId Workflow 实例 ID
-     * @return 更新状态后的 Workflow 实例
      */
-    WorkflowInstanceDO terminate(Long workflowInstanceId);
+    void terminate(Long workflowInstanceId);
 
     /**
      * 重试当前已经到达终态的 Workflow 实例 (SUCCESS/FAILURE/EXCEPTION/TERMINATED)

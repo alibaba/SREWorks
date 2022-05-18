@@ -15,6 +15,8 @@ public interface WorkflowInstanceDOMapper {
 
     int insertSelective(WorkflowInstanceDO record);
 
+    List<WorkflowInstanceDO> selectByExampleWithBLOBs(WorkflowInstanceDOExample example);
+
     List<WorkflowInstanceDO> selectByExample(WorkflowInstanceDOExample example);
 
     int updateByExampleSelective(@Param("record") WorkflowInstanceDO record, @Param("example") WorkflowInstanceDOExample example);

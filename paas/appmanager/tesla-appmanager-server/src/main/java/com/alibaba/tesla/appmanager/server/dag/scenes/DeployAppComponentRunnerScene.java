@@ -24,24 +24,15 @@ public class DeployAppComponentRunnerScene extends AbstractLocalDagBase {
         node("DeployAppTraitNode");
 
         edge("DeployAppDeciderNode", "DeployAppCreateComponentNode",
-                String.format("#DeployAppDeciderNode['output']['%s'] == '%s' || " +
-                                "#DeployAppDeciderNode['output']['%s'] == '%s' || " +
-                                "#DeployAppDeciderNode['output']['%s'] == '%s' || " +
-                                "#DeployAppDeciderNode['output']['%s'] == '%s' || " +
-                                "#DeployAppDeciderNode['output']['%s'] == '%s' || " +
-                                "#DeployAppDeciderNode['output']['%s'] == '%s'",
+                String.format("#DeployAppDeciderNode['output']['%s'] != '%s' && " +
+                                "#DeployAppDeciderNode['output']['%s'] != '%s' && " +
+                                "#DeployAppDeciderNode['output']['%s'] != '%s'",
                         AppFlowParamKey.COMPONENT_TYPE,
-                        ComponentTypeEnum.K8S_MICROSERVICE,
+                        ComponentTypeEnum.RESOURCE_ADDON,
                         AppFlowParamKey.COMPONENT_TYPE,
-                        ComponentTypeEnum.INTERNAL_ADDON,
+                        ComponentTypeEnum.TRAIT_ADDON,
                         AppFlowParamKey.COMPONENT_TYPE,
-                        ComponentTypeEnum.ABM_CHART,
-                        AppFlowParamKey.COMPONENT_TYPE,
-                        ComponentTypeEnum.HELM,
-                        AppFlowParamKey.COMPONENT_TYPE,
-                        ComponentTypeEnum.ABM_OPERATOR_TVD,
-                        AppFlowParamKey.COMPONENT_TYPE,
-                        ComponentTypeEnum.K8S_JOB));
+                        ComponentTypeEnum.CUSTOM_ADDON));
         edge("DeployAppDeciderNode", "DeployAppCreateResourceAddonNode",
                 String.format("#DeployAppDeciderNode['output']['%s'] == '%s'",
                         AppFlowParamKey.COMPONENT_TYPE,

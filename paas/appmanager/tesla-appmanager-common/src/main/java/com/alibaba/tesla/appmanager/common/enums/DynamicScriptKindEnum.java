@@ -58,6 +58,26 @@ public enum DynamicScriptKindEnum {
     DEPLOY_ASI_COMPONENT,
 
     /**
+     * 构建 ABM Kustomize 模块
+     */
+    BUILD_ABM_KUSTOMIZE_COMPONENT,
+
+    /**
+     * 部署 ABM Kustomize 模块
+     */
+    DEPLOY_ABM_KUSTOMIZE_COMPONENT,
+
+    /**
+     * 构建 ABM Helm 模块
+     */
+    BUILD_ABM_HELM_COMPONENT,
+
+    /**
+     * 部署 ABM Helm 模块
+     */
+    DEPLOY_ABM_HELM_COMPONENT,
+
+    /**
      * 通用构建 Resource Addon 模块
      */
     BUILD_RESOURCE_ADDON_COMPONENT,

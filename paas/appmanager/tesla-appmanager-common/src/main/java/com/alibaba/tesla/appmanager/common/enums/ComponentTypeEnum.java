@@ -64,7 +64,17 @@ public enum ComponentTypeEnum {
     /**
      * ASI Component
      */
-    ASI_COMPONENT;
+    ASI_COMPONENT,
+
+    /**
+     * ABM Kustomize Component
+     */
+    ABM_KUSTOMIZE,
+
+    /**
+     * ABM Helm Component
+     */
+    ABM_HELM;
 
     public static ComponentTypeEnum parse(String value) {
         ComponentTypeEnum result = Enums.getIfPresent(ComponentTypeEnum.class, value).orNull();

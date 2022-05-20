@@ -63,6 +63,39 @@
 //        launchKustomizeWorkflow();
 //    }
 //
+//    @Test
+//    public void testAbmHelm() throws Exception {
+//        launchHelmWorkflow();
+//    }
+//
+//    /**
+//     * 发起服务部署
+//     */
+//    private long launchHelmWorkflow() throws Exception {
+//        String ac = FixtureUtil.getFixture("application_configuration/e2e_workflow_helm.yaml");
+//        WorkflowInstanceDTO res = workflowInstanceProvider
+//                .launch(APP_ID, ac, WorkflowInstanceOption.builder().creator(OPERATOR).build());
+//        for (int i = 0; i < 30; i++) {
+//            WorkflowInstanceDTO result = workflowInstanceProvider.get(res.getId(), true);
+//            WorkflowInstanceStateEnum status = Enums
+//                    .getIfPresent(WorkflowInstanceStateEnum.class, result.getWorkflowStatus()).orNull();
+//            assertThat(status).isNotNull();
+//            switch (status) {
+//                case FAILURE:
+//                case EXCEPTION:
+//                case TERMINATED:
+//                    throw new AppException(AppErrorCode.DEPLOY_ERROR,
+//                            String.format("test launch workflow failed||order=%s", JSONObject.toJSONString(result)));
+//                case SUCCESS:
+//                    return result.getId();
+//                default:
+//                    break;
+//            }
+//            Thread.sleep(5000);
+//        }
+//        throw new AppException(AppErrorCode.UNKNOWN_ERROR, "timeout applying workflow");
+//    }
+//
 //    /**
 //     * 发起服务部署
 //     */

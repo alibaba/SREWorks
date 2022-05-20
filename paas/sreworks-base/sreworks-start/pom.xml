@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>sreworks</artifactId>
-        <groupId>com.alibaba.sreworks</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <artifactId>sreworks-base</artifactId>
+        <groupId>io.sreworks</groupId>
+        <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 

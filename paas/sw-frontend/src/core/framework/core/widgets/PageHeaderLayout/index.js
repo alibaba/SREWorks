@@ -228,7 +228,7 @@ class PageHeaderLayout extends React.Component {
                     className={`common-border brief-page-content globalBackground ${title ? "" : "brief-header-no-title"}`}
                     style={{
                         paddingTop: title ? 32 : 0, zIndex: 1,
-                        position: "relative", marginTop: pageLayoutType === 'FLUID' ? '-12px' : '-19px', marginLeft: '-15.4vw', marginRight: '-15.4vw', paddingLeft: '15.3vw', paddingRight: '15.3vw'
+                        position: "relative", marginTop: pageLayoutType === 'FLUID' ? '-12px' : '-20px', marginLeft: '-15.4vw', marginRight: '-15.4vw', paddingLeft: '15.3vw', paddingRight: '15.3vw'
                     }}
                     title={
                         title &&
@@ -274,7 +274,7 @@ class PageHeaderLayout extends React.Component {
                         </Descriptions>
                     }
                 </PageHeader>
-                <Layout className="brief-page-content" style={{ overflow: 'auto', paddingLeft: paddingInner + 'vw', paddingRight: paddingInner + 'vw' }}>
+                <Layout className="brief-page-content" style={{ overflow: 'auto', paddingLeft: paddingInner + 'vw', paddingRight: paddingInner + 'vw',background:'transparent' }}>
                     {
                         leftSiderMenu &&
                         <Sider style={{ marginRight: 8 }}>

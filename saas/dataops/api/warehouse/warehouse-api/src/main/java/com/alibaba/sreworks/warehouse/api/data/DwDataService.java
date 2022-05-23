@@ -63,7 +63,7 @@ public interface DwDataService extends BasicApi {
             JSONObject swField = modelFields.getJSONObject(fieldName);
             ColumnType fieldType = ColumnType.valueOf(swField.getString("type").toUpperCase());
             try {
-                esData.put(swField.getString("dim"), parseFieldValue(data.get(fieldName), fieldType));
+                esData.put(swField.getString("dim"), parseFieldValue(data.get(fieldName), fieldType, swField.getBoolean("nullable")));
             } catch (Exception ex) {
                 throw new RuntimeException(String.format("入库前数据校验失败, 请仔细核对元信息定义, 详情:%s",ex));
             }
@@ -129,7 +129,7 @@ public interface DwDataService extends BasicApi {
         return esData;
     }
 
-    default Object parseFieldValue(Object value, ColumnType fieldType) throws Exception {
+    default Object parseFieldValue(Object value, ColumnType fieldType, Boolean nullable) throws Exception {
         switch (fieldType) {
             case BOOLEAN:
                 value = TypeUtils.castToBoolean(value);
@@ -170,6 +170,10 @@ public interface DwDataService extends BasicApi {
                 break;
             default:
                 throw new ParamException(String.format("请求列类型[%s]非法, 原值[%s], 请仔细核对接口定义", fieldType, value));
+        }
+
+        if (!nullable && value == null) {
+            throw new ParamException("请求列必填, 请仔细核对接口定义");
         }
 
         return value;

@@ -132,9 +132,9 @@ export default class ListRender extends Component {
             <div className="columns-list" style={{ width: `calc(100% - ${widgetConfig.width || '300px'})` }}>
               {columns && !!columns.length && columns.map((column) => {
                 if (column.render && typeof column.render === 'string') {
-                  return <JSXRender jsx={util.renderTemplateString(column.render)} />
+                  return <JSXRender key={column.dataIndex} jsx={util.renderTemplateString(column.render)} />
                 } else {
-                  return <div className={column.width ? "description-width" : "description-wrap"}
+                  return <div key={column.dataIndex} className={column.width ? "description-width" : "description-wrap"}
                     style={{ width: column.width }}>
                     <div className="description-item">
                       <div className="description-item-title">{column.label}</div>

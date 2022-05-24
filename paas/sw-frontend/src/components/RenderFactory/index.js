@@ -5,6 +5,7 @@
  */
 
 import * as antd from 'antd';
+import '@ant-design/compatible/assets/index.css';
 //antd3 icon 注册兼容
 import { Icon as LegacyIcon } from '@ant-design/compatible';
 //antd4中icon注册

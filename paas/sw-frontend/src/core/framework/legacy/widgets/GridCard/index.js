@@ -48,7 +48,7 @@ class GridCard extends React.Component {
         this.state = {
             loading: true,
             columns: null,
-            data: false,
+            data: this.props.widgetConfig.widgetData? this.props.widgetConfig.widgetData : [],
             reloadCount: 0,
             apiConf: apiConf,
             footChecked: false,
@@ -77,6 +77,7 @@ class GridCard extends React.Component {
     };
     componentWillMount() {
         const { mode } = this.props;
+        let { widgetConfig={} } = this.props;
         let { rowActions, api, paging = false, filters, dynamicColumnsUrl } = mode.config, columns = [], dispalyItems = false,
             hasOper = false;
         columns = (mode.config.columns || []).map(mc => {
@@ -354,6 +355,12 @@ class GridCard extends React.Component {
                     name: "李四",
                     title: "测试测试测试"
                 },
+                {
+                    age: "111",
+                    icon: "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png",
+                    name: "张三",
+                    title: "测试测试测试"
+                }
             ]
         }
         return (

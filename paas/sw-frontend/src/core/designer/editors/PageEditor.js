@@ -204,7 +204,6 @@ export default class PageEditor extends React.Component {
 
     handleSave = () => {
         let { pageModel } = this.state, { onSave } = this.props;
-        console.log(pageModel, 'pageModel-save')
         onSave && onSave(pageModel)
     };
 

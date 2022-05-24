@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "29954545",
+      "name": "BizWordCloud",
+      "font_class": "BizWordCloud",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    },
+    {
+      "icon_id": "29953496",
+      "name": "BizHeatMap",
+      "font_class": "BizHeatMap",
+      "unicode": "e648",
+      "unicode_decimal": 58952
+    },
+    {
       "icon_id": "28679245",
       "name": "CarouselComp",
       "font_class": "CarouselComp",

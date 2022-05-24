@@ -29,6 +29,9 @@ public class DeployAppComponentRunnerScene extends AbstractLocalDagBase {
                                 "#DeployAppDeciderNode['output']['%s'] == '%s' || " +
                                 "#DeployAppDeciderNode['output']['%s'] == '%s' || " +
                                 "#DeployAppDeciderNode['output']['%s'] == '%s' || " +
+                                "#DeployAppDeciderNode['output']['%s'] == '%s' || " +
+                                "#DeployAppDeciderNode['output']['%s'] == '%s' || " +
+                                "#DeployAppDeciderNode['output']['%s'] == '%s' || " +
                                 "#DeployAppDeciderNode['output']['%s'] == '%s'",
                         AppFlowParamKey.COMPONENT_TYPE,
                         ComponentTypeEnum.K8S_MICROSERVICE,
@@ -40,6 +43,12 @@ public class DeployAppComponentRunnerScene extends AbstractLocalDagBase {
                         ComponentTypeEnum.HELM,
                         AppFlowParamKey.COMPONENT_TYPE,
                         ComponentTypeEnum.ABM_OPERATOR_TVD,
+                        AppFlowParamKey.COMPONENT_TYPE,
+                        ComponentTypeEnum.ABM_KUSTOMIZE,
+                        AppFlowParamKey.COMPONENT_TYPE,
+                        ComponentTypeEnum.ABM_HELM,
+                        AppFlowParamKey.COMPONENT_TYPE,
+                        ComponentTypeEnum.ASI_COMPONENT,
                         AppFlowParamKey.COMPONENT_TYPE,
                         ComponentTypeEnum.K8S_JOB));
         edge("DeployAppDeciderNode", "DeployAppCreateResourceAddonNode",

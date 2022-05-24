@@ -242,7 +242,7 @@ public class RtComponentInstanceServiceImpl implements RtComponentInstanceServic
             return record;
         }
 
-        // 插入新的应用实例记录
+        // 插入新的组件实例记录
         RtComponentInstanceDO instance = RtComponentInstanceDO.builder()
                 .appInstanceId(appInstanceId)
                 .componentInstanceId(InstanceIdUtil.genComponentInstanceId())

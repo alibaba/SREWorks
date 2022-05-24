@@ -24,6 +24,10 @@ spec:
                 value: "testhelm"
                 toFieldPaths:
                   - spec.name
+              - name: base64Kubeconfig
+                value: ""
+                toFieldPaths:
+                  - spec.base64Kubeconfig
   workflow:
     steps:
       - type: deploy

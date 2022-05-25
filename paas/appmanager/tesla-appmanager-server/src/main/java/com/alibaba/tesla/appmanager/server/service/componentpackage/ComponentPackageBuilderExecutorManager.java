@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentMap;
  **/
 @Service
 @Slf4j
-public class ComponentPackageManager implements ApplicationListener<ComponentPackageLoadEvent> {
+public class ComponentPackageBuilderExecutorManager implements ApplicationListener<ComponentPackageLoadEvent> {
     @Autowired
     private ApplicationContext context;
 

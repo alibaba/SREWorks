@@ -1,7 +1,6 @@
 package com.alibaba.tesla.appmanager.server.service.componentwatchcron;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.autoconfig.ThreadPoolProperties;
 import com.alibaba.tesla.appmanager.common.enums.ComponentInstanceStatusEnum;
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum;
@@ -14,11 +13,11 @@ import com.alibaba.tesla.appmanager.server.dynamicscript.handler.ComponentWatchC
 import com.alibaba.tesla.appmanager.server.repository.condition.RtComponentInstanceQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.RtComponentInstanceDO;
 import com.alibaba.tesla.appmanager.server.service.rtcomponentinstance.RtComponentInstanceService;
+import com.google.common.base.Enums;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -40,24 +39,24 @@ public class ComponentWatchCronManager {
     /**
      * 监听固定类型常量
      */
-    private static final String WATCH_KIND = "CRON";
+    public static final String WATCH_KIND = "CRON";
 
     /**
      * 检查次数边界常量
      */
-    private static final Long BORDER_TIMES_5S = 60L;
-    private static final Long BORDER_TIMES_10S = 120L;
-    private static final Long BORDER_TIMES_30S = 180L;
-    private static final Long BORDER_TIMES_1M = 240L;
-    private static final Long BORDER_TIMES_2M = 300L;
-    private static final Long BORDER_TIMES_3M = 360L;
-    private static final Long BORDER_TIMES_4M = 420L;
-    private static final Long BORDER_TIMES_5M = 1000000000L;
+    public static final Long BORDER_TIMES_5S = 60L;
+    public static final Long BORDER_TIMES_10S = 120L;
+    public static final Long BORDER_TIMES_30S = 180L;
+    public static final Long BORDER_TIMES_1M = 240L;
+    public static final Long BORDER_TIMES_2M = 300L;
+    public static final Long BORDER_TIMES_3M = 360L;
+    public static final Long BORDER_TIMES_4M = 420L;
+    public static final Long BORDER_TIMES_5M = 1000000000L;
 
     /**
      * 组件获取状态 (运行中) 常量
      */
-    private static final List<String> RUNNING_STATUS_LIST = Arrays.asList(
+    public static final List<String> RUNNING_STATUS_LIST = Arrays.asList(
             ComponentInstanceStatusEnum.PENDING.toString(),
             ComponentInstanceStatusEnum.RUNNING.toString(),
             ComponentInstanceStatusEnum.PREPARING_UPDATE.toString(),
@@ -71,7 +70,7 @@ public class ComponentWatchCronManager {
     /**
      * 组件获取状态 (FAILED) 常量
      */
-    private static final List<String> FAILED_STATUS_LIST = Arrays.asList(
+    public static final List<String> FAILED_STATUS_LIST = Arrays.asList(
             ComponentInstanceStatusEnum.FAILED.toString(),
             ComponentInstanceStatusEnum.EXPIRED.toString()
     );
@@ -82,14 +81,18 @@ public class ComponentWatchCronManager {
     private final Object threadPoolExecutorLock = new Object();
     private final Object failedThreadPoolExecutorLock = new Object();
 
-    @Autowired
-    private RtComponentInstanceService rtComponentInstanceService;
+    private final RtComponentInstanceService rtComponentInstanceService;
+    private final GroovyHandlerFactory groovyHandlerFactory;
+    private final ThreadPoolProperties threadPoolProperties;
 
-    @Autowired
-    private GroovyHandlerFactory groovyHandlerFactory;
-
-    @Autowired
-    private ThreadPoolProperties threadPoolProperties;
+    public ComponentWatchCronManager(
+            RtComponentInstanceService rtComponentInstanceService,
+            GroovyHandlerFactory groovyHandlerFactory,
+            ThreadPoolProperties threadPoolProperties) {
+        this.rtComponentInstanceService = rtComponentInstanceService;
+        this.groovyHandlerFactory = groovyHandlerFactory;
+        this.threadPoolProperties = threadPoolProperties;
+    }
 
     @PostConstruct
     public void init() {
@@ -190,8 +193,7 @@ public class ComponentWatchCronManager {
                     if (!fr.isSuccess()) {
                         log.warn("cannot refresh component instance status|{}", logSuffix);
                     } else {
-                        log.info("refresh component instance success|{}|result={}", logSuffix,
-                                JSONObject.toJSONString(fr.getResult()));
+                        log.info("refresh component instance success|{}", logSuffix);
                     }
                 } catch (InterruptedException | ExecutionException e) {
                     log.warn("failed to refresh component instance status|exception={}", ExceptionUtils.getStackTrace(e));
@@ -214,7 +216,9 @@ public class ComponentWatchCronManager {
                         .timesGreaterThan(0L)
                         .timesLessThan(BORDER_TIMES_5S)
                         .build());
-        refresh(ComponentWatchTypeEnum.NORMAL, "5s", componentInstances.getItems());
+        if (componentInstances != null) {
+            refresh(ComponentWatchTypeEnum.NORMAL, "5s", componentInstances.getItems());
+        }
     }
 
     /**
@@ -230,7 +234,9 @@ public class ComponentWatchCronManager {
                         .timesGreaterThan(BORDER_TIMES_5S + 1)
                         .timesLessThan(BORDER_TIMES_10S)
                         .build());
-        refresh(ComponentWatchTypeEnum.NORMAL, "10s", componentInstances.getItems());
+        if (componentInstances != null) {
+            refresh(ComponentWatchTypeEnum.NORMAL, "10s", componentInstances.getItems());
+        }
     }
 
     /**
@@ -246,7 +252,9 @@ public class ComponentWatchCronManager {
                         .timesGreaterThan(BORDER_TIMES_10S + 1)
                         .timesLessThan(BORDER_TIMES_30S)
                         .build());
-        refresh(ComponentWatchTypeEnum.NORMAL, "30s", componentInstances.getItems());
+        if (componentInstances != null) {
+            refresh(ComponentWatchTypeEnum.NORMAL, "30s", componentInstances.getItems());
+        }
     }
 
     /**
@@ -262,7 +270,9 @@ public class ComponentWatchCronManager {
                         .timesGreaterThan(BORDER_TIMES_30S + 1)
                         .timesLessThan(BORDER_TIMES_1M)
                         .build());
-        refresh(ComponentWatchTypeEnum.NORMAL, "1m", componentInstances.getItems());
+        if (componentInstances != null) {
+            refresh(ComponentWatchTypeEnum.NORMAL, "1m", componentInstances.getItems());
+        }
     }
 
     /**
@@ -278,7 +288,9 @@ public class ComponentWatchCronManager {
                         .timesGreaterThan(BORDER_TIMES_1M + 1)
                         .timesLessThan(BORDER_TIMES_2M)
                         .build());
-        refresh(ComponentWatchTypeEnum.NORMAL, "2m", componentInstances.getItems());
+        if (componentInstances != null) {
+            refresh(ComponentWatchTypeEnum.NORMAL, "2m", componentInstances.getItems());
+        }
     }
 
     /**
@@ -294,7 +306,9 @@ public class ComponentWatchCronManager {
                         .timesGreaterThan(BORDER_TIMES_2M + 1)
                         .timesLessThan(BORDER_TIMES_3M)
                         .build());
-        refresh(ComponentWatchTypeEnum.NORMAL, "3m", componentInstances.getItems());
+        if (componentInstances != null) {
+            refresh(ComponentWatchTypeEnum.NORMAL, "3m", componentInstances.getItems());
+        }
     }
 
     /**
@@ -310,7 +324,9 @@ public class ComponentWatchCronManager {
                         .timesGreaterThan(BORDER_TIMES_3M + 1)
                         .timesLessThan(BORDER_TIMES_4M)
                         .build());
-        refresh(ComponentWatchTypeEnum.NORMAL, "4m", componentInstances.getItems());
+        if (componentInstances != null) {
+            refresh(ComponentWatchTypeEnum.NORMAL, "4m", componentInstances.getItems());
+        }
     }
 
     /**
@@ -326,7 +342,9 @@ public class ComponentWatchCronManager {
                         .timesGreaterThan(BORDER_TIMES_4M + 1)
                         .timesLessThan(BORDER_TIMES_5M)
                         .build());
-        refresh(ComponentWatchTypeEnum.NORMAL, "5m", componentInstances.getItems());
+        if (componentInstances != null) {
+            refresh(ComponentWatchTypeEnum.NORMAL, "5m", componentInstances.getItems());
+        }
     }
 
     /**
@@ -342,7 +360,9 @@ public class ComponentWatchCronManager {
                         .timesGreaterThan(0L)
                         .timesLessThan(BORDER_TIMES_5M)
                         .build());
-        refresh(ComponentWatchTypeEnum.FAILED, "1h", componentInstances.getItems());
+        if (componentInstances != null) {
+            refresh(ComponentWatchTypeEnum.FAILED, "1h", componentInstances.getItems());
+        }
     }
 
     /**
@@ -390,20 +410,47 @@ public class ComponentWatchCronManager {
                                 .componentName(componentInstance.getComponentName())
                                 .version(componentInstance.getVersion())
                                 .build());
-                String status = res.getStatus();
+                ComponentInstanceStatusEnum status = Enums
+                        .getIfPresent(ComponentInstanceStatusEnum.class, res.getStatus()).orNull();
+                if (status == null) {
+                    String errorMessage = String.format("the status which component instance returned is invalid|" +
+                            "clusterId=%s|namespaceId=%s|stageId=%s|appId=%s|componentType=%s|componentName=%s|" +
+                            "version=%s|status=%s", componentInstance.getClusterId(),
+                            componentInstance.getNamespaceId(), componentInstance.getStageId(),
+                            componentInstance.getAppId(), componentInstance.getComponentType(),
+                            componentInstance.getComponentName(), componentInstance.getVersion(),
+                            res.getStatus());
+                    log.warn(errorMessage);
+                    result.setSuccess(false);
+                    result.setMessage(errorMessage);
+                    return;
+                }
                 JSONArray conditions = res.getConditions();
 
                 // 上报数据
-                componentInstance.setStatus(status);
+                boolean becomeUnstable = status.checkUnstable(Enums
+                        .getIfPresent(ComponentInstanceStatusEnum.class, componentInstance.getStatus()).orNull());
+                componentInstance.setStatus(status.toString());
                 componentInstance.setConditions(JSONArray.toJSONString(conditions));
                 if (componentInstance.getTimes() != null) {
-                    componentInstance.setTimes(componentInstance.getTimes() + 1);
+                    if (becomeUnstable) {
+                        log.info("unstable status changes detected, prepare to set times to 0 to query status " +
+                                "changes with the highest priority|appInstanceId={}|componentInstanceId={}|" +
+                                        "appId={}|clusterId={}|namespaceId={}|componentName={}|toStatus={}",
+                                componentInstance.getAppInstanceId(), componentInstance.getId(),
+                                componentInstance.getAppId(), componentInstance.getClusterId(),
+                                componentInstance.getNamespaceId(), componentInstance.getComponentName(),
+                                componentInstance.getStatus());
+                        componentInstance.setTimes(0L);
+                    } else {
+                        componentInstance.setTimes(componentInstance.getTimes() + 1);
+                    }
                 } else {
                     componentInstance.setTimes(0L);
                 }
                 rtComponentInstanceService.reportRaw(componentInstance);
                 result.setSuccess(true);
-                result.setMessage("");
+                result.setMessage("report ok");
             } catch (Throwable e) {
                 result.setSuccess(false);
                 result.setMessage(ExceptionUtils.getStackTrace(e));
@@ -416,8 +463,6 @@ public class ComponentWatchCronManager {
      */
     @Data
     static class UpdateTaskResult {
-
-        private RtComponentInstanceGetStatusRes result;
 
         private RtComponentInstanceDO componentInstance;
 

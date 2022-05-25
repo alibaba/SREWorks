@@ -118,6 +118,7 @@ public class ExImportController extends BaseController {
             productopsNodeElement.setGmtModified(System.currentTimeMillis());
             productopsNodeElement.setLastModifier(getUserEmployeeId());
             productopsNodeElement.setStageId(stageId);
+            productopsNodeElement.setIsImport(1);
             productopsNodeElementRepository.save(productopsNodeElement);
         }
         productopsNodeElementRepository.flush();
@@ -133,6 +134,7 @@ public class ExImportController extends BaseController {
             productopsElement.setGmtModified(System.currentTimeMillis());
             productopsElement.setLastModifier(getUserEmployeeId());
             productopsElement.setStageId(stageId);
+            productopsElement.setIsImport(1);
             productopsElementRepository.save(productopsElement);
         }
         productopsElementRepository.flush();
@@ -148,6 +150,7 @@ public class ExImportController extends BaseController {
             productopsNode.setGmtModified(System.currentTimeMillis());
             productopsNode.setLastModifier(getUserEmployeeId());
             productopsNode.setStageId(stageId);
+            productopsNode.setIsImport(1);
             productopsNodeRepository.save(productopsNode);
         }
         productopsNodeRepository.flush();
@@ -163,6 +166,7 @@ public class ExImportController extends BaseController {
             productopsTab.setGmtModified(System.currentTimeMillis());
             productopsTab.setLastModifier(getUserEmployeeId());
             productopsTab.setStageId(stageId);
+            productopsTab.setIsImport(1);
             productopsTabRepository.save(productopsTab);
         }
         productopsTabRepository.flush();

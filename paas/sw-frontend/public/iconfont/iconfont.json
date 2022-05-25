@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "29963585",
+      "name": "ResultStatus",
+      "font_class": "ResultStatus",
+      "unicode": "e64a",
+      "unicode_decimal": 58954
+    },
+    {
       "icon_id": "29954545",
       "name": "BizWordCloud",
       "font_class": "BizWordCloud",

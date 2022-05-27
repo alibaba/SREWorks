@@ -3,7 +3,7 @@
  * 节点页面编辑器
  */
 import React from 'react';
-import { BuildOutlined, CodeOutlined, DatabaseOutlined, SettingOutlined, SnippetsOutlined, QuestionCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { BuildOutlined, CodeOutlined, DatabaseOutlined, SettingOutlined, SnippetsOutlined, QuestionCircleOutlined, PlusOutlined, DeploymentUnitOutlined } from '@ant-design/icons';
 import {
     Layout,
     Menu,
@@ -44,6 +44,7 @@ import AceViewer from '../../../components/FormBuilder/FormItem/AceViewer';
 import FluidContentLayoutDesigner from "../../framework/components/FluidContentLayoutDesigner";
 import appMenuTreeService from '../../services/appMenuTreeService';
 import { page_template_meta, template_app_id } from './TemplateConstant';
+import SearchParamsEditor from "./SearchParamsEditor"
 
 const { Step } = Steps;
 const { TabPane } = Tabs;
@@ -505,6 +506,12 @@ export default class PageEditor extends React.Component {
                             }
                         />
                     </TabPane>
+                    {/* <TabPane tab={<span><DeploymentUnitOutlined style={{ marginRight: 8 }} />页面参数</span>} key="searchparams">
+                        <SearchParamsEditor value={pageModel.config.searchParams || {}}
+                            onValuesChange={(changedValues, allValues) => {
+                                pageModel.setSearchParams(changedValues);
+                            }} />
+                    </TabPane> */}
                 </Tabs>
                 <Drawer
                     title={showJson ? "页面源码" : "页面预览"}

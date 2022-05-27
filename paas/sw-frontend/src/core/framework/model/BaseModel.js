@@ -10,6 +10,7 @@ export default class BaseModel {
     events = new EventEmitter();
     dataSource;
     dataSourceMeta;
+    searchParams;
 
     constructor(modelJson) {
         Object.assign(this, modelJson);
@@ -55,9 +56,12 @@ export default class BaseModel {
     }
 
     setDataSourceMeta(meta) {
+        console.log(meta,"执行了1")
         this.dataSourceMeta = meta;
     }
-
+    setSearchParams(params){
+        this.searchParams = params
+    }
     getDataSource() {
         if (this.dataSourceMeta) {
             return new DataSource(this.dataSourceMeta);

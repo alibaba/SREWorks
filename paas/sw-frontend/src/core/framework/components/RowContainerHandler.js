@@ -57,6 +57,7 @@ class RowContainerHandler extends React.Component {
         let { elements } = row;
         let copyedModel = JSON.parse(model);
         copyedModel.uniqueKey = uuidv4();
+        debugger
         service.getWidgetRepository().then(category => {
             let allCompMeta = []
             category.forEach(cate => {
@@ -79,7 +80,6 @@ class RowContainerHandler extends React.Component {
         try {
             if (!navigator.clipboard) {
                 let strModel = this.getClipboard()
-                strModel.uniqueKey = uuidv4();
                 strModel && this.initCopyedModel(strModel, currentIndex)
             } else {
                 navigator.clipboard.readText().then(clText => this.initCopyedModel(clText, currentIndex)

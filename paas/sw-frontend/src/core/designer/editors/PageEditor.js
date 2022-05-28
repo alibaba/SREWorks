@@ -92,7 +92,8 @@ export default class PageEditor extends React.Component {
                 label: '',
                 serviceType: ''
             },
-            editCategory: ''
+            editCategory: '',
+            sourceJSON: pageModel.toJSON()
         };
     }
 
@@ -228,6 +229,12 @@ export default class PageEditor extends React.Component {
     };
 
     handleChangeTab = res => {
+        if(res === 'setting') {
+            let { pageModel } = this.state;
+            this.setState({
+                sourceJSON: pageModel.toJSON()
+            })
+        }
         this.setState({ activeKey: res })
     }
     addCategory = () => {
@@ -314,7 +321,6 @@ export default class PageEditor extends React.Component {
             getTemplateLoading: true
         })
         appMenuTreeService.getMenuTree(template_app_id).then(res => {
-            console.log(res, 'res-menuTree');
             let sunMenuTree = [];
             sunMenuTree = (res && res.children && res.children.find(item => item.nodeTypePath === page_template_meta.parentNodeTypePath)) || {};
             let categoryList = [];
@@ -431,7 +437,8 @@ export default class PageEditor extends React.Component {
         })
     }
     render() {
-        let { pageModel, showPreview, openDrawer, showJson, activeKey, showTemplateList, confirmLoading, templateList, activeTarget, getTemplateLoading, saveOrCreat, activePanel, categoryList, templateForm, templateModal } = this.state, { height = 620, nodeData, contentLoading } = this.props;
+        let { pageModel, showPreview,sourceJSON, openDrawer, showJson, activeKey, showTemplateList, confirmLoading, templateList, activeTarget, getTemplateLoading, saveOrCreat, activePanel, categoryList, templateForm, templateModal } = this.state, { height = 620, nodeData, contentLoading } = this.props;
+        console.log(pageModel,'pageModel-init')
         let tabEditorContentStyle = { height: height - 42, overflowY: "auto", overflowX: "none" }, { config } = nodeData;
         let { pageLayoutType = Constants.PAGE_LAYOUT_TYPE_CUSTOM } = config, containerModel = pageModel.getRootWidgetModel();
         return (
@@ -493,7 +500,7 @@ export default class PageEditor extends React.Component {
                                 <AceViewer model={{
                                     showDiff: false,
                                     defModel: { height: height - 48, disableShowDiff: true, mode: "json" },
-                                }} mode="json" value={pageModel.toJSON()} readOnly={true} />
+                                }} mode="json" value={sourceJSON} readOnly={true} />
                             </TabPane>
                         </Tabs>
                     </TabPane>

@@ -77,7 +77,7 @@ class Pie extends Component {
         return (
             <PieChart appendPadding={appendPadding || [10, 0, 0, 10]}
                 theme={theme || 'light'}
-                height={width && Number(height)}
+                height={height && Number(height)}
                 width={width && Number(width)}
                 autoFit={true}
                 data={finalData}

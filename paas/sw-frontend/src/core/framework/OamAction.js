@@ -705,6 +705,10 @@ class OamAction extends React.Component {
      * @param params
      */
     handlePreSubmitAction = (params) => {
+        console.log(params,'params-lo')
+        if(!params) {
+            return false
+        }
         let { action, remoteParams } = this.state, { nodeParams, userParams, actionParams } = this.props;
         //合并参数来源一同传递给作业,输入参数及自定义数据源优先级最高
         let allParams = Object.assign({}, nodeParams, userParams, actionParams, remoteParams, params), executeAction = this.executeAction, closeAndRefresh = this.closeAndRefresh;
@@ -810,7 +814,6 @@ class OamAction extends React.Component {
     render() {
         let { actionData, mode, displayType, nodeParams, advanced, showScenes, addScene, showSearch, filterConfig, widgetConfig, ...contentProps } = this.props;
         let { action, dockVisible, dispalyItems, loading, feedbackVisible, feedbacks, showHistory, sceneTitle, scenes, beforeOpenWait, effectItemMapping } = this.state;
-        console.log(displayType,this.props,'filter-displayType');
         if (beforeOpenWait) return null;
         if (!action || !dispalyItems) return <Spin />;
         let execInfo = action.getExecuteInfo();

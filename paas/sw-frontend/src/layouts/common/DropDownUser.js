@@ -18,6 +18,7 @@ import httpClient from "../../utils/httpClient";
 import properties from "appRoot/properties";
 import { CirclePicker } from "react-color";
 import _ from 'lodash'
+import Bus from '../../utils/eventBus'
 
 const SubMenu = Menu.SubMenu;
 const Item = Menu.Item;
@@ -56,6 +57,7 @@ export default class DropDownUser extends React.Component {
     dispatch({ type: "global/switchTheme", theme: themeType });
     {/* global THEMES */
     }
+    Bus.emit('themeChange',themeType);
     let color = localStorage.getItem("theme_color") || '#00c1de';
     let obj = _.cloneDeep(THEMES[themeType]);
     obj['@primary-color'] = color;

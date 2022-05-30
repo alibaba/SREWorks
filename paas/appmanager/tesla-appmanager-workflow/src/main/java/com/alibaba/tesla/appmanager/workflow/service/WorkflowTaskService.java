@@ -62,7 +62,7 @@ public interface WorkflowTaskService {
      * @param workflowTaskId WorkflowTaskID
      * @param extMessage     终止时的扩展信息存储字符串
      */
-    void terminate(Long workflowTaskId, String extMessage);
+    boolean terminate(Long workflowTaskId, String extMessage);
 
     /**
      * 暂停指定 Workflow 任务 (RUNNING -> RUNNING_SUSPEND / WAITING -> WAITING_SUSPEND)

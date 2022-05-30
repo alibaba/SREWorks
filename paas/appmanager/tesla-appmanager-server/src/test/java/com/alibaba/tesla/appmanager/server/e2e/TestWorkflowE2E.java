@@ -53,10 +53,75 @@
 //    private WorkflowInstanceProvider workflowInstanceProvider;
 //
 //    @Test
-//    public void run() throws Exception {
-//        long appPackageId = buildStage();
-//        launchStage(appPackageId);
-//        Thread.sleep(100000);
+//    public void testMicroservice() throws Exception {
+//        long appPackageId = buildMicroservice();
+//        launchMicroserviceWorkflow(appPackageId);
+//    }
+//
+//    @Test
+//    public void testAbmKustomize() throws Exception {
+//        launchKustomizeWorkflow();
+//    }
+//
+//    @Test
+//    public void testAbmHelm() throws Exception {
+//        launchHelmWorkflow();
+//    }
+//
+//    /**
+//     * 发起服务部署
+//     */
+//    private long launchHelmWorkflow() throws Exception {
+//        String ac = FixtureUtil.getFixture("application_configuration/e2e_workflow_helm.yaml");
+//        WorkflowInstanceDTO res = workflowInstanceProvider
+//                .launch(APP_ID, ac, WorkflowInstanceOption.builder().creator(OPERATOR).build());
+//        for (int i = 0; i < 30; i++) {
+//            WorkflowInstanceDTO result = workflowInstanceProvider.get(res.getId(), true);
+//            WorkflowInstanceStateEnum status = Enums
+//                    .getIfPresent(WorkflowInstanceStateEnum.class, result.getWorkflowStatus()).orNull();
+//            assertThat(status).isNotNull();
+//            switch (status) {
+//                case FAILURE:
+//                case EXCEPTION:
+//                case TERMINATED:
+//                    throw new AppException(AppErrorCode.DEPLOY_ERROR,
+//                            String.format("test launch workflow failed||order=%s", JSONObject.toJSONString(result)));
+//                case SUCCESS:
+//                    return result.getId();
+//                default:
+//                    break;
+//            }
+//            Thread.sleep(5000);
+//        }
+//        throw new AppException(AppErrorCode.UNKNOWN_ERROR, "timeout applying workflow");
+//    }
+//
+//    /**
+//     * 发起服务部署
+//     */
+//    private long launchKustomizeWorkflow() throws Exception {
+//        String ac = FixtureUtil.getFixture("application_configuration/e2e_workflow_kustomize.yaml");
+//        WorkflowInstanceDTO res = workflowInstanceProvider
+//                .launch(APP_ID, ac, WorkflowInstanceOption.builder().creator(OPERATOR).build());
+//        for (int i = 0; i < 30; i++) {
+//            WorkflowInstanceDTO result = workflowInstanceProvider.get(res.getId(), true);
+//            WorkflowInstanceStateEnum status = Enums
+//                    .getIfPresent(WorkflowInstanceStateEnum.class, result.getWorkflowStatus()).orNull();
+//            assertThat(status).isNotNull();
+//            switch (status) {
+//                case FAILURE:
+//                case EXCEPTION:
+//                case TERMINATED:
+//                    throw new AppException(AppErrorCode.DEPLOY_ERROR,
+//                            String.format("test launch workflow failed||order=%s", JSONObject.toJSONString(result)));
+//                case SUCCESS:
+//                    return result.getId();
+//                default:
+//                    break;
+//            }
+//            Thread.sleep(5000);
+//        }
+//        throw new AppException(AppErrorCode.UNKNOWN_ERROR, "timeout applying workflow");
 //    }
 //
 //    /**
@@ -64,8 +129,8 @@
 //     *
 //     * @return 部署单 ID
 //     */
-//    private long launchStage(long appPackageId) throws Exception {
-//        String ac = FixtureUtil.getFixture("application_configuration/e2e_workflow.yaml");
+//    private long launchMicroserviceWorkflow(long appPackageId) throws Exception {
+//        String ac = FixtureUtil.getFixture("application_configuration/e2e_workflow_microservice.yaml");
 //        ac = ac.replace("PLACEHOLDER_APP_PACKAGE_ID", String.valueOf(appPackageId));
 //        WorkflowInstanceDTO res = workflowInstanceProvider
 //                .launch(APP_ID, ac, WorkflowInstanceOption.builder().creator(OPERATOR).build());
@@ -91,11 +156,11 @@
 //    }
 //
 //    /**
-//     * 发起服务构建
+//     * 发起微服务构建
 //     *
 //     * @return 返回构建好的应用包 ID
 //     */
-//    private long buildStage() throws Exception {
+//    private long buildMicroservice() throws Exception {
 //        // 发起服务构建
 //        String serverOptions = FixtureUtil.getFixture("component_package/component_options_appmanager_python_demo.json");
 //        String jobOptions = FixtureUtil.getFixture("component_package/component_options_job_test.json");

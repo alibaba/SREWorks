@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3290880 */
-  src: url('iconfont.woff2?t=1648867537770') format('woff2'),
-       url('iconfont.woff?t=1648867537770') format('woff'),
-       url('iconfont.ttf?t=1648867537770') format('truetype');
+  src: url('iconfont.woff2?t=1653449456992') format('woff2'),
+       url('iconfont.woff?t=1653449456992') format('woff'),
+       url('iconfont.ttf?t=1653449456992') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,18 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.sre-ResultStatus:before {
+  content: "\e64a";
+}
+
+.sre-BizWordCloud:before {
+  content: "\e649";
+}
+
+.sre-BizHeatMap:before {
+  content: "\e648";
 }
 
 .sre-CarouselComp:before {

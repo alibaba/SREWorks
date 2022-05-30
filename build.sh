@@ -25,6 +25,22 @@ then
    export MIGRATE_IMAGE="migrate/migrate"
 fi
 
+if [ -z ${MAVEN_IMAGE} ]
+then
+   export MAVEN_IMAGE="maven:3.8.3-adoptopenjdk-11"
+fi
+
+if [ -z ${HELM_BIN_URL} ]
+then
+   export HELM_BIN_URL="https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/helm"
+fi
+
+if [ -z ${KUSTOMIZE_BIN_URL} ]
+then
+   export KUSTOMIZE_BIN_URL="https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/kustomize"
+fi
+
+
 
 target_maven(){
     [ -n "$TAG" ] && tag=$TAG || tag="latest"    
@@ -44,7 +60,9 @@ target_migrate(){
     [ -n "$TAG" ] && tag=$TAG || tag="latest"
     if [ -n "$BUILD" ]; then
         echo "-- build sw-migrate --" >&2
-        docker build -t sw-migrate:$tag --pull --no-cache -f $SW_ROOT/paas/migrate/Dockerfile $SW_ROOT/paas/migrate
+        TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
+        envsubst < $SW_ROOT/paas/migrate/Dockerfile.tpl > ${TMP_DOCKERFILE}
+        docker build -t sw-migrate:$tag --pull --no-cache -f ${TMP_DOCKERFILE} $SW_ROOT/paas/migrate
         docker tag sw-migrate:$tag sw-migrate:latest
     fi
     if [ -n "$PUSH_REPO" ]; then
@@ -88,8 +106,10 @@ target_appmanager_server(){
     [ -n "$TAG" ] && tag=$TAG || tag="develop"
     if [ -n "$BUILD" ]; then
         echo "-- build appmanager server --" >&2
-        export DOCKER_BUILDKIT=0
-        docker build -t sw-paas-appmanager:$tag -f $SW_ROOT/paas/appmanager/Dockerfile_sreworks $SW_ROOT/paas/appmanager
+        #export DOCKER_BUILDKIT=0
+        TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
+        envsubst < $SW_ROOT/paas/appmanager/Dockerfile_sreworks.tpl > ${TMP_DOCKERFILE}
+        docker build -t sw-paas-appmanager:$tag -f ${TMP_DOCKERFILE} $SW_ROOT/paas/appmanager
         docker tag sw-paas-appmanager:$tag sw-paas-appmanager:latest
     fi
     if [ -n "$PUSH_REPO" ]; then

@@ -94,7 +94,7 @@ export default class TabsRender extends Component {
             }
             return <TabPane disabled={disabled} tab={<span>{item.icon && <Icon type={item.icon} />}{item.tab}</span>}
               key={item.key}>
-              <div className="tab-content" style={{ marginTop: tabType === "capsule" ? 10 : "" }}>
+              <div className="tab-content" style={{ marginTop: tabType === "capsule" ? 10 : ""}}>
                 <Block {...this.props} widgetConfig={{ block: item.block }} />
               </div>
             </TabPane>;

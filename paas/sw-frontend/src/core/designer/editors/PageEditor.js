@@ -93,7 +93,8 @@ export default class PageEditor extends React.Component {
                 serviceType: ''
             },
             editCategory: '',
-            sourceJSON: pageModel.toJSON()
+            sourceJSON: pageModel.toJSON(),
+            esSearchStr: pageModel.getEsSearch()
         };
     }
 
@@ -232,7 +233,13 @@ export default class PageEditor extends React.Component {
         if(res === 'setting') {
             let { pageModel } = this.state;
             this.setState({
-                sourceJSON: pageModel.toJSON()
+                sourceJSON: pageModel.toJSON(),
+            })
+        }
+        if(res === 'searchparams') {
+            let { pageModel } = this.state;
+            this.setState({
+                esSearchStr: pageModel.getEsSearch()
             })
         }
         this.setState({ activeKey: res })
@@ -437,7 +444,7 @@ export default class PageEditor extends React.Component {
         })
     }
     render() {
-        let { pageModel, showPreview,sourceJSON, openDrawer, showJson, activeKey, showTemplateList, confirmLoading, templateList, activeTarget, getTemplateLoading, saveOrCreat, activePanel, categoryList, templateForm, templateModal } = this.state, { height = 620, nodeData, contentLoading } = this.props;
+        let { pageModel, showPreview,sourceJSON,esSearchStr, openDrawer, showJson, activeKey, showTemplateList, confirmLoading, templateList, activeTarget, getTemplateLoading, saveOrCreat, activePanel, categoryList, templateForm, templateModal } = this.state, { height = 620, nodeData, contentLoading } = this.props;
         console.log(pageModel,'pageModel-init')
         let tabEditorContentStyle = { height: height - 42, overflowY: "auto", overflowX: "none" }, { config } = nodeData;
         let { pageLayoutType = Constants.PAGE_LAYOUT_TYPE_CUSTOM } = config, containerModel = pageModel.getRootWidgetModel();
@@ -513,12 +520,15 @@ export default class PageEditor extends React.Component {
                             }
                         />
                     </TabPane>
-                    {/* <TabPane tab={<span><DeploymentUnitOutlined style={{ marginRight: 8 }} />页面参数</span>} key="searchparams">
-                        <SearchParamsEditor value={pageModel.config.searchParams || {}}
+                    <TabPane tab={<span><DeploymentUnitOutlined style={{ marginRight: 8 }} />页面参数</span>} key="searchparams">
+                        <SearchParamsEditor value={esSearchStr || null}
                             onValuesChange={(changedValues, allValues) => {
-                                pageModel.setSearchParams(changedValues);
+                                pageModel.setEsSearch(changedValues);
+                                this.setState({
+                                    esSearchStr: pageModel.getEsSearch()
+                                })
                             }} />
-                    </TabPane> */}
+                    </TabPane>
                 </Tabs>
                 <Drawer
                     title={showJson ? "页面源码" : "页面预览"}

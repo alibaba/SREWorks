@@ -85,7 +85,6 @@ export default class FluidCharts extends Component {
                             fill: "#000"
                         },
                         customHtml(container, view, item) {
-                            console.log(item, 'item-fluidchart')
                             return `${(item.percent * 100).toFixed(2)}%`
                         }
                     }

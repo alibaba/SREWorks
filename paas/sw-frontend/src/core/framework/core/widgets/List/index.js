@@ -84,14 +84,14 @@ export default class ListRender extends Component {
   }
   render() {
     let { widgetData = [], widgetConfig = {}, actionParams, ...otherProps } = this.props;
-    let { bordered, header, footer, listItem, itemLayout, itemToolbar, columns = [],emptyText='',minHeight } = widgetConfig;
+    let { bordered, header, footer, listItem, itemLayout, itemToolbar, columns = [], emptyText = '', minHeight } = widgetConfig;
     let { title, description, avatar, extra, href, content } = listItem;
     let { total, pageSize, currentPage, splitData } = this.state;
-    return <div style={{ width: '100%',minHeight }}>
+    return <div style={{ width: '100%', minHeight }}>
       <List
         bordered={bordered}
         locale={{
-          emptyText:emptyText ? <JSXRender  {...this.props} jsx={emptyText} /> : null
+          emptyText: emptyText ? <JSXRender  {...this.props} jsx={emptyText} /> : null
         }}
         itemLayout={itemLayout}
         className="card-list-ant"
@@ -132,9 +132,9 @@ export default class ListRender extends Component {
             <div className="columns-list" style={{ width: `calc(100% - ${widgetConfig.width || '300px'})` }}>
               {columns && !!columns.length && columns.map((column) => {
                 if (column.render && typeof column.render === 'string') {
-                  return <JSXRender jsx={util.renderTemplateString(column.render)} />
+                  return <JSXRender key={column.dataIndex} jsx={util.renderTemplateString(column.render)} />
                 } else {
-                  return <div className={column.width ? "description-width" : "description-wrap"}
+                  return <div key={column.dataIndex} className={column.width ? "description-width" : "description-wrap"}
                     style={{ width: column.width }}>
                     <div className="description-item">
                       <div className="description-item-title">{column.label}</div>
@@ -143,12 +143,12 @@ export default class ListRender extends Component {
                           {item[column.dataIndex] || '-'}
                         </Popover> */}
                         {
-                          column.isLink ? <a href={'#/'+item[column.dataIndex]} target='_blank'>{item[column.dataIndex]}</a> : 
-                          <Popover content={item[column.dataIndex] || '-'}>
-                          {item[column.dataIndex] || '-'}
-                        </Popover>
+                          column.isLink ? <a href={'#/' + item[column.dataIndex]} target='_blank'>{item[column.dataIndex]}</a> :
+                            <Popover content={item[column.dataIndex] || '-'}>
+                              {item[column.dataIndex] || '-'}
+                            </Popover>
                         }
-                        </div>
+                      </div>
                     </div>
                   </div>
                 }

@@ -163,7 +163,6 @@ export default class FormElementFactory {
                 itemElement = <TextArea style={{ minHeight: 32, visibility: hidden ? 'hidden' : 'visible' }} placeholder={(defModel.inputTip || item.tooltip) ? (defModel.inputTip || item.tooltip) : (localeHelper.get('common.placeInput', "请输入") + item.label)} autoSize={{ minRows: item.row || 3 }} autoComplete="off" />;
                 break;
             case FormElementType.SELECT://单选
-                console.log(needSelectWrapper, defModel, item, 'needSelectWrapper')
                 if (needSelectWrapper) {
                     itemElement = (<SelectItemWrapper style={{ visibility: hidden ? 'hidden' : 'visible' }} item={item} selectType="select" form={form} />);
                     break;

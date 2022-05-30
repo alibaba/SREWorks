@@ -23,6 +23,7 @@ import httpClient from '../utils/httpClient';
 import BriefLayout from './BriefLayout';
 import BriefHeader from "./BriefLayout/Header";
 import SiderNavToggleBar from '../components/SiderNavToggleBar';
+import Bus from '../utils/eventBus';
 
 const { Content } = Layout;
 let envs = [{ label: "日常", value: "daily" }, { label: "预发", value: "pre" }, { label: "生产", value: "prod" }];
@@ -52,6 +53,9 @@ class DefaultLayout extends React.Component {
         }
         if (properties.deployEnv !== 'local' && !global.currentProduct.isNeedDailyEnv) {
             envs = envs.filter(env => env.value !== "daily")
+        }
+        this.state = {
+            themeFlag: true
         }
     }
 
@@ -114,8 +118,32 @@ class DefaultLayout extends React.Component {
     componentDidMount() {
         //const { global,history} = this.props;
         //开启埋点统计
-    }
+        if(localStorage.getItem("tesla-theme") === "navyblue"){
+            this.setState({
+                themeFlag: localStorage.getItem("tesla-theme") === "navyblue"? false : true
+            })
+        }
+        Bus.on('themeChange', (themeType) => {
+            console.log(themeType,'themeType')
+            let flag = false;
+            if(themeType === 'navyBlue') {
+                flag = false
+            } else if(themeType === 'light') {
+                flag = true
+            } else {
+                flag = false
+            }
+            this.setState({
+                themeFlag: flag
+            },()=> {
+                console.log(this.state.themeFlag,'themeType-')
+            })
+        })
 
+    };
+    // componentWillUnmount(){
+    //     Bus.off('themeChange')
+    // }
     onSwitchSidebar = () => {
         const { dispatch } = this.props;
         dispatch({ type: 'global/switchSidebar' });
@@ -188,6 +216,7 @@ class DefaultLayout extends React.Component {
         const { global, children, location, app } = this.props;
         const { siderFold, siderRespons, theme, menuMode, siderOpenKeys, menuResponsVisible, moduleName, currentUser, moduleGroups, accessRoutes, settings, currentProduct } = global;
         //if(accessRoutes.length===0) return null;
+        let {themeFlag} = this.state;
         let routes = accessRoutes;
         // console.log(this.props,'this.props')
         // console.log(accessRoutes, 'accessRoutes-defaultLayout')
@@ -352,7 +381,7 @@ class DefaultLayout extends React.Component {
                     <Layout style={{ height: `calc(100vh - ${hasTop ? 90 : 60}px)`, overflowY: 'scroll', overflowX: 'hidden' }} id="__MAIN_CONTENT__">
                         <NoticeBar />
                         <Content>
-                            <Layout className="mixin-background">
+                            <Layout className={themeFlag ? "mixin-background" : "mixin-background-black"} >
                                 <LeftSiderMenus key={currentModule.name} {...menuProps} />
                                 <Content
                                     style={{ padding: header.type === "brief" ? "12px 15vw 0 15vw" : (contentPadding ? contentPadding : "8px 8px 0px 8px") }}>

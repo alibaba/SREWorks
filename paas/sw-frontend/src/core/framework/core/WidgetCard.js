@@ -100,7 +100,6 @@ export default class WidgetCard extends React.Component {
         });
     }
     handleParamsChanged = (paramData, outputs) => {
-        console.log(this.props, paramData, 'is dispatch')
         let { dispatch } = this.props;
         dispatch && dispatch({ type: 'node/updateParams', paramData: paramData });
     };
@@ -190,11 +189,12 @@ export default class WidgetCard extends React.Component {
 
         }
         let paddingPix = (pageLayoutType === 'FLUID' && title) ? 8 : 3;
+        console.log(this.wrapperType,'this.wrapperType')
         if (this.wrapperType === Constants.CARD_WRAPPER_TRANSPARENT || this.wrapperType === Constants.CARD_WRAPPER_TITLE_TRANSPARENT) {
-            let classNameArr = this.wrapperType === Constants.CARD_WRAPPER_TITLE_TRANSPARENT ? ['abm_frontend_widget_component_wrapper', 'globalBackground'] : ['abm_frontend_widget_component_wrapper']
+            let classNameArr = this.wrapperType === Constants.CARD_WRAPPER_TITLE_TRANSPARENT ? ['abm_frontend_widget_component_wrapper', 'transparent-panel'] : ['abm_frontend_widget_component_wrapper']
             return (
                 <div>
-                    <section style={{ display: "flex", alignItems: "center", justifyContent: 'space-between', height: 54, verticalAlign: 'middle', paddingLeft: paddingPix }}>
+                    <section style={{ display: "flex", alignItems: "center", justifyContent: 'space-between', height: 54, verticalAlign: 'middle',background:'transparent',paddingLeft: paddingPix }}>
                         <div style={{ display: "flex", justifyContent: 'flex-start' }}>
                             {
                                 title && <h2 style={{ fontSize: 16, marginRight: '12px' }}><JSXRender jsx={title} /></h2>

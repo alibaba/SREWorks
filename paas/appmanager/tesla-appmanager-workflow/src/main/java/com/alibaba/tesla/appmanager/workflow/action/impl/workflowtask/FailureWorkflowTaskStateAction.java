@@ -41,6 +41,6 @@ public class FailureWorkflowTaskStateAction implements WorkflowTaskStateAction, 
         log.info("the current workflow task enters the FAILURE state|workflowInstanceId={}|workflowTaskId={}",
                 task.getWorkflowInstanceId(), task.getId());
         WorkflowInstanceDO instance = workflowInstanceService.get(task.getWorkflowInstanceId(), false);
-        workflowInstanceService.triggerFailure(instance, task.getTaskErrorMessage());
+        workflowInstanceService.triggerProcessFailed(instance, task.getTaskErrorMessage());
     }
 }

@@ -57,7 +57,6 @@ export default class BaseModel {
     setDataSourceMeta(meta) {
         this.dataSourceMeta = meta;
     }
-
     getDataSource() {
         if (this.dataSourceMeta) {
             return new DataSource(this.dataSourceMeta);

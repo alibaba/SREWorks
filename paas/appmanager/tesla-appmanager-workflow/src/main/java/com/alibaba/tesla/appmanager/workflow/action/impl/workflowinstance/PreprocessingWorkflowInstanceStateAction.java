@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.enums.*;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
-import com.alibaba.tesla.appmanager.common.util.NetworkUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.option.WorkflowInstanceOption;
 import com.alibaba.tesla.appmanager.domain.req.UpdateWorkflowSnapshotReq;
@@ -150,7 +149,6 @@ public class PreprocessingWorkflowInstanceStateAction implements WorkflowInstanc
 
             // 创建 workflow task
             String taskStatus = WorkflowTaskStateEnum.PENDING.toString();
-            String clientHostname = NetworkUtil.getCurrentHostnameAddress();
             WorkflowTaskDO record = WorkflowTaskDO.builder()
                     .workflowInstanceId(workflowInstanceId)
                     .appId(instance.getAppId())
@@ -158,12 +156,11 @@ public class PreprocessingWorkflowInstanceStateAction implements WorkflowInstanc
                     .taskStage(workflowStage.toString())
                     .taskProperties(JSONObject.toJSONString(workflowProperties))
                     .taskStatus(taskStatus)
-                    .clientHostname(clientHostname)
                     .build();
             WorkflowTaskDO task = workflowTaskService.create(record);
             log.info("action=createWorkflowTask|workflowInstanceId={}|appId={}|taskType={}|taskStage={}|" +
-                            "taskStatus={}|clientHostname={}", workflowInstanceId, instance.getAppId(), workflowType,
-                    workflowStage, taskStatus, clientHostname);
+                            "taskStatus={}", workflowInstanceId, instance.getAppId(), workflowType,
+                    workflowStage, taskStatus);
             tasks.add(task);
         }
         return tasks;

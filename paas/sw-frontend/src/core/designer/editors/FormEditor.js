@@ -102,14 +102,26 @@ class FormEditor extends PureComponent {
     };
     orderChange=(dragIndex,hoverIndex)=> {
        let { parameters } = this.state,{ onChange } = this.props;
-       parameters.forEach((item,index )=> {
-           if(index === dragIndex) {
-               item.order = hoverIndex
-           }
-           if(index === hoverIndex) {
-            item.order = dragIndex
-           }
-       })
+       if (dragIndex>hoverIndex) {
+        parameters.forEach((item,index )=> {
+            if(index >= hoverIndex && index<dragIndex) {
+                item.order = item.order + 1
+               }
+            if(index === dragIndex) {
+                item.order = hoverIndex
+            }
+        })
+       }
+       if (dragIndex<hoverIndex) {
+        parameters.forEach((item,index )=> {
+            if(index > dragIndex && index <= hoverIndex) {
+                item.order = item.order -1
+               }
+            if(index === dragIndex) {
+                item.order = hoverIndex
+            }
+        })
+       }
        parameters = this.sortParameters(parameters);
        onChange && onChange(parameters); 
        this.setState({

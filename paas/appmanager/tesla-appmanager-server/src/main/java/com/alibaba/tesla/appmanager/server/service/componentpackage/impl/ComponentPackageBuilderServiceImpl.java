@@ -21,7 +21,7 @@ import com.alibaba.tesla.appmanager.server.repository.condition.ComponentPackage
 import com.alibaba.tesla.appmanager.server.repository.domain.ComponentPackageDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.ComponentPackageTaskDO;
 import com.alibaba.tesla.appmanager.server.service.componentpackage.ComponentPackageBuilderService;
-import com.alibaba.tesla.appmanager.server.service.componentpackage.ComponentPackageManager;
+import com.alibaba.tesla.appmanager.server.service.componentpackage.ComponentPackageBuilderExecutorManager;
 import com.alibaba.tesla.appmanager.server.service.componentpackage.handler.BuildComponentHandler;
 import com.alibaba.tesla.appmanager.server.service.componentpackage.instance.ComponentPackageBase;
 import com.alibaba.tesla.appmanager.server.storage.Storage;
@@ -49,7 +49,7 @@ public class ComponentPackageBuilderServiceImpl implements ComponentPackageBuild
     @Autowired
     private PackageProperties packageProperties;
     @Autowired
-    private ComponentPackageManager componentPackageManager;
+    private ComponentPackageBuilderExecutorManager componentPackageBuilderExecutorManager;
     @Autowired
     private ComponentPackageTaskRepository componentPackageTaskRepository;
     @Autowired
@@ -178,7 +178,7 @@ public class ComponentPackageBuilderServiceImpl implements ComponentPackageBuild
         switch (componentType) {
             case K8S_MICROSERVICE:
             case K8S_JOB: {
-                ComponentPackageBase instance = componentPackageManager.getInstance(componentType.name());
+                ComponentPackageBase instance = componentPackageBuilderExecutorManager.getInstance(componentType.name());
                 instance.exportComponentPackage(taskDO);
                 break;
             }

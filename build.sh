@@ -4,21 +4,27 @@ SW_ROOT=$(cd `dirname $0`; pwd)
 
 set -e
 
-target_python27(){
+if [ -z ${SW_PYTHON3_IMAGE} ]
+then
+   export SW_PYTHON3_IMAGE="python:3.9.12-alpine"
+fi
 
-    [ -n "$TAG" ] && tag=$TAG || tag="latest"
+if [ -z ${APK_REPO_DOMAIN} ]
+then
+   export APK_REPO_DOMAIN="mirrors.tuna.tsinghua.edu.cn"
+fi
 
-    if [ -n "$BUILD" ]; then
-        echo "-- build sw-python27 --" >&2
-        docker build -t sw-python27:$tag --pull --no-cache -f $SW_ROOT/paas/python27/Dockerfile $SW_ROOT/paas/python27  
-        docker tag sw-python27:$tag sw-python27:latest
-    fi
-    if [ -n "$PUSH_REPO" ]; then
-        echo "-- push sw-python27 --" >&2
-        docker tag sw-python27:$tag $PUSH_REPO/sw-python27:$tag
-        docker push $PUSH_REPO/sw-python27:$tag
-    fi
-}
+if [ -z ${PYTHON_PIP} ]
+then
+   export PYTHON_PIP="http://mirrors.aliyun.com/pypi/simple"
+fi
+export PYTHON_PIP_DOMAIN=$(echo $PYTHON_PIP|awk -F '//' '{print $2}'|awk -F '/' '{print $1}')
+
+if [ -z ${MIGRATE_IMAGE} ]
+then
+   export MIGRATE_IMAGE="migrate/migrate"
+fi
+
 
 target_maven(){
     [ -n "$TAG" ] && tag=$TAG || tag="latest"    
@@ -66,7 +72,9 @@ target_postrun(){
     [ -n "$TAG" ] && tag=$TAG || tag="latest"
     if [ -n "$BUILD" ]; then
         echo "-- build sw-postrun --" >&2
-        docker build -t sw-postrun:$tag --pull --no-cache -f $SW_ROOT/paas/postrun/Dockerfile $SW_ROOT/paas/postrun
+        TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
+        envsubst < $SW_ROOT/paas/postrun/Dockerfile.tpl > ${TMP_DOCKERFILE}
+        docker build -t sw-postrun:$tag --pull --no-cache -f ${TMP_DOCKERFILE} $SW_ROOT/paas/postrun
         docker tag sw-postrun:$tag sw-postrun:latest
     fi
     if [ -n "$PUSH_REPO" ]; then
@@ -80,6 +88,7 @@ target_appmanager_server(){
     [ -n "$TAG" ] && tag=$TAG || tag="develop"
     if [ -n "$BUILD" ]; then
         echo "-- build appmanager server --" >&2
+        export DOCKER_BUILDKIT=0
         docker build -t sw-paas-appmanager:$tag -f $SW_ROOT/paas/appmanager/Dockerfile_sreworks $SW_ROOT/paas/appmanager
         docker tag sw-paas-appmanager:$tag sw-paas-appmanager:latest
     fi
@@ -231,7 +240,6 @@ target_swcli_builtin_package(){
 
 
 target_base(){
-    target_python27
     target_maven
     target_migrate
     target_openjdk8

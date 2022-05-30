@@ -8,7 +8,7 @@ metadata:
   name: sreworks-core-init-job
   annotations:
 spec:
-  backoffLimit: 20
+  backoffLimit: 20000000
   ttlSecondsAfterFinished: 600
   template:
     spec:
@@ -61,7 +61,7 @@ metadata:
   name: sreworks-saas-{{.}}-init-job
   annotations:
 spec:
-  backoffLimit: 20
+  backoffLimit: 2000000
   ttlSecondsAfterFinished: 600
   template:
     spec:

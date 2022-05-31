@@ -1,6 +1,7 @@
 FROM ${MAVEN_IMAGE} AS build
 COPY . /app
 WORKDIR /app
+RUN mkdir /root/.m2/ && curl ${MAVEN_SETTINGS_XML} -o /root/.m2/settings.xml
 RUN mvn -Dmaven.test.skip=true clean package -U
 
 # Release

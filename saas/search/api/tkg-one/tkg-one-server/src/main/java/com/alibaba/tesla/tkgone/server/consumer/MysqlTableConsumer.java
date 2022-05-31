@@ -66,8 +66,8 @@ public class MysqlTableConsumer extends AbstractConsumer implements Initializing
             if (contentType.equals(Constant.FRONTEND_CONTENT)) {
                 List<JSONObject> simpleFrontendList = new ArrayList<>();
                 retList.forEach(ret -> {
-                    JSONObject config = JSONObject.parseObject(ret.getString("config"));
-                    if (config.containsKey("esSearch") && !config.getJSONArray("esSearch").isEmpty()) {
+                    JSONObject tabConfig = JSONObject.parseObject(ret.getString("tab_config"));
+                    if (tabConfig.containsKey("esSearch") && !JSONObject.parseArray(tabConfig.getString("esSearch")).isEmpty()) {
                         detailFrontendList.add(ret);
                     } else {
                         simpleFrontendList.add(ret);
@@ -95,8 +95,8 @@ public class MysqlTableConsumer extends AbstractConsumer implements Initializing
     }
 
     private List<JSONObject> instantiateFrontend(JSONObject detailFrontend) {
-        JSONObject pageConfig = JSONObject.parseObject(detailFrontend.getString("config"));
-        List<FrontendPageVar> pageVariables = pageConfig.getJSONArray("esSearch").toJavaList(FrontendPageVar.class);
+        JSONObject tabConfig = JSONObject.parseObject(detailFrontend.getString("tab_config"));
+        List<FrontendPageVar> pageVariables = JSONObject.parseArray(tabConfig.getString("esSearch")).toJavaList(FrontendPageVar.class);
 
         List<String> varIds = getTopoSort(detailFrontend.getString("id"), pageVariables);
         if (CollectionUtils.isEmpty(varIds)) {

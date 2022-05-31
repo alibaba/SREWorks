@@ -38,6 +38,7 @@ export default class SearchParamsEditor extends Component {
     }
     editorChange = (finalValue) => {
         let formateValue = [];
+        this.value = finalValue;
         if (finalValue) {
             try {
                 formateValue = finalValue
@@ -48,9 +49,9 @@ export default class SearchParamsEditor extends Component {
     }
     render() {
         // let value = '[]';
-        if (this.props.value && this.props.value.length > 20) {
-            this.value = this.props.value
-        }
+        // if (this.props.value && this.props.value.length > 20) {
+        //     this.value = this.props.value
+        // }
         console.log(this.props.value, this.value, '传入props.value')
         return <div className="card-tab-panel">
             <AceEditor

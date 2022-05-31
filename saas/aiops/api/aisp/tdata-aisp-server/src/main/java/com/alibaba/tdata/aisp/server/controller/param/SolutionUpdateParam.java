@@ -14,20 +14,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @ClassName: SceneUpdateParam
+ * @ClassName: SolutionUpdateParam
  * @Author: dyj
- * @DATE: 2021-11-18
+ * @DATE: 2022-05-09
  * @Description:
  **/
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "update场景")
-public class SceneUpdateParam {
-    @NotNull(message = "sceneCode can not be null!")
-    @ApiModelProperty(notes = "场景Code", required = true)
-    private String sceneCode;
+@ApiModel(value = "algoInstance update参数")
+public class SolutionUpdateParam {
+    @NotNull(message = "algoInstanceCode can not be null!")
+    @ApiModelProperty(notes = "algoInstanceCode", required = true)
+    private String algoInstanceCode;
 
     @ApiModelProperty(notes = "关联的产品")
     private List<String> productList;
@@ -36,7 +36,7 @@ public class SceneUpdateParam {
     @ApiModelProperty(notes = "ownerInfoList")
     private List<UserSimpleInfo> ownerInfoList;
 
-    private String sceneName;
+    private String algoInstanceName;
 
     private String comment;
 }

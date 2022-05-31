@@ -6,7 +6,10 @@ import javax.validation.constraints.NotNull;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @ClassName: SceneQueryParam
@@ -15,6 +18,9 @@ import lombok.Data;
  * @Description:
  **/
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @ApiModel(value = "根据条件查找场景")
 public class SceneQueryParam {
     private String sceneCode;

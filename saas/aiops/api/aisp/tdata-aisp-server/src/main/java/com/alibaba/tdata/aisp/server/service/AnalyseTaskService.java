@@ -40,7 +40,7 @@ public interface AnalyseTaskService {
      * @param taskUUID
      * @return
      */
-    JSONObject queryTaskRes(String taskUUID);
+    JSONObject queryTaskRes(String taskUUID, String empId);
 
     /**
      * @param param
@@ -57,4 +57,10 @@ public interface AnalyseTaskService {
      * @return
      */
     TaskReportResult queryTaskReport(TaskTrendQueryParam param, String sceneCode, String detectorCode);
+
+    /**
+     * @param taskUUID
+     * @return
+     */
+    Map<String, List<JSONArray>> queryAdLine(String taskUUID);
 }

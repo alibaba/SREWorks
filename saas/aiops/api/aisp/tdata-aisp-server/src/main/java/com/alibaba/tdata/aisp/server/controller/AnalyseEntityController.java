@@ -30,7 +30,7 @@ import static com.alibaba.tdata.aisp.server.common.factory.AispResponseFactory.b
  * @DATE: 2021-11-15
  * @Description:
  **/
-@Api(tags = "检测Entity接口")
+@Api(tags = "Entity接口")
 @Slf4j
 @RestController
 @RequestMapping("/entity/")
@@ -64,13 +64,6 @@ public class AnalyseEntityController {
     @ResponseBody
     public AispResult batchUpsertModel(@RequestBody @Validated AnalyseInstanceBacthUpsertModelParam param){
         return buildSuccessResult(instanceService.batchUpsertModel(param));
-    }
-
-    @ApiOperation("反馈接口")
-    @PostMapping(value = "feedback")
-    @ResponseBody
-    public AispResult feedback(@RequestBody @Validated AnalyseInstanceFeedbackParam param){
-        return buildSuccessResult(instanceService.feedback(param));
     }
 
     @ApiOperation("查询")

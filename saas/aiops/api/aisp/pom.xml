@@ -5,7 +5,7 @@
     <groupId>com.alibaba.tdata</groupId>
     <artifactId>tdata-aisp</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>tdata-aisp</name>
     <description>springboot project</description>
     <properties>
@@ -51,8 +51,8 @@
             <!-- self project -->
             <dependency>
                 <artifactId>tdata-aisp-server</artifactId>
-                <groupId>com.alibaba.tesla</groupId>
-                <version>0.0.1-SNAPSHOT</version>
+                <groupId>com.alibaba.tdata</groupId>
+                <version>1.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.alibaba</groupId>

@@ -10,6 +10,7 @@ import com.alibaba.tdata.aisp.server.common.config.AispRegister;
 import com.alibaba.tdata.aisp.server.common.constant.AispResult;
 import com.alibaba.tdata.aisp.server.common.filter.LogConstant;
 import com.alibaba.tdata.aisp.server.common.utils.UuidUtil;
+import com.alibaba.tdata.aisp.server.controller.param.AnalyseInstanceFeedbackParam;
 import com.alibaba.tdata.aisp.server.controller.param.AnalyzeTaskUpdateParam;
 import com.alibaba.tdata.aisp.server.controller.param.CodeParam;
 import com.alibaba.tdata.aisp.server.controller.param.TaskQueryParam;
@@ -22,6 +23,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,8 +48,6 @@ public class AnalyseExecuteController {
     private HttpServletRequest httpServletRequest;
     @Autowired
     private AnalyseExecuteService executeService;
-    @Autowired
-    private AnalyseTaskService taskService;
     @Autowired
     private AispRegister monitor;
 
@@ -82,6 +82,17 @@ public class AnalyseExecuteController {
     @ResponseBody
     public AispResult getInput(@PathVariable String detectorCode){
         return buildSuccessResult(executeService.getInput(detectorCode));
+    }
+
+    @ApiOperation("反馈接口")
+    @PostMapping(value = "/{sceneCode}/{detectorCode}/feedback")
+    @ResponseBody
+    public AispResult feedback(@PathVariable String sceneCode,
+        @PathVariable String detectorCode, @RequestBody @Validated AnalyseInstanceFeedbackParam param){
+        JSONObject result = new JSONObject();
+        result.put("result", executeService.feedback(sceneCode, detectorCode, param));
+        result.put("taskUUID", genTaskUUID());
+        return buildSuccessResult(result);
     }
 
     private String genTaskUUID() {

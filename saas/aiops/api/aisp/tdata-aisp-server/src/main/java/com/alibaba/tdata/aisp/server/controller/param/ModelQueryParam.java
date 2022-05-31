@@ -4,7 +4,6 @@ import javax.validation.constraints.NotNull;
 
 import com.alibaba.fastjson.JSONObject;
 
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,16 +11,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @ClassName: SceneUpsertModelParam
+ * @ClassName: ModelQueryParam
  * @Author: dyj
- * @DATE: 2022-03-03
+ * @DATE: 2022-05-10
  * @Description:
  **/
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SceneUpsertModelParam {
+public class ModelQueryParam {
     @NotNull(message = "sceneCode can not be null!")
     @ApiModelProperty(notes = "场景Code", required = true)
     private String sceneCode;
@@ -30,7 +29,9 @@ public class SceneUpsertModelParam {
     @ApiModelProperty(notes = "检测器Code", required = true)
     private String detectorCode;
 
-    @NotNull(message = "sceneModelParam can not be null!")
-    @ApiModelProperty(notes = "场景级别modelParam", required = true)
-    private JSONObject sceneModelParam;
+    @NotNull(message = "level can not be null!")
+    @ApiModelProperty(notes = "level", required = true)
+    private String level;
+
+    private String entityId;
 }

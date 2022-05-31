@@ -15,12 +15,6 @@ import lombok.Data;
  **/
 @Data
 public class AnalyseInstanceFeedbackParam {
-    @NotNull(message = "sceneCode can not be null!")
-    @ApiModelProperty(notes = "场景Code", required = true)
-    private String sceneCode;
-    @NotNull(message = "detectorCode can not be null!")
-    @ApiModelProperty(notes = "检测器Code", required = true)
-    private String detectorCode;
     @NotNull(message = "entityId can not be null!")
     @ApiModelProperty(notes = "entityId", required = true)
     private String entityId;

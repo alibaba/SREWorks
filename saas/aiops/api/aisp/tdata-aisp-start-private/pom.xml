@@ -7,7 +7,7 @@
   <parent>
     <artifactId>tdata-aisp</artifactId>
     <groupId>com.alibaba.tdata</groupId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -20,7 +20,7 @@
     <dependency>
       <artifactId>tdata-aisp-server</artifactId>
       <groupId>com.alibaba.tdata</groupId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>1.0.0</version>
     </dependency>
 
     <dependency>

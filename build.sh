@@ -40,6 +40,10 @@ then
    export KUSTOMIZE_BIN_URL="https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/kustomize"
 fi
 
+if [ -z ${MAVEN_SETTINGS_XML} ]
+then
+   export MAVEN_SETTINGS_XML="https://sreworks.oss-cn-beijing.aliyuncs.com/resource/settings.xml"
+fi
 
 
 target_maven(){

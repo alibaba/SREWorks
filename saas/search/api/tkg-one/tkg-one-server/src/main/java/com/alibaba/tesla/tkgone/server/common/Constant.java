@@ -210,4 +210,12 @@ public final class Constant {
     public final static String BACKEND_STORE_PATTERNS_SPLIT_SYMBOL = ";";
     public final static int HASHMAP_INIT_CAPACITY = 1000;
 
+    /*** content 类型 ***/
+    public final static String FRONTEND_CONTENT = "frontend";
+
+    /*** var 类型 ***/
+    public enum FRONTEND_VAR_TYPE {
+        api, datasource, constant
+    }
+
 }

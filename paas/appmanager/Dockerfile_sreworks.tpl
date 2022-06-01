@@ -1,12 +1,11 @@
-FROM maven:3.8.3-adoptopenjdk-11 AS build
+FROM ${MAVEN_IMAGE} AS build
 COPY . /app
 WORKDIR /app
+RUN mkdir /root/.m2/ && curl ${MAVEN_SETTINGS_XML} -o /root/.m2/settings.xml
 RUN mvn -Dmaven.test.skip=true clean package -U
 
 # Release
-FROM maven:3.8.3-adoptopenjdk-11 AS release
-COPY ./sbin /app/sbin
-RUN sh /app/sbin/ubuntu-install-debug.sh
+FROM ${MAVEN_IMAGE} AS release
 USER root
 WORKDIR /root
 ARG APP_NAME=tesla-appmanager
@@ -16,12 +15,10 @@ COPY --from=build /app/${APP_NAME}-start-standalone/target/${APP_NAME}/BOOT-INF/
 # Copy Resources
 COPY --from=build /app/${APP_NAME}-start-standalone/target/${APP_NAME}/BOOT-INF/classes/dynamicscripts /app/dynamicscripts
 COPY --from=build /app/${APP_NAME}-start-standalone/target/${APP_NAME}/BOOT-INF/classes/jinja /app/jinja
-RUN wget -O /app/helm "https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/helm" \
+RUN wget -O /app/helm "${HELM_BIN_URL}" \
     && chmod +x /app/helm \
-    && wget -O /app/kustomize "https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/kustomize" \
-    && chmod +x /app/kustomize \
-    && wget -O /app/kubectl "https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/kubectl" \
-    && chmod +x /app/kubectl
+    && wget -O /app/kustomize "${KUSTOMIZE_BIN_URL}"  \
+    && chmod +x /app/kustomize
 
 WORKDIR /app
 ENTRYPOINT ["/app/sbin/run_sreworks.sh"]

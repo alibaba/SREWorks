@@ -24,6 +24,14 @@ public interface RtComponentInstanceService {
     /**
      * 上报 Component 实例状态
      *
+     * @param request     上报数据请求
+     * @param ignoreError 是否忽略错误 true or false，错误时抛出 AppException
+     */
+    void report(ReportRtComponentInstanceStatusReq request, boolean ignoreError);
+
+    /**
+     * 上报 Component 实例状态 (忽略错误)
+     *
      * @param request 上报数据请求
      */
     void report(ReportRtComponentInstanceStatusReq request);

@@ -74,7 +74,12 @@ public enum ComponentTypeEnum {
     /**
      * ABM Helm Component
      */
-    ABM_HELM;
+    ABM_HELM,
+
+    /**
+     * ABM Status Component
+     */
+    ABM_STATUS;
 
     public static ComponentTypeEnum parse(String value) {
         ComponentTypeEnum result = Enums.getIfPresent(ComponentTypeEnum.class, value).orNull();

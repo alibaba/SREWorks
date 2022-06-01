@@ -31,6 +31,13 @@ public interface WorkloadBinder {
     void setOwnerReference(String ownerReference);
 
     /**
+     * 返回 Owner Reference 字符串
+     *
+     * @return Owner Reference JSON Object String
+     */
+    String getOwnerReference();
+
+    /**
      * 获取当前被绑定的 Component 对象
      *
      * @return Component

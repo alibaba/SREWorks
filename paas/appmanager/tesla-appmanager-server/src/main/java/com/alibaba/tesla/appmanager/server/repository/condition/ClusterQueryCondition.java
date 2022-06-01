@@ -20,4 +20,6 @@ public class ClusterQueryCondition extends BaseCondition {
     private String clusterId;
 
     private String clusterName;
+
+    private String clusterType;
 }

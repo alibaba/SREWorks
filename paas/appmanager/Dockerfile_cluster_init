@@ -6,5 +6,5 @@ COPY ./APP-META-PRIVATE/cluster-init /app/sbin
 
 # 安装依赖，构建镜像
 RUN sed -i 's/mirrors.tuna.tsinghua.edu.cn/mirrors.aliyun.com/g' /etc/apk/repositories \
-    && pip install -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com requests
+    && pip install -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com requests requests_oauthlib
 ENTRYPOINT ["/app/sbin/cluster_run.sh"]

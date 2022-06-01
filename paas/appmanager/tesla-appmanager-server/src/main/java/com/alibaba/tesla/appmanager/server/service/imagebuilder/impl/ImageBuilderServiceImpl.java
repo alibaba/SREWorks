@@ -266,10 +266,14 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
             throws IOException {
         Jinjava jinjava = new Jinjava();
         Path dockerfileTemplate;
+        String dockerfileTemplateStr = request.getDockerfileTemplate();
+        if (StringUtils.isEmpty(dockerfileTemplateStr)) {
+            dockerfileTemplateStr = "Dockerfile";
+        }
         if (StringUtils.isEmpty(request.getRepoPath())) {
-            dockerfileTemplate = Paths.get(cloneDir.toString(), request.getDockerfileTemplate());
+            dockerfileTemplate = Paths.get(cloneDir.toString(), dockerfileTemplateStr);
         } else {
-            dockerfileTemplate = Paths.get(cloneDir.toString(), request.getRepoPath(), request.getDockerfileTemplate());
+            dockerfileTemplate = Paths.get(cloneDir.toString(), request.getRepoPath(), dockerfileTemplateStr);
         }
         String template = FileUtils.readFileToString(dockerfileTemplate.toFile(), StandardCharsets.UTF_8);
         String renderedTemplate = jinjava.render(template, request.getDockerfileTemplateArgs());

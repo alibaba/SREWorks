@@ -1,8 +1,10 @@
 package com.alibaba.tesla.appmanager.server.service.informer;
 
+import com.alibaba.tesla.appmanager.common.enums.ClusterTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.dynamicscript.core.GroovyHandlerFactory;
 import com.alibaba.tesla.appmanager.dynamicscript.core.GroovyHandlerItem;
 import com.alibaba.tesla.appmanager.kubernetes.KubernetesClientFactory;
@@ -61,14 +63,16 @@ public class InformerManager {
     @Scheduled(cron = "${appmanager.cron-job.informer-manager-refresh:0 * * * * *}")
     @SchedulerLock(name = "informerManagerFactoryRefresh")
     public void init() throws IOException {
-        List<ClusterDO> clusters = clusterService.list(ClusterQueryCondition.builder().build());
-        for (ClusterDO cluster : clusters) {
+        Pagination<ClusterDO> clusters = clusterService.list(ClusterQueryCondition.builder()
+                .clusterType(ClusterTypeEnum.KUBERNETES.toString())
+                .build());
+        for (ClusterDO cluster : clusters.getItems()) {
             initCluster(cluster);
         }
 
         // 通过差值确认需要删除的集群
         HashSet<String> clusterIdSet = new HashSet<>(clusterMd5Map.keySet());
-        clusterIdSet.removeAll(clusters.stream().map(ClusterDO::getClusterId).collect(Collectors.toSet()));
+        clusterIdSet.removeAll(clusters.getItems().stream().map(ClusterDO::getClusterId).collect(Collectors.toSet()));
         for (String clusterId : clusterIdSet) {
             removeCluster(clusterId);
         }

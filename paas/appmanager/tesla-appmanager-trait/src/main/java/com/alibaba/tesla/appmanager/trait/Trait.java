@@ -3,7 +3,6 @@ package com.alibaba.tesla.appmanager.trait;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.domain.core.TaskExecutor;
 import com.alibaba.tesla.appmanager.domain.core.WorkloadBinder;
-import io.fabric8.kubernetes.api.model.OwnerReference;
 
 /**
  * Trait 接口定义

@@ -4,9 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.domain.core.WorkloadResource;
 import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
 import com.alibaba.tesla.appmanager.domain.schema.TraitDefinition;
-import io.fabric8.kubernetes.api.model.OwnerReference;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Trait 实现基类
@@ -38,7 +36,7 @@ public class BaseTrait implements Trait {
     /**
      * Owner Reference
      */
-    private OwnerReference ownerReference;
+    private String ownerReference;
 
     /**
      * 绑定到当前 Trait 的 SpecComponent 对象
@@ -81,12 +79,13 @@ public class BaseTrait implements Trait {
     }
 
     @Override
+    public String getOwnerReference() {
+        return this.ownerReference;
+    }
+
+    @Override
     public void setOwnerReference(String ownerReference) {
-        if (StringUtils.isNotEmpty(ownerReference)) {
-            this.ownerReference = JSONObject.parseObject(ownerReference, OwnerReference.class);
-        } else {
-            this.ownerReference = null;
-        }
+        this.ownerReference = ownerReference;
     }
 
     @Override

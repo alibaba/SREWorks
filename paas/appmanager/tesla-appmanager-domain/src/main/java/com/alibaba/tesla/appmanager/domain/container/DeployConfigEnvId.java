@@ -47,6 +47,15 @@ public class DeployConfigEnvId {
     }
 
     /**
+     * 返回空环境字符串标识（通用类型）
+     *
+     * @return 字符串标识
+     */
+    public static String emptyUnitStr() {
+        return "Unit";
+    }
+
+    /**
      * 返回 Stage 字符串标识
      *
      * @param stageId Stage ID

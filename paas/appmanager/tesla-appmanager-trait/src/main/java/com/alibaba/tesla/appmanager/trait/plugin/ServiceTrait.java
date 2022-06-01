@@ -11,8 +11,10 @@ import com.alibaba.tesla.appmanager.domain.schema.TraitDefinition;
 import com.alibaba.tesla.appmanager.kubernetes.KubernetesClientFactory;
 import com.alibaba.tesla.appmanager.spring.util.SpringBeanUtil;
 import com.alibaba.tesla.appmanager.trait.BaseTrait;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
+import io.fabric8.kubernetes.api.model.OwnerReference;
 import io.fabric8.kubernetes.api.model.Service;
 import io.fabric8.kubernetes.api.model.ServiceBuilder;
 import io.fabric8.kubernetes.api.model.ServiceSpec;
@@ -48,6 +50,7 @@ public class ServiceTrait extends BaseTrait {
 
         // 获取基本信息
         String namespace = workloadRef.getMetadata().getNamespace();
+        String ownerReference = getOwnerReference();
 
         // 支持多个 Service 配置
         JSONArray services = getSpec().getJSONArray("services");
@@ -70,8 +73,8 @@ public class ServiceTrait extends BaseTrait {
                 if (spec == null) {
                     throw new AppException(AppErrorCode.INVALID_USER_ARGS, "spec is required in service trait");
                 }
-                JSONObject cr = generateService(namespace, name, labels, annotations, spec);
-                applyService(clusterId, cr, namespace, name, labels, annotations);
+                JSONObject cr = generateService(namespace, name, labels, annotations, ownerReference, spec);
+                applyService(clusterId, cr, namespace, name, labels, annotations, ownerReference);
             }
         } else {
             String name = workloadRef.getMetadata().getName();
@@ -87,8 +90,8 @@ public class ServiceTrait extends BaseTrait {
             if (annotations.size() == 0) {
                 annotations = (JSONObject) workloadRef.getMetadata().getAnnotations();
             }
-            JSONObject cr = generateService(namespace, name, labels, annotations, getSpec());
-            applyService(clusterId, cr, namespace, name, labels, annotations);
+            JSONObject cr = generateService(namespace, name, labels, annotations, ownerReference, getSpec());
+            applyService(clusterId, cr, namespace, name, labels, annotations, ownerReference);
 
             // 写入暴露值
             getSpec().put("serviceName", name);
@@ -97,15 +100,18 @@ public class ServiceTrait extends BaseTrait {
 
     /**
      * 应用 Service 到集群中
-     * @param clusterId 集群 ID
-     * @param cr CR
-     * @param namespace Namespace
-     * @param name Name
-     * @param labels Labels
-     * @param annotations Annotations
+     *
+     * @param clusterId      集群 ID
+     * @param cr             CR
+     * @param namespace      Namespace
+     * @param name           Name
+     * @param labels         Labels
+     * @param annotations    Annotations
+     * @param ownerReference Owner Reference
      */
     private void applyService(
-            String clusterId, JSONObject cr, String namespace, String name, JSONObject labels, JSONObject annotations) {
+            String clusterId, JSONObject cr, String namespace, String name, JSONObject labels,
+            JSONObject annotations, String ownerReference) {
         KubernetesClientFactory clientFactory = SpringBeanUtil.getBean(KubernetesClientFactory.class);
         DefaultKubernetesClient client = clientFactory.get(clusterId);
         // 应用到集群
@@ -135,15 +141,34 @@ public class ServiceTrait extends BaseTrait {
                     Service result = client.services()
                             .inNamespace(namespace)
                             .withName(name)
-                            .edit(s -> new ServiceBuilder(s)
-                                    .editMetadata()
-                                    .withLabels(JSON.parseObject(finalLabels.toJSONString(), new TypeReference<Map<String, String>>() {
-                                    }))
-                                    .withAnnotations(JSON.parseObject(finalAnnotations.toJSONString(), new TypeReference<Map<String, String>>() {
-                                    }))
-                                    .endMetadata()
-                                    .withSpec(newSpec)
-                                    .build());
+                            .edit(s -> {
+                                if (StringUtils.isNotEmpty(ownerReference)) {
+                                    try {
+                                        return new ServiceBuilder(s)
+                                                .editMetadata()
+                                                .withLabels(JSON.parseObject(finalLabels.toJSONString(), new TypeReference<Map<String, String>>() {
+                                                }))
+                                                .withAnnotations(JSON.parseObject(finalAnnotations.toJSONString(), new TypeReference<Map<String, String>>() {
+                                                }))
+                                                .withOwnerReferences(mapper.readValue(ownerReference, OwnerReference.class))
+                                                .endMetadata()
+                                                .withSpec(newSpec)
+                                                .build();
+                                    } catch (JsonProcessingException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                } else {
+                                    return new ServiceBuilder(s)
+                                            .editMetadata()
+                                            .withLabels(JSON.parseObject(finalLabels.toJSONString(), new TypeReference<Map<String, String>>() {
+                                            }))
+                                            .withAnnotations(JSON.parseObject(finalAnnotations.toJSONString(), new TypeReference<Map<String, String>>() {
+                                            }))
+                                            .endMetadata()
+                                            .withSpec(newSpec)
+                                            .build();
+                                }
+                            });
                     log.info("cr yaml has updated in kubernetes|cluster={}|namespace={}|name={}|labels={}|" +
                                     "annotations={}|newSpec={}|result={}", clusterId, namespace, name,
                             JSONObject.toJSONString(labels), JSONObject.toJSONString(annotations),
@@ -168,13 +193,16 @@ public class ServiceTrait extends BaseTrait {
     /**
      * 创建服务 JSON spec
      *
-     * @param namespace 命名空间
-     * @param name      标识名称
-     * @param spec      spec 定义
+     * @param namespace   命名空间
+     * @param name        标识名称
+     * @param labels      Labels
+     * @param annotations Annotations
+     * @param spec        spec 定义
      * @return JSONObject
      */
     private JSONObject generateService(
-            String namespace, String name, JSONObject labels, JSONObject annotations, JSONObject spec) {
+            String namespace, String name, JSONObject labels, JSONObject annotations, String ownerReference,
+            JSONObject spec) {
         String serviceStr = JSONObject.toJSONString(ImmutableMap.of(
                 "apiVersion", "v1",
                 "kind", "Service",
@@ -191,6 +219,11 @@ public class ServiceTrait extends BaseTrait {
                 )
         ));
         JSONObject service = JSONObject.parseObject(serviceStr);
+        if (StringUtils.isNotEmpty(ownerReference)) {
+            service.getJSONObject("metadata").put("ownerReferences", new JSONArray());
+            service.getJSONObject("metadata").getJSONArray("ownerReferences")
+                    .add(JSONObject.parseObject(ownerReference));
+        }
         service.getJSONObject("spec").putAll(spec);
         return service;
     }

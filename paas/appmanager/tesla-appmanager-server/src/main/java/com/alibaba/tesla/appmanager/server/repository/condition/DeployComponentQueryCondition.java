@@ -3,12 +3,11 @@ package com.alibaba.tesla.appmanager.server.repository.condition;
 import com.alibaba.tesla.appmanager.common.BaseCondition;
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentStateEnum;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.io.Serializable;
+import java.util.List;
 
 /**
  * Component 部署单查询条件类
@@ -36,6 +35,8 @@ public class DeployComponentQueryCondition extends BaseCondition {
     private String identifierStartsWith;
 
     private DeployComponentStateEnum deployStatus;
+
+    private List<DeployComponentStateEnum> deployStatusList;
 
     private Long deployProcessId;
 

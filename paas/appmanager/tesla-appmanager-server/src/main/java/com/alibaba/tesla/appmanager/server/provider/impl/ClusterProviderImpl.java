@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * Cluster 服务
@@ -48,8 +47,8 @@ public class ClusterProviderImpl implements ClusterProvider {
     public Pagination<ClusterDTO> queryByCondition(ClusterQueryReq request) {
         ClusterQueryCondition condition = new ClusterQueryCondition();
         ClassUtil.copy(request, condition);
-        List<ClusterDO> results = clusterService.list(condition);
-        return Pagination.valueOf(results, item -> clusterConvert.to(item));
+        Pagination<ClusterDO> results = clusterService.list(condition);
+        return Pagination.transform(results, item -> clusterConvert.to(item));
     }
 
     /**
@@ -117,8 +116,9 @@ public class ClusterProviderImpl implements ClusterProvider {
 
         // 如果设置某个集群的 masterFlag 为 true，那么设置其余所有 cluster 的 masterFlag 为 false
         if (request.getMasterFlag() != null && request.getMasterFlag()) {
-            List<ClusterDO> allClusters = clusterService.list(ClusterQueryCondition.builder().build());
-            for (ClusterDO cluster : allClusters) {
+            ClusterQueryCondition condition = ClusterQueryCondition.builder().build();
+            Pagination<ClusterDO> allClusters = clusterService.list(condition);
+            for (ClusterDO cluster : allClusters.getItems()) {
                 if (cluster.getClusterId().equals(clusterId)) {
                     continue;
                 }

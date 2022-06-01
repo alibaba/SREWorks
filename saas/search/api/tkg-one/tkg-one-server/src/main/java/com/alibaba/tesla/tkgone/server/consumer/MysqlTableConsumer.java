@@ -52,7 +52,7 @@ public class MysqlTableConsumer extends AbstractConsumer implements Initializing
         sql = Tools.processTemplateString(sql,
                 JSONObject.parseObject(JSONObject.toJSONString(consumerDto)).getInnerMap());
         boolean isPartition = consumerDto.getSourceInfoJson().getBooleanValue("isPartition");
-        String contentType = consumerDto.getSourceInfoJson().getString("type");
+        String name = consumerDto.getName();
 
         MysqlHelper mysqlHelper = new MysqlHelper(host, port, db, username, password);
         String partition = isPartition ? Tools.currentDataString() : null;
@@ -63,7 +63,7 @@ public class MysqlTableConsumer extends AbstractConsumer implements Initializing
         List<JSONObject> detailFrontendList = new ArrayList<>();
         mysqlHelper.executeQuery(sql, Constant.FETCH_DATA_SIZE, retList -> {
             // 前端站点导航源
-            if (contentType.equals(Constant.FRONTEND_CONTENT)) {
+            if (name.equals(Constant.FRONTEND_NAME)) {
                 List<JSONObject> simpleFrontendList = new ArrayList<>();
                 retList.forEach(ret -> {
                     JSONObject tabConfig = JSONObject.parseObject(ret.getString("tab_config"));

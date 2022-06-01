@@ -424,8 +424,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
             }
         }
         throw new AppException(AppErrorCode.DEPLOY_ERROR,
-                String.format("cannot find best deploy config with given condition|clusterId=%s|namespaceId=%s|" +
-                        "stageId=%s", clusterId, namespaceId, stageId));
+                String.format("cannot find best deploy config with given condition(general type)|" +
+                        "clusterId=%s|namespaceId=%s|stageId=%s", clusterId, namespaceId, stageId));
     }
 
     /**
@@ -469,7 +469,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
             }
         }
 
-        // 兜底
+        // 通过无 appId 的部署配置记录进行二次查找
         List<DeployConfigDO> filteredAppRecords = appRecords.stream()
                 .filter(item -> StringUtils.isEmpty(item.getEnvId()))
                 .collect(Collectors.toList());
@@ -496,9 +496,11 @@ public class DeployConfigServiceImpl implements DeployConfigService {
             }
             return result;
         }
+
+        // 再不行就报错了
         throw new AppException(AppErrorCode.DEPLOY_ERROR,
-                String.format("cannot find best deploy config with given condition|clusterId=%s|namespaceId=%s|" +
-                        "stageId=%s", clusterId, namespaceId, stageId));
+                String.format("cannot find best deploy config with given condition(specified name)|clusterId=%s|" +
+                        "namespaceId=%s|stageId=%s", clusterId, namespaceId, stageId));
     }
 
     /**

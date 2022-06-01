@@ -67,7 +67,7 @@ public class MysqlTableConsumer extends AbstractConsumer implements Initializing
                 List<JSONObject> simpleFrontendList = new ArrayList<>();
                 retList.forEach(ret -> {
                     JSONObject tabConfig = JSONObject.parseObject(ret.getString("tab_config"));
-                    if (tabConfig.containsKey("esSearch") && !JSONObject.parseArray(tabConfig.getString("esSearch")).isEmpty()) {
+                    if (tabConfig != null && tabConfig.containsKey("esSearch") && !JSONObject.parseArray(tabConfig.getString("esSearch")).isEmpty()) {
                         detailFrontendList.add(ret);
                     } else {
                         simpleFrontendList.add(ret);

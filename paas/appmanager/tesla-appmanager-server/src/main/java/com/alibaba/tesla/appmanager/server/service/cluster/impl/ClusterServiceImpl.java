@@ -3,6 +3,7 @@ package com.alibaba.tesla.appmanager.server.service.cluster.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.server.repository.ClusterRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.ClusterQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.ClusterDO;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Function;
 
 @Service
 @Slf4j
@@ -29,8 +31,9 @@ public class ClusterServiceImpl implements ClusterService {
      * @return 查询结果
      */
     @Override
-    public List<ClusterDO> list(ClusterQueryCondition condition) {
-        return clusterRepository.selectByCondition(condition);
+    public Pagination<ClusterDO> list(ClusterQueryCondition condition) {
+        List<ClusterDO> result = clusterRepository.selectByCondition(condition);
+        return Pagination.valueOf(result, Function.identity());
     }
 
     /**

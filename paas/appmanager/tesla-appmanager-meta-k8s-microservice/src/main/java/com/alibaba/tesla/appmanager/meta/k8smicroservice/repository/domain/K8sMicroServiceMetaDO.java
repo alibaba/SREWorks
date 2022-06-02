@@ -356,7 +356,7 @@ public class K8sMicroServiceMetaDO implements Serializable {
         if (StringUtils.isNotEmpty(kind)) {
             microServiceExtJson.put("kind", kind);
         } else {
-            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "kind parameter is required");
+            microServiceExtJson.put("kind", "AdvancedStatefulSet");
         }
 
         if (CollectionUtils.isNotEmpty(envList)) {
@@ -450,7 +450,7 @@ public class K8sMicroServiceMetaDO implements Serializable {
         if (StringUtils.isNotEmpty(initContainerListString)) {
             initContainerList = JSON.parseArray(initContainerListString, InitContainerDTO.class);
         } else {
-            containerObjectList = Collections.emptyList();
+            initContainerList = Collections.emptyList();
         }
 
         String repoString = microServiceExtJson.getString("repo");

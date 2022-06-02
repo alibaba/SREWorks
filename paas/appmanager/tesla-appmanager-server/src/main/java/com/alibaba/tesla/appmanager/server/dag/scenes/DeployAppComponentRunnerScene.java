@@ -24,33 +24,14 @@ public class DeployAppComponentRunnerScene extends AbstractLocalDagBase {
         node("DeployAppTraitNode");
 
         edge("DeployAppDeciderNode", "DeployAppCreateComponentNode",
-                String.format("#DeployAppDeciderNode['output']['%s'] == '%s' || " +
-                                "#DeployAppDeciderNode['output']['%s'] == '%s' || " +
-                                "#DeployAppDeciderNode['output']['%s'] == '%s' || " +
-                                "#DeployAppDeciderNode['output']['%s'] == '%s' || " +
-                                "#DeployAppDeciderNode['output']['%s'] == '%s' || " +
-                                "#DeployAppDeciderNode['output']['%s'] == '%s' || " +
-                                "#DeployAppDeciderNode['output']['%s'] == '%s' || " +
-                                "#DeployAppDeciderNode['output']['%s'] == '%s' || " +
-                                "#DeployAppDeciderNode['output']['%s'] == '%s'",
-                        AppFlowParamKey.COMPONENT_TYPE,
-                        ComponentTypeEnum.K8S_MICROSERVICE,
-                        AppFlowParamKey.COMPONENT_TYPE,
-                        ComponentTypeEnum.INTERNAL_ADDON,
-                        AppFlowParamKey.COMPONENT_TYPE,
-                        ComponentTypeEnum.ABM_CHART,
-                        AppFlowParamKey.COMPONENT_TYPE,
-                        ComponentTypeEnum.HELM,
-                        AppFlowParamKey.COMPONENT_TYPE,
-                        ComponentTypeEnum.ABM_OPERATOR_TVD,
-                        AppFlowParamKey.COMPONENT_TYPE,
-                        ComponentTypeEnum.ABM_KUSTOMIZE,
-                        AppFlowParamKey.COMPONENT_TYPE,
-                        ComponentTypeEnum.ABM_HELM,
-                        AppFlowParamKey.COMPONENT_TYPE,
-                        ComponentTypeEnum.ASI_COMPONENT,
-                        AppFlowParamKey.COMPONENT_TYPE,
-                        ComponentTypeEnum.K8S_JOB));
+                String.format("#DeployAppDeciderNode['output']['%s'] != '%s' && " +
+                                "#DeployAppDeciderNode['output']['%s'] != '%s' && " +
+                                "#DeployAppDeciderNode['output']['%s'] != '%s' && " +
+                                "#DeployAppDeciderNode['output']['%s'] != '%s'",
+                        AppFlowParamKey.COMPONENT_TYPE, ComponentTypeEnum.RESOURCE_ADDON,
+                        AppFlowParamKey.COMPONENT_TYPE, ComponentTypeEnum.TRAIT_ADDON,
+                        AppFlowParamKey.COMPONENT_TYPE, ComponentTypeEnum.CUSTOM_ADDON,
+                        AppFlowParamKey.COMPONENT_TYPE, ""));
         edge("DeployAppDeciderNode", "DeployAppCreateResourceAddonNode",
                 String.format("#DeployAppDeciderNode['output']['%s'] == '%s'",
                         AppFlowParamKey.COMPONENT_TYPE,

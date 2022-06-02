@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tdata.aisp.server.common.config.AispRegister;
+import com.alibaba.tdata.aisp.server.common.constant.AispResult;
 import com.alibaba.tdata.aisp.server.common.exception.DetectorException;
 import com.alibaba.tdata.aisp.server.common.exception.PlatformInternalException;
 import com.alibaba.tdata.aisp.server.common.filter.LogConstant;
@@ -24,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import static com.alibaba.tdata.aisp.server.common.factory.AispResponseFactory.buildSuccessResult;
 
 /**
  * @ClassName: AiopsFrontController
@@ -48,11 +51,12 @@ public class AiopsFrontController {
     @ApiOperation("任务详情")
     @GetMapping(value = "queryTaskDetail")
     @ResponseBody
-    public JSONObject queryTaskDetail(@RequestParam(name = "taskUUID") String taskUUID){
+    public JSONObject queryTaskDetail(@RequestParam(name = "taskUUID") String taskUUID,
+        @RequestParam(name = "empId", required = false) String empId){
         // 适配前端组件展示结构
         JSONObject body = new JSONObject();
         JSONObject data = new JSONObject();
-        JSONObject result = taskService.queryTaskRes(taskUUID);
+        JSONObject result = taskService.queryTaskRes(taskUUID, empId);
         data.put("result", result);
         body.put("data", data);
         body.put("code", 200);
@@ -77,6 +81,13 @@ public class AiopsFrontController {
         } catch (IllegalArgumentException | AssertionError e){
             return buildExceptionBody(400, null, "400", e.getMessage());
         }
+    }
+
+    @ApiOperation("异常检测曲线接口")
+    @GetMapping(value = "queryAdLine")
+    @ResponseBody
+    public AispResult queryAdLine(@RequestParam(name = "taskUUID") String taskUUID){
+        return buildSuccessResult(taskService.queryAdLine(taskUUID));
     }
 
     private JSONObject buildSuccessBody(JSONObject result){

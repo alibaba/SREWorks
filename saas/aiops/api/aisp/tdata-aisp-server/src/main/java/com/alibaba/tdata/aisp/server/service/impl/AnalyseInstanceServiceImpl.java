@@ -134,9 +134,9 @@ public class AnalyseInstanceServiceImpl implements AnalyseInstanceService {
     }
 
     @Override
-    public int feedback(AnalyseInstanceFeedbackParam param) {
-        String instanceCode = MessageDigestUtil.genSHA256(param.getSceneCode()
-            .concat(param.getDetectorCode())
+    public int feedback(String sceneCode, String detectorCode, AnalyseInstanceFeedbackParam param) {
+        String instanceCode = MessageDigestUtil.genSHA256(sceneCode
+            .concat(detectorCode)
             .concat(param.getEntityId()));
         InstanceDO instanceDO = instanceRepository.queryById(instanceCode);
         if (instanceDO==null){
@@ -145,21 +145,29 @@ public class AnalyseInstanceServiceImpl implements AnalyseInstanceService {
         if (CollectionUtils.isEmpty(param.getFeedback())) {
             return 0;
         }
+        JSONObject recentFeedback;
         if (StringUtils.isEmpty(instanceDO.getRecentFeedback())) {
-            JSONArray recentFeedback = new JSONArray();
-            recentFeedback.add(param.getFeedback());
-            instanceDO.setRecentFeedback(recentFeedback.toJSONString());
+            recentFeedback = new JSONObject();
         } else {
-            JSONArray recentFeedback = JSONArray.parseArray(instanceDO.getRecentFeedback());
-            if (recentFeedback.size()>100) {
-                List<Object> subFeedback = recentFeedback.subList(recentFeedback.size() - 100, recentFeedback.size() - 1);
-                subFeedback.add(param.getFeedback());
-                instanceDO.setRecentFeedback(JSONArray.toJSONString(subFeedback));
+            recentFeedback = JSONObject.parseObject(instanceDO.getRecentFeedback());
+        }
+        for (String key : param.getFeedback().keySet()) {
+            // 每个key保留最近100次提交
+            if (recentFeedback.containsKey(key)) {
+                JSONArray feedbackItems = recentFeedback.getJSONArray(key);
+                feedbackItems.addAll(param.getFeedback().getJSONArray(key));
+                if (feedbackItems.size() > 100) {
+                    recentFeedback.put(key, feedbackItems.subList(feedbackItems.size()-101, feedbackItems.size()-1));
+                } else {
+                    recentFeedback.put(key, feedbackItems);
+                }
             } else {
-                recentFeedback.add(param.getFeedback());
-                instanceDO.setRecentFeedback(recentFeedback.toJSONString());
+                JSONArray feedbackItems = new JSONArray();
+                feedbackItems.addAll(param.getFeedback().getJSONArray(key));
+                recentFeedback.put(key, feedbackItems);
             }
         }
+        instanceDO.setRecentFeedback(recentFeedback.toJSONString());
         return instanceRepository.updateById(instanceDO);
     }
 

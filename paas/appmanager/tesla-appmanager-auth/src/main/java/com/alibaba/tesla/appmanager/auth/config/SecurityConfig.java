@@ -47,8 +47,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             web.ignoring()
                     .antMatchers("/status.taobao")
                     .antMatchers("/actuator/**")
-                    .antMatchers("/clusters**")
-                    .antMatchers("/clusters/**")
                     .antMatchers("/traits**")
                     .antMatchers("/flow-manager/**")
                     .antMatchers("/traits/**")

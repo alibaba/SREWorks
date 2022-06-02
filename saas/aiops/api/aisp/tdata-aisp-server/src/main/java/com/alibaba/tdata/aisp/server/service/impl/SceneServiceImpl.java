@@ -54,6 +54,11 @@ public class SceneServiceImpl implements SceneService {
         sceneConfigDO.setSceneName(param.getSceneName());
         sceneConfigDO.setComment(param.getComment());
         sceneConfigDO.setOwners(userInfoConvert.tos(param.getOwnerInfoList()));
+        if (param.getDetectorBinder()==null) {
+            sceneConfigDO.setDetectorBinder("*");
+        } else {
+            sceneConfigDO.setDetectorBinder(param.getDetectorBinder());
+        }
         sceneRepository.insert(sceneConfigDO);
         return true;
     }
@@ -65,10 +70,12 @@ public class SceneServiceImpl implements SceneService {
             throw new IllegalArgumentException("action=upsertModel|| can not find scene of sceneCode:"+ param.getSceneCode());
         }
         if (StringUtils.isEmpty(sceneConfigDO.getSceneModelParam())){
-            sceneConfigDO.setSceneModelParam(param.getSceneModelParam().toJSONString());
+            JSONObject sceneModelParam = new JSONObject();
+            sceneModelParam.put(param.getDetectorCode(), param.getSceneModelParam());
+            sceneConfigDO.setSceneModelParam(sceneModelParam.toJSONString());
         } else {
             JSONObject sceneModel = JSONObject.parseObject(sceneConfigDO.getSceneModelParam());
-            sceneModel.putAll(param.getSceneModelParam());
+            sceneModel.put(param.getDetectorCode(), param.getSceneModelParam());
             sceneConfigDO.setSceneModelParam(sceneModel.toJSONString());
         }
         sceneRepository.updateById(sceneConfigDO);
@@ -81,11 +88,9 @@ public class SceneServiceImpl implements SceneService {
         if (sceneConfigDO==null){
             throw new IllegalArgumentException("action=upsertModel|| can not find scene of sceneCode:"+ param.getSceneCode());
         }
-        if (!StringUtils.isEmpty(sceneConfigDO.getSceneModelParam()) && !CollectionUtils.isEmpty(param.getKeyList())){
+        if (!StringUtils.isEmpty(sceneConfigDO.getSceneModelParam())){
             JSONObject sceneModel = JSONObject.parseObject(sceneConfigDO.getSceneModelParam());
-            for (String key : param.getKeyList()) {
-                sceneModel.remove(key);
-            }
+            sceneModel.remove(param.getDetectorCode());
             sceneConfigDO.setSceneModelParam(sceneModel.toJSONString());
         }
         sceneRepository.updateById(sceneConfigDO);
@@ -132,5 +137,14 @@ public class SceneServiceImpl implements SceneService {
         log.info("action=update|| scene: {}", sceneConfigDO);
         sceneRepository.updateById(sceneConfigDO);
         return true;
+    }
+
+    @Override
+    public SceneConfigDto queryById(String sceneCode) {
+        SceneConfigDO sceneConfigDO = sceneRepository.queryById(sceneCode);
+        if (sceneConfigDO==null) {
+            throw new IllegalArgumentException("action=queryById|| can not find scene config by code:"+ sceneCode);
+        }
+        return sceneConfigConvert.from(sceneConfigDO);
     }
 }

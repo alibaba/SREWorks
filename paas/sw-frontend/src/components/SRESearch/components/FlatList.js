@@ -3,7 +3,7 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Card, message, Tabs, Divider } from 'antd';
+import { Card, message, Tabs, Divider, Tooltip } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import _ from 'lodash';
 import SearchService from '../services/service';
@@ -60,13 +60,15 @@ class FlatList extends Component {
             <Card className="flat-list-pane" loading={this.state.loading}>
                 {
                     suggestList.length !== 0 ?
-                        (<div class="flat-list">
+                        (<div className="flat-list">
                             {
                                 suggestList.map((item, index) => {
-                                    return <div key={index} className="suggest-list-cell" onClick={() => this.turnToNewPath(item.url)} style={{ height: '30px' }}>
+                                    return <div key={index} className="suggest-list-cell" onClick={() => this.turnToNewPath(item.url)} style={{ height: '30px',paddingRight:20}}>
                                         <span>{item.type}</span>
-                                        <Divider type="vertical" />
-                                        <span>{item.title}</span>
+                                        <Divider type="vertical"/>
+                                        <Tooltip title={item.title}>
+                                        <span style={{wordBreak:"break-all"}}>{item.title}</span>
+                                        </Tooltip>
                                     </div>
                                 })
                             }

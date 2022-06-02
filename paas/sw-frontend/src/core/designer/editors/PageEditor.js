@@ -230,13 +230,13 @@ export default class PageEditor extends React.Component {
     };
 
     handleChangeTab = res => {
-        if(res === 'setting') {
+        if (res === 'setting') {
             let { pageModel } = this.state;
             this.setState({
                 sourceJSON: pageModel.toJSON(),
             })
         }
-        if(res === 'searchparams') {
+        if (res === 'searchparams') {
             let { pageModel } = this.state;
             this.setState({
                 esSearchStr: pageModel.getEsSearch()
@@ -444,8 +444,8 @@ export default class PageEditor extends React.Component {
         })
     }
     render() {
-        let { pageModel, showPreview,sourceJSON,esSearchStr, openDrawer, showJson, activeKey, showTemplateList, confirmLoading, templateList, activeTarget, getTemplateLoading, saveOrCreat, activePanel, categoryList, templateForm, templateModal } = this.state, { height = 620, nodeData, contentLoading } = this.props;
-        console.log(pageModel,'pageModel-init')
+        let { pageModel, showPreview, sourceJSON, esSearchStr, openDrawer, showJson, activeKey, showTemplateList, confirmLoading, templateList, activeTarget, getTemplateLoading, saveOrCreat, activePanel, categoryList, templateForm, templateModal } = this.state, { height = 620, nodeData, contentLoading } = this.props;
+        console.log(pageModel, 'pageModel-init')
         let tabEditorContentStyle = { height: height - 42, overflowY: "auto", overflowX: "none" }, { config } = nodeData;
         let { pageLayoutType = Constants.PAGE_LAYOUT_TYPE_CUSTOM } = config, containerModel = pageModel.getRootWidgetModel();
         return (

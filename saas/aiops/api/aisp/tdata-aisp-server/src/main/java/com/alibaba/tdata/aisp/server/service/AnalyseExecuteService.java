@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tdata.aisp.server.controller.param.AnalyseInstanceFeedbackParam;
 import com.alibaba.tdata.aisp.server.controller.param.AnalyzeTaskUpdateParam;
 import com.alibaba.tdata.aisp.server.controller.param.CodeParam;
 import com.alibaba.tdata.aisp.server.controller.param.TaskQueryParam;
@@ -46,4 +47,13 @@ public interface AnalyseExecuteService {
      * @return
      */
     JSONObject getInput(String detectorCode);
+
+    /**
+     * @param sceneCode
+     * @param detectorCode
+     * @param param
+     * @return
+     */
+    boolean feedback(String sceneCode, String detectorCode, AnalyseInstanceFeedbackParam param);
+
 }

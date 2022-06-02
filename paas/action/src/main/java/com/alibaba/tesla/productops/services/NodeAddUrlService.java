@@ -25,11 +25,15 @@ public class NodeAddUrlService {
     @Autowired
     ProductopsNodeRepository productopsNodeRepository;
 
-    private String getUrl(ProductopsNode node, Map<String, ProductopsNode> nodeTypePathMap, String url) {
+    private String getUrl(ProductopsNode node, Map<String, ProductopsNode> nodeTypePathMap, String url, int ttl) {
+        if (ttl > 20) {
+            log.error(String.format("ttl is too big: %s; url: %s", ttl, url));
+            return url;
+        }
         if (node != null) {
             String name = JSONObject.parseObject(node.getConfig()).getString("name");
             url = StringUtil.isEmpty(url) ? name : name + "/" + url;
-            return getUrl(nodeTypePathMap.get(node.getParentNodeTypePath()), nodeTypePathMap, url);
+            return getUrl(nodeTypePathMap.get(node.getParentNodeTypePath()), nodeTypePathMap, url, ttl + 1);
         } else {
             return url;
         }
@@ -49,7 +53,7 @@ public class NodeAddUrlService {
             appId = node.getNodeTypePath().split("\\|")[0];
         } catch (Exception ignored) {}
         JSONObject config = JSONObject.parseObject(node.getConfig());
-        config.put("url", appId + "/" + getUrl(node, nodeTypePathMap, ""));
+        config.put("url", appId + "/" + getUrl(node, nodeTypePathMap, "", 0));
         productopsNodeRepository.updateConfigWhereId(node.getId(), JSONObject.toJSONString(config));
     }
 

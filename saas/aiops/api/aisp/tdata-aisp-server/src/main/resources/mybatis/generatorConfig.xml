@@ -75,21 +75,21 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-<!--        <table schema="tdata_aisp" tableName="aisp_scene_config"-->
-<!--               domainObjectName="SceneConfigDO" enableCountByExample="true"-->
-<!--               enableUpdateByExample="true" enableDeleteByExample="true"-->
-<!--               enableSelectByExample="true" >-->
-<!--        </table>-->
+        <table schema="tdata_aisp" tableName="aisp_scene_config"
+               domainObjectName="SceneConfigDO" enableCountByExample="true"
+               enableUpdateByExample="true" enableDeleteByExample="true"
+               enableSelectByExample="true" >
+        </table>
 <!--        <table schema="tdata_aisp" tableName="aisp_detector_config"-->
 <!--               domainObjectName="DetectorConfigDO" enableCountByExample="true"-->
 <!--               enableUpdateByExample="true" enableDeleteByExample="true"-->
 <!--               enableSelectByExample="true" >-->
 <!--        </table>-->
-        <table schema="tdata_aisp" tableName="aisp_analyse_instance"
-               domainObjectName="InstanceDO" enableCountByExample="true"
-               enableUpdateByExample="true" enableDeleteByExample="true"
-               enableSelectByExample="true" >
-        </table>
+<!--        <table schema="tdata_aisp" tableName="aisp_analyse_instance"-->
+<!--               domainObjectName="InstanceDO" enableCountByExample="true"-->
+<!--               enableUpdateByExample="true" enableDeleteByExample="true"-->
+<!--               enableSelectByExample="true" >-->
+<!--        </table>-->
 <!--        <table schema="tdata_aisp" tableName="aisp_analyse_task"-->
 <!--               domainObjectName="TaskDO" enableCountByExample="true"-->
 <!--               enableUpdateByExample="true" enableDeleteByExample="true"-->

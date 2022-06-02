@@ -8,7 +8,10 @@ import com.alibaba.tdata.aisp.server.common.dto.UserSimpleInfo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @ClassName: SceneUpdateParam
@@ -17,6 +20,9 @@ import lombok.Data;
  * @Description:
  **/
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @ApiModel(value = "update场景")
 public class SceneUpdateParam {
     @NotNull(message = "sceneCode can not be null!")

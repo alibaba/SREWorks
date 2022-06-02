@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tdata.aisp.server.common.dto.SceneConfigDto;
+import com.alibaba.tdata.aisp.server.common.dto.SolutionConfigDto;
 import com.alibaba.tdata.aisp.server.repository.domain.SceneConfigDO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,7 @@ public class SceneConfigConvert {
                 )
             )
             .sceneModelParam(JSONObject.parseObject(configDO.getSceneModelParam()))
+            .detectorBinder(configDO.getDetectorBinder())
             .build();
         return configDto;
     }

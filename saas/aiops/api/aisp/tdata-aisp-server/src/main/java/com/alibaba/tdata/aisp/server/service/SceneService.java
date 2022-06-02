@@ -52,4 +52,6 @@ public interface SceneService {
      * @return
      */
     boolean update(SceneUpdateParam param);
+
+    SceneConfigDto queryById(String sceneCode);
 }

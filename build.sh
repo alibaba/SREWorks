@@ -45,27 +45,24 @@ then
    export MAVEN_SETTINGS_XML="https://sreworks.oss-cn-beijing.aliyuncs.com/resource/settings.xml"
 fi
 
+if [ -z ${GOLANG_IMAGE} ]
+then
+   export GOLANG_IMAGE="golang:alpine"
+fi
 
-target_maven(){
-    [ -n "$TAG" ] && tag=$TAG || tag="latest"    
-    if [ -n "$BUILD" ]; then
-        echo "-- build sw-maven --" >&2
-        docker build -t sw-maven:$tag --pull --no-cache -f $SW_ROOT/paas/maven/Dockerfile $SW_ROOT/paas/maven
-        docker tag sw-maven:$tag sw-maven:latest
-    fi
-    if [ -n "$PUSH_REPO" ]; then
-        echo "-- push sw-maven --" >&2
-        docker tag sw-maven:$tag $PUSH_REPO/sw-maven:$tag
-        docker push $PUSH_REPO/sw-maven:$tag
-    fi
-}
+if [ -z ${GOPROXY} ]
+then
+   export GOPROXY="https://goproxy.cn"
+fi
+
+
 
 target_migrate(){
     [ -n "$TAG" ] && tag=$TAG || tag="latest"
     if [ -n "$BUILD" ]; then
         echo "-- build sw-migrate --" >&2
-        TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
-        envsubst < $SW_ROOT/paas/migrate/Dockerfile.tpl > ${TMP_DOCKERFILE}
+        tmp_dockerfile="/tmp/${random}.dockerfile"
+        envsubst < $sw_root/paas/migrate/dockerfile.tpl > ${tmp_dockerfile}
         docker build -t sw-migrate:$tag --pull --no-cache -f ${TMP_DOCKERFILE} $SW_ROOT/paas/migrate
         docker tag sw-migrate:$tag sw-migrate:latest
     fi
@@ -110,7 +107,6 @@ target_appmanager_server(){
     [ -n "$TAG" ] && tag=$TAG || tag="develop"
     if [ -n "$BUILD" ]; then
         echo "-- build appmanager server --" >&2
-        #export DOCKER_BUILDKIT=0
         TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
         envsubst < $SW_ROOT/paas/appmanager/Dockerfile_sreworks.tpl > ${TMP_DOCKERFILE}
         docker build -t sw-paas-appmanager:$tag -f ${TMP_DOCKERFILE} $SW_ROOT/paas/appmanager
@@ -141,7 +137,9 @@ target_appmanager_postrun(){
     [ -n "$TAG" ] && tag=$TAG || tag="latest"
     if [ -n "$BUILD" ]; then
         echo "-- build appmanager postrun --" >&2
-        docker build -t sw-paas-appmanager-postrun:$tag -f $SW_ROOT/paas/appmanager/Dockerfile_postrun_sreworks $SW_ROOT/paas/appmanager
+        TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
+        envsubst < $SW_ROOT/paas/appmanager/Dockerfile_postrun_sreworks.tpl > ${TMP_DOCKERFILE}
+        docker build -t sw-paas-appmanager-postrun:$tag -f ${TMP_DOCKERFILE} $SW_ROOT/paas/appmanager
         docker tag sw-paas-appmanager-postrun:$tag sw-paas-appmanager-postrun:latest
     fi
     if [ -n "$PUSH_REPO" ]; then
@@ -169,7 +167,9 @@ target_appmanager_cluster_init(){
     [ -n "$TAG" ] && tag=$TAG || tag="latest"
     if [ -n "$BUILD" ]; then
         echo "-- build appmanager cluster init --" >&2
-        docker build -t sw-paas-appmanager-cluster-init:$tag -f $SW_ROOT/paas/appmanager/Dockerfile_cluster_init $SW_ROOT/paas/appmanager
+        TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
+        envsubst < $SW_ROOT/paas/appmanager/Dockerfile_cluster_init.tpl > ${TMP_DOCKERFILE}
+        docker build -t sw-paas-appmanager-cluster-init:$tag -f ${TMP_DOCKERFILE} $SW_ROOT/paas/appmanager
         docker tag sw-paas-appmanager-cluster-init:$tag sw-paas-appmanager-cluster-init:latest
     fi
     if [ -n "$PUSH_REPO" ]; then
@@ -198,7 +198,9 @@ target_swcli(){
     [ -n "$TAG" ] && tag=$TAG || tag="latest"    
     if [ -n "$BUILD" ]; then
         echo "-- build swcli --" >&2
-        docker build -t swcli:$tag -f $SW_ROOT/paas/swcli/Dockerfile_sreworks $SW_ROOT/paas/swcli
+        TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
+        envsubst < $SW_ROOT/paas/swcli/Dockerfile_sreworks.tpl > ${TMP_DOCKERFILE}
+        docker build -t swcli:$tag -f ${TMP_DOCKERFILE} $SW_ROOT/paas/swcli
         docker tag swcli:$tag swcli:latest
     fi
     if [ -n "$PUSH_REPO" ]; then
@@ -264,7 +266,6 @@ target_swcli_builtin_package(){
 
 
 target_base(){
-    target_maven
     target_migrate
     target_openjdk8
     target_postrun

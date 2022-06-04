@@ -55,6 +55,16 @@ then
    export GOPROXY="https://goproxy.cn"
 fi
 
+if [ -z ${GOLANG_BUILD_IMAGE} ]
+then
+   export GOLANG_BUILD_IMAGE="golang:1.16"
+fi
+
+if [ -z ${DISTROLESS_IMAGE} ]
+then
+   export DISTROLESS_IMAGE="sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/distroless-static:nonroot"
+fi
+
 
 
 target_migrate(){
@@ -62,7 +72,7 @@ target_migrate(){
     if [ -n "$BUILD" ]; then
         echo "-- build sw-migrate --" >&2
         tmp_dockerfile="/tmp/${random}.dockerfile"
-        envsubst < $sw_root/paas/migrate/dockerfile.tpl > ${tmp_dockerfile}
+        envsubst < $sw_root/paas/migrate/Dockerfile.tpl > ${tmp_dockerfile}
         docker build -t sw-migrate:$tag --pull --no-cache -f ${TMP_DOCKERFILE} $SW_ROOT/paas/migrate
         docker tag sw-migrate:$tag sw-migrate:latest
     fi

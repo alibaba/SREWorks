@@ -71,8 +71,8 @@ target_migrate(){
     [ -n "$TAG" ] && tag=$TAG || tag="latest"
     if [ -n "$BUILD" ]; then
         echo "-- build sw-migrate --" >&2
-        tmp_dockerfile="/tmp/${random}.dockerfile"
-        envsubst < $SW_ROOT/paas/migrate/Dockerfile.tpl > ${tmp_dockerfile}
+        TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
+        envsubst < $SW_ROOT/paas/migrate/Dockerfile.tpl > ${TMP_DOCKERFILE}
         docker build -t sw-migrate:$tag --pull --no-cache -f ${TMP_DOCKERFILE} $SW_ROOT/paas/migrate
         docker tag sw-migrate:$tag sw-migrate:latest
     fi

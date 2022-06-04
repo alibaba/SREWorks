@@ -1,5 +1,6 @@
 FROM {{ MAVEN_IMAGE }} AS build
 COPY . /app
+RUN mkdir /root/.m2/ && curl {{ MAVEN_SETTINGS_XML }} -o /root/.m2/settings.xml
 RUN cd /app && mvn -Dmaven.test.skip=true clean package
 
 FROM {{ JRE8_IMAGE }} AS release

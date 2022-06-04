@@ -9,6 +9,7 @@ data:
   APK_REPO_DOMAIN: {{ .Values.global.artifacts.apkRepoDomain }} 
   MAVEN_IMAGE: {{ .Values.global.artifacts.mavenImage }}
   JRE8_IMAGE: {{ .Values.global.artifacts.openjdk8Image }}
+  MAVEN_SETTINGS_XML: {{ .Values.global.artifacts.mavenSettingsXml }}
   PYTHON2_IMAGE: {{ .Values.global.images.registry }}/sw-python27:{{ .Values.global.images.tag }}
   MIGRATE_IMAGE: {{ .Values.global.images.registry }}/sw-migrate:{{ .Values.global.images.tag }}
   POSTRUN_IMAGE: {{ .Values.global.images.registry }}/sw-postrun:{{ .Values.global.images.tag }}

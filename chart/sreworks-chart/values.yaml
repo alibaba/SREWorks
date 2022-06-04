@@ -14,8 +14,8 @@ global:
   artifacts:
     mavenImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/maven:3.8.3-adoptopenjdk-11 
     openjdk8Image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/openjdk8:alpine-jre
-    apkRepoDomain: mirrors.tuna.tsinghua.edu.cn 
-
+    apkRepoDomain: mirrors.tuna.tsinghua.edu.cn
+    mavenSettingsXml: https://sreworks.oss-cn-beijing.aliyuncs.com/resource/settings.xml  
 
 platformName: SREWorks
 platformLogo: /static/publicMedia/sreworks.png

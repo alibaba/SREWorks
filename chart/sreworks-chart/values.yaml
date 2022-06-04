@@ -11,6 +11,12 @@ global:
 
   accessMode: ingress
 
+  artifacts:
+    mavenImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/maven:3.8.3-adoptopenjdk-11 
+    openjdk8Image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/openjdk8:alpine-jre
+    apkRepoDomain: mirrors.tuna.tsinghua.edu.cn 
+
+
 platformName: SREWorks
 platformLogo: /static/publicMedia/sreworks.png
 

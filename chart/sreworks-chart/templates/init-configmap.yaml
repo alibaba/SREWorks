@@ -5,10 +5,12 @@ data:
 
   IMAGE_PUSH_REGISTRY: {{ .Values.appmanager.server.docker.registry }}/{{ .Values.appmanager.server.docker.namespace }}
   
-  MAVEN_IMAGE: {{ .Values.global.images.registry }}/sw-maven:{{ .Values.global.images.tag }}
+
+  APK_REPO_DOMAIN: {{ .Values.global.artifacts.apkRepoDomain }} 
+  MAVEN_IMAGE: {{ .Values.global.artifacts.mavenImage }}
+  JRE8_IMAGE: {{ .Values.global.artifacts.openjdk8Image }}
   PYTHON2_IMAGE: {{ .Values.global.images.registry }}/sw-python27:{{ .Values.global.images.tag }}
   MIGRATE_IMAGE: {{ .Values.global.images.registry }}/sw-migrate:{{ .Values.global.images.tag }}
-  JRE8_IMAGE: {{ .Values.global.images.registry }}/sw-openjdk8-jre:{{ .Values.global.images.tag }}
   POSTRUN_IMAGE: {{ .Values.global.images.registry }}/sw-postrun:{{ .Values.global.images.tag }}
 
   SOURCE_BRANCH: {{ .Values.source.branch | default "master" | quote }}

@@ -2,6 +2,10 @@
 IMG ?= controller:latest
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true"
+# Default Dockerfile path
+DOCKERFILE ?= "./Dockerfile"
+# Go Proxy URL
+GOPROXY ?= "https://goproxy.cn"
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
@@ -60,7 +64,7 @@ generate: controller-gen
 
 # Build the docker image
 docker-build: test
-	docker build . -t ${IMG}
+	docker build . -t ${IMG} -f ${DOCKERFILE}
 
 # Build the docker image
 docker-build-arm: test
@@ -83,7 +87,7 @@ ifeq (, $(shell which controller-gen))
 	CONTROLLER_GEN_TMP_DIR=$$(mktemp -d) ;\
 	cd $$CONTROLLER_GEN_TMP_DIR ;\
 	go mod init tmp ;\
-	go env -w GOPROXY=https://goproxy.cn,direct ;\
+	go env -w GOPROXY=${GOPROXY},direct ;\
 	go get sigs.k8s.io/controller-tools/cmd/controller-gen@v0.5.0 ;\
 	rm -rf $$CONTROLLER_GEN_TMP_DIR ;\
 	}

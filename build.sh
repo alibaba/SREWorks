@@ -65,6 +65,15 @@ then
    export DISTROLESS_IMAGE="sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/distroless-static:nonroot"
 fi
 
+if [ -z ${MINIO_CLIENT_URL} ]
+then
+   export MINIO_CLIENT_URL="https://sreworks.oss-cn-beijing.aliyuncs.com/bin/mc-linux-amd64"
+fi 
+
+if [ -z ${SREWORKS_BUILTIN_PACKAGE_URL} ]
+then
+   export SREWORKS_BUILTIN_PACKAGE_URL="https://sreworks.oss-cn-beijing.aliyuncs.com/packages"
+fi
 
 
 target_migrate(){
@@ -159,20 +168,6 @@ target_appmanager_postrun(){
     fi
 }
 
-target_minio_init(){
-    [ -n "$TAG" ] && tag=$TAG || tag="latest"
-    if [ -n "$BUILD" ]; then
-        echo "-- build minio init --" >&2
-        docker build -t sw-paas-minio-init:$tag -f $SW_ROOT/paas/minio/Dockerfile-init-job $SW_ROOT/paas/minio
-        docker tag sw-paas-minio-init:$tag sw-paas-minio-init:latest
-    fi
-    if [ -n "$PUSH_REPO" ]; then
-        echo "-- push minio init --" >&2
-        docker tag sw-paas-minio-init:$tag $PUSH_REPO/sw-paas-minio-init:$tag
-        docker push $PUSH_REPO/sw-paas-minio-init:$tag
-    fi
-}
-
 target_appmanager_cluster_init(){
     [ -n "$TAG" ] && tag=$TAG || tag="latest"
     if [ -n "$BUILD" ]; then
@@ -194,7 +189,9 @@ target_appmanager_kind_operator(){
     if [ -n "$BUILD" ]; then
         echo "-- build appmanager kind operator --" >&2
         cd $SW_ROOT/paas/appmanager-kind-operator
-        IMG=sw-paas-appmanager-operator:$tag make docker-build
+        TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
+        envsubst < $SW_ROOT/paas/appmanager-kind-operator/Dockerfile.tpl > ${TMP_DOCKERFILE}
+        IMG=sw-paas-appmanager-operator:$tag DOCKERFILE=${TMP_DOCKERFILE} GOPROXY=${GOPROXY} make docker-build
         docker tag sw-paas-appmanager-operator:$tag sw-paas-appmanager-operator:latest
     fi
     if [ -n "$PUSH_REPO" ]; then
@@ -221,7 +218,7 @@ target_swcli(){
 }
 
 download_packages(){
-   PKG_URL="https://sreworks.oss-cn-beijing.aliyuncs.com/packages/${tag}"
+   PKG_URL="${SREWORKS_BUILTIN_PACKAGE_URL}/${tag}"
 
    mkdir -p $SW_ROOT/saas/desktop/ui/ && wget "${PKG_URL}/saas/desktop/ui/desktop-auto.zip" -O $SW_ROOT/saas/desktop/ui/desktop-auto.zip
    mkdir -p $SW_ROOT/saas/swadmin/ui/ && wget "${PKG_URL}/saas/swadmin/ui/swadmin-auto.zip" -O $SW_ROOT/saas/swadmin/ui/swadmin-auto.zip
@@ -265,7 +262,9 @@ target_swcli_builtin_package(){
         download_packages
         cp -r $SW_ROOT/saas $SW_ROOT/paas/swcli/builtin_package/saas
         cp -r $SW_ROOT/chart $SW_ROOT/paas/swcli/builtin_package/chart
-        docker build -t swcli-builtin-package:$tag -f $SW_ROOT/paas/swcli/Dockerfile_builtin_package $SW_ROOT/paas/swcli
+        TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
+        envsubst < $SW_ROOT/paas/swcli/Dockerfile_builtin_package.tpl > ${TMP_DOCKERFILE}
+        docker build -t swcli-builtin-package:$tag -f ${TMP_DOCKERFILE} $SW_ROOT/paas/swcli
         docker tag swcli-builtin-package:$tag swcli-builtin-package:latest
     fi
     if [ -n "$PUSH_REPO" ]; then

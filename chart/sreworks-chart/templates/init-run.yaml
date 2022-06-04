@@ -315,6 +315,7 @@ data:
     import sys
     import yaml
     import json
+    from functools import reduce
 
     def merge(a, b):
         if b is None:

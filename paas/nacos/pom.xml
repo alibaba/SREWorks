@@ -17,13 +17,13 @@
         <mockito-all.version>1.10.19</mockito-all.version>
         <spring-boot.version>2.1.6.RELEASE</spring-boot.version>
         <maven-antrun.version>1.8</maven-antrun.version>
-        <nacos.version>1.1.3.tesla-SNAPSHOT</nacos.version>
+        <nacos.version>1.1.4</nacos.version>
         <nacos.spring.boot.starter.version>0.2.3</nacos.spring.boot.starter.version>
         <nacos.spring.cloud.starter.version>2.1.0.RELEASE</nacos.spring.cloud.starter.version>
         <junit.version>4.12</junit.version>
         <guava.version>22.0</guava.version>
         <fastjson.version>1.2.68</fastjson.version>
-        <tesla.spring.version>2.1.6-SNAPSHOT</tesla.spring.version>
+        <tesla.spring.version>2.1.9</tesla.spring.version>
         <mysql-connector-java.version>5.1.48</mysql-connector-java.version>
     </properties>
 
@@ -49,12 +49,12 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-sentry-spring-boot-starter</artifactId>
                 <version>${tesla.spring.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-webmvc-spring-boot-starter</artifactId>
                 <version>${tesla.spring.version}</version>
             </dependency>
@@ -65,7 +65,7 @@
             </dependency>
 
             <dependency>
-                <groupId>com.alibaba.nacos</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>nacos-all</artifactId>
                 <version>${nacos.version}</version>
                 <type>pom</type>

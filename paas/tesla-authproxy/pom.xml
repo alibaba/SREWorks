@@ -17,8 +17,8 @@
 
 
         <!-- tesla -->
-        <tesla.common.version>2.1.0-SNAPSHOT</tesla.common.version>
-        <tesla-spring-boot-starter.version>2.1.6-SNAPSHOT</tesla-spring-boot-starter.version>
+        <tesla.common.version>2.1.0</tesla.common.version>
+        <tesla-spring-boot-starter.version>2.1.9</tesla-spring-boot-starter.version>
 
         <!-- private dependencies version -->
         <elastic-job.version>2.1.5</elastic-job.version>

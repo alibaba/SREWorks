@@ -20,7 +20,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
+            <groupId>io.sreworks</groupId>
             <artifactId>tesla-common-mybatis</artifactId>
         </dependency>
     </dependencies>

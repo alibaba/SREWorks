@@ -477,6 +477,8 @@ options:
         dockerfileTemplateArgs:
           MAVEN_IMAGE: ${MAVEN_IMAGE}
           JRE8_IMAGE: ${JRE8_IMAGE}
+          APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML} 
         dockerfileTemplate: Dockerfile.tpl
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}

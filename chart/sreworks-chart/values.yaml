@@ -16,6 +16,9 @@ global:
     openjdk8Image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/openjdk8:alpine-jre
     apkRepoDomain: mirrors.tuna.tsinghua.edu.cn
     mavenSettingsXml: https://sreworks.oss-cn-beijing.aliyuncs.com/resource/settings.xml  
+    alpineImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/alpine:latest
+    nodeImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/node:10-alpine
+ 
 
 platformName: SREWorks
 platformLogo: /static/publicMedia/sreworks.png

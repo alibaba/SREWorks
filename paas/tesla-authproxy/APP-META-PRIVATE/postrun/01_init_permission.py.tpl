@@ -32,7 +32,7 @@ def _get_passwd_hash(user_name, user_passwd):
         'passwd': user_passwd
     }
     m = hashlib.md5()
-    m.update(key)
+    m.update(key.encode('utf-8'))
     return m.hexdigest()
 
 CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))

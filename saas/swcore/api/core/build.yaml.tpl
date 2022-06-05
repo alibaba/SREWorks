@@ -305,6 +305,7 @@ options:
         dockerfileTemplateArgs:
           ALPINE_IMAGE: ${ALPINE_IMAGE}
           NODE_IMAGE: ${NODE_IMAGE}
+          APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
         dockerfileTemplate: Dockerfile_standalone.tpl
         repoPath: paas/sw-frontend
         branch: ${SOURCE_BRANCH}

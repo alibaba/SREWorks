@@ -49,4 +49,12 @@
 {{- end -}}
 {{- end -}}
 
+{{- define "postrun.image" -}}
+{{- if eq .Values.global.artifacts.postrunImage "sw-postrun" -}}
+{{ .Values.global.images.registry }}/sw-postrun:{{ .Values.global.images.tag }}
+{{- else -}}
+{{ .Values.global.artifacts.postrunImage }}
+{{- end -}}
+{{- end -}}
+
 

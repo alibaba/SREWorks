@@ -19,7 +19,8 @@ global:
     alpineImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/alpine:latest
     nodeImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/node:10-alpine
     migrateImage: sw-migrate 
-
+    postrunImage: sw-postrun
+ 
 platformName: SREWorks
 platformLogo: /static/publicMedia/sreworks.png
 

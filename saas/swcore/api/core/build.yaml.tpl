@@ -458,7 +458,7 @@ options:
       ciToken: ${SOURCE_CI_TOKEN}
       repoPath: paas/tesla-gateway
       dockerfileTemplateArgs:
-        PYTHON2_IMAGE: ${PYTHON2_IMAGE}
+        POSTRUN_IMAGE: ${POSTRUN_IMAGE}
     name: route-config
 
 

@@ -303,9 +303,8 @@ options:
           TAG: master
           OSSUTIL_URL: http://gosspublic.alicdn.com/ossutil/1.6.10/ossutil64
         dockerfileTemplateArgs:
-          ALPINE_IMAGE: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/alpine:latest
-          NODE_IMAGE: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/node:10-alpine
-        #dockerfileTemplate: Dockerfile.tpl
+          ALPINE_IMAGE: ${ALPINE_IMAGE}
+          NODE_IMAGE: ${NODE_IMAGE}
         dockerfileTemplate: Dockerfile_standalone.tpl
         repoPath: paas/sw-frontend
         branch: ${SOURCE_BRANCH}
@@ -395,6 +394,7 @@ options:
         dockerfileTemplateArgs:
           MAVEN_IMAGE: ${MAVEN_IMAGE}
           JRE8_IMAGE: ${JRE8_IMAGE}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
         dockerfileTemplate: Dockerfile_paas.tpl
         repoPath: paas/tesla-gateway
         branch: ${SOURCE_BRANCH}
@@ -526,6 +526,7 @@ options:
         dockerfileTemplateArgs:
           MAVEN_IMAGE: ${MAVEN_IMAGE}
           JRE8_IMAGE: ${JRE8_IMAGE}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
         dockerfileTemplate: Dockerfile.tpl
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}

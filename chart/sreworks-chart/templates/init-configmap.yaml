@@ -12,9 +12,9 @@ data:
   MAVEN_SETTINGS_XML: {{ .Values.global.artifacts.mavenSettingsXml }}
   NODE_IMAGE: {{ .Values.global.artifacts.nodeImage }}
   ALPINE_IMAGE: {{ .Values.global.artifacts.alpineImage }}
+  MIGRATE_IMAGE: {{ template "migrate.image" . }}
 
   PYTHON2_IMAGE: {{ .Values.global.images.registry }}/sw-python27:{{ .Values.global.images.tag }}
-  MIGRATE_IMAGE: {{ .Values.global.images.registry }}/sw-migrate:{{ .Values.global.images.tag }}
   POSTRUN_IMAGE: {{ .Values.global.images.registry }}/sw-postrun:{{ .Values.global.images.tag }}
 
   SOURCE_BRANCH: {{ .Values.source.branch | default "master" | quote }}

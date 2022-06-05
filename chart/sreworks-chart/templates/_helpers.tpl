@@ -41,4 +41,12 @@
 {{- end -}}
 {{- end -}}
 
+{{- define "migrate.image" -}}
+{{- if eq .Values.global.artifacts.migrateImage "sw-migrate" -}}
+{{ .Values.global.images.registry }}/sw-migrate:{{ .Values.global.images.tag }}
+{{- else -}}
+{{ .Values.global.artifacts.migrateImage }}
+{{- end -}}
+{{- end -}}
+
 

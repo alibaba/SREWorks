@@ -166,36 +166,36 @@
 
             <!-- swagger -->
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-swagger-spring-boot-starter</artifactId>
                 <version>${tesla-spring-boot-starter.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-webmvc-spring-boot-starter</artifactId>
                 <version>${tesla-spring-boot-starter.version}</version>
             </dependency>
 
             <!-- tesla-common -->
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-commons</artifactId>
                 <version>${tesla.common.version}</version>
                 <type>pom</type>
             </dependency>
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-common-base</artifactId>
                 <version>${tesla.common.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-common-mybatis</artifactId>
                 <version>${tesla.common.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-common-utils</artifactId>
                 <version>${tesla.common.version}</version>
             </dependency>

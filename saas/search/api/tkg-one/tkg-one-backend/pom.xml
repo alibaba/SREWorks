@@ -30,12 +30,12 @@
         </dependency>
 
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
+            <groupId>io.sreworks</groupId>
             <artifactId>tesla-mybatis-spring-boot-starter</artifactId>
             <version>${tesla-spring-boot-starter.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
+            <groupId>io.sreworks</groupId>
             <artifactId>tesla-swagger-spring-boot-starter</artifactId>
         </dependency>
 
@@ -45,17 +45,17 @@
         </dependency>
 
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
+            <groupId>io.sreworks</groupId>
             <artifactId>tesla-webmvc-spring-boot-starter</artifactId>
         </dependency>
 
         <!-- tesla common -->
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
+            <groupId>io.sreworks</groupId>
             <artifactId>tesla-common-base</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
+            <groupId>io.sreworks</groupId>
             <artifactId>tesla-common-utils</artifactId>
             <exclusions>
                 <exclusion>

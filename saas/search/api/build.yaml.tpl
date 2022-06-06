@@ -13,6 +13,7 @@ options:
         dockerfileTemplateArgs:
           MAVEN_IMAGE: ${MAVEN_IMAGE}
           JRE8_IMAGE: ${JRE8_IMAGE}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
         dockerfileTemplate: Dockerfile
         repoPath: saas/search/api/tkg-one
         branch: ${SOURCE_BRANCH}

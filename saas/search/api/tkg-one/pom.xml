@@ -31,8 +31,8 @@
         <spring.cloud.alibaba.version>2.1.2.RELEASE</spring.cloud.alibaba.version>
 
         <!-- tesla -->
-        <tesla-spring-boot-starter.version>2.1.6-SNAPSHOT</tesla-spring-boot-starter.version>
-        <tesla-common.version>2.1.0-SNAPSHOT</tesla-common.version>
+        <tesla-spring-boot-starter.version>2.1.9</tesla-spring-boot-starter.version>
+        <tesla-common.version>2.1.0</tesla-common.version>
 
         <!-- other -->
         <plexus-archiver.version>2.2</plexus-archiver.version>
@@ -129,30 +129,30 @@
 
             <!-- tesla -->
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-webmvc-spring-boot-starter</artifactId>
                 <version>${tesla-spring-boot-starter.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-swagger-spring-boot-starter</artifactId>
                 <version>${tesla-spring-boot-starter.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-mybatis-spring-boot-starter</artifactId>
                 <version>${tesla-spring-boot-starter.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-common-base</artifactId>
                 <version>${tesla-common.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-common-utils</artifactId>
                 <version>${tesla-common.version}</version>
             </dependency>

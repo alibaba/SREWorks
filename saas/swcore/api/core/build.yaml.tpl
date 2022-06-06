@@ -299,13 +299,11 @@ options:
       build:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        args:
-          TAG: master
-          OSSUTIL_URL: http://gosspublic.alicdn.com/ossutil/1.6.10/ossutil64
         dockerfileTemplateArgs:
           ALPINE_IMAGE: ${ALPINE_IMAGE}
           NODE_IMAGE: ${NODE_IMAGE}
           APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
+          NPM_REGISTRY_URL: ${NPM_REGISTRY_URL}
         dockerfileTemplate: Dockerfile_standalone.tpl
         repoPath: paas/sw-frontend
         branch: ${SOURCE_BRANCH}

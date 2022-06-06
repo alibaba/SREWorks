@@ -4,7 +4,7 @@ WORKDIR /app
 RUN mkdir /root/.m2/ && curl {{ MAVEN_SETTINGS_XML }} -o /root/.m2/settings.xml
 RUN mvn -Dmaven.test.skip=true clean package
 
-FROM {{ JRE11_IMAGE }} AS release
+FROM registry.cn-hangzhou.aliyuncs.com/alisre/openjdk:11.0.10-jre AS release
 USER root
 WORKDIR /root
 COPY --from=build /app/clustermanage-start/target/clustermanage.jar /app/clustermanage.jar

@@ -14,6 +14,7 @@ data:
   ALPINE_IMAGE: {{ .Values.global.artifacts.alpineImage }}
   MIGRATE_IMAGE: {{ template "migrate.image" . }}
   POSTRUN_IMAGE: {{ template "postrun.image" . }}
+  NPM_REGISTRY_URL: {{ .Values.global.artifacts.npmRegistryUrl }}
 
   SOURCE_BRANCH: {{ .Values.source.branch | default "master" | quote }}
   SOURCE_REPO: {{ .Values.source.repo }}

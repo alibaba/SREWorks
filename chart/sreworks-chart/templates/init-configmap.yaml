@@ -9,6 +9,7 @@ data:
   APK_REPO_DOMAIN: {{ .Values.global.artifacts.apkRepoDomain }} 
   MAVEN_IMAGE: {{ .Values.global.artifacts.mavenImage }}
   JRE8_IMAGE: {{ .Values.global.artifacts.openjdk8Image }}
+  JRE11_IMAGE: {{ .Values.global.artifacts.openjdk11Image }}
   MAVEN_SETTINGS_XML: {{ .Values.global.artifacts.mavenSettingsXml }}
   NODE_IMAGE: {{ .Values.global.artifacts.nodeImage }}
   ALPINE_IMAGE: {{ .Values.global.artifacts.alpineImage }}

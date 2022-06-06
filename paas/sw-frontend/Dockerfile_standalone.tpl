@@ -1,6 +1,6 @@
 FROM {{ NODE_IMAGE }} AS build
 COPY . /app
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+RUN sed -i 's/dl-cdn.alpinelinux.org/{{ APK_REPO_DOMAIN }}/g' /etc/apk/repositories \
     && apk add --update --no-cache python2 make gcc g++ zip
 RUN /bin/sh /app/sbin/build-standalone.sh
 

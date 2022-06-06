@@ -18,13 +18,13 @@
         <!-- self dependency -->
         <dependency>
             <artifactId>sreworks-flyadmin-server</artifactId>
-            <groupId>com.alibaba.sreworks</groupId>
-            <version>1.0.0-SNAPSHOT</version>
+            <groupId>io.sreworks</groupId>
+            <version>1.0.2</version>
         </dependency>
         <dependency>
             <artifactId>sreworks-plugin-server</artifactId>
-            <groupId>com.alibaba.sreworks</groupId>
-            <version>1.0.0-SNAPSHOT</version>
+            <groupId>io.sreworks</groupId>
+            <version>1.0.2</version>
         </dependency>
         <dependency>
             <artifactId>clustermanage-server</artifactId>

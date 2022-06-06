@@ -11,8 +11,10 @@ options:
         args:
           TAG: ack
         dockerfileTemplateArgs:
-          JRE11_IMAGE: registry.cn-hangzhou.aliyuncs.com/alisre/openjdk:11.0.10-jre
-        dockerfileTemplate: Dockerfile
+          JRE11_IMAGE: ${JRE11_IMAGE}
+          MAVEN_IMAGE: ${MAVEN_IMAGE}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
+        dockerfileTemplate: Dockerfile.tpl
         repoPath: saas/cluster/api/clustermanage
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}
@@ -28,7 +30,7 @@ options:
           TAG: ack
         dockerfileTemplateArgs:
           MIGRATE_IMAGE: ${MIGRATE_IMAGE}
-        dockerfileTemplate: Dockerfile-db-migration
+        dockerfileTemplate: Dockerfile-db-migration.tpl
         repoPath: saas/cluster/api/clustermanage
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}

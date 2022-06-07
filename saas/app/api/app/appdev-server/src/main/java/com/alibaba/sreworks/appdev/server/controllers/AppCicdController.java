@@ -5,7 +5,7 @@ import java.util.List;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.appdev.server.params.AppCicdCreateParam;
 import com.alibaba.sreworks.appdev.server.params.AppCicdModifyParam;
-import com.alibaba.sreworks.common.util.JenkinsUtil;
+//import com.alibaba.sreworks.common.util.JenkinsUtil;
 import com.alibaba.sreworks.common.util.RegularUtil;
 import com.alibaba.sreworks.domain.DO.AppCicd;
 import com.alibaba.sreworks.domain.repository.AppCicdRepository;
@@ -33,21 +33,21 @@ public class AppCicdController extends BaseController {
     @Autowired
     AppCicdRepository appCicdRepository;
 
-    private JenkinsUtil jenkinsUtil() {
-        return new JenkinsUtil("http://dev-app-dev-jenkins:8080/", "admin:admin");
-    }
+//    private JenkinsUtil jenkinsUtil() {
+//        return new JenkinsUtil("http://dev-app-dev-jenkins:8080/", "admin:admin");
+//    }
 
-    @ApiOperation(value = "create")
-    @RequestMapping(value = "create", method = RequestMethod.POST)
-    public TeslaBaseResult create(@RequestBody AppCicdCreateParam param) {
-
-        AppCicd appCicd = appCicdRepository.saveAndFlush(param.toAppCicd(getUserEmployeeId()));
-        jenkinsUtil().createJob(
-            param.getName(), param.getTimerTrigger(), param.getAuthToken(), param.getDescription(), param.getScript()
-        );
-        return buildSucceedResult(appCicd);
-
-    }
+//    @ApiOperation(value = "create")
+//    @RequestMapping(value = "create", method = RequestMethod.POST)
+//    public TeslaBaseResult create(@RequestBody AppCicdCreateParam param) {
+//
+//        AppCicd appCicd = appCicdRepository.saveAndFlush(param.toAppCicd(getUserEmployeeId()));
+//        jenkinsUtil().createJob(
+//            param.getName(), param.getTimerTrigger(), param.getAuthToken(), param.getDescription(), param.getScript()
+//        );
+//        return buildSucceedResult(appCicd);
+//
+//    }
 
     @ApiOperation(value = "modify")
     @RequestMapping(value = "modify", method = RequestMethod.POST)
@@ -58,13 +58,13 @@ public class AppCicdController extends BaseController {
         return buildSucceedResult(appCicd);
     }
 
-    @ApiOperation(value = "delete")
-    @RequestMapping(value = "delete", method = RequestMethod.DELETE)
-    public TeslaBaseResult delete(Long id) {
-        jenkinsUtil().deleteJob(appCicdRepository.findFirstById(id).getName());
-        appCicdRepository.deleteById(id);
-        return buildSucceedResult("OK");
-    }
+//    @ApiOperation(value = "delete")
+//    @RequestMapping(value = "delete", method = RequestMethod.DELETE)
+//    public TeslaBaseResult delete(Long id) {
+//        jenkinsUtil().deleteJob(appCicdRepository.findFirstById(id).getName());
+//        appCicdRepository.deleteById(id);
+//        return buildSucceedResult("OK");
+//    }
 
     @ApiOperation(value = "get")
     @RequestMapping(value = "get", method = RequestMethod.GET)

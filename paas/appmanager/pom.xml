@@ -57,7 +57,7 @@
         <hikaricp.version>5.0.1</hikaricp.version>
 
         <!-- tesla -->
-        <tesla.spring.boot.version>2.1.7</tesla.spring.boot.version>
+        <tesla.spring.boot.version>2.1.9</tesla.spring.boot.version>
         <task-flow-service.version>1.1.0</task-flow-service.version>
 
         <!-- other -->

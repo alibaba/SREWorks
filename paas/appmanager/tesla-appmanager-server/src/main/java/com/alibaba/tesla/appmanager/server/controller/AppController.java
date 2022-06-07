@@ -136,6 +136,10 @@ public class AppController extends BaseController {
         if (StringUtils.isEmpty(appId)) {
             return buildSucceedResult(Boolean.TRUE);
         }
+        String cloudType = System.getenv("CLOUD_TYPE");
+        if ("Internal".equals(cloudType)) {
+            return buildClientErrorResult("Deleting apps is now prohibited");
+        }
 
         boolean result = appMetaProvider.delete(appId);
         return buildSucceedResult(result);

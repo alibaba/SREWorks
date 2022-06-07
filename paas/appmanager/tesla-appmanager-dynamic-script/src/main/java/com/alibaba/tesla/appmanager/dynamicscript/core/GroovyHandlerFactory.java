@@ -258,6 +258,16 @@ public class GroovyHandlerFactory {
                             DynamicScriptKindEnum.DEPLOY_ABM_HELM_COMPONENT.toString(),
                             DefaultConstant.DEFAULT_GROOVY_HANDLER);
                 }
+            case ABM_STATUS:
+                if (ComponentActionEnum.BUILD.equals(action)) {
+                    return get(scriptClass,
+                            DynamicScriptKindEnum.BUILD_ABM_STATUS_COMPONENT.toString(),
+                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                } else {
+                    return get(scriptClass,
+                            DynamicScriptKindEnum.DEPLOY_ABM_STATUS_COMPONENT.toString(),
+                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                }
             case INTERNAL_ADDON:
                 if ("productops".equals(componentName)) {
                     if (ComponentActionEnum.BUILD.equals(action)) {

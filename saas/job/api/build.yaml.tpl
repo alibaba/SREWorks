@@ -11,8 +11,10 @@ options:
         args:
           TAG: ack
         dockerfileTemplateArgs:
-          JRE11_IMAGE: registry.cn-hangzhou.aliyuncs.com/alisre/openjdk:11.0.10-jre
-        dockerfileTemplate: master-Dockerfile
+          JRE11_IMAGE: ${JRE11_IMAGE}
+          MAVEN_IMAGE: ${MAVEN_IMAGE}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
+        dockerfileTemplate: master-Dockerfile.tpl
         repoPath: saas/job/api/sreworks-job
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}
@@ -28,7 +30,7 @@ options:
           TAG: ack
         dockerfileTemplateArgs:
           MIGRATE_IMAGE: ${MIGRATE_IMAGE}
-        dockerfileTemplate: Dockerfile-db-migration
+        dockerfileTemplate: Dockerfile-db-migration.tpl
         repoPath: saas/job/api/sreworks-job
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}
@@ -41,8 +43,8 @@ options:
         args:
           TAG: ack
         dockerfileTemplateArgs:
-          MIGRATE_IMAGE: ${MIGRATE_IMAGE}
-        dockerfileTemplate: Dockerfile-init
+          POSTRUN_IMAGE: ${POSTRUN_IMAGE}
+        dockerfileTemplate: Dockerfile-init.tpl
         repoPath: saas/job/api/sreworks-job
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}
@@ -78,8 +80,13 @@ options:
         args:
           TAG: ack
         dockerfileTemplateArgs:
-          JRE11_IMAGE: registry.cn-hangzhou.aliyuncs.com/alisre/openjdk:11.0.10-jre
-        dockerfileTemplate: worker-Dockerfile
+          APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
+          MAVEN_IMAGE: ${MAVEN_IMAGE}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
+          JRE11_ALPINE_IMAGE: ${JRE11_ALPINE_IMAGE}
+          PYTHON_PIP: ${PYTHON_PIP}
+          PYTHON_PIP_DOMAIN: ${PYTHON_PIP_DOMAIN}
+        dockerfileTemplate: worker-Dockerfile.tpl
         repoPath: saas/job/api/sreworks-job
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}

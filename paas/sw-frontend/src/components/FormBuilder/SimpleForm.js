@@ -114,7 +114,6 @@ class SimpleForm extends PureComponent {
         let { colCount, items, form, formItemLayout, hintFunction, nodeParam = {}, extCol, advanced, autoSubmit, formLayout = 'horizontal' } = this.props;
         let { displayMode } = this.state, hasCategory = false, rows = false, normalItems = [], groupItems = [], categoryMapping = {}, categoryOrderMapping = {};
         //把高级查询条件放置到最后
-        console.log(items, 'simple-items')
         if (this.hasType) {
             let base = [], advs = [];
             items.forEach(ni => {

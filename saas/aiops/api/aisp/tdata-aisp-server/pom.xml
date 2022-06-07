@@ -5,7 +5,7 @@
   <parent>
     <artifactId>tdata-aisp</artifactId>
     <groupId>com.alibaba.tdata</groupId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -71,6 +71,11 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.aliyun.inner</groupId>
+      <artifactId>tesla_aiops20220429</artifactId>
+      <version>1.0.7</version>
     </dependency>
 
     <!-- prometheus meter-->

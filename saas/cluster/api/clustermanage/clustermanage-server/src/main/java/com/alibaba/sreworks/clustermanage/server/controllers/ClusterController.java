@@ -125,18 +125,33 @@ public class ClusterController extends BaseController {
         List<JSONObject> ret = clusterRepository.findObjectByUserAndNameLike(getUserEmployeeId(), "%" + name + "%");
         RegularUtil.underscoreToCamel(ret);
         RegularUtil.gmt2Date(ret);
+        for(JSONObject clusterInfo: ret){
+            clusterInfo.put("kubeconfig", null);
+        }
         return buildSucceedResult(ret);
     }
 
-    @ApiOperation(value = "公共列表")
-    @RequestMapping(value = "listPublic", method = RequestMethod.GET)
-    public TeslaBaseResult listPublic(String name) {
-        name = StringUtil.isEmpty(name) ? "" : name;
-        List<JSONObject> ret = clusterRepository.findObjectByVisibleScopeIsPublicAndNameLike("%" + name + "%");
+    @ApiOperation(value = "全部列表")
+    @RequestMapping(value = "listAll", method = RequestMethod.GET)
+    public TeslaBaseResult listAll() {
+        List<JSONObject> ret = clusterRepository.findAll().stream().map(Cluster::toJsonObject).collect(Collectors.toList());
+        for(JSONObject clusterInfo: ret){
+            clusterInfo.put("kubeconfig", null);
+        }
         RegularUtil.underscoreToCamel(ret);
         RegularUtil.gmt2Date(ret);
         return buildSucceedResult(ret);
     }
+
+//    @ApiOperation(value = "公共列表")
+//    @RequestMapping(value = "listPublic", method = RequestMethod.GET)
+//    public TeslaBaseResult listPublic(String name) {
+//        name = StringUtil.isEmpty(name) ? "" : name;
+//        List<JSONObject> ret = clusterRepository.findObjectByVisibleScopeIsPublicAndNameLike("%" + name + "%");
+//        RegularUtil.underscoreToCamel(ret);
+//        RegularUtil.gmt2Date(ret);
+//        return buildSucceedResult(ret);
+//    }
 
     @ApiOperation(value = "idSelector")
     @RequestMapping(value = "idSelector", method = RequestMethod.GET)

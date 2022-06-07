@@ -40,6 +40,9 @@ public class SceneCreateParam {
     @ApiModelProperty(notes = "owner列表")
     private List<UserSimpleInfo> ownerInfoList;
 
+    @ApiModelProperty(notes = "关联检测器")
+    private String detectorBinder;
+
     @ApiModelProperty(notes = "备注")
     private String comment;
 }

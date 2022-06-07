@@ -36,6 +36,7 @@ public class ClusterRepositoryImpl implements ClusterRepository {
 
     @Override
     public List<ClusterDO> selectByCondition(ClusterQueryCondition condition) {
+        condition.doPagination();
         return clusterDOMapper.selectByExample(buildExample(condition));
     }
 
@@ -52,6 +53,9 @@ public class ClusterRepositoryImpl implements ClusterRepository {
         }
         if (StringUtils.isNotEmpty(condition.getClusterName())) {
             criteria.andClusterNameEqualTo(condition.getClusterName());
+        }
+        if (StringUtils.isNotEmpty(condition.getClusterType())) {
+            criteria.andClusterTypeEqualTo(condition.getClusterType());
         }
         return example;
     }

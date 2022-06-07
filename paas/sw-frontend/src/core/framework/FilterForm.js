@@ -27,6 +27,7 @@ import debounce from 'lodash.debounce';
 import localeHelper from '../../utils/localeHelper';
 import * as util from "../../utils/utils";
 import './tabFilter/index.less';
+import JSXRender from '../../components/JSXRender';
 
 class FilterForm extends PureComponent {
 
@@ -227,7 +228,7 @@ class FilterForm extends PureComponent {
                                                             {
                                                                 normal.tooltip &&
                                                                 <em className="optional">
-                                                                    <Tooltip title={normal.tooltip}>
+                                                                    <Tooltip title={<JSXRender jsx={normal.tooltip} />}>
                                                                         <QuestionCircleOutlined />
                                                                     </Tooltip>
                                                                 </em>

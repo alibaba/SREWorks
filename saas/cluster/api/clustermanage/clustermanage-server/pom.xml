@@ -20,6 +20,12 @@
             <artifactId>sreworks-domain</artifactId>
             <groupId>io.sreworks</groupId>
             <version>1.0.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-slf4j-impl</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <artifactId>sreworks-plugin-server</artifactId>

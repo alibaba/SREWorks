@@ -20,7 +20,7 @@
         <!-- alibaba-->
         <spring.cloud.alibaba.version>2.1.2.RELEASE</spring.cloud.alibaba.version>
         <!-- tesla-->
-        <tesla-spring-boot-starter.version>2.1.6-SNAPSHOT</tesla-spring-boot-starter.version>
+        <tesla-spring-boot-starter.version>2.1.10</tesla-spring-boot-starter.version>
         <!-- other -->
         <lombok.version>1.18.8</lombok.version>
         <junit.version>4.12</junit.version>
@@ -44,17 +44,17 @@
 
             <!-- tesla dependency -->
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-webmvc-spring-boot-starter</artifactId>
                 <version>${tesla-spring-boot-starter.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-swagger-spring-boot-starter</artifactId>
                 <version>${tesla-spring-boot-starter.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>iosreworks</groupId>
                 <artifactId>tesla-mybatis-spring-boot-starter</artifactId>
             </dependency>
             <!-- other -->
@@ -118,18 +118,6 @@
             </plugin>
         </plugins>
     </build>
-    <distributionManagement>
-        <repository>
-            <id>releases</id>
-            <name>releases</name>
-            <url>http://repo.alibaba-inc.com/nexus/content/repositories/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>snapshots</name>
-            <url>http://repo.alibaba-inc.com/nexus/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
     <modules>
         <module>sreworks-job-master</module>
         <module>sreworks-job-worker</module>

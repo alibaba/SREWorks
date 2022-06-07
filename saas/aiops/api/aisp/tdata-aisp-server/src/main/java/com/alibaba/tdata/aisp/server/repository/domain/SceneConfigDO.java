@@ -18,6 +18,8 @@ public class SceneConfigDO implements Serializable {
 
     private String sceneName;
 
+    private String detectorBinder;
+
     private String comment;
 
     private String sceneModelParam;
@@ -72,6 +74,14 @@ public class SceneConfigDO implements Serializable {
         this.sceneName = sceneName == null ? null : sceneName.trim();
     }
 
+    public String getDetectorBinder() {
+        return detectorBinder;
+    }
+
+    public void setDetectorBinder(String detectorBinder) {
+        this.detectorBinder = detectorBinder == null ? null : detectorBinder.trim();
+    }
+
     public String getComment() {
         return comment;
     }
@@ -106,6 +116,7 @@ public class SceneConfigDO implements Serializable {
             && (this.getOwners() == null ? other.getOwners() == null : this.getOwners().equals(other.getOwners()))
             && (this.getProductName() == null ? other.getProductName() == null : this.getProductName().equals(other.getProductName()))
             && (this.getSceneName() == null ? other.getSceneName() == null : this.getSceneName().equals(other.getSceneName()))
+            && (this.getDetectorBinder() == null ? other.getDetectorBinder() == null : this.getDetectorBinder().equals(other.getDetectorBinder()))
             && (this.getComment() == null ? other.getComment() == null : this.getComment().equals(other.getComment()))
             && (this.getSceneModelParam() == null ? other.getSceneModelParam() == null : this.getSceneModelParam().equals(other.getSceneModelParam()));
     }
@@ -120,6 +131,7 @@ public class SceneConfigDO implements Serializable {
         result = prime * result + ((getOwners() == null) ? 0 : getOwners().hashCode());
         result = prime * result + ((getProductName() == null) ? 0 : getProductName().hashCode());
         result = prime * result + ((getSceneName() == null) ? 0 : getSceneName().hashCode());
+        result = prime * result + ((getDetectorBinder() == null) ? 0 : getDetectorBinder().hashCode());
         result = prime * result + ((getComment() == null) ? 0 : getComment().hashCode());
         result = prime * result + ((getSceneModelParam() == null) ? 0 : getSceneModelParam().hashCode());
         return result;
@@ -137,6 +149,7 @@ public class SceneConfigDO implements Serializable {
         sb.append(", owners=").append(owners);
         sb.append(", productName=").append(productName);
         sb.append(", sceneName=").append(sceneName);
+        sb.append(", detectorBinder=").append(detectorBinder);
         sb.append(", comment=").append(comment);
         sb.append(", sceneModelParam=").append(sceneModelParam);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -151,6 +164,7 @@ public class SceneConfigDO implements Serializable {
         owners("owners", "owners", "VARCHAR", false),
         productName("product_name", "productName", "VARCHAR", false),
         sceneName("scene_name", "sceneName", "VARCHAR", false),
+        detectorBinder("detector_binder", "detectorBinder", "VARCHAR", false),
         comment("comment", "comment", "LONGVARCHAR", false),
         sceneModelParam("scene_model_param", "sceneModelParam", "LONGVARCHAR", false);
 

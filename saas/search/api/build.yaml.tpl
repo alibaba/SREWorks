@@ -13,7 +13,8 @@ options:
         dockerfileTemplateArgs:
           MAVEN_IMAGE: ${MAVEN_IMAGE}
           JRE8_IMAGE: ${JRE8_IMAGE}
-        dockerfileTemplate: Dockerfile
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
+        dockerfileTemplate: Dockerfile.tpl
         repoPath: saas/search/api/tkg-one
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}
@@ -30,7 +31,7 @@ options:
           TAG: ack
         dockerfileTemplateArgs:
           MIGRATE_IMAGE: ${MIGRATE_IMAGE}
-        dockerfileTemplate: Dockerfile-db-migration
+        dockerfileTemplate: Dockerfile_db_migration.tpl
         repoPath: saas/search/api/tkg-one
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}

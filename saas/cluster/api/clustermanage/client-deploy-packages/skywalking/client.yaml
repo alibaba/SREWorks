@@ -1,6 +1,6 @@
 
 
 name: skywalking 
-deployCommand: helm upgrade skywalking ./skywalking-chart --create-namespace --namespace sreworks-client -f values.yaml --install --set elasticsearchEndpint=${elasticsearchEndpint} 
+deployCommand: helm upgrade skywalking ./skywalking-chart --create-namespace --namespace sreworks-client -f values.yaml --install --set elasticsearchEndpint=${elasticsearchEndpint} elasticsearchUser=${elasticsearchUser} elasticsearchPassword=${elasticsearchPassword}
 chart: skywalking
 

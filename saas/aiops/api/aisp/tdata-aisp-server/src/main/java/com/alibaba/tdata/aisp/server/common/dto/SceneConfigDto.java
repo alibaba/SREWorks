@@ -35,5 +35,7 @@ public class SceneConfigDto {
 
     private JSONObject sceneModelParam;
 
+    private String detectorBinder;
+
     private String comment;
 }

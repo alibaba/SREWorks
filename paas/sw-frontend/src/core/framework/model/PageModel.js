@@ -21,7 +21,7 @@ export default class PageModel extends BaseModel {
 
     rootWidgetModel;
     functionMeta;
-    searchParams;
+    esSearch;
 
 
     constructor(modelJson) {
@@ -30,9 +30,9 @@ export default class PageModel extends BaseModel {
             let { dataSourceMeta } = modelJson.config;
             this.setDataSourceMeta(dataSourceMeta);
         }
-        if(modelJson.config && modelJson.config.dataSourceMeta) {
-            let { searchParams } = modelJson.config;
-            this.setSearchParams(searchParams);
+        if(modelJson.config && modelJson.config.esSearch) {
+            let { esSearch } = modelJson.config;
+            this.setEsSearch(esSearch);
         }
         this.rootWidgetModel = new ContainerModel(modelJson, true);
     }
@@ -66,7 +66,7 @@ export default class PageModel extends BaseModel {
      */
     toJSON() {
         let jsonData = super.toJSON();
-        let { name, id, dataSourceMeta, functionMeta, searchParams } = this;
+        let { name, id, dataSourceMeta, functionMeta, esSearch } = this;
         return {
             ...jsonData,
             name: name,
@@ -77,7 +77,7 @@ export default class PageModel extends BaseModel {
             config: {
                 dataSourceMeta: dataSourceMeta && { ...dataSourceMeta },
                 functionMeta: functionMeta || [],
-                searchParams: searchParams
+                esSearch: esSearch
             }
         }
     }
@@ -144,8 +144,11 @@ export default class PageModel extends BaseModel {
     getNodeModel() {
         return this.nodeModel;
     }
-    setSearchParams(params){
-        this.searchParams = params
+    setEsSearch(params){
+        this.esSearch = params
+    }
+    getEsSearch() {
+        return this.esSearch
     }
 
 

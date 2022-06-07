@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -88,6 +89,11 @@ public class DeployComponentRepositoryImpl implements DeployComponentRepository 
         }
         if (condition.getDeployStatus() != null) {
             criteria.andDeployStatusEqualTo(condition.getDeployStatus().name());
+        }
+        if (condition.getDeployStatusList() != null && condition.getDeployStatusList().size() > 0) {
+            criteria.andDeployStatusIn(condition.getDeployStatusList().stream()
+                    .map(Enum::name)
+                    .collect(Collectors.toList()));
         }
         if (condition.getDeployProcessId() != null && condition.getDeployProcessId() > 0) {
             criteria.andDeployProcessIdEqualTo(String.valueOf(condition.getDeployProcessId()));

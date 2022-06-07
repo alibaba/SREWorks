@@ -64,7 +64,7 @@ public interface AnalyseInstanceService {
      * @param param
      * @return
      */
-    int feedback(AnalyseInstanceFeedbackParam param);
+    int feedback(String sceneCode, String detectorCode, AnalyseInstanceFeedbackParam param);
 
     /**
      * @param instanceCode

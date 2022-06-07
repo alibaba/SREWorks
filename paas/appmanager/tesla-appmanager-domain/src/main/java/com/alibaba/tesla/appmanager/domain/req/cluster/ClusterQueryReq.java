@@ -1,11 +1,10 @@
 package com.alibaba.tesla.appmanager.domain.req.cluster;
 
+import com.alibaba.tesla.appmanager.common.BaseRequest;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Cluster 查询请求
@@ -13,10 +12,10 @@ import java.io.Serializable;
  * @author yaoxing.gyx@alibaba-inc.com
  */
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClusterQueryReq implements Serializable {
+public class ClusterQueryReq extends BaseRequest {
 
     private static final long serialVersionUID = -1872143932301240289L;
 
@@ -29,4 +28,9 @@ public class ClusterQueryReq implements Serializable {
      * Cluster 名称
      */
     private String clusterName;
+
+    /**
+     * Cluster 类型
+     */
+    private String clusterType;
 }

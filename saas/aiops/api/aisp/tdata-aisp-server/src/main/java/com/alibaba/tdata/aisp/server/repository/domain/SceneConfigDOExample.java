@@ -505,6 +505,76 @@ public class SceneConfigDOExample {
             return (Criteria) this;
         }
 
+        public Criteria andDetectorBinderIsNull() {
+            addCriterion("detector_binder is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetectorBinderIsNotNull() {
+            addCriterion("detector_binder is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetectorBinderEqualTo(String value) {
+            addCriterion("detector_binder =", value, "detectorBinder");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetectorBinderNotEqualTo(String value) {
+            addCriterion("detector_binder <>", value, "detectorBinder");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetectorBinderGreaterThan(String value) {
+            addCriterion("detector_binder >", value, "detectorBinder");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetectorBinderGreaterThanOrEqualTo(String value) {
+            addCriterion("detector_binder >=", value, "detectorBinder");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetectorBinderLessThan(String value) {
+            addCriterion("detector_binder <", value, "detectorBinder");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetectorBinderLessThanOrEqualTo(String value) {
+            addCriterion("detector_binder <=", value, "detectorBinder");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetectorBinderLike(String value) {
+            addCriterion("detector_binder like", value, "detectorBinder");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetectorBinderNotLike(String value) {
+            addCriterion("detector_binder not like", value, "detectorBinder");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetectorBinderIn(List<String> values) {
+            addCriterion("detector_binder in", values, "detectorBinder");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetectorBinderNotIn(List<String> values) {
+            addCriterion("detector_binder not in", values, "detectorBinder");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetectorBinderBetween(String value1, String value2) {
+            addCriterion("detector_binder between", value1, value2, "detectorBinder");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetectorBinderNotBetween(String value1, String value2) {
+            addCriterion("detector_binder not between", value1, value2, "detectorBinder");
+            return (Criteria) this;
+        }
+
         public Criteria andSceneCodeLikeInsensitive(String value) {
             addCriterion("upper(scene_code) like", value.toUpperCase(), "sceneCode");
             return (Criteria) this;
@@ -522,6 +592,11 @@ public class SceneConfigDOExample {
 
         public Criteria andSceneNameLikeInsensitive(String value) {
             addCriterion("upper(scene_name) like", value.toUpperCase(), "sceneName");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetectorBinderLikeInsensitive(String value) {
+            addCriterion("upper(detector_binder) like", value.toUpperCase(), "detectorBinder");
             return (Criteria) this;
         }
     }

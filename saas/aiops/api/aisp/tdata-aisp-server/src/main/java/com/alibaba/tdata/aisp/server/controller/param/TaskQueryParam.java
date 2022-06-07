@@ -21,6 +21,8 @@ public class TaskQueryParam {
 
     private String taskType;
 
+    private String entityId;
+
     @NotNull(message = "page can not be null!")
     @ApiModelProperty(required = true)
     private Integer page;

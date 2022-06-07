@@ -1,9 +1,8 @@
 package com.alibaba.tesla.appmanager.server.service.cluster;
 
+import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.server.repository.condition.ClusterQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.ClusterDO;
-
-import java.util.List;
 
 /**
  * 集群服务
@@ -18,7 +17,7 @@ public interface ClusterService {
      * @param condition 请求数据
      * @return 查询结果
      */
-    List<ClusterDO> list(ClusterQueryCondition condition);
+    Pagination<ClusterDO> list(ClusterQueryCondition condition);
 
     /**
      * 获取指定 clusterId 对应的数据

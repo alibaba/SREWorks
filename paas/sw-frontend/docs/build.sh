@@ -1,8 +1,8 @@
-npm install --registry=https://registry.npmmirror.com -g gitbook-cli
+npm install --registry=${NPM_REGISTRY_URL} -g gitbook-cli
 
-npm install --registry=https://registry.npmmirror.com
+npm install --registry=${NPM_REGISTRY_URL}
 
-npm config set registry https://registry.npmmirror.com
+npm config set registry ${NPM_REGISTRY_URL}
 
 gitbook build ./
 

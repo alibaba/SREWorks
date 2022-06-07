@@ -36,6 +36,10 @@ public class ConfigService {
         return config == null ? "" : config.getContent();
     }
 
+    public Integer del(String name){
+        return configRepository.deleteByName(name);
+    }
+
     public List<Config> getAll() {
         return configRepository.findAll();
     }

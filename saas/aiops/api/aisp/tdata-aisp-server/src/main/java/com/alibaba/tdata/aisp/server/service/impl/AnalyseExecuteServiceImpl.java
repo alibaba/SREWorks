@@ -5,16 +5,11 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.tdata.aisp.server.common.condition.TaskQueryCondition;
 import com.alibaba.tdata.aisp.server.common.constant.AnalyseTaskStatusEnum;
 import com.alibaba.tdata.aisp.server.common.constant.AnalyseTaskTypeEnum;
 import com.alibaba.tdata.aisp.server.common.constant.CodeTypeEnum;
@@ -22,20 +17,15 @@ import com.alibaba.tdata.aisp.server.common.exception.DetectorException;
 import com.alibaba.tdata.aisp.server.common.exception.PlatformInternalException;
 import com.alibaba.tdata.aisp.server.common.properties.AuthProperties;
 import com.alibaba.tdata.aisp.server.common.properties.EnvProperties;
-import com.alibaba.tdata.aisp.server.common.properties.TaskRemainProperties;
 import com.alibaba.tdata.aisp.server.common.utils.DetectorUtil;
 import com.alibaba.tdata.aisp.server.common.utils.MessageDigestUtil;
 import com.alibaba.tdata.aisp.server.common.utils.TaskCacheUtil;
 import com.alibaba.tdata.aisp.server.common.utils.TeslaAuthUtil;
 import com.alibaba.tdata.aisp.server.controller.param.AnalyseInstanceCreateParam;
+import com.alibaba.tdata.aisp.server.controller.param.AnalyseInstanceFeedbackParam;
 import com.alibaba.tdata.aisp.server.controller.param.AnalyseTaskCreateParam;
 import com.alibaba.tdata.aisp.server.controller.param.AnalyseTaskCreateParam.AnalyseTaskCreateParamBuilder;
-import com.alibaba.tdata.aisp.server.controller.param.AnalyzeTaskUpdateParam;
 import com.alibaba.tdata.aisp.server.controller.param.CodeParam;
-import com.alibaba.tdata.aisp.server.controller.param.TaskQueryParam;
-import com.alibaba.tdata.aisp.server.controller.param.TaskTrendQueryParam;
-import com.alibaba.tdata.aisp.server.controller.result.TaskQueryResult;
-import com.alibaba.tdata.aisp.server.controller.result.TaskReportResult;
 import com.alibaba.tdata.aisp.server.repository.AnalyseInstanceRepository;
 import com.alibaba.tdata.aisp.server.repository.AnalyseTaskRepository;
 import com.alibaba.tdata.aisp.server.repository.SceneRepository;
@@ -43,7 +33,6 @@ import com.alibaba.tdata.aisp.server.repository.domain.DetectorConfigDO;
 import com.alibaba.tdata.aisp.server.repository.domain.InstanceDO;
 import com.alibaba.tdata.aisp.server.repository.domain.SceneConfigDO;
 import com.alibaba.tdata.aisp.server.repository.domain.TaskDO;
-import com.alibaba.tdata.aisp.server.repository.domain.TaskTrendDO;
 import com.alibaba.tdata.aisp.server.service.AnalyseExecuteService;
 import com.alibaba.tdata.aisp.server.service.AnalyseInstanceService;
 import com.alibaba.tdata.aisp.server.service.AnalyseTaskService;
@@ -64,7 +53,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
@@ -115,7 +103,17 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
     public JSONObject exec(String taskUUID, JSONObject param, String sceneCode, String detectorCode) {
         SceneConfigDO sceneConfigDO = sceneRepository.queryById(sceneCode);
         if (sceneConfigDO==null) {
-            throw new IllegalArgumentException("action=analyze || Path variable：sceneCode: "+sceneCode+" is not exists!");
+            throw new IllegalArgumentException("action=exec || Can not find config of code:"+ sceneCode + " !");
+        }
+        if (sceneConfigDO.getDetectorBinder()!=null && !"*".equalsIgnoreCase(sceneConfigDO.getDetectorBinder())){
+            if (!sceneConfigDO.getDetectorBinder().matches(detectorCode)) {
+                throw new IllegalArgumentException("action=exec || "+sceneCode+" not binder detector: "+detectorCode+" !");
+            }
+        }
+        DetectorConfigDO detectorConfigDO = detectorService.queryById(detectorCode);
+        if (detectorConfigDO==null){
+            throw new IllegalArgumentException(
+                "action=exec || Can not find detector record from detectorCode:" + detectorCode);
         }
         checkExecParam(param);
         AnalyseTaskCreateParamBuilder taskBuilder = AnalyseTaskCreateParam.builder().reqParam(param);
@@ -142,10 +140,10 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
                 }
                 // 加入用户最近反馈信息
                 if (!StringUtils.isEmpty(instanceDO.getRecentFeedback())) {
-                    JSONArray recentFeedback = JSONArray.parseArray(instanceDO.getRecentFeedback());
+                    JSONObject recentFeedback = JSONObject.parseObject(instanceDO.getRecentFeedback());
                     if (modelParam.containsKey("feedback")) {
-                        JSONArray feedback = modelParam.getJSONArray("feedback");
-                        feedback.addAll(recentFeedback);
+                        JSONObject feedback = modelParam.getJSONObject("feedback");
+                        feedback.putAll(recentFeedback);
                         modelParam.put("feedback", feedback);
                     } else {
                         modelParam.put("feedback", recentFeedback);
@@ -166,10 +164,10 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
             .build());
         switch (taskTypeEnum) {
             case SYNC: {
-                return syncExec(taskUUID, detectorCode, param);
+                return syncExec(taskUUID, detectorConfigDO, param);
             }
             case ASYNC: {
-                return asyncExec(taskUUID, detectorCode, param);
+                return asyncExec(taskUUID, detectorConfigDO, param);
             }
             default:
                 throw new IllegalArgumentException("action=exec|| Can not find task type:" + taskTypeEnum);
@@ -206,18 +204,19 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
     }
 
     @Override
+    public boolean feedback(String sceneCode, String detectorCode, AnalyseInstanceFeedbackParam param) {
+        instanceService.feedback(sceneCode, detectorCode, param);
+        return true;
+    }
+
+    @Override
     public String getDoc(String detectorCode) {
         return detectorService.getDoc(detectorCode);
     }
 
-    private JSONObject syncExec(String taskUUID, String detectorCode, JSONObject param) {
-        String detectorUrl = System.getenv(detectorCode);
+    private JSONObject syncExec(String taskUUID, DetectorConfigDO detectorConfigDO, JSONObject param) {
+        String detectorUrl = System.getenv(detectorConfigDO.getDetectorCode());
         if (StringUtils.isEmpty(detectorUrl)){
-            DetectorConfigDO detectorConfigDO = detectorService.queryById(detectorCode);
-            if (detectorConfigDO==null){
-                throw new IllegalArgumentException(
-                    "action=syncExec || Can not find detector record from detectorCode:" + detectorCode);
-            }
             detectorUrl = detectorConfigDO.getDetectorUrl();
         }
         JSONObject postJson = JSONObject.parseObject(JSONObject.toJSONString(param));
@@ -236,12 +235,12 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
                 assert response.body() != null;
                 String bodyStr = response.body().string();
                 JSONObject result = JSONObject.parseObject(bodyStr);
+                result.put("taskUUID", taskUUID);
                 taskResultCache.put(TaskCacheUtil.genResultKey(taskUUID), result);
                 log.info("action=syncExec || detector http code:{} !", response.code());
                 if (response.code()==200){
                     completeTask(taskUUID, AnalyseTaskStatusEnum.SUCCESS, result);
                 }
-                result.put("taskUUID", taskUUID);
                 return result;
             } else {
                 assert response.body() != null;
@@ -254,9 +253,9 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
                     result.put("message", response.message());
                 }
                 result.put("code", "Detector_".concat(result.getString("code")));
+                result.put("taskUUID", taskUUID);
                 taskResultCache.put(TaskCacheUtil.genResultKey(taskUUID), result);
                 updateTaskStatus(taskUUID, AnalyseTaskStatusEnum.FAILED, result);
-                result.put("taskUUID", taskUUID);
                 log.info("action=syncExec || result: {}", result);
                 throw new DetectorException(response.code(), result);
             }
@@ -282,6 +281,9 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
         taskDO.setCostTime(cost);
         taskDO.setTaskResult(result.toJSONString());
         taskRepository.updateSelectiveById(taskDO);
+        if (!result.containsKey("data") || !result.getJSONObject("data").containsKey("modelParam")) {
+            return;
+        }
         JSONObject newModelParam = result.getJSONObject("data").getJSONObject("modelParam");
         result.getJSONObject("data").remove("modelParam");
         String instanceCode = taskDO.getInstanceCode();
@@ -292,14 +294,9 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
         }
     }
 
-    private JSONObject asyncExec(String taskUUID, String detectorCode, JSONObject param) {
-        String detectorUrl = System.getenv(detectorCode);
+    private JSONObject asyncExec(String taskUUID, DetectorConfigDO detectorConfigDO, JSONObject param) {
+        String detectorUrl = System.getenv(detectorConfigDO.getDetectorCode());
         if (StringUtils.isEmpty(detectorUrl)){
-            DetectorConfigDO detectorConfigDO = detectorService.queryById(detectorCode);
-            if (detectorConfigDO==null){
-                throw new IllegalArgumentException(
-                    "action=syncExec || Can not find detector record from detectorCode:" + detectorCode);
-            }
             detectorUrl = detectorConfigDO.getDetectorUrl();
         }
         JSONObject postJson = JSONObject.parseObject(JSONObject.toJSONString(param));
@@ -329,6 +326,7 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
                     assert response.body() != null;
                     String bodyStr = response.body().string();
                     JSONObject result = JSONObject.parseObject(bodyStr);
+                    result.put("taskUUID", taskUUID);
                     taskResultCache.put(TaskCacheUtil.genResultKey(taskUUID), result);
                     if (response.code()==200){
                         completeTask(taskUUID, AnalyseTaskStatusEnum.SUCCESS, result);
@@ -344,6 +342,7 @@ public class AnalyseExecuteServiceImpl implements AnalyseExecuteService {
                         result.put("message", response.message());
                     }
                     result.put("code", "Detector_".concat(result.getString("code")));
+                    result.put("taskUUID", taskUUID);
                     log.info("action=asyncExec || result: {}", result);
                     taskResultCache.put(TaskCacheUtil.genResultKey(taskUUID), result);
                     updateTaskStatus(taskUUID, AnalyseTaskStatusEnum.FAILED, result);

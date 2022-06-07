@@ -46,11 +46,11 @@
         </dependency>
         <!-- tesla common -->
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
+            <groupId>io.sreworks</groupId>
             <artifactId>tesla-common-base</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
+            <groupId>io.sreworks</groupId>
             <artifactId>tesla-common-utils</artifactId>
         </dependency>
         <dependency>

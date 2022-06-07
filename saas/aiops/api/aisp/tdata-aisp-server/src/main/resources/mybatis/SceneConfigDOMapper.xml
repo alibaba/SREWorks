@@ -8,6 +8,7 @@
     <result column="owners" jdbcType="VARCHAR" property="owners" />
     <result column="product_name" jdbcType="VARCHAR" property="productName" />
     <result column="scene_name" jdbcType="VARCHAR" property="sceneName" />
+    <result column="detector_binder" jdbcType="VARCHAR" property="detectorBinder" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.alibaba.tdata.aisp.server.repository.domain.SceneConfigDO">
     <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
@@ -72,7 +73,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    scene_code, gmt_create, gmt_modified, owners, product_name, scene_name
+    scene_code, gmt_create, gmt_modified, owners, product_name, scene_name, detector_binder
   </sql>
   <sql id="Blob_Column_List">
     comment, scene_model_param
@@ -128,10 +129,12 @@
   <insert id="insert" parameterType="com.alibaba.tdata.aisp.server.repository.domain.SceneConfigDO">
     insert into aisp_scene_config (scene_code, gmt_create, gmt_modified, 
       owners, product_name, scene_name, 
-      comment, scene_model_param)
+      detector_binder, comment, scene_model_param
+      )
     values (#{sceneCode,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
       #{owners,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{sceneName,jdbcType=VARCHAR}, 
-      #{comment,jdbcType=LONGVARCHAR}, #{sceneModelParam,jdbcType=LONGVARCHAR})
+      #{detectorBinder,jdbcType=VARCHAR}, #{comment,jdbcType=LONGVARCHAR}, #{sceneModelParam,jdbcType=LONGVARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.alibaba.tdata.aisp.server.repository.domain.SceneConfigDO">
     insert into aisp_scene_config
@@ -153,6 +156,9 @@
       </if>
       <if test="sceneName != null">
         scene_name,
+      </if>
+      <if test="detectorBinder != null">
+        detector_binder,
       </if>
       <if test="comment != null">
         comment,
@@ -179,6 +185,9 @@
       </if>
       <if test="sceneName != null">
         #{sceneName,jdbcType=VARCHAR},
+      </if>
+      <if test="detectorBinder != null">
+        #{detectorBinder,jdbcType=VARCHAR},
       </if>
       <if test="comment != null">
         #{comment,jdbcType=LONGVARCHAR},
@@ -215,6 +224,9 @@
       <if test="record.sceneName != null">
         scene_name = #{record.sceneName,jdbcType=VARCHAR},
       </if>
+      <if test="record.detectorBinder != null">
+        detector_binder = #{record.detectorBinder,jdbcType=VARCHAR},
+      </if>
       <if test="record.comment != null">
         comment = #{record.comment,jdbcType=LONGVARCHAR},
       </if>
@@ -234,6 +246,7 @@
       owners = #{record.owners,jdbcType=VARCHAR},
       product_name = #{record.productName,jdbcType=VARCHAR},
       scene_name = #{record.sceneName,jdbcType=VARCHAR},
+      detector_binder = #{record.detectorBinder,jdbcType=VARCHAR},
       comment = #{record.comment,jdbcType=LONGVARCHAR},
       scene_model_param = #{record.sceneModelParam,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
@@ -247,7 +260,8 @@
       gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
       owners = #{record.owners,jdbcType=VARCHAR},
       product_name = #{record.productName,jdbcType=VARCHAR},
-      scene_name = #{record.sceneName,jdbcType=VARCHAR}
+      scene_name = #{record.sceneName,jdbcType=VARCHAR},
+      detector_binder = #{record.detectorBinder,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -270,6 +284,9 @@
       <if test="sceneName != null">
         scene_name = #{sceneName,jdbcType=VARCHAR},
       </if>
+      <if test="detectorBinder != null">
+        detector_binder = #{detectorBinder,jdbcType=VARCHAR},
+      </if>
       <if test="comment != null">
         comment = #{comment,jdbcType=LONGVARCHAR},
       </if>
@@ -286,6 +303,7 @@
       owners = #{owners,jdbcType=VARCHAR},
       product_name = #{productName,jdbcType=VARCHAR},
       scene_name = #{sceneName,jdbcType=VARCHAR},
+      detector_binder = #{detectorBinder,jdbcType=VARCHAR},
       comment = #{comment,jdbcType=LONGVARCHAR},
       scene_model_param = #{sceneModelParam,jdbcType=LONGVARCHAR}
     where scene_code = #{sceneCode,jdbcType=VARCHAR}
@@ -296,7 +314,8 @@
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
       owners = #{owners,jdbcType=VARCHAR},
       product_name = #{productName,jdbcType=VARCHAR},
-      scene_name = #{sceneName,jdbcType=VARCHAR}
+      scene_name = #{sceneName,jdbcType=VARCHAR},
+      detector_binder = #{detectorBinder,jdbcType=VARCHAR}
     where scene_code = #{sceneCode,jdbcType=VARCHAR}
   </update>
   <select id="selectByExampleWithBLOBsWithRowbounds" parameterType="com.alibaba.tdata.aisp.server.repository.domain.SceneConfigDOExample" resultMap="ResultMapWithBLOBs">
@@ -331,14 +350,14 @@
   </select>
   <insert id="batchInsert" parameterType="map">
     insert into aisp_scene_config
-    (scene_code, gmt_create, gmt_modified, owners, product_name, scene_name, comment, 
-      scene_model_param)
+    (scene_code, gmt_create, gmt_modified, owners, product_name, scene_name, detector_binder, 
+      comment, scene_model_param)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.sceneCode,jdbcType=VARCHAR}, #{item.gmtCreate,jdbcType=TIMESTAMP}, #{item.gmtModified,jdbcType=TIMESTAMP}, 
         #{item.owners,jdbcType=VARCHAR}, #{item.productName,jdbcType=VARCHAR}, #{item.sceneName,jdbcType=VARCHAR}, 
-        #{item.comment,jdbcType=LONGVARCHAR}, #{item.sceneModelParam,jdbcType=LONGVARCHAR}
-        )
+        #{item.detectorBinder,jdbcType=VARCHAR}, #{item.comment,jdbcType=LONGVARCHAR}, 
+        #{item.sceneModelParam,jdbcType=LONGVARCHAR})
     </foreach>
   </insert>
   <insert id="batchInsertSelective" parameterType="map">
@@ -368,6 +387,9 @@
         </if>
         <if test="'scene_name'.toString() == column.value">
           #{item.sceneName,jdbcType=VARCHAR}
+        </if>
+        <if test="'detector_binder'.toString() == column.value">
+          #{item.detectorBinder,jdbcType=VARCHAR}
         </if>
         <if test="'comment'.toString() == column.value">
           #{item.comment,jdbcType=LONGVARCHAR}
@@ -400,6 +422,9 @@
       <if test="sceneName != null">
         scene_name,
       </if>
+      <if test="detectorBinder != null">
+        detector_binder,
+      </if>
       <if test="comment != null">
         comment,
       </if>
@@ -426,6 +451,9 @@
       </if>
       <if test="sceneName != null">
         #{sceneName,jdbcType=VARCHAR},
+      </if>
+      <if test="detectorBinder != null">
+        #{detectorBinder,jdbcType=VARCHAR},
       </if>
       <if test="comment != null">
         #{comment,jdbcType=LONGVARCHAR},
@@ -454,6 +482,9 @@
       <if test="sceneName != null">
         scene_name = #{sceneName,jdbcType=VARCHAR},
       </if>
+      <if test="detectorBinder != null">
+        detector_binder = #{detectorBinder,jdbcType=VARCHAR},
+      </if>
       <if test="comment != null">
         comment = #{comment,jdbcType=LONGVARCHAR},
       </if>
@@ -464,27 +495,12 @@
   </insert>
   <insert id="upsert" parameterType="com.alibaba.tdata.aisp.server.repository.domain.SceneConfigDO">
     insert into aisp_scene_config
-    (scene_code, gmt_create, gmt_modified, owners, product_name, scene_name)
-    values
-    (#{sceneCode,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
-      #{owners,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{sceneName,jdbcType=VARCHAR}
+    (scene_code, gmt_create, gmt_modified, owners, product_name, scene_name, detector_binder
       )
-    on duplicate key update 
-    scene_code = #{sceneCode,jdbcType=VARCHAR}, 
-    gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}, 
-    gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}, 
-    owners = #{owners,jdbcType=VARCHAR}, 
-    product_name = #{productName,jdbcType=VARCHAR}, 
-    scene_name = #{sceneName,jdbcType=VARCHAR}
-  </insert>
-  <insert id="upsertWithBLOBs" parameterType="com.alibaba.tdata.aisp.server.repository.domain.SceneConfigDO">
-    insert into aisp_scene_config
-    (scene_code, gmt_create, gmt_modified, owners, product_name, scene_name, comment, 
-      scene_model_param)
     values
     (#{sceneCode,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
       #{owners,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{sceneName,jdbcType=VARCHAR}, 
-      #{comment,jdbcType=LONGVARCHAR}, #{sceneModelParam,jdbcType=LONGVARCHAR})
+      #{detectorBinder,jdbcType=VARCHAR})
     on duplicate key update 
     scene_code = #{sceneCode,jdbcType=VARCHAR}, 
     gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}, 
@@ -492,6 +508,25 @@
     owners = #{owners,jdbcType=VARCHAR}, 
     product_name = #{productName,jdbcType=VARCHAR}, 
     scene_name = #{sceneName,jdbcType=VARCHAR}, 
+    detector_binder = #{detectorBinder,jdbcType=VARCHAR}
+  </insert>
+  <insert id="upsertWithBLOBs" parameterType="com.alibaba.tdata.aisp.server.repository.domain.SceneConfigDO">
+    insert into aisp_scene_config
+    (scene_code, gmt_create, gmt_modified, owners, product_name, scene_name, detector_binder, 
+      comment, scene_model_param)
+    values
+    (#{sceneCode,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
+      #{owners,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{sceneName,jdbcType=VARCHAR}, 
+      #{detectorBinder,jdbcType=VARCHAR}, #{comment,jdbcType=LONGVARCHAR}, #{sceneModelParam,jdbcType=LONGVARCHAR}
+      )
+    on duplicate key update 
+    scene_code = #{sceneCode,jdbcType=VARCHAR}, 
+    gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}, 
+    gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}, 
+    owners = #{owners,jdbcType=VARCHAR}, 
+    product_name = #{productName,jdbcType=VARCHAR}, 
+    scene_name = #{sceneName,jdbcType=VARCHAR}, 
+    detector_binder = #{detectorBinder,jdbcType=VARCHAR}, 
     comment = #{comment,jdbcType=LONGVARCHAR}, 
     scene_model_param = #{sceneModelParam,jdbcType=LONGVARCHAR}
   </insert>

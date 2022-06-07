@@ -4,41 +4,85 @@ SW_ROOT=$(cd `dirname $0`; pwd)
 
 set -e
 
-target_python27(){
+if [ -z ${SW_PYTHON3_IMAGE} ]
+then
+   export SW_PYTHON3_IMAGE="python:3.9.12-alpine"
+fi
 
-    [ -n "$TAG" ] && tag=$TAG || tag="latest"
+if [ -z ${APK_REPO_DOMAIN} ]
+then
+   export APK_REPO_DOMAIN="mirrors.tuna.tsinghua.edu.cn"
+fi
 
-    if [ -n "$BUILD" ]; then
-        echo "-- build sw-python27 --" >&2
-        docker build -t sw-python27:$tag --pull --no-cache -f $SW_ROOT/paas/python27/Dockerfile $SW_ROOT/paas/python27  
-        docker tag sw-python27:$tag sw-python27:latest
-    fi
-    if [ -n "$PUSH_REPO" ]; then
-        echo "-- push sw-python27 --" >&2
-        docker tag sw-python27:$tag $PUSH_REPO/sw-python27:$tag
-        docker push $PUSH_REPO/sw-python27:$tag
-    fi
-}
+if [ -z ${PYTHON_PIP} ]
+then
+   export PYTHON_PIP="http://mirrors.aliyun.com/pypi/simple"
+fi
+export PYTHON_PIP_DOMAIN=$(echo $PYTHON_PIP|awk -F '//' '{print $2}'|awk -F '/' '{print $1}')
 
-target_maven(){
-    [ -n "$TAG" ] && tag=$TAG || tag="latest"    
-    if [ -n "$BUILD" ]; then
-        echo "-- build sw-maven --" >&2
-        docker build -t sw-maven:$tag --pull --no-cache -f $SW_ROOT/paas/maven/Dockerfile $SW_ROOT/paas/maven
-        docker tag sw-maven:$tag sw-maven:latest
-    fi
-    if [ -n "$PUSH_REPO" ]; then
-        echo "-- push sw-maven --" >&2
-        docker tag sw-maven:$tag $PUSH_REPO/sw-maven:$tag
-        docker push $PUSH_REPO/sw-maven:$tag
-    fi
-}
+if [ -z ${MIGRATE_IMAGE} ]
+then
+   export MIGRATE_IMAGE="migrate/migrate"
+fi
+
+if [ -z ${MAVEN_IMAGE} ]
+then
+   export MAVEN_IMAGE="maven:3.8.3-adoptopenjdk-11"
+fi
+
+if [ -z ${HELM_BIN_URL} ]
+then
+   export HELM_BIN_URL="https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/helm"
+fi
+
+if [ -z ${KUSTOMIZE_BIN_URL} ]
+then
+   export KUSTOMIZE_BIN_URL="https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/kustomize"
+fi
+
+if [ -z ${MAVEN_SETTINGS_XML} ]
+then
+   export MAVEN_SETTINGS_XML="https://sreworks.oss-cn-beijing.aliyuncs.com/resource/settings.xml"
+fi
+
+if [ -z ${GOLANG_IMAGE} ]
+then
+   export GOLANG_IMAGE="golang:alpine"
+fi
+
+if [ -z ${GOPROXY} ]
+then
+   export GOPROXY="https://goproxy.cn"
+fi
+
+if [ -z ${GOLANG_BUILD_IMAGE} ]
+then
+   export GOLANG_BUILD_IMAGE="golang:1.16"
+fi
+
+if [ -z ${DISTROLESS_IMAGE} ]
+then
+   export DISTROLESS_IMAGE="sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/distroless-static:nonroot"
+fi
+
+if [ -z ${MINIO_CLIENT_URL} ]
+then
+   export MINIO_CLIENT_URL="https://sreworks.oss-cn-beijing.aliyuncs.com/bin/mc-linux-amd64"
+fi 
+
+if [ -z ${SREWORKS_BUILTIN_PACKAGE_URL} ]
+then
+   export SREWORKS_BUILTIN_PACKAGE_URL="https://sreworks.oss-cn-beijing.aliyuncs.com/packages"
+fi
+
 
 target_migrate(){
     [ -n "$TAG" ] && tag=$TAG || tag="latest"
     if [ -n "$BUILD" ]; then
         echo "-- build sw-migrate --" >&2
-        docker build -t sw-migrate:$tag --pull --no-cache -f $SW_ROOT/paas/migrate/Dockerfile $SW_ROOT/paas/migrate
+        TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
+        envsubst < $SW_ROOT/paas/migrate/Dockerfile.tpl > ${TMP_DOCKERFILE}
+        docker build -t sw-migrate:$tag --pull --no-cache -f ${TMP_DOCKERFILE} $SW_ROOT/paas/migrate
         docker tag sw-migrate:$tag sw-migrate:latest
     fi
     if [ -n "$PUSH_REPO" ]; then
@@ -66,7 +110,9 @@ target_postrun(){
     [ -n "$TAG" ] && tag=$TAG || tag="latest"
     if [ -n "$BUILD" ]; then
         echo "-- build sw-postrun --" >&2
-        docker build -t sw-postrun:$tag --pull --no-cache -f $SW_ROOT/paas/postrun/Dockerfile $SW_ROOT/paas/postrun
+        TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
+        envsubst < $SW_ROOT/paas/postrun/Dockerfile.tpl > ${TMP_DOCKERFILE}
+        docker build -t sw-postrun:$tag --pull --no-cache -f ${TMP_DOCKERFILE} $SW_ROOT/paas/postrun
         docker tag sw-postrun:$tag sw-postrun:latest
     fi
     if [ -n "$PUSH_REPO" ]; then
@@ -80,7 +126,9 @@ target_appmanager_server(){
     [ -n "$TAG" ] && tag=$TAG || tag="develop"
     if [ -n "$BUILD" ]; then
         echo "-- build appmanager server --" >&2
-        docker build -t sw-paas-appmanager:$tag -f $SW_ROOT/paas/appmanager/Dockerfile_sreworks $SW_ROOT/paas/appmanager
+        TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
+        envsubst < $SW_ROOT/paas/appmanager/Dockerfile_sreworks.tpl > ${TMP_DOCKERFILE}
+        docker build -t sw-paas-appmanager:$tag -f ${TMP_DOCKERFILE} $SW_ROOT/paas/appmanager
         docker tag sw-paas-appmanager:$tag sw-paas-appmanager:latest
     fi
     if [ -n "$PUSH_REPO" ]; then
@@ -108,7 +156,9 @@ target_appmanager_postrun(){
     [ -n "$TAG" ] && tag=$TAG || tag="latest"
     if [ -n "$BUILD" ]; then
         echo "-- build appmanager postrun --" >&2
-        docker build -t sw-paas-appmanager-postrun:$tag -f $SW_ROOT/paas/appmanager/Dockerfile_postrun_sreworks $SW_ROOT/paas/appmanager
+        TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
+        envsubst < $SW_ROOT/paas/appmanager/Dockerfile_postrun_sreworks.tpl > ${TMP_DOCKERFILE}
+        docker build -t sw-paas-appmanager-postrun:$tag -f ${TMP_DOCKERFILE} $SW_ROOT/paas/appmanager
         docker tag sw-paas-appmanager-postrun:$tag sw-paas-appmanager-postrun:latest
     fi
     if [ -n "$PUSH_REPO" ]; then
@@ -118,25 +168,13 @@ target_appmanager_postrun(){
     fi
 }
 
-target_minio_init(){
-    [ -n "$TAG" ] && tag=$TAG || tag="latest"
-    if [ -n "$BUILD" ]; then
-        echo "-- build minio init --" >&2
-        docker build -t sw-paas-minio-init:$tag -f $SW_ROOT/paas/minio/Dockerfile-init-job $SW_ROOT/paas/minio
-        docker tag sw-paas-minio-init:$tag sw-paas-minio-init:latest
-    fi
-    if [ -n "$PUSH_REPO" ]; then
-        echo "-- push minio init --" >&2
-        docker tag sw-paas-minio-init:$tag $PUSH_REPO/sw-paas-minio-init:$tag
-        docker push $PUSH_REPO/sw-paas-minio-init:$tag
-    fi
-}
-
 target_appmanager_cluster_init(){
     [ -n "$TAG" ] && tag=$TAG || tag="latest"
     if [ -n "$BUILD" ]; then
         echo "-- build appmanager cluster init --" >&2
-        docker build -t sw-paas-appmanager-cluster-init:$tag -f $SW_ROOT/paas/appmanager/Dockerfile_cluster_init $SW_ROOT/paas/appmanager
+        TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
+        envsubst < $SW_ROOT/paas/appmanager/Dockerfile_cluster_init.tpl > ${TMP_DOCKERFILE}
+        docker build -t sw-paas-appmanager-cluster-init:$tag -f ${TMP_DOCKERFILE} $SW_ROOT/paas/appmanager
         docker tag sw-paas-appmanager-cluster-init:$tag sw-paas-appmanager-cluster-init:latest
     fi
     if [ -n "$PUSH_REPO" ]; then
@@ -151,7 +189,9 @@ target_appmanager_kind_operator(){
     if [ -n "$BUILD" ]; then
         echo "-- build appmanager kind operator --" >&2
         cd $SW_ROOT/paas/appmanager-kind-operator
-        IMG=sw-paas-appmanager-operator:$tag make docker-build
+        TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
+        envsubst < $SW_ROOT/paas/appmanager-kind-operator/Dockerfile.tpl > ${TMP_DOCKERFILE}
+        IMG=sw-paas-appmanager-operator:$tag DOCKERFILE=${TMP_DOCKERFILE} GOPROXY=${GOPROXY} make docker-build
         docker tag sw-paas-appmanager-operator:$tag sw-paas-appmanager-operator:latest
     fi
     if [ -n "$PUSH_REPO" ]; then
@@ -165,7 +205,9 @@ target_swcli(){
     [ -n "$TAG" ] && tag=$TAG || tag="latest"    
     if [ -n "$BUILD" ]; then
         echo "-- build swcli --" >&2
-        docker build -t swcli:$tag -f $SW_ROOT/paas/swcli/Dockerfile_sreworks $SW_ROOT/paas/swcli
+        TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
+        envsubst < $SW_ROOT/paas/swcli/Dockerfile_sreworks.tpl > ${TMP_DOCKERFILE}
+        docker build -t swcli:$tag -f ${TMP_DOCKERFILE} $SW_ROOT/paas/swcli
         docker tag swcli:$tag swcli:latest
     fi
     if [ -n "$PUSH_REPO" ]; then
@@ -176,7 +218,7 @@ target_swcli(){
 }
 
 download_packages(){
-   PKG_URL="https://sreworks.oss-cn-beijing.aliyuncs.com/packages/${tag}"
+   PKG_URL="${SREWORKS_BUILTIN_PACKAGE_URL}/${tag}"
 
    mkdir -p $SW_ROOT/saas/desktop/ui/ && wget "${PKG_URL}/saas/desktop/ui/desktop-auto.zip" -O $SW_ROOT/saas/desktop/ui/desktop-auto.zip
    mkdir -p $SW_ROOT/saas/swadmin/ui/ && wget "${PKG_URL}/saas/swadmin/ui/swadmin-auto.zip" -O $SW_ROOT/saas/swadmin/ui/swadmin-auto.zip
@@ -220,7 +262,9 @@ target_swcli_builtin_package(){
         download_packages
         cp -r $SW_ROOT/saas $SW_ROOT/paas/swcli/builtin_package/saas
         cp -r $SW_ROOT/chart $SW_ROOT/paas/swcli/builtin_package/chart
-        docker build -t swcli-builtin-package:$tag -f $SW_ROOT/paas/swcli/Dockerfile_builtin_package $SW_ROOT/paas/swcli
+        TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
+        envsubst < $SW_ROOT/paas/swcli/Dockerfile_builtin_package.tpl > ${TMP_DOCKERFILE}
+        docker build -t swcli-builtin-package:$tag -f ${TMP_DOCKERFILE} $SW_ROOT/paas/swcli
         docker tag swcli-builtin-package:$tag swcli-builtin-package:latest
     fi
     if [ -n "$PUSH_REPO" ]; then
@@ -231,8 +275,6 @@ target_swcli_builtin_package(){
 
 
 target_base(){
-    target_python27
-    target_maven
     target_migrate
     target_openjdk8
     target_postrun

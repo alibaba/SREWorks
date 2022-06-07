@@ -4,7 +4,7 @@
     <parent>
         <artifactId>sreworks-base</artifactId>
         <groupId>io.sreworks</groupId>
-        <version>1.0.0</version>
+        <version>1.0.4</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -95,6 +95,12 @@
             <groupId>io.sreworks</groupId>
             <artifactId>appmanager-auth-client</artifactId>
             <version>1.0.4</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-slf4j-impl</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

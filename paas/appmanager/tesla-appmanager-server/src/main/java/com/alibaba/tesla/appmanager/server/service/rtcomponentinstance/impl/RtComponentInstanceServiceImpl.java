@@ -80,10 +80,11 @@ public class RtComponentInstanceServiceImpl implements RtComponentInstanceServic
     /**
      * 上报 Component 实例状态
      *
-     * @param request 上报数据请求
+     * @param request     上报数据请求
+     * @param ignoreError 是否忽略错误 true or false，错误时抛出 AppException
      */
     @Override
-    public void report(ReportRtComponentInstanceStatusReq request) {
+    public void report(ReportRtComponentInstanceStatusReq request, boolean ignoreError) {
         String componentInstanceId = request.getComponentInstanceId();
         RtComponentInstanceQueryCondition condition = RtComponentInstanceQueryCondition.builder()
                 .componentInstanceId(componentInstanceId)
@@ -105,12 +106,18 @@ public class RtComponentInstanceServiceImpl implements RtComponentInstanceServic
                 .stageId(request.getStageId())
                 .build());
         if (appInstance == null) {
-            log.warn("action=componentInstanceStatusReport|cannot find app instance by component instance query " +
-                            "condition|appInstanceId={}|componentInstanceId={}|appId={}|clusterId={}|namespaceId={}|" +
-                            "componentName={}|status={}", appInstanceId, componentInstanceId,
+            String errorMessage = String.format("action=componentInstanceStatusReport|cannot find app instance by " +
+                            "component instance query condition|appInstanceId=%s|componentInstanceId=%s|appId=%s|" +
+                            "clusterId=%s|namespaceId=%s|componentName=%s|status=%s",
+                    appInstanceId, componentInstanceId,
                     request.getAppId(), request.getClusterId(), request.getNamespaceId(), request.getComponentName(),
                     request.getStatus());
-            return;
+            if (ignoreError) {
+                log.warn(errorMessage);
+                return;
+            } else {
+                throw new AppException(AppErrorCode.UNKNOWN_ERROR, errorMessage);
+            }
         }
 
         // 获取 component type 对象实例
@@ -131,7 +138,13 @@ public class RtComponentInstanceServiceImpl implements RtComponentInstanceServic
             record.setConditions(JSONObject.toJSONString(request.getConditions()));
             int updated = repository.updateByCondition(record, condition);
             if (updated == 0) {
-                log.debug("report request has ignored because of lock version|condition={}", conditionStr);
+                if (ignoreError) {
+                    log.debug("report request has ignored because of lock version|condition={}", conditionStr);
+                } else {
+                    throw new AppException(AppErrorCode.LOCKER_VERSION_EXPIRED,
+                            String.format("report request has ignored because of lock version|condition=%s",
+                                    conditionStr));
+                }
             } else {
                 log.debug("report request has processed|condition={}", conditionStr);
             }
@@ -154,7 +167,13 @@ public class RtComponentInstanceServiceImpl implements RtComponentInstanceServic
             try {
                 repository.insert(record);
             } catch (Exception e) {
-                log.info("report request has ignored because of race condition|condition={}", conditionStr);
+                if (ignoreError) {
+                    log.info("report request has ignored because of race condition|condition={}", conditionStr);
+                } else {
+                    throw new AppException(AppErrorCode.LOCKER_VERSION_EXPIRED,
+                            String.format("report request has ignored becuase of race condition|condition=%s",
+                                    conditionStr));
+                }
             }
         }
         log.info("action=componentInstanceStatusReport|component instance status has reported|appInstanceId={}|" +
@@ -164,6 +183,16 @@ public class RtComponentInstanceServiceImpl implements RtComponentInstanceServic
 
         // 触发 app instance 层面的状态更新
         rtAppInstanceService.asyncTriggerStatusUpdate(appInstanceId);
+    }
+
+    /**
+     * 上报 Component 实例状态 (忽略错误)
+     *
+     * @param request 上报数据请求
+     */
+    @Override
+    public void report(ReportRtComponentInstanceStatusReq request) {
+        report(request, true);
     }
 
     /**
@@ -193,8 +222,8 @@ public class RtComponentInstanceServiceImpl implements RtComponentInstanceServic
     /**
      * 查询当前的组件实例，如果存在则返回，否则返回 null
      *
-     * @param condition  查询条件 (appId/componentType/componentName/clusterId/namespaceId/stageId 必选,
-     *                   clusterId/namespaceId/stage 可为空)
+     * @param condition 查询条件 (appId/componentType/componentName/clusterId/namespaceId/stageId 必选,
+     *                  clusterId/namespaceId/stage 可为空)
      * @return 实时组件实例 DO 对象 or null
      */
     @Override

@@ -66,7 +66,8 @@ public class AnalyseTaskController {
     @ApiOperation("查询任务结果")
     @GetMapping(value = "queryTaskResult")
     @ResponseBody
-    public JSONObject queryTaskResult(@RequestParam(name = "taskUUID") String taskUUID){
-        return taskService.queryTaskRes(taskUUID);
+    public JSONObject queryTaskResult(@RequestParam(name = "taskUUID") String taskUUID,
+        @RequestParam(name = "empId", required = false) String empId){
+        return taskService.queryTaskRes(taskUUID, empId);
     }
 }

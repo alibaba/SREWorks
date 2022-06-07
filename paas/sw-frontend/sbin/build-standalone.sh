@@ -8,7 +8,8 @@ sh /app/docs/build.sh
 
 # 编译打包 (包含当前版本)
 cd /app
-yarn install --registry=https://registry.npmmirror.com
+#yarn install --registry=https://registry.npmmirror.com
+yarn install --registry=${NPM_REGISTRY_URL}
 npm run build -e production production
 cd /app/build
 mv /app/docs/pictures /app/docs/_book/pictures

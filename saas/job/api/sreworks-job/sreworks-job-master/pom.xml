@@ -22,7 +22,7 @@
         </dependency>
         <!-- alibaba dependency -->
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
+            <groupId>io.sreworks</groupId>
             <artifactId>tesla-swagger-spring-boot-starter</artifactId>
         </dependency>
 
@@ -55,7 +55,7 @@
         </dependency>
         <!-- tesla -->
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
+            <groupId>io.sreworks</groupId>
             <artifactId>tesla-webmvc-spring-boot-starter</artifactId>
         </dependency>
         <!-- db -->
@@ -115,9 +115,9 @@
             <version>4.4</version>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
-            <artifactId>tesla-task-flow-service</artifactId>
-            <version>1.0.9-SNAPSHOT</version>
+            <groupId>io.sreworks</groupId>
+            <artifactId>task-flow-service</artifactId>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>

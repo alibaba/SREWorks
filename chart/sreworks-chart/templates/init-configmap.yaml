@@ -16,6 +16,9 @@ data:
   MIGRATE_IMAGE: {{ template "migrate.image" . }}
   POSTRUN_IMAGE: {{ template "postrun.image" . }}
   NPM_REGISTRY_URL: {{ .Values.global.artifacts.npmRegistryUrl }}
+  JRE11_ALPINE_IMAGE: {{ .Values.global.artifacts.openjdk11AlpineImage }}
+  PYTHON_PIP: {{ .Values.global.artifacts.pythonPip }}
+  PYTHON_PIP_DOMAIN: {{ template "python.pip.domain" . }}
 
   SOURCE_BRANCH: {{ .Values.source.branch | default "master" | quote }}
   SOURCE_REPO: {{ .Values.source.repo }}

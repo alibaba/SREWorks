@@ -57,4 +57,8 @@
 {{- end -}}
 {{- end -}}
 
+{{- define "python.pip.domain" -}}
+{{- (split "/" ((split "://" .Values.global.artifacts.pythonPip)._1))._0 | quote -}}
+{{- end -}}
+
 

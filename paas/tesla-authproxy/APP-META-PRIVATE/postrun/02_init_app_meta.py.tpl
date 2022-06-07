@@ -68,7 +68,7 @@ def import_apps(config):
     for app in config.get('apps', []):
         request = copy.deepcopy(app)
         app_md5 = hashlib.md5()
-        app_md5.update(request['appId'])
+        app_md5.update(request['appId'].encode('utf-8'))
         request['appAccessKey'] = request['appId'] + '-' + app_md5.hexdigest()
         response = requests.post(os.path.join(AUTHPROXY_ENDPOINT, 'auth/app/register'), headers={
             'X-Auth-App': AUTH_APP,

@@ -106,7 +106,7 @@ daemonset:
             templates:
               - condition:
                   equals:
-                    kubernetes.labels.sreworks-telemetry: metric
+                    kubernetes.labels.sreworks-telemetry-metric: enable
                 config:
                   - module: http
                     metricsets:

@@ -18,13 +18,13 @@
         <!-- self project -->
         <dependency>
             <artifactId>sreworks-domain</artifactId>
-            <groupId>com.alibaba.sreworks</groupId>
-            <version>1.0.0-SNAPSHOT</version>
+            <groupId>io.sreworks</groupId>
+            <version>1.0.3</version>
         </dependency>
         <dependency>
             <artifactId>sreworks-flyadmin-server</artifactId>
-            <groupId>com.alibaba.sreworks</groupId>
-            <version>1.0.0-SNAPSHOT</version>
+            <groupId>io.sreworks</groupId>
+            <version>1.0.3</version>
         </dependency>
         <!-- alibaba dependency -->
         <dependency>
@@ -32,7 +32,7 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
+            <groupId>io.sreworks</groupId>
             <artifactId>tesla-swagger-spring-boot-starter</artifactId>
         </dependency>
 
@@ -65,7 +65,7 @@
         </dependency>
         <!-- tesla -->
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
+            <groupId>io.sreworks</groupId>
             <artifactId>tesla-webmvc-spring-boot-starter</artifactId>
         </dependency>
         <dependency>

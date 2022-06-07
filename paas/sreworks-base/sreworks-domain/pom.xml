@@ -6,7 +6,7 @@
     <parent>
         <artifactId>sreworks-base</artifactId>
         <groupId>io.sreworks</groupId>
-        <version>1.0.3</version>
+        <version>1.0.4</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -50,7 +50,7 @@
         <dependency>
             <artifactId>sreworks-common</artifactId>
             <groupId>io.sreworks</groupId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
         </dependency>
     </dependencies>
 </project>

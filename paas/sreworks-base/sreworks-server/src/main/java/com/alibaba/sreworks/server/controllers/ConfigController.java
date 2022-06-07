@@ -101,6 +101,12 @@ public class ConfigController extends BaseController {
         return buildSucceedResult(configService.get(name));
     }
 
+    @ApiOperation(value = "del")
+    @RequestMapping(value = "del", method = RequestMethod.DELETE)
+    public TeslaBaseResult del(String name) {
+        return buildSucceedResult(configService.del(name));
+    }
+
     @ApiOperation(value = "setObject")
     @RequestMapping(value = "setObject", method = RequestMethod.POST)
     public TeslaBaseResult setObject(String name, @RequestBody JSONObject content) {

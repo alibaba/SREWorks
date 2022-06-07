@@ -5,7 +5,7 @@
     <groupId>io.sreworks</groupId>
     <artifactId>sreworks-base</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <name>sreworks-base</name>
     <description>springboot project</description>
     <properties>

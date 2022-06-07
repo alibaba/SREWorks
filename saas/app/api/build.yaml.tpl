@@ -14,7 +14,7 @@ options:
           JRE11_IMAGE: ${JRE11_IMAGE}
           MAVEN_IMAGE: ${MAVEN_IMAGE}
           MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
-        dockerfileTemplate: Dockerfile
+        dockerfileTemplate: Dockerfile.tpl
         repoPath: saas/app/api/app
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}

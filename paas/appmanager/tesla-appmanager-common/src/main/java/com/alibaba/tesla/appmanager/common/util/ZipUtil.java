@@ -37,7 +37,7 @@ public class ZipUtil {
     }
 
     /**
-     * 将某个目录打包到指定路径的 zip 文件上
+     * 将某批文件打包到指定路径的 zip 文件上
      * @param zipPath zip 文件绝对路径
      * @param files 文件列表
      */

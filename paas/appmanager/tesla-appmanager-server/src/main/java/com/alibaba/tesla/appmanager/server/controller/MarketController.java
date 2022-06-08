@@ -51,7 +51,7 @@ public class MarketController extends AppManagerBaseController {
     }
 
     @PostMapping(value = "/check")
-    public TeslaBaseResult endpointCheck(@RequestBody MarketCheckReq request) throws IOException {
+    public TeslaBaseResult endpointCheck(@RequestBody MarketCheckReq request, OAuth2Authentication auth) throws IOException {
         JSONObject result = new JSONObject();
         result.put("write", false);
         result.put("read", false);
@@ -62,9 +62,9 @@ public class MarketController extends AppManagerBaseController {
              */
             OssStorage client = new OssStorage(request.getEndpoint(), request.getAccessKey(), request.getSecretKey());
             Path tempFile = Files.createTempFile("sw", ".txt");
-            client.putObject(request.getRemoteBucket(), request.getRemotePackagePath(), tempFile.toAbsolutePath().toString());
-
             String remoteFilePath = request.getRemotePackagePath() + "/" + tempFile.getFileName().toString();
+            client.putObject(request.getRemoteBucket(), remoteFilePath, tempFile.toAbsolutePath().toString());
+
             result.put("write", client.objectExists(request.getRemoteBucket(), remoteFilePath));
             log.info("action=check|message=check oss write|endpoint={}|bucket={}|writePath={}",
                     request.getEndpoint(), request.getRemoteBucket(), request.getRemotePackagePath());

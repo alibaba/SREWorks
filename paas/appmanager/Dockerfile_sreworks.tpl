@@ -6,6 +6,7 @@ RUN mvn -Dmaven.test.skip=true clean package -U
 
 # Release
 FROM ${MAVEN_IMAGE} AS release
+COPY ./sbin /app/sbin
 USER root
 WORKDIR /root
 # Copy Jars

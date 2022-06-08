@@ -1,4 +1,0 @@
-FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-postrun
-
-COPY ./APP-META-PRIVATE/postrun /app/postrun
-RUN apk update 

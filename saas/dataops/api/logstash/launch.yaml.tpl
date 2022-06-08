@@ -56,7 +56,7 @@ spec:
                 index => "metricbeat"
                 query => '{"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"now-1m/m","lt":"now/m"}}},{"query_string":{"query":"kubernetes.labels.sreworks-telemetry-metric:enable AND metricset.name:json"}},{"exists":{"field":"http"}}]}},"sort":["service.address"]}'
                 schedule => "* * * * *"
-                scroll => "1m"
+                scroll => "5m"
                 size => 10000
               }
             }

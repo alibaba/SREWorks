@@ -17,6 +17,8 @@ const getClientEnvironment = require('./env');
 const cdnPath = require('./cdnPath');
 const ThemeVariables = require('./generateTheme');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+const smp = new SpeedMeasurePlugin();
 const HappyPack = require('happypack'),
     os = require('os');
 const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
@@ -60,7 +62,7 @@ const extractTextPluginOptions = shouldUseRelativeAssetPaths
 // This is the production configuration.
 // It compiles slowly and is focused on producing a fast and minimal bundle.
 // The development configuration is different and lives in a separate file.
-module.exports = {
+module.exports = smp.wrap({
     // Don't attempt to continue if there are any errors.
     bail: true,
     // We generate sourcemaps in production. This is slow but gives good results.
@@ -485,4 +487,4 @@ module.exports = {
         child_process: 'empty',
         __dirname: true
     },
-};
+});

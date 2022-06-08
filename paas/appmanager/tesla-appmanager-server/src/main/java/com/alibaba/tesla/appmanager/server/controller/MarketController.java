@@ -51,7 +51,7 @@ public class MarketController extends AppManagerBaseController {
     }
 
     @PostMapping(value = "/check")
-    public TeslaBaseResult endpointCheck(MarketCheckReq request) throws IOException {
+    public TeslaBaseResult endpointCheck(@RequestBody MarketCheckReq request) throws IOException {
         JSONObject result = new JSONObject();
         result.put("write", false);
         result.put("read", false);
@@ -66,6 +66,8 @@ public class MarketController extends AppManagerBaseController {
 
             String remoteFilePath = request.getRemotePackagePath() + "/" + tempFile.getFileName().toString();
             result.put("write", client.objectExists(request.getRemoteBucket(), remoteFilePath));
+            log.info("action=check|message=check oss write|endpoint={}|bucket={}|writePath={}",
+                    request.getEndpoint(), request.getRemoteBucket(), request.getRemotePackagePath());
         }
         /**
          *  测试读取

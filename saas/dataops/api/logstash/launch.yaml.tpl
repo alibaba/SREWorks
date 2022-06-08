@@ -42,19 +42,22 @@ spec:
         logstashPipeline:
           logstash.conf: |
             input {
-              beats {
-                port => 5044
+              elasticsearch {
+                hosts => "${DATA_ES_HOST}:${DATA_ES_PORT}"
+                user => "${DATA_ES_USER}"
+                password => "${DATA_ES_PASSWORD}"
+                index => "metricbeat"
+                query => '{"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"now-1m/m","lt":"now/m"}}},{"query_string":{"query":"kubernetes.labels.sreworks-telemetry-metric:enable AND metricset.name:json"}},{"exists":{"field":"http"}}]}},"sort":["service.address"]}'
+                schedule => "* * * * *"
+                scroll => "30m"
+                size => 10000
               }
             }
             output {
               kafka {
                 bootstrap_servers => "sreworks-kafka.sreworks.svc.cluster.local:9092"
                 codec => json
-                topic_id => "%{[@metadata][beat]}-%{[@metadata][version]}"
-              }
-              elasticsearch {
-                hosts => ["${ELASTICSEARCH_HOSTS:{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-elasticsearch-master.{{ Global.NAMESPACE_ID }}.svc.cluster.local:9200}"]
-                index => "%{[@metadata][beat]}-%{[@metadata][version]}" 
+                topic_id => "sreworks-telemetry-metric"
               }
             }
 

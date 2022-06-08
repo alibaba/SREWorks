@@ -100,8 +100,9 @@ daemonset:
       metricbeat.autodiscover:
         providers:
           - type: kubernetes
-            scope: cluster
+            scope: node
             node: ${NODE_NAME}
+            include_labels: ["sreworks-telemetry-metric"]
             resource: service
             templates:
               - condition:
@@ -116,6 +117,18 @@ daemonset:
                     namespace: "${data.kubernetes.namespace}#${data.kubernetes.service.name}"
                     path: "/"
                     method: "GET"
+
+          - type: kubernetes
+            include_labels: ["sreworks-prometheus-scrape-metric"]
+            templates:
+              - condition:
+                  - equals:
+                      kubernetes.labels.sreworks-prometheus-scrape-metric: enable
+                config:
+                  - module: prometheus
+                    period: 1m
+                    metricsets: ["collector"]
+                    hosts: "${data.host}:${data.port}"
 
           - type: kubernetes
             scope: cluster

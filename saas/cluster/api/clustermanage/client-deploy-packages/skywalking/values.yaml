@@ -4,6 +4,9 @@ oap:
     tag: 8.5.0-es7
   storageType: elasticsearch7
 
+elasticsearchUser: elastic
+elasticsearchPassword: elastic
+
 elasticsearch:
   enabled: false
   config:

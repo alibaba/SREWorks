@@ -13,6 +13,8 @@ options:
         dockerfileTemplateArgs:
           MAVEN_IMAGE: ${MAVEN_IMAGE}
           JRE8_IMAGE: ${JRE8_IMAGE}
+          APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
         dockerfileTemplate: Dockerfile.tpl
         repoPath: paas/tesla-authproxy
         branch: ${SOURCE_BRANCH}
@@ -297,13 +299,11 @@ options:
       build:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        args:
-          TAG: master
-          OSSUTIL_URL: http://gosspublic.alicdn.com/ossutil/1.6.10/ossutil64
         dockerfileTemplateArgs:
-          ALPINE_IMAGE: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/alpine:latest
-          NODE_IMAGE: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/node:10-alpine
-        #dockerfileTemplate: Dockerfile.tpl
+          ALPINE_IMAGE: ${ALPINE_IMAGE}
+          NODE_IMAGE: ${NODE_IMAGE}
+          APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
+          NPM_REGISTRY_URL: ${NPM_REGISTRY_URL}
         dockerfileTemplate: Dockerfile_standalone.tpl
         repoPath: paas/sw-frontend
         branch: ${SOURCE_BRANCH}
@@ -393,6 +393,7 @@ options:
         dockerfileTemplateArgs:
           MAVEN_IMAGE: ${MAVEN_IMAGE}
           JRE8_IMAGE: ${JRE8_IMAGE}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
         dockerfileTemplate: Dockerfile_paas.tpl
         repoPath: paas/tesla-gateway
         branch: ${SOURCE_BRANCH}
@@ -455,7 +456,7 @@ options:
       ciToken: ${SOURCE_CI_TOKEN}
       repoPath: paas/tesla-gateway
       dockerfileTemplateArgs:
-        PYTHON2_IMAGE: ${PYTHON2_IMAGE}
+        POSTRUN_IMAGE: ${POSTRUN_IMAGE}
     name: route-config
 
 
@@ -475,6 +476,8 @@ options:
         dockerfileTemplateArgs:
           MAVEN_IMAGE: ${MAVEN_IMAGE}
           JRE8_IMAGE: ${JRE8_IMAGE}
+          APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML} 
         dockerfileTemplate: Dockerfile.tpl
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}
@@ -524,6 +527,7 @@ options:
         dockerfileTemplateArgs:
           MAVEN_IMAGE: ${MAVEN_IMAGE}
           JRE8_IMAGE: ${JRE8_IMAGE}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
         dockerfileTemplate: Dockerfile.tpl
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}

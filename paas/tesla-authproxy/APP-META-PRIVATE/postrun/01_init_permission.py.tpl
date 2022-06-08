@@ -28,11 +28,11 @@ def _get_passwd_hash(user_name, user_passwd):
     """
     key = "%(user_name)s%(local_time)s%(passwd)s" % {
         'user_name': user_name,
-        'local_time': time.strftime(b'%Y%m%d', time.localtime(time.time())),
+        'local_time': time.strftime('%Y%m%d', time.localtime(time.time())),
         'passwd': user_passwd
     }
     m = hashlib.md5()
-    m.update(key)
+    m.update(key.encode('utf-8'))
     return m.hexdigest()
 
 CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))

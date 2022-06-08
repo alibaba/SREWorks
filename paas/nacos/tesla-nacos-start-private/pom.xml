@@ -60,7 +60,7 @@
       <artifactId>spring-boot-starter</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.alibaba.tesla</groupId>
+      <groupId>io.sreworks</groupId>
       <artifactId>tesla-webmvc-spring-boot-starter</artifactId>
     </dependency>
     <!-- prometheus meter-->

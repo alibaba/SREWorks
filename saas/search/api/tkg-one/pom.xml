@@ -18,6 +18,7 @@
         <maven-antrun.version>1.8</maven-antrun.version>
 
         <!-- spring -->
+        <spring-boot.version>1.5.14.RELEASE</spring-boot.version>
         <spring.boot.dependencies.version>2.3.9.RELEASE</spring.boot.dependencies.version>
         <spring.cloud.dependencies.version>Hoxton.SR10</spring.cloud.dependencies.version>
 
@@ -31,8 +32,8 @@
         <spring.cloud.alibaba.version>2.1.2.RELEASE</spring.cloud.alibaba.version>
 
         <!-- tesla -->
-        <tesla-spring-boot-starter.version>2.1.6-SNAPSHOT</tesla-spring-boot-starter.version>
-        <tesla-common.version>2.1.0-SNAPSHOT</tesla-common.version>
+        <tesla-spring-boot-starter.version>2.1.9</tesla-spring-boot-starter.version>
+        <tesla-common.version>2.1.0</tesla-common.version>
 
         <!-- other -->
         <plexus-archiver.version>2.2</plexus-archiver.version>
@@ -129,30 +130,30 @@
 
             <!-- tesla -->
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-webmvc-spring-boot-starter</artifactId>
                 <version>${tesla-spring-boot-starter.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-swagger-spring-boot-starter</artifactId>
                 <version>${tesla-spring-boot-starter.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-mybatis-spring-boot-starter</artifactId>
                 <version>${tesla-spring-boot-starter.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-common-base</artifactId>
                 <version>${tesla-common.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-common-utils</artifactId>
                 <version>${tesla-common.version}</version>
             </dependency>
@@ -307,6 +308,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>3.2.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

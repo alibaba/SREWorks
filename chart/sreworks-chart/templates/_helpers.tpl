@@ -41,4 +41,24 @@
 {{- end -}}
 {{- end -}}
 
+{{- define "migrate.image" -}}
+{{- if eq .Values.global.artifacts.migrateImage "sw-migrate" -}}
+{{ .Values.global.images.registry }}/sw-migrate:{{ .Values.global.images.tag }}
+{{- else -}}
+{{ .Values.global.artifacts.migrateImage }}
+{{- end -}}
+{{- end -}}
+
+{{- define "postrun.image" -}}
+{{- if eq .Values.global.artifacts.postrunImage "sw-postrun" -}}
+{{ .Values.global.images.registry }}/sw-postrun:{{ .Values.global.images.tag }}
+{{- else -}}
+{{ .Values.global.artifacts.postrunImage }}
+{{- end -}}
+{{- end -}}
+
+{{- define "python.pip.domain" -}}
+{{- (split "/" ((split "://" .Values.global.artifacts.pythonPip)._1))._0 | quote -}}
+{{- end -}}
+
 

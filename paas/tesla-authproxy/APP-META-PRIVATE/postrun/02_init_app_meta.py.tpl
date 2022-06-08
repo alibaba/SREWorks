@@ -31,11 +31,11 @@ def _get_passwd_hash(user_name, user_passwd):
     """
     key = "%(user_name)s%(local_time)s%(passwd)s" % {
         'user_name': user_name,
-        'local_time': time.strftime(b'%Y%m%d', time.localtime(time.time())),
+        'local_time': time.strftime('%Y%m%d', time.localtime(time.time())),
         'passwd': user_passwd
     }
     m = hashlib.md5()
-    m.update(key)
+    m.update(key.encode('utf-8'))
     return m.hexdigest()
 
 
@@ -68,7 +68,7 @@ def import_apps(config):
     for app in config.get('apps', []):
         request = copy.deepcopy(app)
         app_md5 = hashlib.md5()
-        app_md5.update(request['appId'])
+        app_md5.update(request['appId'].encode('utf-8'))
         request['appAccessKey'] = request['appId'] + '-' + app_md5.hexdigest()
         response = requests.post(os.path.join(AUTHPROXY_ENDPOINT, 'auth/app/register'), headers={
             'X-Auth-App': AUTH_APP,

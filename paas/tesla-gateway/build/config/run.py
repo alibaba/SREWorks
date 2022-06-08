@@ -65,7 +65,7 @@ def get_passwd_hash(user_name, user_passwd):
         'local_time': time.strftime('%Y%m%d', time.localtime(time.time())),
         'passwd': user_passwd }
     m = hashlib.md5()
-    m.update(key)
+    m.update(key.encode('utf-8'))
     return m.hexdigest()
 
 def gen_auth_headers():

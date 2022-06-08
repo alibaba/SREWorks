@@ -14,9 +14,9 @@ COPY --from=build /app/tesla-appmanager-start-standalone/target/tesla-appmanager
 # Copy Resources
 COPY --from=build /app/tesla-appmanager-start-standalone/target/tesla-appmanager/BOOT-INF/classes/dynamicscripts /app/dynamicscripts
 COPY --from=build /app/tesla-appmanager-start-standalone/target/tesla-appmanager/BOOT-INF/classes/jinja /app/jinja
-RUN wget -O /app/helm "${HELM_BIN_URL}" \
+RUN curl -o /app/helm "${HELM_BIN_URL}" \
     && chmod +x /app/helm \
-    && wget -O /app/kustomize "${KUSTOMIZE_BIN_URL}"  \
+    && curl -o /app/kustomize "${KUSTOMIZE_BIN_URL}"  \
     && chmod +x /app/kustomize
 
 WORKDIR /app

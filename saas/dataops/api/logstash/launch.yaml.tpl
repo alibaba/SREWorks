@@ -39,6 +39,13 @@ spec:
     - name: "values"
       value:
         image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/logstash"
+        logstashConfig:
+          logstash.yml: |
+            http.host: 0.0.0.0
+            xpack.monitoring.enabled: true
+            xpack.monitoring.elasticsearch.username: '${DATA_ES_USER}'
+            xpack.monitoring.elasticsearch.password: '${DATA_ES_PASSWORD}'
+            xpack.monitoring.elasticsearch.hosts: ["${DATA_ES_HOST}:${DATA_ES_PORT}"]
         logstashPipeline:
           logstash.conf: |
             input {
@@ -49,7 +56,7 @@ spec:
                 index => "metricbeat"
                 query => '{"query":{"bool":{"must":[{"range":{"@timestamp":{"gte":"now-1m/m","lt":"now/m"}}},{"query_string":{"query":"kubernetes.labels.sreworks-telemetry-metric:enable AND metricset.name:json"}},{"exists":{"field":"http"}}]}},"sort":["service.address"]}'
                 schedule => "* * * * *"
-                scroll => "30m"
+                scroll => "1m"
                 size => 10000
               }
             }

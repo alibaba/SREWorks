@@ -8,6 +8,7 @@ import com.alibaba.tesla.appmanager.common.util.*;
 import com.alibaba.tesla.appmanager.domain.dto.AppPackageDTO;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.AppPackageQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.market.MarketAppListReq;
+import com.alibaba.tesla.appmanager.domain.req.market.MarketCheckReq;
 import com.alibaba.tesla.appmanager.domain.req.market.MarketPublishReq;
 import com.alibaba.tesla.appmanager.domain.res.apppackage.AppPackageUrlRes;
 import com.alibaba.tesla.appmanager.domain.schema.AppPackageSchema;
@@ -47,6 +48,29 @@ public class MarketController extends AppManagerBaseController {
     @GetMapping(value = "/apps")
     public TeslaBaseResult listApp(MarketAppListReq request) {
         return buildSucceedResult(marketProvider.list(request));
+    }
+
+    @PostMapping(value = "/check")
+    public TeslaBaseResult endpointCheck(MarketCheckReq request) throws IOException {
+        JSONObject result = new JSONObject();
+        result.put("write", false);
+        result.put("read", false);
+        result.put("hasInit", false);
+        if(StringUtils.isNotBlank(request.getAccessKey())){
+            /**
+             *  测试写入
+             */
+            OssStorage client = new OssStorage(request.getEndpoint(), request.getAccessKey(), request.getSecretKey());
+            Path tempFile = Files.createTempFile("sw", ".txt");
+            client.putObject(request.getRemoteBucket(), request.getRemotePackagePath(), tempFile.toAbsolutePath().toString());
+
+            String remoteFilePath = request.getRemotePackagePath() + "/" + tempFile.getFileName().toString();
+            result.put("write", client.objectExists(request.getRemoteBucket(), remoteFilePath));
+        }
+        /**
+         *  测试读取
+         */
+        return buildSucceedResult(result);
     }
 
 

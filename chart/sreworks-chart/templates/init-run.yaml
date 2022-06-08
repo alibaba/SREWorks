@@ -399,9 +399,9 @@ data:
     envsubst < /root/saas/dataops/api/ververica-platform/launch.yaml.tpl > tmp-launch.yaml
     split
 
-    #envsubst < /root/saas/dataops/api/logstash/build.yaml.tpl > tmp-build.yaml
-    #envsubst < /root/saas/dataops/api/logstash/launch.yaml.tpl > tmp-launch.yaml
-    #split
+    envsubst < /root/saas/dataops/api/logstash/build.yaml.tpl > tmp-build.yaml
+    envsubst < /root/saas/dataops/api/logstash/launch.yaml.tpl > tmp-launch.yaml
+    split
 
     envsubst < /root/saas/dataops/api/build.yaml.tpl > tmp-build.yaml
     envsubst < /root/saas/dataops/api/launch.yaml.tpl > tmp-launch.yaml

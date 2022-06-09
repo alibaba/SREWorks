@@ -8,6 +8,7 @@ import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.OSSObjectSummary;
 import com.aliyun.oss.model.ObjectListing;
+import com.aliyun.oss.model.CannedAccessControlList;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -85,6 +86,8 @@ public class OssStorage extends BaseStorage implements Storage {
         }
     }
 
+
+
     /**
      * 上传本地文件到远端存储
      *
@@ -103,6 +106,15 @@ public class OssStorage extends BaseStorage implements Storage {
         log.info("action=storage.putObject|type=localFile|bucketName={}|remotePath={}|localPath={}",
                 bucketName, remotePath, localPath);
     }
+
+    /**
+     * 设置文件的权限为公共读
+     */
+    @Override
+    public void setObjectAclPublic(String bucketName, String remotePath){
+        ossClient.setObjectAcl(bucketName, remotePath, CannedAccessControlList.PublicRead);
+    }
+
 
     /**
      * 上传 Stream 到远端存储

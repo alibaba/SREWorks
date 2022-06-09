@@ -79,4 +79,9 @@ public interface Storage {
      * @return URL 地址
      */
     String getObjectUrl(String bucketName, String remotePath, Integer expiration);
+
+    /**
+     * 设置文件的权限为公共读
+     */
+    void setObjectAclPublic(String bucketName, String remotePath);
 }

@@ -1,17 +1,16 @@
 package com.alibaba.tesla.appmanager.server.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.AppPackageProvider;
 import com.alibaba.tesla.appmanager.api.provider.MarketProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
-import com.alibaba.tesla.appmanager.common.util.*;
+import com.alibaba.tesla.appmanager.common.util.NetworkUtil;
 import com.alibaba.tesla.appmanager.domain.dto.AppPackageDTO;
+import com.alibaba.tesla.appmanager.domain.dto.MarketEndpointDTO;
+import com.alibaba.tesla.appmanager.domain.dto.MarketPackageDTO;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.AppPackageQueryReq;
-import com.alibaba.tesla.appmanager.domain.req.market.MarketAppListReq;
-import com.alibaba.tesla.appmanager.domain.req.market.MarketCheckReq;
-import com.alibaba.tesla.appmanager.domain.req.market.MarketPublishReq;
-import com.alibaba.tesla.appmanager.domain.res.apppackage.AppPackageUrlRes;
-import com.alibaba.tesla.appmanager.domain.schema.AppPackageSchema;
+import com.alibaba.tesla.appmanager.domain.req.market.*;
 import com.alibaba.tesla.appmanager.server.storage.impl.OssStorage;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -56,22 +54,45 @@ public class MarketController extends AppManagerBaseController {
         result.put("write", false);
         result.put("read", false);
         result.put("hasInit", false);
-        if(StringUtils.isNotBlank(request.getAccessKey())){
-            /**
-             *  测试写入
-             */
-            OssStorage client = new OssStorage(request.getEndpoint(), request.getAccessKey(), request.getSecretKey());
-            Path tempFile = Files.createTempFile("sw", ".txt");
-            String remoteFilePath = request.getRemotePackagePath() + "/" + tempFile.getFileName().toString();
-            client.putObject(request.getRemoteBucket(), remoteFilePath, tempFile.toAbsolutePath().toString());
 
-            result.put("write", client.objectExists(request.getRemoteBucket(), remoteFilePath));
-            log.info("action=check|message=check oss write|endpoint={}|bucket={}|writePath={}",
-                    request.getEndpoint(), request.getRemoteBucket(), request.getRemotePackagePath());
+
+        String remotePackagePath = request.getRemotePackagePath();
+        if(remotePackagePath.startsWith("/")){
+            /**
+             * 用户传入的路径如果以/开头，则自动适配
+             */
+            remotePackagePath = remotePackagePath.substring(1);
         }
-        /**
-         *  测试读取
-         */
+
+        if(StringUtils.equals(request.getEndpointType(), "oss")){
+            OssStorage client = new OssStorage(request.getEndpoint(), request.getAccessKey(), request.getSecretKey());
+            if(StringUtils.isNotBlank(request.getAccessKey())){
+                /**
+                 *  测试写入
+                 */
+                Path tempFile = Files.createTempFile("sw", ".txt");
+                String remoteFilePath = remotePackagePath + "/" + tempFile.getFileName().toString();
+                client.putObject(request.getRemoteBucket(), remoteFilePath, tempFile.toAbsolutePath().toString());
+                boolean writeTest = client.objectExists(request.getRemoteBucket(), remoteFilePath);
+                result.put("write", writeTest);
+                client.removeObject(request.getRemoteBucket(), remoteFilePath);
+                log.info("action=check|message=check oss write|endpoint={}|bucket={}|writePath={}",
+                        request.getEndpoint(), request.getRemoteBucket(), request.getRemotePackagePath());
+            }
+            /**
+             *  测试读取
+             */
+            try{
+                client.listObjects(request.getRemoteBucket(), remotePackagePath);
+                result.put("read", true);
+            }catch (Exception e) {
+                log.info("action=check|message=check oss read fail|{}", e);
+            }
+        }else{
+            buildClientErrorResult("not support endpointType " + request.getEndpointType());
+        }
+
+
         return buildSucceedResult(result);
     }
 
@@ -87,73 +108,90 @@ public class MarketController extends AppManagerBaseController {
                 .withBlobs(true)
                 .build(), getOperator(auth));
 
-        String remotePackageVersion = VersionUtil.buildVersion(request.getRemoteSimplePackageVersion());
         String remoteAppId;
         if (StringUtils.isNotBlank(request.getRemoteAppId())){
             remoteAppId = request.getRemoteAppId();
         }else{
             remoteAppId = appPackageInfo.getAppId();
         }
-        String fullRemotePath = request.getRemotePackagePath() + "/applications/" + remoteAppId + "/" + remotePackageVersion + ".zip";
+        String remotePackagePath = request.getRemotePackagePath();
+        if(remotePackagePath.startsWith("/")){
+            /**
+             * 用户传入的路径如果以/开头，则自动适配
+             */
+            remotePackagePath = remotePackagePath.substring(1);
+        }
+
+        MarketPackageDTO marketPackage = marketProvider.rebuildAppPackage(
+                appPackageInfo, getOperator(auth), remoteAppId, request.getRemoteSimplePackageVersion());
+
         JSONObject result = new JSONObject();
-        result.put("filePath", fullRemotePath);
         result.put("remoteAppId", remoteAppId);
-        result.put("remotePackageVersion", remotePackageVersion);
+        result.put("remotePackageVersion", marketPackage.getPackageVersion());
         result.put("remoteBucket", request.getRemoteBucket());
 
-        /**
-         * 将包下载到本地并解压
-         */
-        AppPackageUrlRes appPackageUrl = appPackageProvider.generateUrl(appPackageInfo.getId(), getOperator(auth));
-        File zipFile = Files.createTempFile("market_publish", ".zip").toFile();
-        String zipFileAbsPath = zipFile.getAbsolutePath();
-        NetworkUtil.download(appPackageUrl.getUrl(), zipFile.getAbsolutePath());
-        Path workDirFile = Files.createTempDirectory("market_publish");
-        String workDirAbsPath = workDirFile.toFile().getAbsolutePath();
-        ZipUtil.unzip(zipFileAbsPath, workDirAbsPath);
-        FileUtils.deleteQuietly(zipFile);
-
-        /**
-         * 将组件包进行解压
-         */
-
-        /**
-         * 将组件包进行字符串替换
-         */
-
-        /**
-         * 将组件包进行重新压缩
-         */
-
-        /**
-         * 针对Application的meta.yaml进行解析替换
-         */
-        String metaYaml = FileUtils.readFileToString(Paths.get(workDirAbsPath, "/meta.yaml").toFile(), StandardCharsets.UTF_8);
-        AppPackageSchema metaYamlObject = SchemaUtil.toSchema(AppPackageSchema.class, metaYaml);
-        metaYamlObject.setPackageVersion(remotePackageVersion);
-        FileUtils.writeStringToFile(Paths.get(workDirAbsPath, "/meta.yaml").toFile(), SchemaUtil.toYamlMapStr(metaYamlObject), StandardCharsets.UTF_8);
-
-        /**
-         * 针对应用进行重新压缩
-         */
-        Path workDirResult = Files.createTempDirectory("market_publish_result");
-        String zipPath = workDirResult.resolve("app_package.zip").toString();
-        ZipUtil.zipDirectory(workDirResult.resolve("app_package.zip").toString(), workDirFile.toFile());
+        MarketEndpointDTO marketEndpoint = new MarketEndpointDTO();
+        marketEndpoint.setEndpoint(request.getEndpoint());
+        marketEndpoint.setEndpointType(request.getEndpointType());
+        marketEndpoint.setAccessKey(request.getAccessKey());
+        marketEndpoint.setSecretKey(request.getSecretKey());
+        marketEndpoint.setRemoteBucket(request.getRemoteBucket());
+        marketEndpoint.setRemotePackagePath(remotePackagePath);
 
         /**
          * 将包上传到远端市场
          */
-        if (StringUtils.equals(request.getEndpointType(), "oss")){
-            OssStorage client = new OssStorage(
-                    request.getEndpoint(), request.getAccessKey(), request.getSecretKey());
-            log.info("action=init|message=oss client has initialized|endpoint={}", request.getEndpoint());
-            client.putObject(request.getRemoteBucket(), fullRemotePath, zipPath);
-        }else{
-            return buildClientErrorResult("no support endpoint type");
+
+        String filePath = marketProvider.uploadPackage(marketEndpoint, marketPackage);
+        result.put("filePath", filePath);
+        if(filePath == null){
+            return buildClientErrorResult("upload package failed");
         }
 
         return buildSucceedResult(result);
 
+    }
+
+    @GetMapping(value = "detail")
+    @ResponseBody
+    public TeslaBaseResult detail(MarketAppDetailReq request, OAuth2Authentication auth) throws IOException {
+        JSONObject detailObject = new JSONObject();
+        JSONObject appInfo = null;
+        if(StringUtils.startsWith(request.getRemoteUrl(), "oss://")){
+            String swIndexUrl = "https://" + Paths.get(request.getRemoteUrl().replace("oss://", ""), "sw-index.json").toString();
+            File swIndexFile = Files.createTempFile("market", ".json").toFile();
+            NetworkUtil.download(swIndexUrl, swIndexFile.getAbsolutePath());
+            JSONObject swIndexObject = JSONObject.parseObject(FileUtils.readFileToString(swIndexFile, "UTF-8"));
+            JSONArray swIndexPackages = swIndexObject.getJSONArray("packages");
+            for(int i=0; i < swIndexPackages.size(); i++){
+                if(StringUtils.equals(swIndexPackages.getJSONObject(i).getString("appId"), request.getAppId())){
+                    appInfo = swIndexPackages.getJSONObject(i);
+                    break;
+                }
+            }
+            return buildSucceedResult(appInfo);
+        }
+        return buildSucceedResult(detailObject);
+    }
+
+    @GetMapping(value = "packageList")
+    @ResponseBody
+    public TeslaBaseResult packageList(MarketAppPackageListReq request, OAuth2Authentication auth) throws IOException {
+        JSONArray packageArray = new JSONArray();
+        String[] remoteUrls = request.getRemoteUrls().split(",");
+
+        for(String remoteUrl: remoteUrls){
+            String swIndexUrl = "https://" + Paths.get(remoteUrl.replace("oss://", ""), "sw-index.json").toString();
+            File swIndexFile = Files.createTempFile("market", ".json").toFile();
+            NetworkUtil.download(swIndexUrl, swIndexFile.getAbsolutePath());
+            JSONObject swIndexObject = JSONObject.parseObject(FileUtils.readFileToString(swIndexFile, "UTF-8"));
+            JSONArray swIndexPackages = swIndexObject.getJSONArray("packages");
+            packageArray.addAll(swIndexPackages);
+        }
+
+        JSONObject result = new JSONObject();
+        result.put("items", packageArray);
+        return buildSucceedResult(result);
     }
 
     @GetMapping(value = "download")

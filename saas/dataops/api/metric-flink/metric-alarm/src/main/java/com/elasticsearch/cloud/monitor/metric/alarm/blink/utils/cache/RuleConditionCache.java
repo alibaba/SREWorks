@@ -7,11 +7,8 @@ import com.elasticsearch.cloud.monitor.commons.rule.Rule;
 import com.elasticsearch.cloud.monitor.commons.state.RuleDataPointsCache;
 import com.elasticsearch.cloud.monitor.commons.utils.Pair;
 import com.elasticsearch.cloud.monitor.commons.utils.TimeUtils;
-import com.elasticsearch.cloud.monitor.metric.alarm.blink.constant.MetricConstants;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import com.opensearch.cobble.monitor.Monitor;
-import com.taobao.kmonitor.core.MetricsTags;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,8 +28,6 @@ public abstract class RuleConditionCache implements RuleDataPointsCache {
      */
     protected transient Map<Map<String, String>, Pair<TimeSeriesCache, DurationConditionChecker>> stateMap;
     protected transient PlottQueryClient queryClient;
-    protected transient MetricsTags globalTags;
-    protected transient Monitor monitor;
     /**
      * 数据精度 granularity
      */
@@ -110,15 +105,6 @@ public abstract class RuleConditionCache implements RuleDataPointsCache {
         for (Map<String, String> key : toRemoveKeys) {
             stateMap.remove(key);
         }
-
-        if (monitor != null) {
-            monitor.increment(MetricConstants.ALARM_CACHE_STATE_SIZE, stateMap.size(), globalTags);
-        }
-    }
-
-    public void setMonitorClient(Monitor monitor, MetricsTags tags) {
-        this.monitor = monitor;
-        globalTags = tags;
     }
 
     public String getCache(Map<String, String> tags) {

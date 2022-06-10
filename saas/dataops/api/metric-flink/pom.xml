@@ -12,11 +12,6 @@
         <module>metric-common</module>
         <module>metric-mapping</module>
         <module>metric-alarm</module>
-<!--        <module>rule-dump</module>-->
-<!--        <module>metric-downsample</module>-->
-<!--        <module>metric-agg</module>-->
-<!--        <module>metric-routing</module>-->
-        <module>metric-log</module>
 
     </modules>
 
@@ -176,49 +171,6 @@
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
             <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.opensearch</groupId>
-            <artifactId>cobble</artifactId>
-            <version>0.5.2-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.squareup.okhttp3</groupId>
-                    <artifactId>okhttp</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.thrift</groupId>
-                    <artifactId>libthrift</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-codec</groupId>
-                    <artifactId>commons-codec</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.curator</groupId>
-                    <artifactId>curator-framework</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.curator</groupId>
-                    <artifactId>curator-recipes</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.curator</groupId>
-                    <artifactId>curator-client</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.opensearch.sync</groupId>
-                    <artifactId>sync-proto</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.taobao.monitor</groupId>
-                    <artifactId>kmonitor-client</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

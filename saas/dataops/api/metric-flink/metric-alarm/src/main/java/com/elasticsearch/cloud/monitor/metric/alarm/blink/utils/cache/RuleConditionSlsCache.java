@@ -56,14 +56,6 @@ public class RuleConditionSlsCache extends RuleConditionCache {
                 }
             } catch (Exception e) {
                 log.error(String.format("query: %s, exception: %s", query, Throwables.getStackTraceAsString(e)));
-                if (monitor != null) {
-                    monitor.increment(MetricConstants.ALARM_CACHE_FETECH_ERROR_QPS, 1, globalTags);
-                }
-            }
-
-            if (monitor != null) {
-                monitor.reportLatency(MetricConstants.ALARM_CACHE_QUERY_LATENCY, start, globalTags);
-                monitor.increment(MetricConstants.ALARM_CACHE_QUERY_QPS, 1, globalTags);
             }
         }
     }

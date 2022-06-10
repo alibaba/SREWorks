@@ -2,14 +2,6 @@
 
 JOB_ROOT=$(cd `dirname $0`; pwd)
 
-export VVP_ENDPOINT=${VVP_ENDPOINT}
-export KAFKA_URL=${KAFKA_URL}
-export ES_URL=${ES_URL}
-
-export VVP_WORK_NS="default"
-export UDF_ARTIFACT_NAME="metric-alarm-12-snapshot"
-export UDF_ARTIFACT_JAR="metric-alarm-1.2-SNAPSHOT.jar"
-
 while [[ "$(curl -s -o /dev/null -w '%{http_code}\n' http://$VVP_ENDPOINT/swagger)" != "200" ]]
 do
     sleep 10
@@ -48,7 +40,9 @@ curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:exe
         "CREATE FUNCTION IF NOT EXISTS `DurationAlarm` AS '\''com.elasticsearch.cloud.monitor.metric.alarm.blink.udtf.DurationAlarm'\''",
         "CREATE FUNCTION IF NOT EXISTS `splitEventList` AS '\''com.elasticsearch.cloud.monitor.metric.alarm.blink.udtf.splitEventList'\''",
         "CREATE FUNCTION IF NOT EXISTS `HealthAlert` AS '\''com.elasticsearch.cloud.monitor.metric.alarm.blink.udtf.HealthAlert'\''",
-        "CREATE FUNCTION IF NOT EXISTS `HealthFailure` AS '\''com.elasticsearch.cloud.monitor.metric.alarm.blink.udtf.HealthFailure'\''"
+        "CREATE FUNCTION IF NOT EXISTS `HealthFailure` AS '\''com.elasticsearch.cloud.monitor.metric.alarm.blink.udtf.HealthFailure'\''",
+        "CREATE FUNCTION IF NOT EXISTS `PmdbMetricUidUdf` AS '\''com.elasticsearch.cloud.monitor.metric.common.blink.udf.PmdbMetricUidUdf'\''",
+        "CREATE FUNCTION IF NOT EXISTS `PmdbMetricInsUidUdf` AS '\''com.elasticsearch.cloud.monitor.metric.common.blink.udf.PmdbMetricInsUidUdf'\''"
     ]'
 
 

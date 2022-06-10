@@ -8,20 +8,15 @@ import com.elasticsearch.cloud.monitor.commons.rule.RuleManagerFactory;
 import com.elasticsearch.cloud.monitor.commons.rule.RulesManager;
 import com.elasticsearch.cloud.monitor.commons.rule.filter.TagVFilter;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.constant.AlarmConstants;
-import com.elasticsearch.cloud.monitor.metric.alarm.blink.constant.MetricConstants;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.AlarmEvent;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.AlarmEventHelper;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.TagsUtils;
-import com.elasticsearch.cloud.monitor.metric.common.blink.utils.BlinkLogTracer;
-import com.elasticsearch.cloud.monitor.metric.common.blink.utils.BlinkTagsUtil;
-import com.elasticsearch.cloud.monitor.metric.common.monitor.kmon.KmonCreatorForBlink;
+import com.elasticsearch.cloud.monitor.metric.common.blink.utils.FlinkLogTracer;
 import com.elasticsearch.cloud.monitor.metric.common.rule.util.RuleUtil;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.opensearch.cobble.monitor.Monitor;
-import com.taobao.kmonitor.core.MetricsTags;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -36,19 +31,16 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author xingming.xuxm
- * @Date 2019-11-26
+ * @author: fangzong.lyj
+ * @date: 2021/09/01 15:40
  */
 @Slf4j
 public class NoDataAlarm extends AggregateFunction<List<AlarmEvent>, NoDataAlarm.NoDataAlarmAccumulator> {
     private transient Cache<String, NoDataConditionChecker> checkerCache;
     private transient RuleManagerFactory ruleManagerFactory;
-    private transient MetricsTags tags;
-    private transient Monitor monitor;
-    private transient BlinkLogTracer tracer;
+    private transient FlinkLogTracer tracer;
     private transient Map<String, Map<Long, Map<Long, Map<String, Set<String>>>>> windowRuleSingleTagValueMap;
     private transient Map<String, Map<Long, Map<Long, Set<Map<String, String>>>>> windowRuleMultiTagValueMap;
-    private transient MultiTagNoDataInfoSync noDataInfoSync;
 
     /**
      * 配置了no data, 但是实际上来数据了的rule id
@@ -63,24 +55,11 @@ public class NoDataAlarm extends AggregateFunction<List<AlarmEvent>, NoDataAlarm
             .expireAfterAccess(timeout, TimeUnit.HOURS).build();
         ruleManagerFactory = RuleUtil.createRuleManagerFactory(context);
 
-        monitor = KmonCreatorForBlink.getMonitor(context, this.getClass().getSimpleName());
-        monitor.registerGauge(MetricConstants.ALARM_DATA_DELAY);
-        monitor.registerQPS(MetricConstants.ALARM_ERROR_QPS);
-        monitor.registerCounter(MetricConstants.ALARM_TRIGGER_COUNT);
         windowRuleSingleTagValueMap = Maps.newConcurrentMap();
         windowRuleMultiTagValueMap = Maps.newConcurrentMap();
         tenantTimestampRuleIds = Maps.newConcurrentMap();
 
-        if (Boolean.valueOf(context.getJobParameter(AlarmConstants.NODATA_OSS_ENABLE, "false"))) {
-            noDataInfoSync = new MultiTagNoDataInfoSync(context.getJobParameter(AlarmConstants.NODATA_OSS_ENDPOINT, ""),
-                context.getJobParameter(AlarmConstants.NODATA_OSS_ACCESS_KEY, ""),
-                context.getJobParameter(AlarmConstants.NODATA_OSS_ACCESS_SECRET, ""),
-                context.getJobParameter(AlarmConstants.NODATA_OSS_BUCKET, ""),
-                context.getJobParameter(AlarmConstants.NODATA_OSS_FILE, ""));
-        }
-
-        tags = BlinkTagsUtil.getTags(context, this.getClass().getSimpleName());
-        tracer = new BlinkLogTracer(context);
+        tracer = new FlinkLogTracer(context);
         tracer.trace("NoDataAlarm init========");
     }
 
@@ -89,9 +68,6 @@ public class NoDataAlarm extends AggregateFunction<List<AlarmEvent>, NoDataAlarm
         tracer.trace("NoDataAlarm close========");
         if (ruleManagerFactory != null) {
             ruleManagerFactory.close();
-        }
-        if (noDataInfoSync != null) {
-            noDataInfoSync.close();
         }
     }
 
@@ -102,10 +78,6 @@ public class NoDataAlarm extends AggregateFunction<List<AlarmEvent>, NoDataAlarm
 
     @Override
     public List<AlarmEvent> getValue(NoDataAlarmAccumulator alarmAcc) {
-        if (monitor != null) {
-            monitor.reportLatency(MetricConstants.ALARM_DATA_DELAY, alarmAcc.getTimestamp(), tags);
-        }
-
         Set<Long> comeRuleIds = Sets.newConcurrentHashSet();
         if (tenantTimestampRuleIds.containsKey(alarmAcc.getTenant()) && tenantTimestampRuleIds.get(
             alarmAcc.getTenant()).containsKey(alarmAcc.getTimestamp())) {
@@ -117,7 +89,6 @@ public class NoDataAlarm extends AggregateFunction<List<AlarmEvent>, NoDataAlarm
             if (rule.getNoDataCondition() == null) {
                 continue;
             }
-            rewriteRule(rule);
             Map<String, Set<String>> occurTags = null;
             Set<Map<String, String>> occurMultiTags = null;
             long window = alarmAcc.getTimestamp();
@@ -140,9 +111,6 @@ public class NoDataAlarm extends AggregateFunction<List<AlarmEvent>, NoDataAlarm
                 alarms = checker.check(comeRuleIds, rule, occurTags, occurMultiTags);
             } catch (Throwable e) {
                 log.error("nodata check failed", e);
-                if (monitor != null) {
-                    monitor.increment(MetricConstants.ALARM_ERROR_QPS, 1, tags);
-                }
             }
             if (alarms != null) {
                 for (Alarm alarm : alarms) {
@@ -166,9 +134,6 @@ public class NoDataAlarm extends AggregateFunction<List<AlarmEvent>, NoDataAlarm
             tenantTimestampRuleIds.remove(alarmAcc.getTimestamp());
         }
 
-        if (monitor != null) {
-            monitor.increment(MetricConstants.ALARM_TRIGGER_COUNT, out.size(), tags);
-        }
         return out;
     }
 
@@ -199,7 +164,6 @@ public class NoDataAlarm extends AggregateFunction<List<AlarmEvent>, NoDataAlarm
         if (rule != null && rule.getNoDataCondition() != null) {
             //tracer.trace("nodata rule: {},{},{}", ruleId, windowStart, granularity);
             //TODO 如果报警数据 同时支持多种精度, 需要考虑granularity
-            rewriteRule(rule);
             // acc.addRuleId(ruleId);
             Map<Long, Set<Long>> tenantRuleIds = tenantTimestampRuleIds.get(tenant);
             if (tenantRuleIds == null) {
@@ -278,17 +242,6 @@ public class NoDataAlarm extends AggregateFunction<List<AlarmEvent>, NoDataAlarm
         }
         acc.setTenant(tenant);
         acc.setTimestamp(windowStart);
-    }
-
-    private void rewriteRule(Rule rule) {
-        try {
-            if (noDataInfoSync != null) {
-                noDataInfoSync.rewriteRule(rule);
-            }
-        } catch (Throwable t) {
-            log.error("rewrite rule error %s", t.getMessage(), t);
-        }
-
     }
 
     @Data

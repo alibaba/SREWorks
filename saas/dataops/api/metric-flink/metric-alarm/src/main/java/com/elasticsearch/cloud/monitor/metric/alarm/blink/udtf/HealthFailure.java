@@ -1,7 +1,7 @@
 package com.elasticsearch.cloud.monitor.metric.alarm.blink.udtf;
 
 import com.alibaba.fastjson.JSONObject;
-import com.elasticsearch.cloud.monitor.metric.common.blink.utils.BlinkLogTracer;
+import com.elasticsearch.cloud.monitor.metric.common.blink.utils.FlinkLogTracer;
 import com.elasticsearch.cloud.monitor.metric.common.constant.Constants;
 import com.elasticsearch.cloud.monitor.metric.common.pojo.FailureInstance;
 import com.elasticsearch.cloud.monitor.metric.common.rule.HealthFailureRulesManager;
@@ -9,7 +9,6 @@ import com.elasticsearch.cloud.monitor.metric.common.rule.HealthFailureRulesMana
 import com.elasticsearch.cloud.monitor.metric.common.rule.failure.FailureLevelWithBoundary;
 import com.elasticsearch.cloud.monitor.metric.common.uti.HttpClientsUtil;
 import com.elasticsearch.cloud.monitor.metric.common.uti.PropertiesUtil;
-import com.opensearch.cobble.monitor.Monitor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.api.java.tuple.Tuple9;
 import org.apache.flink.table.functions.FunctionContext;
@@ -23,8 +22,8 @@ import java.util.Date;
 /**
  * 特别提示: 同一条线, 必须放到同一个shard上且是保序的, 如果分布到多个shard上会有问题!!!
  *
- * @author xingming.xuxm
- * @Date 2019-12-11
+ * @author: fangzong.lyj
+ * @date: 2021/09/01 15:40
  */
 
 @SuppressWarnings("Duplicates")
@@ -36,8 +35,7 @@ public class HealthFailure
     /**
      * flink暂时不上报作业的监控指标, 需要提供新的监控数据上报通道
      */
-    private Monitor monitor = null;
-    private BlinkLogTracer tracer;
+    private FlinkLogTracer tracer;
 
     private final int maxTotal = 200;
     private final int maxPerRoute = 40;
@@ -52,7 +50,7 @@ public class HealthFailure
         long shufflePeriod = Long.parseLong(context.getJobParameter(Constants.RULE_REFRESH_SHUFFLE, Constants.RULE_REFRESH_SHUFFLE_DEF + ""));
         httpClient = HttpClientsUtil.createHttpClient(maxTotal, maxPerRoute, maxRoute, PropertiesUtil.getProperty("health.instance.url"));
         rulesManagerFactory = new HealthFailureRulesManagerFactory(refreshPeriod, shufflePeriod);
-        tracer = new BlinkLogTracer(context);
+        tracer = new FlinkLogTracer(context);
     }
 
     public void eval(Long incidentInstanceId, String appInstanceId, String appComponentInstanceId, Long occurTs, Long recoverTs, String cause, Integer failureDefId, String appName, String failureConfigStr) {

@@ -8,8 +8,8 @@ import org.apache.flink.table.functions.TableFunction;
 import java.util.List;
 
 /**
- * @author xingming.xuxm
- * @Date 2019-11-27
+ * @author: fangzong.lyj
+ * @date: 2021/09/01 15:40
  */
 public class splitEventList extends TableFunction<Tuple9<String, String, String, String, String, String, String, String, String>> {
     public void eval(List<AlarmEvent> events) throws Exception {

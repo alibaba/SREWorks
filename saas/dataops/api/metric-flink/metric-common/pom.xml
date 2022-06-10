@@ -19,25 +19,6 @@
         </dependency>
         <dependency>
             <groupId>com.elasticsearch.cloud.monitor</groupId>
-            <artifactId>emon-sdk</artifactId>
-            <version>0.0.3-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.alibaba.kmonitor</groupId>
-                    <artifactId>kmonitor-common</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.elasticsearch.cloud.monitor</groupId>
-                    <artifactId>kmonitor-client</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.elasticsearch.cloud.monitor</groupId>
             <artifactId>monitor-common</artifactId>
         </dependency>
         <dependency>

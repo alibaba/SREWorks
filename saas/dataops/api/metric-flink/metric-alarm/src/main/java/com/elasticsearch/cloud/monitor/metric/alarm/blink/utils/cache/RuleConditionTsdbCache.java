@@ -84,11 +84,6 @@ public class RuleConditionTsdbCache extends RuleConditionCache{
             }
             mergePut(dmap);
         }
-
-        if (monitor != null) {
-            monitor.reportLatency(MetricConstants.ALARM_CACHE_QUERY_LATENCY, start, globalTags);
-            monitor.increment(MetricConstants.ALARM_CACHE_QUERY_QPS, 1, globalTags);
-        }
     }
 
     private void mergePut(Map<String, List<DataPoint>> dmap) {

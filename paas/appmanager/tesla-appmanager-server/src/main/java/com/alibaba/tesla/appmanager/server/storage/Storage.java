@@ -19,6 +19,15 @@ public interface Storage {
     boolean bucketExists(String bucketName);
 
     /**
+     * 检测 对象 是否存在
+     *
+     * @param bucketName Bucket 名称
+     * @param objectPath 文件名称
+     * @return true or false
+     */
+    boolean objectExists(String bucketName, String objectPath);
+
+    /**
      * 创建 Bucket
      *
      * @param bucketName     Bucket 名称
@@ -70,4 +79,9 @@ public interface Storage {
      * @return URL 地址
      */
     String getObjectUrl(String bucketName, String remotePath, Integer expiration);
+
+    /**
+     * 设置文件的权限为公共读
+     */
+    void setObjectAclPublic(String bucketName, String remotePath);
 }

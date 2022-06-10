@@ -1,7 +1,7 @@
-FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/maven:3.8.3-adoptopenjdk-11 AS build
+FROM {{ MAVEN_IMAGE }} AS build
 
 COPY . /app
-COPY settings.xml /root/.m2/settings.xml
+RUN mkdir /root/.m2/ && curl {{ MAVEN_SETTINGS_XML }} -o /root/.m2/settings.xml
 RUN cd /app && mvn -f pom.xml -Dmaven.test.skip=true clean package
 
 FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/alpine:latest AS release

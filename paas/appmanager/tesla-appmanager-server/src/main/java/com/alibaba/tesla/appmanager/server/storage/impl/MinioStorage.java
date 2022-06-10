@@ -59,6 +59,26 @@ public class MinioStorage extends BaseStorage implements Storage {
     }
 
     /**
+     * 设置文件的权限为公共读
+     */
+    @Override
+    public void setObjectAclPublic(String bucketName, String remotePath){
+        return;
+    }
+
+    /**
+     * 检测 对象 是否存在
+     *
+     * @param bucketName Bucket 名称
+     * @param objectPath 文件名称
+     * @return true or false
+     */
+    @Override
+    public boolean objectExists(String bucketName, String objectPath) {
+        return false;
+    }
+
+    /**
      * 创建 Bucket
      *
      * @param bucketName     Bucket 名称

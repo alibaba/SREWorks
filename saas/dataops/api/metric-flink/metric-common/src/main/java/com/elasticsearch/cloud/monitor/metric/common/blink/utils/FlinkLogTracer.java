@@ -9,10 +9,10 @@ import org.apache.flink.table.functions.FunctionContext;
  * @Date 2021-08-31
  */
 @Slf4j
-public class BlinkLogTracer {
+public class FlinkLogTracer {
     private boolean enable;
 
-    public BlinkLogTracer(FunctionContext context) {
+    public FlinkLogTracer(FunctionContext context) {
         String parameter = context.getJobParameter(Constants.LOG_TRACER_ENABLE, "false");
         enable = Boolean.parseBoolean(parameter);
     }

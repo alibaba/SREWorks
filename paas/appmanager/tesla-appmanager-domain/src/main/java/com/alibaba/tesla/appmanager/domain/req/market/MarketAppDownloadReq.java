@@ -17,14 +17,13 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class MarketAppDownloadReq extends BaseRequest {
 
-    /**
-     * 远端市场地址
-     */
     private String remoteUrl;
+
+    private String packageUrl;
 
     private String appId;
 
-    private String packageVersion;
+    private String localAppId;
 
 
 }

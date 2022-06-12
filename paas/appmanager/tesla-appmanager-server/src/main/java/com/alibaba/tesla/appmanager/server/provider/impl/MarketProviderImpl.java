@@ -13,6 +13,7 @@ import com.alibaba.tesla.appmanager.domain.req.apppackage.AppPackageVersionCount
 import com.alibaba.tesla.appmanager.domain.req.market.MarketAppListReq;
 import com.alibaba.tesla.appmanager.domain.res.apppackage.AppPackageUrlRes;
 import com.alibaba.tesla.appmanager.domain.schema.AppPackageSchema;
+import com.alibaba.tesla.appmanager.domain.schema.ComponentSchema;
 import com.alibaba.tesla.appmanager.server.assembly.AppPackageDtoConvert;
 import com.alibaba.tesla.appmanager.server.repository.AppMetaRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppMarketQueryCondition;
@@ -205,21 +206,33 @@ public class MarketProviderImpl implements MarketProvider {
                 appInfo = new JSONObject();
                 appInfo.put("appId", marketPackage.getAppId());
                 appInfo.put("appName", marketPackage.getAppName());
-                if(marketPackage.getAppOptions().getString("category") != null){
-                    appInfo.put("category", marketPackage.getAppOptions().getString("category"));
-                }
-                if(marketPackage.getAppOptions().getString("description") != null){
-                    appInfo.put("description", marketPackage.getAppOptions().getString("description"));
+                if(marketPackage.getAppOptions() != null) {
+                    if (marketPackage.getAppOptions().getString("category") != null) {
+                        appInfo.put("category", marketPackage.getAppOptions().getString("category"));
+                    }
+                    if (marketPackage.getAppOptions().getString("description") != null) {
+                        appInfo.put("description", marketPackage.getAppOptions().getString("description"));
+                    }
                 }
                 appInfo.put("urls", new JSONObject());
                 appInfo.put("packageVersions", new JSONArray());
                 swIndexPackages.add(appInfo);
             }
 
+            if(marketPackage.getAppSchemaObject() != null){
+                appInfo.put("latestComponents", new JSONArray());
+                for(AppPackageSchema.ComponentPackageItem componentPackage : marketPackage.getAppSchemaObject().getComponentPackages()){
+                    JSONObject componentInfo = new JSONObject();
+                    componentInfo.put("componentName", componentPackage.getComponentName());
+                    componentInfo.put("componentType", componentPackage.getComponentType());
+                    appInfo.getJSONArray("latestComponents").add(componentInfo);
+                }
+            }
             JSONObject appUrls = appInfo.getJSONObject("urls");
             JSONArray packageVersions = appInfo.getJSONArray("packageVersions");
             appUrls.put(marketPackage.getPackageVersion(), relativeRemotePath);
             packageVersions.add(marketPackage.getPackageVersion());
+
 
             File swIndexFile = Files.createTempFile("market_index", ".json").toFile();
             FileUtils.writeStringToFile(swIndexFile, swIndexObject.toString(SerializerFeature.PrettyFormat), true);
@@ -248,46 +261,80 @@ public class MarketProviderImpl implements MarketProvider {
     }
 
     @Override
-    public MarketPackageDTO rebuildAppPackage(AppPackageDTO appPackage, String operator, String appId, String simplePackageVersion) throws IOException {
-
-        String newPackageVersion;
-        if(simplePackageVersion == null){
-            newPackageVersion = appPackage.getPackageVersion();
-        }else{
-            newPackageVersion = VersionUtil.buildVersion(simplePackageVersion);
-        }
-
-        /**
-         * 将包下载到本地并解压
-         */
+    public File downloadAppPackage(AppPackageDTO appPackage, String operator) throws IOException {
         AppPackageUrlRes appPackageUrl = appPackageProvider.generateUrl(appPackage.getId(), operator);
         File zipFile = Files.createTempFile("market_publish", ".zip").toFile();
         NetworkUtil.download(appPackageUrl.getUrl(), zipFile.getAbsolutePath());
+        return zipFile;
+    }
+
+    @Override
+    public MarketPackageDTO rebuildAppPackage(File appPackageLocal, String operator, String oldAppId, String newAppId, String newSimplePackageVersion) throws IOException {
+
+
+        /**
+         * 将应用包解压
+         */
         Path workDirFile = Files.createTempDirectory("market_publish");
         String workDirAbsPath = workDirFile.toFile().getAbsolutePath();
-        ZipUtil.unzip(zipFile.getAbsolutePath(), workDirAbsPath);
-        FileUtils.deleteQuietly(zipFile);
-
+        ZipUtil.unzip(appPackageLocal.getAbsolutePath(), workDirAbsPath);
+        FileUtils.deleteQuietly(appPackageLocal);
 
         /**
          * 将组件包进行解压
          */
+        List<File> subfiles = Files.walk(workDirFile).map(p -> p.toFile()).collect(Collectors.toList());
+        for(File component: subfiles ){
+            if(!component.getName().endsWith(".zip")){
+                continue;
+            }
+            Path componentPath = Paths.get(component.getAbsolutePath().replace(".zip", ""));
+            Files.createDirectory(componentPath);
+            ZipUtil.unzip(component.getAbsolutePath(), componentPath.toString());
+            FileUtils.deleteQuietly(component);
 
-        /**
-         * 将组件包进行字符串替换
-         */
+            /**
+             * 将组件包的meta.yaml进行字符串替换
+             */
+            String metaYaml = FileUtils.readFileToString(Paths.get(componentPath.toString(), "meta.yaml").toFile(), StandardCharsets.UTF_8);
+            if(newAppId != null) {
+                ComponentSchema metaYamlObject = SchemaUtil.toSchema(ComponentSchema.class, metaYaml);
+                JSONObject labels = (JSONObject) metaYamlObject.getMetadata().getLabels();
+                labels.put("labels.appmanager.oam.dev/appId", newAppId);
+                labels.put("appId", newAppId);
+                JSONObject specLabels = (JSONObject) metaYamlObject.getSpec().getWorkload().getMetadata().getLabels();
+                specLabels.put("labels.appmanager.oam.dev/appId", newAppId);
+                specLabels.put("appId", newAppId);
+                FileUtils.writeStringToFile(Paths.get(componentPath.toString(), "meta.yaml").toFile(), SchemaUtil.toYamlMapStr(metaYamlObject), StandardCharsets.UTF_8);
+            }
 
-        /**
-         * 将组件包进行重新压缩
-         */
+            /**
+            * 将组件包进行重新压缩，并删除组件目录
+            */
+            ZipUtil.zipFiles(component.getAbsolutePath(), Files.walk(componentPath).map(p -> p.toFile()).collect(Collectors.toList()));
+            FileUtils.deleteDirectory(componentPath.toFile());
+
+        }
 
         /**
          * 针对Application的meta.yaml进行解析替换
          */
         String metaYaml = FileUtils.readFileToString(Paths.get(workDirAbsPath, "/meta.yaml").toFile(), StandardCharsets.UTF_8);
+        if(newAppId != null){
+            metaYaml = metaYaml.replace("appId: " + oldAppId, "appId: " + newAppId);
+            metaYaml = metaYaml.replace("appId: \"" + oldAppId + "\"", "appId: \"" + newAppId + "\"");
+            metaYaml = metaYaml.replace("labels.appmanager.oam.dev/appId: \"" + oldAppId + "\"", "labels.appmanager.oam.dev/appId: \"" + newAppId + "\"");
+        }
         AppPackageSchema metaYamlObject = SchemaUtil.toSchema(AppPackageSchema.class, metaYaml);
-        if(!StringUtils.equals(newPackageVersion, appPackage.getPackageVersion())){
+        if(!metaYamlObject.getTags().contains("on-sale")){
+            metaYamlObject.getTags().add("on-sale");
+        }
+        String newPackageVersion;
+        if(newSimplePackageVersion != null){
+            newPackageVersion = VersionUtil.buildVersion(newSimplePackageVersion);
             metaYamlObject.setPackageVersion(newPackageVersion);
+        }else{
+            newPackageVersion = metaYamlObject.getPackageVersion();
         }
         FileUtils.writeStringToFile(Paths.get(workDirAbsPath, "/meta.yaml").toFile(), SchemaUtil.toYamlMapStr(metaYamlObject), StandardCharsets.UTF_8);
 
@@ -296,15 +343,13 @@ public class MarketProviderImpl implements MarketProvider {
          */
         Path workDirResult = Files.createTempDirectory("market_publish_result");
         String zipPath = workDirResult.resolve("app_package.zip").toString();
-        ZipUtil.zipDirectory(workDirResult.resolve("app_package.zip").toString(), workDirFile.toFile());
+        ZipUtil.zipFiles(workDirResult.resolve("app_package.zip").toString(), Files.walk(workDirFile).map(p -> p.toFile()).collect(Collectors.toList()));
 
         MarketPackageDTO marketPackage = new MarketPackageDTO();
         marketPackage.setPackageLocalPath(zipPath);
-        marketPackage.setAppId(appId);
+        marketPackage.setAppId(newAppId);
         marketPackage.setPackageVersion(newPackageVersion);
-        marketPackage.setSimplePackageVersion(simplePackageVersion);
-        marketPackage.setAppName(appPackage.getAppName());
-        marketPackage.setAppOptions(appPackage.getAppOptions());
+        marketPackage.setSimplePackageVersion(newPackageVersion.split("\\+")[0]);
         return marketPackage;
     }
 

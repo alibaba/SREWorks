@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * 指标数据对象
  *
- * @author: fangzong.ly
+ * @author: fangzong.lyj
  * @date: 2022/01/17 17:39
  */
 @Data

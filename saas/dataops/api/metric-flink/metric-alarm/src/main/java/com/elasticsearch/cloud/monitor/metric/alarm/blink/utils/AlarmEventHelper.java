@@ -1,18 +1,17 @@
 package com.elasticsearch.cloud.monitor.metric.alarm.blink.utils;
 
-import com.elasticsearch.cloud.monitor.commons.core.MetricAlarm;
-import com.elasticsearch.cloud.monitor.commons.rule.Rule;
-import com.elasticsearch.cloud.monitor.commons.utils.StringUtils;
-import com.elasticsearch.cloud.monitor.commons.utils.TagUtils;
-import com.elasticsearch.cloud.monitor.commons.utils.TimeUtils;
+import com.elasticsearch.cloud.monitor.metric.common.constant.Constants;
+import com.elasticsearch.cloud.monitor.metric.common.core.MetricAlarm;
+import com.elasticsearch.cloud.monitor.metric.common.rule.Rule;
+import com.elasticsearch.cloud.monitor.metric.common.utils.TagUtils;
+import com.elasticsearch.cloud.monitor.metric.common.utils.TimeUtils;
 import com.google.common.hash.Hashing;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.elasticsearch.cloud.monitor.metric.common.constant.Constants.TENANT_TAG;
 
 public class AlarmEventHelper {
 
@@ -50,7 +49,7 @@ public class AlarmEventHelper {
         if (metricAlarm.getTags() != null) {
             tags.putAll(metricAlarm.getTags());
         }
-        tags.remove(TENANT_TAG);
+        tags.remove(Constants.TENANT_TAG);
         if (MapUtils.isNotEmpty(tags)) {
             sb.append("{").append(TagUtils.getTag(tags)).append("}");
         }

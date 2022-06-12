@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * 指标实例对象
  *
- * @author: fangzong.ly
+ * @author: fangzong.lyj
  * @date: 2021/09/05 11:47
  */
 

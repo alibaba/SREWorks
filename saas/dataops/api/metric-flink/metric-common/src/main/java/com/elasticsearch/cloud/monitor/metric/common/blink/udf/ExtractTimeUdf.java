@@ -1,7 +1,6 @@
 package com.elasticsearch.cloud.monitor.metric.common.blink.udf;
 
-import com.elasticsearch.cloud.monitor.commons.datapoint.ImmutableDataPoint;
-import com.elasticsearch.cloud.monitor.commons.datapoint.ImmutableDataPoint.MetricAndTimestamp;
+import com.elasticsearch.cloud.monitor.metric.common.datapoint.ImmutableDataPoint;
 import com.elasticsearch.cloud.monitor.metric.common.rule.exception.InvalidParameterException;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
@@ -14,10 +13,7 @@ import java.sql.Timestamp;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @author xiaoping
- * @date 2019/11/8
- */
+
 public class ExtractTimeUdf extends ScalarFunction {
     private static final Log log = LogFactory.getLog(ExtractTimeUdf.class);
 
@@ -37,10 +33,10 @@ public class ExtractTimeUdf extends ScalarFunction {
 
     @Override
     public void open(FunctionContext context) throws InvalidParameterException {
-        alignTimeMs = TimeUnit.SECONDS.toMillis(Long.valueOf(context.getJobParameter(ALIGN_TIME_SECOND, "1")));
-        forHolo = Boolean.valueOf(context.getJobParameter(FOR_HOLO, "false"));
-        holoDelayTime = Long.valueOf(context.getJobParameter(HOLO_DELAY_TIME_SECOND, "120")) * 1000;
-        printLateMetric = Boolean.valueOf(context.getJobParameter(PRINT_LATE_METRIC, "false"));
+        alignTimeMs = TimeUnit.SECONDS.toMillis(Long.parseLong(context.getJobParameter(ALIGN_TIME_SECOND, "1")));
+        forHolo = Boolean.parseBoolean(context.getJobParameter(FOR_HOLO, "false"));
+        holoDelayTime = Long.parseLong(context.getJobParameter(HOLO_DELAY_TIME_SECOND, "120")) * 1000;
+        printLateMetric = Boolean.parseBoolean(context.getJobParameter(PRINT_LATE_METRIC, "false"));
         if (printLateMetric) {
             late120s = Sets.newConcurrentHashSet();
             late90s = Sets.newConcurrentHashSet();
@@ -50,7 +46,7 @@ public class ExtractTimeUdf extends ScalarFunction {
     }
 
     public java.sql.Timestamp eval(String msg) {
-        MetricAndTimestamp metricAndTimestamp;
+        ImmutableDataPoint.MetricAndTimestamp metricAndTimestamp;
         try {
             metricAndTimestamp = ImmutableDataPoint.getTimestamp(msg);
         } catch (Exception e) {

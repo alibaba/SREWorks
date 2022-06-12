@@ -1,33 +1,33 @@
 package com.elasticsearch.cloud.monitor.metric.alarm.blink.udtf;
 
 import com.alibaba.fastjson.JSONObject;
-import com.elasticsearch.cloud.monitor.commons.checker.duration.DurationConditionChecker;
-import com.elasticsearch.cloud.monitor.commons.core.Alarm;
-import com.elasticsearch.cloud.monitor.commons.core.MetricAlarm;
-import com.elasticsearch.cloud.monitor.commons.datapoint.DataPoint;
-import com.elasticsearch.cloud.monitor.commons.datapoint.ImmutableDataPoint;
-import com.elasticsearch.cloud.monitor.commons.rule.Rule;
-import com.elasticsearch.cloud.monitor.commons.utils.StringUtils;
-import com.elasticsearch.cloud.monitor.commons.utils.TagUtils;
-import com.elasticsearch.cloud.monitor.commons.utils.TimeUtils;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.constant.AlarmConstants;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.AlarmEvent;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.AlarmEventHelper;
-import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.cache.RuleConditionCache;
-import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.cache.RuleConditionKafkaCache;
+import com.elasticsearch.cloud.monitor.metric.common.cache.RuleConditionCache;
+import com.elasticsearch.cloud.monitor.metric.common.cache.RuleConditionKafkaCache;
 import com.elasticsearch.cloud.monitor.metric.common.blink.utils.FlinkLogTracer;
 import com.elasticsearch.cloud.monitor.metric.common.blink.utils.FlinkTimeUtil;
+import com.elasticsearch.cloud.monitor.metric.common.checker.duration.DurationConditionChecker;
 import com.elasticsearch.cloud.monitor.metric.common.client.KafkaConfig;
 import com.elasticsearch.cloud.monitor.metric.common.constant.Constants;
+import com.elasticsearch.cloud.monitor.metric.common.core.Alarm;
+import com.elasticsearch.cloud.monitor.metric.common.core.MetricAlarm;
+import com.elasticsearch.cloud.monitor.metric.common.datapoint.DataPoint;
+import com.elasticsearch.cloud.monitor.metric.common.datapoint.ImmutableDataPoint;
 import com.elasticsearch.cloud.monitor.metric.common.pojo.AlertInstance;
-import com.elasticsearch.cloud.monitor.metric.common.rule.EmonRulesManager;
+import com.elasticsearch.cloud.monitor.metric.common.rule.ClientRulesManager;
 import com.elasticsearch.cloud.monitor.metric.common.rule.HealthAlertRulesManagerFactory;
-import com.elasticsearch.cloud.monitor.metric.common.uti.HttpClientsUtil;
-import com.elasticsearch.cloud.monitor.metric.common.uti.PropertiesUtil;
+import com.elasticsearch.cloud.monitor.metric.common.rule.Rule;
+import com.elasticsearch.cloud.monitor.metric.common.utils.HttpClientsUtil;
+import com.elasticsearch.cloud.monitor.metric.common.utils.PropertiesUtil;
+import com.elasticsearch.cloud.monitor.metric.common.utils.TagUtils;
+import com.elasticsearch.cloud.monitor.metric.common.utils.TimeUtils;
 import com.google.common.base.Throwables;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.java.tuple.Tuple13;
 import org.apache.flink.table.functions.FunctionContext;
 import org.apache.flink.table.functions.TableFunction;
@@ -100,7 +100,7 @@ public class HealthAlert
         }
 
         Long ruleId = generateRuleId(alertDefId, metricId);
-        EmonRulesManager rulesManager = rulesManagerFactory.getRulesManager(String.valueOf(alertDefId));
+        ClientRulesManager rulesManager = rulesManagerFactory.getRulesManager(String.valueOf(alertDefId));
         boolean ruleUpdated = false;
         if (rulesManager == null) {
             JSONObject alertRuleConfig = buildAlertRuleConfig(appId, metricName, ruleId, alertConfig.getJSONObject("alert_rule_config"));

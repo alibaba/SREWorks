@@ -15,7 +15,7 @@ import org.springframework.util.CollectionUtils;
  * 解析成应用ID、指标ID、指标名称、指标类型、实例身份ID、实例tags、指标采集时间、指标数值
  * 入参：sreworks pmdb metric msg
  *
- * @author: fangzong.ly
+ * @author: fangzong.lyj
  * @date: 2021/09/03 14:54
  */
 @Slf4j

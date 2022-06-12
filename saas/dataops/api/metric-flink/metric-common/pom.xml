@@ -18,8 +18,9 @@
             <version>3.0</version>
         </dependency>
         <dependency>
-            <groupId>com.elasticsearch.cloud.monitor</groupId>
-            <artifactId>monitor-common</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.4.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>

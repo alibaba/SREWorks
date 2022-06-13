@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.domain.req.market;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.BaseRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,5 +26,6 @@ public class MarketAppDownloadReq extends BaseRequest {
 
     private String localAppId;
 
+    private JSONObject appOptions;
 
 }

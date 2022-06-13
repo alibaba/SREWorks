@@ -228,6 +228,10 @@ public class MarketProviderImpl implements MarketProvider {
                     appInfo.getJSONArray("latestComponents").add(componentInfo);
                 }
             }
+            if(marketPackage.getAppOptions() != null){
+                marketPackage.getAppOptions().put("swapp", null);
+                appInfo.put("appOptions", marketPackage.getAppOptions());
+            }
             JSONObject appUrls = appInfo.getJSONObject("urls");
             JSONArray packageVersions = appInfo.getJSONArray("packageVersions");
             appUrls.put(marketPackage.getPackageVersion(), relativeRemotePath);
@@ -246,7 +250,8 @@ public class MarketProviderImpl implements MarketProvider {
 
     @Override
     public String uploadPackage(MarketEndpointDTO marketEndpoint, MarketPackageDTO marketPackage) throws IOException {
-        String relativeRemotePath = "applications/" + marketPackage.getAppId() + "/" + marketPackage.getPackageVersion() + ".zip";
+        String applicationRemotePath = "applications/" + marketPackage.getAppId();
+        String relativeRemotePath = applicationRemotePath + "/" + marketPackage.getPackageVersion() + ".zip";
         String fullRemotePath = marketEndpoint.getRemotePackagePath() + "/" + relativeRemotePath;
         if (StringUtils.equals(marketEndpoint.getEndpointType(), "oss")) {
             OssStorage client = new OssStorage(
@@ -254,6 +259,20 @@ public class MarketProviderImpl implements MarketProvider {
             log.info("action=init|message=oss client has initialized|endpoint={}", marketEndpoint.getEndpoint());
             client.putObject(marketEndpoint.getRemoteBucket(), fullRemotePath, marketPackage.getPackageLocalPath());
             client.setObjectAclPublic(marketEndpoint.getRemoteBucket(), fullRemotePath);
+
+            // logo如果为本地minio地址，则直接上传后替换
+            if(marketPackage.getAppOptions() != null
+                    && marketPackage.getAppOptions().getString("logoImg") != null
+                    && marketPackage.getAppOptions().getString("logoImg").startsWith("/gateway/minio/")){
+                String logoLocalUrl = marketPackage.getAppOptions().getString("logoImg").replace("/gateway/minio/", "http://sreworks-minio:9000/");
+                File logoTempFile = Files.createTempFile("logo", null).toFile();
+                NetworkUtil.download(logoLocalUrl, logoTempFile.getAbsolutePath());
+                String logoRemoteUrl = marketEndpoint.getRemotePackagePath() + "/" + applicationRemotePath + "/logo";
+                client.putObject(marketEndpoint.getRemoteBucket(), logoRemoteUrl, logoTempFile.getAbsolutePath());
+                client.setObjectAclPublic(marketEndpoint.getRemoteBucket(), logoRemoteUrl);
+                marketPackage.getAppOptions().put("logoImg", "https://" + marketEndpoint.getRemoteBucket() + "." + marketEndpoint.getEndpoint() + "/" + logoRemoteUrl);
+            }
+
             this.updateMarketPackageIndex(marketEndpoint, marketPackage, relativeRemotePath);
             return fullRemotePath;
         }

@@ -245,6 +245,7 @@
                     <dotGitDirectory>${project.basedikr}/.git</dotGitDirectory>
                     <prefix>git</prefix>
                     <verbose>false</verbose>
+                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
                     <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties
                     </generateGitPropertiesFilename>

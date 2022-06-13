@@ -1,3 +1,3 @@
-FROM registry.cn-hangzhou.aliyuncs.com/alisre/sw-postrun:lastest
+FROM {{ POSTRUN_IMAGE }}
 COPY ./APP-META-PRIVATE/postrun /app/postrun
 RUN apk update 

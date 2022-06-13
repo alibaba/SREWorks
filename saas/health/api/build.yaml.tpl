@@ -8,11 +8,12 @@ options:
       build:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        args:
-          TAG: ack
         dockerfileTemplateArgs:
-          JRE11_IMAGE: registry.cn-hangzhou.aliyuncs.com/alisre/openjdk:11.0.10-jre
-        dockerfileTemplate: Dockerfile
+          MAVEN_IMAGE: ${MAVEN_IMAGE}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
+          JRE8_IMAGE: ${JRE8_IMAGE}
+          APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
+        dockerfileTemplate: Dockerfile.tpl
         repoPath: saas/health/api/health
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}
@@ -25,11 +26,9 @@ options:
       build:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        args:
-          TAG: ack
         dockerfileTemplateArgs:
           MIGRATE_IMAGE: ${MIGRATE_IMAGE}
-        dockerfileTemplate: Dockerfile-db-migration
+        dockerfileTemplate: Dockerfile-db-migration.tpl
         repoPath: saas/health/api/health
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}

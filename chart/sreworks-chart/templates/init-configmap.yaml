@@ -19,6 +19,9 @@ data:
   JRE11_ALPINE_IMAGE: {{ .Values.global.artifacts.openjdk11AlpineImage }}
   PYTHON_PIP: {{ .Values.global.artifacts.pythonPip }}
   PYTHON_PIP_DOMAIN: {{ template "python.pip.domain" . }}
+  MINIO_CLIENT_URL: {{ .Values.global.artifacts.minioClientUrl }}
+  PYTHON3_IMAGE: {{ .Values.global.artifacts.python3Image }}
+  BENTOML_IMAGE: {{ .Values.global.artifacts.bentomlImage }}
 
   SOURCE_BRANCH: {{ .Values.source.branch | default "master" | quote }}
   SOURCE_REPO: {{ .Values.source.repo }}

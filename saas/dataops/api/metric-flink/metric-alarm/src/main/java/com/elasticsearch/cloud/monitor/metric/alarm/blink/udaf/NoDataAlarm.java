@@ -1,17 +1,17 @@
 package com.elasticsearch.cloud.monitor.metric.alarm.blink.udaf;
 
-import com.elasticsearch.cloud.monitor.commons.checker.nodata.NoDataConditionChecker;
-import com.elasticsearch.cloud.monitor.commons.core.Alarm;
-import com.elasticsearch.cloud.monitor.commons.core.MetricAlarm;
-import com.elasticsearch.cloud.monitor.commons.rule.Rule;
-import com.elasticsearch.cloud.monitor.commons.rule.RuleManagerFactory;
-import com.elasticsearch.cloud.monitor.commons.rule.RulesManager;
-import com.elasticsearch.cloud.monitor.commons.rule.filter.TagVFilter;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.constant.AlarmConstants;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.AlarmEvent;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.AlarmEventHelper;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.TagsUtils;
 import com.elasticsearch.cloud.monitor.metric.common.blink.utils.FlinkLogTracer;
+import com.elasticsearch.cloud.monitor.metric.common.checker.nodata.NoDataConditionChecker;
+import com.elasticsearch.cloud.monitor.metric.common.core.Alarm;
+import com.elasticsearch.cloud.monitor.metric.common.core.MetricAlarm;
+import com.elasticsearch.cloud.monitor.metric.common.rule.OssRulesManager;
+import com.elasticsearch.cloud.monitor.metric.common.rule.Rule;
+import com.elasticsearch.cloud.monitor.metric.common.rule.SreworksRulesManagerFactory;
+import com.elasticsearch.cloud.monitor.metric.common.rule.filter.TagVFilter;
 import com.elasticsearch.cloud.monitor.metric.common.rule.util.RuleUtil;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class NoDataAlarm extends AggregateFunction<List<AlarmEvent>, NoDataAlarm.NoDataAlarmAccumulator> {
     private transient Cache<String, NoDataConditionChecker> checkerCache;
-    private transient RuleManagerFactory ruleManagerFactory;
+    private transient SreworksRulesManagerFactory ruleManagerFactory;
     private transient FlinkLogTracer tracer;
     private transient Map<String, Map<Long, Map<Long, Map<String, Set<String>>>>> windowRuleSingleTagValueMap;
     private transient Map<String, Map<Long, Map<Long, Set<Map<String, String>>>>> windowRuleMultiTagValueMap;
@@ -84,7 +84,7 @@ public class NoDataAlarm extends AggregateFunction<List<AlarmEvent>, NoDataAlarm
             comeRuleIds = tenantTimestampRuleIds.get(alarmAcc.getTenant()).get(alarmAcc.getTimestamp());
         }
         List<AlarmEvent> out = new ArrayList<>();
-        RulesManager rulesManager = ruleManagerFactory.getRuleManager(alarmAcc.getTenant());
+        OssRulesManager rulesManager = (OssRulesManager) ruleManagerFactory.getRulesManager(alarmAcc.getTenant());
         for (Rule rule : rulesManager.getAllRules()) {
             if (rule.getNoDataCondition() == null) {
                 continue;
@@ -156,7 +156,7 @@ public class NoDataAlarm extends AggregateFunction<List<AlarmEvent>, NoDataAlarm
     }
 
     public void accumulate(NoDataAlarmAccumulator acc, long ruleId, long windowStart, String tenant, String tagString) {
-        RulesManager rulesManager = ruleManagerFactory.getRuleManager(tenant);
+        OssRulesManager rulesManager = (OssRulesManager) ruleManagerFactory.getRulesManager(tenant);
         if (StringUtils.isEmpty(tenant)) {
             tenant = "default";
         }

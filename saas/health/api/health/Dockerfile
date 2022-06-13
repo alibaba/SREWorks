@@ -1,10 +1,10 @@
-FROM registry.cn-hangzhou.aliyuncs.com/alisre/sreworks-base AS build
+FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/maven:3.8.3-adoptopenjdk-11 AS build
 
 COPY . /app
 COPY settings.xml /root/.m2/settings.xml
 RUN cd /app && mvn -f pom.xml -Dmaven.test.skip=true clean package
 
-FROM registry.cn-hangzhou.aliyuncs.com/alisre/openjdk8-jre AS release
+FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/openjdk8:alpine-jre AS release
 ARG START_MODULE=health-start
 ARG TARGET_DIRECTORY=health
 ARG JAR_NAME=health.jar

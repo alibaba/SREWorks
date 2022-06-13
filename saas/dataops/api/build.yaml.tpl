@@ -8,10 +8,11 @@ options:
       build:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        args:
-          TAG: ack
         dockerfileTemplateArgs:
-          JRE11_IMAGE: registry.cn-hangzhou.aliyuncs.com/alisre/openjdk:11.0.10-jre
+          MAVEN_IMAGE: ${MAVEN_IMAGE}
+          JRE8_IMAGE: ${JRE8_IMAGE}
+          APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
         dockerfileTemplate: Dockerfile.tpl
         repoPath: saas/dataops/api/dataset
         branch: ${SOURCE_BRANCH}
@@ -24,11 +25,9 @@ options:
       build:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        args:
-          TAG: ack
         dockerfileTemplateArgs:
           MIGRATE_IMAGE: ${MIGRATE_IMAGE}
-        dockerfileTemplate: Dockerfile_db_migration.tpl
+        dockerfileTemplate: Dockerfile-db-migration.tpl
         repoPath: saas/dataops/api/dataset
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}
@@ -38,11 +37,9 @@ options:
       build:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        args:
-          TAG: ack
         dockerfileTemplateArgs:
           MIGRATE_IMAGE: ${MIGRATE_IMAGE}
-        dockerfileTemplate: Dockerfile_db_migration_datasource.tpl
+        dockerfileTemplate: Dockerfile-db-migration-datasource.tpl
         repoPath: saas/dataops/api/dataset
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}
@@ -75,8 +72,6 @@ options:
     build:
       imagePush: ${IMAGE_BUILD_ENABLE}
       imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-      args:
-        TAG: ack
       dockerfileTemplateArgs:
         POSTRUN_IMAGE: ${POSTRUN_IMAGE}
       dockerfileTemplate: Dockerfile-postrun.tpl
@@ -108,10 +103,11 @@ options:
       build:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        args:
-          TAG: ack
         dockerfileTemplateArgs:
-          JRE11_IMAGE: registry.cn-hangzhou.aliyuncs.com/alisre/openjdk:11.0.10-jre
+          MAVEN_IMAGE: ${MAVEN_IMAGE}
+          JRE8_IMAGE: ${JRE8_IMAGE}
+          APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
         dockerfileTemplate: Dockerfile.tpl
         repoPath: saas/dataops/api/pmdb
         branch: ${SOURCE_BRANCH}
@@ -124,8 +120,6 @@ options:
       build:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        args:
-          TAG: ack
         dockerfileTemplateArgs:
           MIGRATE_IMAGE: ${MIGRATE_IMAGE}
         dockerfileTemplate: Dockerfile_db_migration.tpl
@@ -168,10 +162,11 @@ options:
       build:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        args:
-          TAG: ack
         dockerfileTemplateArgs:
-          JRE11_IMAGE: registry.cn-hangzhou.aliyuncs.com/alisre/openjdk:11.0.10-jre
+          MAVEN_IMAGE: ${MAVEN_IMAGE}
+          JRE8_IMAGE: ${JRE8_IMAGE}
+          APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
         dockerfileTemplate: Dockerfile.tpl
         repoPath: saas/dataops/api/warehouse
         branch: ${SOURCE_BRANCH}
@@ -188,7 +183,7 @@ options:
           TAG: ack
         dockerfileTemplateArgs:
           MIGRATE_IMAGE: ${MIGRATE_IMAGE}
-        dockerfileTemplate: Dockerfile_db_migration.tpl
+        dockerfileTemplate: Dockerfile-db-migration.tpl
         repoPath: saas/dataops/api/warehouse
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}
@@ -220,8 +215,14 @@ options:
       args:
         TAG: ack
       dockerfileTemplateArgs:
-        ALPINE_IMAGE: alpine:latest
-      dockerfileTemplate: Dockerfile
+        MAVEN_IMAGE: ${MAVEN_IMAGE}
+        ALPINE_IMAGE: ${ALPINE_IMAGE}
+        APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
+        MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
+        MINIO_CLIENT_URL: ${MINIO_CLIENT_URL}
+        PYTHON_PIP: ${PYTHON_PIP}
+        PYTHON_PIP_DOMAIN: ${PYTHON_PIP_DOMAIN}
+      dockerfileTemplate: Dockerfile.tpl
       repoPath: saas/dataops/api/metric-flink
       branch: ${SOURCE_BRANCH}
       repo: ${SOURCE_REPO}

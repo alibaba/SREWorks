@@ -1,13 +1,13 @@
 package com.elasticsearch.cloud.monitor.metric.common.rule.loader;
 
-import com.elasticsearch.cloud.monitor.commons.rule.Rule;
+import com.elasticsearch.cloud.monitor.metric.common.rule.Rule;
 
 import java.util.List;
 
 /**
  * 规则加载
  *
- * @author: fangzong.ly
+ * @author: fangzong.lyj
  * @date: 2021/09/02 14:17
  */
 public interface RulesLoader {

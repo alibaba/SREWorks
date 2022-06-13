@@ -2,15 +2,20 @@ package com.alibaba.tesla.appmanager.server.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.api.provider.AppMetaProvider;
 import com.alibaba.tesla.appmanager.api.provider.AppPackageProvider;
 import com.alibaba.tesla.appmanager.api.provider.MarketProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.common.util.NetworkUtil;
+import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.dto.AppPackageDTO;
 import com.alibaba.tesla.appmanager.domain.dto.MarketEndpointDTO;
 import com.alibaba.tesla.appmanager.domain.dto.MarketPackageDTO;
+import com.alibaba.tesla.appmanager.domain.req.AppMetaUpdateReq;
+import com.alibaba.tesla.appmanager.domain.req.apppackage.AppPackageImportReq;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.AppPackageQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.market.*;
+import com.alibaba.tesla.appmanager.domain.schema.AppPackageSchema;
 import com.alibaba.tesla.appmanager.server.storage.impl.OssStorage;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +26,16 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 应用市场 Controller
@@ -42,6 +53,9 @@ public class MarketController extends AppManagerBaseController {
     @Autowired
     private AppPackageProvider appPackageProvider;
 
+    @Autowired
+    private AppMetaProvider appMetaProvider;
+
 
     @GetMapping(value = "/apps")
     public TeslaBaseResult listApp(MarketAppListReq request) {
@@ -53,8 +67,6 @@ public class MarketController extends AppManagerBaseController {
         JSONObject result = new JSONObject();
         result.put("write", false);
         result.put("read", false);
-        result.put("hasInit", false);
-
 
         String remotePackagePath = request.getRemotePackagePath();
         if(remotePackagePath.startsWith("/")){
@@ -65,11 +77,11 @@ public class MarketController extends AppManagerBaseController {
         }
 
         if(StringUtils.equals(request.getEndpointType(), "oss")){
-            OssStorage client = new OssStorage(request.getEndpoint(), request.getAccessKey(), request.getSecretKey());
             if(StringUtils.isNotBlank(request.getAccessKey())){
                 /**
                  *  测试写入
                  */
+                OssStorage client = new OssStorage(request.getEndpoint(), request.getAccessKey(), request.getSecretKey());
                 Path tempFile = Files.createTempFile("sw", ".txt");
                 String remoteFilePath = remotePackagePath + "/" + tempFile.getFileName().toString();
                 client.putObject(request.getRemoteBucket(), remoteFilePath, tempFile.toAbsolutePath().toString());
@@ -82,16 +94,28 @@ public class MarketController extends AppManagerBaseController {
             /**
              *  测试读取
              */
-            try{
-                client.listObjects(request.getRemoteBucket(), remotePackagePath);
-                result.put("read", true);
-            }catch (Exception e) {
-                log.info("action=check|message=check oss read fail|{}", e);
+            if(StringUtils.isNotBlank(request.getAccessKey())){
+                try{
+                    OssStorage client = new OssStorage(request.getEndpoint(), request.getAccessKey(), request.getSecretKey());
+                    client.listObjects(request.getRemoteBucket(), remotePackagePath);
+                    result.put("read", true);
+                }catch (Exception e) {
+                    log.info("action=check|message=check oss read fail|{}", e);
+                }
+            }else{
+                String swIndexUrl = "https://" + Paths.get(request.getRemoteBucket() + "." + request.getEndpoint(), request.getRemotePackagePath(), "sw-index.json").toString();
+                try {
+                    File swIndexFile = Files.createTempFile("market", ".json").toFile();
+                    NetworkUtil.download(swIndexUrl, swIndexFile.getAbsolutePath());
+                    JSONObject.parseObject(FileUtils.readFileToString(swIndexFile, "UTF-8"));
+                    result.put("read", true);
+                } catch (IOException e) {
+                    log.info("endpointCheck|swIndexUrl:{} return:{}", swIndexUrl, e);
+                }
             }
         }else{
             buildClientErrorResult("not support endpointType " + request.getEndpointType());
         }
-
 
         return buildSucceedResult(result);
     }
@@ -122,8 +146,13 @@ public class MarketController extends AppManagerBaseController {
             remotePackagePath = remotePackagePath.substring(1);
         }
 
+        File appPackageLocal = marketProvider.downloadAppPackage(appPackageInfo, getOperator(auth));
+
         MarketPackageDTO marketPackage = marketProvider.rebuildAppPackage(
-                appPackageInfo, getOperator(auth), remoteAppId, request.getRemoteSimplePackageVersion());
+                appPackageLocal, getOperator(auth), appPackageInfo.getAppId(), remoteAppId, request.getRemoteSimplePackageVersion());
+        marketPackage.setAppName(appPackageInfo.getAppName());
+        marketPackage.setAppOptions(appPackageInfo.getAppOptions());
+        marketPackage.setAppSchemaObject(SchemaUtil.toSchema(AppPackageSchema.class, appPackageInfo.getAppSchema()));
 
         JSONObject result = new JSONObject();
         result.put("remoteAppId", remoteAppId);
@@ -178,15 +207,25 @@ public class MarketController extends AppManagerBaseController {
     @ResponseBody
     public TeslaBaseResult packageList(MarketAppPackageListReq request, OAuth2Authentication auth) throws IOException {
         JSONArray packageArray = new JSONArray();
-        String[] remoteUrls = request.getRemoteUrls().split(",");
 
-        for(String remoteUrl: remoteUrls){
-            String swIndexUrl = "https://" + Paths.get(remoteUrl.replace("oss://", ""), "sw-index.json").toString();
-            File swIndexFile = Files.createTempFile("market", ".json").toFile();
-            NetworkUtil.download(swIndexUrl, swIndexFile.getAbsolutePath());
-            JSONObject swIndexObject = JSONObject.parseObject(FileUtils.readFileToString(swIndexFile, "UTF-8"));
-            JSONArray swIndexPackages = swIndexObject.getJSONArray("packages");
-            packageArray.addAll(swIndexPackages);
+        List<String> remoteUrlList = Arrays.asList(request.getRemoteUrls().split(",")).stream().distinct().collect(Collectors.toList());
+
+        if(StringUtils.isNotBlank(request.getRemoteUrls())) {
+            for (String remoteUrl : remoteUrlList) {
+                String swIndexUrl = "https://" + Paths.get(remoteUrl.replace("oss://", ""), "sw-index.json").toString();
+                try {
+                    File swIndexFile = Files.createTempFile("market", ".json").toFile();
+                    NetworkUtil.download(swIndexUrl, swIndexFile.getAbsolutePath());
+                    JSONObject swIndexObject = JSONObject.parseObject(FileUtils.readFileToString(swIndexFile, "UTF-8"));
+                    JSONArray swIndexPackages = swIndexObject.getJSONArray("packages");
+                    for (int i = 0; i < swIndexPackages.size(); i++) {
+                        swIndexPackages.getJSONObject(i).put("remoteUrl", remoteUrl);
+                    }
+                    packageArray.addAll(swIndexPackages);
+                } catch (IOException e) {
+                    log.info("packageList|swIndexUrl:{} return:{}", swIndexUrl, e);
+                }
+            }
         }
 
         JSONObject result = new JSONObject();
@@ -194,9 +233,43 @@ public class MarketController extends AppManagerBaseController {
         return buildSucceedResult(result);
     }
 
-    @GetMapping(value = "download")
+    @PostMapping(value = "download")
     @ResponseBody
-    public TeslaBaseResult download(OAuth2Authentication auth) {
-        return buildSucceedResult(null);
+    public TeslaBaseResult download(@RequestBody MarketAppDownloadReq request, OAuth2Authentication auth) throws IOException {
+
+        String downloadUrl;
+        if(StringUtils.startsWith(request.getRemoteUrl(), "oss://")){
+            downloadUrl = "https://" + Paths.get(request.getRemoteUrl().replace("oss://", ""), URLEncoder.encode(request.getPackageUrl(), "UTF-8"));
+
+        }else{
+            return buildClientErrorResult("not support");
+        }
+
+        File localPackageFile = Files.createTempFile("market", ".zip").toFile();
+        NetworkUtil.download(downloadUrl, localPackageFile.getAbsolutePath());
+
+        MarketPackageDTO marketPackage = marketProvider.rebuildAppPackage(
+                localPackageFile, getOperator(auth), request.getAppId(), request.getLocalAppId(), null);
+
+        File marketPackageFile = new File(marketPackage.getPackageLocalPath());
+        InputStream marketPackageStream = new FileInputStream(marketPackageFile);
+
+        AppPackageImportReq appPackageImportReq = AppPackageImportReq.builder()
+                .appId(marketPackage.getAppId())
+                .packageCreator(getOperator(auth))
+                .packageVersion(marketPackage.getPackageVersion())
+                .force(true)
+                .resetVersion(false)
+                .build();
+        AppPackageDTO appPackageInfo = appPackageProvider.importPackage(appPackageImportReq, marketPackageStream, getOperator(auth));
+
+        AppMetaUpdateReq appMetaUpdateReq = new AppMetaUpdateReq();
+        appMetaUpdateReq.setAppId(marketPackage.getAppId());
+        if(request.getAppOptions() != null) {
+            appMetaUpdateReq.setOptions(request.getAppOptions());
+        }
+        appMetaProvider.save(appMetaUpdateReq);
+
+        return buildSucceedResult(appPackageInfo);
     }
 }

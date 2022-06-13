@@ -1,14 +1,13 @@
 package com.elasticsearch.cloud.monitor.metric.common.rule.util;
 
-import com.elasticsearch.cloud.monitor.commons.utils.StringUtils;
 import com.elasticsearch.cloud.monitor.metric.common.client.MinioConfig;
 import com.elasticsearch.cloud.monitor.metric.common.constant.Constants;
-import com.elasticsearch.cloud.monitor.metric.common.rule.RuleManagerFactory;
-import com.elasticsearch.cloud.monitor.metric.common.rule.RuleMinioManagerFactory;
+import com.elasticsearch.cloud.monitor.metric.common.rule.*;
 import com.elasticsearch.cloud.monitor.metric.common.rule.constant.StorageType;
 import com.elasticsearch.cloud.monitor.metric.common.rule.exception.InvalidParameterException;
-import com.elasticsearch.cloud.monitor.metric.common.uti.PropertiesUtil;
+import com.elasticsearch.cloud.monitor.metric.common.utils.PropertiesUtil;
 import com.google.common.base.Preconditions;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.table.functions.FunctionContext;
 
 /**
@@ -29,7 +28,7 @@ public class RuleUtil {
      * @return
      * @throws InvalidParameterException
      */
-    public static com.elasticsearch.cloud.monitor.commons.rule.RuleManagerFactory createRuleManagerFactory(FunctionContext context)
+    public static SreworksRulesManagerFactory<OssRulesManager> createRuleManagerFactory(FunctionContext context)
             throws InvalidParameterException {
         String ossRulePath = context.getJobParameter(Constants.RULE_PATH, "");
         if (StringUtils.isEmpty(ossRulePath)) {
@@ -40,7 +39,7 @@ public class RuleUtil {
         long shufflePeriod = Long.valueOf(
                 context.getJobParameter(Constants.RULE_REFRESH_SHUFFLE, Constants.RULE_REFRESH_SHUFFLE_DEF + ""));
         boolean forEmon=Boolean.valueOf(context.getJobParameter(Constants.RULE_FOR_EMON, "false"));
-        return new com.elasticsearch.cloud.monitor.commons.rule.RuleManagerFactory(ossRulePath, refreshPeriod, shufflePeriod, forEmon);
+        return new OssRulesManagerFactory(ossRulePath, refreshPeriod, shufflePeriod);
     }
 
     /**
@@ -49,14 +48,14 @@ public class RuleUtil {
      * @return
      * @throws InvalidParameterException
      */
-    public static RuleManagerFactory createRuleManagerFactoryForFlink(FunctionContext context)
+    public static SreworksRulesManagerFactory<MinioRulesManager> createRuleManagerFactoryForFlink(FunctionContext context)
             throws InvalidParameterException {
         StorageType storageType = StorageType.valueOf(context.getJobParameter(Constants.RULE_STORAGE_TYPE,
                 "MINIO").toUpperCase());
 
-        long refreshPeriod = Long.valueOf(
+        long refreshPeriod = Long.parseLong(
                 context.getJobParameter(Constants.RULE_REFRESH_PERIOD, Constants.RULE_REFRESH_PERIOD_DEF + ""));
-        long shufflePeriod = Long.valueOf(
+        long shufflePeriod = Long.parseLong(
                 context.getJobParameter(Constants.RULE_REFRESH_SHUFFLE, Constants.RULE_REFRESH_SHUFFLE_DEF + ""));
 
         if (storageType == StorageType.MINIO) {
@@ -75,7 +74,7 @@ public class RuleUtil {
                     String.format("only json and zip file are supported, real file:%s", minioFile));
 
             MinioConfig minioConfig = new MinioConfig(minioEndpoint, minioAccessKey, minioSecretKey, minioBucket, minioFile);
-            return new RuleMinioManagerFactory(minioConfig, refreshPeriod, shufflePeriod);
+            return new MinioRulesManagerFactory(minioConfig, refreshPeriod, shufflePeriod);
 
         } else if (storageType == StorageType.OSS) {
             // TODO

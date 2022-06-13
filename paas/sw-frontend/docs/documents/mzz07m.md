@@ -77,3 +77,31 @@ helm install sreworks $SW_ROOT/chart/sreworks-chart \
 --set source.repo="https://code.aliyun.com/sreworks_public/mirror.git"
 
 ```
+<a name="M4cYp"></a>
+# 4. 源码构建依赖资源清单
+适用于纯内网构建或者部分资源替换场景
+
+<a name="xW7Sg"></a>
+## 底座依赖资源参数
+在执行 `./build.sh` 命令前传入
+```bash
+export SW_PYTHON3_IMAGE="python:3.9.12-alpine"
+export APK_REPO_DOMAIN="mirrors.tuna.tsinghua.edu.cn"
+export PYTHON_PIP="http://mirrors.aliyun.com/pypi/simple"
+export MIGRATE_IMAGE="migrate/migrate"
+export MAVEN_IMAGE="maven:3.8.3-adoptopenjdk-11"
+export HELM_BIN_URL="https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/helm"
+export KUSTOMIZE_BIN_URL="https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/kustomize"
+export MAVEN_SETTINGS_XML="https://sreworks.oss-cn-beijing.aliyuncs.com/resource/settings.xml"
+export GOLANG_IMAGE="golang:alpine"
+export GOPROXY="https://goproxy.cn"
+export GOLANG_BUILD_IMAGE="golang:1.16"
+export DISTROLESS_IMAGE="sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/distroless-static:nonroot"
+export MINIO_CLIENT_URL="https://sreworks.oss-cn-beijing.aliyuncs.com/bin/mc-linux-amd64"
+export SREWORKS_BUILTIN_PACKAGE_URL="https://sreworks.oss-cn-beijing.aliyuncs.com/packages"
+```
+
+<a name="ZYXoU"></a>
+## 运维应用依赖资源参数
+附加到helm的安装参数上
+

@@ -1,0 +1,1 @@
+INSERT IGNORE INTO config (name, content, operator) VALUES ("market_default", "{\"id\":\"default\",\"alias\":\"公共市场\",\"endpoint\":\"oss-cn-beijing.aliyuncs.com\",\"remoteBucket\":\"sreworks\",\"remotePackagePath\":\"/markets\",\"isUpload\":false,\"endpointType\":\"oss\"}","999999999");

@@ -1,9 +1,9 @@
 package com.elasticsearch.cloud.monitor.metric.common.blink.utils;
 
-import com.elasticsearch.cloud.monitor.commons.utils.TimeUtils;
+import com.elasticsearch.cloud.monitor.metric.common.utils.TimeUtils;
 
 /**
- * @author: fangzong.ly
+ * @author: fangzong.lyj
  * @date: 2021/09/06 17:51
  */
 public class FlinkTimeUtil extends TimeUtils {

@@ -7,7 +7,7 @@ import lombok.Data;
 /**
  * 故障实例
  *
- * @author: fangzong.ly
+ * @author: fangzong.lyj
  * @date: 2022/01/27 17:28
  */
 @Data

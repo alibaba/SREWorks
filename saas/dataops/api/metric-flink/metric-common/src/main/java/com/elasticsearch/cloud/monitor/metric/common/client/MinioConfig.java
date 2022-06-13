@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  * Kafka配置信息
  *
- * @author: fangzong.ly
+ * @author: fangzong.lyj
  * @date: 2021/08/31 19:27
  */
 @Data

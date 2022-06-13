@@ -1,10 +1,10 @@
-FROM registry.cn-hangzhou.aliyuncs.com/alisre/sreworks-base AS build
+FROM {{ MAVEN_IMAGE }} AS build
 
 COPY . /app
-COPY settings.xml /root/.m2/settings.xml
+RUN mkdir /root/.m2/ && curl {{ MAVEN_SETTINGS_XML }} -o /root/.m2/settings.xml
 RUN cd /app && mvn -f pom.xml -Dmaven.test.skip=true clean package
 
-FROM registry.cn-hangzhou.aliyuncs.com/alisre/openjdk8-jre AS release
+FROM {{ JRE8_IMAGE }} AS release
 ARG START_MODULE=dataset-start
 ARG TARGET_DIRECTORY=dataset
 ARG JAR_NAME=dataset.jar

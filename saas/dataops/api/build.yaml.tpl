@@ -216,8 +216,14 @@ options:
       args:
         TAG: ack
       dockerfileTemplateArgs:
-        ALPINE_IMAGE: alpine:latest
-      dockerfileTemplate: Dockerfile
+        MAVEN_IMAGE: ${MAVEN_IMAGE}
+        ALPINE_IMAGE: ${ALPINE_IMAGE}
+        APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
+        MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
+        MINIO_CLIENT_URL: ${MINIO_CLIENT_URL}
+        PYTHON_PIP: ${PYTHON_PIP}
+        PYTHON_PIP_DOMAIN: ${PYTHON_PIP_DOMAIN}
+      dockerfileTemplate: Dockerfile.tpl
       repoPath: saas/dataops/api/metric-flink
       branch: ${SOURCE_BRANCH}
       repo: ${SOURCE_REPO}

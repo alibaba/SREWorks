@@ -24,6 +24,8 @@ global:
     migrateImage: sw-migrate 
     postrunImage: sw-postrun
     pythonPip: http://mirrors.aliyun.com/pypi/simple
+    minioClientUrl: https://sreworks.oss-cn-beijing.aliyuncs.com/bin/mc-linux-amd64
+    python3Image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/python:3.9.12-alpine
  
 platformName: SREWorks
 platformLogo: /static/publicMedia/sreworks.png

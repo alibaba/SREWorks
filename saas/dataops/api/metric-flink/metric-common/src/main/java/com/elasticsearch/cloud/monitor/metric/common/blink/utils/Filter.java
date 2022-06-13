@@ -1,6 +1,6 @@
 package com.elasticsearch.cloud.monitor.metric.common.blink.utils;
 
-import com.elasticsearch.cloud.monitor.commons.datapoint.ImmutableDataPoint;
+import com.elasticsearch.cloud.monitor.metric.common.datapoint.ImmutableDataPoint;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;

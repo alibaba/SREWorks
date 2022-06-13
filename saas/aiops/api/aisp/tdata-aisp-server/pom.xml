@@ -17,7 +17,7 @@
 
     <!-- alibaba dependency -->
     <dependency>
-      <groupId>com.alibaba.tesla</groupId>
+      <groupId>io.sreworks</groupId>
       <artifactId>tesla-swagger-spring-boot-starter</artifactId>
     </dependency>
     <dependency>
@@ -71,11 +71,6 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.aliyun.inner</groupId>
-      <artifactId>tesla_aiops20220429</artifactId>
-      <version>1.0.7</version>
     </dependency>
 
     <!-- prometheus meter-->

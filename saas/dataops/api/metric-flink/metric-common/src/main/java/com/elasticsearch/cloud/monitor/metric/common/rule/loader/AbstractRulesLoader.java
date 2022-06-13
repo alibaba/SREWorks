@@ -1,14 +1,15 @@
 package com.elasticsearch.cloud.monitor.metric.common.rule.loader;
 
-import com.elasticsearch.cloud.monitor.commons.rule.Rule;
-import com.elasticsearch.cloud.monitor.commons.rule.SubQuery;
+import com.elasticsearch.cloud.monitor.metric.common.rule.Rule;
+import com.elasticsearch.cloud.monitor.metric.common.rule.SubQuery;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
 /**
- * @author: fangzong.ly
+ * @author: fangzong.lyj
  * @date: 2021/09/02 14:20
  */
 @Slf4j
@@ -39,7 +40,7 @@ public abstract class AbstractRulesLoader implements RulesLoader {
 
     protected void subqueryLowerCase(SubQuery rule) {
         if (rule != null) {
-            if (com.elasticsearch.cloud.monitor.commons.utils.StringUtils.isNotEmpty(rule.getMetric())) {
+            if (StringUtils.isNotEmpty(rule.getMetric())) {
                 rule.setMetric(rule.getMetric().toLowerCase());
             }
 

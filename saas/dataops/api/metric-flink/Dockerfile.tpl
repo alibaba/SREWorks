@@ -4,8 +4,8 @@ COPY . /app
 RUN mkdir /root/.m2/ && curl {{ MAVEN_SETTINGS_XML }} -o /root/.m2/settings.xml
 RUN cd /app && mvn -f pom.xml -Dmaven.test.skip=true clean package
 
-FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/alpine:latest AS release
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+FROM {{ ALPINE_IMAGE }} AS release
+RUN sed -i 's/dl-cdn.alpinelinux.org/{{ APK_REPO_DOMAIN }}/g' /etc/apk/repositories
 RUN { \
         echo '#!/bin/sh'; \
         echo 'set -e'; \
@@ -28,11 +28,12 @@ COPY ./sbin/ /app/sbin/
 RUN chmod +x /app/sbin/entrypoint.sh
 
 # minio-client
-RUN wget https://sreworks.oss-cn-beijing.aliyuncs.com/bin/mc-linux-amd64 -O /app/sbin/mc
+RUN wget {{ MINIO_CLIENT_URL }} -O /app/sbin/mc
 RUN chmod +x /app/sbin/mc
 
 # kafka init
 RUN apk add gcc python3 python3-dev py3-pip musl-dev librdkafka-dev
-RUN pip3 install -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com confluent_kafka
+RUN pip config set global.index-url {{ PYTHON_PIP }} && pip config set global.trusted-host {{ PYTHON_PIP_DOMAIN }}
+RUN pip3 install confluent_kafka
 
 ENTRYPOINT ["/bin/sh", "/app/sbin/entrypoint.sh"]

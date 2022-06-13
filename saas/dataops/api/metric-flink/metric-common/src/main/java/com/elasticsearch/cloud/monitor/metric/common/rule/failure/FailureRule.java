@@ -1,7 +1,7 @@
 package com.elasticsearch.cloud.monitor.metric.common.rule.failure;
 
 import com.alibaba.fastjson.JSONObject;
-import com.elasticsearch.cloud.monitor.commons.utils.TimeUtils;
+import com.elasticsearch.cloud.monitor.metric.common.utils.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.Optional;
 /**
  * 故障规则
  *
- * @author: fangzong.ly
+ * @author: fangzong.lyj
  * @date: 2022/01/27 15:47
  */
 public class FailureRule {

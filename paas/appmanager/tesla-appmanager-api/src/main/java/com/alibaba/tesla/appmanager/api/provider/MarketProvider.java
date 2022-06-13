@@ -7,6 +7,7 @@ import com.alibaba.tesla.appmanager.domain.dto.MarketEndpointDTO;
 import com.alibaba.tesla.appmanager.domain.dto.MarketPackageDTO;
 import com.alibaba.tesla.appmanager.domain.req.market.MarketAppListReq;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -24,12 +25,15 @@ public interface MarketProvider {
     /**
      * 重新构建应用包，可以改变appId和packageVersion
      */
-    MarketPackageDTO rebuildAppPackage(AppPackageDTO appPackage, String appId, String simplePackageVersion, String operator) throws IOException;
+    MarketPackageDTO rebuildAppPackage(File appPackageLocal, String operator, String oldAppId, String newAppId, String newSimplePackageVersion) throws IOException;
 
-//    /**
-//     * 更新市场包索引
-//     */
-//    boolean updateMarketPackageIndex(MarketEndpointDTO marketEndpoint, MarketPackageDTO marketPackage) throws IOException;
+
+    /**
+     *
+     *  下载应用包到本地
+     */
+    File downloadAppPackage(AppPackageDTO appPackage, String operator) throws IOException;
+
 
     /**
      * 上传市场包

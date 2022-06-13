@@ -1,6 +1,7 @@
 package com.alibaba.tesla.appmanager.domain.dto;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.domain.schema.AppPackageSchema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -48,5 +49,10 @@ public class MarketPackageDTO implements Serializable {
      * 应用配置信息 (JSON)
      */
     private JSONObject appOptions;
+
+    /**
+     * 应用包 Schema 定义信息 (YAML)
+     */
+    private AppPackageSchema appSchemaObject;
 
 }

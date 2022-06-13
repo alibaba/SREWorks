@@ -103,10 +103,11 @@ options:
       build:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        args:
-          TAG: ack
         dockerfileTemplateArgs:
-          JRE11_IMAGE: registry.cn-hangzhou.aliyuncs.com/alisre/openjdk:11.0.10-jre
+          MAVEN_IMAGE: ${MAVEN_IMAGE}
+          JRE8_IMAGE: ${JRE8_IMAGE}
+          APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
         dockerfileTemplate: Dockerfile.tpl
         repoPath: saas/dataops/api/pmdb
         branch: ${SOURCE_BRANCH}
@@ -119,8 +120,6 @@ options:
       build:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        args:
-          TAG: ack
         dockerfileTemplateArgs:
           MIGRATE_IMAGE: ${MIGRATE_IMAGE}
         dockerfileTemplate: Dockerfile_db_migration.tpl

@@ -261,16 +261,18 @@ public class MarketProviderImpl implements MarketProvider {
             client.setObjectAclPublic(marketEndpoint.getRemoteBucket(), fullRemotePath);
 
             // logo如果为本地minio地址，则直接上传后替换
-            if(marketPackage.getAppOptions() != null
-                    && marketPackage.getAppOptions().getString("logoImg") != null
-                    && marketPackage.getAppOptions().getString("logoImg").startsWith("/gateway/minio/")){
-                String logoLocalUrl = marketPackage.getAppOptions().getString("logoImg").replace("/gateway/minio/", "http://sreworks-minio:9000/");
-                File logoTempFile = Files.createTempFile("logo", null).toFile();
-                NetworkUtil.download(logoLocalUrl, logoTempFile.getAbsolutePath());
-                String logoRemoteUrl = marketEndpoint.getRemotePackagePath() + "/" + applicationRemotePath + "/logo";
-                client.putObject(marketEndpoint.getRemoteBucket(), logoRemoteUrl, logoTempFile.getAbsolutePath());
-                client.setObjectAclPublic(marketEndpoint.getRemoteBucket(), logoRemoteUrl);
-                marketPackage.getAppOptions().put("logoImg", "https://" + marketEndpoint.getRemoteBucket() + "." + marketEndpoint.getEndpoint() + "/" + logoRemoteUrl);
+            if(marketPackage.getAppOptions() != null){
+                if(marketPackage.getAppOptions().getString("logoImg") != null && marketPackage.getAppOptions().getString("logoImg").startsWith("/gateway/minio/")) {
+                    String logoLocalUrl = marketPackage.getAppOptions().getString("logoImg").replace("/gateway/minio/", "http://sreworks-minio:9000/");
+                    File logoTempFile = Files.createTempFile("logo", null).toFile();
+                    NetworkUtil.download(logoLocalUrl, logoTempFile.getAbsolutePath());
+                    String logoRemoteUrl = marketEndpoint.getRemotePackagePath() + "/" + applicationRemotePath + "/logo";
+                    client.putObject(marketEndpoint.getRemoteBucket(), logoRemoteUrl, logoTempFile.getAbsolutePath());
+                    client.setObjectAclPublic(marketEndpoint.getRemoteBucket(), logoRemoteUrl);
+                    marketPackage.getAppOptions().put("logoImg", "https://" + marketEndpoint.getRemoteBucket() + "." + marketEndpoint.getEndpoint() + "/" + logoRemoteUrl);
+                }
+                // 进入市场之后，处于非开发态
+                marketPackage.getAppOptions().put("isDevelopment", 0);
             }
 
             this.updateMarketPackageIndex(marketEndpoint, marketPackage, relativeRemotePath);

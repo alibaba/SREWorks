@@ -33,7 +33,7 @@ RUN chmod +x /app/sbin/mc
 
 # kafka init
 RUN apk add gcc python3 python3-dev py3-pip musl-dev librdkafka-dev
-RUN pip config set global.index-url ${PYTHON_PIP} && pip config set global.trusted-host ${PYTHON_PIP_DOMAIN}
+RUN pip config set global.index-url {{ PYTHON_PIP }} && pip config set global.trusted-host {{ PYTHON_PIP_DOMAIN }}
 RUN pip3 install confluent_kafka
 
 ENTRYPOINT ["/bin/sh", "/app/sbin/entrypoint.sh"]

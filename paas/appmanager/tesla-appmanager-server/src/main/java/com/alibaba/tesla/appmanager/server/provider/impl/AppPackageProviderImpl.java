@@ -271,7 +271,7 @@ public class AppPackageProviderImpl implements AppPackageProvider {
                 throw new AppException(AppErrorCode.UNKNOWN_ERROR,
                         String.format("unpack failed, dagInst=%s", JSONObject.toJSONString(dagInst)));
             }
-            return appPackageDtoConvert.to(item);
+            return get(AppPackageQueryReq.builder().id(item.getId()).build(), operator);
         }
         throw new AppException(AppErrorCode.UNKNOWN_ERROR, "unpack failed, wait timeout");
     }

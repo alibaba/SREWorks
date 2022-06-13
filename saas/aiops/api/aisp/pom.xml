@@ -21,8 +21,6 @@
         <!-- alibaba-->
         <spring.cloud.alibaba.version>2.1.2.RELEASE</spring.cloud.alibaba.version>
         <alibaba.security.spring>2.1.0-SNAPSHOT</alibaba.security.spring>
-        <!-- tesla-->
-        <tesla-spring-boot-starter.version>2.1.6-SNAPSHOT</tesla-spring-boot-starter.version>
         <!-- other -->
         <lombok.version>1.18.8</lombok.version>
         <pagehelper.version>5.1.10</pagehelper.version>
@@ -61,9 +59,9 @@
             </dependency>
             <!-- tesla dependency -->
             <dependency>
-                <groupId>com.alibaba.tesla</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-swagger-spring-boot-starter</artifactId>
-                <version>${tesla-spring-boot-starter.version}</version>
+                <version>2.1.10</version>
             </dependency>
             <!--spring-->
             <dependency>

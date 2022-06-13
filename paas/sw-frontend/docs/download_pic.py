@@ -23,7 +23,7 @@ for docName in os.listdir(self_path + "/documents"):
     f = open(self_path + "/documents/" + docName, 'r')
     content = f.read()
     f.close()
-    raw = content.replace('![](', '![image.png](').split("![image.png](")
+    raw = content.replace('![](', '![image.png](').split(".png](")
 
     for r in raw:
         if not r.startswith("http"): continue

@@ -5,7 +5,7 @@ import com.elasticsearch.cloud.monitor.metric.common.blink.utils.FlinkTimeUtil;
 /**
  * 故障规则上下界
  *
- * @author: fangzong.ly
+ * @author: fangzong.lyj
  * @date: 2022/01/27 14:38
  */
 public class FailureLevelWithBoundary {

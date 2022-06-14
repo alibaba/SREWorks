@@ -1,36 +1,33 @@
 package com.elasticsearch.cloud.monitor.metric.alarm.blink.udtf;
 
 import com.alibaba.fastjson.JSONObject;
-import com.elasticsearch.cloud.monitor.commons.checker.duration.DurationConditionChecker;
-import com.elasticsearch.cloud.monitor.commons.core.Alarm;
-import com.elasticsearch.cloud.monitor.commons.core.MetricAlarm;
-import com.elasticsearch.cloud.monitor.commons.datapoint.DataPoint;
-import com.elasticsearch.cloud.monitor.commons.datapoint.ImmutableDataPoint;
-import com.elasticsearch.cloud.monitor.commons.rule.Rule;
-import com.elasticsearch.cloud.monitor.commons.utils.StringUtils;
-import com.elasticsearch.cloud.monitor.commons.utils.TagUtils;
-import com.elasticsearch.cloud.monitor.commons.utils.TimeUtils;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.constant.AlarmConstants;
-import com.elasticsearch.cloud.monitor.metric.alarm.blink.constant.MetricConstants;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.AlarmEvent;
 import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.AlarmEventHelper;
-import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.cache.RuleConditionCache;
-import com.elasticsearch.cloud.monitor.metric.alarm.blink.utils.cache.RuleConditionKafkaCache;
-import com.elasticsearch.cloud.monitor.metric.common.blink.utils.BlinkLogTracer;
+import com.elasticsearch.cloud.monitor.metric.common.cache.RuleConditionCache;
+import com.elasticsearch.cloud.monitor.metric.common.cache.RuleConditionKafkaCache;
+import com.elasticsearch.cloud.monitor.metric.common.blink.utils.FlinkLogTracer;
 import com.elasticsearch.cloud.monitor.metric.common.blink.utils.FlinkTimeUtil;
+import com.elasticsearch.cloud.monitor.metric.common.checker.duration.DurationConditionChecker;
 import com.elasticsearch.cloud.monitor.metric.common.client.KafkaConfig;
 import com.elasticsearch.cloud.monitor.metric.common.constant.Constants;
+import com.elasticsearch.cloud.monitor.metric.common.core.Alarm;
+import com.elasticsearch.cloud.monitor.metric.common.core.MetricAlarm;
+import com.elasticsearch.cloud.monitor.metric.common.datapoint.DataPoint;
+import com.elasticsearch.cloud.monitor.metric.common.datapoint.ImmutableDataPoint;
 import com.elasticsearch.cloud.monitor.metric.common.pojo.AlertInstance;
-import com.elasticsearch.cloud.monitor.metric.common.rule.EmonRulesManager;
+import com.elasticsearch.cloud.monitor.metric.common.rule.ClientRulesManager;
 import com.elasticsearch.cloud.monitor.metric.common.rule.HealthAlertRulesManagerFactory;
-import com.elasticsearch.cloud.monitor.metric.common.uti.HttpClientsUtil;
-import com.elasticsearch.cloud.monitor.metric.common.uti.PropertiesUtil;
+import com.elasticsearch.cloud.monitor.metric.common.rule.Rule;
+import com.elasticsearch.cloud.monitor.metric.common.utils.HttpClientsUtil;
+import com.elasticsearch.cloud.monitor.metric.common.utils.PropertiesUtil;
+import com.elasticsearch.cloud.monitor.metric.common.utils.TagUtils;
+import com.elasticsearch.cloud.monitor.metric.common.utils.TimeUtils;
 import com.google.common.base.Throwables;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.opensearch.cobble.monitor.Monitor;
-import com.taobao.kmonitor.core.MetricsTags;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.java.tuple.Tuple13;
 import org.apache.flink.table.functions.FunctionContext;
 import org.apache.flink.table.functions.TableFunction;
@@ -44,8 +41,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * 特别提示: 同一条线, 必须放到同一个shard上且是保序的, 如果分布到多个shard上会有问题!!!
  *
- * @author xingming.xuxm
- * @Date 2019-12-11
+ * @author: fangzong.lyj
+ * @date: 2021/09/01 15:40
  */
 
 @SuppressWarnings("Duplicates")
@@ -58,9 +55,7 @@ public class HealthAlert
     /**
      * flink暂时不上报作业的监控指标, 需要提供新的监控数据上报通道
      */
-    private Monitor monitor = null;
-    private MetricsTags globalTags = null;
-    private BlinkLogTracer tracer;
+    private FlinkLogTracer tracer;
     private KafkaConfig kafkaConfig = null;
     private boolean enableRecoverCache = false;
 
@@ -94,7 +89,7 @@ public class HealthAlert
             kafkaConfig = new KafkaConfig();
         }
 
-        tracer = new BlinkLogTracer(context);
+        tracer = new FlinkLogTracer(context);
     }
 
     public void eval(String metricInstanceUid, Integer metricId, String metricName, Map<String, String> labels, Long ts, Float value, Integer alertDefId, String appId, String alertConfigStr) {
@@ -105,7 +100,7 @@ public class HealthAlert
         }
 
         Long ruleId = generateRuleId(alertDefId, metricId);
-        EmonRulesManager rulesManager = rulesManagerFactory.getRulesManager(String.valueOf(alertDefId));
+        ClientRulesManager rulesManager = rulesManagerFactory.getRulesManager(String.valueOf(alertDefId));
         boolean ruleUpdated = false;
         if (rulesManager == null) {
             JSONObject alertRuleConfig = buildAlertRuleConfig(appId, metricName, ruleId, alertConfig.getJSONObject("alert_rule_config"));
@@ -126,9 +121,6 @@ public class HealthAlert
         String granularity = FlinkTimeUtil.getMinuteDuration(alertConfig.getInteger("granularity"));
         long interval = TimeUtils.parseDuration(granularity);
         long timestamp = ts - ts % interval;   // 时间戳对齐
-        if (monitor != null) {
-            monitor.reportLatency(MetricConstants.ALARM_DATA_DELAY, timestamp, globalTags);
-        }
 
         //这个如果并发情况下 可能会有问题 TODO
 //        com.elasticsearch.cloud.monitor.commons.core.Constants.CHECK_INTERVAL = interval;
@@ -187,14 +179,8 @@ public class HealthAlert
                                 metricInstanceUid, StringUtils.join(event.getTags(), ","), event.getGroup(),
                                 event.getTitle(), event.getType(), event.getText(), ts, event.getSource())
                 );
-                if (monitor != null) {
-                    monitor.increment(MetricConstants.ALARM_TRIGGER_COUNT, 1, globalTags);
-                }
             }
         } catch (Exception e) {
-            if (monitor != null) {
-                monitor.increment(MetricConstants.ALARM_ERROR_QPS, 1, globalTags);
-            }
             log.error("check failed. ruleid=" + rule.getId() + " " + dp.getTimestamp() + TagUtils.getTag(dp.getTags()),
                 e);
         }
@@ -261,7 +247,6 @@ public class HealthAlert
         if (ruleConditionCache == null || ruleUpdated) {
             log.warn(String.format("not exist rules condition cache[cache_key:%s] or rule updated[%s]", key, ruleUpdated));
             ruleConditionCache = new RuleConditionKafkaCache(rule, interval, kafkaConfig);
-            ruleConditionCache.setMonitorClient(monitor, globalTags);
             ruleConditionCaches.put(key, ruleConditionCache);
         }
         try {

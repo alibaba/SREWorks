@@ -1,6 +1,6 @@
 package com.elasticsearch.cloud.monitor.metric.common.metric;
 
-import com.elasticsearch.cloud.monitor.metric.common.uti.MysqlClient;
+import com.elasticsearch.cloud.monitor.metric.common.utils.MysqlClient;
 import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 指标实例缓存类
  *
- * @author: fangzong.ly
+ * @author: fangzong.lyj
  * @date: 2021/09/05 14:11
  */
 @Data

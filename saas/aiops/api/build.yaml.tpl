@@ -7,10 +7,11 @@ options:
       build:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        args:
-          TAG: ack
-        dockerfileTemplateArgs: {}
-        dockerfileTemplate: Dockerfile_sreworks
+        dockerfileTemplateArgs:
+          JRE11_IMAGE: ${JRE11_IMAGE}
+          MAVEN_IMAGE: ${MAVEN_IMAGE}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
+        dockerfileTemplate: Dockerfile_sreworks.tpl
         repoPath: saas/aiops/api/aisp
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}
@@ -22,10 +23,9 @@ options:
       build:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        args:
-          TAG: ack
         dockerfileTemplateArgs: {}
-        dockerfileTemplate: Dockerfile-sreworks-migration
+          MIGRATE_IMAGE: ${MIGRATE_IMAGE}
+        dockerfileTemplate: Dockerfile-sreworks-migration.tpl
         repoPath: saas/aiops/api/aisp
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}
@@ -77,9 +77,10 @@ options:
       build:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        args:
-          TAG: ack
-        dockerfileTemplateArgs: {}
+        dockerfileTemplateArgs:
+          BENTOML_IMAGE: ${BENTOML_IMAGE}
+          PYTHON_PIP: ${PYTHON_PIP}
+          PYTHON_PIP_DOMAIN: ${PYTHON_PIP_DOMAIN}
         dockerfileTemplate: Dockerfile
         repoPath: saas/aiops/api/anomalydetection
         branch: ${SOURCE_BRANCH}
@@ -96,10 +97,11 @@ options:
       build:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        args:
-          TAG: ack
-        dockerfileTemplateArgs: {}
-        dockerfileTemplate: Dockerfile
+        dockerfileTemplateArgs:
+          JRE11_IMAGE: ${JRE11_IMAGE}
+          MAVEN_IMAGE: ${MAVEN_IMAGE}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML} 
+        dockerfileTemplate: Dockerfile.tpl
         repoPath: saas/aiops/api/aisp-process-strategy
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}

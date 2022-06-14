@@ -1,4 +1,4 @@
-FROM registry.cn-hangzhou.aliyuncs.com/alisre/sreworks-base AS build
+FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/maven:3.8.3-adoptopenjdk-11 AS build
 
 COPY . /app
 COPY settings.xml /root/.m2/settings.xml
@@ -20,7 +20,7 @@ RUN set -x && apk --update upgrade && apk add --no-cache openjdk8 && [ "$JAVA_HO
 RUN apk --no-cache add curl && apk --no-cache add gettext && apk --no-cache add jq
 
 ARG ALARM_MODULE=metric-alarm
-ARG JAR_NAME=metric-alarm-1.2-SNAPSHOT.jar
+ARG JAR_NAME=metric-flink-1.2.jar
 ARG BUILD_JAR=/app/${ALARM_MODULE}/target/metric-alarm-1.2-SNAPSHOT.jar
 
 COPY --from=build ${BUILD_JAR} /app/sbin/${JAR_NAME}

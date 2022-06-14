@@ -5,6 +5,7 @@ import { Popover } from "antd";
 import "brace/mode/javascript";
 import "brace/theme/monokai";
 import AceViewer from "./AceViewer";
+import JSONSchemaItem from "./JSONSchemaItem";
 
 export default class PopoverAceEditor extends React.Component {
   constructor(props) {
@@ -19,10 +20,9 @@ export default class PopoverAceEditor extends React.Component {
       visible: !this.state.visible,
     });
   };
-
   render() {
     let { visible } = this.state;
-    let { model, onChange, value } = this.props;
+    let { model, value,onChange } = this.props;
     return (
       <div>
         <Popover

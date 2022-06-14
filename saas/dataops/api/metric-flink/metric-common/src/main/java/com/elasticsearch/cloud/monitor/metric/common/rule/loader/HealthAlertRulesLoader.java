@@ -1,6 +1,6 @@
 package com.elasticsearch.cloud.monitor.metric.common.rule.loader;
 
-import com.elasticsearch.cloud.monitor.commons.rule.Rule;
+import com.elasticsearch.cloud.monitor.metric.common.rule.Rule;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  * 健康服务告警规则loader
  *
- * @author: fangzong.ly
+ * @author: fangzong.lyj
  * @date: 2022/01/19 15:33
  */
 @Slf4j

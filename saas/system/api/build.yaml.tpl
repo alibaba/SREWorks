@@ -76,9 +76,10 @@ options:
     build:
       imagePush: ${IMAGE_BUILD_ENABLE}
       imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-      args:
-        TAG: ack
-      dockerfileTemplateArgs: {}
+      dockerfileTemplateArgs:
+        APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
+        MINIO_CLIENT_URL: ${MINIO_CLIENT_URL}
+        PYTHON3_IMAGE: ${PYTHON3_IMAGE}
       dockerfileTemplate: Dockerfile.tpl
       repoPath: saas/system/api/resource
       branch: ${SOURCE_BRANCH}

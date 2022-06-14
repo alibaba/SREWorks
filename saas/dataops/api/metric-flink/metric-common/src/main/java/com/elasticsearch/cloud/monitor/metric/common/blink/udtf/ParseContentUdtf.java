@@ -1,9 +1,9 @@
 package com.elasticsearch.cloud.monitor.metric.common.blink.udtf;
 
 import com.alibaba.fastjson.JSON;
-import com.elasticsearch.cloud.monitor.commons.datapoint.DataPoint;
-import com.elasticsearch.cloud.monitor.commons.datapoint.ImmutableDataPoint;
+import com.elasticsearch.cloud.monitor.metric.common.datapoint.DataPoint;
 import com.elasticsearch.cloud.monitor.metric.common.blink.utils.Filter;
+import com.elasticsearch.cloud.monitor.metric.common.datapoint.ImmutableDataPoint;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flink.api.java.tuple.Tuple4;
@@ -14,10 +14,7 @@ import java.sql.Time;
 import java.util.Arrays;
 import java.util.TreeMap;
 
-/**
- * @author xiaoping
- * @date 2019/11/8
- */
+
 public class ParseContentUdtf extends TableFunction<Tuple4<String, Double, java.sql.Time, String>> {
     private boolean filtered = false;
     private String FILTER_PATTERN_KEY = "metric.filter.pattern";
@@ -25,7 +22,7 @@ public class ParseContentUdtf extends TableFunction<Tuple4<String, Double, java.
 
     @Override
     public void open(FunctionContext context) {
-        this.filtered = Boolean.valueOf(context.getJobParameter(FILTER_ENABLE_KEY, "false"));
+        this.filtered = Boolean.parseBoolean(context.getJobParameter(FILTER_ENABLE_KEY, "false"));
         String filterPattern = context.getJobParameter(FILTER_PATTERN_KEY, "");
         if (filtered && StringUtils.isNotEmpty(filterPattern)) {
             Filter.setList(Arrays.asList(filterPattern.split(",")));

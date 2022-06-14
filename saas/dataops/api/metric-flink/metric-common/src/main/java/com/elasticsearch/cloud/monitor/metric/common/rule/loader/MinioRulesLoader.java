@@ -1,7 +1,7 @@
 package com.elasticsearch.cloud.monitor.metric.common.rule.loader;
 
-import com.elasticsearch.cloud.monitor.commons.rule.Rule;
 import com.elasticsearch.cloud.monitor.metric.common.client.MinioConfig;
+import com.elasticsearch.cloud.monitor.metric.common.rule.Rule;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,7 +24,7 @@ import java.util.zip.ZipInputStream;
 /**
  * minio规则loader
  *
- * @author: fangzong.ly
+ * @author: fangzong.lyj
  * @date: 2021/09/01 15:33
  */
 @Slf4j
@@ -58,7 +58,7 @@ public class MinioRulesLoader extends AbstractRulesLoader {
 
         List<Rule> ruleList;
         try {
-            ruleList = objectMapper.readValue(content, new TypeReference<List<Rule>>(){});
+            ruleList = objectMapper.readValue(content, new TypeReference<Object>(){});
         } catch (Exception ex) {
             log.error("load " + minioConfig.getFile() + " failed", ex);
             return null;

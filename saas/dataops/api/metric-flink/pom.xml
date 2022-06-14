@@ -12,11 +12,6 @@
         <module>metric-common</module>
         <module>metric-mapping</module>
         <module>metric-alarm</module>
-<!--        <module>rule-dump</module>-->
-<!--        <module>metric-downsample</module>-->
-<!--        <module>metric-agg</module>-->
-<!--        <module>metric-routing</module>-->
-        <module>metric-log</module>
 
     </modules>
 
@@ -67,18 +62,6 @@
                 <scope>provided</scope>
             </dependency>
 
-<!--            <dependency>-->
-<!--                <groupId>com.alibaba.blink</groupId>-->
-<!--                <artifactId>blink-table</artifactId>-->
-<!--                <version>${blink.version}</version>-->
-<!--                <scope>provided</scope>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>com.alibaba.blink</groupId>-->
-<!--                <artifactId>flink-core</artifactId>-->
-<!--                <version>${blink.version}</version>-->
-<!--                <scope>provided</scope>-->
-<!--            </dependency>-->
             <dependency>
                 <groupId>com.alibaba.blink</groupId>
                 <artifactId>flink-table_2.11</artifactId>
@@ -157,17 +140,6 @@
                 <artifactId>elasticsearch-rest-high-level-client</artifactId>
                 <version>6.7.0</version>
             </dependency>
-            <dependency>
-                <groupId>com.elasticsearch.cloud.monitor</groupId>
-                <artifactId>monitor-common</artifactId>
-                <version>1.2-SNAPSHOT</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.taobao.monitor</groupId>
-                        <artifactId>kmonitor-client</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -188,54 +160,6 @@
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
             <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.taobao.monitor</groupId>
-            <artifactId>kmonitor-client</artifactId>
-            <version>1.1.7-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.opensearch</groupId>
-            <artifactId>cobble</artifactId>
-            <version>0.5.2-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.squareup.okhttp3</groupId>
-                    <artifactId>okhttp</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.thrift</groupId>
-                    <artifactId>libthrift</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-codec</groupId>
-                    <artifactId>commons-codec</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.curator</groupId>
-                    <artifactId>curator-framework</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.curator</groupId>
-                    <artifactId>curator-recipes</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.curator</groupId>
-                    <artifactId>curator-client</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.opensearch.sync</groupId>
-                    <artifactId>sync-proto</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.taobao.monitor</groupId>
-                    <artifactId>kmonitor-client</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -321,6 +245,7 @@
                     <dotGitDirectory>${project.basedikr}/.git</dotGitDirectory>
                     <prefix>git</prefix>
                     <verbose>false</verbose>
+                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
                     <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties
                     </generateGitPropertiesFilename>

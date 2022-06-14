@@ -373,7 +373,7 @@ class GridCard extends React.Component {
                     renderItem={(item, r) => {
                         let title = _.get(item, mode.config.columnTitle || mode.config.title) || item.title;
                         let icon = _.get(item, mode.config.icon) || item.icon;
-                        let avatar = icon ? <Avatar src={icon} /> : <Avatar style={{
+                        let avatar = icon ? <Avatar shape="square" src={icon} /> : <Avatar style={{
                             backgroundColor: colors[r % 10],
                             verticalAlign: 'middle',
                             fontSize: '18px'

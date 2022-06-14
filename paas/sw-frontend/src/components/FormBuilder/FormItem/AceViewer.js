@@ -20,6 +20,7 @@ import _ from "lodash";
 class AceViewer extends Component {
     constructor(props) {
         super(props);
+        console.log(props,'viewer-content')
         this.themeType = localStorage.getItem('tesla-theme');
         let { value, onChange, model, mode, target } = props;
         this.mode = model && (mode || (model.defModel && model.defModel.mode));
@@ -116,7 +117,6 @@ class AceViewer extends Component {
         if (model && model.defModel && !_.isEmpty(model.defModel)) {
             Object.assign(aceProps, model.defModel);
         }
-        console.log(mode, 'mode-javascript')
         return (
             <div>
                 <AceEditor
@@ -130,7 +130,7 @@ class AceViewer extends Component {
                     showGutter={true}
                     highlightActiveLine={true}
                     onChange={this.editorChange}
-                    // debounceChangePeriod={2000}
+                    debounceChangePeriod={2000}
                     setOptions={{
                         enableBasicAutocompletion: true,
                         enableLiveAutocompletion: false,

@@ -17,6 +17,16 @@ public class AppAddonUpdateReq {
     private String appId;
 
     /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
+
+    /**
      * Addon Name
      */
     private String addonName;

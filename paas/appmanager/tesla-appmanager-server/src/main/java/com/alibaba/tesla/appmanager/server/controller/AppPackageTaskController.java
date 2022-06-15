@@ -9,6 +9,7 @@ import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
+import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.dto.AppComponentDTO;
 import com.alibaba.tesla.appmanager.domain.dto.AppPackageTaskDTO;
 import com.alibaba.tesla.appmanager.domain.dto.ComponentPackageVersionItemDTO;
@@ -63,14 +64,21 @@ public class AppPackageTaskController extends AppManagerBaseController {
     @PostMapping("/apps/{appId}/app-package-tasks")
     @ResponseBody
     public TeslaBaseResult create(
-            @PathVariable String appId, @RequestBody AppPackageTaskCreateReq request,
+            @PathVariable String appId,
+            @RequestBody AppPackageTaskCreateReq request,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
         if (CollectionUtils.isEmpty(request.getTags())) {
             return buildClientErrorResult("tags is required");
         }
 
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
+        request.setAppId(appId);
+        request.setNamespaceId(namespaceId);
+        request.setStageId(stageId);
         try {
-            request.setAppId(appId);
             AppPackageTaskCreateRes response = appPackageTaskProvider.create(request, getOperator(auth));
             return buildSucceedResult(response);
         } catch (AppException e) {
@@ -134,11 +142,16 @@ public class AppPackageTaskController extends AppManagerBaseController {
     @PostMapping("/apps/{appId}/app-package-tasks/quick-create")
     @ResponseBody
     public TeslaBaseResult quickCreate(
-            @PathVariable String appId, @RequestBody AppPackageTaskCreateReq request,
+            @PathVariable String appId,
+            @RequestBody AppPackageTaskCreateReq request,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
         if (CollectionUtils.isEmpty(request.getTags())) {
             return buildClientErrorResult("tags is required");
         }
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
         String operator = getOperator(auth);
 
         try {
@@ -147,7 +160,11 @@ public class AppPackageTaskController extends AppManagerBaseController {
             );
             request.setVersion(appPackageVersion);
             List<AppComponentDTO> appComponents = appComponentProvider.list(
-                    AppComponentQueryReq.builder().appId(appId).build(), operator
+                    AppComponentQueryReq.builder()
+                            .appId(appId)
+                            .namespaceId(namespaceId)
+                            .stageId(stageId)
+                            .build(), operator
             );
             if (CollectionUtils.isEmpty(appComponents)) {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS, "missing package component");
@@ -213,6 +230,8 @@ public class AppPackageTaskController extends AppManagerBaseController {
 
             request.setComponents(components);
             request.setAppId(appId);
+            request.setNamespaceId(namespaceId);
+            request.setStageId(stageId);
             AppPackageTaskCreateRes response = appPackageTaskProvider.create(request, getOperator(auth));
             return buildSucceedResult(response);
         } catch (AppException e) {

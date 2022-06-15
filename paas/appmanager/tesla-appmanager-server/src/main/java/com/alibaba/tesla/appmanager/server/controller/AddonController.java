@@ -3,8 +3,10 @@ package com.alibaba.tesla.appmanager.server.controller;
 import com.alibaba.tesla.appmanager.api.provider.AddonMetaProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
+import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.dto.AddonMetaDTO;
 import com.alibaba.tesla.appmanager.domain.req.AddonMetaQueryReq;
+import com.alibaba.tesla.appmanager.domain.req.appaddon.AppAddonSyncReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +54,15 @@ public class AddonController extends AppManagerBaseController {
 
     // 同步全量 addon 绑定关系
     @PutMapping("/sync")
-    public TeslaBaseResult sync() {
-        addonMetaProvider.sync();
+    public TeslaBaseResult sync(@RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
+        AppAddonSyncReq req = AppAddonSyncReq.builder()
+                .namespaceId(namespaceId)
+                .stageId(stageId)
+                .build();
+        addonMetaProvider.sync(req);
         return buildSucceedResult(DefaultConstant.EMPTY_OBJ);
     }
 

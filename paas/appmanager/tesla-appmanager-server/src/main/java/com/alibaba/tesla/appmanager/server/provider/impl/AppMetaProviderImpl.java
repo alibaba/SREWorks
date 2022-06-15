@@ -32,7 +32,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
@@ -179,7 +178,9 @@ public class AppMetaProviderImpl implements AppMetaProvider {
     }
 
     private void deleteK8sMicroServiceMeta(String appId) {
-        K8sMicroserviceMetaQueryCondition condition = K8sMicroserviceMetaQueryCondition.builder().appId(appId).build();
+        K8sMicroserviceMetaQueryCondition condition = K8sMicroserviceMetaQueryCondition.builder()
+                .appId(appId)
+                .build();
         k8sMicroserviceMetaService.delete(condition);
     }
 

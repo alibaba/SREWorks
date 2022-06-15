@@ -40,6 +40,16 @@ public class ComponentPackageTaskQueryCondition extends BaseCondition {
     private String appId;
 
     /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
+
+    /**
      * 组件类型
      */
     private String componentType;

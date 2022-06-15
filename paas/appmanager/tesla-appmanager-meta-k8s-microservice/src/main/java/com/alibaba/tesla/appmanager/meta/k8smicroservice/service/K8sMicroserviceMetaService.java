@@ -28,13 +28,15 @@ public interface K8sMicroserviceMetaService {
     K8sMicroServiceMetaDO get(Long id);
 
     /**
-     * 根据 appId + microServiceId 获取微应用元信息
+     * 根据 appId + microServiceId + namespaceId + stageId 获取微应用元信息
      *
-     * @param appId
-     * @param microServiceId
+     * @param appId 应用 ID
+     * @param microServiceId 微服务标识
+     * @param namespaceId Namespace ID
+     * @param stageId Stage ID
      * @return K8sMicroServiceMetaDO
      */
-    K8sMicroServiceMetaDO getByMicroServiceId(String appId, String microServiceId);
+    K8sMicroServiceMetaDO getByMicroServiceId(String appId, String microServiceId, String namespaceId, String stageId);
 
     /**
      * 更新指定的微应用元信息

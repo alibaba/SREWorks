@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.server.service.appaddon;
 
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.req.AppAddonCreateReq;
+import com.alibaba.tesla.appmanager.domain.req.appaddon.AppAddonSyncReq;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppAddonQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.AppAddonDO;
 
@@ -52,5 +53,5 @@ public interface AppAddonService {
     /**
      * 同步当前所有 app addon 绑定关系到 deploy config 中
      */
-    void sync();
+    void sync(AppAddonSyncReq request);
 }

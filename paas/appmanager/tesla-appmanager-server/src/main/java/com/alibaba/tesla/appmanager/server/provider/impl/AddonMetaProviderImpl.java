@@ -5,6 +5,7 @@ import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.ClassUtil;
 import com.alibaba.tesla.appmanager.domain.dto.AddonMetaDTO;
 import com.alibaba.tesla.appmanager.domain.req.AddonMetaQueryReq;
+import com.alibaba.tesla.appmanager.domain.req.appaddon.AppAddonSyncReq;
 import com.alibaba.tesla.appmanager.server.assembly.AddonMetaDtoConvert;
 import com.alibaba.tesla.appmanager.server.repository.condition.AddonMetaQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.AddonMetaDO;
@@ -80,7 +81,7 @@ public class AddonMetaProviderImpl implements AddonMetaProvider {
      * 同步当前所有 app addon 绑定关系到 deploy config 中
      */
     @Override
-    public void sync() {
-        appAddonService.sync();
+    public void sync(AppAddonSyncReq request) {
+        appAddonService.sync(request);
     }
 }

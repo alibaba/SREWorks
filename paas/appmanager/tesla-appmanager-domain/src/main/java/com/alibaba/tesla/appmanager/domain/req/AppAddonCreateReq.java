@@ -43,6 +43,16 @@ public class AppAddonCreateReq {
     private String addonName;
 
     /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
+
+    /**
      * Addon 配置信息
      */
     private JSONObject spec;

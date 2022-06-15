@@ -70,6 +70,7 @@ def apply(file_name, type_id):
     post_body = {
       "appId": "",
       "typeId": type_id,
+      "envId": "Namespace:%s::Stage:%s" % ("sreworks", "dev"),
       "config": config,
       "apiVersion": "core.oam.dev/v1alpha2",
       "enabled": True,

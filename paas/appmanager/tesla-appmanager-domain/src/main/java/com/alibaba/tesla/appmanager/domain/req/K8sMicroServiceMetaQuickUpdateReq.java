@@ -30,6 +30,16 @@ public class K8sMicroServiceMetaQuickUpdateReq {
     private String appId;
 
     /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
+
+    /**
      * 微服务标示
      */
     private String microServiceId;

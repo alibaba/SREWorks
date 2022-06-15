@@ -21,4 +21,14 @@ public class AppComponentQueryReq extends BaseRequest {
      * 应用 ID
      */
     private String appId;
+
+    /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
 }

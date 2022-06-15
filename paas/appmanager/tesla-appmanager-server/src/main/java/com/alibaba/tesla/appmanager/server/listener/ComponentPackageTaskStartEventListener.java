@@ -30,6 +30,8 @@ public class ComponentPackageTaskStartEventListener implements ApplicationListen
                 .appPackageTaskId(event.getAppPackageTaskId())
                 .componentPackageTaskId(event.getComponentPackageTaskId())
                 .appId(event.getAppId())
+                .namespaceId(event.getNamespaceId())
+                .stageId(event.getStageId())
                 .operator(event.getOperator())
                 .component(event.getComponent())
                 .packageTaskEnum(event.getPackageTaskEnum())

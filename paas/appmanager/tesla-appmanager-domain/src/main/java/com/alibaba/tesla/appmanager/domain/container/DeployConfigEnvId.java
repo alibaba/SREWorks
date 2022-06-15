@@ -76,24 +76,6 @@ public class DeployConfigEnvId {
     }
 
     /**
-     * Namespace Stage 环境拼接
-     * @param namespaceId Namespace ID
-     * @param stageId Stage ID
-     * @return 字符串标识
-     */
-    public static String namespaceStageStr(String namespaceId, String stageId) {
-        if (StringUtils.isEmpty(namespaceId) && StringUtils.isEmpty(stageId)) {
-            return "";
-        } else if (StringUtils.isEmpty(namespaceId)) {
-            return String.format("Stage:%s", stageId);
-        } else if (StringUtils.isEmpty(stageId)) {
-            return String.format("Namespace:%s", namespaceId);
-        } else {
-            return String.format("Namespace:%s::Stage:%s", namespaceId, stageId);
-        }
-    }
-
-    /**
      * 返回 Cluster 字符串标识
      *
      * @param clusterId Cluster ID

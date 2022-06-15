@@ -5,6 +5,7 @@ import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
+import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigApplyTemplateReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigGenerateReq;
@@ -36,12 +37,18 @@ public class ApplicationConfigurationController extends BaseController {
      * @apiGroup Application Configuration API
      */
     @PutMapping
-    public TeslaBaseResult update(@RequestBody DeployConfigApplyTemplateReq request) {
+    public TeslaBaseResult update(
+            @RequestBody DeployConfigApplyTemplateReq request,
+            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
         if (StringUtils.isEmpty(request.getAppId())) {
             request.setAppId("");
         } else if (StringUtils.isEmpty(request.getEnvId())) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "empty envId is not allowed");
         }
+
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        request.setIsolateNamespaceId(container.getNamespaceId());
+        request.setIsolateStageId(container.getStageId());
         return buildSucceedResult(deployConfigProvider.applyTemplate(request));
     }
 
@@ -51,7 +58,9 @@ public class ApplicationConfigurationController extends BaseController {
      * @apiGroup Application Configuration API
      */
     @GetMapping
-    public TeslaBaseResult get(@ModelAttribute DeployConfigGenerateReq request) {
+    public TeslaBaseResult get(
+            @ModelAttribute DeployConfigGenerateReq request,
+            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
         if (StringUtils.isEmpty(request.getApiVersion())) {
             request.setApiVersion(DefaultConstant.API_VERSION_V1_ALPHA2);
         }
@@ -59,6 +68,10 @@ public class ApplicationConfigurationController extends BaseController {
             request.setAppId("");
         }
         request.setAppPackageId(0L);
+
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        request.setIsolateNamespaceId(container.getNamespaceId());
+        request.setIsolateStageId(container.getStageId());
         DeployConfigGenerateRes result = deployConfigProvider.generate(request);
         return buildSucceedResult(ApplicationConfigurationGenerateRes.builder()
                 .yaml(SchemaUtil.toYamlMapStr(result.getSchema()))
@@ -71,13 +84,20 @@ public class ApplicationConfigurationController extends BaseController {
      * @apiGroup Application Configuration API
      */
     @DeleteMapping
-    public TeslaBaseResult delete(@ModelAttribute DeployConfigDeleteReq request) {
+    public TeslaBaseResult delete(
+            @ModelAttribute DeployConfigDeleteReq request,
+            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
         if (StringUtils.isEmpty(request.getApiVersion())) {
             request.setApiVersion(DefaultConstant.API_VERSION_V1_ALPHA2);
         }
         if (StringUtils.isEmpty(request.getAppId())) {
             request.setAppId("");
         }
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
+        request.setIsolateNamespaceId(namespaceId);
+        request.setIsolateStageId(stageId);
         deployConfigProvider.delete(request);
         return buildSucceedResult(DefaultConstant.EMPTY_OBJ);
     }

@@ -8,7 +8,6 @@ import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.AddonUtil;
 import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
-import com.alibaba.tesla.appmanager.domain.container.DeployConfigEnvId;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.dto.AppAddonDTO;
 import com.alibaba.tesla.appmanager.domain.req.AppAddonCreateReq;
@@ -133,9 +132,11 @@ public class AppAddonServiceImpl implements AppAddonService {
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(request.getAppId())
                 .typeId(typeId)
-                .envId(DeployConfigEnvId.namespaceStageStr(request.getNamespaceId(), request.getStageId()))
+                .envId("")
                 .inherit(true)
                 .config("")
+                .isolateNamespaceId(request.getNamespaceId())
+                .isolateStageId(request.getStageId())
                 .build());
         return record;
     }
@@ -191,9 +192,11 @@ public class AppAddonServiceImpl implements AppAddonService {
                     .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                     .appId(appAddon.getAppId())
                     .typeId(typeId)
-                    .envId(DeployConfigEnvId.namespaceStageStr(request.getNamespaceId(), request.getStageId()))
+                    .envId("")
                     .inherit(true)
                     .config("")
+                    .isolateNamespaceId(request.getNamespaceId())
+                    .isolateStageId(request.getStageId())
                     .build());
         }
     }

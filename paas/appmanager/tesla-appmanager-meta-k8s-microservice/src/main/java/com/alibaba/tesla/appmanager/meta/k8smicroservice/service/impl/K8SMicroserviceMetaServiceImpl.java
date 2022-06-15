@@ -9,7 +9,6 @@ import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConfigQueryCondition;
 import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDO;
 import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
-import com.alibaba.tesla.appmanager.domain.container.DeployConfigEnvId;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.dto.LaunchDTO;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpdateReq;
@@ -309,9 +308,11 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
                 DeployConfigQueryCondition.builder()
                         .appId(metaDO.getAppId())
                         .typeId(systemTypeId)
-                        .envId(DeployConfigEnvId.namespaceStageStr(metaDO.getNamespaceId(), metaDO.getStageId()))
+                        .envId("")
                         .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                         .enabled(true)
+                        .isolateNamespaceId(metaDO.getNamespaceId())
+                        .isolateStageId(metaDO.getStageId())
                         .build()
         );
 
@@ -335,9 +336,11 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(metaDO.getAppId())
                 .typeId(typeId)
-                .envId(DeployConfigEnvId.namespaceStageStr(metaDO.getNamespaceId(), metaDO.getStageId()))
+                .envId("")
                 .inherit(false)
                 .config(yaml.dumpAsMap(configObject))
+                .isolateNamespaceId(metaDO.getNamespaceId())
+                .isolateStageId(metaDO.getStageId())
                 .build());
     }
 

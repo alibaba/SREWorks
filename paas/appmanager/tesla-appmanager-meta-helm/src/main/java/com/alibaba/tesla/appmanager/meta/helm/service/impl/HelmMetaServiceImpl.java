@@ -11,7 +11,6 @@ import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConfigQueryCondition;
 import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDO;
 import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
-import com.alibaba.tesla.appmanager.domain.container.DeployConfigEnvId;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpdateReq;
@@ -162,6 +161,8 @@ public class HelmMetaServiceImpl implements HelmMetaService {
                         .envId("")
                         .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                         .enabled(true)
+                        .isolateNamespaceId(namespaceId)
+                        .isolateStageId(stageId)
                         .build()
         );
 
@@ -185,9 +186,11 @@ public class HelmMetaServiceImpl implements HelmMetaService {
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(record.getAppId())
                 .typeId(typeId)
-                .envId(DeployConfigEnvId.namespaceStageStr(namespaceId, stageId))
+                .envId("")
                 .inherit(false)
                 .config(yaml.dumpAsMap(configObject))
+                .isolateNamespaceId(namespaceId)
+                .isolateStageId(stageId)
                 .build());
 
     }
@@ -218,7 +221,9 @@ public class HelmMetaServiceImpl implements HelmMetaService {
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(record.getAppId())
                 .typeId(typeId)
-                .envId(DeployConfigEnvId.namespaceStageStr(namespaceId, stageId))
+                .envId("")
+                .isolateNamespaceId(namespaceId)
+                .isolateStageId(stageId)
                 .build());
         return helmMetaRepository.deleteByPrimaryKey(id);
     }

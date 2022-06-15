@@ -156,7 +156,7 @@ public class AppController extends BaseController {
     public TeslaBaseResult updateApplicationConfigurations(
             @PathVariable String appId,
             @RequestBody DeployConfigApplyTemplateReq request,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         request.setAppId(appId);
 
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
@@ -175,7 +175,7 @@ public class AppController extends BaseController {
     public TeslaBaseResult getApplicationConfigurations(
             @PathVariable String appId,
             @ModelAttribute DeployConfigGenerateReq request,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         if (StringUtils.isEmpty(request.getApiVersion())) {
             request.setApiVersion(DefaultConstant.API_VERSION_V1_ALPHA2);
         }
@@ -201,7 +201,7 @@ public class AppController extends BaseController {
     public TeslaBaseResult deleteApplicationConfigurations(
             @PathVariable String appId,
             @ModelAttribute DeployConfigDeleteReq request,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         if (StringUtils.isEmpty(request.getApiVersion())) {
             request.setApiVersion(DefaultConstant.API_VERSION_V1_ALPHA2);
         }

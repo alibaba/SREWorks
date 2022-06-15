@@ -54,7 +54,7 @@ public class AppComponentPackageTaskController extends AppManagerBaseController 
     public TeslaBaseResult create(
             @PathVariable String appId,
             @RequestBody ComponentPackageTaskCreateReq request,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();

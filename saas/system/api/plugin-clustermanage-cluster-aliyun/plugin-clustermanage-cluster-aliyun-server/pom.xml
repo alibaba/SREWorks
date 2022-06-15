@@ -16,9 +16,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.alibaba.sreworks</groupId>
+            <groupId>io.sreworks</groupId>
             <artifactId>sreworks-common</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.4</version>
         </dependency>
         <!-- alibaba dependency -->
         <dependency>

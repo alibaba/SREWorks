@@ -17,7 +17,6 @@ import com.alibaba.tesla.appmanager.common.util.VersionUtil;
 import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConfigQueryCondition;
 import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDO;
 import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
-import com.alibaba.tesla.appmanager.domain.container.DeployConfigEnvId;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.dto.AppPackageTaskDTO;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.AppPackageTaskCreateReq;
@@ -131,8 +130,10 @@ public class AppPackageTaskProviderImpl implements AppPackageTaskProvider {
                         .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                         .appId(appId)
                         .typeId(typeId)
-                        .envId(DeployConfigEnvId.namespaceStageStr(namespaceId, stageId))
+                        .envId("")
                         .enabled(true)
+                        .isolateNamespaceId(namespaceId)
+                        .isolateStageId(stageId)
                         .build();
                 DeployConfigDO deployConfig = deployConfigService.getWithInherit(queryCondition);
                 if (deployConfig != null) {

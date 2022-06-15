@@ -8,7 +8,6 @@ import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.service.GitService;
 import com.alibaba.tesla.appmanager.common.util.*;
 import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
-import com.alibaba.tesla.appmanager.domain.container.DeployConfigEnvId;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.dto.InitContainerDTO;
 import com.alibaba.tesla.appmanager.domain.dto.K8sMicroServiceMetaDTO;
@@ -100,7 +99,9 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(metaDO.getAppId())
                 .typeId(typeId)
-                .envId(DeployConfigEnvId.namespaceStageStr(metaDO.getNamespaceId(), metaDO.getStageId()))
+                .envId("")
+                .isolateNamespaceId(metaDO.getNamespaceId())
+                .isolateStageId(metaDO.getStageId())
                 .build());
         k8SMicroserviceMetaService.delete(id);
         return true;

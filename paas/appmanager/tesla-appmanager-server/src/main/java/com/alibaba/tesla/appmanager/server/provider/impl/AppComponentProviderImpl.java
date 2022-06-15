@@ -46,12 +46,15 @@ public class AppComponentProviderImpl implements AppComponentProvider {
     @Override
     public List<AppComponentDTO> list(AppComponentQueryReq request, String operator) {
         String appId = request.getAppId();
+        String namespaceId = request.getNamespaceId();
+        String stageId = request.getStageId();
         List<AppComponentDTO> result = new ArrayList<>();
 
         // 获取 K8S 微应用组件
         K8sMicroServiceMetaQueryReq k8sMicroServiceMetaQueryReq = new K8sMicroServiceMetaQueryReq();
         k8sMicroServiceMetaQueryReq.setAppId(appId);
         k8sMicroServiceMetaQueryReq.setPagination(false);
+        // TODO: namespace/stage
         k8SMicroServiceMetaProvider.list(k8sMicroServiceMetaQueryReq).getItems()
                 .forEach(k8sMicroServiceMetaDTO ->
                         result.add(AppComponentDTO.builder()
@@ -68,6 +71,7 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         HelmMetaQueryReq helmMetaQueryReq = new HelmMetaQueryReq();
         helmMetaQueryReq.setAppId(appId);
         helmMetaQueryReq.setPagination(false);
+        // TODO: namespace/stage
         helmMetaProvider.list(helmMetaQueryReq).getItems()
                 .forEach(helmMetaDO ->
                         result.add(AppComponentDTO.builder()
@@ -84,6 +88,8 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         // 获取 Internal Addon
         AppAddonQueryReq internalAddonQueryReq = new AppAddonQueryReq();
         internalAddonQueryReq.setAppId(appId);
+        internalAddonQueryReq.setNamespaceId(namespaceId);
+        internalAddonQueryReq.setStageId(stageId);
         internalAddonQueryReq.setPagination(false);
         internalAddonQueryReq.setAddonTypeList(Collections.singletonList(ComponentTypeEnum.INTERNAL_ADDON));
         appAddonProvider.list(internalAddonQueryReq).getItems()
@@ -102,6 +108,8 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         // 获取 Resource Addon
         AppAddonQueryReq resourceAddonQueryReq = new AppAddonQueryReq();
         resourceAddonQueryReq.setAppId(appId);
+        resourceAddonQueryReq.setNamespaceId(namespaceId);
+        resourceAddonQueryReq.setStageId(stageId);
         resourceAddonQueryReq.setPagination(false);
         resourceAddonQueryReq.setAddonTypeList(Collections.singletonList(ComponentTypeEnum.RESOURCE_ADDON));
         appAddonProvider.list(resourceAddonQueryReq).getItems()

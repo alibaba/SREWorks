@@ -1,11 +1,10 @@
 package com.alibaba.tesla.appmanager.domain.dto;
 
+import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
+import lombok.Data;
+
 import java.util.Date;
 import java.util.List;
-
-import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
-
-import lombok.Data;
 
 /**
  * @author qianmo.zm@alibaba-inc.com
@@ -32,6 +31,16 @@ public class K8sMicroServiceMetaDTO {
      * 应用标示
      */
     private String appId;
+
+    /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
 
     /**
      * 微服务标示

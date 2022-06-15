@@ -98,10 +98,14 @@ public class ComponentPackageProviderImpl implements ComponentPackageProvider {
      */
     @Override
     public ComponentPackageCreateRes createTask(ComponentPackageTaskCreateReq request, String operator) {
+        String appId = request.getAppId();
+        String namespaceId = request.getNamespaceId();
+        String stageId = request.getStageId();
+
         // 对当前版本合法性进行检测
         String newVersion = request.getVersion();
         ComponentPackageQueryCondition condition = ComponentPackageQueryCondition.builder()
-                .appId(request.getAppId())
+                .appId(appId)
                 .componentType(request.getComponentType())
                 .componentName(request.getComponentName())
                 .orderBy(DefaultConstant.ORDER_BY_GMT_CREATE_DESC)
@@ -117,7 +121,9 @@ public class ComponentPackageProviderImpl implements ComponentPackageProvider {
 
         // 插入实际任务
         ComponentPackageTaskDO taskDO = ComponentPackageTaskDO.builder()
-                .appId(request.getAppId())
+                .appId(appId)
+                .namespaceId(namespaceId)
+                .stageId(stageId)
                 .componentType(request.getComponentType())
                 .componentName(request.getComponentName())
                 .packageVersion(fullVersion)

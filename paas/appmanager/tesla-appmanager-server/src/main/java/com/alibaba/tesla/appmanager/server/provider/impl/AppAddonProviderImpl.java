@@ -1,7 +1,6 @@
 package com.alibaba.tesla.appmanager.server.provider.impl;
 
 import com.alibaba.tesla.appmanager.api.provider.AppAddonProvider;
-import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.ClassUtil;
 import com.alibaba.tesla.appmanager.domain.dto.AppAddonDTO;
@@ -10,12 +9,10 @@ import com.alibaba.tesla.appmanager.domain.req.AppAddonQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.AppAddonUpdateReq;
 import com.alibaba.tesla.appmanager.server.assembly.AppAddonDtoConvert;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppAddonQueryCondition;
-import com.alibaba.tesla.appmanager.server.repository.domain.AddonMetaDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.AppAddonDO;
 import com.alibaba.tesla.appmanager.server.service.addon.AddonMetaService;
 import com.alibaba.tesla.appmanager.server.service.appaddon.AppAddonService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,8 +58,13 @@ public class AppAddonProviderImpl implements AppAddonProvider {
      * 通过 name 查询 Addon 信息
      */
     @Override
-    public AppAddonDTO get(String appId, String name) {
-        AppAddonQueryCondition condition = AppAddonQueryCondition.builder().appId(appId).addonName(name).build();
+    public AppAddonDTO get(String appId, String namespaceId, String stageId, String name) {
+        AppAddonQueryCondition condition = AppAddonQueryCondition.builder()
+                .appId(appId)
+                .addonName(name)
+                .namespaceId(namespaceId)
+                .stageId(stageId)
+                .build();
         return get(condition);
     }
 
@@ -70,9 +72,11 @@ public class AppAddonProviderImpl implements AppAddonProvider {
      * 通过 ID 删除 Addon 信息
      */
     @Override
-    public boolean delete(String appId, String addonName) {
+    public boolean delete(String appId, String namespaceId, String stageId, String addonName) {
         AppAddonQueryCondition condition = AppAddonQueryCondition.builder()
                 .appId(appId)
+                .namespaceId(namespaceId)
+                .stageId(stageId)
                 .addonName(addonName)
                 .build();
         return appAddonService.delete(condition) > 0;
@@ -85,9 +89,13 @@ public class AppAddonProviderImpl implements AppAddonProvider {
     public boolean update(AppAddonUpdateReq request) {
         AppAddonQueryCondition condition = AppAddonQueryCondition.builder()
                 .appId(request.getAppId())
+                .namespaceId(request.getNamespaceId())
+                .stageId(request.getStageId())
                 .addonName(request.getAddonName())
                 .build();
-        AppAddonDTO appAddonDTO = AppAddonDTO.builder().spec(request.getSpec()).build();
+        AppAddonDTO appAddonDTO = AppAddonDTO.builder()
+                .spec(request.getSpec())
+                .build();
         int count = appAddonService.update(appAddonDtoConvert.from(appAddonDTO), condition);
         return count > 0;
     }

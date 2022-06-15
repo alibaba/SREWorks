@@ -25,7 +25,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.List;
 
@@ -110,6 +109,8 @@ public class RunningComponentPackageTaskStateAction implements ComponentPackageT
         try {
             componentPackageInfo = componentPackageBuilderService.build(BuildComponentHandlerReq.builder()
                     .appId(taskDO.getAppId())
+                    .namespaceId(taskDO.getNamespaceId())
+                    .stageId(taskDO.getStageId())
                     .componentType(taskDO.getComponentType())
                     .componentName(taskDO.getComponentName())
                     .version(taskDO.getPackageVersion())

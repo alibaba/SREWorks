@@ -52,6 +52,9 @@ public class DeployConfigRepositoryImpl implements DeployConfigRepository {
     private DeployConfigDOExample buildExample(DeployConfigQueryCondition condition) {
         DeployConfigDOExample example = new DeployConfigDOExample();
         DeployConfigDOExample.Criteria criteria = example.createCriteria();
+        if (condition.getId() != null && condition.getId() > 0) {
+            criteria.andIdEqualTo(condition.getId());
+        }
         // 允许 appId/envId 为空
         if (condition.getAppId() != null) {
             criteria.andAppIdEqualTo(condition.getAppId());

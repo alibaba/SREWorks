@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.meta.helm.controller;
 
 import com.alibaba.tesla.appmanager.api.provider.HelmMetaProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
+import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.dto.HelmMetaDTO;
 import com.alibaba.tesla.appmanager.domain.req.helm.HelmMetaCreateReq;
 import com.alibaba.tesla.appmanager.domain.req.helm.HelmMetaQueryReq;
@@ -29,8 +30,14 @@ public class HelmItemController extends AppManagerBaseController {
      * @apiParam (Path Parameters) {Number} id HELM 组件主键ID
      */
     @GetMapping(value = "/{id}")
-    public TeslaBaseResult get(@PathVariable String appId, @PathVariable Long id) {
-        HelmMetaDTO result = metaProvider.get(id);
+    public TeslaBaseResult get(
+            @PathVariable String appId,
+            @PathVariable Long id,
+            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
+        HelmMetaDTO result = metaProvider.get(id, namespaceId, stageId);
         return buildSucceedResult(result);
     }
 
@@ -45,7 +52,15 @@ public class HelmItemController extends AppManagerBaseController {
      * @apiParam (GET Parameters) {Number} pageSize 每页大小
      */
     @GetMapping
-    public TeslaBaseResult list(@PathVariable String appId, @ModelAttribute HelmMetaQueryReq request) {
+    public TeslaBaseResult list(
+            @PathVariable String appId,
+            @ModelAttribute HelmMetaQueryReq request,
+            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
+        request.setNamespaceId(namespaceId);
+        request.setStageId(stageId);
         request.setAppId(appId);
         request.setWithBlobs(true);
         return buildSucceedResult(metaProvider.list(request));
@@ -64,7 +79,15 @@ public class HelmItemController extends AppManagerBaseController {
      * @apiParam (JSON Body) {String} description 描述信息
      */
     @PostMapping
-    public TeslaBaseResult create(@PathVariable String appId, @RequestBody HelmMetaCreateReq request) {
+    public TeslaBaseResult create(
+            @PathVariable String appId,
+            @RequestBody HelmMetaCreateReq request,
+            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
+        request.setNamespaceId(namespaceId);
+        request.setStageId(stageId);
         request.setAppId(appId);
         request.checkReq();
         HelmMetaDTO result = metaProvider.create(request);
@@ -79,10 +102,18 @@ public class HelmItemController extends AppManagerBaseController {
      * @apiParam (Path Parameters) {Number} id HELM组件主键 ID
      */
     @PutMapping(value = "/{id}")
-    public TeslaBaseResult update(@PathVariable String appId, @PathVariable Long id,
-                                  @RequestBody HelmMetaUpdateReq request) {
+    public TeslaBaseResult update(
+            @PathVariable String appId,
+            @PathVariable Long id,
+            @RequestBody HelmMetaUpdateReq request,
+            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
         request.setId(id);
         request.setAppId(appId);
+        request.setNamespaceId(namespaceId);
+        request.setStageId(stageId);
         request.checkReq();
         HelmMetaDTO result = metaProvider.update(request);
         return buildSucceedResult(result);
@@ -96,10 +127,16 @@ public class HelmItemController extends AppManagerBaseController {
      * @apiParam (Path Parameters) {Number} id HELM组件主键 ID
      */
     @DeleteMapping(value = "/{id}")
-    public TeslaBaseResult delete(@PathVariable String appId, @PathVariable Long id) {
+    public TeslaBaseResult delete(
+            @PathVariable String appId,
+            @PathVariable Long id,
+            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
         if (Objects.isNull(id)) {
             return buildSucceedResult(Boolean.TRUE);
         }
-        return buildSucceedResult(metaProvider.delete(id));
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
+        return buildSucceedResult(metaProvider.delete(id, namespaceId, stageId));
     }
 }

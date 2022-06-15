@@ -5,6 +5,7 @@ import com.alibaba.tesla.appmanager.api.provider.ComponentPackageProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.PackageTaskEnum;
+import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.dto.ComponentPackageTaskDTO;
 import com.alibaba.tesla.appmanager.domain.req.componentpackage.ComponentPackageTaskCreateReq;
 import com.alibaba.tesla.appmanager.domain.req.componentpackage.ComponentPackageTaskListQueryReq;
@@ -92,10 +93,15 @@ public class AppComponentPackageTaskController extends AppManagerBaseController 
     @PostMapping(value = "/{taskId}/retry")
     @ResponseBody
     public TeslaBaseResult retryTask(
-            @PathVariable String appId, @PathVariable("taskId") Long taskId,
+            @PathVariable String appId,
+            @PathVariable("taskId") Long taskId,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
         publisher.publishEvent(new ComponentPackageTaskStartEvent(
-                this, 0L, taskId, appId, getOperator(auth), null, PackageTaskEnum.RETRY));
+                this, 0L, taskId, appId, namespaceId, stageId, getOperator(auth), null, PackageTaskEnum.RETRY));
         return buildSucceedResult(Boolean.TRUE);
     }
 }

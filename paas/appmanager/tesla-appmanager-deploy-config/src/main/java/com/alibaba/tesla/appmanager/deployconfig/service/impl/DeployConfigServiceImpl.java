@@ -499,8 +499,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
 
         // 再不行就报错了
         throw new AppException(AppErrorCode.DEPLOY_ERROR,
-                String.format("cannot find best deploy config with given condition(specified name)|clusterId=%s|" +
-                        "namespaceId=%s|stageId=%s", clusterId, namespaceId, stageId));
+                String.format("cannot find best deploy config with given condition(specified name)|unitId=%s|" +
+                        "clusterId=%s|namespaceId=%s|stageId=%s", unitId, clusterId, namespaceId, stageId));
     }
 
     /**

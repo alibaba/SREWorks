@@ -26,12 +26,12 @@ public interface AppAddonProvider {
     /**
      * 通过 name 查询 Addon 信息
      */
-    AppAddonDTO get(String appId, String name);
+    AppAddonDTO get(String appId, String namespaceId, String stageId, String name);
 
     /**
      * 通过 ID 删除 Addon 信息
      */
-    boolean delete(String appId, String name);
+    boolean delete(String appId, String namespaceId, String stageId, String name);
 
     /**
      * 更新应用 Addon 绑定

@@ -59,7 +59,7 @@ class DefaultBuildInternalAddonDevelopmentMetaHandler implements BuildComponentH
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 8
+    public static final Integer REVISION = 10
 
     private static final String TEMPLATE_INTERNAL_ADDON_DEVELOPMENTMETA_FILENAME = "default_internal_addon_developmentmeta.tpl"
     private static final String EXPORT_OPTION_FILE = "option.json"
@@ -88,6 +88,8 @@ class DefaultBuildInternalAddonDevelopmentMetaHandler implements BuildComponentH
     @Override
     LaunchBuildComponentHandlerRes launch(BuildComponentHandlerReq request) {
         def appId = request.getAppId()
+        def namespaceId = request.getNamespaceId()
+        def stageId = request.getStageId()
         def componentType = request.getComponentType()
         def componentName = request.getComponentName()
         def version = request.getVersion()
@@ -109,21 +111,37 @@ class DefaultBuildInternalAddonDevelopmentMetaHandler implements BuildComponentH
         // microservice
         buildData.put("microservices", null)
         Pagination<K8sMicroServiceMetaDO> k8sMicroservicePagination = k8sMicroserviceMetaService.list(
-                K8sMicroserviceMetaQueryCondition.builder().appId(appId).withBlobs(true).build())
+                K8sMicroserviceMetaQueryCondition.builder()
+                        .appId(appId)
+                        .namespaceId(namespaceId)
+                        .stageId(stageId)
+                        .withBlobs(true)
+                        .build())
         if (!k8sMicroservicePagination.isEmpty()) {
             buildData.put("microservices", k8sMicroservicePagination.getItems())
         }
 
         // helm
         buildData.put("helms", null)
-        Pagination<HelmMetaDO> helmPagination = helmMetaService.list(HelmMetaQueryCondition.builder().appId(appId).withBlobs(true).build())
+        Pagination<HelmMetaDO> helmPagination = helmMetaService.list(
+                HelmMetaQueryCondition.builder()
+                        .appId(appId)
+                        .namespaceId(namespaceId)
+                        .stageId(stageId)
+                        .withBlobs(true)
+                        .build())
         if (!helmPagination.isEmpty()) {
             buildData.put("helms", helmPagination.getItems())
         }
 
         // addons
         buildData.put("addons", null)
-        Pagination<AppAddonDO> addons = appAddonService.list(AppAddonQueryCondition.builder().appId(appId).build())
+        Pagination<AppAddonDO> addons = appAddonService.list(
+                AppAddonQueryCondition.builder()
+                        .appId(appId)
+                        .namespaceId(namespaceId)
+                        .stageId(stageId)
+                        .build())
         if (!addons.isEmpty()) {
             buildData.put("addons", addons.getItems())
         }

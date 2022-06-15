@@ -74,13 +74,18 @@ public class K8sMicroServiceMetaRepositoryImpl implements K8sMicroServiceMetaRep
         if (StringUtils.isNotBlank(condition.getAppId())) {
             criteria.andAppIdEqualTo(condition.getAppId());
         }
+        if (condition.getNamespaceId() != null) {
+            criteria.andNamespaceIdEqualTo(condition.getNamespaceId());
+        }
+        if (condition.getStageId() != null) {
+            criteria.andStageIdEqualTo(condition.getStageId());
+        }
         if (StringUtils.isNotBlank(condition.getMicroServiceId())) {
             criteria.andMicroServiceIdEqualTo(condition.getMicroServiceId());
         }
         if (CollectionUtils.isNotEmpty(condition.getComponentTypeList())) {
             criteria.andComponentTypeIn(
-                condition.getComponentTypeList().stream().map(componentType -> componentType.toString()).collect(
-                    Collectors.toList()));
+                condition.getComponentTypeList().stream().map(Enum::toString).collect(Collectors.toList()));
         }
         return example;
     }

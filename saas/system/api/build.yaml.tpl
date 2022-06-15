@@ -11,8 +11,10 @@ options:
         args:
           TAG: plugin-clustermanage-cluster-aliyun
         dockerfileTemplateArgs:
-          JRE11_IMAGE: registry.cn-hangzhou.aliyuncs.com/alisre/openjdk:11.0.10-jre
-        dockerfileTemplate: Dockerfile
+          MAVEN_IMAGE: ${MAVEN_IMAGE}
+          JRE11_IMAGE: ${JRE11_IMAGE}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
+        dockerfileTemplate: Dockerfile.tpl
         repoPath: saas/system/api/plugin-clustermanage-cluster-aliyun
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}
@@ -57,8 +59,10 @@ options:
         args:
           TAG: plugin-teammanage-account-aliyun
         dockerfileTemplateArgs:
-          JRE11_IMAGE: registry.cn-hangzhou.aliyuncs.com/alisre/openjdk:11.0.10-jre
-        dockerfileTemplate: Dockerfile
+          MAVEN_IMAGE: ${MAVEN_IMAGE}
+          JRE11_IMAGE: ${JRE11_IMAGE}
+          MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
+        dockerfileTemplate: Dockerfile.tpl
         repoPath: saas/system/api/plugin-teammanage-account-aliyun
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}

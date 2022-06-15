@@ -30,7 +30,7 @@ public class HelmGlobalController extends AppManagerBaseController {
     @GetMapping
     public TeslaBaseResult list(
             @ModelAttribute HelmMetaQueryReq request,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();

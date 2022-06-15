@@ -39,7 +39,7 @@ public class ApplicationConfigurationController extends BaseController {
     @PutMapping
     public TeslaBaseResult update(
             @RequestBody DeployConfigApplyTemplateReq request,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         if (StringUtils.isEmpty(request.getAppId())) {
             request.setAppId("");
         } else if (StringUtils.isEmpty(request.getEnvId())) {
@@ -60,7 +60,7 @@ public class ApplicationConfigurationController extends BaseController {
     @GetMapping
     public TeslaBaseResult get(
             @ModelAttribute DeployConfigGenerateReq request,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         if (StringUtils.isEmpty(request.getApiVersion())) {
             request.setApiVersion(DefaultConstant.API_VERSION_V1_ALPHA2);
         }
@@ -86,7 +86,7 @@ public class ApplicationConfigurationController extends BaseController {
     @DeleteMapping
     public TeslaBaseResult delete(
             @ModelAttribute DeployConfigDeleteReq request,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         if (StringUtils.isEmpty(request.getApiVersion())) {
             request.setApiVersion(DefaultConstant.API_VERSION_V1_ALPHA2);
         }

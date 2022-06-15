@@ -70,7 +70,7 @@ def apply(file_name, type_id):
     post_body = {
       "appId": "",
       "typeId": type_id,
-      "envId": "Namespace:%s::Stage:%s" % ("sreworks", "dev"),
+      "envId": "",
       "config": config,
       "apiVersion": "core.oam.dev/v1alpha2",
       "enabled": True,
@@ -78,7 +78,9 @@ def apply(file_name, type_id):
     client = AppManagerClient(ENDPOINT, CLIENT_ID, CLIENT_SECRET, USERNAME, PASSWORD).client
 
     logger.info(post_body)
-    response = client.put(ENDPOINT + '/application-configurations', json=post_body)
+    response = client.put(ENDPOINT + '/application-configurations', json=post_body, headers={
+      "X-Biz-App": "%s,%s,%s" % ("unknown", "sreworks", "dev")
+    })
     response_json = response.json()
     if response_json.get('code') != 200:
         logger.error('import global swapp to appmanager failed, file=%s, response=%s' % (file_name, response.text))
@@ -87,7 +89,6 @@ def apply(file_name, type_id):
 
 
 def apply_all_swapps():
-
     swapps = [
        {
          "file": "productopsv2.yaml",
@@ -101,23 +102,6 @@ def apply_all_swapps():
     for swapp in swapps:
         apply(swapp["file"], swapp["type_id"])
 
-# def get_passwd_hash(user_name, user_passwd):
-#     key = "%(user_name)s%(local_time)s%(passwd)s" % {
-#         'user_name': user_name,
-#         'local_time': time.strftime('%Y%m%d', time.localtime(time.time())),
-#         'passwd': user_passwd }
-#     m = hashlib.md5()
-#     m.update(key)
-#     return m.hexdigest()
-#
-# def gen_auth_headers():
-#     ## 四个header
-#     return {
-#         "x-auth-app": os.environ.get('ACCOUNT_SUPER_CLIENT_ID'),
-#         "x-auth-key": os.environ.get('ACCOUNT_SUPER_CLIENT_SECRET'),
-#         "x-auth-user": os.environ.get('ACCOUNT_SUPER_ID'),
-#         "x-auth-passwd": get_passwd_hash(os.environ.get('ACCOUNT_SUPER_ID'), os.environ.get('ACCOUNT_SUPER_SECRET_KEY'))
-#     }
 
 if __name__ == '__main__':
     if os.getenv("SREWORKS_INIT") == "enable":

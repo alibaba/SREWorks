@@ -118,6 +118,8 @@ public class PackServiceImpl implements PackService {
         String componentName = component.getComponentName();
         ComponentPackageTaskCreateReq request = ComponentPackageTaskCreateReq.builder()
                 .appId(appId)
+                .namespaceId(namespaceId)
+                .stageId(stageId)
                 .appPackageTaskId(message.getAppPackageTaskId())
                 .componentType(componentType.toString())
                 .componentName(componentName)

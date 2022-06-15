@@ -52,12 +52,19 @@ public class AppComponentPackageTaskController extends AppManagerBaseController 
     @PostMapping
     @ResponseBody
     public TeslaBaseResult create(
-            @PathVariable String appId, @RequestBody ComponentPackageTaskCreateReq request,
+            @PathVariable String appId,
+            @RequestBody ComponentPackageTaskCreateReq request,
+            @RequestHeader(value = "X-Biz-App") String headerBizApp,
             OAuth2Authentication auth) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
         if (StringUtils.isEmpty(request.getVersion())) {
             request.setVersion(DefaultConstant.AUTO_VERSION);
         }
         request.setAppId(appId);
+        request.setNamespaceId(namespaceId);
+        request.setStageId(stageId);
         ComponentPackageCreateRes response = componentPackageProvider.createTask(request, getOperator(auth));
         return buildSucceedResult(response);
     }

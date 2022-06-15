@@ -57,7 +57,7 @@ export default class ElementEditor extends React.Component {
             widgetMeta: null,
             isJsonEdit: false,
             configWrapper: JSON.parse(JSON.stringify(widgetModel.config)),
-            hasWrapper:JSON.parse(JSON.stringify(widgetModel.config)),
+            hasWrapper: JSON.parse(JSON.stringify(widgetModel.config)),
             customList: []
         };
         this.isFilter = widgetModel.isFilter();
@@ -152,7 +152,7 @@ export default class ElementEditor extends React.Component {
     }
     render() {
         let { widgetModel, widgetMeta, isJsonEdit } = this.state;
-        let { configWrapper,customList,hasWrapper } = this.state;
+        let { configWrapper, customList, hasWrapper } = this.state;
         let CommonTabContent = null, tabContentStyle = { height: 'calc(45vh - 10px)', overflowY: "auto", overflowX: "none" };
         // if(this.isFilter){
         //      CommonTabContent=(props)=><FilterSetting {...props}/>;
@@ -263,32 +263,48 @@ export default class ElementEditor extends React.Component {
                             (widgetMeta.configSchema.schema && Object.keys(widgetMeta.configSchema.schema).length) || widgetMeta.configSchema.supportItemToolbar
                         ) &&
                         <TabPane key="custom" tab={<span>组件属性</span>}>
-                            <div style={tabContentStyle}>
-                                {
-                                    widgetMeta.configSchema.schema && Object.keys(widgetMeta.configSchema.schema).length > 0 &&
-                                    <CustomSetting widgetModel={widgetModel}
-                                        config={Object.assign({}, this.commonConfig)}
-                                        widgetMeta={widgetMeta}
-                                        onValuesChange={(changedField, allValue) => this.setCommonConfig(changedField)} />
-                                }
-                                {
-                                    widgetMeta.configSchema.supportItemToolbar &&
-                                    <Collapse>
-                                        <Panel header="数据项工具栏" key="row_action">
-                                            <ToolbarSetting noFilter={true} noHelp={true} configIndex="itemToolbar" widgetModel={widgetModel} config={Object.assign({}, this.commonConfig)} onValuesChange={(changedField, allValue) => this.setCommonConfig({ itemToolbar: allValue })} />
-                                        </Panel>
-                                    </Collapse>
-                                }
-                                {/* 大屏图表组件位置标配 */}
-                                {
-                                    widgetMeta.type === 'DisplayScreens' &&
-                                    <Collapse>
-                                        <Panel header="大屏图表配置" key="row_action">
-                                            <ScreenSetting widgetModel={widgetModel} config={Object.assign({}, this.commonConfig)} onValuesChange={(changedField, allValue) => this.setCommonConfig({ chartDisplayConfig: allValue })} />
-                                        </Panel>
-                                    </Collapse>
-                                }
-                            </div>
+                            <Row>
+                                <Col span={16}>
+                                    <div>
+                                        {
+                                            widgetMeta.configSchema.schema && Object.keys(widgetMeta.configSchema.schema).length > 0 &&
+                                            <CustomSetting widgetModel={widgetModel}
+                                                config={Object.assign({}, this.commonConfig)}
+                                                widgetMeta={widgetMeta}
+                                                onValuesChange={(changedField, allValue) => this.setCommonConfig(changedField)} />
+                                        }
+                                        {
+                                            widgetMeta.configSchema.supportItemToolbar &&
+                                            <Collapse>
+                                                <Panel header="数据项工具栏" key="row_action">
+                                                    <ToolbarSetting noFilter={true} noHelp={true} configIndex="itemToolbar" widgetModel={widgetModel} config={Object.assign({}, this.commonConfig)} onValuesChange={(changedField, allValue) => this.setCommonConfig({ itemToolbar: allValue })} />
+                                                </Panel>
+                                            </Collapse>
+                                        }
+                                        {/* 大屏图表组件位置标配 */}
+                                        {
+                                            widgetMeta.type === 'DisplayScreens' &&
+                                            <Collapse>
+                                                <Panel header="大屏图表配置" key="row_action">
+                                                    <ScreenSetting widgetModel={widgetModel} config={Object.assign({}, this.commonConfig)} onValuesChange={(changedField, allValue) => this.setCommonConfig({ chartDisplayConfig: allValue })} />
+                                                </Panel>
+                                            </Collapse>
+                                        }
+                                    </div>
+                                </Col>
+                                <Col span={8}>
+                                    <div>
+                                        {
+                                            widgetMeta && widgetMeta.info.docs &&
+                                            <Card title="配置文档" size="small">
+                                                <div>
+                                                    <ReactMarkdown children={widgetMeta.info.docs} escapeHtml={false} />
+                                                </div>
+                                            </Card>
+                                        }
+                                    </div>
+                                </Col>
+                            </Row>
                         </TabPane>
                     }
                     {
@@ -303,25 +319,13 @@ export default class ElementEditor extends React.Component {
                         isJsonEdit &&
                         <TabPane key="widget" tab={<span>源码</span>}>
                             <Row gutter={8}>
-                                <Col span={12}>
+                                <Col span={18}>
                                     {/*<JsonEditor json={Object.assign({},widgetModel.config,this.commonConfig)} mode="code" readOnly={false} onChange={this.onConfigChanged} changeInterval={500} style={{height:"calc(50vh - 100px)"}}/>*/}
                                     <AceViewer model={{ showDiff: false, defModel: { height: "calc(50vh - 64px)", disableShowDiff: true, mode: "json" } }}
                                         mode="json"
                                         value={Object.assign({}, this.commonConfig)}
                                         onChange={this.onConfigChanged}
                                     />
-                                </Col>
-                                <Col span={12}>
-                                    <div style={tabContentStyle}>
-                                        {
-                                            widgetMeta && widgetMeta.info.docs &&
-                                            <Card title="配置文档" size="small">
-                                                <div>
-                                                    <ReactMarkdown children={widgetMeta.info.docs} escapeHtml={false} />
-                                                </div>
-                                            </Card>
-                                        }
-                                    </div>
                                 </Col>
                             </Row>
                         </TabPane>

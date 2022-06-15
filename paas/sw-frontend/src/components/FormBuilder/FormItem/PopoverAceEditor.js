@@ -28,7 +28,7 @@ export default class PopoverAceEditor extends React.Component {
         <Popover
           content={
             <div style={{ width: 560 }}>
-              <AceViewer value={value || ''} model={model} onChange={onChange} />
+              <AceViewer value={value || {}} model={model} onChange={onChange} />
             </div>
           }
           title={

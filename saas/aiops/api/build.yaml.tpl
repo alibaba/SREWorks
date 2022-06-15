@@ -23,7 +23,7 @@ options:
       build:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        dockerfileTemplateArgs: {}
+        dockerfileTemplateArgs:
           MIGRATE_IMAGE: ${MIGRATE_IMAGE}
         dockerfileTemplate: Dockerfile-sreworks-migration.tpl
         repoPath: saas/aiops/api/aisp
@@ -31,7 +31,6 @@ options:
         repo: ${SOURCE_REPO}
         ciAccount: ${SOURCE_CI_ACCOUNT}
         ciToken: ${SOURCE_CI_TOKEN}
-
 
   env:
     - DB_HOST
@@ -47,27 +46,6 @@ options:
     - ACCOUNT_SUPER_ACCESS_KEY
 
 ---
-
-#componentType: K8S_MICROSERVICE
-#componentName: drilldown
-#options:
-#  containers:
-#    - name: server
-#      build:
-#        imagePush: ${IMAGE_BUILD_ENABLE}
-#        imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-#        args:
-#          TAG: ack
-#        dockerfileTemplateArgs: {}
-#        dockerfileTemplate: Dockerfile
-#        repoPath: saas/aiops/api/drilldown
-#        branch: ${SOURCE_BRANCH}
-#        repo: ${SOURCE_REPO}
-#        ciAccount: ${SOURCE_CI_ACCOUNT}
-#        ciToken: ${SOURCE_CI_TOKEN}
-#
-#
-#---
 
 componentType: K8S_MICROSERVICE
 componentName: anomalydetection
@@ -89,6 +67,7 @@ options:
         ciToken: ${SOURCE_CI_TOKEN}
 
 ---
+
 componentType: K8S_MICROSERVICE
 componentName: processstrategy
 options:

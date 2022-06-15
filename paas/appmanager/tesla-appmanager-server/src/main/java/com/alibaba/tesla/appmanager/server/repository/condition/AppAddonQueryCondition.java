@@ -29,4 +29,8 @@ public class AppAddonQueryCondition extends BaseCondition {
     private String addonId;
 
     private String addonName;
+
+    private String namespaceId;
+
+    private String stageId;
 }

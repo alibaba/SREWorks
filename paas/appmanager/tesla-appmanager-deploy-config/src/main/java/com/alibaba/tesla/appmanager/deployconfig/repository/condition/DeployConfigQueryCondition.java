@@ -13,6 +13,11 @@ import lombok.experimental.SuperBuilder;
 public class DeployConfigQueryCondition extends BaseCondition {
 
     /**
+     * ID
+     */
+    private Long id;
+
+    /**
      * 应用 ID
      */
     private String appId;

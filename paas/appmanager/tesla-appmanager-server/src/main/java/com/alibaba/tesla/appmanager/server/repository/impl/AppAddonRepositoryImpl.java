@@ -4,8 +4,8 @@ import com.alibaba.tesla.appmanager.common.util.DateUtil;
 import com.alibaba.tesla.appmanager.server.repository.AppAddonRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppAddonQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.AppAddonDO;
-import com.alibaba.tesla.appmanager.server.repository.domain.AppAddonExample;
-import com.alibaba.tesla.appmanager.server.repository.mapper.AppAddonMapper;
+import com.alibaba.tesla.appmanager.server.repository.domain.AppAddonDOExample;
+import com.alibaba.tesla.appmanager.server.repository.mapper.AppAddonDOMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,8 +20,9 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class AppAddonRepositoryImpl implements AppAddonRepository {
+
     @Autowired
-    private AppAddonMapper appAddonMapper;
+    private AppAddonDOMapper appAddonMapper;
 
     @Override
     public long countByCondition(AppAddonQueryCondition condition) {
@@ -40,7 +41,7 @@ public class AppAddonRepositoryImpl implements AppAddonRepository {
 
     @Override
     public List<AppAddonDO> selectByCondition(AppAddonQueryCondition condition) {
-        AppAddonExample example = buildExample(condition);
+        AppAddonDOExample example = buildExample(condition);
         condition.doPagination();
         return appAddonMapper.selectByExample(example);
     }
@@ -50,9 +51,9 @@ public class AppAddonRepositoryImpl implements AppAddonRepository {
         return appAddonMapper.updateByExampleSelective(updateDate(record), buildExample(condition));
     }
 
-    private AppAddonExample buildExample(AppAddonQueryCondition condition) {
-        AppAddonExample example = new AppAddonExample();
-        AppAddonExample.Criteria criteria = example.createCriteria();
+    private AppAddonDOExample buildExample(AppAddonQueryCondition condition) {
+        AppAddonDOExample example = new AppAddonDOExample();
+        AppAddonDOExample.Criteria criteria = example.createCriteria();
         if (Objects.nonNull(condition.getId())) {
             criteria.andIdEqualTo(condition.getId());
         }
@@ -70,6 +71,12 @@ public class AppAddonRepositoryImpl implements AppAddonRepository {
         }
         if (StringUtils.isNotEmpty(condition.getAddonName())) {
             criteria.andNameEqualTo(condition.getAddonName());
+        }
+        if (condition.getNamespaceId() != null) {
+            criteria.andNamespaceIdEqualTo(condition.getNamespaceId());
+        }
+        if (condition.getStageId() != null) {
+            criteria.andStageIdEqualTo(condition.getStageId());
         }
         return example;
     }

@@ -2,6 +2,8 @@ package com.alibaba.tesla.appmanager.server.controller;
 
 import com.alibaba.tesla.appmanager.api.provider.DeployConfigProvider;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
+import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
+import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigApplyTemplateReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
@@ -37,6 +39,8 @@ public class ApplicationConfigurationController extends BaseController {
     public TeslaBaseResult update(@RequestBody DeployConfigApplyTemplateReq request) {
         if (StringUtils.isEmpty(request.getAppId())) {
             request.setAppId("");
+        } else if (StringUtils.isEmpty(request.getEnvId())) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "empty envId is not allowed");
         }
         return buildSucceedResult(deployConfigProvider.applyTemplate(request));
     }

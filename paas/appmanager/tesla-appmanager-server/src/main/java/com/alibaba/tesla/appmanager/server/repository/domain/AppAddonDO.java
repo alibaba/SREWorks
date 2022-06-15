@@ -9,16 +9,13 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 /**
- * 应用组件关联表
- *
- * @author qianmo.zm@alibaba-inc.com
+ * 应用addon关联表
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppAddonDO {
-
     /**
      * 主键
      */
@@ -63,4 +60,14 @@ public class AppAddonDO {
      * 名称
      */
     private String name;
+
+    /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
 }

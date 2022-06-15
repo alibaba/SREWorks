@@ -8,7 +8,6 @@ import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
 import java.util.Objects;
 
 /**
@@ -23,6 +22,16 @@ public class HelmMetaCreateReq {
      * 应用 ID
      */
     private String appId;
+
+    /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
 
     /**
      * Helm 包标识 ID

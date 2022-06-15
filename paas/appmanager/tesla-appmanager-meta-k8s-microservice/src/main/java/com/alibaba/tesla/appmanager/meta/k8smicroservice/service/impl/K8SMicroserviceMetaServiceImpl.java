@@ -9,6 +9,7 @@ import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConfigQueryCondition;
 import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDO;
 import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
+import com.alibaba.tesla.appmanager.domain.container.DeployConfigEnvId;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.dto.LaunchDTO;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpdateReq;
@@ -67,24 +68,36 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
         return k8sMicroServiceMetaRepository.selectByPrimaryKey(id);
     }
 
+    /**
+     * 根据 appId + microServiceId + namespaceId + stageId 获取微应用元信息
+     *
+     * @param appId 应用 ID
+     * @param microServiceId 微服务标识
+     * @param namespaceId Namespace ID
+     * @param stageId Stage ID
+     * @return K8sMicroServiceMetaDO
+     */
     @Override
-    public K8sMicroServiceMetaDO getByMicroServiceId(String appId, String microServiceId){
+    public K8sMicroServiceMetaDO getByMicroServiceId(
+            String appId, String microServiceId, String namespaceId, String stageId) {
         K8sMicroserviceMetaQueryCondition condition = K8sMicroserviceMetaQueryCondition.builder()
                 .microServiceId(microServiceId)
                 .appId(appId)
+                .namespaceId(namespaceId)
+                .stageId(stageId)
                 .withBlobs(true)
                 .build();
         List<K8sMicroServiceMetaDO> metaList = k8sMicroServiceMetaRepository.selectByCondition(condition);
-        if (metaList.size() > 0){
+        if (metaList.size() > 0) {
             return metaList.get(0);
-        }else{
+        } else {
             return null;
         }
     }
 
     private void refreshDeployConfig(K8sMicroServiceMetaDO metaDO) {
         LaunchDTO launchObject = metaDO.getLaunchObject();
-        if (launchObject == null){
+        if (launchObject == null) {
             log.info("appId: " + metaDO.getAppId() + " launchObject is null, skip");
             return;
         }
@@ -98,7 +111,7 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
         JSONObject nsObject = new JSONObject();
         JSONObject nsSpecObject = new JSONObject();
         nsSpecObject.put("autoCreate", true);
-        if(launchObject.getNamespaceResourceLimit() != null){
+        if (launchObject.getNamespaceResourceLimit() != null) {
             JSONObject resourceQuotaObject = new JSONObject();
             resourceQuotaObject.put("name", "sreworks-resource-limit");
             resourceQuotaObject.put("spec", launchObject.getNamespaceResourceLimit());
@@ -110,7 +123,7 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
         nsScopeObject.put("scopeRef", nsObject);
         scopes.add(nsScopeObject);
 
-        configObject.put("revisionName", "K8S_MICROSERVICE|"+metaDO.getMicroServiceId()+"|_");
+        configObject.put("revisionName", "K8S_MICROSERVICE|" + metaDO.getMicroServiceId() + "|_");
 
         /** - name: service.trait.abm.io
          *    runtime: post
@@ -125,26 +138,26 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
         JSONObject portObject = new JSONObject();
 
         List<String> ports = new ArrayList<>(8);
-        if(StringUtils.isNotBlank(launchObject.getServicePorts())){
+        if (StringUtils.isNotBlank(launchObject.getServicePorts())) {
             ports = Arrays.stream(launchObject.getServicePorts().split(",")).collect(Collectors.toList());
-        }else if (!Objects.isNull(launchObject.getServicePort())){
+        } else if (!Objects.isNull(launchObject.getServicePort())) {
             ports.add(launchObject.getServicePort().toString());
-        }else {
+        } else {
             ports.add("7001");
         }
         for (String port : ports) {
             portObject.put("protocol", "TCP");
-            if(port.split(":").length > 1){
+            if (port.split(":").length > 1) {
                 portObject.put("port", port.split(":")[0]);
                 portObject.put("targetPort", Long.valueOf(port.split(":")[1]));
-            }else{
+            } else {
                 portObject.put("port", 80);
                 portObject.put("targetPort", Long.valueOf(port));
             }
             svcSpecPorts.add(portObject);
         }
 
-        if(launchObject.getServiceLabels() != null){
+        if (launchObject.getServiceLabels() != null) {
             svcSpec.put("labels", launchObject.getServiceLabels());
         }
         svcSpec.put("ports", svcSpecPorts);
@@ -155,7 +168,7 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
         svcTrait.put("spec", svcSpec);
         traits.add(svcTrait);
 
-        if(StringUtils.isNotBlank(launchObject.getGatewayRoute())) {
+        if (StringUtils.isNotBlank(launchObject.getGatewayRoute())) {
 
             /** - name: gateway.trait.abm.io
              *    runtime: post
@@ -168,28 +181,28 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
             JSONObject gatewayTrait = new JSONObject();
             JSONObject gatewaySpec = new JSONObject();
             String gatewayRoute = launchObject.getGatewayRoute();
-            if(!launchObject.getGatewayRoute().startsWith("/")){
+            if (!launchObject.getGatewayRoute().startsWith("/")) {
                 gatewayRoute = "/" + gatewayRoute;
             }
-            if(!launchObject.getGatewayRoute().endsWith("*")){
+            if (!launchObject.getGatewayRoute().endsWith("*")) {
                 gatewayRoute = gatewayRoute + "/**";
             }
             gatewaySpec.put("path", gatewayRoute);
-            gatewaySpec.put("serviceName", "{{ Global.STAGE_ID }}-"+metaDO.getAppId()+"-"+metaDO.getMicroServiceId()+".{{ Global.NAMESPACE_ID }}");
+            gatewaySpec.put("serviceName", "{{ Global.STAGE_ID }}-" + metaDO.getAppId() + "-" + metaDO.getMicroServiceId() + ".{{ Global.NAMESPACE_ID }}");
             gatewayTrait.put("name", "gateway.trait.abm.io");
             gatewayTrait.put("runtime", "post");
             gatewayTrait.put("spec", gatewaySpec);
-            if(launchObject.getGatewayRouteOrder() != null){
+            if (launchObject.getGatewayRouteOrder() != null) {
                 gatewaySpec.put("order", launchObject.getGatewayRouteOrder());
             }
-            if(launchObject.getGatewayAuthEnabled() != null){
+            if (launchObject.getGatewayAuthEnabled() != null) {
                 gatewaySpec.put("authEnabled", launchObject.getGatewayAuthEnabled());
             }
 
             traits.add(gatewayTrait);
         }
 
-        if(launchObject.getReplicas() != null){
+        if (launchObject.getReplicas() != null) {
 
             /**
              *         - name: REPLICAS
@@ -206,7 +219,7 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
             parameterValues.add(replicaValueObject);
         }
 
-        if(StringUtils.isNotBlank(launchObject.getTimezone())){
+        if (StringUtils.isNotBlank(launchObject.getTimezone())) {
             /**
              *         - name: timezoneSync.trait.abm.io
              *           runtime: pre
@@ -225,7 +238,7 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
             traits.add(timezoneTrait);
         }
 
-        if(launchObject.getPodLabels() != null){
+        if (launchObject.getPodLabels() != null) {
             /**
              * name: podPatch.trait.abm.io
              * runtime: pre
@@ -242,7 +255,7 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
 
             podPatchTrait.put("name", "podPatch.trait.abm.io");
             podPatchTrait.put("runtime", "pre");
-            if(launchObject.getPodLabels() != null){
+            if (launchObject.getPodLabels() != null) {
                 podMetadata.put("labels", launchObject.getPodLabels());
             }
             podPatchSpec.put("metadata", podMetadata);
@@ -254,16 +267,16 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
         traitEnvMapList.put("APP_INSTANCE_ID", "{{ spec.labels[\"labels.appmanager.oam.dev/appInstanceId\"] }}");
         JSONArray traitEnvList = new JSONArray();
 
-        for (String env : metaDO.getEnvKeyList()){
-            if(StringUtils.isBlank(env)){
+        for (String env : metaDO.getEnvKeyList()) {
+            if (StringUtils.isBlank(env)) {
                 continue;
             }
             String[] kv = env.split("=");
             String key = kv[0];
-            if(traitEnvMapList.containsKey(key)){
+            if (traitEnvMapList.containsKey(key)) {
                 traitEnvList.add(key);
             }
-            if(kv.length > 1){
+            if (kv.length > 1) {
                 JSONObject valueObject = new JSONObject();
                 valueObject.put("name", "Global." + key);
                 valueObject.put("value", kv[1]);
@@ -271,7 +284,7 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
             }
         }
 
-        if(traitEnvList.size() > 0){
+        if (traitEnvList.size() > 0) {
             JSONObject envTrait = new JSONObject();
             JSONArray dataOutputs = new JSONArray();
             envTrait.put("dataInputs", new JSONArray());
@@ -296,7 +309,7 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
                 DeployConfigQueryCondition.builder()
                         .appId(metaDO.getAppId())
                         .typeId(systemTypeId)
-                        .envId("")
+                        .envId(DeployConfigEnvId.namespaceStageStr(metaDO.getNamespaceId(), metaDO.getStageId()))
                         .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                         .enabled(true)
                         .build()
@@ -304,7 +317,7 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
 
         // 如果存在system-env则直接进行依赖
         // todo: 判断自身的变量在system-env中有才进行依赖
-        if (configs.size() > 0){
+        if (configs.size() > 0) {
             JSONArray dependencies = new JSONArray();
             JSONObject componentSystem = new JSONObject();
             componentSystem.put("component", "RESOURCE_ADDON|system-env@system-env");
@@ -322,7 +335,7 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(metaDO.getAppId())
                 .typeId(typeId)
-                .envId("")
+                .envId(DeployConfigEnvId.namespaceStageStr(metaDO.getNamespaceId(), metaDO.getStageId()))
                 .inherit(false)
                 .config(yaml.dumpAsMap(configObject))
                 .build());

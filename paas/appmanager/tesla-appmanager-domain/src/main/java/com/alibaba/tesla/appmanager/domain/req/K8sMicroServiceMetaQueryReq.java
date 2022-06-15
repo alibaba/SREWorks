@@ -26,6 +26,16 @@ public class K8sMicroServiceMetaQueryReq extends BaseRequest {
     private String appId;
 
     /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
+
+    /**
      * 微应用类型
      */
     private List<ComponentTypeEnum> componentTypeList;

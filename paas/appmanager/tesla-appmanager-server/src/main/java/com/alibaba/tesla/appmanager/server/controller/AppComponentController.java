@@ -2,15 +2,13 @@ package com.alibaba.tesla.appmanager.server.controller;
 
 import com.alibaba.tesla.appmanager.api.provider.AppComponentProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
+import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentQueryReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Component Controller
@@ -33,8 +31,15 @@ public class AppComponentController extends AppManagerBaseController {
      */
     @GetMapping
     public TeslaBaseResult list(
-            @PathVariable String appId, OAuth2Authentication auth) {
-        AppComponentQueryReq request = AppComponentQueryReq.builder().appId(appId).build();
+            @PathVariable String appId,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
+            OAuth2Authentication auth) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        AppComponentQueryReq request = AppComponentQueryReq.builder()
+                .appId(appId)
+                .namespaceId(container.getNamespaceId())
+                .stageId(container.getStageId())
+                .build();
         return buildSucceedResult(appComponentProvider.list(request, getOperator(auth)));
     }
 }

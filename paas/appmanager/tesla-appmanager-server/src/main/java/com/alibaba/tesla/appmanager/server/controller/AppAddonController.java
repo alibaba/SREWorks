@@ -8,6 +8,7 @@ import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
+import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.core.WorkloadResource;
 import com.alibaba.tesla.appmanager.domain.dto.AddonMetaDTO;
 import com.alibaba.tesla.appmanager.domain.dto.AppAddonDTO;
@@ -53,7 +54,13 @@ public class AppAddonController extends AppManagerBaseController {
      */
     @GetMapping
     @ResponseBody
-    public TeslaBaseResult list(@PathVariable String appId, @ModelAttribute AppAddonQueryReq request) throws Exception {
+    public TeslaBaseResult list(
+            @PathVariable String appId,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
+            @ModelAttribute AppAddonQueryReq request) throws Exception {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        request.setNamespaceId(container.getNamespaceId());
+        request.setStageId(container.getStageId());
         request.setAppId(appId);
         Pagination<AppAddonDTO> addonList = appAddonProvider.list(request);
         Pagination<JSONObject> result = Pagination.transform(addonList, appAddonDTO -> {
@@ -79,9 +86,15 @@ public class AppAddonController extends AppManagerBaseController {
      */
     @PostMapping
     @ResponseBody
-    public TeslaBaseResult create(@PathVariable String appId, @RequestBody AppAddonCreateReq request) {
+    public TeslaBaseResult create(
+            @PathVariable String appId,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
+            @RequestBody AppAddonCreateReq request) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        request.setNamespaceId(container.getNamespaceId());
+        request.setStageId(container.getStageId());
+        request.setAppId(appId);
         try {
-            request.setAppId(appId);
             boolean result = appAddonProvider.create(request);
             return buildSucceedResult(result);
         } catch (DuplicateKeyException e) {
@@ -99,8 +112,14 @@ public class AppAddonController extends AppManagerBaseController {
      */
     @GetMapping(value = "/{addonName}")
     @ResponseBody
-    public TeslaBaseResult get(@PathVariable String appId, @PathVariable String addonName) {
-        AppAddonDTO appAddonDTO = appAddonProvider.get(appId, addonName);
+    public TeslaBaseResult get(
+            @PathVariable String appId,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
+            @PathVariable String addonName) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
+        AppAddonDTO appAddonDTO = appAddonProvider.get(appId, namespaceId, stageId, addonName);
         AddonMetaDTO addonMetaDTO = addonMetaProvider.get(appAddonDTO.getAddonId(), appAddonDTO.getAddonVersion());
         JSONObject result = (JSONObject) JSON.toJSON(appAddonDTO);
         result.put("componentsSchema", addonMetaDTO.getComponentsSchema());
@@ -120,10 +139,16 @@ public class AppAddonController extends AppManagerBaseController {
     public TeslaBaseResult update(
             @PathVariable String appId,
             @PathVariable String addonName,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             @RequestBody AppAddonUpdateReq request) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
+        request.setAppId(appId);
+        request.setNamespaceId(namespaceId);
+        request.setStageId(stageId);
+        request.setAddonName(addonName);
         try {
-            request.setAppId(appId);
-            request.setAddonName(addonName);
             boolean result = appAddonProvider.update(request);
             return buildSucceedResult(result);
         } catch (DuplicateKeyException e) {
@@ -141,11 +166,17 @@ public class AppAddonController extends AppManagerBaseController {
      */
     @DeleteMapping(value = "/{addonName}")
     @ResponseBody
-    public TeslaBaseResult delete(@PathVariable String appId, @PathVariable String addonName) {
+    public TeslaBaseResult delete(
+            @PathVariable String appId,
+            @PathVariable String addonName,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         if (StringUtils.isEmpty(appId) || StringUtils.isEmpty(addonName)) {
             return buildSucceedResult(Boolean.TRUE);
         }
-        boolean result = appAddonProvider.delete(appId, addonName);
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
+        boolean result = appAddonProvider.delete(appId, namespaceId, stageId, addonName);
         return buildSucceedResult(result);
     }
 
@@ -158,8 +189,14 @@ public class AppAddonController extends AppManagerBaseController {
      */
     @GetMapping(value = "/{addonName}/data-outputs")
     @ResponseBody
-    public TeslaBaseResult listDataOutputs(@PathVariable String appId, @PathVariable String addonName) {
-        AppAddonDTO appAddonDTO = appAddonProvider.get(appId, addonName);
+    public TeslaBaseResult listDataOutputs(
+            @PathVariable String appId,
+            @PathVariable String addonName,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
+        AppAddonDTO appAddonDTO = appAddonProvider.get(appId, namespaceId, stageId, addonName);
         AddonMetaDTO addonMetaDTO = addonMetaProvider.get(appAddonDTO.getAddonId(), appAddonDTO.getAddonVersion());
 
         Yaml yaml = SchemaUtil.createYaml(ComponentSchema.class);

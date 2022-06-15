@@ -17,6 +17,7 @@ import com.alibaba.tesla.appmanager.common.util.VersionUtil;
 import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConfigQueryCondition;
 import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDO;
 import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
+import com.alibaba.tesla.appmanager.domain.container.DeployConfigEnvId;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.dto.AppPackageTaskDTO;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.AppPackageTaskCreateReq;
@@ -83,6 +84,8 @@ public class AppPackageTaskProviderImpl implements AppPackageTaskProvider {
     @Override
     public AppPackageTaskCreateRes create(AppPackageTaskCreateReq request, String operator) {
         String appId = request.getAppId();
+        String namespaceId = request.getNamespaceId();
+        String stageId = request.getStageId();
         String packageVersion = request.getVersion();
         packageVersion = checkAppPackageVersion(appId, packageVersion);
 
@@ -128,7 +131,7 @@ public class AppPackageTaskProviderImpl implements AppPackageTaskProvider {
                         .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                         .appId(appId)
                         .typeId(typeId)
-                        .envId("")
+                        .envId(DeployConfigEnvId.namespaceStageStr(namespaceId, stageId))
                         .enabled(true)
                         .build();
                 DeployConfigDO deployConfig = deployConfigService.getWithInherit(queryCondition);
@@ -142,10 +145,13 @@ public class AppPackageTaskProviderImpl implements AppPackageTaskProvider {
 
             try {
                 publisher.publishEvent(new ComponentPackageTaskStartEvent(
-                        this, appPackageTaskId, 0L, appId, operator, component, PackageTaskEnum.CREATE));
+                        this, appPackageTaskId, 0L, appId, namespaceId, stageId,
+                        operator, component, PackageTaskEnum.CREATE));
             } catch (Exception e) {
                 ComponentPackageTaskDO taskDO = ComponentPackageTaskDO.builder()
                         .appId(appId)
+                        .namespaceId(namespaceId)
+                        .stageId(stageId)
                         .componentType(componentType.toString())
                         .componentName(componentName)
                         .packageVersion(component.getVersion())

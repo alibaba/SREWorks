@@ -21,7 +21,7 @@ public interface HelmMetaService {
      */
     HelmMetaDO get(Long id, String namespaceId, String stageId);
 
-    HelmMetaDO getByHelmPackageId(String appId, String helmPackageId);
+    HelmMetaDO getByHelmPackageId(String appId, String helmPackageId, String namespaceId, String stageId);
 
     /**
      * 创建指定的HELM组件信息

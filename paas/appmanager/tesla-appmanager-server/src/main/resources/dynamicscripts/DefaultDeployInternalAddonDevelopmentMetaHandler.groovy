@@ -63,7 +63,7 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 14
+    public static final Integer REVISION = 15
 
     private static final String EXPORT_OPTION_FILE = "option.json"
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
@@ -106,7 +106,12 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
         // microservices
         if (data.getJSONArray("microservices") != null) {
             for (k8sMicroServiceMetaDO in data.getJSONArray("microservices").toJavaList(K8sMicroServiceMetaDO.class)) {
-                K8sMicroServiceMetaDO microService = k8sMicroserviceMetaService.getByMicroServiceId(k8sMicroServiceMetaDO.getAppId(), k8sMicroServiceMetaDO.getMicroServiceId())
+                def appId = k8sMicroServiceMetaDO.getAppId()
+                def microserviceId = k8sMicroServiceMetaDO.getMicroServiceId()
+                def namespaceId = k8sMicroServiceMetaDO.getNamespaceId()
+                def stageId = k8sMicroServiceMetaDO.getStageId()
+                K8sMicroServiceMetaDO microService = k8sMicroserviceMetaService
+                        .getByMicroServiceId(appId, microserviceId, namespaceId, stageId)
                 k8sMicroServiceMetaDO.setId(null);
                 k8sMicroServiceMetaDO.extFromString();
                 k8sMicroServiceMetaDO.init();
@@ -132,7 +137,11 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
         // helms
         if (data.getJSONArray("helms") != null) {
             for (helmMetaDO in data.getJSONArray("helms").toJavaList(HelmMetaDO.class)) {
-                HelmMetaDO helmMeta = helmMetaService.getByHelmPackageId(helmMetaDO.getAppId(), helmMetaDO.getHelmPackageId())
+                def appId = helmMetaDO.getAppId()
+                def helmPackageId = helmMetaDO.getHelmPackageId()
+                def namespaceId = helmMetaDO.getNamespaceId()
+                def stageId = helmMetaDO.getStageId()
+                HelmMetaDO helmMeta = helmMetaService.getByHelmPackageId(appId, helmPackageId, namespaceId, stageId)
                 if (helmMeta == null) {
                     def response = helmMetaService.create(helmMetaDO)
                     log.info("import(create) app meta helm config success|appId={}|content={}|response={}",

@@ -46,4 +46,14 @@ public class DeployConfigQueryCondition extends BaseCondition {
      * 是否继承
      */
     private Boolean inherit;
+
+    /**
+     * Namespace ID
+     */
+    private String isolateNamespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String isolateStageId;
 }

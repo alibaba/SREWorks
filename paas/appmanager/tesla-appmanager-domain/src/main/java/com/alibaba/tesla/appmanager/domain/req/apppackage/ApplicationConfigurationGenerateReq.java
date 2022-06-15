@@ -67,4 +67,14 @@ public class ApplicationConfigurationGenerateReq {
      * 是否组件包配置优先 (当 true 时, 不使用系统存储的组件 deploy configurations)
      */
     private boolean componentPackageConfigurationFirst = false;
+
+    /**
+     * Isolate Namespace ID
+     */
+    private String isolateNamespaceId;
+
+    /**
+     * Isolate Stage ID
+     */
+    private String isolateStageId;
 }

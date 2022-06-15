@@ -3,7 +3,6 @@ package com.alibaba.tesla.appmanager.server.service.maintainer.impl;
 import com.alibaba.tesla.appmanager.deployconfig.repository.DeployConfigRepository;
 import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConfigQueryCondition;
 import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDO;
-import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.meta.helm.repository.HelmMetaRepository;
 import com.alibaba.tesla.appmanager.meta.helm.repository.condition.HelmMetaQueryCondition;
 import com.alibaba.tesla.appmanager.meta.helm.repository.domain.HelmMetaDO;
@@ -139,17 +138,19 @@ public class MaintainerServiceImpl implements MaintainerService {
      * @param stageId     Stage ID
      */
     private void upgradeNamespaceStageForDeployConfig(String namespaceId, String stageId) {
-        BizAppContainer container = BizAppContainer.valueOf("unknown");
         DeployConfigQueryCondition condition = DeployConfigQueryCondition.builder()
-                .envId(String.format("Namespace:%s::Stage:%s", container.getNamespaceId(), container.getStageId()))
+                .isolateNamespaceId("")
+                .isolateStageId("")
                 .build();
         List<DeployConfigDO> records = deployConfigRepository.selectByExample(condition);
         for (DeployConfigDO record : records) {
-            record.setEnvId("");
+            record.setNamespaceId(namespaceId);
+            record.setStageId(stageId);
             deployConfigRepository.updateByExampleSelective(record,
                     DeployConfigQueryCondition.builder().id(record.getId()).build());
             log.info("upgrade namespace and stage field in deploy config record|appId={}|typeId={}|envId={}|" +
-                    "inherit={}", record.getAppId(), record.getTypeId(), record.getEnabled(), record.getInherit());
+                    "inherit={}|namespaceId={}|stageId={}", record.getAppId(), record.getTypeId(), record.getEnabled(),
+                    record.getInherit(), record.getNamespaceId(), record.getStageId());
         }
     }
 

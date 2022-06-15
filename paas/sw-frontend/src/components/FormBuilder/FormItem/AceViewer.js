@@ -20,7 +20,6 @@ import _ from "lodash";
 class AceViewer extends Component {
     constructor(props) {
         super(props);
-        console.log(props,'viewer-content')
         this.themeType = localStorage.getItem('tesla-theme');
         let { value, onChange, model, mode, target } = props;
         this.mode = model && (mode || (model.defModel && model.defModel.mode));

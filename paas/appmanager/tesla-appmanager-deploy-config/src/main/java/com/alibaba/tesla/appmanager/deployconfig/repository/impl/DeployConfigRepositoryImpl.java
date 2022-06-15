@@ -74,6 +74,12 @@ public class DeployConfigRepositoryImpl implements DeployConfigRepository {
         if (condition.getInherit() != null) {
             criteria.andInheritEqualTo(condition.getInherit());
         }
+        if (condition.getIsolateNamespaceId() != null) {
+            criteria.andNamespaceIdEqualTo(condition.getIsolateNamespaceId());
+        }
+        if (condition.getIsolateStageId() != null) {
+            criteria.andStageIdEqualTo(condition.getIsolateStageId());
+        }
         example.setOrderByClause(DefaultConstant.ORDER_BY_ID_DESC);
         return example;
     }

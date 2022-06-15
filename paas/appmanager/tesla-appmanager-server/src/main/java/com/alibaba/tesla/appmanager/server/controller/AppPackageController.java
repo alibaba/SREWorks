@@ -4,6 +4,7 @@ import com.alibaba.tesla.appmanager.api.provider.AppPackageProvider;
 import com.alibaba.tesla.appmanager.api.provider.AppPackageTaskProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
+import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.dto.AppPackageDTO;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.*;
 import com.alibaba.tesla.appmanager.domain.res.apppackage.AppPackageReleaseRes;
@@ -110,8 +111,12 @@ public class AppPackageController extends AppManagerBaseController {
     @GetMapping("/{appPackageId}/launch-yaml")
     @ResponseBody
     public TeslaBaseResult launchYaml(
-            @PathVariable String appId, @PathVariable Long appPackageId,
-            @ModelAttribute AppPackageGetLaunchYamlReq request, OAuth2Authentication auth) {
+            @PathVariable String appId,
+            @PathVariable Long appPackageId,
+            @ModelAttribute AppPackageGetLaunchYamlReq request,
+            @RequestHeader(value = "X-Biz-App") String headerBizApp,
+            OAuth2Authentication auth) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         ApplicationConfigurationGenerateRes result = appPackageProvider.generate(
                 ApplicationConfigurationGenerateReq.builder()
                         .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
@@ -123,6 +128,8 @@ public class AppPackageController extends AppManagerBaseController {
                         .namespaceId(request.getNamespaceId())
                         .stageId(request.getStageId())
                         .componentPackageConfigurationFirst(request.isComponentPackageConfigurationFirst())
+                        .isolateNamespaceId(container.getNamespaceId())
+                        .isolateStageId(container.getStageId())
                         .build());
         return buildSucceedResult(result);
     }

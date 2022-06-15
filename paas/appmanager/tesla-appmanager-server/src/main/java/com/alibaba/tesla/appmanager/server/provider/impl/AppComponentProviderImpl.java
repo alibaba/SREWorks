@@ -53,13 +53,16 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         // 获取 K8S 微应用组件
         K8sMicroServiceMetaQueryReq k8sMicroServiceMetaQueryReq = new K8sMicroServiceMetaQueryReq();
         k8sMicroServiceMetaQueryReq.setAppId(appId);
+        k8sMicroServiceMetaQueryReq.setNamespaceId(namespaceId);
+        k8sMicroServiceMetaQueryReq.setStageId(stageId);
         k8sMicroServiceMetaQueryReq.setPagination(false);
-        // TODO: namespace/stage
         k8SMicroServiceMetaProvider.list(k8sMicroServiceMetaQueryReq).getItems()
                 .forEach(k8sMicroServiceMetaDTO ->
                         result.add(AppComponentDTO.builder()
                                 .id(k8sMicroServiceMetaDTO.getId())
                                 .appId(appId)
+                                .namespaceId(namespaceId)
+                                .stageId(stageId)
                                 .componentName(k8sMicroServiceMetaDTO.getMicroServiceId())
                                 .componentLabel(k8sMicroServiceMetaDTO.getName())
                                 .componentType(k8sMicroServiceMetaDTO.getComponentType())
@@ -70,13 +73,16 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         // 获取 HELM 组件
         HelmMetaQueryReq helmMetaQueryReq = new HelmMetaQueryReq();
         helmMetaQueryReq.setAppId(appId);
+        helmMetaQueryReq.setNamespaceId(namespaceId);
+        helmMetaQueryReq.setStageId(stageId);
         helmMetaQueryReq.setPagination(false);
-        // TODO: namespace/stage
         helmMetaProvider.list(helmMetaQueryReq).getItems()
                 .forEach(helmMetaDO ->
                         result.add(AppComponentDTO.builder()
                                 .id(helmMetaDO.getId())
                                 .appId(appId)
+                                .namespaceId(namespaceId)
+                                .stageId(stageId)
                                 .componentName(helmMetaDO.getHelmPackageId())
                                 .componentLabel(helmMetaDO.getName())
                                 .componentType(helmMetaDO.getComponentType())
@@ -97,6 +103,8 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                         result.add(AppComponentDTO.builder()
                                 .id(item.getId())
                                 .appId(appId)
+                                .namespaceId(namespaceId)
+                                .stageId(stageId)
                                 .componentType(item.getAddonType())
                                 .componentName(item.getAddonId())
                                 .componentVersion(item.getAddonVersion())
@@ -117,6 +125,8 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                         result.add(AppComponentDTO.builder()
                                 .id(item.getId())
                                 .appId(appId)
+                                .namespaceId(namespaceId)
+                                .stageId(stageId)
                                 .componentType(item.getAddonType())
                                 .componentName(String.format("%s@%s", item.getAddonId(), item.getName()))
                                 .componentVersion(item.getAddonVersion())

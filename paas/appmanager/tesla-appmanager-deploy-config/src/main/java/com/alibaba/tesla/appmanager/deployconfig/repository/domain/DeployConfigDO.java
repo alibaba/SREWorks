@@ -69,4 +69,14 @@ public class DeployConfigDO {
      * 是否继承父级配置
      */
     private Boolean inherit;
+
+    /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
 }

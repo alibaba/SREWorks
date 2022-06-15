@@ -30,4 +30,14 @@ public class DeployConfigDeleteReq {
      * 环境 ID
      */
     private String envId;
+
+    /**
+     * Namespace ID
+     */
+    private String isolateNamespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String isolateStageId;
 }

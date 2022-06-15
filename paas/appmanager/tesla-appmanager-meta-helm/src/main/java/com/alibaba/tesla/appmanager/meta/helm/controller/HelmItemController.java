@@ -33,7 +33,7 @@ public class HelmItemController extends AppManagerBaseController {
     public TeslaBaseResult get(
             @PathVariable String appId,
             @PathVariable Long id,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();
@@ -55,7 +55,7 @@ public class HelmItemController extends AppManagerBaseController {
     public TeslaBaseResult list(
             @PathVariable String appId,
             @ModelAttribute HelmMetaQueryReq request,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();
@@ -82,7 +82,7 @@ public class HelmItemController extends AppManagerBaseController {
     public TeslaBaseResult create(
             @PathVariable String appId,
             @RequestBody HelmMetaCreateReq request,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();
@@ -106,7 +106,7 @@ public class HelmItemController extends AppManagerBaseController {
             @PathVariable String appId,
             @PathVariable Long id,
             @RequestBody HelmMetaUpdateReq request,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();
@@ -130,7 +130,7 @@ public class HelmItemController extends AppManagerBaseController {
     public TeslaBaseResult delete(
             @PathVariable String appId,
             @PathVariable Long id,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         if (Objects.isNull(id)) {
             return buildSucceedResult(Boolean.TRUE);
         }

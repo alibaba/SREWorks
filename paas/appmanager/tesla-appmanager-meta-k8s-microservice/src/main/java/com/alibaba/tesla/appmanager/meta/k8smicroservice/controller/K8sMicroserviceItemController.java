@@ -57,7 +57,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
     public TeslaBaseResult list(
             @PathVariable String appId,
             @ModelAttribute K8sMicroServiceMetaQueryReq request,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();
@@ -84,7 +84,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
     public TeslaBaseResult create(
             @PathVariable String appId,
             @RequestBody K8sMicroServiceMetaUpdateReq request,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();
@@ -108,7 +108,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
     public TeslaBaseResult quickCreate(
             @PathVariable String appId,
             @RequestBody K8sMicroServiceMetaQuickUpdateReq request,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();
@@ -129,7 +129,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
     public TeslaBaseResult quickUpdate(
             @PathVariable String appId,
             @RequestBody K8sMicroServiceMetaQuickUpdateReq request,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();
@@ -151,7 +151,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
             @PathVariable String appId,
             @RequestParam("type") String type,
             @RequestBody String body,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();
@@ -199,7 +199,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
     public TeslaBaseResult get(
             @PathVariable String appId,
             @PathVariable Long id,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         BizAppContainer.valueOf(headerBizApp);
         K8sMicroServiceMetaDTO result = metaProvider.get(id);
         return buildSucceedResult(result);
@@ -222,7 +222,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
             @PathVariable String appId,
             @PathVariable Long id,
             @RequestBody K8sMicroServiceMetaUpdateReq request,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();
@@ -246,7 +246,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
     public TeslaBaseResult delete(
             @PathVariable String appId,
             @PathVariable Long id,
-            @RequestHeader(value = "X-Biz-App") String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         if (Objects.isNull(id)) {
             return buildSucceedResult(Boolean.TRUE);
         }

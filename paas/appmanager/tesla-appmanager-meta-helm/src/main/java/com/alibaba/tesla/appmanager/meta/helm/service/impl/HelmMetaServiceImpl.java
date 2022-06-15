@@ -55,16 +55,18 @@ public class HelmMetaServiceImpl implements HelmMetaService {
     }
 
     @Override
-    public HelmMetaDO getByHelmPackageId(String appId, String helmPackageId){
+    public HelmMetaDO getByHelmPackageId(String appId, String helmPackageId, String namespaceId, String stageId) {
         HelmMetaQueryCondition condition = HelmMetaQueryCondition.builder()
                 .helmPackageId(helmPackageId)
                 .appId(appId)
+                .namespaceId(namespaceId)
+                .stageId(stageId)
                 .withBlobs(true)
                 .build();
         List<HelmMetaDO> metaList = helmMetaRepository.selectByCondition(condition);
-        if (metaList.size() > 0){
+        if (metaList.size() > 0) {
             return metaList.get(0);
-        }else{
+        } else {
             return null;
         }
     }
@@ -91,11 +93,11 @@ public class HelmMetaServiceImpl implements HelmMetaService {
         nsScopeObject.put("scopeRef", nsObject);
         scopes.add(nsScopeObject);
 
-        configObject.put("revisionName", "HELM|"+record.getHelmPackageId()+"|_");
+        configObject.put("revisionName", "HELM|" + record.getHelmPackageId() + "|_");
 
         JSONArray parameterValues = new JSONArray();
         JSONObject valuesObject = new JSONObject();
-        if (StringUtils.isNotBlank(defaultValuesYaml)){
+        if (StringUtils.isNotBlank(defaultValuesYaml)) {
             JSONObject defaultValuesObject = SchemaUtil.createYaml(JSONObject.class).loadAs(defaultValuesYaml, JSONObject.class);
             JSONArray toFieldPaths = new JSONArray();
             toFieldPaths.add("spec.values");
@@ -122,26 +124,26 @@ public class HelmMetaServiceImpl implements HelmMetaService {
         renameObject.put("toFieldPaths", toNameFieldPaths);
         parameterValues.add(renameObject);
 
-        if (gatewayRoute != null && StringUtils.isNotBlank(gatewayRoute.getString("path")) && StringUtils.isNotBlank(gatewayRoute.getString("service"))){
+        if (gatewayRoute != null && StringUtils.isNotBlank(gatewayRoute.getString("path")) && StringUtils.isNotBlank(gatewayRoute.getString("service"))) {
 
             JSONObject gatewayTrait = new JSONObject();
             JSONObject gatewaySpec = new JSONObject();
             String gatewayRoutePath = gatewayRoute.getString("path");
             String gatewayRouteService = gatewayRoute.getString("service");
 
-            if(!gatewayRoutePath.startsWith("/")){
+            if (!gatewayRoutePath.startsWith("/")) {
                 gatewayRoutePath = "/" + gatewayRoute;
             }
-            if(!gatewayRoutePath.endsWith("*")){
+            if (!gatewayRoutePath.endsWith("*")) {
                 gatewayRoutePath = gatewayRoute + "/**";
             }
 
             gatewaySpec.put("path", gatewayRoutePath);
 
-            if(gatewayRouteService.split(":").length > 0){
+            if (gatewayRouteService.split(":").length > 0) {
                 gatewaySpec.put("serviceName", gatewayRouteService.split(":")[0]);
                 gatewaySpec.put("servicePort", gatewayRouteService.split(":")[1]);
-            }else {
+            } else {
                 gatewaySpec.put("serviceName", gatewayRouteService);
             }
 
@@ -168,7 +170,7 @@ public class HelmMetaServiceImpl implements HelmMetaService {
 
         // 如果存在system-env则直接进行依赖
         // todo: 判断自身的变量在system-env中有才进行依赖
-        if (configs.size() > 0){
+        if (configs.size() > 0) {
             JSONArray dependencies = new JSONArray();
             JSONObject componentSystem = new JSONObject();
             componentSystem.put("component", "RESOURCE_ADDON|system-env@system-env");

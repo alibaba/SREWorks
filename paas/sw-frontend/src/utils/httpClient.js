@@ -148,7 +148,8 @@ const showConstExceptionNotification = debounce(function (title, message) {
 }, 500);
 
 function isIgnoreException(reqConfig) {
-    let { url } = reqConfig;
+    let { url='' } = reqConfig;
+    console.log(url,reqConfig,'核对url')
     //存在带参数的url需要去掉参数
     let urlFix = url.indexOf("?");
     if (urlFix > 0) {

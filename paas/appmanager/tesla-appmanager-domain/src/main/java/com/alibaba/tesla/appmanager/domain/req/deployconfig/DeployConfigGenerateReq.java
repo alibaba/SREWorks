@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -63,4 +62,14 @@ public class DeployConfigGenerateReq {
      * 禁用 component 配置获取
      */
     private boolean disableComponentFetching = false;
+
+    /**
+     * Isolate Namespace ID
+     */
+    private String isolateNamespaceId;
+
+    /**
+     * Isolate Stage ID
+     */
+    private String isolateStageId;
 }

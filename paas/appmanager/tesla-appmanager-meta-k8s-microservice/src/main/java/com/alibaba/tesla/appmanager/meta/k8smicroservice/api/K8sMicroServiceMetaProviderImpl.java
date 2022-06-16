@@ -100,6 +100,8 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
                 .appId(metaDO.getAppId())
                 .typeId(typeId)
                 .envId("")
+                .isolateNamespaceId(metaDO.getNamespaceId())
+                .isolateStageId(metaDO.getStageId())
                 .build());
         k8SMicroserviceMetaService.delete(id);
         return true;
@@ -170,6 +172,8 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
 
         K8sMicroserviceMetaQueryCondition condition = K8sMicroserviceMetaQueryCondition.builder()
                 .appId(metaDO.getAppId())
+                .namespaceId(metaDO.getNamespaceId())
+                .stageId(metaDO.getStageId())
                 .microServiceId(metaDO.getMicroServiceId())
                 .build();
         k8SMicroserviceMetaService.update(metaDO, condition);

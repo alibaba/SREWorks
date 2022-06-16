@@ -61,8 +61,8 @@ spec:
         image: 
           repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/grafana
           tag: 7.5.3
-        plugins:
-          - marcusolsson-json-datasource
+        #plugins:
+        #  - marcusolsson-json-datasource
         datasources:
           datasources.yaml:
             apiVersion: 1
@@ -93,10 +93,10 @@ spec:
                 esVersion: 70
                 logMessageField: message
                 logLevelField: fields.level
-            - name: dataset
-              type: marcusolsson-json-datasource
-              url: http://{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-dataset.{{ Global.NAMESPACE_ID }}
-              access: proxy
-              isDefault: false
+            #- name: dataset
+            #  type: marcusolsson-json-datasource
+            #  url: http://{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-dataset.{{ Global.NAMESPACE_ID }}
+            #  access: proxy
+            #  isDefault: false
       toFieldPaths:
       - "spec.values"

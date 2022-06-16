@@ -3,6 +3,7 @@ package com.alibaba.tesla.appmanager.api.provider;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.AddonMetaDTO;
 import com.alibaba.tesla.appmanager.domain.req.AddonMetaQueryReq;
+import com.alibaba.tesla.appmanager.domain.req.appaddon.AppAddonSyncReq;
 
 /**
  * Addon 元信息 Provider
@@ -26,5 +27,5 @@ public interface AddonMetaProvider {
     /**
      * 同步当前所有 app addon 绑定关系到 deploy config 中
      */
-    void sync();
+    void sync(AppAddonSyncReq request);
 }

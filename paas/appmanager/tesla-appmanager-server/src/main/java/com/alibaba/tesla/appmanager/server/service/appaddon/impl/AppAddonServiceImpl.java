@@ -11,6 +11,7 @@ import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.dto.AppAddonDTO;
 import com.alibaba.tesla.appmanager.domain.req.AppAddonCreateReq;
+import com.alibaba.tesla.appmanager.domain.req.appaddon.AppAddonSyncReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpdateReq;
 import com.alibaba.tesla.appmanager.server.assembly.AppAddonDtoConvert;
@@ -20,7 +21,6 @@ import com.alibaba.tesla.appmanager.server.repository.domain.AddonMetaDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.AppAddonDO;
 import com.alibaba.tesla.appmanager.server.service.addon.AddonMetaService;
 import com.alibaba.tesla.appmanager.server.service.appaddon.AppAddonService;
-import com.google.common.base.Enums;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,6 +106,8 @@ public class AppAddonServiceImpl implements AppAddonService {
         ComponentTypeEnum addonType = ComponentTypeEnum.parse(addonMetaDO.getAddonType());
         AppAddonDTO appAddonDTO = AppAddonDTO.builder()
                 .appId(request.getAppId())
+                .namespaceId(request.getNamespaceId())
+                .stageId(request.getStageId())
                 .addonType(addonType)
                 .addonId(addonMetaDO.getAddonId())
                 .name(request.getAddonName())
@@ -133,6 +135,8 @@ public class AppAddonServiceImpl implements AppAddonService {
                 .envId("")
                 .inherit(true)
                 .config("")
+                .isolateNamespaceId(request.getNamespaceId())
+                .isolateStageId(request.getStageId())
                 .build());
         return record;
     }
@@ -172,7 +176,7 @@ public class AppAddonServiceImpl implements AppAddonService {
      * 同步当前所有 app addon 绑定关系到 deploy config 中
      */
     @Override
-    public void sync() {
+    public void sync(AppAddonSyncReq request) {
         List<AppAddonDO> appAddons = appAddonRepository.selectByCondition(AppAddonQueryCondition.builder()
                 .pageSize(DefaultConstant.UNLIMITED_PAGE_SIZE)
                 .build());
@@ -191,6 +195,8 @@ public class AppAddonServiceImpl implements AppAddonService {
                     .envId("")
                     .inherit(true)
                     .config("")
+                    .isolateNamespaceId(request.getNamespaceId())
+                    .isolateStageId(request.getStageId())
                     .build());
         }
     }

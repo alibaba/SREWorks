@@ -82,10 +82,17 @@ def import_default_route():
     routes = read_routes()
     print(gen_auth_headers())
     for route in routes:
-        if check_route_exist(route['routeId']):
-            update_route(route)
-        else:
-            insert_route(route)
+        for i in range(3):
+            try:
+                if check_route_exist(route['routeId']):
+                    update_route(route)
+                    break
+                else:
+                    insert_route(route)
+                    break
+            except RuntimeError as e:
+                print(e)
+                print("try upsert route %s" % route['routeId'])
 
 
 if __name__ == '__main__':

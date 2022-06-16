@@ -116,7 +116,6 @@ class AceViewer extends Component {
         if (model && model.defModel && !_.isEmpty(model.defModel)) {
             Object.assign(aceProps, model.defModel);
         }
-        console.log(mode, 'mode-javascript')
         return (
             <div>
                 <AceEditor
@@ -130,7 +129,7 @@ class AceViewer extends Component {
                     showGutter={true}
                     highlightActiveLine={true}
                     onChange={this.editorChange}
-                    // debounceChangePeriod={2000}
+                    debounceChangePeriod={2000}
                     setOptions={{
                         enableBasicAutocompletion: true,
                         enableLiveAutocompletion: false,

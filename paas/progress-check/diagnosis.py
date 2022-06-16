@@ -45,7 +45,8 @@ class Diagnosis(object):
         pvcs = self.ktools.get_pvc("sreworks")
         storageclass_list = set()
         for pvc in pvcs:
-            storageclass_list.add(pvc.spec.storage_class_name)
+            if pvc.spec.storage_class_name is not None:
+                storageclass_list.add(pvc.spec.storage_class_name)
 
         check_storageclass_list = set()
         for sc in self.ktools.get_storage_class():

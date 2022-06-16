@@ -4,10 +4,15 @@ apiVersion: batch/v1
 kind: Job
 metadata: 
   name: sreworks-progress-check
+  labels:
+    app: sreworks-progress-check
 spec:
   backoffLimit: 100000
   ttlSecondsAfterFinished: 600
   template:
+    metadata:
+      labels:
+        app: sreworks-progress-check
     spec:
       restartPolicy: OnFailure 
       containers:

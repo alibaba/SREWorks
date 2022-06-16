@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 
 # 显示当前 ENV 变量
-DOCKER_COMMAND='docker run -it --entrypoint "bash" '
+DOCKER_COMMAND='docker run -it --entrypoint "sh" '
 for item in $(env); do
   DOCKER_COMMAND+="-e ${item} "
 done

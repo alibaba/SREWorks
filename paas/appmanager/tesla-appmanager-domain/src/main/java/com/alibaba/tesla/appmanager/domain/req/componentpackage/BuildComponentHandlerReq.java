@@ -23,6 +23,16 @@ public class BuildComponentHandlerReq {
     private String appId;
 
     /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
+
+    /**
      * Component 类型
      */
     private String componentType;

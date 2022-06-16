@@ -16,6 +16,8 @@
     <result column="inherit" jdbcType="BOOLEAN" property="inherit" />
     <result column="modifier" jdbcType="VARCHAR" property="modifier" />
     <result column="deleted" jdbcType="BOOLEAN" property="deleted" />
+    <result column="namespace_id" jdbcType="VARCHAR" property="namespaceId" />
+    <result column="stage_id" jdbcType="VARCHAR" property="stageId" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <!--@mbg.generated-->
@@ -80,7 +82,7 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, gmt_create, gmt_modified, app_id, type_id, env_id, api_version, revision, config, 
-    `inherit`, modifier, deleted
+    `inherit`, modifier, deleted, namespace_id, stage_id
   </sql>
   <select id="selectByExample" parameterType="com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigHistoryDOExample" resultMap="BaseResultMap">
     <!--@mbg.generated-->
@@ -141,6 +143,12 @@
       <if test="deleted != null">
         deleted,
       </if>
+      <if test="namespaceId != null">
+        namespace_id,
+      </if>
+      <if test="stageId != null">
+        stage_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="gmtCreate != null">
@@ -175,6 +183,12 @@
       </if>
       <if test="deleted != null">
         #{deleted,jdbcType=BOOLEAN},
+      </if>
+      <if test="namespaceId != null">
+        #{namespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="stageId != null">
+        #{stageId,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -224,6 +238,12 @@
       </if>
       <if test="record.deleted != null">
         deleted = #{record.deleted,jdbcType=BOOLEAN},
+      </if>
+      <if test="record.namespaceId != null">
+        namespace_id = #{record.namespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stageId != null">
+        stage_id = #{record.stageId,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null">

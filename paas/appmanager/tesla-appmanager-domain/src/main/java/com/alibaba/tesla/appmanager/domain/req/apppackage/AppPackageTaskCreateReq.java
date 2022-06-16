@@ -1,11 +1,11 @@
 package com.alibaba.tesla.appmanager.domain.req.apppackage;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * 创建 Component Package 请求
@@ -22,6 +22,16 @@ public class AppPackageTaskCreateReq {
      * 应用 ID
      */
     private String appId;
+
+    /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
 
     /**
      * 包版本

@@ -5,6 +5,7 @@ import com.alibaba.tesla.appmanager.api.provider.DeployConfigProvider;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
+import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.dto.AppMetaDTO;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaUpdateReq;
@@ -153,8 +154,14 @@ public class AppController extends BaseController {
      */
     @PutMapping(value = "/{appId}/application-configurations")
     public TeslaBaseResult updateApplicationConfigurations(
-            @PathVariable String appId, @RequestBody DeployConfigApplyTemplateReq request) {
+            @PathVariable String appId,
+            @RequestBody DeployConfigApplyTemplateReq request,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         request.setAppId(appId);
+
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        request.setIsolateNamespaceId(container.getNamespaceId());
+        request.setIsolateStageId(container.getStageId());
         return buildSucceedResult(deployConfigProvider.applyTemplate(request));
     }
 
@@ -166,12 +173,18 @@ public class AppController extends BaseController {
      */
     @GetMapping(value = "/{appId}/application-configurations")
     public TeslaBaseResult getApplicationConfigurations(
-            @PathVariable String appId, @ModelAttribute DeployConfigGenerateReq request) {
+            @PathVariable String appId,
+            @ModelAttribute DeployConfigGenerateReq request,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         if (StringUtils.isEmpty(request.getApiVersion())) {
             request.setApiVersion(DefaultConstant.API_VERSION_V1_ALPHA2);
         }
         request.setAppId(appId);
         request.setAppPackageId(0L);
+
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        request.setIsolateNamespaceId(container.getNamespaceId());
+        request.setIsolateStageId(container.getStageId());
         DeployConfigGenerateRes result = deployConfigProvider.generate(request);
         return buildSucceedResult(ApplicationConfigurationGenerateRes.builder()
                 .yaml(SchemaUtil.toYamlMapStr(result.getSchema()))
@@ -186,11 +199,17 @@ public class AppController extends BaseController {
      */
     @DeleteMapping(value = "/{appId}/application-configurations")
     public TeslaBaseResult deleteApplicationConfigurations(
-            @PathVariable String appId, @ModelAttribute DeployConfigDeleteReq request) {
+            @PathVariable String appId,
+            @ModelAttribute DeployConfigDeleteReq request,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         if (StringUtils.isEmpty(request.getApiVersion())) {
             request.setApiVersion(DefaultConstant.API_VERSION_V1_ALPHA2);
         }
         request.setAppId(appId);
+
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        request.setIsolateNamespaceId(container.getNamespaceId());
+        request.setIsolateStageId(container.getStageId());
         deployConfigProvider.delete(request);
         return buildSucceedResult(DefaultConstant.EMPTY_OBJ);
     }

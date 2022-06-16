@@ -26,6 +26,16 @@ public class AppComponentDTO {
     private String appId;
 
     /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
+
+    /**
      * 组件描述
      */
     private String componentLabel;

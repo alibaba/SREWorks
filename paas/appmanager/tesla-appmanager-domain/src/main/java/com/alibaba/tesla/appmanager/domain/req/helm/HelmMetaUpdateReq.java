@@ -28,6 +28,16 @@ public class HelmMetaUpdateReq {
     private String appId;
 
     /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
+
+    /**
      * Helm 包标识 ID
      */
     private String helmPackageId;

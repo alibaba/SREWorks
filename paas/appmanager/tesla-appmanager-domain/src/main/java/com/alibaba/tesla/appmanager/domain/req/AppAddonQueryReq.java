@@ -25,6 +25,16 @@ public class AppAddonQueryReq extends BaseRequest {
     private String appId;
 
     /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
+
+    /**
      * 类型
      */
     private List<ComponentTypeEnum> addonTypeList;

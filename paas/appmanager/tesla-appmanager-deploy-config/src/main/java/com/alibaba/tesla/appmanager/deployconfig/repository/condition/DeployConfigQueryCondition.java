@@ -13,6 +13,11 @@ import lombok.experimental.SuperBuilder;
 public class DeployConfigQueryCondition extends BaseCondition {
 
     /**
+     * ID
+     */
+    private Long id;
+
+    /**
      * 应用 ID
      */
     private String appId;
@@ -41,4 +46,14 @@ public class DeployConfigQueryCondition extends BaseCondition {
      * 是否继承
      */
     private Boolean inherit;
+
+    /**
+     * Namespace ID
+     */
+    private String isolateNamespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String isolateStageId;
 }

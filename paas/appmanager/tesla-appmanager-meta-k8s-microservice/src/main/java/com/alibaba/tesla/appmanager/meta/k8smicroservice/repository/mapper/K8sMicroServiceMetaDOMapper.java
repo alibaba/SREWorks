@@ -2,11 +2,13 @@ package com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.mapper;
 
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.domain.K8sMicroServiceMetaDO;
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.domain.K8sMicroServiceMetaDOExample;
-import java.util.List;
-
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 
+import java.util.List;
+
+@Mapper
 public interface K8sMicroServiceMetaDOMapper {
     long countByExample(K8sMicroServiceMetaDOExample example);
 

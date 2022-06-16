@@ -13,6 +13,7 @@ import com.alibaba.tesla.appmanager.server.assembly.AppPackageDtoConvert;
 import com.alibaba.tesla.appmanager.server.provider.impl.AppPackageProviderImpl;
 import com.alibaba.tesla.appmanager.server.repository.AppPackageComponentRelRepository;
 import com.alibaba.tesla.appmanager.server.repository.AppPackageRepository;
+import com.alibaba.tesla.appmanager.server.repository.condition.AppPackageQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.AppPackageDO;
 import com.alibaba.tesla.appmanager.server.service.appmeta.AppMetaService;
 import com.alibaba.tesla.appmanager.server.service.appoption.AppOptionService;
@@ -29,7 +30,10 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.InputStream;
@@ -115,6 +119,7 @@ public class TestProviderAppPackageImport {
                 .swapp(SWAPP)
                 .build();
         Mockito.when(appPackageService.createByStream(Mockito.any())).thenReturn(appPackageDO);
+        Mockito.when(appPackageService.get(AppPackageQueryCondition.builder().id(1L).build())).thenReturn(appPackageDO);
 
         Long dagInstId = 10L;
         Mockito.when(dagInstService.start(Mockito.eq(UnpackAppPackageFromStorageDag.name),

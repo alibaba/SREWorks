@@ -189,7 +189,6 @@ export default class WidgetCard extends React.Component {
 
         }
         let paddingPix = (pageLayoutType === 'FLUID' && title) ? 8 : 3;
-        console.log(this.wrapperType,'this.wrapperType')
         if (this.wrapperType === Constants.CARD_WRAPPER_TRANSPARENT || this.wrapperType === Constants.CARD_WRAPPER_TITLE_TRANSPARENT) {
             let classNameArr = this.wrapperType === Constants.CARD_WRAPPER_TITLE_TRANSPARENT ? ['abm_frontend_widget_component_wrapper', 'transparent-panel'] : ['abm_frontend_widget_component_wrapper']
             return (

@@ -28,6 +28,16 @@ public class HelmMetaQueryReq extends BaseRequest {
     private String appId;
 
     /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
+
+    /**
      * Helm 名称
      */
     private String name;

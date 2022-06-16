@@ -92,6 +92,16 @@ public class ComponentPackageTaskDO {
     private String envId;
 
     /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
+
+    /**
      * 包 Addon 描述信息
      */
     private String packageAddon;

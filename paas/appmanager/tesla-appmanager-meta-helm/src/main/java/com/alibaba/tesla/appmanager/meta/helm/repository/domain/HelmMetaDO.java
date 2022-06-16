@@ -78,6 +78,16 @@ public class HelmMetaDO {
     */
     private String options;
 
+    /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
+
     public JSONObject getJSONOptions(List<EnvMetaDTO> appEnvList) {
         Yaml yaml = SchemaUtil.createYaml(JSONObject.class);
         JSONObject root = yaml.loadAs(options, JSONObject.class);

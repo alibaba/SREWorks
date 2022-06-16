@@ -24,6 +24,10 @@ public class ComponentPackageTaskMessage {
 
     private String appId;
 
+    private String namespaceId;
+
+    private String stageId;
+
     private String operator;
 
     private ComponentBinder component;

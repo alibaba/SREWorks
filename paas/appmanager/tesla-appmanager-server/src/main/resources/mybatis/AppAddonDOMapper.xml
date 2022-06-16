@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.alibaba.tesla.appmanager.server.repository.mapper.AppAddonMapper">
+<mapper namespace="com.alibaba.tesla.appmanager.server.repository.mapper.AppAddonDOMapper">
   <resultMap id="BaseResultMap" type="com.alibaba.tesla.appmanager.server.repository.domain.AppAddonDO">
     <!--@mbg.generated-->
+    <!--@Table am_app_addon-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
@@ -12,6 +13,8 @@
     <result column="addon_version" jdbcType="VARCHAR" property="addonVersion" />
     <result column="addon_config" jdbcType="LONGVARCHAR" property="addonConfig" />
     <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="namespace_id" jdbcType="VARCHAR" property="namespaceId" />
+    <result column="stage_id" jdbcType="VARCHAR" property="stageId" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <!--@mbg.generated-->
@@ -76,9 +79,9 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, gmt_create, gmt_modified, app_id, addon_type, addon_id, addon_version, addon_config, 
-    `name`
+    `name`, namespace_id, stage_id
   </sql>
-  <select id="selectByExample" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.AppAddonExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.AppAddonDOExample" resultMap="BaseResultMap">
     <!--@mbg.generated-->
     select
     <if test="distinct">
@@ -105,7 +108,7 @@
     delete from am_app_addon
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.AppAddonExample">
+  <delete id="deleteByExample" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.AppAddonDOExample">
     <!--@mbg.generated-->
     delete from am_app_addon
     <if test="_parameter != null">
@@ -114,12 +117,14 @@
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.AppAddonDO" useGeneratedKeys="true">
     <!--@mbg.generated-->
-    insert into am_app_addon (gmt_create, gmt_modified, app_id,
+    insert into am_app_addon (gmt_create, gmt_modified, app_id, 
       addon_type, addon_id, addon_version, 
-      addon_config, `name`)
+      addon_config, `name`, namespace_id, 
+      stage_id)
     values (#{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{appId,jdbcType=VARCHAR}, 
       #{addonType,jdbcType=VARCHAR}, #{addonId,jdbcType=VARCHAR}, #{addonVersion,jdbcType=VARCHAR}, 
-      #{addonConfig,jdbcType=LONGVARCHAR}, #{name,jdbcType=VARCHAR})
+      #{addonConfig,jdbcType=LONGVARCHAR}, #{name,jdbcType=VARCHAR}, #{namespaceId,jdbcType=VARCHAR}, 
+      #{stageId,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.AppAddonDO" useGeneratedKeys="true">
     <!--@mbg.generated-->
@@ -149,6 +154,12 @@
       <if test="name != null">
         `name`,
       </if>
+      <if test="namespaceId != null">
+        namespace_id,
+      </if>
+      <if test="stageId != null">
+        stage_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="gmtCreate != null">
@@ -175,9 +186,15 @@
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
+      <if test="namespaceId != null">
+        #{namespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="stageId != null">
+        #{stageId,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.AppAddonExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.AppAddonDOExample" resultType="java.lang.Long">
     <!--@mbg.generated-->
     select count(*) from am_app_addon
     <if test="_parameter != null">
@@ -215,6 +232,12 @@
       <if test="record.name != null">
         `name` = #{record.name,jdbcType=VARCHAR},
       </if>
+      <if test="record.namespaceId != null">
+        namespace_id = #{record.namespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stageId != null">
+        stage_id = #{record.stageId,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -231,7 +254,9 @@
       addon_id = #{record.addonId,jdbcType=VARCHAR},
       addon_version = #{record.addonVersion,jdbcType=VARCHAR},
       addon_config = #{record.addonConfig,jdbcType=LONGVARCHAR},
-      `name` = #{record.name,jdbcType=VARCHAR}
+      `name` = #{record.name,jdbcType=VARCHAR},
+      namespace_id = #{record.namespaceId,jdbcType=VARCHAR},
+      stage_id = #{record.stageId,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -264,6 +289,12 @@
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},
       </if>
+      <if test="namespaceId != null">
+        namespace_id = #{namespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="stageId != null">
+        stage_id = #{stageId,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -277,7 +308,9 @@
       addon_id = #{addonId,jdbcType=VARCHAR},
       addon_version = #{addonVersion,jdbcType=VARCHAR},
       addon_config = #{addonConfig,jdbcType=LONGVARCHAR},
-      `name` = #{name,jdbcType=VARCHAR}
+      `name` = #{name,jdbcType=VARCHAR},
+      namespace_id = #{namespaceId,jdbcType=VARCHAR},
+      stage_id = #{stageId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

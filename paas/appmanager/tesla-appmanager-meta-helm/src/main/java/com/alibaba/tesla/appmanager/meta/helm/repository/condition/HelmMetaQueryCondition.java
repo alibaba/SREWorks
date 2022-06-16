@@ -27,6 +27,16 @@ public class HelmMetaQueryCondition extends BaseCondition {
     private String appId;
 
     /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
+
+    /**
      * Helm 名称
      */
     private String name;

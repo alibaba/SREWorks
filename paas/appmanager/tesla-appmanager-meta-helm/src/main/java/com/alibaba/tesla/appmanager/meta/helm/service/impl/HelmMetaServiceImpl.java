@@ -4,8 +4,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
+import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
+import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
+import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConfigQueryCondition;
+import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDO;
 import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
@@ -40,26 +44,37 @@ public class HelmMetaServiceImpl implements HelmMetaService {
     }
 
     @Override
-    public HelmMetaDO get(Long id) {
-        return helmMetaRepository.selectByPrimaryKey(id);
+    public HelmMetaDO get(Long id, String namespaceId, String stageId) {
+        HelmMetaDO record = helmMetaRepository.selectByPrimaryKey(id);
+        if (record == null) {
+            return null;
+        } else if (!record.getNamespaceId().equals(namespaceId) || !record.getStageId().equals(stageId)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "mismatch namespaceId/stageId");
+        }
+        return record;
     }
 
     @Override
-    public HelmMetaDO getByHelmPackageId(String appId, String helmPackageId){
+    public HelmMetaDO getByHelmPackageId(String appId, String helmPackageId, String namespaceId, String stageId) {
         HelmMetaQueryCondition condition = HelmMetaQueryCondition.builder()
                 .helmPackageId(helmPackageId)
                 .appId(appId)
+                .namespaceId(namespaceId)
+                .stageId(stageId)
                 .withBlobs(true)
                 .build();
         List<HelmMetaDO> metaList = helmMetaRepository.selectByCondition(condition);
-        if (metaList.size() > 0){
+        if (metaList.size() > 0) {
             return metaList.get(0);
-        }else{
+        } else {
             return null;
         }
     }
 
     private void refreshDeployConfig(HelmMetaDO record) {
+        String appId = record.getAppId();
+        String namespaceId = record.getNamespaceId();
+        String stageId = record.getStageId();
 
         JSONObject helmExt = JSONObject.parseObject(record.getHelmExt());
         String defaultValuesYaml = helmExt.getString("defaultValuesYaml");
@@ -78,11 +93,11 @@ public class HelmMetaServiceImpl implements HelmMetaService {
         nsScopeObject.put("scopeRef", nsObject);
         scopes.add(nsScopeObject);
 
-        configObject.put("revisionName", "HELM|"+record.getHelmPackageId()+"|_");
+        configObject.put("revisionName", "HELM|" + record.getHelmPackageId() + "|_");
 
         JSONArray parameterValues = new JSONArray();
         JSONObject valuesObject = new JSONObject();
-        if (StringUtils.isNotBlank(defaultValuesYaml)){
+        if (StringUtils.isNotBlank(defaultValuesYaml)) {
             JSONObject defaultValuesObject = SchemaUtil.createYaml(JSONObject.class).loadAs(defaultValuesYaml, JSONObject.class);
             JSONArray toFieldPaths = new JSONArray();
             toFieldPaths.add("spec.values");
@@ -109,26 +124,26 @@ public class HelmMetaServiceImpl implements HelmMetaService {
         renameObject.put("toFieldPaths", toNameFieldPaths);
         parameterValues.add(renameObject);
 
-        if (gatewayRoute != null && StringUtils.isNotBlank(gatewayRoute.getString("path")) && StringUtils.isNotBlank(gatewayRoute.getString("service"))){
+        if (gatewayRoute != null && StringUtils.isNotBlank(gatewayRoute.getString("path")) && StringUtils.isNotBlank(gatewayRoute.getString("service"))) {
 
             JSONObject gatewayTrait = new JSONObject();
             JSONObject gatewaySpec = new JSONObject();
             String gatewayRoutePath = gatewayRoute.getString("path");
             String gatewayRouteService = gatewayRoute.getString("service");
 
-            if(!gatewayRoutePath.startsWith("/")){
+            if (!gatewayRoutePath.startsWith("/")) {
                 gatewayRoutePath = "/" + gatewayRoute;
             }
-            if(!gatewayRoutePath.endsWith("*")){
+            if (!gatewayRoutePath.endsWith("*")) {
                 gatewayRoutePath = gatewayRoute + "/**";
             }
 
             gatewaySpec.put("path", gatewayRoutePath);
 
-            if(gatewayRouteService.split(":").length > 0){
+            if (gatewayRouteService.split(":").length > 0) {
                 gatewaySpec.put("serviceName", gatewayRouteService.split(":")[0]);
                 gatewaySpec.put("servicePort", gatewayRouteService.split(":")[1]);
-            }else {
+            } else {
                 gatewaySpec.put("serviceName", gatewayRouteService);
             }
 
@@ -137,6 +152,30 @@ public class HelmMetaServiceImpl implements HelmMetaService {
             gatewayTrait.put("spec", gatewaySpec);
 
             traits.add(gatewayTrait);
+        }
+
+        String systemTypeId = new DeployConfigTypeId(ComponentTypeEnum.RESOURCE_ADDON, "system-env@system-env").toString();
+
+        List<DeployConfigDO> configs = deployConfigService.list(
+                DeployConfigQueryCondition.builder()
+                        .appId(record.getAppId())
+                        .typeId(systemTypeId)
+                        .envId("")
+                        .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                        .enabled(true)
+                        .isolateNamespaceId(namespaceId)
+                        .isolateStageId(stageId)
+                        .build()
+        );
+
+        // 如果存在system-env则直接进行依赖
+        // todo: 判断自身的变量在system-env中有才进行依赖
+        if (configs.size() > 0) {
+            JSONArray dependencies = new JSONArray();
+            JSONObject componentSystem = new JSONObject();
+            componentSystem.put("component", "RESOURCE_ADDON|system-env@system-env");
+            dependencies.add(componentSystem);
+            configObject.put("dependencies", dependencies);
         }
 
         configObject.put("parameterValues", parameterValues);
@@ -152,6 +191,8 @@ public class HelmMetaServiceImpl implements HelmMetaService {
                 .envId("")
                 .inherit(false)
                 .config(yaml.dumpAsMap(configObject))
+                .isolateNamespaceId(namespaceId)
+                .isolateStageId(stageId)
                 .build());
 
     }
@@ -171,18 +212,20 @@ public class HelmMetaServiceImpl implements HelmMetaService {
     }
 
     @Override
-    public int delete(Long id) {
+    public int delete(Long id, String namespaceId, String stageId) {
         if (Objects.isNull(id)) {
             return 0;
         }
 
-        HelmMetaDO record = this.get(id);
+        HelmMetaDO record = this.get(id, namespaceId, stageId);
         String typeId = new DeployConfigTypeId(ComponentTypeEnum.HELM, record.getHelmPackageId()).toString();
         deployConfigService.delete(DeployConfigDeleteReq.builder()
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(record.getAppId())
                 .typeId(typeId)
                 .envId("")
+                .isolateNamespaceId(namespaceId)
+                .isolateStageId(stageId)
                 .build());
         return helmMetaRepository.deleteByPrimaryKey(id);
     }

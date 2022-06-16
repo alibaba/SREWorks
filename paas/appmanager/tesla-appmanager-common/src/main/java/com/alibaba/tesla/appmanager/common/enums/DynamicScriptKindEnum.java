@@ -88,6 +88,16 @@ public enum DynamicScriptKindEnum {
     DEPLOY_ABM_STATUS_COMPONENT,
 
     /**
+     * 构建 ABM ES Status 模块
+     */
+    BUILD_ABM_ES_STATUS_COMPONENT,
+
+    /**
+     * 部署 ABM ES Status 模块
+     */
+    DEPLOY_ABM_ES_STATUS_COMPONENT,
+
+    /**
      * 通用构建 Resource Addon 模块
      */
     BUILD_RESOURCE_ADDON_COMPONENT,

@@ -169,6 +169,8 @@ public class ComponentPackageBuilderServiceImpl implements ComponentPackageBuild
         String componentName = taskDO.getComponentName();
         BuildComponentHandlerReq componentHandlerReq = BuildComponentHandlerReq.builder()
                 .appId(taskDO.getAppId())
+                .namespaceId(taskDO.getNamespaceId())
+                .stageId(taskDO.getStageId())
                 .componentType(taskDO.getComponentType())
                 .componentName(taskDO.getComponentName())
                 .version(taskDO.getPackageVersion())

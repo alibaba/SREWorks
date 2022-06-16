@@ -256,6 +256,8 @@ public class AppPackageServiceImpl implements AppPackageService {
                 .stageId(req.getStageId())
                 .typeIds(req.getTypeIds())
                 .disableComponentFetching(req.isComponentPackageConfigurationFirst())
+                .isolateNamespaceId(req.getIsolateNamespaceId())
+                .isolateStageId(req.getIsolateStageId())
                 .build());
         DeployAppSchema schema = systemRes.getSchema();
 

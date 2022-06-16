@@ -19,10 +19,9 @@ public interface HelmMetaService {
      * @param id HELM组件主键 ID
      * @return HelmMetaDO
      */
-    HelmMetaDO get(Long id);
+    HelmMetaDO get(Long id, String namespaceId, String stageId);
 
-
-    HelmMetaDO getByHelmPackageId(String appId, String helmPackageId);
+    HelmMetaDO getByHelmPackageId(String appId, String helmPackageId, String namespaceId, String stageId);
 
     /**
      * 创建指定的HELM组件信息
@@ -34,15 +33,18 @@ public interface HelmMetaService {
     /**
      * 更新指定的HELM组件信息
      *
-     * @param record HELM组件记录
+     * @param record    HELM组件记录
      * @param condition 过滤条件
      */
     int update(HelmMetaDO record, HelmMetaQueryCondition condition);
 
     /**
      * 通过HELM组件 ID 删除组件元信息
-     * @param id HELM组件主键 ID
+     *
+     * @param id          HELM组件主键 ID
+     * @param namespaceId Namespace ID
+     * @param stageId     Stage ID
      * @return 删除数量
      */
-    int delete(Long id);
+    int delete(Long id, String namespaceId, String stageId);
 }

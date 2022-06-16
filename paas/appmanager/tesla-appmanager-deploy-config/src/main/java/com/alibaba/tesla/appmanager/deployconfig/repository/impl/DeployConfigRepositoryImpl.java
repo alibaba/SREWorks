@@ -52,6 +52,9 @@ public class DeployConfigRepositoryImpl implements DeployConfigRepository {
     private DeployConfigDOExample buildExample(DeployConfigQueryCondition condition) {
         DeployConfigDOExample example = new DeployConfigDOExample();
         DeployConfigDOExample.Criteria criteria = example.createCriteria();
+        if (condition.getId() != null && condition.getId() > 0) {
+            criteria.andIdEqualTo(condition.getId());
+        }
         // 允许 appId/envId 为空
         if (condition.getAppId() != null) {
             criteria.andAppIdEqualTo(condition.getAppId());
@@ -70,6 +73,12 @@ public class DeployConfigRepositoryImpl implements DeployConfigRepository {
         }
         if (condition.getInherit() != null) {
             criteria.andInheritEqualTo(condition.getInherit());
+        }
+        if (condition.getIsolateNamespaceId() != null) {
+            criteria.andNamespaceIdEqualTo(condition.getIsolateNamespaceId());
+        }
+        if (condition.getIsolateStageId() != null) {
+            criteria.andStageIdEqualTo(condition.getIsolateStageId());
         }
         example.setOrderByClause(DefaultConstant.ORDER_BY_ID_DESC);
         return example;

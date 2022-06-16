@@ -1,11 +1,10 @@
 package com.alibaba.tesla.appmanager.deployconfig.repository.domain;
 
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 /**
  * 部署配置历史表
@@ -74,4 +73,14 @@ public class DeployConfigHistoryDO {
      * 是否被删除
      */
     private Boolean deleted;
+
+    /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
 }

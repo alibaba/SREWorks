@@ -47,9 +47,9 @@ envsubst < ${SELF}/api/ververica-platform/build.yaml.tpl > ${SELF}/tmp-build.yam
 cat ${SELF}/tmp-build.yaml >> ${SELF}/tmp-merge-build.yaml
 echo "---" >> ${SELF}/tmp-merge-build.yaml
 
-#envsubst < ${SELF}/api/logstash/build.yaml.tpl > ${SELF}/tmp-build.yaml
-#cat ${SELF}/tmp-build.yaml >> ${SELF}/tmp-merge-build.yaml
-#echo "---" >> ${SELF}/tmp-merge-build.yaml
+envsubst < ${SELF}/api/logstash/build.yaml.tpl > ${SELF}/tmp-build.yaml
+cat ${SELF}/tmp-build.yaml >> ${SELF}/tmp-merge-build.yaml
+echo "---" >> ${SELF}/tmp-merge-build.yaml
 
 envsubst < ${SELF}/api/build.yaml.tpl > ${SELF}/tmp-build.yaml
 cat ${SELF}/tmp-build.yaml >> ${SELF}/tmp-merge-build.yaml

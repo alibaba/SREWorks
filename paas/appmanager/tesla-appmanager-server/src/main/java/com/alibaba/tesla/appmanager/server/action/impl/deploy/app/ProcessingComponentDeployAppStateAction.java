@@ -10,6 +10,7 @@ import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.common.util.StringUtil;
+import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.container.DeployAppRevisionName;
 import com.alibaba.tesla.appmanager.domain.req.componentpackage.ComponentPackageTaskCreateReq;
 import com.alibaba.tesla.appmanager.domain.res.componentpackage.ComponentPackageCreateRes;
@@ -28,7 +29,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -105,9 +105,13 @@ public class ProcessingComponentDeployAppStateAction implements DeployAppStateAc
                 DeployAppHelper.recursiveSetParameters(options, null, Arrays.asList(name.split("\\.")), value,
                         ParameterValueSetPolicy.OVERWRITE_ON_CONFILICT);
             }
+            // container 用于获取当前系统默认的隔离 namespaceId / stageId
+            BizAppContainer container = BizAppContainer.valueOf(appId);
             ComponentPackageCreateRes task = componentPackageProvider.createTask(
                     ComponentPackageTaskCreateReq.builder()
                             .appId(appId)
+                            .namespaceId(container.getNamespaceId())
+                            .stageId(container.getStageId())
                             .componentType(componentType.toString())
                             .componentName(componentName)
                             .version(DefaultConstant.AUTO_VERSION)

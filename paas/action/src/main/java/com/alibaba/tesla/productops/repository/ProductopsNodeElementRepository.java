@@ -41,4 +41,5 @@ public interface ProductopsNodeElementRepository
     @Transactional(rollbackOn = Exception.class)
     void deleteByAppId(String appId);
 
+
 }

@@ -1,5 +1,7 @@
 {{- if eq .Values.installMode "default" -}}
 
+{{ if .Values.progressCheck }}
+
 apiVersion: batch/v1
 kind: Job
 metadata: 
@@ -14,6 +16,8 @@ spec:
       - image: {{ template "images.progressCheck" . }}
         name: job
         imagePullPolicy: Always
+
+{{ end }}
 
 
 {{- end -}}

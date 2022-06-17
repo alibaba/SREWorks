@@ -36,6 +36,7 @@ platformLogo: /static/publicMedia/sreworks.png
 
 installMode: default
 
+progressCheck: false
 debug: false
 
 images: {}

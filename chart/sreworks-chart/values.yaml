@@ -29,7 +29,7 @@ global:
     bentomlImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/bentoml-model-server:0.13.1-py37
 
     logstashImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/logstash:7.10.2 
-
+    grafanaImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/grafana:7.5.3
  
 platformName: SREWorks
 platformLogo: /static/publicMedia/sreworks.png

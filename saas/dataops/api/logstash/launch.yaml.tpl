@@ -38,7 +38,10 @@ spec:
     parameterValues:
     - name: "values"
       value:
-        image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/logstash"
+        #image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/logstash"
+        #imageTag: "7.10.2"
+        image: "${LOGSTASH_IMAGE}"
+        imageTag: "${LOGSTASH_IMAGE_TAG}"
         logstashConfig:
           logstash.yml: |
             http.host: 0.0.0.0

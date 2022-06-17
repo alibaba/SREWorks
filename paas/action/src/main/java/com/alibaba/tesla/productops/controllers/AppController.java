@@ -10,17 +10,11 @@ import com.alibaba.tesla.action.controller.BaseController;
 import com.alibaba.tesla.productops.DO.ProductopsApp;
 import com.alibaba.tesla.productops.common.JsonUtil;
 import com.alibaba.tesla.productops.params.AppInitParam;
-import com.alibaba.tesla.productops.repository.ProductopsAppRepository;
+import com.alibaba.tesla.productops.repository.*;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author jinghua.yjh
@@ -32,6 +26,18 @@ public class AppController extends BaseController {
 
     @Autowired
     ProductopsAppRepository productopsAppRepository;
+
+    @Autowired
+    ProductopsElementRepository productopsElementRepository;
+
+    @Autowired
+    ProductopsNodeRepository productopsNodeRepository;
+
+    @Autowired
+    ProductopsTabRepository productopsTabRepository;
+
+    @Autowired
+    ProductopsNodeElementRepository productopsNodeElementRepository;
 
     @GetMapping(value = "/{appId}")
     public TeslaBaseResult get(@PathVariable String appId, String stageId) {
@@ -63,10 +69,21 @@ public class AppController extends BaseController {
         return buildSucceedResult(productopsAppRepository.saveAndFlush(app));
     }
 
-    @PostMapping(value = "delete")
-    public TeslaBaseResult delete(Long id) {
-        productopsAppRepository.deleteById(id);
-        return buildSucceedResult("ok");
+    @DeleteMapping(value = "/{appId}")
+    public TeslaBaseResult delete(@PathVariable String appId) {
+        Long elements = productopsElementRepository.deleteByAppId(appId);
+        Long nodeCounts = productopsNodeRepository.deleteByAppId(appId);
+        Long nodeElements =  productopsNodeElementRepository.deleteByAppId(appId);
+        Long tabs = productopsTabRepository.deleteByAppId(appId);
+        Long apps = productopsAppRepository.deleteByAppId(appId);
+        JSONObject res = new JSONObject();
+        res.put("deleteNodes", nodeCounts);
+        res.put("deleteElements", elements);
+        res.put("deleteNodeElements", nodeElements);
+        res.put("deleteTabs", tabs);
+        res.put("deleteApps", apps);
+        res.put("appId", appId);
+        return buildSucceedResult(res);
     }
 
 }

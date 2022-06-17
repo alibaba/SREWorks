@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.api.provider;
 
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.AppMetaDTO;
+import com.alibaba.tesla.appmanager.domain.req.AppMetaDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaUpdateReq;
 
@@ -23,9 +24,9 @@ public interface AppMetaProvider {
     AppMetaDTO get(String appId);
 
     /**
-     * 通过应用 ID 删除应用元信息
+     * 删除应用元信息
      */
-    boolean delete(String appId);
+    boolean delete(AppMetaDeleteReq request);
 
     /**
      * 保存应用元信息

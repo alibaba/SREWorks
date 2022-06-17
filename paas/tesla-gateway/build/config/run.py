@@ -91,8 +91,11 @@ def import_default_route():
                     insert_route(route)
                     break
             except RuntimeError as e:
-                print(e)
-                print("try upsert route %s" % route['routeId'])
+                if i >= 2:
+                    raise e
+                else:
+                    print(e)
+                    print("try upsert route %s" % route['routeId'])
 
 
 if __name__ == '__main__':

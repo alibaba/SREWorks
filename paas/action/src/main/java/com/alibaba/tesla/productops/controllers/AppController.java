@@ -71,12 +71,19 @@ public class AppController extends BaseController {
 
     @DeleteMapping(value = "/{appId}")
     public TeslaBaseResult delete(@PathVariable String appId) {
-        productopsElementRepository.deleteByAppId(appId);
-        productopsNodeRepository.deleteByAppId(appId);
-        productopsNodeElementRepository.deleteByAppId(appId);
-        productopsTabRepository.deleteByAppId(appId);
-        productopsAppRepository.deleteByAppId(appId);
-        return buildSucceedResult("ok");
+        Long elements = productopsElementRepository.deleteByAppId(appId);
+        Long nodeCounts = productopsNodeRepository.deleteByAppId(appId);
+        Long nodeElements =  productopsNodeElementRepository.deleteByAppId(appId);
+        Long tabs = productopsTabRepository.deleteByAppId(appId);
+        Long apps = productopsAppRepository.deleteByAppId(appId);
+        JSONObject res = new JSONObject();
+        res.put("deleteNodes", nodeCounts);
+        res.put("deleteElements", elements);
+        res.put("deleteNodeElements", nodeElements);
+        res.put("deleteTabs", tabs);
+        res.put("deleteApps", apps);
+        res.put("appId", appId);
+        return buildSucceedResult(res);
     }
 
 }

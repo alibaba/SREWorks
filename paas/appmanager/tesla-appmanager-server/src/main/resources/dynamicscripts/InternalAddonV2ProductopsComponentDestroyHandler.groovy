@@ -1,10 +1,15 @@
 package dynamicscripts
 
+import com.alibaba.fastjson.JSONObject
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum
+import com.alibaba.tesla.appmanager.common.util.RequestUtil
 import com.alibaba.tesla.appmanager.domain.req.destroy.DestroyComponentInstanceReq
 import com.alibaba.tesla.appmanager.server.dynamicscript.handler.ComponentDestroyHandler
+import okhttp3.OkHttpClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+
+import java.util.concurrent.TimeUnit
 
 /**
  * Internal Addon Productops V2 组件销毁 Handler
@@ -20,7 +25,7 @@ class InternalAddonV2ProductopsComponentDestroyHandler implements ComponentDestr
      */
     public static final String KIND = DynamicScriptKindEnum.COMPONENT_DESTROY.toString()
     public static final String NAME = "InternalAddonV2ProductopsDefault"
-    public static final Integer REVISION = 0
+    public static final Integer REVISION = 2
 
     /**
      * 销毁组件实例
@@ -33,5 +38,20 @@ class InternalAddonV2ProductopsComponentDestroyHandler implements ComponentDestr
         def componentName = request.getComponentName()
         def namespace = request.getNamespaceId()
         def stageId = request.getStageId()
+
+        def targetEndpoint = "prod-flycore-paas-action"
+
+        def removeAppUrl = "http://" + targetEndpoint + "/frontend/apps/" + appId
+        def httpClientBuilder = new OkHttpClient.Builder()
+                .readTimeout(5, TimeUnit.MINUTES)
+                .writeTimeout(5, TimeUnit.MINUTES)
+        def httpClient = RequestUtil.newHttpClient(httpClientBuilder)
+        def ret = RequestUtil.delete(removeAppUrl, new JSONObject(), new JSONObject())
+        log.info("frontend-service remove app {} {}", removeAppUrl, ret)
+        def retJson = JSONObject.parseObject(ret)
+        if (retJson.getIntValue("code") != 200) {
+            throw new Exception("frontend-service remove app error with ret: " + ret)
+        }
+
     }
 }

@@ -23,6 +23,11 @@ data:
   PYTHON3_IMAGE: {{ .Values.global.artifacts.python3Image }}
   BENTOML_IMAGE: {{ .Values.global.artifacts.bentomlImage }}
 
+  LOGSTASH_IMAGE: {{ (split ":" .Values.global.artifacts.logstashImage)._0 }}
+  LOGSTASH_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.logstashImage)._1 }}
+  GRAFANA_IMAGE: {{ (split ":" .Values.global.artifacts.grafanaImage)._0 }}
+  GRAFANA_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.grafanaImage)._1 }}
+
   SOURCE_BRANCH: {{ .Values.source.branch | default "master" | quote }}
   SOURCE_REPO: {{ .Values.source.repo }}
   SOURCE_CI_ACCOUNT: {{ .Values.source.ciAccount | default "" | quote }}

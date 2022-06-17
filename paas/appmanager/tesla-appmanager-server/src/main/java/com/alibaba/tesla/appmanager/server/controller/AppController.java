@@ -7,6 +7,7 @@ import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.dto.AppMetaDTO;
+import com.alibaba.tesla.appmanager.domain.req.AppMetaDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaUpdateReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigApplyTemplateReq;
@@ -133,7 +134,7 @@ public class AppController extends BaseController {
      * @apiParam (Path Parameters) {String} appId 应用 ID
      */
     @DeleteMapping(value = "/{appId}")
-    public TeslaBaseResult delete(@PathVariable String appId) {
+    public TeslaBaseResult delete(@PathVariable String appId, @ModelAttribute AppMetaDeleteReq request) {
         if (StringUtils.isEmpty(appId)) {
             return buildSucceedResult(Boolean.TRUE);
         }
@@ -142,7 +143,8 @@ public class AppController extends BaseController {
             return buildClientErrorResult("Deleting apps is now prohibited");
         }
 
-        boolean result = appMetaProvider.delete(appId);
+        request.setAppId(appId);
+        boolean result = appMetaProvider.delete(request);
         return buildSucceedResult(result);
     }
 

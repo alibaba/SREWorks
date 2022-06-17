@@ -85,12 +85,7 @@ public class NodeElementController extends BaseController {
                 .gmtCreate(System.currentTimeMillis())
                 .build();
         }
-        String appId;
-        if(StringUtils.isBlank(param.getAppId())){
-            appId = param.getNodeTypePath().split("\\|")[0];
-        }else{
-            appId = param.getAppId();
-        }
+        String appId = param.getNodeTypePath().split("\\|")[0];
 
         nodeElement.setGmtModified(System.currentTimeMillis());
         nodeElement.setLastModifier(getUserEmployeeId());

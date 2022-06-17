@@ -34,6 +34,6 @@ public interface ProductopsTabRepository
 
     @Modifying
     @Transactional(rollbackOn = Exception.class)
-    void deleteByAppId(String appId);
+    Long deleteByAppId(String appId);
 
 }

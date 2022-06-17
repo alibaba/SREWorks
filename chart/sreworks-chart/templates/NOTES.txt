@@ -1,12 +1,6 @@
 
-Please execute following command in terminal to trace the install progress:
 
->
-> kubectl logs job.batch/sreworks-progress-check -nsreworks -f
->
-
-
-After install finished open the following URL in your browser:
+After install finished (5-10mins) open the following URL in your browser:
 
    {{ .Values.appmanager.home.url }}/#/
 

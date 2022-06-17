@@ -27,6 +27,9 @@ global:
     minioClientUrl: https://sreworks.oss-cn-beijing.aliyuncs.com/bin/mc-linux-amd64
     python3Image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/python:3.9.12-alpine
     bentomlImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/bentoml-model-server:0.13.1-py37
+
+    logstashImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/logstash:7.10.2 
+
  
 platformName: SREWorks
 platformLogo: /static/publicMedia/sreworks.png

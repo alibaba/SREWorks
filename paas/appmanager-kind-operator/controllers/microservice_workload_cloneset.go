@@ -141,7 +141,9 @@ func (r *MicroserviceReconciler) ReconcileMicroserviceCloneSet(ctx context.Conte
 	instance.Spec.ScaleStrategy = microservice.Spec.CloneSet.ScaleStrategy
 	instance.Spec.UpdateStrategy = microservice.Spec.CloneSet.UpdateStrategy
 	instance.Spec.MinReadySeconds = microservice.Spec.CloneSet.MinReadySeconds
-	*instance.Spec.RevisionHistoryLimit = *microservice.Spec.CloneSet.RevisionHistoryLimit
+	if microservice.Spec.CloneSet.RevisionHistoryLimit != nil {
+		*instance.Spec.RevisionHistoryLimit = *microservice.Spec.CloneSet.RevisionHistoryLimit
+	}
 	instance.Spec.VolumeClaimTemplates = microservice.Spec.CloneSet.VolumeClaimTemplates
 	_ = helper.SetRevision(&instance.ObjectMeta, targetRevision)
 	if err := r.GetClient().Update(ctx, instance); err != nil {

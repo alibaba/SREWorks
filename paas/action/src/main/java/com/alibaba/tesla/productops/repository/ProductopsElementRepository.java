@@ -27,4 +27,8 @@ public interface ProductopsElementRepository
     @Transactional(rollbackOn = Exception.class)
     void deleteByAppIdAndStageIdAndIsImport(String appId, String stageId, Integer isImport);
 
+    @Modifying
+    @Transactional(rollbackOn = Exception.class)
+    void deleteByAppId(String appId);
+
 }

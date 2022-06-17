@@ -38,4 +38,8 @@ public interface ProductopsNodeRepository
     @Query(value = "update productops_node set config=?2 where id = ?1", nativeQuery = true)
     void updateConfigWhereId(Long id, String config);
 
+    @Modifying
+    @Transactional(rollbackOn = Exception.class)
+    void deleteByAppId(String appId);
+
 }

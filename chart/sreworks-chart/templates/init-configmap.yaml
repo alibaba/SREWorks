@@ -52,7 +52,7 @@ data:
   FILEBEAT_IMAGE: {{ (split ":" .Values.global.artifacts.filebeatImage)._0 | quote }}
   FILEBEAT_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.filebeatImage)._1 | quote }}
   MYSQL_REGISTRY: {{ (split "/" .Values.global.artifacts.mysqlImage)._0 | quote }}
-  MYSQL_REPO: {{ (split ":" (split "/" .Values.global.artifacts.mysqlImage)._1)._0 | quote }}
+  MYSQL_REPO: {{ (split ":" (splitn "/" 2 .Values.global.artifacts.mysqlImage)._1)._0 | quote }}
   MYSQL_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.mysqlImage)._1 | quote }}
 
   SOURCE_BRANCH: {{ .Values.source.branch | default "master" | quote }}

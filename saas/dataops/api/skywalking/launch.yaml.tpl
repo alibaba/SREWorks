@@ -38,17 +38,22 @@ spec:
     parameterValues:
     - name: "values"
       value:
+        initContainer:
+          image: "${BUSYBOX_IMAGE}"
+          tag: "${BUSYBOX_IMAGE_TAG}"
+
         oap:
           replicas: 1
           image:
-            repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-oap-server-utc-8
-            tag: 8.5.0-es7
+            repository: "${SKYWALKING_OAP_IMAGE}"
+            tag: "${SKYWALKING_OAP_IMAGE_TAG}"
           storageType: elasticsearch7
           javaOpts: -Xmx720m -Xms720m
 
         ui:
           image:
-            tag: 8.5.0
+            repository: "${SKYWALKING_UI_IMAGE}"
+            tag: "${SKYWALKING_UI_IMAGE_TAG}"
 
         elasticsearch:
           enabled: false

@@ -27,6 +27,28 @@ data:
   LOGSTASH_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.logstashImage)._1 }}
   GRAFANA_IMAGE: {{ (split ":" .Values.global.artifacts.grafanaImage)._0 }}
   GRAFANA_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.grafanaImage)._1 }}
+  KIBANA_IMAGE: {{ (split ":" .Values.global.artifacts.kibanaImage)._0 }}
+  KIBANA_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.kibanaImage)._1 }}
+  ELASTICSEARCH_IMAGE: {{ (split ":" .Values.global.artifacts.elasticsearchImage)._0 }}
+  ELASTICSEARCH_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.elasticsearchImage)._1 }}
+  ELASTICSEARCH_IMAGE: {{ (split ":" .Values.global.artifacts.elasticsearchImage)._0 }}
+  ELASTICSEARCH_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.elasticsearchImage)._1 }}
+  SKYWALKING_OAP_IMAGE: {{ (split ":" .Values.global.artifacts.skywalkingOapImage)._0 }}
+  SKYWALKING_OAP_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.skywalkingOapImage)._1 }}
+  SKYWALKING_UI_IMAGE: {{ (split ":" .Values.global.artifacts.skywalkingUiImage)._0 }}
+  SKYWALKING_UI_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.skywalkingUiImage)._1 }}
+  BUSYBOX_IMAGE: {{ (split ":" .Values.global.artifacts.busyboxImage)._0 }}
+  BUSYBOX_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.busyboxImage)._1 }}
+  VVP_APPMANAGER_IMAGE:  {{ (split ":" .Values.global.artifacts.vvpAppmanagerImage)._0 }}
+  VVP_APPMANAGER_IMAGE_TAG:  {{ (split ":" .Values.global.artifacts.vvpAppmanagerImage)._1 }}
+  VVP_UI_IMAGE:  {{ (split ":" .Values.global.artifacts.vvpUiImage)._0 }}
+  VVP_UI_IMAGE_TAG:  {{ (split ":" .Values.global.artifacts.vvpUiImage)._1 }}
+  VVP_GATEWAY_IMAGE:  {{ (split ":" .Values.global.artifacts.vvpGatewayImage)._0 }}
+  VVP_GATEWAY_IMAGE_TAG:  {{ (split ":" .Values.global.artifacts.vvpGatewayImage)._1 }}
+  METRICBEAT_IMAGE: {{ (split ":" .Values.global.artifacts.metricbeatImage)._0 }}
+  METRICBEAT_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.metricbeatImage)._1 }}
+  FILEBEAT_IMAGE: {{ (split ":" .Values.global.artifacts.filebeatImage)._0 }}
+  FILEBEAT_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.filebeatImage)._1 }}
 
   SOURCE_BRANCH: {{ .Values.source.branch | default "master" | quote }}
   SOURCE_REPO: {{ .Values.source.repo }}

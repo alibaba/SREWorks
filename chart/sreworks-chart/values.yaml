@@ -30,7 +30,19 @@ global:
 
     logstashImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/logstash:7.10.2 
     grafanaImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/grafana:7.5.3
- 
+    kibanaImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kibana:7.10.2 
+    elasticsearchImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/elasticsearch:7.10.2-with-plugins
+    skywalkingOapImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-oap-server-utc-8:8.5.0-es7
+    skywalkingUiImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-ui:8.5.0
+    busyboxImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/busybox:1.30
+
+    vvpAppmanagerImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/vvp-appmanager:2.6.1
+    vvpGatewayImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/vvp-gateway:2.6.1
+    vvpUiImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/vvp-ui:2.6.1
+
+    metricbeatImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/metricbeat:7.10.2 
+    filebeatImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/filebeat:7.10.2
+
 platformName: SREWorks
 platformLogo: /static/publicMedia/sreworks.png
 

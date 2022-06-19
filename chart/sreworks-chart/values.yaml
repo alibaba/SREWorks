@@ -36,12 +36,14 @@ global:
     skywalkingUiImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-ui:8.5.0
     busyboxImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/busybox:1.30
 
+    vvpRegistry: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror
     vvpAppmanagerImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/vvp-appmanager:2.6.1
     vvpGatewayImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/vvp-gateway:2.6.1
     vvpUiImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/vvp-ui:2.6.1
 
     metricbeatImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/metricbeat:7.10.2 
     filebeatImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/filebeat:7.10.2
+    mysqlImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/mysql:8.0.22-debian-10-r44
 
 platformName: SREWorks
 platformLogo: /static/publicMedia/sreworks.png

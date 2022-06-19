@@ -40,7 +40,7 @@ spec:
       value:
         acceptCommunityEditionLicense: true
         vvp:
-          #registry: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror
+          registry: ${VVP_REGISTRY}
           persistence:
             type: local
         
@@ -80,7 +80,7 @@ spec:
             secretAccessKey: ${MINIO_SECRET_KEY}
 
         appmanager:
-          image: "${VVP_APPMANAGER_IMAGE}"
+          repository: "${VVP_APPMANAGER_REPO}"
           tag: "${VVP_APPMANAGER_IMAGE_TAG}"
           resources:
             limits:
@@ -91,7 +91,7 @@ spec:
               memory: 512Mi
 
         gateway:
-          image: "${VVP_GATEWAY_IMAGE}"
+          repository: "${VVP_GATEWAY_REPO}"
           tag: "${VVP_GATEWAY_IMAGE_TAG}" 
           resources:
             limits:
@@ -102,7 +102,7 @@ spec:
               memory: 1Gi
 
         ui:
-          image: "${VVP_UI_IMAGE}"
+          repository: "${VVP_UI_REPO}"
           tag: "${VVP_UI_IMAGE_TAG}"
  
         persistentVolume:

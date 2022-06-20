@@ -226,7 +226,6 @@ public class ComponentPackageServiceImpl implements ComponentPackageService {
                 .appId(req.getAppId())
                 .componentType(req.getComponentType())
                 .componentName(req.getComponentName())
-                .orderBy(DefaultConstant.ORDER_BY_ID_DESC)
                 .withBlobs(false)
                 .page(1)
                 .pageSize(1)

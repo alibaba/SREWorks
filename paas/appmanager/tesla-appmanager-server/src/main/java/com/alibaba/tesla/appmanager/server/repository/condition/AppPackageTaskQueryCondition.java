@@ -31,7 +31,5 @@ public class AppPackageTaskQueryCondition extends BaseCondition {
 
     private List<AppPackageTaskStatusEnum> taskStatusList;
 
-    private String orderBy;
-
     private String envId;
 }

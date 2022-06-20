@@ -55,7 +55,6 @@ public class DeployAppAttrRepositoryImpl implements DeployAppAttrRepository {
         if (StringUtils.isNotBlank(condition.getAttrType())) {
             criteria.andAttrTypeEqualTo(condition.getAttrType());
         }
-        example.setOrderByClause(DefaultConstant.ORDER_BY_ID_DESC);
         return example;
     }
 

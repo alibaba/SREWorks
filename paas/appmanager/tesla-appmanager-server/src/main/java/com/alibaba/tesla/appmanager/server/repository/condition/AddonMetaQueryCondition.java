@@ -25,6 +25,4 @@ public class AddonMetaQueryCondition extends BaseCondition {
     private String addonVersion;
 
     private List<ComponentTypeEnum> addonTypeList;
-
-    private String orderByClause;
 }

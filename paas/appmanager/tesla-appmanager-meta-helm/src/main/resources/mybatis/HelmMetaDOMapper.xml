@@ -15,6 +15,8 @@
     <result column="package_type" jdbcType="VARCHAR" property="packageType" />
     <result column="helm_ext" jdbcType="LONGVARCHAR" property="helmExt" />
     <result column="options" jdbcType="LONGVARCHAR" property="options" />
+    <result column="namespace_id" jdbcType="VARCHAR" property="namespaceId" />
+    <result column="stage_id" jdbcType="VARCHAR" property="stageId" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <!--@mbg.generated-->
@@ -79,7 +81,7 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, gmt_create, gmt_modified, app_id, helm_package_id, `name`, description, component_type, 
-    package_type, helm_ext, `options`
+    package_type, helm_ext, `options`, namespace_id, stage_id
   </sql>
   <select id="selectByExample" parameterType="com.alibaba.tesla.appmanager.meta.helm.repository.domain.HelmMetaDOExample" resultMap="BaseResultMap">
     <!--@mbg.generated-->
@@ -120,11 +122,13 @@
     insert into am_helm_meta (gmt_create, gmt_modified, app_id, 
       helm_package_id, `name`, description, 
       component_type, package_type, helm_ext, 
-      `options`)
+      `options`, namespace_id, stage_id
+      )
     values (#{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{appId,jdbcType=VARCHAR}, 
       #{helmPackageId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR}, 
       #{componentType,jdbcType=VARCHAR}, #{packageType,jdbcType=VARCHAR}, #{helmExt,jdbcType=LONGVARCHAR}, 
-      #{options,jdbcType=LONGVARCHAR})
+      #{options,jdbcType=LONGVARCHAR}, #{namespaceId,jdbcType=VARCHAR}, #{stageId,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.alibaba.tesla.appmanager.meta.helm.repository.domain.HelmMetaDO" useGeneratedKeys="true">
     <!--@mbg.generated-->
@@ -160,6 +164,12 @@
       <if test="options != null">
         `options`,
       </if>
+      <if test="namespaceId != null">
+        namespace_id,
+      </if>
+      <if test="stageId != null">
+        stage_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="gmtCreate != null">
@@ -191,6 +201,12 @@
       </if>
       <if test="options != null">
         #{options,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="namespaceId != null">
+        #{namespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="stageId != null">
+        #{stageId,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -238,6 +254,12 @@
       <if test="record.options != null">
         `options` = #{record.options,jdbcType=LONGVARCHAR},
       </if>
+      <if test="record.namespaceId != null">
+        namespace_id = #{record.namespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stageId != null">
+        stage_id = #{record.stageId,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -256,7 +278,9 @@
       component_type = #{record.componentType,jdbcType=VARCHAR},
       package_type = #{record.packageType,jdbcType=VARCHAR},
       helm_ext = #{record.helmExt,jdbcType=LONGVARCHAR},
-      `options` = #{record.options,jdbcType=LONGVARCHAR}
+      `options` = #{record.options,jdbcType=LONGVARCHAR},
+      namespace_id = #{record.namespaceId,jdbcType=VARCHAR},
+      stage_id = #{record.stageId,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -295,6 +319,12 @@
       <if test="options != null">
         `options` = #{options,jdbcType=LONGVARCHAR},
       </if>
+      <if test="namespaceId != null">
+        namespace_id = #{namespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="stageId != null">
+        stage_id = #{stageId,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -310,7 +340,9 @@
       component_type = #{componentType,jdbcType=VARCHAR},
       package_type = #{packageType,jdbcType=VARCHAR},
       helm_ext = #{helmExt,jdbcType=LONGVARCHAR},
-      `options` = #{options,jdbcType=LONGVARCHAR}
+      `options` = #{options,jdbcType=LONGVARCHAR},
+      namespace_id = #{namespaceId,jdbcType=VARCHAR},
+      stage_id = #{stageId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

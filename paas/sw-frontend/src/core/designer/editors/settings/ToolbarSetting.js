@@ -290,7 +290,7 @@ class ToolbarSetting extends React.Component {
         let formChildrens = this.itemDef.map(item => FormElementFactory.createFormItem(item, form, toolbarLayout));
         return (
             <Row>
-                <Col span={18}>
+                <Col span={22}>
                     {
                         [
 

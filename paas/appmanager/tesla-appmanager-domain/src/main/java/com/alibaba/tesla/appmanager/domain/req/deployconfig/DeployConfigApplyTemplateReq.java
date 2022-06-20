@@ -35,4 +35,14 @@ public class DeployConfigApplyTemplateReq {
      * 是否开启
      */
     private boolean enabled = false;
+
+    /**
+     * Namespace ID
+     */
+    private String isolateNamespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String isolateStageId;
 }

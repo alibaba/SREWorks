@@ -33,6 +33,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TestServicePackDoComponentPackageCreate {
 
     private static final String APP_ID = "testapp";
+    private static final String NAMESPACE_ID = "default";
+    private static final String STAGE_ID = "pre";
     private static final ComponentTypeEnum COMPONENT_TYPE = ComponentTypeEnum.INTERNAL_ADDON;
     private static final String COMPONENT_NAME = "productops";
     private static final String OPERATOR = "SYSTEM";
@@ -81,7 +83,7 @@ public class TestServicePackDoComponentPackageCreate {
         ));
         Mockito.doReturn(new JSONObject())
                 .when(packService)
-                .buildOptions4InternalAddon(APP_ID, COMPONENT_NAME);
+                .buildOptions4InternalAddon(APP_ID, NAMESPACE_ID, STAGE_ID, COMPONENT_NAME);
     }
 
     @Test
@@ -90,6 +92,8 @@ public class TestServicePackDoComponentPackageCreate {
                 .appPackageTaskId(1L)
                 .componentPackageTaskId(1L)
                 .appId(APP_ID)
+                .namespaceId(NAMESPACE_ID)
+                .stageId(STAGE_ID)
                 .operator(OPERATOR)
                 .component(ComponentBinder.builder()
                         .componentType(COMPONENT_TYPE)

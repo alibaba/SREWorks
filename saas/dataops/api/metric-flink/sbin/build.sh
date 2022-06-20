@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 SW_ROOT=$(cd `dirname $0`; pwd)
 

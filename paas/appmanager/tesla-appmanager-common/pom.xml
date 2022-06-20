@@ -26,8 +26,8 @@
             <artifactId>pagehelper</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.gitlab</groupId>
-            <artifactId>java-gitlab-api</artifactId>
+            <groupId>org.gitlab4j</groupId>
+            <artifactId>gitlab4j-api</artifactId>
         </dependency>
 
         <dependency>

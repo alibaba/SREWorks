@@ -86,6 +86,12 @@ public class ComponentPackageTaskRepositoryImpl implements ComponentPackageTaskR
         if (StringUtils.isNotBlank(condition.getAppId())) {
             criteria.andAppIdEqualTo(condition.getAppId());
         }
+        if (condition.getNamespaceId() != null) {
+            criteria.andNamespaceIdEqualTo(condition.getNamespaceId());
+        }
+        if (condition.getStageId() != null) {
+            criteria.andStageIdEqualTo(condition.getStageId());
+        }
         if (StringUtils.isNotBlank(condition.getComponentType())) {
             criteria.andComponentTypeEqualTo(condition.getComponentType());
         }
@@ -101,7 +107,6 @@ public class ComponentPackageTaskRepositoryImpl implements ComponentPackageTaskR
         if (StringUtils.isNotBlank(condition.getTaskStatus())) {
             criteria.andTaskStatusEqualTo(condition.getTaskStatus());
         }
-        example.setOrderByClause(DefaultConstant.ORDER_BY_ID_DESC);
         return example;
     }
 

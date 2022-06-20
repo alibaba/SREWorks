@@ -40,4 +40,14 @@ public class DeployConfigUpdateReq {
      * 是否继承
      */
     private boolean inherit;
+
+    /**
+     * Namespace ID
+     */
+    private String isolateNamespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String isolateStageId;
 }

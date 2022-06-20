@@ -32,4 +32,8 @@ public interface ProductopsTabRepository
     @Transactional(rollbackOn = Exception.class)
     void deleteByNodeTypePathLikeAndStageIdAndIsImport(String s, String stageId, Integer isImport);
 
+    @Modifying
+    @Transactional(rollbackOn = Exception.class)
+    Long deleteByAppId(String appId);
+
 }

@@ -13,15 +13,16 @@ import com.alibaba.tesla.web.controller.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.gitlab4j.api.GitLabApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.gitlab.api.GitlabAPI;
-import org.gitlab.api.models.GitlabGroup;
-import org.gitlab.api.models.GitlabProject;
+import org.gitlab4j.api.GitLabApi;
+import org.gitlab4j.api.models.Group;
+
 
 /**
  * @author jinghua.yjh
@@ -56,21 +57,21 @@ public class ConfigController extends BaseController {
         String repoGroup = jsonObject.getString("repoGroup");
         String token = jsonObject.getString("token");
 
-        GitlabAPI api;
+        GitLabApi api;
         JSONObject result = new JSONObject();
         result.put("result", "ERROR");
 
         try {
-            api = GitlabAPI.connect(repoDomain, token);
+            api = new GitLabApi(repoDomain, token);
         } catch (Exception e) {
             result.put("message", "Gitlab服务检查失败,无法使用自动创建仓库能力");
             return buildSucceedResult(result);
         }
 
-        GitlabGroup group;
+        Group group;
         try {
-            group = api.getGroup(repoGroup);
-        } catch (IOException e) {
+            group = api.getGroupApi().getGroup(repoGroup);
+        } catch (GitLabApiException e) {
             result.put("message", "检查Gitlab Group失败，请检查该Gitlab Group是否存在");
             return buildSucceedResult(result);
         }

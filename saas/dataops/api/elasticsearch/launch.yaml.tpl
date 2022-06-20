@@ -52,8 +52,8 @@ spec:
     - name: "values"
       value:
         clusterName: "{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-elasticsearch"
-        image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/elasticsearch
-        imageTag: "7.10.2-with-plugins"
+        image: "${ELASTICSEARCH_IMAGE}"
+        imageTag: "${ELASTICSEARCH_IMAGE_TAG}"
         replicas: 1
         minimumMasterNodes: 1
         clusterHealthCheckEnable: false

@@ -51,7 +51,8 @@ spec:
         ingress:
           enabled: false
 
-        image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kibana
+        image: "${KIBANA_IMAGE}"
+        imageTag: "${KIBANA_IMAGE_TAG}"
 
         resources:
           requests:

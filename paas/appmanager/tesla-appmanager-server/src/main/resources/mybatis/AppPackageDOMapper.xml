@@ -73,9 +73,7 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
+    order by id desc
   </select>
   <select id="selectByExample" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.AppPackageDOExample" resultMap="BaseResultMap">
     <!--@mbg.generated-->
@@ -88,9 +86,7 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
+    order by id desc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     <!--@mbg.generated-->
@@ -336,13 +332,11 @@
       #{tag}
     </foreach>
     GROUP BY app_package_id
-    HAVING COUNT(app_package_id) = ${tags.size}
+    HAVING COUNT(app_package_id) = #{tagSize}
     )
     AND
     <include refid="Tag_Example_Where_Clause" />
-    <if test="example.orderByClause != null">
-      order by ${example.orderByClause}
-    </if>
+    order by id desc
   </select>
 
   <select id="selectByTags" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.AppPackageDO" resultMap="BaseResultMap">
@@ -356,13 +350,11 @@
       #{tag}
     </foreach>
     GROUP BY app_package_id
-    HAVING COUNT(app_package_id) = ${tags.size}
+    HAVING COUNT(app_package_id) = #{tagSize}
     )
     AND
     <include refid="Tag_Example_Where_Clause" />
-    <if test="example.orderByClause != null">
-      order by ${example.orderByClause}
-    </if>
+    order by id desc
   </select>
 
   <select id="countAppPackageVersion" resultType="com.alibaba.tesla.appmanager.domain.dto.AppPackageVersionCountDTO">

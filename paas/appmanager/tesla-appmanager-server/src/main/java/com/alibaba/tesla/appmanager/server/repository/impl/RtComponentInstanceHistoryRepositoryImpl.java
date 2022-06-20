@@ -77,7 +77,6 @@ public class RtComponentInstanceHistoryRepositoryImpl implements RtComponentInst
         if (StringUtils.isNotBlank(condition.getStatus())) {
             criteria.andStatusEqualTo(condition.getStatus());
         }
-        example.setOrderByClause(DefaultConstant.ORDER_BY_ID_DESC);
         return example;
     }
 

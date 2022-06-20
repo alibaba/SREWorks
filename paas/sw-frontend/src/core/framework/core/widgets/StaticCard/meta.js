@@ -28,7 +28,7 @@ export default {
     "screenshots": [],
     "updated": "",
     "version": "",
-    "docs": "<a target='_blank' href='https://3x.ant.design/components/list-cn/'>组件文档地址</a>",
+    "docs": "<a target='_blank' href='#/help/book/documents/ho617k.html#83-统计卡片'>组件文档地址</a>",
   },
   "state": "",
   "latestVersion": "1.0",

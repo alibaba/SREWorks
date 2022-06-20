@@ -30,7 +30,5 @@ public class ComponentPackageQueryCondition extends BaseCondition {
 
     private String packageCreator;
 
-    private String orderBy;
-
     private List<Long> idList;
 }

@@ -66,6 +66,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
     public DeployConfigApplyTemplateRes<DeployConfigDO> applyTemplate(DeployConfigApplyTemplateReq req) {
         String apiVersion = req.getApiVersion();
         String appId = req.getAppId();
+        String isolateNamespace = req.getIsolateNamespaceId();
+        String isolateStage = req.getIsolateStageId();
         String envId = req.getEnvId();
         String config = req.getConfig();
         boolean enabled = req.isEnabled();
@@ -81,14 +83,14 @@ public class DeployConfigServiceImpl implements DeployConfigService {
         String parameterTypeId = new DeployConfigTypeId(DeployConfigTypeId.TYPE_PARAMETER_VALUES).toString();
         items.add(applySingleConfig(apiVersion, appId, parameterTypeId, envId,
                 SchemaUtil.toYamlStr(schema.getSpec().getParameterValues(), DeployAppSchema.ParameterValue.class),
-                enabled, false));
+                enabled, false, isolateNamespace, isolateStage));
         // 保存 components 配置
         for (DeployAppSchema.SpecComponent component : schema.getSpec().getComponents()) {
             DeployAppRevisionName revision = DeployAppRevisionName.valueOf(component.getRevisionName());
             String componentTypeId = new DeployConfigTypeId(
                     revision.getComponentType(), revision.getComponentName()).toString();
             items.add(applySingleConfig(apiVersion, appId, componentTypeId, envId,
-                    SchemaUtil.toYamlMapStr(component), enabled, false));
+                    SchemaUtil.toYamlMapStr(component), enabled, false, isolateNamespace, isolateStage));
         }
         return DeployConfigApplyTemplateRes.<DeployConfigDO>builder().items(items).build();
     }
@@ -146,6 +148,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                 .typeId(condition.getTypeId())
                 .envId(condition.getEnvId())
                 .enabled(condition.getEnabled())
+                .isolateNamespaceId(condition.getIsolateNamespaceId())
+                .isolateStageId(condition.getIsolateStageId())
                 .build());
     }
 
@@ -159,6 +163,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
     public DeployConfigDO update(DeployConfigUpdateReq req) {
         String apiVersion = req.getApiVersion();
         String appId = req.getAppId();
+        String isolateNamespaceId = req.getIsolateNamespaceId();
+        String isolateStageId = req.getIsolateStageId();
         String envId = req.getEnvId();
         String typeId = req.getTypeId();
         String config = req.getConfig();
@@ -168,7 +174,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                     String.format("invalid deploy config update request|request=%s", JSONObject.toJSONString(req)));
         }
 
-        return applySingleConfig(apiVersion, appId, typeId, envId, config, true, inherit);
+        return applySingleConfig(apiVersion, appId, typeId, envId, config, true, inherit,
+                isolateNamespaceId, isolateStageId);
     }
 
     /**
@@ -180,6 +187,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
     public void delete(DeployConfigDeleteReq req) {
         String apiVersion = req.getApiVersion();
         String appId = req.getAppId();
+        String isolateNamespaceId = req.getIsolateNamespaceId();
+        String isolateStageId = req.getIsolateStageId();
         String envId = req.getEnvId();
         String typeId = req.getTypeId();
         if (StringUtils.isAnyEmpty(apiVersion, typeId)) {
@@ -187,7 +196,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                     String.format("invalid deploy config delete request|request=%s", JSONObject.toJSONString(req)));
         }
 
-        deleteSingleConfig(apiVersion, appId, typeId, envId);
+        deleteSingleConfig(apiVersion, appId, typeId, envId, isolateNamespaceId, isolateStageId);
     }
 
     /**
@@ -230,6 +239,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
         String clusterId = req.getClusterId();
         String namespaceId = req.getNamespaceId();
         String stageId = req.getStageId();
+        String isolateNamespaceId = req.getIsolateNamespaceId();
+        String isolateStageId = req.getIsolateStageId();
 
         DeployAppSchema schema = new DeployAppSchema();
         schema.setApiVersion(apiVersion);
@@ -256,12 +267,16 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                         .apiVersion(apiVersion)
                         .appId(appId)
                         .enabled(true)
+                        .isolateNamespaceId(isolateNamespaceId)
+                        .isolateStageId(isolateStageId)
                         .build());
         List<DeployConfigDO> rootRecords = deployConfigRepository.selectByExample(
                 DeployConfigQueryCondition.builder()
                         .apiVersion(apiVersion)
                         .appId("")
                         .enabled(true)
+                        .isolateNamespaceId(isolateNamespaceId)
+                        .isolateStageId(isolateStageId)
                         .build());
         // 明确是具体特定组件的 typeIds，明确有 componentName 的 (非通用类型 typeIds)
         List<String> typeIds = CollectionUtils.isEmpty(req.getTypeIds())
@@ -431,17 +446,17 @@ public class DeployConfigServiceImpl implements DeployConfigService {
     /**
      * 根据指定条件寻找最佳部署配置
      *
-     * @param appRecords  指定应用下的 deploy config 配置
-     * @param rootRecords 根 deploy config 配置 (无 appId，全局配置)
-     * @param unitId      单元 ID
-     * @param clusterId   集群 ID
-     * @param namespaceId Namespace ID
-     * @param stageId     Stage ID
+     * @param appRecords         指定应用下的 deploy config 配置
+     * @param rootRecords        根 deploy config 配置 (无 appId，全局配置)
+     * @param unitId             单元 ID
+     * @param clusterId          集群 ID
+     * @param namespaceId        Namespace ID
+     * @param stageId            Stage ID
      * @return 最佳配置记录
      */
     private DeployConfigDO findBestConfigInRecordsBySpecifiedName(
-            List<DeployConfigDO> appRecords, List<DeployConfigDO> rootRecords,
-            String unitId, String clusterId, String namespaceId, String stageId) {
+            List<DeployConfigDO> appRecords, List<DeployConfigDO> rootRecords, String unitId, String clusterId,
+            String namespaceId, String stageId) {
         List<String> priorities = new ArrayList<>();
         if (StringUtils.isNotEmpty(stageId)) {
             priorities.add(DeployConfigEnvId.stageStr(stageId));
@@ -490,7 +505,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                 }
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                         String.format("cannot find inherit record by deploy config app record|unitId=%s|clusterId=%s" +
-                                "|namespaceId=%s|stageId=%s|appRecords=%s|rootRecords=%s", unitId, clusterId,
+                                        "|namespaceId=%s|stageId=%s|appRecords=%s|rootRecords=%s", unitId, clusterId,
                                 namespaceId, stageId, JSONObject.toJSONString(appRecords),
                                 JSONObject.toJSONString(rootRecords)));
             }
@@ -499,8 +514,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
 
         // 再不行就报错了
         throw new AppException(AppErrorCode.DEPLOY_ERROR,
-                String.format("cannot find best deploy config with given condition(specified name)|clusterId=%s|" +
-                        "namespaceId=%s|stageId=%s", clusterId, namespaceId, stageId));
+                String.format("cannot find best deploy config with given condition(specified name)|unitId=%s|" +
+                        "clusterId=%s|namespaceId=%s|stageId=%s", unitId, clusterId, namespaceId, stageId));
     }
 
     /**
@@ -520,12 +535,15 @@ public class DeployConfigServiceImpl implements DeployConfigService {
     /**
      * 删除单个部署模板配置
      *
-     * @param apiVersion API Version
-     * @param appId      应用 ID
-     * @param typeId     类型 ID
-     * @param envId      环境 ID
+     * @param apiVersion       API Version
+     * @param appId            应用 ID
+     * @param typeId           类型 ID
+     * @param envId            环境 ID
+     * @param isolateNamespace Namespace ID
+     * @param isolateStage     Stage ID
      */
-    private void deleteSingleConfig(String apiVersion, String appId, String typeId, String envId) {
+    private void deleteSingleConfig(
+            String apiVersion, String appId, String typeId, String envId, String isolateNamespace, String isolateStage) {
         if (StringUtils.isEmpty(appId)) {
             appId = "";
         }
@@ -539,17 +557,21 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                 .typeId(typeId)
                 .envId(envId)
                 .apiVersion(apiVersion)
+                .isolateNamespaceId(isolateNamespace)
+                .isolateStageId(isolateStage)
                 .page(1)
                 .pageSize(1)
                 .build();
         List<DeployConfigDO> records = deployConfigRepository.selectByExample(condition);
         if (records.size() == 0) {
-            log.info("no need to delete single deploy config record|apiVersion={}|appId={}|typeId={}|envId={}",
-                    apiVersion, appId, typeId, envId);
+            log.info("no need to delete single deploy config record|apiVersion={}|appId={}|typeId={}|envId={}|" +
+                            "namespaceId={}|stageId={}", apiVersion, appId, typeId, envId,
+                    isolateNamespace, isolateStage);
             return;
         } else if (records.size() > 1) {
             String errorMessage = String.format("system error, multiple deploy config records found|apiVersion=%s|" +
-                    "appId=%s|typeId=%s|envId=%s", apiVersion, appId, typeId, envId);
+                            "appId=%s|typeId=%s|envId=%s|namespaceId=%s|stageId=%s", apiVersion, appId, typeId, envId,
+                    isolateNamespace, isolateStage);
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, errorMessage);
         }
         Integer revision = records.get(0).getCurrentRevision() + 1;
@@ -565,27 +587,31 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                 .config(config)
                 .inherit(false)
                 .deleted(true)
+                .namespaceId(isolateNamespace)
+                .stageId(isolateStage)
                 .build());
         deployConfigRepository.deleteByExample(condition);
-        log.info("deploy config record has deleted|apiVersion={}|appId={}|typeId={}|envId={}", apiVersion, appId,
-                typeId, envId);
+        log.info("deploy config record has deleted|apiVersion={}|appId={}|typeId={}|envId={}|namespaceId={}|stageId={}",
+                apiVersion, appId, typeId, envId, isolateNamespace, isolateStage);
     }
 
     /**
      * 保存单个部署模板到系统中并应用
      *
-     * @param apiVersion API Version
-     * @param appId      应用 ID
-     * @param typeId     类型 ID
-     * @param envId      环境 ID
-     * @param config     配置内容
-     * @param enabled    是否启用
-     * @param inherit    是否继承
+     * @param apiVersion         API Version
+     * @param appId              应用 ID
+     * @param typeId             类型 ID
+     * @param envId              环境 ID
+     * @param config             配置内容
+     * @param enabled            是否启用
+     * @param inherit            是否继承
+     * @param isolateNamespaceId 隔离 Namespace ID
+     * @param isolateStageId     隔离 Stage ID
      * @return DeployConfigDO
      */
     private DeployConfigDO applySingleConfig(
             String apiVersion, String appId, String typeId, String envId, String config,
-            boolean enabled, boolean inherit) {
+            boolean enabled, boolean inherit, String isolateNamespaceId, String isolateStageId) {
         if (StringUtils.isEmpty(envId)) {
             envId = "";
         }
@@ -597,6 +623,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                         .typeId(typeId)
                         .envId(envId)
                         .apiVersion(apiVersion)
+                        .isolateNamespaceId(isolateNamespaceId)
+                        .isolateStageId(isolateStageId)
                         .page(1)
                         .pageSize(1)
                         .build());
@@ -615,12 +643,16 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                 .config(config)
                 .inherit(inherit)
                 .deleted(false)
+                .namespaceId(isolateNamespaceId)
+                .stageId(isolateStageId)
                 .build());
         DeployConfigQueryCondition configCondition = DeployConfigQueryCondition.builder()
                 .appId(appId)
                 .typeId(typeId)
                 .envId(envId)
                 .apiVersion(apiVersion)
+                .isolateNamespaceId(isolateNamespaceId)
+                .isolateStageId(isolateStageId)
                 .build();
         List<DeployConfigDO> records = deployConfigRepository.selectByExample(configCondition);
         DeployConfigDO result;
@@ -634,6 +666,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                     .config(config)
                     .enabled(enabled)
                     .inherit(inherit)
+                    .namespaceId(isolateNamespaceId)
+                    .stageId(isolateStageId)
                     .build();
             try {
                 deployConfigRepository.insertSelective(result);
@@ -643,7 +677,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                                 JSONObject.toJSONString(result), ExceptionUtils.getStackTrace(e)));
             }
             log.info("deploy config has insert into database|apiVersion={}|appId={}|typeId={}|envId={}|revision={}|" +
-                    "enable={}|inherit={}", apiVersion, appId, typeId, envId, revision, enabled, inherit);
+                            "enable={}|inherit={}|namespaceId={}|stageId={}", apiVersion, appId, typeId, envId, revision,
+                    enabled, inherit, isolateNamespaceId, isolateStageId);
         } else {
             DeployConfigDO item = records.get(0);
             item.setCurrentRevision(revision);
@@ -659,7 +694,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                                 ExceptionUtils.getStackTrace(e)));
             }
             log.info("deploy config has updated in database|apiVersion={}|appId={}|typeId={}|envId={}|revision={}|" +
-                    "enable={}|inherit={}", apiVersion, appId, typeId, envId, revision, enabled, inherit);
+                            "enable={}|inherit={}|namespaceId={}|stageId={}", apiVersion, appId, typeId, envId,
+                    revision, enabled, inherit, isolateNamespaceId, isolateStageId);
             result = item;
         }
         return result;

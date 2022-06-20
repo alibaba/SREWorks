@@ -27,8 +27,8 @@ export default  {
         "screenshots": [],
         "updated": "",
         "version": "",
-        "docs":"<div><a target='_blank' href=''>table配置</a></div><br />"+
-            "<div><a target='_blank' href='https://3x.ant.design/components/table-cn/'>列完整配置见antd Table Column 配置</a></div>"
+        "docs":"<div><a target='_blank' href='#/help/book/documents/ho617k.html#87-表格'>table配置</a></div><br />"+
+            "<div><a target='_blank' href='https://ant.design/components/table-cn/#header'>列完整配置见antd Table Column 配置</a></div>"
     },
     "state": "",
     "latestVersion": "1.0",

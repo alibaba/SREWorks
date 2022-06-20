@@ -112,10 +112,14 @@ public class PackServiceImpl implements PackService {
     public void createComponentPackageTask(ComponentPackageTaskMessage message) {
         ComponentBinder component = message.getComponent();
         String appId = message.getAppId();
+        String namespaceId = message.getNamespaceId();
+        String stageId = message.getStageId();
         ComponentTypeEnum componentType = component.getComponentType();
         String componentName = component.getComponentName();
         ComponentPackageTaskCreateReq request = ComponentPackageTaskCreateReq.builder()
                 .appId(appId)
+                .namespaceId(namespaceId)
+                .stageId(stageId)
                 .appPackageTaskId(message.getAppPackageTaskId())
                 .componentType(componentType.toString())
                 .componentName(componentName)
@@ -127,7 +131,8 @@ public class PackServiceImpl implements PackService {
             if (BooleanUtils.isTrue(component.getUseRawOptions())) {
                 options = component.getOptions();
             } else if (componentType.isKubernetesJob() || componentType.isKubernetesMicroservice()) {
-                options = buildOptions4K8sMicroService(appId, componentName, component.getBranch());
+                options = buildOptions4K8sMicroService(
+                        appId, namespaceId, stageId, componentName, component.getBranch());
             } else if (componentType.isResourceAddon()) {
                 String[] arr = componentName.split("@", 2);
                 if (arr.length != 2) {
@@ -136,9 +141,9 @@ public class PackServiceImpl implements PackService {
                 }
                 String addonId = arr[0];
                 String addonName = arr[1];
-                options = buildOptions4ResourceAddon(appId, addonId, addonName);
+                options = buildOptions4ResourceAddon(appId, namespaceId, stageId, addonId, addonName);
             } else if (componentType.isInternalAddon()) {
-                options = buildOptions4InternalAddon(appId, componentName);
+                options = buildOptions4InternalAddon(appId, namespaceId, stageId, componentName);
             } else if (componentType.isHelm()) {
                 options = buildOptions4Helm(appId, componentName, component.getBranch());
             }
@@ -172,6 +177,8 @@ public class PackServiceImpl implements PackService {
                     ExceptionUtils.getStackTrace(e));
             ComponentPackageTaskDO taskDO = ComponentPackageTaskDO.builder()
                     .appId(appId)
+                    .namespaceId(namespaceId)
+                    .stageId(stageId)
                     .componentType(componentType.toString())
                     .componentName(componentName)
                     .packageVersion(component.getVersion())
@@ -185,8 +192,9 @@ public class PackServiceImpl implements PackService {
     }
 
     @Override
-    public JSONObject buildOptions4InternalAddon(String appId, String addonId) {
-        log.info("action=packService|buildOptions4InternalAddon|enter|appId={}|addonId={}|", appId, addonId);
+    public JSONObject buildOptions4InternalAddon(String appId, String namespaceId, String stageId, String addonId) {
+        log.info("action=packService|buildOptions4InternalAddon|enter|appId={}|addonId={}|namespaceId={}|stageId={}",
+                appId, addonId, namespaceId, stageId);
         if (INTERNAL_ADDON_DEVELOPMENT_META.equals(addonId)) {
             return new JSONObject();
         }
@@ -195,6 +203,8 @@ public class PackServiceImpl implements PackService {
         }
         AppAddonQueryCondition condition = AppAddonQueryCondition.builder()
                 .appId(appId)
+                .namespaceId(namespaceId)
+                .stageId(stageId)
                 .addonId(addonId)
                 .addonName(addonId)
                 .build();
@@ -214,11 +224,14 @@ public class PackServiceImpl implements PackService {
     }
 
     @Override
-    public JSONObject buildOptions4ResourceAddon(String appId, String addonId, String addonName) {
-        log.info("action=packService|buildOptions4ResourceAddon|enter|appId={}|addonId={}|addonName={}",
-                appId, addonId, addonName);
+    public JSONObject buildOptions4ResourceAddon(
+            String appId, String namespaceId, String stageId, String addonId, String addonName) {
+        log.info("action=packService|buildOptions4ResourceAddon|enter|appId={}|namespaceId={}|stageId={}|" +
+                        "addonId={}|addonName={}", appId, namespaceId, stageId, addonId, addonName);
         AppAddonQueryCondition condition = AppAddonQueryCondition.builder()
                 .appId(appId)
+                .namespaceId(namespaceId)
+                .stageId(stageId)
                 .addonId(addonId)
                 .addonName(addonName)
                 .build();
@@ -238,11 +251,14 @@ public class PackServiceImpl implements PackService {
     }
 
     @Override
-    public JSONObject buildOptions4K8sMicroService(String appId, String microServiceId, String branch) {
-        log.info("action=packService|buildOptions4K8sMicroService|enter|appId={}|microServiceId={}|branch={}",
-                appId, microServiceId, branch);
+    public JSONObject buildOptions4K8sMicroService(
+            String appId, String namespaceId, String stageId, String microServiceId, String branch) {
+        log.info("action=packService|buildOptions4K8sMicroService|enter|appId={}|namespaceId={}|stageId={}|" +
+                        "microServiceId={}|branch={}", appId, namespaceId, stageId, microServiceId, branch);
         K8sMicroserviceMetaQueryCondition microserviceMetaCondition = K8sMicroserviceMetaQueryCondition.builder()
                 .appId(appId)
+                .namespaceId(namespaceId)
+                .stageId(stageId)
                 .microServiceId(microServiceId)
                 .withBlobs(true)
                 .build();
@@ -250,7 +266,7 @@ public class PackServiceImpl implements PackService {
                 .list(microserviceMetaCondition);
         if (microserviceMetaList.isEmpty()) {
             log.error("action=packService|buildOptions4K8sMicroService|ERROR|message=component not exists|appId={}|" +
-                    "microServiceId={}", appId, microServiceId);
+                    "microServiceId={}|namespaceId={}|stageId={}", appId, microServiceId, namespaceId, stageId);
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "component not exists");
         }
 

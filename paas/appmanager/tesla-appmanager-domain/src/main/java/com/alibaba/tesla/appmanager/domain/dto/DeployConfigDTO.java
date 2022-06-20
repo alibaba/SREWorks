@@ -69,4 +69,14 @@ public class DeployConfigDTO {
      * 是否继承
      */
     private Boolean inherit;
+
+    /**
+     * Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * Stage ID
+     */
+    private String stageId;
 }

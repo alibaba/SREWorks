@@ -63,7 +63,7 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 12
+    public static final Integer REVISION = 15
 
     private static final String EXPORT_OPTION_FILE = "option.json"
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
@@ -106,7 +106,12 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
         // microservices
         if (data.getJSONArray("microservices") != null) {
             for (k8sMicroServiceMetaDO in data.getJSONArray("microservices").toJavaList(K8sMicroServiceMetaDO.class)) {
-                K8sMicroServiceMetaDO microService = k8sMicroserviceMetaService.getByMicroServiceId(k8sMicroServiceMetaDO.getAppId(), k8sMicroServiceMetaDO.getMicroServiceId())
+                def appId = k8sMicroServiceMetaDO.getAppId()
+                def microserviceId = k8sMicroServiceMetaDO.getMicroServiceId()
+                def namespaceId = k8sMicroServiceMetaDO.getNamespaceId()
+                def stageId = k8sMicroServiceMetaDO.getStageId()
+                K8sMicroServiceMetaDO microService = k8sMicroserviceMetaService
+                        .getByMicroServiceId(appId, microserviceId, namespaceId, stageId)
                 k8sMicroServiceMetaDO.setId(null);
                 k8sMicroServiceMetaDO.extFromString();
                 k8sMicroServiceMetaDO.init();
@@ -116,8 +121,10 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
                             request.getAppId(), JSONObject.toJSONString(k8sMicroServiceMetaDO), JSONObject.toJSONString(response))
                 } else {
                     K8sMicroserviceMetaQueryCondition condition = K8sMicroserviceMetaQueryCondition.builder()
-                            .microServiceId(k8sMicroServiceMetaDO.getMicroServiceId())
                             .appId(k8sMicroServiceMetaDO.getAppId())
+                            .namespaceId(k8sMicroServiceMetaDO.getNamespaceId())
+                            .stageId(k8sMicroServiceMetaDO.getStageId())
+                            .microServiceId(k8sMicroServiceMetaDO.getMicroServiceId())
                             .withBlobs(true)
                             .build();
                     def response = k8sMicroserviceMetaService.update(k8sMicroServiceMetaDO, condition);
@@ -130,7 +137,11 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
         // helms
         if (data.getJSONArray("helms") != null) {
             for (helmMetaDO in data.getJSONArray("helms").toJavaList(HelmMetaDO.class)) {
-                HelmMetaDO helmMeta = helmMetaService.getByHelmPackageId(helmMetaDO.getAppId(), helmMetaDO.getHelmPackageId())
+                def appId = helmMetaDO.getAppId()
+                def helmPackageId = helmMetaDO.getHelmPackageId()
+                def namespaceId = helmMetaDO.getNamespaceId()
+                def stageId = helmMetaDO.getStageId()
+                HelmMetaDO helmMeta = helmMetaService.getByHelmPackageId(appId, helmPackageId, namespaceId, stageId)
                 if (helmMeta == null) {
                     def response = helmMetaService.create(helmMetaDO)
                     log.info("import(create) app meta helm config success|appId={}|content={}|response={}",
@@ -139,6 +150,8 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
                     HelmMetaQueryCondition condition = HelmMetaQueryCondition.builder()
                             .helmPackageId(helmMeta.getHelmPackageId())
                             .appId(helmMeta.getAppId())
+                            .namespaceId(helmMeta.getNamespaceId())
+                            .stageId(helmMeta.getStageId())
                             .withBlobs(true)
                             .build();
                     helmMetaDO.setId(null);
@@ -154,6 +167,8 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
             for (addon in data.getJSONArray("addons").toJavaList(AppAddonDO.class)) {
                 def item = appAddonService.get(AppAddonQueryCondition.builder()
                         .appId(addon.getAppId())
+                        .namespaceId(addon.getNamespaceId())
+                        .stageId(addon.getStageId())
                         .addonId(addon.getAddonId())
                         .addonName(addon.getName())
                         .build())
@@ -169,6 +184,8 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
                     }
                     appAddonService.create(AppAddonCreateReq.builder()
                             .appId(addon.getAppId())
+                            .namespaceId(addon.getNamespaceId())
+                            .stageId(addon.getStageId())
                             .addonMetaId(addonMeta.getId())
                             .addonType(addon.getAddonType().toString())
                             .addonId(addon.getAddonId())
@@ -180,6 +197,8 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
                     addon.setId(null)
                     int count = appAddonService.update(addon, AppAddonQueryCondition.builder()
                             .appId(addon.getAppId())
+                            .namespaceId(addon.getNamespaceId())
+                            .stageId(addon.getStageId())
                             .addonId(addon.getAddonId())
                             .addonName(addon.getName())
                             .build())

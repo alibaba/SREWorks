@@ -72,7 +72,12 @@ public class DeployConfigHistoryRepositoryImpl implements DeployConfigHistoryRep
         if (condition.getInherit() != null) {
             criteria.andInheritEqualTo(condition.getInherit());
         }
-        example.setOrderByClause(DefaultConstant.ORDER_BY_ID_DESC);
+        if (condition.getIsolateNamespaceId() != null) {
+            criteria.andNamespaceIdEqualTo(condition.getIsolateNamespaceId());
+        }
+        if (condition.getIsolateStageId() != null) {
+            criteria.andStageIdEqualTo(condition.getIsolateStageId());
+        }
         return example;
     }
 

@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.server.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.api.provider.AppMetaProvider;
 import com.alibaba.tesla.appmanager.api.provider.AppPackageProvider;
 import com.alibaba.tesla.appmanager.api.provider.MarketProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
@@ -10,6 +11,7 @@ import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.dto.AppPackageDTO;
 import com.alibaba.tesla.appmanager.domain.dto.MarketEndpointDTO;
 import com.alibaba.tesla.appmanager.domain.dto.MarketPackageDTO;
+import com.alibaba.tesla.appmanager.domain.req.AppMetaUpdateReq;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.AppPackageImportReq;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.AppPackageQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.market.*;
@@ -50,6 +52,9 @@ public class MarketController extends AppManagerBaseController {
 
     @Autowired
     private AppPackageProvider appPackageProvider;
+
+    @Autowired
+    private AppMetaProvider appMetaProvider;
 
 
     @GetMapping(value = "/apps")
@@ -257,6 +262,13 @@ public class MarketController extends AppManagerBaseController {
                 .resetVersion(false)
                 .build();
         AppPackageDTO appPackageInfo = appPackageProvider.importPackage(appPackageImportReq, marketPackageStream, getOperator(auth));
+
+        AppMetaUpdateReq appMetaUpdateReq = new AppMetaUpdateReq();
+        appMetaUpdateReq.setAppId(marketPackage.getAppId());
+        if(request.getAppOptions() != null) {
+            appMetaUpdateReq.setOptions(request.getAppOptions());
+        }
+        appMetaProvider.save(appMetaUpdateReq);
 
         return buildSucceedResult(appPackageInfo);
     }

@@ -92,6 +92,22 @@ target_migrate(){
     fi
 }
 
+target_progress_check(){
+    [ -n "$TAG" ] && tag=$TAG || tag="latest"
+    if [ -n "$BUILD" ]; then
+        echo "-- build sw-progress-check --" >&2
+        TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
+        envsubst < $SW_ROOT/paas/progress-check/Dockerfile.tpl > ${TMP_DOCKERFILE}
+        docker build -t sw-progress-check:$tag --pull --no-cache -f ${TMP_DOCKERFILE} $SW_ROOT/paas/progress-check
+        docker tag sw-progress-check:$tag sw-progress-check:latest
+    fi
+    if [ -n "$PUSH_REPO" ]; then
+        echo "-- push sw-progress-check --" >&2
+        docker tag sw-progress-check:$tag $PUSH_REPO/sw-progress-check:$tag
+        docker push $PUSH_REPO/sw-progress-check:$tag
+    fi
+}
+
 target_openjdk8(){
     [ -n "$TAG" ] && tag=$TAG || tag="latest"
     if [ -n "$BUILD" ]; then
@@ -278,6 +294,7 @@ target_base(){
     target_migrate
     target_openjdk8
     target_postrun
+    target_progress_check
 }
 
 target_appmanager_base(){

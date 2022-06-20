@@ -59,8 +59,8 @@ spec:
           auth.anonymous:
             enabled: true
         image: 
-          repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/grafana
-          tag: 7.5.3
+          repository: "${GRAFANA_IMAGE}"
+          tag: "${GRAFANA_IMAGE_TAG}"
         #plugins:
         #  - marcusolsson-json-datasource
         datasources:

@@ -29,11 +29,13 @@ public interface AppPackageDOMapper {
     List<AppPackageDO> selectByTagsWithBLOBs(
             @Param("appId") String appId,
             @Param("tags") List<String> tags,
+            @Param("tagSize") Integer tagSize,
             @Param("example") AppPackageDOExample example);
 
     List<AppPackageDO> selectByTags(
             @Param("appId") String appId,
             @Param("tags") List<String> tags,
+            @Param("tagSize") Integer tagSize,
             @Param("example") AppPackageDOExample example);
 
     List<AppPackageVersionCountDTO> countAppPackageVersion(

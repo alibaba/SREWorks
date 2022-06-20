@@ -23,6 +23,38 @@ data:
   PYTHON3_IMAGE: {{ .Values.global.artifacts.python3Image }}
   BENTOML_IMAGE: {{ .Values.global.artifacts.bentomlImage }}
 
+  LOGSTASH_IMAGE: {{ (split ":" .Values.global.artifacts.logstashImage)._0 | quote }}
+  LOGSTASH_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.logstashImage)._1 | quote }}
+  GRAFANA_IMAGE: {{ (split ":" .Values.global.artifacts.grafanaImage)._0 | quote }}
+  GRAFANA_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.grafanaImage)._1 | quote }}
+  KIBANA_IMAGE: {{ (split ":" .Values.global.artifacts.kibanaImage)._0 | quote }}
+  KIBANA_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.kibanaImage)._1 | quote }}
+  ELASTICSEARCH_IMAGE: {{ (split ":" .Values.global.artifacts.elasticsearchImage)._0 | quote }}
+  ELASTICSEARCH_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.elasticsearchImage)._1 | quote }}
+  ELASTICSEARCH_IMAGE: {{ (split ":" .Values.global.artifacts.elasticsearchImage)._0 | quote }}
+  ELASTICSEARCH_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.elasticsearchImage)._1 | quote }}
+  SKYWALKING_OAP_IMAGE: {{ (split ":" .Values.global.artifacts.skywalkingOapImage)._0 | quote }}
+  SKYWALKING_OAP_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.skywalkingOapImage)._1 | quote }}
+  SKYWALKING_UI_IMAGE: {{ (split ":" .Values.global.artifacts.skywalkingUiImage)._0 | quote }}
+  SKYWALKING_UI_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.skywalkingUiImage)._1 | quote }}
+  BUSYBOX_IMAGE: {{ (split ":" .Values.global.artifacts.busyboxImage)._0 | quote }}
+  BUSYBOX_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.busyboxImage)._1 | quote }}
+  
+  VVP_REPO:  {{ .Values.global.artifacts.vvpRegistry | quote }}
+  VVP_APPMANAGER_REPO:  {{ (split "/" (split ":" .Values.global.artifacts.vvpAppmanagerImage)._0)._2 | quote }}
+  VVP_APPMANAGER_IMAGE_TAG:  {{ (split ":" .Values.global.artifacts.vvpAppmanagerImage)._1 | quote }}
+  VVP_UI_REPO:  {{ (split "/" (split ":" .Values.global.artifacts.vvpUiImage)._0)._2 | quote }}
+  VVP_UI_IMAGE_TAG:  {{ (split ":" .Values.global.artifacts.vvpUiImage)._1 | quote }}
+  VVP_GATEWAY_REPO:  {{ (split "/" (split ":" .Values.global.artifacts.vvpGatewayImage)._0)._2 | quote }}
+  VVP_GATEWAY_IMAGE_TAG:  {{ (split ":" .Values.global.artifacts.vvpGatewayImage)._1 | quote }}
+  METRICBEAT_IMAGE: {{ (split ":" .Values.global.artifacts.metricbeatImage)._0 | quote}}
+  METRICBEAT_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.metricbeatImage)._1 | quote }}
+  FILEBEAT_IMAGE: {{ (split ":" .Values.global.artifacts.filebeatImage)._0 | quote }}
+  FILEBEAT_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.filebeatImage)._1 | quote }}
+  MYSQL_REGISTRY: {{ (split "/" .Values.global.artifacts.mysqlImage)._0 | quote }}
+  MYSQL_REPO: {{ (split ":" (splitn "/" 2 .Values.global.artifacts.mysqlImage)._1)._0 | quote }}
+  MYSQL_IMAGE_TAG: {{ (split ":" .Values.global.artifacts.mysqlImage)._1 | quote }}
+
   SOURCE_BRANCH: {{ .Values.source.branch | default "master" | quote }}
   SOURCE_REPO: {{ .Values.source.repo }}
   SOURCE_CI_ACCOUNT: {{ .Values.source.ciAccount | default "" | quote }}

@@ -1,35 +1,16 @@
 package com.alibaba.tesla.appmanager.server.service.componentpackage;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.tesla.appmanager.autoconfig.PackageProperties;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.ComponentPackageTaskStateEnum;
-import com.alibaba.tesla.appmanager.common.exception.AppException;
-import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.PackageUtil;
 import com.alibaba.tesla.appmanager.common.util.VersionUtil;
-import com.alibaba.tesla.appmanager.domain.req.apppackage.AppPackageCreateByStreamReq;
-import com.alibaba.tesla.appmanager.domain.req.componentpackage.ComponentPackageCreateByLocalFileReq;
 import com.alibaba.tesla.appmanager.domain.req.componentpackage.ComponentPackageTaskNextVersionReq;
 import com.alibaba.tesla.appmanager.domain.res.componentpackage.ComponentPackageTaskNextVersionRes;
-import com.alibaba.tesla.appmanager.domain.schema.AppPackageSchema;
-import com.alibaba.tesla.appmanager.server.repository.*;
-import com.alibaba.tesla.appmanager.server.repository.condition.AppPackageQueryCondition;
-import com.alibaba.tesla.appmanager.server.repository.condition.ComponentPackageQueryCondition;
+import com.alibaba.tesla.appmanager.server.repository.ComponentPackageTaskRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.ComponentPackageTaskQueryCondition;
-import com.alibaba.tesla.appmanager.server.repository.condition.ComponentQueryCondition;
-import com.alibaba.tesla.appmanager.server.repository.domain.AppPackageDO;
-import com.alibaba.tesla.appmanager.server.repository.domain.ComponentPackageDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.ComponentPackageTaskDO;
-import com.alibaba.tesla.appmanager.server.service.apppackage.AppPackageService;
-import com.alibaba.tesla.appmanager.server.service.apppackage.impl.AppPackageServiceImpl;
-import com.alibaba.tesla.appmanager.server.service.componentpackage.impl.ComponentPackageServiceImpl;
 import com.alibaba.tesla.appmanager.server.service.componentpackage.impl.ComponentPackageTaskServiceImpl;
-import com.alibaba.tesla.appmanager.server.service.deploy.DeployAppService;
-import com.alibaba.tesla.appmanager.server.storage.Storage;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,14 +19,9 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @RunWith(SpringRunner.class)
 @Slf4j
@@ -96,7 +72,6 @@ public class TestServiceComponentPackageTaskNextVersion {
                         .appId(APP_ID)
                         .componentType(COMPONENT_TYPE)
                         .componentName(COMPONENT_NAME)
-                        .orderBy(DefaultConstant.ORDER_BY_ID_DESC)
                         .withBlobs(false)
                         .page(1)
                         .pageSize(1)
@@ -123,7 +98,6 @@ public class TestServiceComponentPackageTaskNextVersion {
                         .appId(APP_ID)
                         .componentType(COMPONENT_TYPE)
                         .componentName(COMPONENT_NAME)
-                        .orderBy(DefaultConstant.ORDER_BY_ID_DESC)
                         .withBlobs(false)
                         .page(1)
                         .pageSize(1)

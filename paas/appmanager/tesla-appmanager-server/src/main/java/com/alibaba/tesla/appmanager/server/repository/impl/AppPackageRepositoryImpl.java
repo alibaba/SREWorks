@@ -1,7 +1,6 @@
 package com.alibaba.tesla.appmanager.server.repository.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.DateUtil;
@@ -60,12 +59,12 @@ public class AppPackageRepositoryImpl implements AppPackageRepository {
         condition.doPagination();
         if (condition.isWithBlobs()) {
             if (!CollectionUtils.isEmpty(tags)) {
-                return appPackageDOMapper.selectByTagsWithBLOBs(appId, tags, example);
+                return appPackageDOMapper.selectByTagsWithBLOBs(appId, tags, tags.size(), example);
             }
             return appPackageDOMapper.selectByExampleWithBLOBs(example);
         } else {
             if (!CollectionUtils.isEmpty(tags)) {
-                return appPackageDOMapper.selectByTags(appId, tags, example);
+                return appPackageDOMapper.selectByTags(appId, tags, tags.size(), example);
             }
             return appPackageDOMapper.selectByExample(example);
         }
@@ -121,11 +120,6 @@ public class AppPackageRepositoryImpl implements AppPackageRepository {
         }
         if (StringUtils.isNotBlank(condition.getPackageVersionLessThan())) {
             criteria.andPackageVersionLessThan(condition.getPackageVersionLessThan());
-        }
-        if (StringUtils.isNotBlank(condition.getOrderBy())) {
-            example.setOrderByClause(condition.getOrderBy());
-        } else {
-            example.setOrderByClause(DefaultConstant.ORDER_BY_ID_DESC);
         }
         return example;
     }

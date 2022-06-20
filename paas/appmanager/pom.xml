@@ -50,7 +50,7 @@
         <micrometer-registry-prometheus.version>1.8.3</micrometer-registry-prometheus.version>
 
         <!-- alibaba -->
-        <fastjson.version>1.2.79</fastjson.version>
+        <fastjson.version>1.2.83_noneautotype</fastjson.version>
         <okhttp.version>4.9.3</okhttp.version>
         <jsonpath.version>2.7.0</jsonpath.version>
         <jinjava.version>2.6.0</jinjava.version>
@@ -396,9 +396,9 @@
             </dependency>
 
             <dependency>
-                <groupId>org.gitlab</groupId>
-                <artifactId>java-gitlab-api</artifactId>
-                <version>1.2.8</version>
+                <groupId>org.gitlab4j</groupId>
+                <artifactId>gitlab4j-api</artifactId>
+                <version>5.0.1</version>
             </dependency>
 
             <!-- shedlock -->

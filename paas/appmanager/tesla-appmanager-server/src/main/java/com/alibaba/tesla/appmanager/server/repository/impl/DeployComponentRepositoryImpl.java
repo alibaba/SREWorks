@@ -98,11 +98,6 @@ public class DeployComponentRepositoryImpl implements DeployComponentRepository 
         if (condition.getDeployProcessId() != null && condition.getDeployProcessId() > 0) {
             criteria.andDeployProcessIdEqualTo(String.valueOf(condition.getDeployProcessId()));
         }
-        if (StringUtils.isNotBlank(condition.getOrderBy())) {
-            example.setOrderByClause(condition.getOrderBy());
-        } else {
-            example.setOrderByClause(DefaultConstant.ORDER_BY_ID_DESC);
-        }
         return example;
     }
 

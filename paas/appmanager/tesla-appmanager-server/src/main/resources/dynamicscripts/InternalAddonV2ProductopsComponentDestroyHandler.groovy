@@ -5,8 +5,11 @@ import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum
 import com.alibaba.tesla.appmanager.common.util.RequestUtil
 import com.alibaba.tesla.appmanager.domain.req.destroy.DestroyComponentInstanceReq
 import com.alibaba.tesla.appmanager.server.dynamicscript.handler.ComponentDestroyHandler
+import okhttp3.OkHttpClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.util.concurrent.TimeUnit
+
 /**
  * Internal Addon Productops V2 组件销毁 Handler
  *
@@ -35,11 +38,13 @@ class InternalAddonV2ProductopsComponentDestroyHandler implements ComponentDestr
         def namespace = request.getNamespaceId()
         def stageId = request.getStageId()
 
+
         log.info("frontend-service app {} start destroy", appId)
 
         def targetEndpoint = "prod-flycore-paas-action"
 
         def removeAppUrl = "http://" + targetEndpoint + "/frontend/apps/" + appId
+
         def ret = RequestUtil.delete(removeAppUrl, new JSONObject(), new JSONObject())
         log.info("frontend-service remove app {} {}", removeAppUrl, ret)
         def retJson = JSONObject.parseObject(ret)

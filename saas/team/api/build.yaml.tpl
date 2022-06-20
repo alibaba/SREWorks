@@ -8,8 +8,6 @@ options:
       build:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        args:
-          TAG: ack
         dockerfileTemplateArgs:
           JRE11_IMAGE: ${JRE11_IMAGE}
           MAVEN_IMAGE: ${MAVEN_IMAGE}
@@ -27,8 +25,6 @@ options:
       build:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-        args:
-          TAG: ack
         dockerfileTemplateArgs:
           MIGRATE_IMAGE: ${MIGRATE_IMAGE}
         dockerfileTemplate: Dockerfile-db-migration.tpl

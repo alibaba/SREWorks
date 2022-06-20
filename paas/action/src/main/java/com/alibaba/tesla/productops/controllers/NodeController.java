@@ -203,45 +203,6 @@ public class NodeController extends BaseController {
         productopsElementRepository.flush();
 
 
-
-//        param.getSourceNodeTypePath()
-
-
-//        JSONObject newNodeConfig = JSONObject.parseObject(sourceNode.getConfig());
-
-
-////        String nodeConfig = sourceNode.getConfig();
-//        JSONObject newNodeConfig = JSONObject.parseObject(sourceNode.getConfig());
-//        JSONObject targetNodeConfig = JSONObject.parseObject(node.getConfig());
-//        newNodeConfig.put("label", targetNodeConfig.getString("label"));
-//        newNodeConfig.put("url", targetNodeConfig.getString("url"));
-//        newNodeConfig.put("name", targetNodeConfig.getString("name"));
-//        node.setConfig(JSONObject.toJSONString(newNodeConfig));
-
-//        String[] targetNodeTypePaths = param.getTargetNodeTypePath().split(":");
-//        String targetServiceType = targetNodeTypePaths[targetNodeTypePaths.length - 1];
-//        String targetParentNodeTypePath = param.getTargetNodeTypePath().replace(":" + targetServiceType, "");
-//        if(targetParentNodeTypePath.endsWith(":")){
-//            targetParentNodeTypePath = targetParentNodeTypePath.substring(0, targetParentNodeTypePath.length() - 1);
-//        }
-//
-//        ProductopsNode node = ProductopsNode.builder()
-//                .gmtCreate(System.currentTimeMillis())
-//                .gmtModified(System.currentTimeMillis())
-//                .lastModifier(getUserEmployeeId())
-//                .stageId(stageId)
-//                .category(sourceNode.getCategory())
-//                .parentNodeTypePath(targetParentNodeTypePath)
-//                .serviceType(targetServiceType)
-//                .nodeTypePath(param.getTargetNodeTypePath())
-//                .version(sourceNode.getVersion())
-//                .isImport(0)
-//                .config(nodeConfig)
-//                .build();
-
-//        productopsNodeRepository.saveAndFlush(node);
-//        nodeAddUrlService.addUrl(node);
-
         return buildSucceedResult(node);
 
 
@@ -253,11 +214,14 @@ public class NodeController extends BaseController {
         log.debug("POST: " + JSONObject.toJSONString(param));
         String nodeTypePath = getNodeTypePath(param);
 
+        String appId = nodeTypePath.split("\\|")[0];
+
         ProductopsNode node = ProductopsNode.builder()
             .gmtCreate(System.currentTimeMillis())
             .gmtModified(System.currentTimeMillis())
             .lastModifier(getUserEmployeeId())
             .stageId(stageId)
+            .appId(appId)
             .category(param.getCategory())
             .parentNodeTypePath(param.getParentNodeTypePath())
             .serviceType(param.getServiceType())

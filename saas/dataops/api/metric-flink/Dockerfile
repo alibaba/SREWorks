@@ -33,6 +33,6 @@ RUN chmod +x /app/sbin/mc
 
 # kafka init
 RUN apk add gcc python3 python3-dev py3-pip musl-dev librdkafka-dev
-RUN pip3 install -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com confluent_kafka
+RUN pip3 install -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com confluent_kafka==1.8.2
 
 ENTRYPOINT ["/bin/sh", "/app/sbin/entrypoint.sh"]

@@ -256,6 +256,8 @@ public class AppPackageServiceImpl implements AppPackageService {
                 .stageId(req.getStageId())
                 .typeIds(req.getTypeIds())
                 .disableComponentFetching(req.isComponentPackageConfigurationFirst())
+                .isolateNamespaceId(req.getIsolateNamespaceId())
+                .isolateStageId(req.getIsolateStageId())
                 .build());
         DeployAppSchema schema = systemRes.getSchema();
 
@@ -500,7 +502,6 @@ public class AppPackageServiceImpl implements AppPackageService {
                 .appPackageId(appPackageId)
                 .deployStatus(DeployAppStateEnum.SUCCESS)
                 .appId(appPackageDO.getAppId())
-                .orderBy(DefaultConstant.ORDER_BY_GMT_CREATE_DESC)
                 .build(), true);
         ObjectUtil.checkNull(CheckNullObject.builder()
                 .actionName("releaseCustomAddonMeta")

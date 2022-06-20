@@ -40,7 +40,8 @@ spec:
     parameterValues:
     - name: "values"
       value:
-        image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/metricbeat
+        image: "${METRICBEAT_IMAGE}"
+        imageTag: "${METRICBEAT_IMAGE_TAG}"
         daemonset:
           annotations:
             name: metricbeat

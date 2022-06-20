@@ -96,9 +96,7 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
+    order by id desc
   </select>
   <select id="selectByExample" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.CustomAddonInstanceTaskDOExample" resultMap="BaseResultMap">
     select
@@ -111,9 +109,7 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
+    order by id desc
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
     select 
@@ -404,9 +400,7 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
+    order by id desc
   </select>
   <select id="selectByExampleWithRowbounds" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.CustomAddonInstanceTaskDOExample" resultMap="BaseResultMap">
     select
@@ -419,9 +413,7 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
+    order by id desc
   </select>
   <insert id="insertOrUpdateSelective" keyColumn="id" keyProperty="id" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.CustomAddonInstanceTaskDO" useGeneratedKeys="true">
     <!--

@@ -32,14 +32,16 @@ public class HelmMetaProviderImpl implements HelmMetaProvider {
         HelmMetaQueryCondition condition = HelmMetaQueryCondition.builder()
                 .id(request.getId())
                 .appId(request.getAppId())
+                .namespaceId(request.getNamespaceId())
+                .stageId(request.getStageId())
                 .name(request.getName()).build();
         Pagination<HelmMetaDO> helmMetaDOPagination = helmMetaService.list(condition);
         return Pagination.transform(helmMetaDOPagination, item -> helmMetaDtoConvert.to(item));
     }
 
     @Override
-    public HelmMetaDTO get(Long id) {
-        HelmMetaDO helmMetaDO = helmMetaService.get(id);
+    public HelmMetaDTO get(Long id, String namespaceId, String stageId) {
+        HelmMetaDO helmMetaDO = helmMetaService.get(id, namespaceId, stageId);
         if (Objects.isNull(helmMetaDO)) {
             return null;
         }
@@ -64,6 +66,8 @@ public class HelmMetaProviderImpl implements HelmMetaProvider {
         HelmMetaQueryCondition condition = HelmMetaQueryCondition.builder()
                 .id(helmMetaDO.getId())
                 .appId(helmMetaDO.getAppId())
+                .namespaceId(helmMetaDO.getNamespaceId())
+                .stageId(helmMetaDO.getStageId())
                 .name(helmMetaDO.getName()).build();
         if (Objects.nonNull(request.getPackageType())) {
             helmMetaDO.setPackageType(request.getPackageType().name());
@@ -73,16 +77,17 @@ public class HelmMetaProviderImpl implements HelmMetaProvider {
         }
 
         helmMetaService.update(helmMetaDO, condition);
-        HelmMetaDO updatedHelmMetaDO = helmMetaService.get(helmMetaDO.getId());
+        HelmMetaDO updatedHelmMetaDO = helmMetaService
+                .get(helmMetaDO.getId(), helmMetaDO.getNamespaceId(), helmMetaDO.getStageId());
         return helmMetaDtoConvert.to(updatedHelmMetaDO);
     }
 
     @Override
-    public boolean delete(Long id) {
+    public boolean delete(Long id, String namespaceId, String stageId) {
         if (Objects.isNull(id)) {
             return true;
         }
-        helmMetaService.delete(id);
+        helmMetaService.delete(id, namespaceId, stageId);
         return true;
     }
 }

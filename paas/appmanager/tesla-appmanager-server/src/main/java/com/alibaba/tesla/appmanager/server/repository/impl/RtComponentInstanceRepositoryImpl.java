@@ -176,9 +176,6 @@ public class RtComponentInstanceRepositoryImpl implements RtComponentInstanceRep
                 criteria.andTimesBetween(condition.getTimesGreaterThan(), condition.getTimesLessThan());
             }
         }
-        if (condition.getReverse() != null && condition.getReverse()) {
-            example.setOrderByClause(DefaultConstant.ORDER_BY_ID_DESC);
-        }
         return example;
     }
 

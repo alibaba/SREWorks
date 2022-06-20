@@ -12,7 +12,7 @@ public class K8sMicroServiceMetaDOExample {
     protected List<Criteria> oredCriteria;
 
     public K8sMicroServiceMetaDOExample() {
-        oredCriteria = new ArrayList<Criteria>();
+        oredCriteria = new ArrayList<>();
     }
 
     public void setOrderByClause(String orderByClause) {
@@ -69,7 +69,7 @@ public class K8sMicroServiceMetaDOExample {
 
         protected GeneratedCriteria() {
             super();
-            criteria = new ArrayList<Criterion>();
+            criteria = new ArrayList<>();
         }
 
         public boolean isValid() {
@@ -426,72 +426,72 @@ public class K8sMicroServiceMetaDOExample {
         }
 
         public Criteria andNameIsNull() {
-            addCriterion("name is null");
+            addCriterion("`name` is null");
             return (Criteria) this;
         }
 
         public Criteria andNameIsNotNull() {
-            addCriterion("name is not null");
+            addCriterion("`name` is not null");
             return (Criteria) this;
         }
 
         public Criteria andNameEqualTo(String value) {
-            addCriterion("name =", value, "name");
+            addCriterion("`name` =", value, "name");
             return (Criteria) this;
         }
 
         public Criteria andNameNotEqualTo(String value) {
-            addCriterion("name <>", value, "name");
+            addCriterion("`name` <>", value, "name");
             return (Criteria) this;
         }
 
         public Criteria andNameGreaterThan(String value) {
-            addCriterion("name >", value, "name");
+            addCriterion("`name` >", value, "name");
             return (Criteria) this;
         }
 
         public Criteria andNameGreaterThanOrEqualTo(String value) {
-            addCriterion("name >=", value, "name");
+            addCriterion("`name` >=", value, "name");
             return (Criteria) this;
         }
 
         public Criteria andNameLessThan(String value) {
-            addCriterion("name <", value, "name");
+            addCriterion("`name` <", value, "name");
             return (Criteria) this;
         }
 
         public Criteria andNameLessThanOrEqualTo(String value) {
-            addCriterion("name <=", value, "name");
+            addCriterion("`name` <=", value, "name");
             return (Criteria) this;
         }
 
         public Criteria andNameLike(String value) {
-            addCriterion("name like", value, "name");
+            addCriterion("`name` like", value, "name");
             return (Criteria) this;
         }
 
         public Criteria andNameNotLike(String value) {
-            addCriterion("name not like", value, "name");
+            addCriterion("`name` not like", value, "name");
             return (Criteria) this;
         }
 
         public Criteria andNameIn(List<String> values) {
-            addCriterion("name in", values, "name");
+            addCriterion("`name` in", values, "name");
             return (Criteria) this;
         }
 
         public Criteria andNameNotIn(List<String> values) {
-            addCriterion("name not in", values, "name");
+            addCriterion("`name` not in", values, "name");
             return (Criteria) this;
         }
 
         public Criteria andNameBetween(String value1, String value2) {
-            addCriterion("name between", value1, value2, "name");
+            addCriterion("`name` between", value1, value2, "name");
             return (Criteria) this;
         }
 
         public Criteria andNameNotBetween(String value1, String value2) {
-            addCriterion("name not between", value1, value2, "name");
+            addCriterion("`name` not between", value1, value2, "name");
             return (Criteria) this;
         }
 
@@ -635,28 +635,143 @@ public class K8sMicroServiceMetaDOExample {
             return (Criteria) this;
         }
 
-        public Criteria andAppIdLikeInsensitive(String value) {
-            addCriterion("upper(app_id) like", value.toUpperCase(), "appId");
+        public Criteria andNamespaceIdIsNull() {
+            addCriterion("namespace_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andMicroServiceIdLikeInsensitive(String value) {
-            addCriterion("upper(micro_service_id) like", value.toUpperCase(), "microServiceId");
+        public Criteria andNamespaceIdIsNotNull() {
+            addCriterion("namespace_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andNameLikeInsensitive(String value) {
-            addCriterion("upper(name) like", value.toUpperCase(), "name");
+        public Criteria andNamespaceIdEqualTo(String value) {
+            addCriterion("namespace_id =", value, "namespaceId");
             return (Criteria) this;
         }
 
-        public Criteria andDescriptionLikeInsensitive(String value) {
-            addCriterion("upper(description) like", value.toUpperCase(), "description");
+        public Criteria andNamespaceIdNotEqualTo(String value) {
+            addCriterion("namespace_id <>", value, "namespaceId");
             return (Criteria) this;
         }
 
-        public Criteria andComponentTypeLikeInsensitive(String value) {
-            addCriterion("upper(component_type) like", value.toUpperCase(), "componentType");
+        public Criteria andNamespaceIdGreaterThan(String value) {
+            addCriterion("namespace_id >", value, "namespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamespaceIdGreaterThanOrEqualTo(String value) {
+            addCriterion("namespace_id >=", value, "namespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamespaceIdLessThan(String value) {
+            addCriterion("namespace_id <", value, "namespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamespaceIdLessThanOrEqualTo(String value) {
+            addCriterion("namespace_id <=", value, "namespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamespaceIdLike(String value) {
+            addCriterion("namespace_id like", value, "namespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamespaceIdNotLike(String value) {
+            addCriterion("namespace_id not like", value, "namespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamespaceIdIn(List<String> values) {
+            addCriterion("namespace_id in", values, "namespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamespaceIdNotIn(List<String> values) {
+            addCriterion("namespace_id not in", values, "namespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamespaceIdBetween(String value1, String value2) {
+            addCriterion("namespace_id between", value1, value2, "namespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamespaceIdNotBetween(String value1, String value2) {
+            addCriterion("namespace_id not between", value1, value2, "namespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andStageIdIsNull() {
+            addCriterion("stage_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStageIdIsNotNull() {
+            addCriterion("stage_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStageIdEqualTo(String value) {
+            addCriterion("stage_id =", value, "stageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andStageIdNotEqualTo(String value) {
+            addCriterion("stage_id <>", value, "stageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andStageIdGreaterThan(String value) {
+            addCriterion("stage_id >", value, "stageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andStageIdGreaterThanOrEqualTo(String value) {
+            addCriterion("stage_id >=", value, "stageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andStageIdLessThan(String value) {
+            addCriterion("stage_id <", value, "stageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andStageIdLessThanOrEqualTo(String value) {
+            addCriterion("stage_id <=", value, "stageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andStageIdLike(String value) {
+            addCriterion("stage_id like", value, "stageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andStageIdNotLike(String value) {
+            addCriterion("stage_id not like", value, "stageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andStageIdIn(List<String> values) {
+            addCriterion("stage_id in", values, "stageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andStageIdNotIn(List<String> values) {
+            addCriterion("stage_id not in", values, "stageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andStageIdBetween(String value1, String value2) {
+            addCriterion("stage_id between", value1, value2, "stageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andStageIdNotBetween(String value1, String value2) {
+            addCriterion("stage_id not between", value1, value2, "stageId");
             return (Criteria) this;
         }
     }

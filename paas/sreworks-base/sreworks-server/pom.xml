@@ -6,7 +6,7 @@
     <parent>
         <artifactId>sreworks-base</artifactId>
         <groupId>io.sreworks</groupId>
-        <version>1.0.4</version>
+        <version>1.0.6</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -19,7 +19,7 @@
         <dependency>
             <artifactId>sreworks-domain</artifactId>
             <groupId>io.sreworks</groupId>
-            <version>1.0.4</version>
+            <version>1.0.6</version>
         </dependency>
 
         <!-- alibaba dependency -->
@@ -65,10 +65,14 @@
             <artifactId>tesla-webmvc-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.gitlab</groupId>
-            <artifactId>java-gitlab-api</artifactId>
-            <version>1.2.8</version>
+            <groupId>org.gitlab4j</groupId>
+            <artifactId>gitlab4j-api</artifactId>
+            <version>5.0.1</version>
         </dependency>
-
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+            <version>1.1.1</version>
+        </dependency>
     </dependencies>
 </project>

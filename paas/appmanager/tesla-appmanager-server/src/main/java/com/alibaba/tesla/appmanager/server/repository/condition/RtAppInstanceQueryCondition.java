@@ -38,6 +38,4 @@ public class RtAppInstanceQueryCondition extends BaseCondition {
     private String optionKey;
 
     private String optionValue;
-
-    private Boolean reverse;
 }

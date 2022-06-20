@@ -68,7 +68,7 @@ class CustomSetting extends React.Component {
         let formChildrens = this.itemDef.map(item => FormElementFactory.createFormItem(item, form, customFormItemLayout));
         return (
             <Row>
-                <Col span={16}>
+                <Col span={22}>
                     {
                         [
 

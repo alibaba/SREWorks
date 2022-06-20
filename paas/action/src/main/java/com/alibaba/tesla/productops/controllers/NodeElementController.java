@@ -14,6 +14,7 @@ import com.alibaba.tesla.productops.repository.ProductopsElementRepository;
 import com.alibaba.tesla.productops.repository.ProductopsNodeElementRepository;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -84,6 +85,7 @@ public class NodeElementController extends BaseController {
                 .gmtCreate(System.currentTimeMillis())
                 .build();
         }
+        String appId = param.getNodeTypePath().split("\\|")[0];
 
         nodeElement.setGmtModified(System.currentTimeMillis());
         nodeElement.setLastModifier(getUserEmployeeId());
@@ -91,7 +93,7 @@ public class NodeElementController extends BaseController {
         nodeElement.setElementId(param.getElementId());
         nodeElement.setNodeName(param.getName());
         nodeElement.setType(param.getType());
-        nodeElement.setAppId(param.getAppId());
+        nodeElement.setAppId(appId);
         nodeElement.setTags(param.getTags());
         nodeElement.setNodeOrder(param.getOrder());
         nodeElement.setConfig(JSONObject.toJSONString(param.getConfig()));

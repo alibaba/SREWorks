@@ -46,6 +46,9 @@ public class ProductopsTab {
     @Column
     private String stageId;
 
+    @Column
+    private String appId;
+
     @Column(length = 1024)
     private String nodeTypePath;
 

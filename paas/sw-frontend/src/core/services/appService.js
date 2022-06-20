@@ -41,16 +41,13 @@ class AppService {
         let app=getProductName();
         let urlParams=util.getUrlParams();
         let {namespaceId,stageId}=urlParams;
-        console.log(stageId,urlParams,'使用了默认env1')
         if(!namespaceId){
             let cacheBizId=cacheRepository.getAppBizId(app);
-            console.log(cacheBizId,'使用了默认env3')
             if(cacheBizId){
                 cacheBizId=cacheBizId.split(",");
                 namespaceId=cacheBizId[1];
                 stageId=cacheBizId[2];
             }else{
-                console.log('使用了默认env2')
                 namespaceId=properties.defaultNamespace;
                 stageId=properties.defaultStageId;
             }
@@ -87,7 +84,7 @@ class AppService {
     getAppInitData(){
         let productName=getProductName(),settingReq=[];
         let params = {nodeId:`${productName}|app|I`,level:-1,cache:false};
-        params['stageId'] = cacheRepository.getBizEnv(productName)==='dev'? 'dev' : 'prod';
+        params['stageId'] = cacheRepository.getBizEnv(productName)==='prod'? 'prod' : 'dev';
         settingReq.push(httpClient.get("gateway/v2/foundation/appmanager/apps/"+productName));
         settingReq.push(Promise.resolve([]));
         settingReq.push(httpClient.get(

@@ -233,6 +233,10 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
         String buildCommand = String.format(
                 "cd %s; %s %s %s build -t %s --pull --no-cache %s -f %s .",
                 localDir, sudoCommand, dockerBin, dockerTarget, imageName, buildArgs, dockerfile.toString());
+        // for internal use
+        if ("Internal".equals(System.getenv("CLOUD_TYPE"))) {
+            buildCommand += " --secret id=abm-build-secret,src=/etc/abm-build-secret";
+        }
         logContent.append(String.format("run command: %s\n", buildCommand));
         logContent.append(CommandUtil.runLocalCommand(buildCommand));
 

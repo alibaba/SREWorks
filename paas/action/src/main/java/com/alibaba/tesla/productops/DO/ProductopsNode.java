@@ -44,6 +44,9 @@ public class ProductopsNode {
     @Column
     private String stageId;
 
+    @Column
+    private String appId;
+
     @Column(length = 1024)
     private String category;
 

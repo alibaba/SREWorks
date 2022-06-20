@@ -24,7 +24,7 @@ export default {
         "screenshots": [],
         "updated": "",
         "version": "",
-        "docs": "<a target='_blank' href=''>组件示例地址</a>",
+        "docs": "<a target='_blank' href='#/help/book/documents/ho617k.html#82网格卡片'>组件配置说明</a>",
     },
     "state": "",
     "latestVersion": "1.0",

@@ -1,7 +1,6 @@
 package com.alibaba.tesla.appmanager.server.repository.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.DateUtil;
@@ -126,9 +125,6 @@ public class RtAppInstanceRepositoryImpl implements RtAppInstanceRepository {
         }
         if (condition.getUpgrade() != null) {
             criteria.andUpgradeEqualTo(condition.getUpgrade());
-        }
-        if (condition.getReverse() != null && condition.getReverse()) {
-            example.setOrderByClause(DefaultConstant.ORDER_BY_ID_DESC);
         }
         return example;
     }

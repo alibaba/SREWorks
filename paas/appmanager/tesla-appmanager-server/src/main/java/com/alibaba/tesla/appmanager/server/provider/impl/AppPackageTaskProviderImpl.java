@@ -83,6 +83,8 @@ public class AppPackageTaskProviderImpl implements AppPackageTaskProvider {
     @Override
     public AppPackageTaskCreateRes create(AppPackageTaskCreateReq request, String operator) {
         String appId = request.getAppId();
+        String namespaceId = request.getNamespaceId();
+        String stageId = request.getStageId();
         String packageVersion = request.getVersion();
         packageVersion = checkAppPackageVersion(appId, packageVersion);
 
@@ -130,6 +132,8 @@ public class AppPackageTaskProviderImpl implements AppPackageTaskProvider {
                         .typeId(typeId)
                         .envId("")
                         .enabled(true)
+                        .isolateNamespaceId(namespaceId)
+                        .isolateStageId(stageId)
                         .build();
                 DeployConfigDO deployConfig = deployConfigService.getWithInherit(queryCondition);
                 if (deployConfig != null) {
@@ -142,10 +146,13 @@ public class AppPackageTaskProviderImpl implements AppPackageTaskProvider {
 
             try {
                 publisher.publishEvent(new ComponentPackageTaskStartEvent(
-                        this, appPackageTaskId, 0L, appId, operator, component, PackageTaskEnum.CREATE));
+                        this, appPackageTaskId, 0L, appId, namespaceId, stageId,
+                        operator, component, PackageTaskEnum.CREATE));
             } catch (Exception e) {
                 ComponentPackageTaskDO taskDO = ComponentPackageTaskDO.builder()
                         .appId(appId)
+                        .namespaceId(namespaceId)
+                        .stageId(stageId)
                         .componentType(componentType.toString())
                         .componentName(componentName)
                         .packageVersion(component.getVersion())
@@ -174,7 +181,6 @@ public class AppPackageTaskProviderImpl implements AppPackageTaskProvider {
                 .appId(request.getAppId())
                 .id(request.getAppPackageTaskId())
                 .withBlobs(request.isWithBlobs())
-                .orderBy(DefaultConstant.ORDER_BY_ID_DESC)
                 .build();
 
         if (!request.isWithBlobs() && withTags) {
@@ -194,7 +200,6 @@ public class AppPackageTaskProviderImpl implements AppPackageTaskProvider {
                 .withBlobs(request.isWithBlobs())
                 .page(DefaultConstant.DEFAULT_PAGE_NUMBER)
                 .pageSize(DefaultConstant.DEFAULT_PAGE_SIZE)
-                .orderBy(DefaultConstant.ORDER_BY_ID_DESC)
                 .build();
         return appPackageTaskDtoConvert.to(appPackageTaskService.get(condition));
     }
@@ -224,7 +229,6 @@ public class AppPackageTaskProviderImpl implements AppPackageTaskProvider {
     private String checkAppPackageVersion(String appId, String newVersion) {
         List<AppPackageTaskDO> tasks = appPackageTaskRepository.selectByCondition(AppPackageTaskQueryCondition.builder()
                 .appId(appId)
-                .orderBy(DefaultConstant.ORDER_BY_GMT_CREATE_DESC)
                 .pageSize(1)
                 .withBlobs(false)
                 .build());

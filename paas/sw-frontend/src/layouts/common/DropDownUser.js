@@ -24,6 +24,9 @@ const SubMenu = Menu.SubMenu;
 const Item = Menu.Item;
 const MenuItemGroup = Menu.ItemGroup;
 let envs = [{ label: "开发", value: "dev" }, { label: "生产", value: "prod" }];
+const colors = ["#f44336", "#e91e63", "#9c27b0", "#673ab7" , "#3f51b5", "#2196f3",
+"#03a9f4","#00bcd4","#009688","#4caf50","#8bc34a","#cddc39",
+"#ffeb3b","#ffc107","#ff6808","#ff5722","#795548","#607d8b"]
 @connect(({ global, node }) => ({
   currentProduct: global.currentProduct,
   currentUser: global.currentUser,
@@ -183,7 +186,7 @@ export default class DropDownUser extends React.Component {
             {/* <Tooltip title="点击切换">
           <div onClick={()=> this.setPrimaryColor()} style={{width:45,height:25,backgroundColor:'var(--PrimaryColor)'}}></div>
           </Tooltip> */}
-            <CirclePicker color={selectedColor} onChange={this.setPrimaryColor} />
+            <CirclePicker colors={colors} color={selectedColor} onChange={this.setPrimaryColor} />
             {/* <Button onClick={()=> this.setPrimaryColor()}>主色设置</Button> */}
           </Menu.Item>
         </MenuItemGroup>

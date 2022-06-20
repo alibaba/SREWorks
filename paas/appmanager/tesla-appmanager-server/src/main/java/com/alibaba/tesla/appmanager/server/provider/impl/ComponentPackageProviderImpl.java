@@ -3,7 +3,6 @@ package com.alibaba.tesla.appmanager.server.provider.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.ComponentPackageProvider;
 import com.alibaba.tesla.appmanager.autoconfig.SystemProperties;
-import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.ComponentPackageTaskStateEnum;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.ClassUtil;
@@ -98,13 +97,16 @@ public class ComponentPackageProviderImpl implements ComponentPackageProvider {
      */
     @Override
     public ComponentPackageCreateRes createTask(ComponentPackageTaskCreateReq request, String operator) {
+        String appId = request.getAppId();
+        String namespaceId = request.getNamespaceId();
+        String stageId = request.getStageId();
+
         // 对当前版本合法性进行检测
         String newVersion = request.getVersion();
         ComponentPackageQueryCondition condition = ComponentPackageQueryCondition.builder()
-                .appId(request.getAppId())
+                .appId(appId)
                 .componentType(request.getComponentType())
                 .componentName(request.getComponentName())
-                .orderBy(DefaultConstant.ORDER_BY_GMT_CREATE_DESC)
                 .withBlobs(false)
                 .build();
         List<ComponentPackageDO> latestComponentPackage = componentPackageRepository.selectByCondition(condition);
@@ -117,7 +119,9 @@ public class ComponentPackageProviderImpl implements ComponentPackageProvider {
 
         // 插入实际任务
         ComponentPackageTaskDO taskDO = ComponentPackageTaskDO.builder()
-                .appId(request.getAppId())
+                .appId(appId)
+                .namespaceId(namespaceId)
+                .stageId(stageId)
                 .componentType(request.getComponentType())
                 .componentName(request.getComponentName())
                 .packageVersion(fullVersion)
@@ -206,7 +210,6 @@ public class ComponentPackageProviderImpl implements ComponentPackageProvider {
                 .componentType(componentType)
                 .componentName(componentName)
                 .pagination(false)
-                .orderBy(DefaultConstant.ORDER_BY_ID_DESC)
                 .build();
         Pagination<ComponentPackageDTO> componentPackageList = list(condition, operator);
 

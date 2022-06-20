@@ -32,7 +32,7 @@ class WidgetSetting extends React.Component {
         super(props);
         let { widgetModel, config } = props;
         let paramsDef = [], { title, visibleExp = '', dependParams, backgroundColor = "#ffffff", headerColor = "#ffffff", cardBorder = true,
-            refreshInterval, style, foldEnable, hiddenEnable, hasWrapper = Constants.CARD_WRAPPER_DEFAULT, wrapper = Constants.CARD_WRAPPER_DEFAULT } = config;
+            refreshInterval, style = {}, foldEnable, hiddenEnable, hasWrapper = Constants.CARD_WRAPPER_DEFAULT, wrapper = Constants.CARD_WRAPPER_DEFAULT } = config;
         paramsDef.push({ type: FormElementType.INPUT, name: 'title', initValue: title, required: false, label: "组件标题", tooltip: "组件显示的卡片标题" });
         paramsDef.push({
             type: FormElementType.SELECT_TAG, name: 'dependParams', initValue: dependParams, required: false, label: "组件渲染",
@@ -58,7 +58,10 @@ class WidgetSetting extends React.Component {
             type: FormElementType.MODAL_ACE, name: 'style', initValue: style, required: false, label: "卡片样式Style",
             height: "calc(50vh - 150px)",
             showDiff: false,
-            tooltip: "填写 React中的css style定义样式对象或标准的css style对象"
+            tooltip: "填写 React中的css style定义样式对象或标准的css style对象",
+            defModel: {
+                mode: 'json'
+            },
         }
         );
         paramsDef.push({

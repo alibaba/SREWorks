@@ -14,11 +14,11 @@ public interface PackService {
 
     void createComponentPackageTask(ComponentPackageTaskMessage componentPackageTaskMessage);
 
-    JSONObject buildOptions4InternalAddon(String appId, String addonId);
+    JSONObject buildOptions4InternalAddon(String appId, String namespaceId, String stageId, String addonId);
 
-    JSONObject buildOptions4ResourceAddon(String appId, String addonId, String addonName);
+    JSONObject buildOptions4ResourceAddon(String appId, String namespaceId, String stageId, String addonId, String addonName);
 
-    JSONObject buildOptions4K8sMicroService(String appId, String microServiceId, String branch);
+    JSONObject buildOptions4K8sMicroService(String appId, String namespaceId, String stageId, String microServiceId, String branch);
 
     JSONObject buildOptions4Helm(String appId, String helmPackageId, String branch);
 }

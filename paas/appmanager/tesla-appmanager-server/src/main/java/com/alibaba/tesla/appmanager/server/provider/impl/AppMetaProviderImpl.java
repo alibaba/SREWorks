@@ -9,6 +9,7 @@ import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.AppDeployEnvironmentDTO;
 import com.alibaba.tesla.appmanager.domain.dto.AppMetaDTO;
+import com.alibaba.tesla.appmanager.domain.req.AppMetaDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaUpdateReq;
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.condition.K8sMicroserviceMetaQueryCondition;
@@ -17,6 +18,7 @@ import com.alibaba.tesla.appmanager.server.assembly.AppMetaDtoConvert;
 import com.alibaba.tesla.appmanager.server.repository.condition.*;
 import com.alibaba.tesla.appmanager.server.repository.domain.AppAddonDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.AppMetaDO;
+import com.alibaba.tesla.appmanager.server.repository.domain.RtAppInstanceDO;
 import com.alibaba.tesla.appmanager.server.service.appaddon.AppAddonService;
 import com.alibaba.tesla.appmanager.server.service.appmeta.AppMetaService;
 import com.alibaba.tesla.appmanager.server.service.appoption.AppOptionService;
@@ -32,7 +34,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
@@ -129,7 +130,8 @@ public class AppMetaProviderImpl implements AppMetaProvider {
      * 通过应用 ID 删除应用元信息
      */
     @Override
-    public boolean delete(String appId) {
+    public boolean delete(AppMetaDeleteReq request) {
+        String appId = request.getAppId();
         if (StringUtils.isEmpty(appId)) {
             return true;
         }
@@ -158,6 +160,21 @@ public class AppMetaProviderImpl implements AppMetaProvider {
         deleteAppPackage(appId);
         log.info("action=appMetaProvider|deleteAppPackage SUCCESS|appId={}", appId);
 
+        if (request.getRemoveAllInstances() != null && request.getRemoveAllInstances()) {
+            log.info("action=appMetaProvider|prepare to remove all app instances|appId={}", appId);
+            Pagination<RtAppInstanceDO> records = rtAppInstanceService.list(RtAppInstanceQueryCondition.builder()
+                    .appId(appId)
+                    .build());
+            if (!records.isEmpty()) {
+                records.getItems().forEach(item -> {
+                    rtAppInstanceService.delete(item.getAppInstanceId());
+                    log.info("action=appMetaProvider|deleteAppInstance SUCCESS|appId={}|appInstanceId={}",
+                            appId, item.getAppInstanceId());
+                });
+            }
+        }
+        log.info("action=appMetaProvider|deleteAppInstance SUCCESS|all succeed|appId={}", appId);
+
         return true;
     }
 
@@ -179,7 +196,9 @@ public class AppMetaProviderImpl implements AppMetaProvider {
     }
 
     private void deleteK8sMicroServiceMeta(String appId) {
-        K8sMicroserviceMetaQueryCondition condition = K8sMicroserviceMetaQueryCondition.builder().appId(appId).build();
+        K8sMicroserviceMetaQueryCondition condition = K8sMicroserviceMetaQueryCondition.builder()
+                .appId(appId)
+                .build();
         k8sMicroserviceMetaService.delete(condition);
     }
 

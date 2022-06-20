@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 JOB_ROOT=$(cd `dirname $0`; pwd)
 

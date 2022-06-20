@@ -78,11 +78,6 @@ public class AppPackageTaskRepositoryImpl implements AppPackageTaskRepository {
             criteria.andTaskStatusIn(
                     condition.getTaskStatusList().stream().map(Enum::toString).collect(Collectors.toList()));
         }
-
-        if (StringUtils.isNotEmpty(condition.getOrderBy())) {
-            example.setOrderByClause(condition.getOrderBy());
-        }
-
         return example;
     }
 

@@ -181,7 +181,6 @@ public class AppPackageTaskProviderImpl implements AppPackageTaskProvider {
                 .appId(request.getAppId())
                 .id(request.getAppPackageTaskId())
                 .withBlobs(request.isWithBlobs())
-                .orderBy(DefaultConstant.ORDER_BY_ID_DESC)
                 .build();
 
         if (!request.isWithBlobs() && withTags) {
@@ -201,7 +200,6 @@ public class AppPackageTaskProviderImpl implements AppPackageTaskProvider {
                 .withBlobs(request.isWithBlobs())
                 .page(DefaultConstant.DEFAULT_PAGE_NUMBER)
                 .pageSize(DefaultConstant.DEFAULT_PAGE_SIZE)
-                .orderBy(DefaultConstant.ORDER_BY_ID_DESC)
                 .build();
         return appPackageTaskDtoConvert.to(appPackageTaskService.get(condition));
     }
@@ -231,7 +229,6 @@ public class AppPackageTaskProviderImpl implements AppPackageTaskProvider {
     private String checkAppPackageVersion(String appId, String newVersion) {
         List<AppPackageTaskDO> tasks = appPackageTaskRepository.selectByCondition(AppPackageTaskQueryCondition.builder()
                 .appId(appId)
-                .orderBy(DefaultConstant.ORDER_BY_GMT_CREATE_DESC)
                 .pageSize(1)
                 .withBlobs(false)
                 .build());

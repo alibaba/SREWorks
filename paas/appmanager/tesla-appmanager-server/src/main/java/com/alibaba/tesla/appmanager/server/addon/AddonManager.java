@@ -66,7 +66,6 @@ public class AddonManager implements ApplicationListener<AddonLoadedEvent> {
         AddonMetaQueryCondition addonMetaQueryCondition = AddonMetaQueryCondition.builder()
                 .addonId(addonId)
                 .addonVersion(addonVersion)
-                .orderByClause(DefaultConstant.ORDER_BY_GMT_CREATE_DESC)
                 .build();
         Page<CustomAddonMetaDO> metaDOPage = customAddonMetaRepository.selectByCondition(
                 addonMetaQueryCondition);

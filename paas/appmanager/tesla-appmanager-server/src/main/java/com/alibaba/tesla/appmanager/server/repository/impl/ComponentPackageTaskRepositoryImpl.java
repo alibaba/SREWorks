@@ -107,7 +107,6 @@ public class ComponentPackageTaskRepositoryImpl implements ComponentPackageTaskR
         if (StringUtils.isNotBlank(condition.getTaskStatus())) {
             criteria.andTaskStatusEqualTo(condition.getTaskStatus());
         }
-        example.setOrderByClause(DefaultConstant.ORDER_BY_ID_DESC);
         return example;
     }
 

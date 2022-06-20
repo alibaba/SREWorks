@@ -23,7 +23,7 @@
         <okhttp.version>3.14.9</okhttp.version>
         <fastjson.version>1.2.68</fastjson.version>
         <commons-lang3.version>3.10</commons-lang3.version>
-        <slf4j.version>2.11.0</slf4j.version>
+        <slf4j.version>1.7.36</slf4j.version>
     </properties>
 
     <dependencies>
@@ -43,8 +43,8 @@
             <version>${commons-lang3.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
     </dependencies>

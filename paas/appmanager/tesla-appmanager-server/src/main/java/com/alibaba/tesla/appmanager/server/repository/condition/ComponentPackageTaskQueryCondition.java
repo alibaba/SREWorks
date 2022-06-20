@@ -73,9 +73,4 @@ public class ComponentPackageTaskQueryCondition extends BaseCondition {
      * 任务状态
      */
     private String taskStatus;
-
-    /**
-     * 排序方式
-     */
-    private String orderBy;
 }

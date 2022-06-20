@@ -19,7 +19,7 @@
 <a name="cUaZS"></a>
 ### 拉取 SREWorks 项目源码
 ```shell
-git clone http://github.com/alibaba/sreworks.git -b v1.1 sreworks
+git clone http://github.com/alibaba/sreworks.git -b v1.2 sreworks
 cd sreworks
 SW_ROOT=$(pwd)
 ```
@@ -37,7 +37,7 @@ SW_ROOT=$(pwd)
 ```shell
 SW_REPO="your-registry.***.com/sreworks"
 docker login --username=sre****s your-registry.***.com
-./build.sh --target all --push $SW_REPO --tag v1.1
+./build.sh --target all --push $SW_REPO --tag v1.2
 ```
 
 <a name="jiRmc"></a>
@@ -49,7 +49,7 @@ helm install sreworks $SW_ROOT/chart/sreworks-chart \
     --create-namespace --namespace sreworks \
     --set appmanager.home.url="https://your-website.***.com" \
     --set build.enable=true \
-    --set global.images.tag="v1.1" \
+    --set global.images.tag="v1.2" \
     --set global.images.registry=$SW_REPO
 
 ```

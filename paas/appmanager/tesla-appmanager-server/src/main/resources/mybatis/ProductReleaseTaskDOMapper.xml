@@ -91,9 +91,7 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
+    order by id desc
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--@mbg.generated-->
@@ -311,12 +309,10 @@
       #{tag}
     </foreach>
     GROUP BY task_id
-    HAVING COUNT(task_id) = ${tags.size}
+    HAVING COUNT(task_id) = #{tagSize}
     )
     AND
     <include refid="Example_Where_Clause" />
-    <if test="example.orderByClause != null">
-      order by ${example.orderByClause}
-    </if>
+    order by id desc
   </select>
 </mapper>

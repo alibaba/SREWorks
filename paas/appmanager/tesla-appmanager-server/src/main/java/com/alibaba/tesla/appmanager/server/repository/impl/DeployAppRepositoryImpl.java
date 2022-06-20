@@ -103,11 +103,6 @@ public class DeployAppRepositoryImpl implements DeployAppRepository {
         if (CollectionUtils.isNotEmpty(condition.getStageIdBlackList())) {
             criteria.andStageIdNotIn(condition.getStageIdBlackList());
         }
-        if (StringUtils.isNotBlank(condition.getOrderBy())) {
-            example.setOrderByClause(condition.getOrderBy());
-        } else {
-            example.setOrderByClause(DefaultConstant.ORDER_BY_ID_DESC);
-        }
         return example;
     }
 

@@ -106,11 +106,6 @@ public class ComponentPackageRepositoryImpl implements ComponentPackageRepositor
         if (StringUtils.isNotBlank(condition.getPackageVersion())) {
             criteria.andPackageVersionEqualTo(condition.getPackageVersion());
         }
-        if (StringUtils.isNotBlank(condition.getOrderBy())) {
-            example.setOrderByClause(condition.getOrderBy());
-        } else {
-            example.setOrderByClause(DefaultConstant.ORDER_BY_ID_DESC);
-        }
         return example;
     }
 

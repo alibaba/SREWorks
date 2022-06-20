@@ -40,8 +40,8 @@ spec:
     parameterValues:
     - name: "values"
       value:
-        image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/filebeat
-
+        image: "${FILEBEAT_IMAGE}"
+        imageTag: "${FILEBEAT_IMAGE_TAG}"
         podAnnotations:
           name: filebeat
         labels: 

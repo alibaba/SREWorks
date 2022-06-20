@@ -14,6 +14,7 @@ COPY --from=build ${BUILD_JAR} /app/${JAR_NAME}
 COPY ./sbin/ /app/sbin/
 COPY ./${START_MODULE}/src/main/resources/application.properties /app/application.properties
 
+RUN sed -i 's/dl-cdn.alpinelinux.org/{{ APK_REPO_DOMAIN }}/g' /etc/apk/repositories
 RUN apk add --update --no-cache gettext
 RUN chmod +x /app/sbin/run.sh
 ENTRYPOINT ["/app/sbin/run.sh"]

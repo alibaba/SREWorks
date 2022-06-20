@@ -55,6 +55,9 @@ public class TabController extends BaseController {
                 .gmtCreate(System.currentTimeMillis())
                 .build();
         }
+
+        String appId = param.getNodeTypePath().split("\\|")[0];
+
         tab.setTabId(param.getId());
         tab.setGmtModified(System.currentTimeMillis());
         tab.setLastModifier(getUserEmployeeId());
@@ -62,6 +65,7 @@ public class TabController extends BaseController {
         tab.setElements(JSONObject.toJSONString(param.getElements()));
         tab.setNodeTypePath(param.getNodeTypePath());
         tab.setLabel(param.getLabel());
+        tab.setAppId(appId);
         tab.setName(param.getName());
         tab.setIsImport(0);
         System.out.println(JSONObject.toJSONString(tab, true));

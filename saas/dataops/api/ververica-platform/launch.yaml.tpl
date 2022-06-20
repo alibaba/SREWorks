@@ -40,7 +40,7 @@ spec:
       value:
         acceptCommunityEditionLicense: true
         vvp:
-          registry: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror
+          registry: ${VVP_REGISTRY}
           persistence:
             type: local
         
@@ -66,7 +66,7 @@ spec:
                     taskmanager.memory.managed.fraction: 0.0 # no managed memory needed for filesystem statebackend
                     high-availability: vvp-kubernetes
                     metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
-                    execution.checkpointing.interval: 10s
+                 execution.checkpointing.interval: 10s
                     execution.checkpointing.externalized-checkpoint-retention: RETAIN_ON_CANCELLATION
         
           sqlService:
@@ -80,6 +80,8 @@ spec:
             secretAccessKey: ${MINIO_SECRET_KEY}
 
         appmanager:
+          repository: "${VVP_APPMANAGER_REPO}"
+          tag: "${VVP_APPMANAGER_IMAGE_TAG}"
           resources:
             limits:
               cpu: 500m
@@ -89,6 +91,8 @@ spec:
               memory: 512Mi
 
         gateway:
+          repository: "${VVP_GATEWAY_REPO}"
+          tag: "${VVP_GATEWAY_IMAGE_TAG}" 
           resources:
             limits:
               cpu: 500m
@@ -97,6 +101,10 @@ spec:
               cpu: 250m
               memory: 1Gi
 
+        ui:
+          repository: "${VVP_UI_REPO}"
+          tag: "${VVP_UI_IMAGE_TAG}"
+ 
         persistentVolume:
           enabled: true
           accessModes:

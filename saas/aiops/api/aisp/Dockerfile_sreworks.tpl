@@ -1,10 +1,9 @@
 FROM {{ MAVEN_IMAGE }} AS build
 COPY . /app
+RUN mkdir /root/.m2/ && curl {{ MAVEN_SETTINGS_XML }} -o /root/.m2/settings.xml
 RUN cd /app && mvn -f pom.xml -Dmaven.test.skip=true clean package
-RUN apt-get install -y dos2unix
-RUN dos2unix /app/sbin/run.sh
 
-FROM {{ JRE8_IMAGE }} AS release
+FROM {{ JRE11_IMAGE }} AS release
 ARG START_MODULE=tdata-aisp-start-private
 ARG JAR_NAME=tdata-aisp.jar
 ARG BUILD_JAR=/app/${START_MODULE}/target/tdata-aisp.jar

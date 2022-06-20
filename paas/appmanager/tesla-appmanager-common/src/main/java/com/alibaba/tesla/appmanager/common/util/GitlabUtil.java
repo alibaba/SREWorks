@@ -3,39 +3,40 @@ package com.alibaba.tesla.appmanager.common.util;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
-import org.gitlab.api.GitlabAPI;
-import org.gitlab.api.models.GitlabGroup;
-import org.gitlab.api.models.GitlabProject;
+import org.gitlab4j.api.GitLabApi;
+import org.gitlab4j.api.GitLabApiException;
+import org.gitlab4j.api.models.Group;
+import org.gitlab4j.api.models.Project;
 
-import java.io.IOException;
 
 @Slf4j
 public class GitlabUtil {
-    public static GitlabProject createProject(String repoDomain, String repoGroup, String appName, String token) throws AppException {
+    public static Project createProject(String repoDomain, String repoGroup, String appName, String token) throws AppException {
         log.info(">>>gitlabUtil|createProject|enter|repoDomain={}, repoGroup={}, appName={}, token={}", repoDomain,
                 repoGroup, appName, token);
-        GitlabAPI api;
+        GitLabApi api;
         try {
-            api = GitlabAPI.connect(repoDomain, token);
+            api = new GitLabApi(repoDomain, token);
+
         } catch (Exception e) {
             throw new AppException(AppErrorCode.GIT_ERROR, e.getMessage());
         }
 
-        GitlabGroup group;
+        Group group;
         try {
-            group = api.getGroup(repoGroup);
-        } catch (IOException e) {
+            group = api.getGroupApi().getGroup(repoGroup);
+        } catch (GitLabApiException e) {
             log.info(">>>gitlabUtil|getGroup|Err={}", e.getMessage(), e);
             throw new AppException(AppErrorCode.GIT_ERROR, e.getMessage());
         }
 
-        GitlabProject project;
+        Project project;
         try {
-            project = api.getProject(repoGroup, appName);
-        } catch (IOException e) {
+            project = api.getProjectApi().getProject(repoGroup, appName);
+        } catch (GitLabApiException e) {
             try {
-                project = api.createProjectForGroup(appName, group);
-            } catch (IOException e1) {
+                project = api.getProjectApi().createProject(group.getId(), appName);
+            } catch (GitLabApiException e1) {
                 log.info(">>>gitlabUtil|createProjectForGroup|Err={}", e.getMessage(), e);
                 throw new AppException(AppErrorCode.GIT_ERROR, e1.getMessage());
             }

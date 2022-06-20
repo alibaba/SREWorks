@@ -37,4 +37,9 @@ public interface ProductopsNodeElementRepository
 
     List<ProductopsNodeElement> findAllByNodeTypePathLikeAndStageId(String s, String stageId);
 
+    @Modifying
+    @Transactional(rollbackOn = Exception.class)
+    Long deleteByAppId(String appId);
+
+
 }

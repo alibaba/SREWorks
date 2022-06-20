@@ -36,6 +36,7 @@ public interface ProductReleaseTaskDOMapper {
             @Param("releaseId") String releaseId,
             @Param("taskId") String taskId,
             @Param("tags") List<String> tags,
+            @Param("tagSize") Integer tagSize,
             @Param("example") ProductReleaseTaskDOExample example
     );
 }

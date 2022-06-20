@@ -61,4 +61,14 @@
 {{- (split "/" ((split "://" .Values.global.artifacts.pythonPip)._1))._0 | quote -}}
 {{- end -}}
 
+{{- define "images.progressCheck" -}}
+{{- if .Values.images.progressCheck -}}
+{{- .Values.images.progressCheck -}}
+{{- else -}}
+{{- printf "%s/%s:%s" .Values.global.images.registry "sw-progress-check" .Values.global.images.tag -}}
+{{- end -}}
+{{- end -}}
+
+
+
 

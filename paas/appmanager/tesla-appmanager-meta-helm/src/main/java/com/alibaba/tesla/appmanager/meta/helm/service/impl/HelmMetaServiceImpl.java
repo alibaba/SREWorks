@@ -18,7 +18,7 @@ import com.alibaba.tesla.appmanager.meta.helm.repository.HelmMetaRepository;
 import com.alibaba.tesla.appmanager.meta.helm.repository.condition.HelmMetaQueryCondition;
 import com.alibaba.tesla.appmanager.meta.helm.repository.domain.HelmMetaDO;
 import com.alibaba.tesla.appmanager.meta.helm.service.HelmMetaService;
-import groovy.util.logging.Slf4j;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

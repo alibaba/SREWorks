@@ -81,9 +81,9 @@ spec:
             enabled: false
 
           image:
-            registry: sreworks-registry.cn-beijing.cr.aliyuncs.com
-            repository: mirror/mysql
-            tag: 8.0.22-debian-10-r44
+            registry: "${MYSQL_REGISTRY}"
+            repository: "${MYSQL_REPO}"
+            tag: "${MYSQL_IMAGE_TAG}"
 
           auth:
             rootPassword: ${DATAOPS_DB_PASSWORD}

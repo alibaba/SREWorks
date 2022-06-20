@@ -396,9 +396,9 @@
             </dependency>
 
             <dependency>
-                <groupId>org.gitlab</groupId>
-                <artifactId>java-gitlab-api</artifactId>
-                <version>1.2.8</version>
+                <groupId>org.gitlab4j</groupId>
+                <artifactId>gitlab4j-api</artifactId>
+                <version>5.0.1</version>
             </dependency>
 
             <!-- shedlock -->

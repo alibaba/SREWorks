@@ -263,7 +263,7 @@ export default class ElementEditor extends React.Component {
                             (widgetMeta.configSchema.schema && Object.keys(widgetMeta.configSchema.schema).length) || widgetMeta.configSchema.supportItemToolbar
                         ) &&
                         <TabPane key="custom" tab={<span>组件属性</span>}>
-                            <Row>
+                            <Row style={tabContentStyle}>
                                 <Col span={16}>
                                     <div>
                                         {

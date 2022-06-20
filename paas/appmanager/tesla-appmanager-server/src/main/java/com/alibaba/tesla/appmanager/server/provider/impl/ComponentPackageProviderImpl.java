@@ -3,7 +3,6 @@ package com.alibaba.tesla.appmanager.server.provider.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.ComponentPackageProvider;
 import com.alibaba.tesla.appmanager.autoconfig.SystemProperties;
-import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.ComponentPackageTaskStateEnum;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.ClassUtil;
@@ -108,7 +107,6 @@ public class ComponentPackageProviderImpl implements ComponentPackageProvider {
                 .appId(appId)
                 .componentType(request.getComponentType())
                 .componentName(request.getComponentName())
-                .orderBy(DefaultConstant.ORDER_BY_GMT_CREATE_DESC)
                 .withBlobs(false)
                 .build();
         List<ComponentPackageDO> latestComponentPackage = componentPackageRepository.selectByCondition(condition);
@@ -212,7 +210,6 @@ public class ComponentPackageProviderImpl implements ComponentPackageProvider {
                 .componentType(componentType)
                 .componentName(componentName)
                 .pagination(false)
-                .orderBy(DefaultConstant.ORDER_BY_ID_DESC)
                 .build();
         Pagination<ComponentPackageDTO> componentPackageList = list(condition, operator);
 

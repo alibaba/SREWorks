@@ -502,7 +502,6 @@ public class AppPackageServiceImpl implements AppPackageService {
                 .appPackageId(appPackageId)
                 .deployStatus(DeployAppStateEnum.SUCCESS)
                 .appId(appPackageDO.getAppId())
-                .orderBy(DefaultConstant.ORDER_BY_GMT_CREATE_DESC)
                 .build(), true);
         ObjectUtil.checkNull(CheckNullObject.builder()
                 .actionName("releaseCustomAddonMeta")

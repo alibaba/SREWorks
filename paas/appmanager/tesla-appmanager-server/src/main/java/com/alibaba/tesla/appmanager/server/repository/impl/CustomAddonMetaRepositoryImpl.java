@@ -102,9 +102,6 @@ public class CustomAddonMetaRepositoryImpl implements CustomAddonMetaRepository 
                     condition.getAddonTypeList().stream().map(Enum::toString).collect(
                             Collectors.toList()));
         }
-        if (StringUtils.isNotBlank(condition.getOrderByClause())) {
-            example.setOrderByClause(condition.getOrderByClause());
-        }
         return example;
     }
 

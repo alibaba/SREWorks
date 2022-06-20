@@ -45,7 +45,6 @@ public class OrphanComponentInstanceJob {
                 .list(RtComponentInstanceQueryCondition.builder()
                         .page(1)
                         .pageSize(DefaultConstant.UNLIMITED_PAGE_SIZE)
-                        .reverse(true)
                         .build());
         for (RtComponentInstanceDO componentInstance : componentInstances.getItems()) {
             try {

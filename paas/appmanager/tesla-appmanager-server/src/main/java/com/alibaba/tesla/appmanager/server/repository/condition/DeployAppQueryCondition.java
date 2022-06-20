@@ -79,9 +79,4 @@ public class DeployAppQueryCondition extends BaseCondition {
      * 应用 Option Value
      */
     private String optionValue;
-
-    /**
-     * 排序方式
-     */
-    private String orderBy;
 }

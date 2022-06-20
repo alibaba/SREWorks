@@ -49,7 +49,7 @@ public class ProductReleaseTaskRepositoryImpl implements ProductReleaseTaskRepos
         ProductReleaseTaskDOExample example = buildExample(condition);
         condition.doPagination();
         if (!CollectionUtils.isEmpty(tags)) {
-            return mapper.selectByTags(productId, releaseId, taskId, tags, example);
+            return mapper.selectByTags(productId, releaseId, taskId, tags, tags.size(), example);
         }
         return mapper.selectByExample(example);
     }

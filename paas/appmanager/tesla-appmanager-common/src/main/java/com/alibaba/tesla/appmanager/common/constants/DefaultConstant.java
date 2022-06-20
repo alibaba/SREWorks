@@ -56,16 +56,6 @@ public class DefaultConstant {
     public static final String SYSTEM_OPERATOR = "SYSTEM";
 
     /**
-     * 默认按照 gmt_create DESC 进行 order by
-     */
-    public static final String ORDER_BY_GMT_CREATE_DESC = "`gmt_create` DESC";
-
-    /**
-     * 默认按照 id DESC 进行 order by
-     */
-    public static final String ORDER_BY_ID_DESC = "`id` DESC";
-
-    /**
      * DAG 中 global variables 中的 DAG 类型标识，用于在 Dag Inst Listener 中使用，判定当前的事件属于什么类型
      */
     public static final String DAG_TYPE = "dagType";

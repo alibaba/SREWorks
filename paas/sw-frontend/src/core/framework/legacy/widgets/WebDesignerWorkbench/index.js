@@ -193,19 +193,19 @@ class WebDesignerWorkbench extends Component {
             roleId: `${appId}:guest`,
             appId
         }
-        httpClient.post("gateway/v2/foundation/appmanager/apps", params, { headers: { 'X-Biz-App': `${appId},sreworks,dev` } }).then(result => {
+        httpClient.post("gateway/v2/foundation/appmanager/apps", params, { headers: { 'X-Biz-App': `${appId},${properties.defaultNamespace},dev` } }).then(result => {
             console.log(result)
         }).catch(error => {
             console.log(error)
         })
-        httpClient.post("gateway/v2/common/authProxy/roles", roleParams, { headers: { 'X-Biz-App': `${appId},sreworks,dev` } }).then(result => {
+        httpClient.post("gateway/v2/common/authProxy/roles", roleParams, { headers: { 'X-Biz-App': `${appId},${properties.defaultNamespace},dev` } }).then(result => {
             console.log(result)
         }).catch(error => {
             console.log(error)
         })
         // 应后端要求的临时初始化方案
         let addonParams = { "addonType": "INTERNAL_ADDON", "addonName": "productopsv2", "addonId": "productopsv2" }
-        httpClient.post(`gateway/v2/foundation/appmanager/apps/${appId}/addon`, addonParams, { headers: { 'X-Biz-App': `${appId},sreworks,dev` } }).then(result => {
+        httpClient.post(`gateway/v2/foundation/appmanager/apps/${appId}/addon`, addonParams, { headers: { 'X-Biz-App': `${appId},${properties.defaultNamespace},dev` } }).then(result => {
             console.log(result)
         }).catch(error => {
             console.log(error)
@@ -217,7 +217,7 @@ class WebDesignerWorkbench extends Component {
         //     stageLabel = cacheRepository.getEnv(currentProduct.productId)==='dev'? 'dev' : 'prod';
         // }
         let stageLabel = 'dev'
-        return httpClient.post(productopsPrefix + "/apps/init?stageId=" + stageLabel, blankTemplate, { headers: { 'X-Biz-App': `${appId},sreworks,dev` } }).then(result => {
+        return httpClient.post(productopsPrefix + "/apps/init?stageId=" + stageLabel, blankTemplate, { headers: { 'X-Biz-App': `${appId},${properties.defaultNamespace},dev` } }).then(result => {
             this.setState({
                 exists: true,
                 showCreate: false

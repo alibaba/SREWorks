@@ -90,7 +90,7 @@ public class TestServiceDeployConfigApplyTemplate {
                         .enabled(true)
                         .build()))
                 .when(deployConfigRepository)
-                .selectByExample(DeployConfigQueryCondition.builder()
+                .selectByCondition(DeployConfigQueryCondition.builder()
                         .appId(APP_ID)
                         .typeId(parameterValueTypeId)
                         .envId("")
@@ -143,7 +143,7 @@ public class TestServiceDeployConfigApplyTemplate {
                 .inherit(false)
                 .deleted(false)
                 .build());
-        Mockito.verify(deployConfigRepository, Mockito.times(1)).updateByExampleSelective(DeployConfigDO.builder()
+        Mockito.verify(deployConfigRepository, Mockito.times(1)).updateByCondition(DeployConfigDO.builder()
                         .appId(APP_ID)
                         .typeId(parameterValueTypeId)
                         .envId("")
@@ -159,7 +159,7 @@ public class TestServiceDeployConfigApplyTemplate {
                         .envId("")
                         .apiVersion(API_VERSION)
                         .build());
-        Mockito.verify(deployConfigRepository, Mockito.times(1)).insertSelective(DeployConfigDO.builder()
+        Mockito.verify(deployConfigRepository, Mockito.times(1)).insert(DeployConfigDO.builder()
                 .appId(APP_ID)
                 .typeId(componentTypeId)
                 .envId("")
@@ -219,7 +219,7 @@ public class TestServiceDeployConfigApplyTemplate {
                 .inherit(false)
                 .deleted(false)
                 .build());
-        Mockito.verify(deployConfigRepository, Mockito.times(1)).insertSelective(DeployConfigDO.builder()
+        Mockito.verify(deployConfigRepository, Mockito.times(1)).insert(DeployConfigDO.builder()
                 .appId(APP_ID)
                 .typeId(parameterValueTypeId)
                 .envId("")
@@ -229,7 +229,7 @@ public class TestServiceDeployConfigApplyTemplate {
                 .inherit(false)
                 .enabled(true)
                 .build());
-        Mockito.verify(deployConfigRepository, Mockito.times(1)).insertSelective(DeployConfigDO.builder()
+        Mockito.verify(deployConfigRepository, Mockito.times(1)).insert(DeployConfigDO.builder()
                 .appId(APP_ID)
                 .typeId(componentTypeId)
                 .envId("")

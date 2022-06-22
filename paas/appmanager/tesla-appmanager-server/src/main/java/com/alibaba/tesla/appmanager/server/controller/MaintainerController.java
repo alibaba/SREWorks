@@ -3,7 +3,7 @@ package com.alibaba.tesla.appmanager.server.controller;
 import com.alibaba.tesla.appmanager.api.provider.MaintainerProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
-import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
+import com.alibaba.tesla.appmanager.common.util.EnvUtil;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +34,13 @@ public class MaintainerController extends AppManagerBaseController {
     @PostMapping("/upgradeNamespaceStage")
     public TeslaBaseResult upgradeNamespaceStage(
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
-        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
-        String namespaceId = container.getNamespaceId();
-        String stageId = container.getStageId();
+        if (!EnvUtil.isSreworks()) {
+            return buildClientErrorResult("not sreworks environment, abort");
+        }
+
+        String[] array = headerBizApp.split(",", 3);
+        String namespaceId = array[1];
+        String stageId = array[2];
         maintainerProvider.upgradeNamespaceStage(namespaceId, stageId);
         return buildSucceedResult(DefaultConstant.EMPTY_OBJ);
     }

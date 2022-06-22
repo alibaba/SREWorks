@@ -8,13 +8,13 @@ import java.util.List;
 
 public interface DeployConfigRepository {
 
-    long countByExample(DeployConfigQueryCondition condition);
+    long countByCondition(DeployConfigQueryCondition condition);
 
-    int deleteByExample(DeployConfigQueryCondition condition);
+    int deleteByCondition(DeployConfigQueryCondition condition);
 
-    int insertSelective(DeployConfigDO record);
+    int insert(DeployConfigDO record);
 
-    List<DeployConfigDO> selectByExample(DeployConfigQueryCondition condition);
+    List<DeployConfigDO> selectByCondition(DeployConfigQueryCondition condition);
 
-    int updateByExampleSelective(@Param("record") DeployConfigDO record, @Param("condition") DeployConfigQueryCondition condition);
+    int updateByCondition(@Param("record") DeployConfigDO record, @Param("condition") DeployConfigQueryCondition condition);
 }

@@ -1,6 +1,5 @@
 package com.alibaba.tesla.appmanager.deployconfig.repository.impl;
 
-import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.util.DateUtil;
 import com.alibaba.tesla.appmanager.deployconfig.repository.DeployConfigRepository;
 import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConfigQueryCondition;
@@ -25,27 +24,27 @@ public class DeployConfigRepositoryImpl implements DeployConfigRepository {
     }
 
     @Override
-    public long countByExample(DeployConfigQueryCondition condition) {
+    public long countByCondition(DeployConfigQueryCondition condition) {
         return mapper.countByExample(buildExample(condition));
     }
 
     @Override
-    public int deleteByExample(DeployConfigQueryCondition condition) {
+    public int deleteByCondition(DeployConfigQueryCondition condition) {
         return mapper.deleteByExample(buildExample(condition));
     }
 
     @Override
-    public int insertSelective(DeployConfigDO record) {
+    public int insert(DeployConfigDO record) {
         return mapper.insertSelective(insertDate(record));
     }
 
     @Override
-    public List<DeployConfigDO> selectByExample(DeployConfigQueryCondition condition) {
+    public List<DeployConfigDO> selectByCondition(DeployConfigQueryCondition condition) {
         return mapper.selectByExample(buildExample(condition));
     }
 
     @Override
-    public int updateByExampleSelective(DeployConfigDO record, DeployConfigQueryCondition condition) {
+    public int updateByCondition(DeployConfigDO record, DeployConfigQueryCondition condition) {
         return mapper.updateByExampleSelective(updateDate(record), buildExample(condition));
     }
 
@@ -79,6 +78,12 @@ public class DeployConfigRepositoryImpl implements DeployConfigRepository {
         }
         if (condition.getIsolateStageId() != null) {
             criteria.andStageIdEqualTo(condition.getIsolateStageId());
+        }
+        if (StringUtils.isNotEmpty(condition.getIsolateNamespaceIdNotEqualTo())) {
+            criteria.andNamespaceIdNotEqualTo(condition.getIsolateNamespaceIdNotEqualTo());
+        }
+        if (StringUtils.isNotEmpty(condition.getIsolateStageIdNotEqualTo())) {
+            criteria.andStageIdNotEqualTo(condition.getIsolateStageIdNotEqualTo());
         }
         return example;
     }

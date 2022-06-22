@@ -45,9 +45,19 @@ public class ComponentPackageTaskQueryCondition extends BaseCondition {
     private String namespaceId;
 
     /**
+     * Namespace ID 不等条件
+     */
+    private String namespaceIdNotEqualTo;
+
+    /**
      * Stage ID
      */
     private String stageId;
+
+    /**
+     * Stage ID 不等条件
+     */
+    private String stageIdNotEqualTo;
 
     /**
      * 组件类型

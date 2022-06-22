@@ -26,7 +26,11 @@ public class K8sMicroserviceMetaQueryCondition extends BaseCondition {
 
     private String namespaceId;
 
+    private String namespaceIdNotEqualTo;
+
     private String stageId;
+
+    private String stageIdNotEqualTo;
 
     private String microServiceId;
 

@@ -7,6 +7,7 @@ import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
+import com.alibaba.tesla.appmanager.common.util.EnvUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConfigQueryCondition;
 import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDO;
@@ -73,8 +74,13 @@ public class HelmMetaServiceImpl implements HelmMetaService {
 
     private void refreshDeployConfig(HelmMetaDO record) {
         String appId = record.getAppId();
-        String namespaceId = record.getNamespaceId();
-        String stageId = record.getStageId();
+        String metaNamespaceId = record.getNamespaceId();
+        String metaStageId = record.getStageId();
+        // TODO: FOR SREWORKS ONLY TEMPORARY
+        if (EnvUtil.isSreworks()) {
+            metaNamespaceId = EnvUtil.defaultNamespaceId();
+            metaStageId = EnvUtil.defaultStageId();
+        }
 
         JSONObject helmExt = JSONObject.parseObject(record.getHelmExt());
         String defaultValuesYaml = helmExt.getString("defaultValuesYaml");
@@ -163,8 +169,8 @@ public class HelmMetaServiceImpl implements HelmMetaService {
                         .envId("")
                         .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                         .enabled(true)
-                        .isolateNamespaceId(namespaceId)
-                        .isolateStageId(stageId)
+                        .isolateNamespaceId(metaNamespaceId)
+                        .isolateStageId(metaStageId)
                         .build()
         );
 
@@ -191,8 +197,8 @@ public class HelmMetaServiceImpl implements HelmMetaService {
                 .envId("")
                 .inherit(false)
                 .config(yaml.dumpAsMap(configObject))
-                .isolateNamespaceId(namespaceId)
-                .isolateStageId(stageId)
+                .isolateNamespaceId(metaNamespaceId)
+                .isolateStageId(metaStageId)
                 .build());
 
     }

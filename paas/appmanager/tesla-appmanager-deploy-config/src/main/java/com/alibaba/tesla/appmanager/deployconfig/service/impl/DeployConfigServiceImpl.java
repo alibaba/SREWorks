@@ -103,7 +103,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
      */
     @Override
     public List<DeployConfigDO> list(DeployConfigQueryCondition condition) {
-        return deployConfigRepository.selectByExample(condition);
+        return deployConfigRepository.selectByCondition(condition);
     }
 
     /**
@@ -119,7 +119,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                     "invalid getWithInherit parameters, apiVersion/typeId are required");
         }
 
-        List<DeployConfigDO> records = deployConfigRepository.selectByExample(condition);
+        List<DeployConfigDO> records = deployConfigRepository.selectByCondition(condition);
         if (records.size() == 0) {
             return null;
         } else if (records.size() > 1) {
@@ -262,7 +262,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
         schema.getSpec().setComponents(new ArrayList<>());
 
         // 组装每个 type 到 schema 中
-        List<DeployConfigDO> appRecords = deployConfigRepository.selectByExample(
+        List<DeployConfigDO> appRecords = deployConfigRepository.selectByCondition(
                 DeployConfigQueryCondition.builder()
                         .apiVersion(apiVersion)
                         .appId(appId)
@@ -270,7 +270,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                         .isolateNamespaceId(isolateNamespaceId)
                         .isolateStageId(isolateStageId)
                         .build());
-        List<DeployConfigDO> rootRecords = deployConfigRepository.selectByExample(
+        List<DeployConfigDO> rootRecords = deployConfigRepository.selectByCondition(
                 DeployConfigQueryCondition.builder()
                         .apiVersion(apiVersion)
                         .appId("")
@@ -562,7 +562,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                 .page(1)
                 .pageSize(1)
                 .build();
-        List<DeployConfigDO> records = deployConfigRepository.selectByExample(condition);
+        List<DeployConfigDO> records = deployConfigRepository.selectByCondition(condition);
         if (records.size() == 0) {
             log.info("no need to delete single deploy config record|apiVersion={}|appId={}|typeId={}|envId={}|" +
                             "namespaceId={}|stageId={}", apiVersion, appId, typeId, envId,
@@ -590,7 +590,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                 .namespaceId(isolateNamespace)
                 .stageId(isolateStage)
                 .build());
-        deployConfigRepository.deleteByExample(condition);
+        deployConfigRepository.deleteByCondition(condition);
         log.info("deploy config record has deleted|apiVersion={}|appId={}|typeId={}|envId={}|namespaceId={}|stageId={}",
                 apiVersion, appId, typeId, envId, isolateNamespace, isolateStage);
     }
@@ -654,7 +654,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                 .isolateNamespaceId(isolateNamespaceId)
                 .isolateStageId(isolateStageId)
                 .build();
-        List<DeployConfigDO> records = deployConfigRepository.selectByExample(configCondition);
+        List<DeployConfigDO> records = deployConfigRepository.selectByCondition(configCondition);
         DeployConfigDO result;
         if (records.size() == 0) {
             result = DeployConfigDO.builder()
@@ -670,7 +670,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                     .stageId(isolateStageId)
                     .build();
             try {
-                deployConfigRepository.insertSelective(result);
+                deployConfigRepository.insert(result);
             } catch (Exception e) {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                         String.format("cannot insert deploy config into database|result=%s|exception=%s",
@@ -686,7 +686,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
             item.setEnabled(enabled);
             item.setInherit(inherit);
             try {
-                deployConfigRepository.updateByExampleSelective(item, configCondition);
+                deployConfigRepository.updateByCondition(item, configCondition);
             } catch (Exception e) {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                         String.format("cannot update deploy config in database|item=%s|condition=%s|exception=%s",

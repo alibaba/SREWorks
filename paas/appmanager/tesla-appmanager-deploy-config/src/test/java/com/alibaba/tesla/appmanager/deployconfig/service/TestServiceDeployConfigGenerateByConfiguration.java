@@ -1,6 +1,5 @@
 package com.alibaba.tesla.appmanager.deployconfig.service;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
@@ -96,7 +95,7 @@ public class TestServiceDeployConfigGenerateByConfiguration {
                 .build());
         Mockito.doReturn(mockResults)
                 .when(deployConfigRepository)
-                .selectByExample(DeployConfigQueryCondition.builder()
+                .selectByCondition(DeployConfigQueryCondition.builder()
                         .apiVersion(API_VERSION)
                         .appId(APP_ID)
                         .enabled(true)
@@ -165,7 +164,7 @@ public class TestServiceDeployConfigGenerateByConfiguration {
                                         .build()
                         ))
                 .when(deployConfigRepository)
-                .selectByExample(DeployConfigQueryCondition.builder()
+                .selectByCondition(DeployConfigQueryCondition.builder()
                         .apiVersion(API_VERSION)
                         .appId(APP_ID)
                         .enabled(true)
@@ -182,7 +181,7 @@ public class TestServiceDeployConfigGenerateByConfiguration {
                                 .inherit(false)
                                 .build()))
                 .when(deployConfigRepository)
-                .selectByExample(DeployConfigQueryCondition.builder()
+                .selectByCondition(DeployConfigQueryCondition.builder()
                         .apiVersion(API_VERSION)
                         .appId("")
                         .enabled(true)

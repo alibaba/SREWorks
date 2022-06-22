@@ -53,7 +53,17 @@ public class DeployConfigQueryCondition extends BaseCondition {
     private String isolateNamespaceId;
 
     /**
+     * Namespace ID 不等条件
+     */
+    private String isolateNamespaceIdNotEqualTo;
+
+    /**
      * Stage ID
      */
     private String isolateStageId;
+
+    /**
+     * Stage ID 不等条件
+     */
+    private String isolateStageIdNotEqualTo;
 }

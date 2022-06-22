@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
+import com.alibaba.tesla.appmanager.common.util.EnvUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConfigQueryCondition;
 import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDO;
@@ -332,6 +333,13 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
 
         Yaml yaml = SchemaUtil.createYaml(JSONObject.class);
         String typeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE, metaDO.getMicroServiceId()).toString();
+        String metaNamespaceId = metaDO.getNamespaceId();
+        String metaStageId = metaDO.getStageId();
+        // TODO: FOR SREWORKS ONLY TEMPORARY
+        if (EnvUtil.isSreworks()) {
+            metaNamespaceId = EnvUtil.defaultNamespaceId();
+            metaStageId = EnvUtil.defaultStageId();
+        }
         deployConfigService.update(DeployConfigUpdateReq.builder()
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(metaDO.getAppId())
@@ -339,8 +347,8 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
                 .envId("")
                 .inherit(false)
                 .config(yaml.dumpAsMap(configObject))
-                .isolateNamespaceId(metaDO.getNamespaceId())
-                .isolateStageId(metaDO.getStageId())
+                .isolateNamespaceId(metaNamespaceId)
+                .isolateStageId(metaStageId)
                 .build());
     }
 

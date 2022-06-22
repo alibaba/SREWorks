@@ -53,10 +53,6 @@ public class Productops100InternalAddon extends BaseAddon {
             "                        \"x-component-props\": {\n" +
             "                            \"options\": [\n" +
             "                                {\n" +
-            "                                    \"value\": \"http://productops-pre.internal.tesla.alibaba-inc.com\",\n" +
-            "                                    \"label\": \"弹内 - 预发环境\"\n" +
-            "                                },\n" +
-            "                                {\n" +
             "                                    \"value\": \"http://productops.internal.tesla.alibaba-inc.com\",\n" +
             "                                    \"label\": \"弹内 - 生产环境\"\n" +
             "                                }\n" +
@@ -86,7 +82,27 @@ public class Productops100InternalAddon extends BaseAddon {
             "                            \"options\": [\n" +
             "                                {\n" +
             "                                    \"value\": \"pre\",\n" +
-            "                                    \"label\": \"开发态\"\n" +
+            "                                    \"label\": \"弹内开发\"\n" +
+            "                                },\n" +
+            "                                {\n" +
+            "                                    \"value\": \"live\",\n" +
+            "                                    \"label\": \"专有云开发\"\n" +
+            "                                },\n" +
+            "                                {\n" +
+            "                                    \"value\": \"v316xR\",\n" +
+            "                                    \"label\": \"企业版3.16\"\n" +
+            "                                },\n" +
+            "                                {\n" +
+            "                                    \"value\": \"v315xR\",\n" +
+            "                                    \"label\": \"企业版3.14-3.15|敏捷版3.6\"\n" +
+            "                                },\n" +
+            "                                {\n" +
+            "                                    \"value\": \"v312xR\",\n" +
+            "                                    \"label\": \"企业版3.12\"\n" +
+            "                                },\n" +
+            "                                {\n" +
+            "                                    \"value\": \"av35xR\",\n" +
+            "                                    \"label\": \"敏捷版3.5\"\n" +
             "                                }\n" +
             "                            ]\n" +
             "                        },\n" +

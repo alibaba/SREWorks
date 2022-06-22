@@ -42,22 +42,26 @@ public class FlyadminAppmanagerService {
             .getJSONObject("data").getJSONArray("items").toJavaList(JSONObject.class);
     }
 
-    public JSONObject k8sMicroservice(String user, String appId, String componentTypeList) throws IOException {
+    public JSONObject k8sMicroservice(String bizApp, String user, String appId, String componentTypeList) throws IOException {
+        String[] bizAppList = bizApp.split(",", 2);
         return new Requests(AppmanagerServiceUtil.getEndpoint() + "/apps/" + appId + "/k8s-microservices")
             .params(
                 "appId", appId,
                 "componentTypeList", componentTypeList
             )
             .headers(HttpHeaderNames.X_EMPL_ID, user)
+            .headers(HttpHeaderNames.X_BIZ_APP, appId + "," + bizAppList[1])
             .get().isSuccessful()
             .getJSONObject()
             .getJSONObject("data");
     }
 
-    public JSONObject helm(String user, String appId) throws IOException {
+    public JSONObject helm(String bizApp, String user, String appId) throws IOException {
+        String[] bizAppList = bizApp.split(",", 2);
         return new Requests(AppmanagerServiceUtil.getEndpoint() + "/apps/" + appId + "/helm")
             .params()
             .headers(HttpHeaderNames.X_EMPL_ID, user)
+            .headers(HttpHeaderNames.X_BIZ_APP, appId + "," + bizAppList[1])
             .get().isSuccessful()
             .getJSONObject()
             .getJSONObject("data");

@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.domain.container;
 
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.common.util.EnvUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,16 +36,23 @@ public class BizAppContainer {
      * @return BizAppContainer 容器
      */
     public static BizAppContainer valueOf(String headerBizApp) {
+        // TODO: FOR SREWORKS ONLY TEMPORARY
+        if (EnvUtil.isSreworks()) {
+            return BizAppContainer.builder()
+                    .namespaceId(EnvUtil.defaultNamespaceId())
+                    .stageId(EnvUtil.defaultStageId())
+                    .build();
+        }
+
         if (StringUtils.isEmpty(headerBizApp)) {
             return BizAppContainer.builder().namespaceId("").stageId("").build();
         }
         String[] array = headerBizApp.split(",", 3);
         if (array.length <= 1) {
-            if ("sreworks".equals(System.getenv("K8S_NAMESPACE"))) {
-                return BizAppContainer.builder().namespaceId("sreworks").stageId("dev").build();
-            } else {
-                return BizAppContainer.builder().namespaceId("default").stageId("pre").build();
-            }
+            return BizAppContainer.builder()
+                    .namespaceId(EnvUtil.defaultNamespaceId())
+                    .stageId(EnvUtil.defaultStageId())
+                    .build();
         } else if (array.length < 3) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "invalid X-Biz-App header");
         }

@@ -78,6 +78,12 @@ public class AppAddonRepositoryImpl implements AppAddonRepository {
         if (condition.getStageId() != null) {
             criteria.andStageIdEqualTo(condition.getStageId());
         }
+        if (StringUtils.isNotEmpty(condition.getNamespaceIdNotEqualTo())) {
+            criteria.andNamespaceIdNotEqualTo(condition.getNamespaceIdNotEqualTo());
+        }
+        if (StringUtils.isNotEmpty(condition.getStageIdNotEqualTo())) {
+            criteria.andStageIdNotEqualTo(condition.getStageIdNotEqualTo());
+        }
         return example;
     }
 

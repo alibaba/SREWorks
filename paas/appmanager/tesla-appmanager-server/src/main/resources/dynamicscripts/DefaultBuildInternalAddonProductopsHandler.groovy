@@ -51,7 +51,7 @@ class DefaultInternalAddonProductopsHandler implements BuildComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 12
+    public static final Integer REVISION = 14
 
     /**
      * 弹内导出应用需要排除的应用 ID
@@ -87,6 +87,8 @@ class DefaultInternalAddonProductopsHandler implements BuildComponentHandler {
         def appId = request.getAppId()
         def componentType = request.getComponentType()
         def componentName = request.getComponentName()
+        def namespaceId = request.getNamespaceId()
+        def stageId = request.getStageId()
         def version = request.getVersion()
         def options = request.getOptions()
 
@@ -106,12 +108,14 @@ class DefaultInternalAddonProductopsHandler implements BuildComponentHandler {
             FileUtils.copyURLToFile(new URL(remoteFile), exportPath.toFile(), 10 * 1000, 60 * 1000)
         } else {
             // 准备参数并导出数据
-            String endpoint = getEndpoint(appId, options)
+            String endpoint = getEndpoint(appId, namespaceId, stageId, options)
             def url = String.format("%s/maintainer/export/apps", endpoint)
             def params = new HashMap<String, String>()
             params.put("appIds", appId)
             if (StringUtils.isNotEmpty(options.getString("envIds"))) {
                 params.put("envIds", options.getString("envIds"))
+            } else if (StringUtils.isNotEmpty(namespaceId) && StringUtils.isNotEmpty(stageId)) {
+                params.put("envIds", namespaceId + "," + stageId)
             } else if (StringUtils.isNotEmpty(options.getString("namespaceId"))
                     && StringUtils.isNotEmpty(options.getString("stageId"))) {
                 params.put("envIds", options.getString("namespaceId") + "," + options.getString("stageId"))
@@ -145,8 +149,8 @@ class DefaultInternalAddonProductopsHandler implements BuildComponentHandler {
         def metaYamlContent = jinjava.render(template, options)
         def metaYamlFile = Paths.get(packageDir.toString(), "meta.yaml").toFile()
         FileUtils.writeStringToFile(metaYamlFile, metaYamlContent, StandardCharsets.UTF_8)
-        log.info("meta yaml config has rendered||appId={}||componentType={}||componentName={}||packageVersion={}",
-                appId, componentType, componentName, version)
+        log.info("meta yaml config has rendered|appId={}|namespaceId={}|stageId={}|componentType={}|componentName={}|" +
+                "packageVersion={}", appId, namespaceId, stageId, componentType, componentName, version)
 
         // 将 packageDir 打包为 zip 文件
         String zipPath = packageDir.resolve("app_package.zip").toString()
@@ -158,23 +162,23 @@ class DefaultInternalAddonProductopsHandler implements BuildComponentHandler {
             }
         })
         def targetFileMd5 = StringUtil.getMd5Checksum(zipPath)
-        log.info("zip file has generated||appId={}||componentType={}||componentName={}||packageVersion={}||" +
-                "zipPath={}||md5={}", appId, componentType, componentName, version,
-                zipPath, targetFileMd5)
+        log.info("zip file has generated|appId={}|namespaceId={}|stageId={}|componentType={}|componentName={}|" +
+                "packageVersion={}|zipPath={}|md5={}", appId, namespaceId, stageId, componentType, componentName,
+                version, zipPath, targetFileMd5)
 
         // 上传导出包到 Storage 中
         String bucketName = packageProperties.getBucketName()
         String remotePath = PackageUtil
                 .buildComponentPackageRemotePath(appId, componentType, componentName, version)
         storage.putObject(bucketName, remotePath, zipPath)
-        log.info("component package has uploaded to storage||bucketName={}||" +
-                "remotePath={}||localPath={}", bucketName, remotePath, zipPath)
+        log.info("component package has uploaded to storage|appId={}|namespaceId={}|stageId={}|bucketName={}|" +
+                "remotePath={}|localPath={}", appId, namespaceId, stageId, bucketName, remotePath, zipPath)
 
         // 删除临时数据 (正常流程下)
         try {
             FileUtils.deleteDirectory(packageDir.toFile())
         } catch (Exception ignored) {
-            log.warn("cannot delete component package build directory||directory={}", packageDir.toString())
+            log.warn("cannot delete component package build directory|directory={}", packageDir.toString())
         }
         LaunchBuildComponentHandlerRes res = LaunchBuildComponentHandlerRes.builder()
                 .logContent("get zip file from productops succeed")
@@ -198,17 +202,21 @@ class DefaultInternalAddonProductopsHandler implements BuildComponentHandler {
     /**
      * 获取 ProductOps 组件需要的 Endpoint (兼容各种历史问题)
      * @param appId 应用 ID
+     * @param namespaceId Namespace ID
+     * @param stageId Stage ID
      * @param options 应用选项
      * @return Endpoint String
      */
-    private static String getEndpoint(String appId, JSONObject options) {
+    private static String getEndpoint(String appId, String namespaceId, String stageId, JSONObject options) {
         def endpoint = "http://" + (StringUtils.isEmpty(System.getenv("ENDPOINT_PAAS_PRODUCTOPS"))
                 ? "productops.gateway.tesla.alibaba-inc.com/"
                 : System.getenv("ENDPOINT_PAAS_PRODUCTOPS"))
         def cloudType = System.getenv("CLOUD_TYPE")
         if ("Internal" == cloudType
                 && EXCLUDE_APPS.contains(appId)
-                && StringUtils.isEmpty(options.getString("endpoint"))) {
+                && StringUtils.isEmpty(options.getString("endpoint"))
+                && StringUtils.isEmpty(namespaceId)
+                && StringUtils.isEmpty(stageId)) {
             endpoint = "http://productops-private.abm.alibaba-inc.com"
         } else if (StringUtils.isNotEmpty(options.getString("endpoint"))) {
             endpoint = options.getString("endpoint")

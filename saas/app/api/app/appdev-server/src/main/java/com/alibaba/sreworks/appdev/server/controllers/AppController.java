@@ -37,10 +37,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author jinghua.yjh
@@ -227,15 +224,17 @@ public class AppController extends BaseController {
 
     @ApiOperation(value = "getComponents")
     @RequestMapping(value = "getComponents", method = RequestMethod.GET)
-    public TeslaBaseResult getComponents(Long appId) throws IOException {
+    public TeslaBaseResult getComponents(Long appId, @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) throws IOException {
         String appmanagerAppId = "sreworks" + appId.toString();
 
         String user = getUserEmployeeId();
 
-        JSONObject res = flyadminAppmanagerService.k8sMicroservice(user, appmanagerAppId, "MICROSERVICE,K8S_MICROSERVICE");
+        JSONObject res = flyadminAppmanagerService.k8sMicroservice(headerBizApp, user, appmanagerAppId, "MICROSERVICE,K8S_MICROSERVICE");
         JSONArray k8sMicroserviceList = res.getJSONArray("items");
 
-        JSONObject resHelm = flyadminAppmanagerService.helm(user, appmanagerAppId);
+        log.info("{}", k8sMicroserviceList.toJSONString());
+
+        JSONObject resHelm = flyadminAppmanagerService.helm(headerBizApp, user, appmanagerAppId);
         JSONArray helmList = resHelm.getJSONArray("items");
 
         k8sMicroserviceList.addAll(helmList);

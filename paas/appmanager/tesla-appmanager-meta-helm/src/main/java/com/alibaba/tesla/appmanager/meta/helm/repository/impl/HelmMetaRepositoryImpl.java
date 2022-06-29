@@ -77,6 +77,12 @@ public class HelmMetaRepositoryImpl implements HelmMetaRepository {
         if (StringUtils.isNotBlank(condition.getHelmPackageId())){
             criteria.andHelmPackageIdEqualTo(condition.getHelmPackageId());
         }
+        if (StringUtils.isNotEmpty(condition.getNamespaceIdNotEqualTo())) {
+            criteria.andNamespaceIdNotEqualTo(condition.getNamespaceIdNotEqualTo());
+        }
+        if (StringUtils.isNotEmpty(condition.getStageIdNotEqualTo())) {
+            criteria.andStageIdNotEqualTo(condition.getStageIdNotEqualTo());
+        }
         return example;
     }
 

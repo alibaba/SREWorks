@@ -14,6 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,15 +57,15 @@ public class FlyadminAppmanagerController extends BaseController {
 
     @ApiOperation(value = "k8sMicroservice")
     @RequestMapping(value = "k8sMicroservice", method = RequestMethod.GET)
-    public TeslaBaseResult k8sMicroservice(String appId, String componentTypeList) throws IOException {
+    public TeslaBaseResult k8sMicroservice(String appId, String componentTypeList, @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) throws IOException {
         return buildSucceedResult(
-            flyadminAppmanagerService.k8sMicroservice(getUserEmployeeId(), appId, componentTypeList)
+            flyadminAppmanagerService.k8sMicroservice(headerBizApp, getUserEmployeeId(), appId, componentTypeList)
         );
     }
 
     @ApiOperation(value = "helm")
     @RequestMapping(value = "helm", method = RequestMethod.GET)
-    public TeslaBaseResult helm(String appId) throws IOException {
-        return buildSucceedResult(flyadminAppmanagerService.helm(getUserEmployeeId(), appId));
+    public TeslaBaseResult helm(String appId, @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) throws IOException {
+        return buildSucceedResult(flyadminAppmanagerService.helm(headerBizApp, getUserEmployeeId(), appId));
     }
 }

@@ -50,6 +50,7 @@ class CacheRepository {
 
     setAppBizId(app, namespaceId, stageId) {
         let bizId = `${app},${namespaceId},${stageId}`
+        console.log(bizId, '新建应用0')
         localStorage.setItem(SRE_BIZ_ID + app, bizId);
     }
 

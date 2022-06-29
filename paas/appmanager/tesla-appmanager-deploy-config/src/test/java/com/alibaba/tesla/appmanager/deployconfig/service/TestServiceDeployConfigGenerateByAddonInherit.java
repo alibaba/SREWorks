@@ -3,7 +3,6 @@ package com.alibaba.tesla.appmanager.deployconfig.service;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
-import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.deployconfig.repository.DeployConfigHistoryRepository;
 import com.alibaba.tesla.appmanager.deployconfig.repository.DeployConfigRepository;
 import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConfigQueryCondition;
@@ -14,23 +13,14 @@ import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigGenerate
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigGenerateRes;
 import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -92,7 +82,7 @@ public class TestServiceDeployConfigGenerateByAddonInherit {
                                 .inherit(true)
                                 .build()))
                 .when(deployConfigRepository)
-                .selectByExample(DeployConfigQueryCondition.builder()
+                .selectByCondition(DeployConfigQueryCondition.builder()
                         .apiVersion(API_VERSION)
                         .appId(APP_ID)
                         .enabled(true)
@@ -109,7 +99,7 @@ public class TestServiceDeployConfigGenerateByAddonInherit {
                                 .inherit(false)
                                 .build()))
                 .when(deployConfigRepository)
-                .selectByExample(DeployConfigQueryCondition.builder()
+                .selectByCondition(DeployConfigQueryCondition.builder()
                         .apiVersion(API_VERSION)
                         .appId("")
                         .enabled(true)

@@ -17,10 +17,14 @@ import com.alibaba.tesla.appmanager.server.repository.domain.AppAddonDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.ComponentPackageTaskDO;
 import com.alibaba.tesla.appmanager.server.service.maintainer.MaintainerService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 系统维护 Service
@@ -68,19 +72,44 @@ public class MaintainerServiceImpl implements MaintainerService {
      * @param stageId     Stage ID
      */
     private void upgradeNamespaceStageForHelm(String namespaceId, String stageId) {
-        HelmMetaQueryCondition condition = HelmMetaQueryCondition.builder()
-                .namespaceId("")
-                .stageId("")
-                .build();
-        List<HelmMetaDO> records = helmMetaRepository.selectByCondition(condition);
+        List<HelmMetaDO> records = helmMetaRepository.selectByCondition(HelmMetaQueryCondition.builder()
+                .namespaceIdNotEqualTo(namespaceId)
+                .build());
+        List<HelmMetaDO> stageRecords = helmMetaRepository.selectByCondition(HelmMetaQueryCondition.builder()
+                .stageIdNotEqualTo(stageId)
+                .build());
+        CollectionUtils.addAll(records, stageRecords);
+        Set<Long> usedSet = new HashSet<>();
         for (HelmMetaDO record : records) {
+            if (usedSet.contains(record.getId())) {
+                continue;
+            }
+            usedSet.add(record.getId());
+            String rawNamespaceId = record.getNamespaceId();
+            String rawStageId = record.getStageId();
             record.setNamespaceId(namespaceId);
             record.setStageId(stageId);
-            helmMetaRepository.updateByCondition(record,
-                    HelmMetaQueryCondition.builder().id(record.getId()).build());
-            log.info("upgrade namespace and stage field in helm record|appId={}|namespaceId={}|" +
-                            "stageId={}|componentType={}|name={}|helmPackageId={}", record.getAppId(),
-                    namespaceId, stageId, record.getComponentType(), record.getName(), record.getHelmPackageId());
+            HelmMetaQueryCondition findCondition = HelmMetaQueryCondition.builder().id(record.getId()).build();
+            try {
+                helmMetaRepository.updateByCondition(record, findCondition);
+                log.info("upgrade namespace and stage field in helm record|appId={}|namespaceId={}|" +
+                                "stageId={}|componentType={}|name={}|helmPackageId={}", record.getAppId(),
+                        rawNamespaceId, rawStageId, record.getComponentType(), record.getName(),
+                        record.getHelmPackageId());
+            } catch (Exception e) {
+                if (e.getMessage().contains("Duplicate entry")) {
+                    helmMetaRepository.deleteByCondition(findCondition);
+                    log.error("find conflict helm microservice record in upgrading namespace and stage field " +
+                                    "progress, delete it|appId={}|namespaceId={}|stageId={}|componentType={}|" +
+                                    "helmPackageId={}", record.getAppId(), rawNamespaceId, rawStageId,
+                            record.getComponentType(), record.getHelmPackageId());
+                } else {
+                    log.error("upgrade namespace and stage field in helm record failed|appId={}|namespaceId={}|" +
+                                    "stageId={}|componentType={}|name={}|helmPackageId={}|exception={}",
+                            record.getAppId(), rawNamespaceId, rawStageId, record.getComponentType(), record.getName(),
+                            record.getHelmPackageId(), ExceptionUtils.getStackTrace(e));
+                }
+            }
         }
     }
 
@@ -91,19 +120,47 @@ public class MaintainerServiceImpl implements MaintainerService {
      * @param stageId     Stage ID
      */
     private void upgradeNamespaceStageForK8sMicroServices(String namespaceId, String stageId) {
-        K8sMicroserviceMetaQueryCondition condition = K8sMicroserviceMetaQueryCondition.builder()
-                .namespaceId("")
-                .stageId("")
-                .build();
-        List<K8sMicroServiceMetaDO> records = k8sMicroServiceMetaRepository.selectByCondition(condition);
+        List<K8sMicroServiceMetaDO> records = k8sMicroServiceMetaRepository
+                .selectByCondition(K8sMicroserviceMetaQueryCondition.builder()
+                        .namespaceIdNotEqualTo(namespaceId)
+                        .build());
+        List<K8sMicroServiceMetaDO> stageRecords = k8sMicroServiceMetaRepository
+                .selectByCondition(K8sMicroserviceMetaQueryCondition.builder()
+                        .stageIdNotEqualTo(stageId)
+                        .build());
+        CollectionUtils.addAll(records, stageRecords);
+        Set<Long> usedSet = new HashSet<>();
         for (K8sMicroServiceMetaDO record : records) {
+            if (usedSet.contains(record.getId())) {
+                continue;
+            }
+            usedSet.add(record.getId());
+            String rawNamespaceId = record.getNamespaceId();
+            String rawStageId = record.getStageId();
             record.setNamespaceId(namespaceId);
             record.setStageId(stageId);
-            k8sMicroServiceMetaRepository.updateByCondition(record,
-                    K8sMicroserviceMetaQueryCondition.builder().id(record.getId()).build());
-            log.info("upgrade namespace and stage field in k8s microservice record|appId={}|namespaceId={}|" +
-                            "stageId={}|componentType={}|microserviceId={}", record.getAppId(),
-                    namespaceId, stageId, record.getComponentType(), record.getMicroServiceId());
+            K8sMicroserviceMetaQueryCondition findCondition = K8sMicroserviceMetaQueryCondition.builder()
+                    .id(record.getId())
+                    .build();
+            try {
+                k8sMicroServiceMetaRepository.updateByCondition(record, findCondition);
+                log.info("upgrade namespace and stage field in k8s microservice record|appId={}|namespaceId={}|" +
+                                "stageId={}|componentType={}|microserviceId={}", record.getAppId(),
+                        rawNamespaceId, rawStageId, record.getComponentType(), record.getMicroServiceId());
+            } catch (Exception e) {
+                if (e.getMessage().contains("Duplicate entry")) {
+                    k8sMicroServiceMetaRepository.deleteByCondition(findCondition);
+                    log.error("find conflict k8s microservice record in upgrading namespace and stage field " +
+                                    "progress, delete it|appId={}|namespaceId={}|stageId={}|componentType={}|" +
+                                    "microserviceId={}", record.getAppId(), rawNamespaceId, rawStageId,
+                            record.getComponentType(), record.getMicroServiceId());
+                } else {
+                    log.error("upgrade namespace and stage field in k8s microservice record failed|appId={}|" +
+                                    "namespaceId={}|stageId={}|componentType={}|microserviceId={}|exception={}",
+                            record.getAppId(), rawNamespaceId, rawStageId, record.getComponentType(),
+                            record.getMicroServiceId(), ExceptionUtils.getStackTrace(e));
+                }
+            }
         }
     }
 
@@ -114,20 +171,49 @@ public class MaintainerServiceImpl implements MaintainerService {
      * @param stageId     Stage ID
      */
     private void upgradeNamespaceStageForComponentPackageTasks(String namespaceId, String stageId) {
-        ComponentPackageTaskQueryCondition condition = ComponentPackageTaskQueryCondition.builder()
-                .namespaceId("")
-                .stageId("")
-                .build();
-        List<ComponentPackageTaskDO> records = componentPackageTaskRepository.selectByCondition(condition);
+        List<ComponentPackageTaskDO> records = componentPackageTaskRepository
+                .selectByCondition(ComponentPackageTaskQueryCondition.builder()
+                        .namespaceIdNotEqualTo(namespaceId)
+                        .build());
+        List<ComponentPackageTaskDO> stageRecords = componentPackageTaskRepository
+                .selectByCondition(ComponentPackageTaskQueryCondition.builder()
+                        .stageIdNotEqualTo(stageId)
+                        .build());
+        CollectionUtils.addAll(records, stageRecords);
+        Set<Long> usedSet = new HashSet<>();
         for (ComponentPackageTaskDO record : records) {
+            if (usedSet.contains(record.getId())) {
+                continue;
+            }
+            usedSet.add(record.getId());
+            String rawNamespaceId = record.getNamespaceId();
+            String rawStageId = record.getStageId();
             record.setNamespaceId(namespaceId);
             record.setStageId(stageId);
-            componentPackageTaskRepository.updateByCondition(record,
-                    ComponentPackageTaskQueryCondition.builder().id(record.getId()).build());
-            log.info("upgrade namespace and stage field in component package task record|appId={}|namespaceId={}|" +
-                            "stageId={}|componentType={}|componentName={}|packageVersion={}", record.getAppId(),
-                    namespaceId, stageId, record.getComponentType(), record.getComponentName(),
-                    record.getPackageVersion());
+            ComponentPackageTaskQueryCondition findCondition = ComponentPackageTaskQueryCondition.builder()
+                    .id(record.getId())
+                    .build();
+            try {
+                componentPackageTaskRepository.updateByCondition(record, findCondition);
+                log.info("upgrade namespace and stage field in component package task record|appId={}|namespaceId={}|" +
+                                "stageId={}|componentType={}|componentName={}|packageVersion={}", record.getAppId(),
+                        rawNamespaceId, rawStageId, record.getComponentType(), record.getComponentName(),
+                        record.getPackageVersion());
+            } catch (Exception e) {
+                if (e.getMessage().contains("Duplicate entry")) {
+                    componentPackageTaskRepository.deleteByCondition(findCondition);
+                    log.error("find conflict component package tasks record in upgrading namespace and stage field " +
+                            "progress, delete it|appId={}|namespaceId={}|stageId={}|componentType={}|" +
+                            "componentName={}|packageVersion={}", record.getAppId(), rawNamespaceId, rawStageId,
+                            record.getComponentType(), record.getComponentName(), record.getPackageVersion());
+                } else {
+                    log.error("upgrade namespace and stage field in component package task record failed|appId={}|" +
+                                    "namespaceId={}|stageId={}|componentType={}|componentName={}|packageVersion={}|" +
+                                    "exception={}", record.getAppId(), rawNamespaceId, rawStageId,
+                            record.getComponentType(), record.getComponentName(), record.getPackageVersion(),
+                            ExceptionUtils.getStackTrace(e));
+                }
+            }
         }
     }
 
@@ -138,19 +224,43 @@ public class MaintainerServiceImpl implements MaintainerService {
      * @param stageId     Stage ID
      */
     private void upgradeNamespaceStageForDeployConfig(String namespaceId, String stageId) {
-        DeployConfigQueryCondition condition = DeployConfigQueryCondition.builder()
-                .isolateNamespaceId("")
-                .isolateStageId("")
-                .build();
-        List<DeployConfigDO> records = deployConfigRepository.selectByExample(condition);
+        List<DeployConfigDO> records = deployConfigRepository.selectByCondition(DeployConfigQueryCondition.builder()
+                .isolateNamespaceIdNotEqualTo(namespaceId)
+                .build());
+        List<DeployConfigDO> stageRecords = deployConfigRepository.selectByCondition(DeployConfigQueryCondition.builder()
+                .isolateStageIdNotEqualTo(stageId)
+                .build());
+        CollectionUtils.addAll(records, stageRecords);
+        Set<Long> usedSet = new HashSet<>();
         for (DeployConfigDO record : records) {
+            if (usedSet.contains(record.getId())) {
+                continue;
+            }
+            usedSet.add(record.getId());
+            String rawNamespaceId = record.getNamespaceId();
+            String rawStageId = record.getStageId();
             record.setNamespaceId(namespaceId);
             record.setStageId(stageId);
-            deployConfigRepository.updateByExampleSelective(record,
-                    DeployConfigQueryCondition.builder().id(record.getId()).build());
-            log.info("upgrade namespace and stage field in deploy config record|appId={}|typeId={}|envId={}|" +
-                    "inherit={}|namespaceId={}|stageId={}", record.getAppId(), record.getTypeId(), record.getEnabled(),
-                    record.getInherit(), record.getNamespaceId(), record.getStageId());
+            DeployConfigQueryCondition findCondition = DeployConfigQueryCondition.builder().id(record.getId()).build();
+            try {
+                deployConfigRepository.updateByCondition(record, findCondition);
+                log.info("upgrade namespace and stage field in deploy config record|appId={}|typeId={}|envId={}|" +
+                                "inherit={}|namespaceId={}|stageId={}", record.getAppId(), record.getTypeId(),
+                        record.getEnabled(), record.getInherit(), rawNamespaceId, rawStageId);
+            } catch (Exception e) {
+                if (e.getMessage().contains("Duplicate entry")) {
+                    deployConfigRepository.deleteByCondition(findCondition);
+                    log.error("find conflict deploy config record in upgrading namespace and stage field progress, " +
+                            "delete it|appId={}|typeId={}|envId={}|inherit={}|namespaceId={}|stageId={}",
+                            record.getAppId(), record.getTypeId(), record.getEnabled(), record.getInherit(),
+                            rawNamespaceId, rawStageId);
+                } else {
+                    log.error("upgrade namespace and stage field in deploy config record failed|appId={}|typeId={}|" +
+                                    "envId={}|inherit={}|namespaceId={}|stageId={}|exception={}", record.getAppId(),
+                            record.getTypeId(), record.getEnabled(), record.getInherit(), rawNamespaceId, rawStageId,
+                            ExceptionUtils.getStackTrace(e));
+                }
+            }
         }
     }
 
@@ -161,24 +271,45 @@ public class MaintainerServiceImpl implements MaintainerService {
      * @param stageId     Stage ID
      */
     private void upgradeNamespaceStageForAppAddon(String namespaceId, String stageId) {
-        AppAddonQueryCondition condition = AppAddonQueryCondition.builder()
-                .namespaceId("")
-                .stageId("")
-                .build();
-        List<AppAddonDO> records = appAddonRepository.selectByCondition(condition);
+        List<AppAddonDO> records = appAddonRepository.selectByCondition(AppAddonQueryCondition.builder()
+                .namespaceIdNotEqualTo(namespaceId)
+                .build());
+        List<AppAddonDO> stageRecords = appAddonRepository.selectByCondition(AppAddonQueryCondition.builder()
+                .stageIdNotEqualTo(stageId)
+                .build());
+        CollectionUtils.addAll(records, stageRecords);
+        Set<Long> usedSet = new HashSet<>();
         for (AppAddonDO record : records) {
+            if (usedSet.contains(record.getId())) {
+                continue;
+            }
+            usedSet.add(record.getId());
+            String rawNamespaceId = record.getNamespaceId();
+            String rawStageId = record.getStageId();
             record.setNamespaceId(namespaceId);
             record.setStageId(stageId);
-            int count = appAddonRepository
-                    .updateByCondition(record, AppAddonQueryCondition.builder().id(record.getId()).build());
-            if (count > 0) {
-                log.info("upgrade namespace and stage field in app addon record|appId={}|namespaceId={}|stageId={}|" +
-                                "appAddonId={}", record.getAppId(), record.getNamespaceId(), record.getStageId(),
-                        record.getId());
-            } else {
-                log.error("upgrade namespace and stage field failed, count=0|appId={}|namespaceId={}|stageId={}|" +
-                                "appAddonId={}", record.getAppId(), record.getNamespaceId(), record.getStageId(),
-                        record.getId());
+            AppAddonQueryCondition findCondition = AppAddonQueryCondition.builder().id(record.getId()).build();
+            try {
+                int count = appAddonRepository.updateByCondition(record, findCondition);
+                if (count > 0) {
+                    log.info("upgrade namespace and stage field in app addon record|appId={}|namespaceId={}|" +
+                                    "stageId={}|appAddonId={}", record.getAppId(), rawNamespaceId, rawStageId,
+                            record.getId());
+                } else {
+                    log.error("upgrade namespace and stage field failed, count=0|appId={}|namespaceId={}|stageId={}|" +
+                                    "appAddonId={}", record.getAppId(), rawNamespaceId, rawStageId, record.getId());
+                }
+            } catch (Exception e) {
+                if (e.getMessage().contains("Duplicate entry")) {
+                    appAddonRepository.deleteByCondition(findCondition);
+                    log.error("find conflict app addon record in upgrading namespace and stage field progress, " +
+                                    "delete it|appId={}|namespaceId={}|stageId={}|appAddonId={}",
+                            record.getAppId(), rawNamespaceId, rawStageId, record.getId());
+                } else {
+                    log.error("upgrade namespace and stage field in app addon record failed|appId={}|namespaceId={}|" +
+                                    "stageId={}|appAddonId={}|exception={}", record.getAppId(), rawNamespaceId, rawStageId,
+                            record.getId(), ExceptionUtils.getStackTrace(e));
+                }
             }
         }
     }

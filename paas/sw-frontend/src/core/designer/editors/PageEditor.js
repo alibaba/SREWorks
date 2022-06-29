@@ -520,7 +520,7 @@ export default class PageEditor extends React.Component {
                             }
                         />
                     </TabPane>
-                    <TabPane tab={<span><DeploymentUnitOutlined style={{ marginRight: 8 }} />页面参数</span>} key="searchparams">
+                    {/* <TabPane tab={<span><DeploymentUnitOutlined style={{ marginRight: 8 }} />页面参数</span>} key="searchparams">
                         <SearchParamsEditor value={esSearchStr || null}
                             onValuesChange={(changedValues, allValues) => {
                                 pageModel.setEsSearch(changedValues);
@@ -528,7 +528,7 @@ export default class PageEditor extends React.Component {
                                     esSearchStr: pageModel.getEsSearch()
                                 })
                             }} />
-                    </TabPane>
+                    </TabPane> */}
                 </Tabs>
                 <Drawer
                     title={showJson ? "页面源码" : "页面预览"}

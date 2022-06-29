@@ -66,7 +66,7 @@ spec:
                     taskmanager.memory.managed.fraction: 0.0 # no managed memory needed for filesystem statebackend
                     high-availability: vvp-kubernetes
                     metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
-                 execution.checkpointing.interval: 10s
+                    execution.checkpointing.interval: 10s
                     execution.checkpointing.externalized-checkpoint-retention: RETAIN_ON_CANCELLATION
         
           sqlService:

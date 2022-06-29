@@ -223,7 +223,7 @@ class FilterForm extends PureComponent {
                                             <div style={{ display: 'flex', marginRight: index === base.length - 1 ? 0 : 24 }} key={index}>
                                                 {
                                                     normal.label &&
-                                                    <div className="ant-form-item-label">
+                                                    <div className="ant-form-item-label" style={{marginTop:3}}>
                                                         <label title={normal.label}>{normal.label}
                                                             {
                                                                 normal.tooltip &&

@@ -1,5 +1,7 @@
 package com.alibaba.tesla.appmanager.server.service.converter.impl;
 
+import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
+import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.req.converter.AddParametersToLaunchReq;
 import com.alibaba.tesla.appmanager.domain.res.converter.AddParametersToLaunchRes;
@@ -29,6 +31,9 @@ public class ConverterServiceImpl implements ConverterService {
     @Override
     public AddParametersToLaunchRes addParametersToLaunch(AddParametersToLaunchReq request) {
         DeployAppSchema schema = SchemaUtil.toSchema(DeployAppSchema.class, request.getLaunchYaml());
+        if (schema.getSpec() == null) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "invalid launch yaml, no spec found");
+        }
         if (CollectionUtils.isEmpty(schema.getSpec().getParameterValues())) {
             schema.getSpec().setParameterValues(new ArrayList<>());
         }

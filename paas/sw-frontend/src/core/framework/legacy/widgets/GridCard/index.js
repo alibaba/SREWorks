@@ -125,7 +125,11 @@ class GridCard extends React.Component {
         if (widgetConfig && widgetConfig.dataSourceMeta) {
             afterResponseHandler = widgetConfig.dataSourceMeta['afterResponseHandler']
         }
-        this.loadAllData(this.state.apiConf, filterParams).then(respData => {
+        let runtimeUrl = {};
+        if (widgetConfig && widgetConfig.dataSourceMeta) {
+            runtimeUrl = widgetConfig.dataSourceMeta
+        }
+        this.loadAllData(runtimeUrl, filterParams).then(respData => {
             if (afterResponseHandler && afterResponseHandler.length > 50) {
                 respData = safeEval("(" + afterResponseHandler + ")(respData,nodeParams,httpClient)", { respData: respData, nodeParams: nodeParams, httpClient: httpClient });
                 if (respData instanceof Promise) {
@@ -154,7 +158,7 @@ class GridCard extends React.Component {
     }
 
     loadAllData = (api, filterParams = {}) => {
-        if(api && api.url) {
+        if(api && (api.url || api.api)) {
             this.setState({
                 loading: true,
             });
@@ -175,6 +179,7 @@ class GridCard extends React.Component {
             }
             let confParams = Object.assign(_.get(api, "params") || {}, util.getUrlParams(), { ___refresh_timestamp: nodeParams.___refresh_timestamp });
             let reqParams = {};
+            // 造成get方式参数重复
             Object.keys(apiConf.params || {}).forEach(key => {
                 reqParams[key] = confParams[key]
             });
@@ -186,10 +191,14 @@ class GridCard extends React.Component {
                 let funcParams = safeEval("(" + beforeRequestHandler + ")(nodeParams)", { nodeParams: nodeParams });
                 reqParams = {...reqParams,...funcParams}
             }
+            let finalUrl = api.url || api.api;
+            if(finalUrl.includes('$(')) {
+                finalUrl = util.renderTemplateString(finalUrl,nodeParams)
+            }
             if (api.method === 'POST') {
-                return httpClient.post(api.url, reqParams);
+                return httpClient.post(finalUrl, reqParams);
             } else {
-                return httpClient.get(api.url, { params: reqParams })
+                return httpClient.get(finalUrl, { params: reqParams })
             }
         }
 

@@ -7,6 +7,7 @@ import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.AddonUtil;
+import com.alibaba.tesla.appmanager.common.util.EnvUtil;
 import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.dto.AppAddonDTO;
@@ -128,6 +129,13 @@ public class AppAddonServiceImpl implements AppAddonService {
             componentName = AddonUtil.combineComponentName(addonMetaDO.getAddonId(), request.getAddonName());
         }
         String typeId = new DeployConfigTypeId(addonType, componentName).toString();
+        String requestNamespaceId = request.getNamespaceId();
+        String requestStageId = request.getStageId();
+        // TODO: FOR SREWORKS ONLY TEMPORARY
+        if (EnvUtil.isSreworks()) {
+            requestNamespaceId = EnvUtil.defaultNamespaceId();
+            requestStageId = EnvUtil.defaultStageId();
+        }
         deployConfigService.update(DeployConfigUpdateReq.builder()
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(request.getAppId())
@@ -135,8 +143,8 @@ public class AppAddonServiceImpl implements AppAddonService {
                 .envId("")
                 .inherit(true)
                 .config("")
-                .isolateNamespaceId(request.getNamespaceId())
-                .isolateStageId(request.getStageId())
+                .isolateNamespaceId(requestNamespaceId)
+                .isolateStageId(requestStageId)
                 .build());
         return record;
     }
@@ -180,6 +188,13 @@ public class AppAddonServiceImpl implements AppAddonService {
         List<AppAddonDO> appAddons = appAddonRepository.selectByCondition(AppAddonQueryCondition.builder()
                 .pageSize(DefaultConstant.UNLIMITED_PAGE_SIZE)
                 .build());
+        String requestNamespaceId = request.getNamespaceId();
+        String requestStageId = request.getStageId();
+        // TODO: FOR SREWORKS ONLY TEMPORARY
+        if (EnvUtil.isSreworks()) {
+            requestNamespaceId = EnvUtil.defaultNamespaceId();
+            requestStageId = EnvUtil.defaultStageId();
+        }
         for (AppAddonDO appAddon : appAddons) {
             String componentName;
             if (appAddon.getAddonType().isInternalAddon()) {
@@ -195,8 +210,8 @@ public class AppAddonServiceImpl implements AppAddonService {
                     .envId("")
                     .inherit(true)
                     .config("")
-                    .isolateNamespaceId(request.getNamespaceId())
-                    .isolateStageId(request.getStageId())
+                    .isolateNamespaceId(requestNamespaceId)
+                    .isolateStageId(requestStageId)
                     .build());
         }
     }

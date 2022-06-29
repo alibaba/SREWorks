@@ -32,5 +32,9 @@ public class AppAddonQueryCondition extends BaseCondition {
 
     private String namespaceId;
 
+    private String namespaceIdNotEqualTo;
+
     private String stageId;
+
+    private String stageIdNotEqualTo;
 }

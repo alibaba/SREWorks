@@ -32,9 +32,19 @@ public class HelmMetaQueryCondition extends BaseCondition {
     private String namespaceId;
 
     /**
+     * Namespace ID 不等条件
+     */
+    private String namespaceIdNotEqualTo;
+
+    /**
      * Stage ID
      */
     private String stageId;
+
+    /**
+     * Stage ID 不等条件
+     */
+    private String stageIdNotEqualTo;
 
     /**
      * Helm 名称

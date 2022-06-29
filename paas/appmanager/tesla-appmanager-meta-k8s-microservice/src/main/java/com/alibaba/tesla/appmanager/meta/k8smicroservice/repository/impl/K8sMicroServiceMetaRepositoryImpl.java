@@ -87,6 +87,12 @@ public class K8sMicroServiceMetaRepositoryImpl implements K8sMicroServiceMetaRep
             criteria.andComponentTypeIn(
                 condition.getComponentTypeList().stream().map(Enum::toString).collect(Collectors.toList()));
         }
+        if (StringUtils.isNotEmpty(condition.getNamespaceIdNotEqualTo())) {
+            criteria.andNamespaceIdNotEqualTo(condition.getNamespaceIdNotEqualTo());
+        }
+        if (StringUtils.isNotEmpty(condition.getStageIdNotEqualTo())) {
+            criteria.andStageIdNotEqualTo(condition.getStageIdNotEqualTo());
+        }
         return example;
     }
 

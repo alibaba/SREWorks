@@ -16,6 +16,14 @@ curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/udfartifacts \
     -d '{"name": "namespaces/'${VVP_WORK_NS}'/udfartifacts/'${UDF_ARTIFACT_NAME}'"}'
 
 
+###### UPLOAD UDF ARTIFACT
+echo "============UPLOAD UDF ARTIFACT============"
+upload_response=$(curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/udfartifacts/${UDF_ARTIFACT_NAME}:upload-jar \
+    -X POST \
+    -F 'file=@/app/sbin/'${UDF_ARTIFACT_JAR})
+jar_uri=$(echo $upload_response | jq -r ".jarUri")
+
+
 ###### REGISTER UDF ARTIFACT
 echo "============REGISTER UDF ARTIFACT============"
 curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/udfartifacts/${UDF_ARTIFACT_NAME} \
@@ -23,8 +31,18 @@ curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/udfartifacts/$
     -H 'Content-Type: application/json' \
     -d '{
         "name": "namespaces/'${VVP_WORK_NS}'/udfartifacts/'${UDF_ARTIFACT_NAME}'",
-        "jarUrl": "s3://vvp/artifacts/namespaces/'${VVP_WORK_NS}'/udfs/'${UDF_ARTIFACT_JAR}'"
+        "jarUrl": '${jar_uri}'
     }'
+
+####### REGISTER UDF ARTIFACT
+#echo "============REGISTER UDF ARTIFACT============"
+#curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/udfartifacts/${UDF_ARTIFACT_NAME} \
+#    -X PUT \
+#    -H 'Content-Type: application/json' \
+#    -d '{
+#        "name": "namespaces/'${VVP_WORK_NS}'/udfartifacts/'${UDF_ARTIFACT_NAME}'",
+#        "jarUrl": "s3://vvp/artifacts/namespaces/'${VVP_WORK_NS}'/udfs/'${UDF_ARTIFACT_JAR}'"
+#    }'
 
 
 ###### REGISTER UDF FUNCTION

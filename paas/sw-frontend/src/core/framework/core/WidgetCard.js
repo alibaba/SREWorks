@@ -247,7 +247,7 @@ export default class WidgetCard extends React.Component {
                     display: fold ? 'none' : undefined
                 }}
                 headStyle={{
-                    backgroundColor: headerColor ? headerColor : undefined,
+                    backgroundColor: headerColor ? (headerColor==='theme'? 'var(--PrimaryColor)' : headerColor): undefined,
                 }}
                 title={
                     headerExist && <div className="card-title-wrapper">

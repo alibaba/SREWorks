@@ -12,25 +12,25 @@ import java.util.Objects;
  * @date: 2022/01/17 17:39
  */
 @Data
-public class SreworksMetricData {
-    private String instanceId;
+public class SREWorksMetricData {
+    private String uId;
 
     private Integer metricId;
 
-    private String metricName;
+//    private String metricName;
 
-    private String appId;
-
-    private String type;
+//    private String type;
 
     private JSONObject labels;
 
     private Long timestamp;
 
-    private Double value;
+    private Long ts;
+
+    private Float value;
 
     public boolean fieldValidCheck() {
-        return Objects.nonNull(instanceId) && Objects.nonNull(metricId) && Objects.nonNull(metricName) && Objects.nonNull(appId)
-                && Objects.nonNull(type) && Objects.nonNull(timestamp) && Objects.nonNull(value);
+        return Objects.nonNull(uId) && Objects.nonNull(metricId) && Objects.nonNull(timestamp) && Objects.nonNull(ts)
+                && Objects.nonNull(value);
     }
 }

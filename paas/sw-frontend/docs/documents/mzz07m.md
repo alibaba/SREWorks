@@ -1,9 +1,6 @@
 # 2.2 源码构建安装
 
-<a name="mDNRe"></a>
-# 
-<a name="uZn4K"></a>
-# 
+
 <a name="kliWz"></a>
 # 1. SREWorks源码构建
 <a name="j2ijx"></a>
@@ -26,9 +23,23 @@ SW_ROOT=$(pwd)
 
 <a name="e3x9w"></a>
 ### 构建 SREWorks 底座容器镜像
-在sreworks目录下，直接在本地执行构建脚本：
+在sreworks目录下，直接在本地执行构建脚本
 ```shell
-./build.sh --target all --build --tag v1.1
+./build.sh --target all --build --tag v1.2
+```
+附: 构建镜像清单，如果镜像无法构建成功，也可以直接去公网搬运，镜像内容是完全一致的。
+```yaml
+sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-migrate:v1.2
+sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-openjdk8-jre:v1.2
+sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-postrun:v1.2
+sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-progress-check:v1.2
+sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-paas-appmanager:v1.2
+sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-paas-appmanager-db-migration:v1.2
+sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-paas-appmanager-postrun:v1.2
+sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-paas-appmanager-cluster-init:v1.2
+sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-paas-appmanager-operator:v1.2
+sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli:v1.2
+sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v1.2
 ```
 
 <a name="U0oZr"></a>
@@ -39,6 +50,8 @@ SW_REPO="your-registry.***.com/sreworks"
 docker login --username=sre****s your-registry.***.com
 ./build.sh --target all --push $SW_REPO --tag v1.2
 ```
+
+
 
 <a name="jiRmc"></a>
 # 2. SREWorks部署&构建运维应用容器镜像
@@ -87,7 +100,7 @@ helm install sreworks $SW_ROOT/chart/sreworks-chart \
 
 <a name="F2jkU"></a>
 ### 底座构建依赖资源参数
-在执行 `./build.sh` 命令前可传入下列的环境变量来改变资源地址，如不传入则使用默认值
+在执行 `./build.sh` 命令前可传入下列的环境变量来改变资源地址，如不传入则使用默认值。
 ```bash
 # 容器镜像
 export SW_PYTHON3_IMAGE="python:3.9.12-alpine"

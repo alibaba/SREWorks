@@ -119,6 +119,9 @@ daemonset:
                     method: "GET"
 
           - type: kubernetes
+            scope: cluster
+            node: ${NODE_NAME}
+            unique: true
             include_labels: ["sreworks-prometheus-scrape-metric"]
             templates:
               - condition:
@@ -127,8 +130,8 @@ daemonset:
                 config:
                   - module: prometheus
                     period: 1m
-                    metricsets: ["collector"]
-                    hosts: "${data.host}:${data.port}"
+                    hosts: ["${data.host}:${data.port}"]
+                    metrics_path: /metrics
 
           - type: kubernetes
             scope: cluster

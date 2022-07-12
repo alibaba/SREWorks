@@ -113,6 +113,7 @@ data:
   HOME_BUILD: {{ .Values.build.isHome | quote }}
   ONLY_BASE: {{ .Values.saas.onlyBase | quote }}
 
+  ADMIN_INIT_PASSWORD: {{ .Values.adminInitPassword | quote }}
 
 kind: ConfigMap
 metadata:

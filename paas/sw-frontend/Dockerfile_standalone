@@ -1,4 +1,4 @@
-FROM node:10-alpine AS build
+FROM node:14.18.3-alpine3.15 AS build
 COPY . /app
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
     && apk add --update --no-cache python2 make gcc g++ zip

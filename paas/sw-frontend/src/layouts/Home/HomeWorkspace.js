@@ -12,6 +12,8 @@ import SRESearch from "../../components/SRESearch";
 import Bus from '../../utils/eventBus';
 import properties from "../../properties";
 import { debounce } from "lodash";
+
+// const CarouselCompSec = window.CarouselCompSec
 @connect(({ home, global }) => ({
     home: home,
     global: global
@@ -58,6 +60,7 @@ export default class HomeWorkspace extends React.Component {
         return workspaces.map(workspace => {
             return (
                 <div key={workspace.type} style={{ width: '100%', height: 'calc(95vh)' }}>
+                    {/* <CarouselCompSec.CarouselCompSec></CarouselCompSec.CarouselCompSec> */}
                     {
                         workspace.hasSearch && searchConfig &&
                         <div className="search-content">
@@ -80,6 +83,7 @@ export default class HomeWorkspace extends React.Component {
     };
 
     render() {
+        console.log(window,'挂载桌面')
         const settings = {
             infinite: true,
             speed: 500,

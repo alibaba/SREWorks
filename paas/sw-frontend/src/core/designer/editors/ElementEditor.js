@@ -27,7 +27,7 @@ import FormElementFactory from '../../../components/FormBuilder/FormElementFacto
 import Constants from '../../framework/model/Constants';
 import DataSourceEditor from "./DataSourceEditor";
 import widgetLoader from '../../framework/core/WidgetLoader';
-import ReactMarkdown from "react-markdown/with-html";
+import ReactMarkdown from "react-markdown";
 import { getLegacyWidgetMeta } from '../../framework/components/WidgetRepository';
 import AceViewer from '../../../components/FormBuilder/FormItem/AceViewer';
 import debounce from 'lodash.debounce';

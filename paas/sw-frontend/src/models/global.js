@@ -51,6 +51,7 @@ export default {
         platformName: 'SREworks',
         platformLogo: '//g.alicdn.com/bcc/bigdata-manager/new_favicon.png',
         btnLoading: false,
+        remoteComp: [],
     },
     subscriptions: {
         setup({ dispatch }) {
@@ -289,6 +290,13 @@ export default {
                 ...state,
                 ...payload
             }
+        },
+        // 挂载远程组件列表到window
+        assignRemoteComp(state, { payload }) {
+            return {
+                ...state,
+                ...payload
+            };
         }
     },
 }

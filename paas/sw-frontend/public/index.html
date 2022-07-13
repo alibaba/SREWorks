@@ -7,6 +7,7 @@
   <meta name="theme-color" content="#000000">
   <script>
     window.__ABM_LOAD_START__ = (new Date).getTime();
+    window.REMOTE_COMP_LIST = []
   </script>
   <!--
       manifest.json provides metadata used when your web app is added to the
@@ -38,6 +39,20 @@
   <noscript>
     You need to enable JavaScript to run this app.
   </noscript>
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/moment-duration-format/2.3.2/moment-duration-format.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/react/16.14.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/react-dom/16.14.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/react-router/4.3.1/react-router.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/redux/3.7.2/redux.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/react-redux/5.0.7/react-redux.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/ant-design-icons/4.6.2/index.umd.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/antd/4.17.2/antd.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/bizcharts/4.1.15/BizCharts.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!-- <script src="https://qianmo-test.oss-cn-beijing.aliyuncs.com/comptest/CarouselCompSec.umd.js"></script> -->
   <div id="root" style="min-width: 1400px;overflow: hidden">
     <div id="abm-pre-screen-loading">
       <div id="abm-pre-screen-loading-center">
@@ -72,6 +87,8 @@
   <!--<script type="text/javascript" src="%PUBLIC_URL%/system.js"></script>-->
   <!--<script type="text/javascript" src="%PUBLIC_URL%/es6-promise.auto.min.js"></script>-->
   <script type="text/javascript" src="%PUBLIC_URL%/config.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/systemjs/6.10.2/system.min.js"></script>
+  <!-- <script src="https://qianmo-test.oss-cn-beijing.aliyuncs.com/comptest/CarouselCompSec.umd.js"></script> -->
   <script>
     window.less = {
       async: false,

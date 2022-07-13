@@ -5,7 +5,6 @@
 import React from 'react';
 import { getBuiltInWidget, getBuiltInWidgetMetaMapping } from './BuiltInWidgets';
 
-
 //挂件缓存
 const widgetCache = {};
 /**
@@ -22,18 +21,33 @@ class WidgetLoader {
 
     loadWidget(model) {
         const NotFound = () => (<span>未定义组件</span>);
-        const widget = getBuiltInWidget(model);
-        //const widget=builtInWidgets["PageHeaderLayout"];
+        // const widget = getBuiltInWidget(model);
+        let widget;
+        if(model.type === 'CarouselCompSec' || model.name === 'CarouselCompSec') {
+            if(model.name && window[model.name]) {
+                widget = window[model.name][model.name]
+            }
+            if(model.type && window[model.type]) {
+                widget = window[model.type][model.type]
+            }
+        } else {
+            widget = getBuiltInWidget(model);
+        }
         if (widget) {
             return Promise.resolve(widget);
-        }
-        //TODO 远程异步加载扩展组件待实现
+        } 
         return Promise.resolve(null);
     }
 
     getWidgetMeta(model) {
-        console.log(model, '生成model')
-        const meta = getBuiltInWidgetMetaMapping()[model.type];
+        let meta; 
+        if( model.name && window['REMOTE_COMP_LIST'].includes(model.name) && window[model.name]) {
+            meta =  window[model.name][model.name+'Meta']
+        } else if(model.type && window['REMOTE_COMP_LIST'].includes(model.type) && window[model.type]){
+            meta =  window[model.type][model.type+"Meta"]
+        } else {
+            meta = getBuiltInWidgetMetaMapping()[model.type];
+        }
         if (meta) {
             return Promise.resolve(meta);
         }

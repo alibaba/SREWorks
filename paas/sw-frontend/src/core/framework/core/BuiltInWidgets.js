@@ -30,7 +30,7 @@ function getCustomCompList() {
 export function getBuiltInWidget(model){
     return builtInWidgets[model.type];
 }
-console.log(builtInWidgetMetaMapping,builtInWidgets,'builtInWidgetMetaMapping===')
+console.log(builtInWidgets,'builtInWidgetMetaMapping===')
 export function getBuiltInWidgetMetaMapping() {
     // let res = await getCustomCompList()
     // let customTemplate = widgetCategory.find(item => item.name === 'custom') ? widgetCategory.find(item => item.name === 'custom')['children'][0] : {};

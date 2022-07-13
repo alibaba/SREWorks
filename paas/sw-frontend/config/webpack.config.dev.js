@@ -15,13 +15,8 @@ const getClientEnvironment = require('./env');
 const paths = require('./paths');
 //const cdnPath = require('./cdnPath');
 const ThemeVariables = require('./generateTheme');
-const HappyPack = require('happypack'),
-    os = require('os');
-const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
-//const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-// Webpack uses `publicPath` to determine where the app is being served from.
-// In development, we always serve from the root. This makes config easier.
-
+const threadLoader = require('thread-loader');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const publicPath = "/";
 // `publicUrl` is just like `publicPath`, but we will provide it to our app
 // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
@@ -29,20 +24,66 @@ const publicPath = "/";
 const publicUrl = '';
 // Get environment variables to inject into our app.
 const env = getClientEnvironment(publicUrl);
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-
+let threadLoaderOptions = {
+    workerParallelJobs: 50,
+    workerNodeArgs: ['--max-old-space-size=1024'],
+    // 允许重新生成一个僵死的 work 池
+    // 这个过程会降低整体编译速度
+    // 并且开发环境应该设置为 false
+    poolRespawn: false,
+    // 闲置时定时删除 worker 进程
+    // 默认为 500（ms）
+    // 可以设置为无穷大，这样在监视模式(--watch)下可以保持 worker 持续存在
+    poolTimeout: 2000,
+    // 池分配给 worker 的工作数量
+    // 默认为 200
+    // 降低这个数值会降低总体的效率，但是会提升工作分布更均一
+    poolParallelJobs: 50,
+    // 池的名称
+    // 可以修改名称来创建其余选项都一样的池
+    name: "my-pool"
+}
+threadLoader.warmup(
+    {
+        // 池选项，例如传递给 loader 选项
+        // 必须匹配 loader 选项才能启动正确的池
+    },
+    [
+        // 加载模块
+        // 可以是任意模块，例如
+        'babel-loader',
+        'babel-preset-es2015',
+        'sass-loader',
+        'less-loader'
+    ]
+);
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
 // The production configuration is different and lives in a separate file.
 module.exports = {
     // You may want 'eval' instead if you prefer to see the compiled output in DevTools.
     // See the discussion in https://github.com/facebookincubator/create-react-app/issues/343.
-    devtool: 'cheap-module-eval-source-map',
+    mode: 'development',
+    devtool: 'inline-cheap-source-map',
     // These are the "entry points" to our application.
     // This means they will be the "root" imports that are included in JS bundle.
     // The first two entry points enable "hot" CSS and auto-refreshes for JS.
+    externals: {
+        'axios': 'axios',
+        'react': 'React',
+        'react-dom': 'ReactDOM',
+        "antd":"antd",
+        'moment':'moment',
+        "moment-duration-format":"moment-duration-format",
+        "ant-design-icons":"ant-design-icons",
+        "redux": 'Redux',
+        "react-redux": 'ReactRedux',
+        "bizcharts": "BizCharts",
+        "html2canvas": "html2canvas",
+        "jquery": "jQuery"
+    },
     entry: {
-        index:[
+        index: [
             // Include an alternative client for WebpackDevServer. A client's job is to
             // connect to WebpackDevServer by a socket and get notified about changes.
             // When you save a file, the client will either apply hot updates (in case
@@ -60,11 +101,8 @@ module.exports = {
             require.resolve('react-error-overlay'),
             // Finally, this is your app's code:
             paths.appIndexJs,
-            // We include the app code last so that if there is a runtime error during
-            // initialization, it doesn't blow up the WebpackDevServer client, and
-            // changing JS code would still trigger a refresh.
         ],
-        vendor: ['antd','react','react-dom'],
+        // vendor: ['react', 'react-router', 'react-dom'],
     },
     output: {
         // Next line is not used in dev but WebpackDevServer crashes without it:
@@ -82,6 +120,13 @@ module.exports = {
         // Point sourcemap entries to original disk location (format as URL on Windows)
         devtoolModuleFilenameTemplate: info =>
             path.resolve(info.absoluteResourcePath).replace(/\\/g, '/'),
+    },
+    optimization: {
+        splitChunks: {
+            chunks: "all"
+        },
+        namedModules: true,
+        nodeEnv: 'development'
     },
     resolve: {
         // This allows you to set a fallback for where Webpack should look for modules.
@@ -106,22 +151,17 @@ module.exports = {
             // To fix this, we prevent you from importing files out of src/ -- if you'd like to,
             // please link the files into your node_modules/ and let module-resolution kick in.
             // Make sure your source files are compiled, as they will not be processed in any way.
-            new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
+            new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])
         ],
     },
     resolveLoader: {
         alias: {
-            'copy':'file-loader?name=[path][name].[ext]&context=./src'
+            'copy': 'file-loader?name=[path][name].[ext]&context=./src'
         }
     },
     module: {
         strictExportPresence: true,
         rules: [
-            // TODO: Disable require.ensure as it's not a standard language feature.
-            // We are waiting for https://github.com/facebookincubator/create-react-app/issues/2176.
-            // { parser: { requireEnsure: false } },
-
-            // First, run the linter.
             // It's important to do this before Babel processes the JS.
             {
                 test: /\.(js|jsx|mjs)$/,
@@ -147,10 +187,10 @@ module.exports = {
                     // smaller than specified limit in bytes as data URLs to avoid requests.
                     // A missing `test` is equivalent to a match.
                     {
-                        test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/,/\.svg$/],
+                        test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/i, /\.svg$/],
                         loader: require.resolve('url-loader'),
                         options: {
-                            limit: 10000,
+                            limit: 1024 * 10,
                             name: 'static/media/[name].[hash:8].[ext]',
                         },
                     },
@@ -158,62 +198,77 @@ module.exports = {
                     {
                         test: /\.(js|jsx|mjs)$/,
                         include: paths.appSrc,
-                        loader: 'happyPack/loader?id=js',
-                        exclude: paths.appNodeModules
-                        // loader: require.resolve('babel-loader'),
-                        // options: {
-                        //   plugins: [
-                        //     //['react-html-attrs'],//添加babel-plugin-react-html-attrs组件的插件配置
-                        //     // 引入样式为 css
-                        //     // ['import', { libraryName: 'antd', style: 'css' }],
-                        //     // 引入样式为 less
-                        //     ['import', { libraryName: 'antd', style: true }],
-                        //   ],
-                        //   // This is a feature of `babel-loader` for webpack (not Babel itself).
-                        //   // It enables caching results in ./node_modules/.cache/babel-loader/
-                        //   // directory for faster rebuilds.
-                        //   cacheDirectory: true,
-                        // }
-                    },
-                    // "postcss" loader applies autoprefixer to our CSS.
-                    // "css" loader resolves paths in CSS and adds assets as dependencies.
-                    // "style" loader turns CSS into JS modules that inject <style> tags.
-                    // In production, we use a plugin to extract that CSS to a file, but
-                    // in development "style" loader enables hot editing of CSS.
-                    {
-                        test: /\.css$/,
-                        loader: ExtractTextPlugin.extract({
-                            fallback: 'style-loader',
-                            use: 'happypack/loader?id=css'
-                        }),
-                        //loader: 'happypack/loader?id=css',
+                        use: [
+                            {
+                                loader: require.resolve('thread-loader'),
+                                options: {
+                                    workers: 2,
+                                    ...threadLoaderOptions
+                                }
+                            },
+                            {
+                                // loader: require.resolve('babel-loader'),
+                                loader: 'babel-loader',
+                                options: {
+                                    // plugins: [
+                                    //     // ["transform-runtime"],
+                                    //     ['import', [{ libraryName: 'antd', style: 'css' }]],  // import less
+                                    // ],
+                                    compact: true,
+                                    cacheDirectory: true
+                                },
+                            }
+                        ],
                     },
                     {
-                        test: /\.less$/,
-                        loader: ExtractTextPlugin.extract({
-                            fallback: 'style-loader',
-                            use: 'happypack/loader?id=less'
-                        }),
-                        //loader: 'happypack/loader?id=less',
+                        test: /\.(css|less)$/,
+                        use: [
+                            { loader: "style-loader" },
+                            {
+                                loader: 'thread-loader',
+                                options: {
+                                    workers: 2,
+                                    ...threadLoaderOptions
+                                }
+                            },
+                            {
+                                loader: require.resolve('css-loader'),
+                                options: {
+                                    importLoaders: 1,
+                                },
+                            },
+                            {
+                                loader: require.resolve('less-loader'), // compiles Less to CSS
+                                options: {
+                                    modifyVars: require('./generateTheme'),
+                                    javascriptEnabled: true
+                                }
+                            },
+                        ],
                     },
                     {
-                        test: /\.scss$/,
-                        loader: ExtractTextPlugin.extract({
-                            fallback: 'style-loader',
-                            use: 'happypack/loader?id=scss'
-                        }),
-                        //loader: 'happypack/loader?id=scss',
+                        test: /\.(css|scss)$/,
+                        use: [
+                            { loader: "style-loader" },
+                            {
+                                loader: 'thread-loader',
+                                options: {
+                                    workers: 2,
+                                    ...threadLoaderOptions
+                                }
+                            },
+                            {
+                                loader: require.resolve('css-loader'),
+                                options: {
+                                    importLoaders: 1,
+                                },
+                            },
+                            {
+                                loader: require.resolve('sass-loader') // compiles Less to CSS
+                            },
+                        ],
                     },
-                    // "file" loader makes sure those assets get served by WebpackDevServer.
-                    // When you `import` an asset, you get its (virtual) filename.
-                    // In production, they would get copied to the `build` folder.
-                    // This loader doesn't use a "test" so it will catch all modules
-                    // that fall through the other loaders.
                     {
-                        // Exclude `js` files to keep "css" loader working as it injects
-                        // it's runtime that would otherwise processed through "file" loader.
-                        // Also exclude `html` and `json` extensions so they get processed
-                        // by webpacks internal loaders.
                         exclude: [/\.js$/, /\.html$/, /\.json$/, /\.mjs$/],
                         loader: require.resolve('file-loader'),
                         options: {
@@ -227,105 +282,20 @@ module.exports = {
         ],
     },
     plugins: [
-        new ExtractTextPlugin({filename:'static/css/[name].[hash:8].css',allChunks: true}),
+        // new MiniCssExtractPlugin({ filename: 'static/css/[name].[hash:8].css', chunkFilename: 'static/css/[name].[hash:8].css' }),
+        new HtmlWebpackPlugin({
+            inject: true,
+            template: paths.appHtml,
+            chunksSortMode: 'none'
+        }),
         // Makes some environment variables available in index.html.
         // The public URL is available as %PUBLIC_URL% in index.html, e.g.:
         // <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
         // In development, this will be an empty string.
-        new HappyPack({
-            id: 'js',
-            threadPool: happyThreadPool,
-            loaders: [{
-                loader: 'babel-loader',
-                options: {
-                    cacheDirectory: true,
-                    plugins: [
-                        //['react-html-attrs'],//添加babel-plugin-react-html-attrs组件的插件配置
-                        // 引入样式为 css
-                        // ['import', { libraryName: 'antd', style: 'css' }],
-                        // 引入样式为 less
-                        //['import', {libraryName: 'antd', style: true}],
-                    ],
-                    compact: true,
-                },
-            }]
-        }),
-        new HappyPack({
-            id: 'css',
-            threadPool: happyThreadPool,
-            loaders: [
-                //require.resolve('style-loader'),
-                {
-                    loader: require.resolve('css-loader'),
-                    options: {
-                        importLoaders: 1,
-                    },
-                },
-                {
-                    loader: require.resolve('postcss-loader'),
-                    options: {
-                        // Necessary for external CSS imports to work
-                        // https://github.com/facebookincubator/create-react-app/issues/2677
-                        ident: 'postcss',
-                        plugins: () => [
-                            require('postcss-flexbugs-fixes'),
-                            autoprefixer({
-                                browsers: [
-                                    '>1%',
-                                    'last 4 versions',
-                                    'Firefox ESR',
-                                    'not ie < 9', // React doesn't support IE8 anyway
-                                ],
-                                flexbox: 'no-2009',
-                            }),
-                        ],
-                    },
-                },
-            ],
-        }),
-        new HappyPack({
-            id: 'less',
-            threadPool: happyThreadPool,
-            loaders: [
-                //require.resolve('style-loader'),
-                {
-                    loader: require.resolve('css-loader'),
-                    options: {
-                        importLoaders: 1,
-                    },
-                },
-                {
-                    loader: "less-loader", options: {
-                    sourceMap: true,
-                    javascriptEnabled: true,
-                    modifyVars: require('./generateTheme')
-                }
-                },
-
-            ]
-        }),
-        new HappyPack({
-            id: 'scss',
-            threadPool: happyThreadPool,
-            loaders: [ {
-                loader: "css-loader" // 将 CSS 转化成 CommonJS 模块
-            }, {
-                loader: "sass-loader" // 将 Sass 编译成 CSS
-            }]
-        }),
-        // 提供公共代码vendor
-        new webpack.optimize.CommonsChunkPlugin({
-            name: ['vendor']
-        }),
         new SimpleProgressWebpackPlugin(),
-        new InterpolateHtmlPlugin(env.raw),
+        new InterpolateHtmlPlugin(HtmlWebpackPlugin, env.raw),
         // Generates an `index.html` file with the <script> injected.
-        new HtmlWebpackPlugin({
-            inject: true,
-            template: paths.appHtml,
-        }),
         // Add module names to factory functions so they appear in browser profiler.
-        new webpack.NamedModulesPlugin(),
         // Makes some environment variables available to the JS code, for example:
         // if (process.env.NODE_ENV === 'development') { ... }. See `./env.js`.
         new webpack.DefinePlugin(env.stringified),
@@ -349,7 +319,7 @@ module.exports = {
 
         new webpack.DefinePlugin({
             THEMES: JSON.stringify(ThemeVariables)
-        }),
+        })
         //new BundleAnalyzerPlugin()
     ],
     // Some libraries import Node modules but don't use them in the browser.
@@ -362,10 +332,7 @@ module.exports = {
         child_process: 'empty',
         __dirname: true
     },
-    // Turn off performance hints during development because we don't do any
-    // splitting or minification in interest of speed. These warnings become
-    // cumbersome.
     performance: {
         hints: false,
-    },
+    }
 };

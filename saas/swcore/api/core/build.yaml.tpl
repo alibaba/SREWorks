@@ -153,6 +153,8 @@ options:
     - ZOOKEEPER_PORT
     - OAUTH2_JWT_SECRET_KEY
     - DEFAULT_AMDIN_AVATOR
+    - ADMIN_INIT_PASSWORD
+
 ---
 componentType: K8S_JOB
 componentName: paas-authproxy-postrun

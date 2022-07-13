@@ -19,7 +19,7 @@ global:
     apkRepoDomain: mirrors.tuna.tsinghua.edu.cn
     mavenSettingsXml: https://sreworks.oss-cn-beijing.aliyuncs.com/resource/settings.xml  
     alpineImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/alpine:latest
-    nodeImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/node:10-alpine
+    nodeImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/node:14.18.3-alpine3.15
     npmRegistryUrl: https://registry.npmmirror.com
     migrateImage: sw-migrate 
     postrunImage: sw-postrun

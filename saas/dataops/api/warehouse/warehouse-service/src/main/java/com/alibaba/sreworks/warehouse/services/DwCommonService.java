@@ -1,6 +1,7 @@
 package com.alibaba.sreworks.warehouse.services;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.sreworks.warehouse.common.constant.DwConstant;
 import com.alibaba.sreworks.warehouse.operator.ESDocumentOperator;
 import com.alibaba.sreworks.warehouse.operator.ESIndexOperator;
 import com.alibaba.sreworks.warehouse.operator.ESLifecycleOperator;
@@ -11,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author: fangzong.lyj@alibaba-inc.com
@@ -34,22 +35,38 @@ public class DwCommonService {
     @Autowired
     ESLifecycleOperator esLifecycleOperator;
 
-    protected int doFlushDatas(String alias, String index, Integer lifecycle, List<JSONObject> esDatas) throws Exception{
+    protected int doFlushDatas(String alias, String index, String partitionFormat, Integer lifecycle, List<JSONObject> esDatas) throws Exception{
         if (CollectionUtils.isEmpty(esDatas)) {
             return 0;
         }
 
-        log.info(String.format("====flush data, es_index:%s, es_index_alias:%s====", index, alias));
-        if (!esIndexOperator.existIndex(index)) {
-            // 创建索引
-            createTableMeta(index, alias, lifecycle);
-        }
+        AtomicInteger size = new AtomicInteger();
+        Map<String, List<JSONObject>> classifiedDatas = classifiedDataByPartition(esDatas);
+        classifiedDatas.keySet().parallelStream().forEach(dataPartition -> {
+            List<JSONObject> partitionEsDatas = classifiedDatas.get(dataPartition);
 
-        if (esDatas.size() > 1) {
-            return esDocumentOperator.upsertBulkJSON(index, esDatas);
-        } else {
-            return esDocumentOperator.upsertJSON(index, esDatas.get(0));
-        }
+            try {
+                String indexName = inferIndexNameByPartition(index, partitionFormat, dataPartition);
+                log.info(String.format("====[start]flush data, es_index:%s, es_index_alias:%s====", indexName, alias));
+                if (!esIndexOperator.existIndex(indexName)) {
+                    // 创建索引
+                    createTableMeta(indexName, alias, lifecycle);
+                }
+
+                int cnt;
+                if (esDatas.size() > 1) {
+                    cnt = esDocumentOperator.upsertBulkJSON(indexName, partitionEsDatas);
+                } else {
+                    cnt = esDocumentOperator.upsertJSON(indexName, partitionEsDatas.get(0));
+                }
+                size.addAndGet(cnt);
+                log.info(String.format("====[end]flush data, es_index:%s, es_index_alias:%s====", indexName, alias));
+            } catch (Exception ex) {
+                log.error(String.format("====flush data, es_index_alias:%s, exception:%s====", alias, ex));
+                throw new RuntimeException(ex);
+            }
+        });
+        return size.get();
     }
 
     protected void createTableMeta(String tableName, String tableAlias, Integer lifecycle) throws Exception {
@@ -101,5 +118,26 @@ public class DwCommonService {
         }
 
         return stats;
+    }
+
+    protected String inferIndexNameByPartition(String index, String partitionFormat, String dataPartition) throws Exception {
+        String prefixIndex = index.substring(1, index.lastIndexOf("_"));
+
+        Date date = new SimpleDateFormat(DwConstant.DATE_FORMAT.getString(partitionFormat)).parse(dataPartition);
+        SimpleDateFormat f = new SimpleDateFormat(DwConstant.INDEX_DATE_PATTERN.getString(partitionFormat));
+        String datePattern = f.format(date);
+
+        return prefixIndex + "_" + datePattern;
+    }
+
+    protected Map<String, List<JSONObject>> classifiedDataByPartition(List<JSONObject> esDatas) {
+        Map<String, List<JSONObject>> classifiedDatas = new HashMap<>();
+        for(JSONObject esData : esDatas) {
+            String partition = esData.getString(DwConstant.PARTITION_DIM);
+            classifiedDatas.putIfAbsent(partition, new ArrayList<>());
+            List<JSONObject> datas = classifiedDatas.get(partition);
+            datas.add(esData);
+        }
+        return classifiedDatas;
     }
 }

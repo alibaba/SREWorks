@@ -24,29 +24,15 @@ const env = getClientEnvironment(publicUrl);
 const TerserPlugin = require('terser-webpack-plugin');
 const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
 const smp = new SpeedMeasurePlugin();
-let threadLoaderOptions = {
-    workerParallelJobs: 50,
-    workerNodeArgs: ['--max-old-space-size=1024'],
-    // 允许重新生成一个僵死的 work 池
-    // 这个过程会降低整体编译速度
-    // 并且开发环境应该设置为 false
-    poolRespawn: false,
-    // 闲置时定时删除 worker 进程
-    // 默认为 500（ms）
-    // 可以设置为无穷大，这样在监视模式(--watch)下可以保持 worker 持续存在
-    poolTimeout: 2000,
-    poolParallelJobs: 50,
-    name: "my-pool"
-}
-// threadLoader.warmup(
-//     [
-//         // 加载模块
-//         'babel-loader',
-//         'babel-preset-es2015',
-//         'sass-loader',
-//         'less-loader'
-//     ]
-// );
+threadLoader.warmup(
+    [
+        // 加载模块
+        'babel-loader',
+        'babel-preset-es2015',
+        'sass-loader',
+        'less-loader'
+    ]
+);
 // Note: defined here because it will be used more than once.
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
@@ -195,13 +181,7 @@ module.exports = smp.wrap({
                         test: /\.(js|jsx|mjs)$/,
                         include: paths.appSrc,
                         use: [
-                            // {
-                            //     loader: require.resolve('thread-loader'),
-                            //     options: {
-                            //         workers: 2,
-                            //         ...threadLoaderOptions
-                            //     }
-                            // },
+                            'thread-loader',
                             {
                                 // loader: require.resolve('babel-loader'),
                                 loader: 'babel-loader',
@@ -221,13 +201,7 @@ module.exports = smp.wrap({
                         use: [
                             //{ loader: "style-loader" },
                             MiniCssExtractPlugin.loader, // 此处使用把css分离出去了，不过不使用此插件，可以用style-loader
-                            // {
-                            //     loader: 'thread-loader',
-                            //     options: {
-                            //         workers: 2,
-                            //         ...threadLoaderOptions
-                            //     }
-                            // },
+                            'thread-loader',
                             {
                                 loader: require.resolve('css-loader'),
                             },
@@ -244,13 +218,7 @@ module.exports = smp.wrap({
                         test: /\.(css|scss)$/,
                         use: [
                             MiniCssExtractPlugin.loader,
-                            // {
-                            //     loader: 'thread-loader',
-                            //     options: {
-                            //         workers: 2,
-                            //         ...threadLoaderOptions
-                            //     }
-                            // },
+                            'thread-loader',
                             {
                                 loader: require.resolve('css-loader'),
                             },

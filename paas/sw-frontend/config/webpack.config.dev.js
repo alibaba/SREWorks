@@ -43,20 +43,6 @@ let threadLoaderOptions = {
     // 可以修改名称来创建其余选项都一样的池
     name: "my-pool"
 }
-threadLoader.warmup(
-    {
-        // 池选项，例如传递给 loader 选项
-        // 必须匹配 loader 选项才能启动正确的池
-    },
-    [
-        // 加载模块
-        // 可以是任意模块，例如
-        'babel-loader',
-        'babel-preset-es2015',
-        'sass-loader',
-        'less-loader'
-    ]
-);
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
 // The production configuration is different and lives in a separate file.
@@ -199,13 +185,7 @@ module.exports = {
                         test: /\.(js|jsx|mjs)$/,
                         include: paths.appSrc,
                         use: [
-                            {
-                                loader: require.resolve('thread-loader'),
-                                options: {
-                                    workers: 2,
-                                    ...threadLoaderOptions
-                                }
-                            },
+                            'thread-loader',
                             {
                                 // loader: require.resolve('babel-loader'),
                                 loader: 'babel-loader',
@@ -224,13 +204,7 @@ module.exports = {
                         test: /\.(css|less)$/,
                         use: [
                             { loader: "style-loader" },
-                            {
-                                loader: 'thread-loader',
-                                options: {
-                                    workers: 2,
-                                    ...threadLoaderOptions
-                                }
-                            },
+                            'thread-loader',
                             {
                                 loader: require.resolve('css-loader'),
                                 options: {
@@ -250,13 +224,7 @@ module.exports = {
                         test: /\.(css|scss)$/,
                         use: [
                             { loader: "style-loader" },
-                            {
-                                loader: 'thread-loader',
-                                options: {
-                                    workers: 2,
-                                    ...threadLoaderOptions
-                                }
-                            },
+                            'thread-loader',
                             {
                                 loader: require.resolve('css-loader'),
                                 options: {

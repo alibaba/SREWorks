@@ -38,15 +38,15 @@ let threadLoaderOptions = {
     poolParallelJobs: 50,
     name: "my-pool"
 }
-threadLoader.warmup(
-    [
-        // 加载模块
-        'babel-loader',
-        'babel-preset-es2015',
-        'sass-loader',
-        'less-loader'
-    ]
-);
+// threadLoader.warmup(
+//     [
+//         // 加载模块
+//         'babel-loader',
+//         'babel-preset-es2015',
+//         'sass-loader',
+//         'less-loader'
+//     ]
+// );
 // Note: defined here because it will be used more than once.
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
@@ -195,13 +195,13 @@ module.exports = smp.wrap({
                         test: /\.(js|jsx|mjs)$/,
                         include: paths.appSrc,
                         use: [
-                            {
-                                loader: require.resolve('thread-loader'),
-                                options: {
-                                    workers: 2,
-                                    ...threadLoaderOptions
-                                }
-                            },
+                            // {
+                            //     loader: require.resolve('thread-loader'),
+                            //     options: {
+                            //         workers: 2,
+                            //         ...threadLoaderOptions
+                            //     }
+                            // },
                             {
                                 // loader: require.resolve('babel-loader'),
                                 loader: 'babel-loader',
@@ -221,13 +221,13 @@ module.exports = smp.wrap({
                         use: [
                             //{ loader: "style-loader" },
                             MiniCssExtractPlugin.loader, // 此处使用把css分离出去了，不过不使用此插件，可以用style-loader
-                            {
-                                loader: 'thread-loader',
-                                options: {
-                                    workers: 2,
-                                    ...threadLoaderOptions
-                                }
-                            },
+                            // {
+                            //     loader: 'thread-loader',
+                            //     options: {
+                            //         workers: 2,
+                            //         ...threadLoaderOptions
+                            //     }
+                            // },
                             {
                                 loader: require.resolve('css-loader'),
                             },
@@ -244,13 +244,13 @@ module.exports = smp.wrap({
                         test: /\.(css|scss)$/,
                         use: [
                             MiniCssExtractPlugin.loader,
-                            {
-                                loader: 'thread-loader',
-                                options: {
-                                    workers: 2,
-                                    ...threadLoaderOptions
-                                }
-                            },
+                            // {
+                            //     loader: 'thread-loader',
+                            //     options: {
+                            //         workers: 2,
+                            //         ...threadLoaderOptions
+                            //     }
+                            // },
                             {
                                 loader: require.resolve('css-loader'),
                             },

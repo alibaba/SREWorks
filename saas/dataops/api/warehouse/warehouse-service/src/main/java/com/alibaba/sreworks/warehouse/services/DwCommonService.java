@@ -7,7 +7,6 @@ import com.alibaba.sreworks.warehouse.operator.ESIndexOperator;
 import com.alibaba.sreworks.warehouse.operator.ESLifecycleOperator;
 import com.alibaba.sreworks.warehouse.operator.ESSearchOperator;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -90,31 +89,21 @@ public class DwCommonService {
     protected JSONObject statsTable(String tableName, String tableAlias) {
         JSONObject stats = new JSONObject();
 
-        String newestIndex = null;
+        Set<String> indices = new HashSet<>();
         try {
-            Set<String> indices = esIndexOperator.getIndicesByAlias(tableAlias);
+            indices = esIndexOperator.getIndicesByAlias(tableAlias);
             int partitionCount = indices.size();
             stats.put("partitionCount", partitionCount);
-
-            List<String> indexList = new ArrayList<>(indices);
-            newestIndex = indexList.get(indexList.size() - 1);
         } catch (Exception ex) {
             log.error(String.format("统计模型[table:%s, alias:%s]分区数异常, 详情:%s", tableName, tableAlias, ex.getMessage()));
         }
 
         try {
-            long docCount = esSearchOperator.countDoc(tableName);
+            long docCount = esSearchOperator.countDocByIndices(indices);
             stats.put("docCount", docCount);
         } catch (Exception ex) {
             log.error(String.format("统计模型[table:%s, alias:%s]]最新分区实例数异常, 详情:%s",tableName, tableAlias, ex.getMessage()));
-            if (StringUtils.isNotEmpty(newestIndex)) {
-                try {
-                    long docCount = esSearchOperator.countDoc(newestIndex);
-                    stats.put("docCount", docCount);
-                } catch (Exception inEx) {
-                    log.error(String.format("统计模型[table:%s, alias:%s]最新分区实例数异常, 详情:%s", tableName, tableAlias, inEx.getMessage()));
-                }
-            }
+            stats.put("docCount", 0);
         }
 
         return stats;

@@ -195,7 +195,7 @@ spec:
     - name: DEFAULT_AMDIN_AVATOR
       value: "/static/publicMedia/aliyun.png"
     - name: ADMIN_INIT_PASSWORD
-      value "${ADMIN_INIT_PASSWORD}"
+      value: "${ADMIN_INIT_PASSWORD}"
   components:
     - revisionName: K8S_MICROSERVICE|paas-authproxy|_
       scopes:

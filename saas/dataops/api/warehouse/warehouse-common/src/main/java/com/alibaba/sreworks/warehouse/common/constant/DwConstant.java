@@ -63,8 +63,16 @@ public class DwConstant {
             put(PARTITION_BY_DAY, "{now/d}");
             put(PARTITION_BY_MONTH, "{now/M{yyyy.MM}}");
             put(PARTITION_BY_YEAR, "{now/y{yyyy}}");
-//            put(PARTITION_BY_WEEK, "{now/w{yyyy.ww}}w");
             put(PARTITION_BY_WEEK, "{now/w{yyyy.ww}}");
+        }
+    };
+    public static final JSONObject INDEX_DATE_PATTERN = new JSONObject(){
+        {
+            put(PARTITION_BY_HOUR, "yyyy.MM.dd.HH");
+            put(PARTITION_BY_DAY, "yyyy.MM.dd");
+            put(PARTITION_BY_MONTH, "yyyy.MM");
+            put(PARTITION_BY_YEAR, "yyyy");
+            put(PARTITION_BY_WEEK, "yyy.ww");
         }
     };
 
@@ -85,6 +93,16 @@ public class DwConstant {
     public static final String FORMAT_WEEK = "yyyyww";
     public static final String FORMAT_MONTH = "yyyyMM";
     public static final String FORMAT_YEAR = "yyyy";
+
+    public static final JSONObject DATE_FORMAT = new JSONObject(){
+        {
+            put(PARTITION_BY_HOUR, FORMAT_HOUR);
+            put(PARTITION_BY_DAY, FORMAT_DAY);
+            put(PARTITION_BY_MONTH, FORMAT_MONTH);
+            put(PARTITION_BY_YEAR, FORMAT_YEAR);
+            put(PARTITION_BY_WEEK, FORMAT_WEEK);
+        }
+    };
 
     public static final ImmutableList<String> ADS_MODEL_TAGS = ImmutableList.of("交付", "监测", "管理", "控制", "运营", "服务");
 

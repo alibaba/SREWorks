@@ -23,13 +23,8 @@ class WidgetLoader {
         const NotFound = () => (<span>未定义组件</span>);
         // const widget = getBuiltInWidget(model);
         let widget;
-        if(model.type === 'CarouselCompSec' || model.name === 'CarouselCompSec') {
-            if(model.name && window[model.name]) {
-                widget = window[model.name][model.name]
-            }
-            if(model.type && window[model.type]) {
-                widget = window[model.type][model.type]
-            }
+        if(model.type && window['REMOTE_COMP_LIST'].includes(model.type) && window[model.type]) {
+            widget = window[model.type][model.type]
         } else {
             widget = getBuiltInWidget(model);
         }
@@ -41,9 +36,7 @@ class WidgetLoader {
 
     getWidgetMeta(model) {
         let meta; 
-        if( model.name && window['REMOTE_COMP_LIST'].includes(model.name) && window[model.name]) {
-            meta =  window[model.name][model.name+'Meta']
-        } else if(model.type && window['REMOTE_COMP_LIST'].includes(model.type) && window[model.type]){
+         if(model.type && window['REMOTE_COMP_LIST'].includes(model.type) && window[model.type]){
             meta =  window[model.type][model.type+"Meta"]
         } else {
             meta = getBuiltInWidgetMetaMapping()[model.type];

@@ -53,10 +53,11 @@ export default class WidgetSelector extends React.Component {
                         }
                     });
                 })
+                console.log(umdCompList,'umdCompList')
                 umdCompList && umdCompList.forEach(item => {
                     initCategory.forEach(lit => {
                         if (lit.name === 'remote') {
-                            window[item.configObject.name] && lit.children.push(window[item.configObject.name][item.configObject.name+'Meta'])
+                            window[item.name] && lit.children.push(window[item.name][item.name+'Meta'])
                         }
                     });
                 })

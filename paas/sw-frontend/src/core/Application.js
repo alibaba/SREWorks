@@ -57,7 +57,7 @@ class Application extends React.Component {
       remoteComList.forEach(item => {
         if (item.configObject && item.configObject.umdUrl) {
           pros.push(Promise.resolve(window.System.import(item.configObject.umdUrl)))
-          recievedList.push(item.configObject.name)
+          recievedList.push(item.name)
         }
       })
       let remoteComp = await Promise.all(pros);

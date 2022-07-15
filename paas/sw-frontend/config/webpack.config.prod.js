@@ -46,7 +46,7 @@ module.exports = smp.wrap({
     // In production, we only want to load the polyfills and the app code.
     entry: {
         index: [require.resolve('./polyfills'), paths.appIndexJs],
-        vendor: ['lodash', 'react-jsx-parser', 'react-router', "react-router-dom",'node-sass','antd'],
+        vendor: ['lodash', 'react-jsx-parser', 'react-router', "react-router-dom",'antd'],
     },
     output: {
         // The build folder.
@@ -198,8 +198,8 @@ module.exports = smp.wrap({
                     {
                         test: /\.(css|less)$/,
                         use: [
-                            //{ loader: "style-loader" },
-                            MiniCssExtractPlugin.loader, // 此处使用把css分离出去了，不过不使用此插件，可以用style-loader
+                            { loader: "style-loader" },
+                            // MiniCssExtractPlugin.loader, // 此处使用把css分离出去了，不过不使用此插件，可以用style-loader
                             'thread-loader',
                             {
                                 loader: require.resolve('css-loader'),
@@ -216,7 +216,8 @@ module.exports = smp.wrap({
                     {
                         test: /\.(css|scss)$/,
                         use: [
-                            MiniCssExtractPlugin.loader,
+                            // MiniCssExtractPlugin.loader,
+                            { loader: "style-loader" },
                             'thread-loader',
                             {
                                 loader: require.resolve('css-loader'),

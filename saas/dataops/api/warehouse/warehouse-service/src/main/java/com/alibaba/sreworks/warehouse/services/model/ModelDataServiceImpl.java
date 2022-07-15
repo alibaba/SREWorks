@@ -61,12 +61,12 @@ public class ModelDataServiceImpl extends DwCommonService implements DwDataServi
         }
 
         JSONObject modelFields = getModelFields(id);
-        if (!modelFields.keySet().contains(DwConstant.PRIMARY_FIELD)) {
+        if (!modelFields.containsKey(DwConstant.PRIMARY_FIELD)) {
             throw new ModelFieldException(String.format("数据模型字段缺失id,请补充模型主键,模型[ID:%s]", id));
         }
 
         List<JSONObject> esDatas = datas.parallelStream().map(data -> convertToESData(data, swModel.getPartitionFormat(), modelFields)).filter(data -> !data.isEmpty()).collect(Collectors.toList());
-        return doFlushDatas(swModel.getTableAlias(), swModel.getTableName(), swModel.getLifecycle(), esDatas);
+        return doFlushDatas(swModel.getTableAlias(), swModel.getTableName(), swModel.getPartitionFormat(), swModel.getLifecycle(), esDatas);
     }
 
     @Override

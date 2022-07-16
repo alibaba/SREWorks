@@ -46,7 +46,7 @@ module.exports = smp.wrap({
     // In production, we only want to load the polyfills and the app code.
     entry: {
         index: [require.resolve('./polyfills'), paths.appIndexJs],
-        vendor: ['lodash', 'react-jsx-parser', 'react-router', "react-router-dom",'antd'],
+        // vendor: ['lodash', 'react-jsx-parser', 'react-router', "react-router-dom"],
     },
     output: {
         // The build folder.
@@ -63,6 +63,7 @@ module.exports = smp.wrap({
         'axios': 'axios',
         'react': 'React',
         'react-dom': 'ReactDOM',
+        'antd':'antd',
         'moment':'moment',
         "moment-duration-format":"moment-duration-format",
         "ant-design-icons":"ant-design-icons",

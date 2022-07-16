@@ -60,18 +60,18 @@ module.exports = smp.wrap({
                 .replace(/\\/g, '/'),
     },
     externals: {
-        'axios': 'axios',
-        'react': 'React',
-        'react-dom': 'ReactDOM',
-        'antd':'antd',
-        'moment':'moment',
-        "moment-duration-format":"moment-duration-format",
-        "ant-design-icons":"ant-design-icons",
-        "redux": 'Redux',
-        "react-redux": 'ReactRedux',
+        // 'axios': 'axios',
+        // 'react': 'React',
+        // 'react-dom': 'ReactDOM',
+        // 'antd':'antd',
+        // 'moment':'moment',
+        // "moment-duration-format":"moment-duration-format",
+        // "ant-design-icons":"ant-design-icons",
+        // "redux": 'Redux',
+        // "react-redux": 'ReactRedux',
         "bizcharts": "BizCharts",
+        "jquery": "jQuery",
         "html2canvas": "html2canvas",
-        "jquery": "jQuery"
     },
     optimization: {
         splitChunks: {

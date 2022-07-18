@@ -48,7 +48,6 @@
   <!-- <script src="https://cdn.bootcdn.net/ajax/libs/redux/3.7.2/redux.min.js"></script> -->
   <!-- <script src="https://cdn.bootcdn.net/ajax/libs/react-redux/5.0.7/react-redux.min.js"></script> -->
   <!-- <script src="https://cdn.bootcdn.net/ajax/libs/ant-design-icons/4.6.2/index.umd.min.js"></script> -->
-  <script src="./common_vender/antd.min.js"></script>
   <!-- <script src="https://cdn.bootcdn.net/ajax/libs/bizcharts/4.1.15/BizCharts.min.js"></script> -->
   <!-- <script src="https://cdn.bootcdn.net/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> -->
   <!-- <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
@@ -62,7 +61,7 @@
           <div class="abm-pre-screen-object" id="abm-pre-screen-object_one"></div>
         </div>
         <h1 class="abm-pre-screen-text">
-          <span id="loading-mark">SREWorks</span>
+          <!-- <span id="loading-mark">SREWorks</span> -->
         </h1>
         <!--<h1 class="abm-pre-screen-text">
             <span>Apsara Big Data Manager</span>
@@ -99,6 +98,7 @@
       targetDom.innerHTML = window.GlobalBackendConf['production']['platformName'] || "SREWorks"
     }
   </script>
+    <script src="./common_vender/antd.min.js"></script>
 </body>
 
 </html>

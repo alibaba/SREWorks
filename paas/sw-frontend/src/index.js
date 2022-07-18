@@ -11,6 +11,7 @@ import router from './router';
 import AppService from './core/services/appService';
 import MenuTreeService from './core/services/appMenuTreeService'
 import 'antd/dist/antd.css';
+import 'antd/dist/antd.less';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import * as util from './utils/utils';

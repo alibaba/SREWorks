@@ -36,18 +36,11 @@ module.exports = {
     // This means they will be the "root" imports that are included in JS bundle.
     // The first two entry points enable "hot" CSS and auto-refreshes for JS.
     externals: {
-        'axios': 'axios',
         'react': 'React',
         'react-dom': 'ReactDOM',
         "antd":"antd",
         'moment':'moment',
         "moment-duration-format":"moment-duration-format",
-        "ant-design-icons":"ant-design-icons",
-        "redux": 'Redux',
-        "react-redux": 'ReactRedux',
-        "bizcharts": "BizCharts",
-        "html2canvas": "html2canvas",
-        "jquery": "jQuery"
     },
     entry: {
         index: [

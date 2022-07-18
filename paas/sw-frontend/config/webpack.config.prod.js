@@ -46,7 +46,7 @@ module.exports = smp.wrap({
     // In production, we only want to load the polyfills and the app code.
     entry: {
         index: [require.resolve('./polyfills'), paths.appIndexJs],
-        // vendor: ['lodash', 'react-jsx-parser', 'react-router', "react-router-dom"],
+        vendor: ['lodash', 'react-jsx-parser', 'react-router', "react-router-dom"],
     },
     output: {
         // The build folder.
@@ -60,15 +60,15 @@ module.exports = smp.wrap({
                 .replace(/\\/g, '/'),
     },
     externals: {
-        // 'axios': 'axios',
-        // 'react': 'React',
-        // 'react-dom': 'ReactDOM',
-        // 'antd':'antd',
-        // 'moment':'moment',
-        // "moment-duration-format":"moment-duration-format",
-        // "ant-design-icons":"ant-design-icons",
-        // "redux": 'Redux',
-        // "react-redux": 'ReactRedux',
+        'axios': 'axios',
+        'react': 'React',
+        'react-dom': 'ReactDOM',
+        'antd':'antd',
+        'moment':'moment',
+        "moment-duration-format":"moment-duration-format",
+        "ant-design-icons":"ant-design-icons",
+        "redux": 'Redux',
+        "react-redux": 'ReactRedux',
         "bizcharts": "BizCharts",
         "jquery": "jQuery",
         "html2canvas": "html2canvas",
@@ -78,58 +78,59 @@ module.exports = smp.wrap({
             chunks: "all"
         },
         minimize: true,
-        minimizer: [
-            // This is only used in production mode
-            new TerserPlugin({
-                terserOptions: {
-                    parse: {
-                        // We want terser to parse ecma 8 code. However, we don't want it
-                        // to apply any minification steps that turns valid ecma 5 code
-                        // into invalid ecma 5 code. This is why the 'compress' and 'output'
-                        // sections only apply transformations that are ecma 5 safe
-                        // https://github.com/facebook/create-react-app/pull/4234
-                        ecma: 8,
-                    },
-                    compress: {
-                        ecma: 5,
-                        warnings: false,
-                        // Disabled because of an issue with Uglify breaking seemingly valid code:
-                        // https://github.com/facebook/create-react-app/issues/2376
-                        // Pending further investigation:
-                        // https://github.com/mishoo/UglifyJS2/issues/2011
-                        comparisons: false,
-                        // Disabled because of an issue with Terser breaking valid code:
-                        // https://github.com/facebook/create-react-app/issues/5250
-                        // Pending further investigation:
-                        // https://github.com/terser-js/terser/issues/120
-                        inline: 2,
-                    },
-                    mangle: {
-                        safari10: true,
-                    },
-                    // Added for profiling in devtools
-                    keep_classnames: true,
-                    keep_fnames: true,
-                    output: {
-                        ecma: 5,
-                        comments: false,
-                        ascii_only: true,
-                    },
-                    parallel: true,
-                    terserOptions: {
-                        compress: {
-                            drop_console: true
-                        }
-                    }
-                },
-            }),
-            new OptimizeCssAssetsPlugin({
-                assetNameRegExp: /\.optimize\.css$/g,
-                cssProcessor: require('cssnano'),
-                cssProcessorOptions: { safe: true, discardComments: { removeAll: true } },
-                canPrint: true
-            }),
-        ],
+        namedModules: true,
+        // minimizer: [
+        //     // This is only used in production mode
+        //     new TerserPlugin({
+        //         terserOptions: {
+        //             parse: {
+        //                 // We want terser to parse ecma 8 code. However, we don't want it
+        //                 // to apply any minification steps that turns valid ecma 5 code
+        //                 // into invalid ecma 5 code. This is why the 'compress' and 'output'
+        //                 // sections only apply transformations that are ecma 5 safe
+        //                 // https://github.com/facebook/create-react-app/pull/4234
+        //                 ecma: 8,
+        //             },
+        //             compress: {
+        //                 ecma: 5,
+        //                 warnings: false,
+        //                 // Disabled because of an issue with Uglify breaking seemingly valid code:
+        //                 // https://github.com/facebook/create-react-app/issues/2376
+        //                 // Pending further investigation:
+        //                 // https://github.com/mishoo/UglifyJS2/issues/2011
+        //                 comparisons: false,
+        //                 // Disabled because of an issue with Terser breaking valid code:
+        //                 // https://github.com/facebook/create-react-app/issues/5250
+        //                 // Pending further investigation:
+        //                 // https://github.com/terser-js/terser/issues/120
+        //                 inline: 2,
+        //             },
+        //             mangle: {
+        //                 safari10: true,
+        //             },
+        //             // Added for profiling in devtools
+        //             keep_classnames: true,
+        //             keep_fnames: true,
+        //             output: {
+        //                 ecma: 5,
+        //                 comments: false,
+        //                 ascii_only: true,
+        //             },
+        //             parallel: true,
+        //             terserOptions: {
+        //                 compress: {
+        //                     drop_console: true
+        //                 }
+        //             }
+        //         },
+        //     }),
+        //     new OptimizeCssAssetsPlugin({
+        //         assetNameRegExp: /\.optimize\.css$/g,
+        //         cssProcessor: require('cssnano'),
+        //         cssProcessorOptions: { safe: true, discardComments: { removeAll: true } },
+        //         canPrint: true
+        //     }),
+        // ],
 
     },
     resolve: {

@@ -20,6 +20,8 @@ public class AppMetaQueryReq extends BaseRequest {
 
     private String appId;
 
+    private String appIdLike;
+
     private String optionKey;
 
     private String optionValue;

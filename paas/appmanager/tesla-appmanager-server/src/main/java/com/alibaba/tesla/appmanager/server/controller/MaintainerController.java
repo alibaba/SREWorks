@@ -35,7 +35,8 @@ public class MaintainerController extends AppManagerBaseController {
     public TeslaBaseResult upgradeNamespaceStage(
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         if (!EnvUtil.isSreworks()) {
-            return buildClientErrorResult("not sreworks environment, abort");
+            log.info("not sreworks environment, abort");
+            return buildSucceedResult(DefaultConstant.EMPTY_OBJ);
         }
 
         String[] array = headerBizApp.split(",", 3);

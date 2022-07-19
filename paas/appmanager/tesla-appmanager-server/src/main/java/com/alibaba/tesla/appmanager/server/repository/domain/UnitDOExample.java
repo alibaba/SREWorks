@@ -1124,6 +1124,76 @@ public class UnitDOExample {
             addCriterion("category not between", value1, value2, "category");
             return (Criteria) this;
         }
+
+        public Criteria andExtraIsNull() {
+            addCriterion("extra is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraIsNotNull() {
+            addCriterion("extra is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraEqualTo(String value) {
+            addCriterion("extra =", value, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraNotEqualTo(String value) {
+            addCriterion("extra <>", value, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraGreaterThan(String value) {
+            addCriterion("extra >", value, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraGreaterThanOrEqualTo(String value) {
+            addCriterion("extra >=", value, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraLessThan(String value) {
+            addCriterion("extra <", value, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraLessThanOrEqualTo(String value) {
+            addCriterion("extra <=", value, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraLike(String value) {
+            addCriterion("extra like", value, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraNotLike(String value) {
+            addCriterion("extra not like", value, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraIn(List<String> values) {
+            addCriterion("extra in", values, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraNotIn(List<String> values) {
+            addCriterion("extra not in", values, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraBetween(String value1, String value2) {
+            addCriterion("extra between", value1, value2, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraNotBetween(String value1, String value2) {
+            addCriterion("extra not between", value1, value2, "extra");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

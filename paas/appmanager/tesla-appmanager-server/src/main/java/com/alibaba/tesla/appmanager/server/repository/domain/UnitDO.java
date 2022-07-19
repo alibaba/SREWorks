@@ -1,10 +1,11 @@
 package com.alibaba.tesla.appmanager.server.repository.domain;
 
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 /**
  * 管控单元表
@@ -88,4 +89,9 @@ public class UnitDO {
      * 分类
      */
     private String category;
+
+    /**
+     * 扩展信息字段JSON
+     */
+    private String extra;
 }

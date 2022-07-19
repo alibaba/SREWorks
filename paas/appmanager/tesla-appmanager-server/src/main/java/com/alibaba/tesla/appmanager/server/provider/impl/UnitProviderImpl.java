@@ -89,6 +89,10 @@ public class UnitProviderImpl implements UnitProvider {
      */
     @Override
     public UnitDTO create(UnitCreateReq request, String operator) {
+        JSONObject extra = new JSONObject();
+        if (request.getExtra() != null) {
+            extra = request.getExtra();
+        }
         UnitDO unitDO = UnitDO.builder()
                 .unitId(request.getUnitId())
                 .unitName(request.getUnitName())
@@ -99,6 +103,7 @@ public class UnitProviderImpl implements UnitProvider {
                 .username(request.getUsername())
                 .password(request.getPassword())
                 .operatorEndpoint(request.getOperatorEndpoint())
+                .extra(extra.toJSONString())
                 .build();
         return unitConvert.to(unitService.create(unitDO));
     }
@@ -112,6 +117,10 @@ public class UnitProviderImpl implements UnitProvider {
      */
     @Override
     public UnitDTO update(UnitUpdateReq request, String operator) {
+        JSONObject extra = new JSONObject();
+        if (request.getExtra() != null) {
+            extra = request.getExtra();
+        }
         UnitDO unitDO = UnitDO.builder()
                 .unitName(request.getUnitName())
                 .proxyIp(request.getProxyIp())
@@ -121,6 +130,7 @@ public class UnitProviderImpl implements UnitProvider {
                 .username(request.getUsername())
                 .password(request.getPassword())
                 .operatorEndpoint(request.getOperatorEndpoint())
+                .extra(extra.toJSONString())
                 .build();
         UnitQueryCondition condition = UnitQueryCondition.builder()
                 .unitId(request.getUnitId())

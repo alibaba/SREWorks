@@ -73,9 +73,13 @@ public class GroovyHandlerFactory {
             Integer revision = script.getCurrentRevision();
             if (!revision.equals(VERSION_MAP.getOrDefault(key, -1))) {
                 synchronized (GroovyHandlerFactory.class) {
-                    create(keyStore.getKind(), keyStore.getName());
+                    try {
+                        create(keyStore.getKind(), keyStore.getName());
+                        log.info("refresh groovy handler finished|kind={}|name={}", keyStore.getKind(), keyStore.getName());
+                    } catch (AppException e) {
+                        log.error("cannot refresh groovy handler|message={}", e.getErrorMessage());
+                    }
                 }
-                log.info("refresh groovy handler finished|kind={}|name={}", keyStore.getKind(), keyStore.getName());
             } else {
                 log.debug("no need to refresh groovy handler|kind={}|name={}", keyStore.getKind(), keyStore.getName());
             }
@@ -279,7 +283,17 @@ public class GroovyHandlerFactory {
                             DefaultConstant.DEFAULT_GROOVY_HANDLER);
                 }
             case INTERNAL_ADDON:
-                if ("productops".equals(componentName)) {
+                if ("tianji_productops".equals(componentName)) {
+                    if (ComponentActionEnum.BUILD.equals(action)) {
+                        return get(scriptClass,
+                                DynamicScriptKindEnum.BUILD_IA_TIANJI_PRODUCTOPS_COMPONENT.toString(),
+                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                    } else {
+                        return get(scriptClass,
+                                DynamicScriptKindEnum.DEPLOY_IA_TIANJI_PRODUCTOPS_COMPONENT.toString(),
+                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                    }
+                }else if ("productops".equals(componentName)) {
                     if (ComponentActionEnum.BUILD.equals(action)) {
                         return get(scriptClass,
                                 DynamicScriptKindEnum.BUILD_IA_PRODUCTOPS_COMPONENT.toString(),

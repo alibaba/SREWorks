@@ -421,6 +421,11 @@ public class ProcessingDeployAppStateAction implements DeployAppStateAction, App
             Map<String, List<String>> outputMapping, Set<DagCreateEdge> edges, String currentNodeId,
             List<DeployAppSchema.DataInput> dataInputs) {
         dataInputs.forEach(dataInput -> {
+            if (dataInput.getValueFrom() == null) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                        String.format("cannot find valueFrom field in dataInput field|dataInput=%s",
+                                JSONObject.toJSONString(dataInput)));
+            }
             String variable = dataInput.getValueFrom().getDataOutputName();
             List<String> providers = outputMapping.getOrDefault(variable, new ArrayList<>());
             if (providers.size() == 0) {
@@ -466,8 +471,8 @@ public class ProcessingDeployAppStateAction implements DeployAppStateAction, App
     /**
      * 创建 component ($componentType|$componentName) 到 component node id 的映射
      *
-     * @param schema           DeployAppSchema 配置文件
-     * @param componentMapping 组件 Component Node ID 映射 Map
+     * @param schema               DeployAppSchema 配置文件
+     * @param componentMapping     组件 Component Node ID 映射 Map
      * @param specComponentMapping 组件 SpecComponent 映射 Map
      */
     private void initComponentMapping(

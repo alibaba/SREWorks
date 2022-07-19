@@ -8,6 +8,7 @@ import com.alibaba.tesla.appmanager.server.repository.domain.AppMetaDOExample;
 import com.alibaba.tesla.appmanager.server.repository.mapper.AppMetaDOMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,6 +55,9 @@ public class AppMetaRepositoryImpl implements AppMetaRepository {
         AppMetaDOExample.Criteria criteria = example.createCriteria();
         if (StringUtils.isNotEmpty(condition.getAppId())) {
             criteria.andAppIdEqualTo(condition.getAppId());
+        }
+        if (StringUtils.isNotEmpty(condition.getAppIdLike())) {
+            criteria.andAppIdLike("%" + StringEscapeUtils.escapeSql(condition.getAppIdLike()) + "%");
         }
         if (CollectionUtils.isNotEmpty(condition.getAppIdList())) {
             criteria.andAppIdIn(condition.getAppIdList());

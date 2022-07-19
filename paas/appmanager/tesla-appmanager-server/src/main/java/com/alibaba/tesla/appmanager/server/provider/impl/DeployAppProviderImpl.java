@@ -10,7 +10,6 @@ import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.dto.*;
-import com.alibaba.tesla.appmanager.domain.req.apppackage.AppPackageImportReq;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.ApplicationConfigurationGenerateReq;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.ComponentBinder;
 import com.alibaba.tesla.appmanager.domain.req.converter.AddParametersToLaunchReq;
@@ -21,7 +20,6 @@ import com.alibaba.tesla.appmanager.domain.schema.ComponentSchema;
 import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
 import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema.*;
 import com.alibaba.tesla.appmanager.domain.schema.Schema;
-import com.alibaba.tesla.appmanager.domain.schema.TraitDefinition;
 import com.alibaba.tesla.appmanager.server.assembly.DeployAppDtoConvert;
 import com.alibaba.tesla.appmanager.server.assembly.DeployComponentDtoConvert;
 import com.alibaba.tesla.appmanager.server.event.deploy.DeployAppEvent;
@@ -31,7 +29,6 @@ import com.alibaba.tesla.appmanager.server.repository.condition.*;
 import com.alibaba.tesla.appmanager.server.repository.domain.*;
 import com.alibaba.tesla.appmanager.server.service.addon.AddonMetaService;
 import com.alibaba.tesla.appmanager.server.service.appaddon.AppAddonService;
-import com.alibaba.tesla.appmanager.server.service.appoption.AppOptionService;
 import com.alibaba.tesla.appmanager.server.service.apppackage.AppPackageService;
 import com.alibaba.tesla.appmanager.server.service.componentpackage.ComponentPackageService;
 import com.alibaba.tesla.appmanager.server.service.converter.ConverterService;
@@ -242,32 +239,35 @@ public class DeployAppProviderImpl implements DeployAppProvider {
 
         // TODO: 如果是远程单元部署，那么临时 sync 到目标单元，临时方案，等待 workflow 完成后迁移
         if (StringUtils.isNotEmpty(unitId) && appPackageId > 0) {
-            try {
-                JSONObject syncResponse = unitService.syncRemote(unitId, appPackageId);
-                JSONObject syncResponseData = syncResponse.getJSONObject("data");
-                if (syncResponseData == null) {
-                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                            String.format("sync to remote unit failed, syncResponse=%s", syncResponse.toJSONString()));
+            UnitDO unitDO = unitService.get(UnitQueryCondition.builder().unitId(unitId).build());
+            if (unitDO.getCategory().equals(DefaultConstant.PRIVATE_ABM_CATEGORY)) {
+                try {
+                    JSONObject syncResponse = unitService.syncRemote(unitId, appPackageId);
+                    JSONObject syncResponseData = syncResponse.getJSONObject("data");
+                    if (syncResponseData == null) {
+                        throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                String.format("sync to remote unit failed, syncResponse=%s", syncResponse.toJSONString()));
+                    }
+                    appPackageId = syncResponseData.getLongValue("id");
+                    if (appPackageId == 0) {
+                        throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                String.format("sync to remote unit failed, syncResponse=%s", syncResponse.toJSONString()));
+                    }
+                    DeployAppSchema rawSchema = SchemaUtil.toSchema(DeployAppSchema.class, request.getConfiguration());
+                    rawSchema.getMetadata().getAnnotations().setUnitId("");
+                    rawSchema.getMetadata().getAnnotations().setAppPackageId(appPackageId);
+                    JSONObject launchResponse = unitService.launchDeployment(unitId, DeployAppLaunchReq.builder()
+                            .appPackageId(appPackageId)
+                            .configuration(SchemaUtil.toYamlMapStr(rawSchema))
+                            .autoEnvironment(request.getAutoEnvironment())
+                            .removeSuffix(request.getRemoveSuffix())
+                            .build());
+                    return launchResponse.toJavaObject(DeployAppPackageLaunchRes.class);
+                } catch (Exception e) {
+                    throw new AppException(AppErrorCode.NETWORK_ERROR,
+                            String.format("cannot launch deployment in unit %s|appPackageId=%d|exception=%s",
+                                    unitId, appPackageId, ExceptionUtils.getStackTrace(e)));
                 }
-                appPackageId = syncResponseData.getLongValue("id");
-                if (appPackageId == 0) {
-                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                            String.format("sync to remote unit failed, syncResponse=%s", syncResponse.toJSONString()));
-                }
-                DeployAppSchema rawSchema = SchemaUtil.toSchema(DeployAppSchema.class, request.getConfiguration());
-                rawSchema.getMetadata().getAnnotations().setUnitId("");
-                rawSchema.getMetadata().getAnnotations().setAppPackageId(appPackageId);
-                JSONObject launchResponse = unitService.launchDeployment(unitId, DeployAppLaunchReq.builder()
-                        .appPackageId(appPackageId)
-                        .configuration(SchemaUtil.toYamlMapStr(rawSchema))
-                        .autoEnvironment(request.getAutoEnvironment())
-                        .removeSuffix(request.getRemoveSuffix())
-                        .build());
-                return launchResponse.toJavaObject(DeployAppPackageLaunchRes.class);
-            } catch (Exception e) {
-                throw new AppException(AppErrorCode.NETWORK_ERROR,
-                        String.format("cannot launch deployment in unit %s|appPackageId=%d|exception=%s",
-                                unitId, appPackageId, ExceptionUtils.getStackTrace(e)));
             }
         }
 
@@ -425,7 +425,7 @@ public class DeployAppProviderImpl implements DeployAppProvider {
         List<DeployComponentBO> components = deployComponentService.list(DeployComponentQueryCondition.builder()
                 .deployAppId(deployAppId).build(), false);
         components.forEach(component -> eventPublisher.publishEvent(new DeployComponentEvent(
-                        this, DeployComponentEventEnum.OP_TERMINATE, component.getSubOrder().getId())));
+                this, DeployComponentEventEnum.OP_TERMINATE, component.getSubOrder().getId())));
         log.info("TERMINATE command has sent to deployment|deployAppId={}|operator={}", deployAppId, operator);
     }
 

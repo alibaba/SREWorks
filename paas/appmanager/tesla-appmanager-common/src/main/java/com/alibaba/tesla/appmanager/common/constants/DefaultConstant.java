@@ -100,4 +100,8 @@ public class DefaultConstant {
     public static final String INTERNAL_ADDON_DEVELOPMENT_META = "developmentmeta";
 
     public static final String INTERNAL_ADDON_APP_META = "appmeta";
+
+    public static final String UNIT = "Unit";
+
+    public static final String PRIVATE_ABM_CATEGORY = "专有云";
 }

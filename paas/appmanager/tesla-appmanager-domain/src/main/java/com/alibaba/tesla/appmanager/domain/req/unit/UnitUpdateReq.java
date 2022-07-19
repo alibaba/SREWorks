@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.domain.req.unit;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -67,4 +68,9 @@ public class UnitUpdateReq implements Serializable {
      * abm-operator Endpoint
      */
     private String operatorEndpoint;
+
+    /**
+     * 扩展字段
+     */
+    private JSONObject extra;
 }

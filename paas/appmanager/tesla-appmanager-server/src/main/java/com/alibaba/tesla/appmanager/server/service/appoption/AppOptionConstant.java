@@ -76,6 +76,8 @@ public class AppOptionConstant {
                 put(APP_NAV_LINK, AppOptionTypeEnum.STRING);
                 // 应用 Secret 配置
                 put("secret", AppOptionTypeEnum.STRING);
+                // readme
+                put("readme", AppOptionTypeEnum.STRING);
                 // Logo 图像地址
                 put(APP_LOGO_IMG, AppOptionTypeEnum.STRING);
                 // Aone ID

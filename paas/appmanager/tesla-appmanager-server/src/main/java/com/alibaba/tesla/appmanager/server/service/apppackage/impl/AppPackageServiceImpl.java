@@ -285,6 +285,13 @@ public class AppPackageServiceImpl implements AppPackageService {
         // 如果存在单元 ID 配置，那么 merge 进去
         if (StringUtils.isNotEmpty(req.getUnitId())) {
             schema.getMetadata().getAnnotations().setUnitId(req.getUnitId());
+            List<DeployAppSchema.SpecComponent> components = schema.getSpec().getComponents();
+            for (DeployAppSchema.SpecComponent component : components) {
+                component.getScopes()
+                        .add(DeployAppSchema.SpecComponentScope.builder().scopeRef(
+                                        DeployAppSchema.SpecComponentScopeRef.builder().kind(DefaultConstant.UNIT).name(req.getUnitId()).build())
+                                .build());
+            }
         }
 
         return ApplicationConfigurationGenerateRes.builder()

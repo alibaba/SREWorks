@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.domain.dto;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -80,4 +81,9 @@ public class UnitDTO implements Serializable {
      * 分类
      */
     private String category;
+
+    /**
+     * 扩展数据 JSON
+     */
+    private JSONObject extra;
 }

@@ -128,6 +128,16 @@ public enum DynamicScriptKindEnum {
     DEPLOY_IA_PRODUCTOPS_COMPONENT,
 
     /**
+     * 构建 tianji ProductOps 组件
+     */
+    BUILD_IA_TIANJI_PRODUCTOPS_COMPONENT,
+
+    /**
+     * 部署 tianji ProductOps 组件
+     */
+    DEPLOY_IA_TIANJI_PRODUCTOPS_COMPONENT,
+
+    /**
      * 构建 AppMeta 组件
      */
     BUILD_IA_APP_META_COMPONENT,

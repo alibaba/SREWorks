@@ -47,6 +47,10 @@
             <groupId>com.hubspot.jinjava</groupId>
             <artifactId>jinjava</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>

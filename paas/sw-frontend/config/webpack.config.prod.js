@@ -117,12 +117,12 @@ module.exports = smp.wrap({
                     }
                 },
             }),
-            // new OptimizeCssAssetsPlugin({
-            //     assetNameRegExp: /\.optimize\.css$/g,
-            //     cssProcessor: require('cssnano'),
-            //     cssProcessorOptions: { safe: true, discardComments: { removeAll: true } },
-            //     canPrint: true
-            // }),
+            new OptimizeCssAssetsPlugin({
+                assetNameRegExp: /\.optimize\.css$/g,
+                cssProcessor: require('cssnano'),
+                cssProcessorOptions: { safe: true, discardComments: { removeAll: true } },
+                canPrint: true
+            }),
         ],
 
     },

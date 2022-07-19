@@ -40,7 +40,7 @@ module.exports = {
         'react-dom': 'ReactDOM',
         "antd":"antd",
         'moment':'moment',
-        "moment-duration-format":"moment-duration-format",
+        "moment-duration-format":"moment-duration-format"
     },
     entry: {
         index: [

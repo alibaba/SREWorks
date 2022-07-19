@@ -58,10 +58,10 @@ let options = {
   ],
 };
 // 本地开发生成样式文件
-if(process.env.DEPLOY_ENV === 'local'||process.env.DEPLOY_ENV === 'mocks') {
-  options.outputFilePath = path.join(__dirname, '../public/color.less')
-}
-
+// if(process.env.DEPLOY_ENV === 'local'||process.env.DEPLOY_ENV === 'mocks') {
+//   options.outputFilePath = path.join(__dirname, '../public/color.less')
+// }
+options.outputFilePath = path.join(__dirname, '../public/color.less')
 // 设置主题，生成color.less文件，把所有的变量相关样式合成到这个文件下
 generateTheme(options);
 

@@ -71,6 +71,7 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   <!-- for antd-theme-generator START -->
+  <script src="./common_vender/antd.min.js"></script>
   <script src="./common_vender/systemjs/system.min.js"></script>
   <link rel="stylesheet/less" type="text/css" href="./color.less" />
   <link rel="stylesheet/css" type="text/css" href="./root.css" />
@@ -88,7 +89,6 @@
       targetDom.innerHTML = window.GlobalBackendConf['production']['platformName'] || "SREWorks"
     }
   </script>
-    <script src="./common_vender/antd.min.js"></script>
 </body>
 
 </html>

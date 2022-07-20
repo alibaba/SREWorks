@@ -194,7 +194,7 @@ spec:
       value: "${NAMESPACE_DATAOPS}"
     - name: DEFAULT_AMDIN_AVATOR
       value: "/static/publicMedia/aliyun.png"
- components:
+  components:
     - revisionName: K8S_MICROSERVICE|paas-authproxy|_
       scopes:
         - scopeRef:

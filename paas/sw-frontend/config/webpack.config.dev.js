@@ -36,8 +36,8 @@ module.exports = {
     // This means they will be the "root" imports that are included in JS bundle.
     // The first two entry points enable "hot" CSS and auto-refreshes for JS.
     externals: {
-        'react': 'React',
-        'react-dom': 'ReactDOM',
+        // 'react': 'React',
+        // 'react-dom': 'ReactDOM',
         // "antd":"antd",
         // 'moment':'moment',
         // "moment-duration-format":"moment-duration-format"

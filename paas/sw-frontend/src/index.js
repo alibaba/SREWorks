@@ -12,8 +12,8 @@ import AppService from './core/services/appService';
 import MenuTreeService from './core/services/appMenuTreeService'
 //不能去掉用于引入less.js来换肤使用
 import less from 'less';
-// import 'antd/dist/antd.less';
 import 'antd/dist/antd.less';
+import 'antd/dist/antd.css';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import * as util from './utils/utils';

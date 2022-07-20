@@ -22,8 +22,8 @@ const shouldUseSourceMap = false;
 const publicUrl = publicPath.slice(0, -1);
 const env = getClientEnvironment(publicUrl);
 const TerserPlugin = require('terser-webpack-plugin');
-const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
-const smp = new SpeedMeasurePlugin();
+// const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+// const smp = new SpeedMeasurePlugin();
 threadLoader.warmup(
     [
         // 加载模块
@@ -36,7 +36,7 @@ threadLoader.warmup(
 // Note: defined here because it will be used more than once.
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
-module.exports = smp.wrap({
+module.exports = {
     // Don't attempt to continue if there are any errors.
     mode: 'production',
     bail: true,
@@ -46,7 +46,7 @@ module.exports = smp.wrap({
     // In production, we only want to load the polyfills and the app code.
     entry: {
         index: [require.resolve('./polyfills'), paths.appIndexJs],
-        vendor: ['lodash', 'react-jsx-parser', 'react-router', "react-router-dom",'bizcharts'],
+        vendor: ['lodash', 'react-jsx-parser', 'react-router', "react-router-dom", 'bizcharts'],
     },
     output: {
         // The build folder.
@@ -62,9 +62,9 @@ module.exports = smp.wrap({
     externals: {
         'react': 'React',
         'react-dom': 'ReactDOM',
-        'moment':'moment',
-        "moment-duration-format":"moment-duration-format",
-        "antd":"antd",
+        'moment': 'moment',
+        "moment-duration-format": "moment-duration-format",
+        "antd": "antd",
     },
     optimization: {
         splitChunks: {
@@ -72,6 +72,8 @@ module.exports = smp.wrap({
         },
         minimize: true,
         namedModules: true,
+        usedExports: true,
+        sideEffects: true,
         minimizer: [
             // This is only used in production mode
             new TerserPlugin({
@@ -193,11 +195,14 @@ module.exports = smp.wrap({
                     {
                         test: /\.(css|less)$/,
                         use: [
-                            { loader: "style-loader" },
                             // MiniCssExtractPlugin.loader, // 此处使用把css分离出去了，不过不使用此插件，可以用style-loader
+                            { loader: "style-loader" },
                             'thread-loader',
                             {
                                 loader: require.resolve('css-loader'),
+                                options: {
+                                    importLoaders: 1,
+                                },
                             },
                             {
                                 loader: require.resolve('less-loader'), // compiles Less to CSS
@@ -216,6 +221,9 @@ module.exports = smp.wrap({
                             'thread-loader',
                             {
                                 loader: require.resolve('css-loader'),
+                                options: {
+                                    importLoaders: 1,
+                                },
                             },
                             {
                                 loader: require.resolve('sass-loader') // compiles Less to CSS
@@ -234,7 +242,7 @@ module.exports = smp.wrap({
         ],
     },
     plugins: [
-        new MiniCssExtractPlugin({ filename: 'static/css/[name].[hash:8].css', chunkFilename: 'static/css/[name].[hash:8].css' }),
+        // new MiniCssExtractPlugin({ filename: 'static/css/[name].[hash:8].css', chunkFilename: 'static/css/[name].[hash:8].css' }),
         new SimpleProgressWebpackPlugin(),
         new HtmlWebpackPlugin({
             inject: true,
@@ -302,4 +310,4 @@ module.exports = smp.wrap({
         child_process: 'empty',
         __dirname: true
     },
-});
+};

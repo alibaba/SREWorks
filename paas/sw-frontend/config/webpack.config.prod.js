@@ -159,10 +159,10 @@ module.exports = {
                                 // loader: require.resolve('babel-loader'),
                                 loader: 'babel-loader',
                                 options: {
-                                    // plugins: [
-                                    //     // ["transform-runtime"],
-                                    //     ['import', [{ libraryName: 'antd', style: 'css' }]],  // import less
-                                    // ],
+                                    plugins: [
+                                        // ["transform-runtime"],
+                                        ['import', [{ libraryName: 'antd', style: true }]],  // import less
+                                    ],
                                     compact: true,
                                     cacheDirectory: true
                                 },
@@ -172,8 +172,13 @@ module.exports = {
                     {
                         test: /\.(css|less)$/,
                         use: [
-                            MiniCssExtractPlugin.loader, // 此处使用把css分离出去了，不过不使用此插件，可以用style-loader
-                            'thread-loader',
+                            {
+                                loader: MiniCssExtractPlugin.loader,
+                                //css位于“static/css”中，使用“../../”定位索引.html文件夹
+                                //生产中`路径.publicUrlOrPath`可以是相对路径
+                                options: paths.publicUrl.startsWith('.') ? { publicPath: '../../' } : {}
+                              },                          
+                            // 'thread-loader',
                             {
                                 loader: require.resolve('css-loader'),
                                 options: {
@@ -192,8 +197,13 @@ module.exports = {
                     {
                         test: /\.(css|scss)$/,
                         use: [
-                            MiniCssExtractPlugin.loader,
-                            'thread-loader',
+                            {
+                                loader: MiniCssExtractPlugin.loader,
+                                //css位于“static/css”中，使用“../../”定位索引.html文件夹
+                                //生产中`路径.publicUrlOrPath`可以是相对路径
+                                options: paths.publicUrl.startsWith('.') ? { publicPath: '../../' } : {}
+                              },                          
+                            // 'thread-loader',
                             {
                                 loader: require.resolve('css-loader'),
                                 options: {

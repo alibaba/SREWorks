@@ -62,9 +62,9 @@ module.exports = {
     externals: {
         'react': 'React',
         'react-dom': 'ReactDOM',
-        'moment': 'moment',
-        "moment-duration-format": "moment-duration-format",
-        "antd": "antd",
+        // 'moment': 'moment',
+        // "moment-duration-format": "moment-duration-format",
+        // "antd": "antd",
     },
     optimization: {
         splitChunks: {
@@ -195,8 +195,7 @@ module.exports = {
                     {
                         test: /\.(css|less)$/,
                         use: [
-                            // MiniCssExtractPlugin.loader, // 此处使用把css分离出去了，不过不使用此插件，可以用style-loader
-                            { loader: "style-loader" },
+                            MiniCssExtractPlugin.loader, // 此处使用把css分离出去了，不过不使用此插件，可以用style-loader
                             'thread-loader',
                             {
                                 loader: require.resolve('css-loader'),
@@ -216,8 +215,7 @@ module.exports = {
                     {
                         test: /\.(css|scss)$/,
                         use: [
-                            // MiniCssExtractPlugin.loader,
-                            { loader: "style-loader" },
+                            MiniCssExtractPlugin.loader,
                             'thread-loader',
                             {
                                 loader: require.resolve('css-loader'),
@@ -242,7 +240,7 @@ module.exports = {
         ],
     },
     plugins: [
-        // new MiniCssExtractPlugin({ filename: 'static/css/[name].[hash:8].css', chunkFilename: 'static/css/[name].[hash:8].css' }),
+        new MiniCssExtractPlugin({ filename: 'static/css/[name].[hash:8].css', chunkFilename: 'static/css/[name].[hash:8].css' }),
         new SimpleProgressWebpackPlugin(),
         new HtmlWebpackPlugin({
             inject: true,

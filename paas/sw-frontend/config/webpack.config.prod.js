@@ -159,10 +159,10 @@ module.exports = {
                                 // loader: require.resolve('babel-loader'),
                                 loader: 'babel-loader',
                                 options: {
-                                    plugins: [
-                                        // ["transform-runtime"],
-                                        ['import', [{ libraryName: 'antd', style: true }]],  // import less
-                                    ],
+                                    // plugins: [
+                                    //     // ["transform-runtime"],
+                                    //     ['import', [{ libraryName: 'antd', style: css }]],  // import less
+                                    // ],
                                     compact: true,
                                     cacheDirectory: true
                                 },

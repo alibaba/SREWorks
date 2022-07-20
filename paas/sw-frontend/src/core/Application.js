@@ -32,7 +32,6 @@ class Application extends React.Component {
   }
   componentWillMount() {
     this.loadRemoteComp();
-    console.log(process.env,'process.env')
   }
   componentDidMount() {
     const { dispatch, routes, app, global } = this.props;

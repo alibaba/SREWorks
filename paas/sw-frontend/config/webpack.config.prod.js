@@ -60,8 +60,8 @@ module.exports = {
                 .replace(/\\/g, '/'),
     },
     externals: {
-        'react': 'React',
-        'react-dom': 'ReactDOM',
+        // 'react': 'React',
+        // 'react-dom': 'ReactDOM',
         // 'moment': 'moment',
         // "moment-duration-format": "moment-duration-format",
         // "antd": "antd",
@@ -78,15 +78,8 @@ module.exports = {
             // This is only used in production mode
             new TerserPlugin({
                 terserOptions: {
-                    parse: {
-                        // We want terser to parse ecma 8 code. However, we don't want it
-                        // to apply any minification steps that turns valid ecma 5 code
-                        // into invalid ecma 5 code. This is why the 'compress' and 'output'
-                        // sections only apply transformations that are ecma 5 safe
-                        // https://github.com/facebook/create-react-app/pull/4234
-                        ecma: 8,
-                    },
                     compress: {
+                        drop_console: true,
                         ecma: 5,
                         warnings: false,
                         // Disabled because of an issue with Uglify breaking seemingly valid code:
@@ -100,23 +93,7 @@ module.exports = {
                         // https://github.com/terser-js/terser/issues/120
                         inline: 2,
                     },
-                    mangle: {
-                        safari10: true,
-                    },
-                    // Added for profiling in devtools
-                    keep_classnames: true,
-                    keep_fnames: true,
-                    output: {
-                        ecma: 5,
-                        comments: false,
-                        ascii_only: true,
-                    },
                     parallel: true,
-                    terserOptions: {
-                        compress: {
-                            drop_console: true
-                        }
-                    }
                 },
             }),
             new OptimizeCssAssetsPlugin({

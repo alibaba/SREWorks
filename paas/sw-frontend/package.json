@@ -139,7 +139,7 @@
     "analyzer": "set NODE_ENV=production npm_config_report=true && tnpm start",
     "analyze": "source-map-explorer build/static/js/index.*",
     "start": "node --max-old-space-size=4096 scripts/start.js",
-    "build": "node --max-old-space-size=4096 scripts/build.js",
+    "build": "node ./config/generateTheme.js && node --max-old-space-size=4096 scripts/build.js",
     "test": "node --max-old-space-size=4096 scripts/test.js --env=jsdom",
     "preCmd": "node --max-old-space-size=4096 scripts/pre_cmd.js",
     "delete-maps": "npm run delete-map-files && npm run delete-references-to-map-files",

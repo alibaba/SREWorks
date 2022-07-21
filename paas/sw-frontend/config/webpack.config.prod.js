@@ -15,6 +15,7 @@ const paths = require('./paths');
 const getClientEnvironment = require('./env');
 const cdnPath = require('./cdnPath');
 const ThemeVariables = require('./generateTheme');
+const GlobalTheme = require('./globalTheme');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const threadLoader = require('thread-loader');
 const publicPath = cdnPath();
@@ -280,6 +281,9 @@ module.exports = {
             staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
         }),
         new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+        new webpack.DefinePlugin({
+            THEMES: JSON.stringify(GlobalTheme)
+        })
     ],
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.

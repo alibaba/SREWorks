@@ -1,3 +1,8 @@
+
+{{- if hasPrefix "http://NODE_IP:" .Values.appmanager.home.url -}}
+{{ fail "Please replace the NODE_IP value to real node ip in appmanager.home.url" }}
+{{- end -}}
+
 {{- if eq .Values.installMode "default" -}}
 
 apiVersion: v1

@@ -2,6 +2,7 @@ const path = require('path');
 const { generateTheme } = require('antd-theme-generator');
 const lessToJs = require('less-vars-to-js');
 const fs = require('fs');
+const chalk = require('chalk');
 
 let options = {
   antDir: path.join(__dirname, '../node_modules/antd'),
@@ -63,7 +64,12 @@ let options = {
 // }
 options.outputFilePath = path.join(__dirname, '../public/color.less')
 // 设置主题，生成color.less文件，把所有的变量相关样式合成到这个文件下
-generateTheme(options);
+generateTheme(options).then(less => {
+  chalk.green('Theme generated successfully');
+})
+  .catch(error => {
+    chalk.red('Error', error);
+  });
 
 module.exports = {
     navyblue: lessToJs(fs.readFileSync(path.join(__dirname, '../src/themes/navyblue.less'), 'utf8')),

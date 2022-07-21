@@ -186,7 +186,8 @@ module.exports = {
                             {
                                 loader: require.resolve('less-loader'), // compiles Less to CSS
                                 options: {
-                                    modifyVars: require('./generateTheme'),
+                                    // modifyVars: require('./generateTheme'),
+                                    sourceMap: true,
                                     javascriptEnabled: true
                                 }
                             },

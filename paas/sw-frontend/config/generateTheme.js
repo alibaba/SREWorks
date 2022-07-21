@@ -65,10 +65,10 @@ let options = {
 options.outputFilePath = path.join(__dirname, '../public/color.less')
 // 设置主题，生成color.less文件，把所有的变量相关样式合成到这个文件下
 generateTheme(options).then(less => {
-  chalk.green('Theme generated successfully');
+  console.log('Theme generated successfully');
 })
   .catch(error => {
-    chalk.red('Error', error);
+    console.log('Error', error);
   });
 
 module.exports = {

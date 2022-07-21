@@ -87,7 +87,9 @@
     };
     if (window.GlobalBackendConf && window.GlobalBackendConf.production) {
       var targetDom = document.getElementById('loading-mark')
-      targetDom.innerHTML = window.GlobalBackendConf['production']['platformName'] || "SREWorks"
+      if (targetDom) {
+        targetDom.innerHTML = window.GlobalBackendConf['production']['platformName'] || "SREWorks"
+      }
     }
   </script>
 </body>

@@ -29,8 +29,6 @@ threadLoader.warmup(
         // 加载模块
         'babel-loader',
         'babel-preset-es2015',
-        'sass-loader',
-        'less-loader'
     ]
 );
 // Note: defined here because it will be used more than once.

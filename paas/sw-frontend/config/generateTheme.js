@@ -8,7 +8,6 @@ let options = {
   stylesDir: path.join(__dirname, '../src'),
   varFile: path.join(__dirname, '../src/themes/index.less'),
   mainLessFile: path.join(__dirname, '../src/index.less'),
-  outputFilePath: path.join(__dirname, '../build/color.less'), // if provided, file will be created with generated less/styles
   // themeVariables是需要修改的antd变量值
   themeVariables: [
     '@primary-color',
@@ -56,6 +55,7 @@ let options = {
     '@header-bg-color',
     '@nprogress-color'
   ],
+  outputFilePath: path.join(__dirname, '../public/color.less'), // if provided, file will be created with generated less/styles
 };
 // 本地开发生成样式文件
 // if(process.env.DEPLOY_ENV === 'local'||process.env.DEPLOY_ENV === 'mocks') {

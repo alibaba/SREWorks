@@ -1,16 +1,15 @@
 package com.alibaba.tesla.appmanager.domain.req.apppackage;
 
-import java.util.List;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.domain.dto.ParamBinderDTO;
 import com.alibaba.tesla.appmanager.domain.dto.TraitBinderDTO;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * @author qianmo.zm@alibaba-inc.com
@@ -65,6 +64,11 @@ public class ComponentBinder {
      * 组件配置 Yaml (DeployAppSchema.SpecComponent, 可选，传入则在未来部署的时候，以当前包中携带的配置优先)
      */
     private String componentConfiguration;
+
+    /**
+     * 是否为开发模式 (Deprecated)
+     */
+    private Boolean isDevelop = false;
 
     /**
      * 是否使用原生 options 配置

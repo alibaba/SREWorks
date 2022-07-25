@@ -49,7 +49,7 @@ public class AppController extends AppManagerBaseController {
      */
     @GetMapping
     public TeslaBaseResult list(AppMetaQueryReq request, OAuth2Authentication auth) {
-        Pagination<AppMetaDTO> pagination = appMetaProvider.list(request);
+        Pagination<AppMetaDTO> pagination = appMetaProvider.list(request, getOperator(auth), false);
         return buildSucceedResult(pagination);
     }
 
@@ -62,7 +62,7 @@ public class AppController extends AppManagerBaseController {
      */
     @PostMapping
     public TeslaBaseResult create(@RequestBody AppMetaUpdateReq request, OAuth2Authentication auth) {
-        AppMetaDTO result = appMetaProvider.save(request);
+        AppMetaDTO result = appMetaProvider.save(request, getOperator(auth));
         return buildSucceedResult(result);
     }
 
@@ -74,9 +74,10 @@ public class AppController extends AppManagerBaseController {
      */
     @GetMapping(value = "/{appId}")
     public TeslaBaseResult get(@PathVariable String appId, OAuth2Authentication auth) {
-        AppMetaDTO result = appMetaProvider.get(appId);
+        AppMetaDTO result = appMetaProvider.get(appId, getOperator(auth));
         if (result == null) {
-            return buildClientErrorResult(String.format("cannot find app %s", appId));
+            return buildClientErrorResult(String.format(
+                    "cannot find app %s or you don't have the permission to access", appId));
         }
         return buildSucceedResult(result);
     }
@@ -88,16 +89,8 @@ public class AppController extends AppManagerBaseController {
      * @apiParam (Path Parameters) {String} appId 应用 ID
      */
     @GetMapping(value = "/{appId}/version")
-    public TeslaBaseResult getVersion(@PathVariable String appId, OAuth2Authentication auth) {
-        AppMetaDTO result = appMetaProvider.get(appId);
-        if (result == null || result.getOptions() == null) {
-            // 不存在默认返回 v1
-            return buildSucceedResult(AppGetVersionRes.builder().version("v1").build());
-        }
-        String version = result.getOptions().getString("version");
-        if (StringUtils.isEmpty(version)) {
-            return buildSucceedResult(AppGetVersionRes.builder().version("v1").build());
-        }
+    public TeslaBaseResult getFrontendVersion(@PathVariable String appId, OAuth2Authentication auth) {
+        String version = appMetaProvider.getFrontendVersion(appId, getOperator(auth));
         return buildSucceedResult(AppGetVersionRes.builder().version(version).build());
     }
 
@@ -112,7 +105,7 @@ public class AppController extends AppManagerBaseController {
     public TeslaBaseResult update(
             @PathVariable String appId, @RequestBody AppMetaUpdateReq request, OAuth2Authentication auth) {
         request.setAppId(appId);
-        AppMetaDTO result = appMetaProvider.save(request);
+        AppMetaDTO result = appMetaProvider.save(request, getOperator(auth));
         return buildSucceedResult(result);
     }
 
@@ -125,7 +118,7 @@ public class AppController extends AppManagerBaseController {
      */
     @PutMapping
     public TeslaBaseResult updateCompatible(@RequestBody AppMetaUpdateReq request, OAuth2Authentication auth) {
-        AppMetaDTO result = appMetaProvider.save(request);
+        AppMetaDTO result = appMetaProvider.save(request, getOperator(auth));
         return buildSucceedResult(result);
     }
 
@@ -147,7 +140,7 @@ public class AppController extends AppManagerBaseController {
         }
 
         request.setAppId(appId);
-        boolean result = appMetaProvider.delete(request);
+        boolean result = appMetaProvider.delete(request, getOperator(auth));
         return buildSucceedResult(result);
     }
 

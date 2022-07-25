@@ -35,6 +35,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -80,10 +83,11 @@ public class AppMetaProviderImpl implements AppMetaProvider {
     private RtAppInstanceService rtAppInstanceService;
 
     /**
-     * 分页查询应用元信息
+     * 查询应用元信息
      */
     @Override
-    public Pagination<AppMetaDTO> list(AppMetaQueryReq request) {
+    public Pagination<AppMetaDTO> list(AppMetaQueryReq request, String operator, boolean ignorePermission) {
+        // 获取全量应用信息
         AppMetaQueryCondition condition = AppMetaQueryCondition.builder()
                 .appId(request.getAppId())
                 .appIdLike(request.getAppIdLike())
@@ -91,11 +95,24 @@ public class AppMetaProviderImpl implements AppMetaProvider {
                 .optionValue(request.getOptionValue())
                 .page(request.getPage())
                 .pageSize(request.getPageSize())
-                .pagination(request.isPagination())
+                .pagination(false)  // 暂不分页
                 .withBlobs(request.isWithBlobs())
                 .build();
         Pagination<AppMetaDO> metaList = appMetaService.list(condition);
-        return Pagination.transform(metaList, item -> {
+
+        // 过滤当前用户有权限的
+        Pagination<AppMetaDO> permittedMetaList;
+        if (!ignorePermission) {
+            Set<String> userPermittedApps = new HashSet<>(appMetaService.listUserPermittedApp(operator));
+            permittedMetaList = Pagination.valueOf(metaList.getItems().stream()
+                    .filter(item -> userPermittedApps.contains(item.getAppId()))
+                    .collect(Collectors.toList()), Function.identity());
+        } else {
+            permittedMetaList = metaList;
+        }
+
+        // 附加配置及环境信息
+        return Pagination.transform(permittedMetaList, item -> {
             AppMetaDTO dto = appMetaDtoConvert.to(item);
             dto.setOptions(appOptionService.getOptionMap(item.getAppId()));
             dto.setEnvironments(rtAppInstanceService.list(
@@ -119,8 +136,8 @@ public class AppMetaProviderImpl implements AppMetaProvider {
      * 通过应用 ID 查询应用元信息
      */
     @Override
-    public AppMetaDTO get(String appId) {
-        Pagination<AppMetaDTO> results = list(AppMetaQueryReq.builder().appId(appId).build());
+    public AppMetaDTO get(String appId, String operator) {
+        Pagination<AppMetaDTO> results = list(AppMetaQueryReq.builder().appId(appId).build(), operator, true);
         if (results.isEmpty()) {
             return null;
         } else if (results.getTotal() > 1) {
@@ -130,10 +147,36 @@ public class AppMetaProviderImpl implements AppMetaProvider {
     }
 
     /**
+     * 查询指定应用的前端版本
+     *
+     * @param appId    应用 ID
+     * @param operator Operator
+     * @return version v1 or v2
+     */
+    @Override
+    public String getFrontendVersion(String appId, String operator) {
+        AppMetaDO record = appMetaService.get(AppMetaQueryCondition.builder()
+                .appId(appId)
+                .build());
+        if (record == null) {
+            return "v1";
+        }
+        JSONObject appOptions = appOptionService.getOptionMap(appId);
+        if (appOptions == null) {
+            return "v1";
+        }
+        String version = appOptions.getString("version");
+        if (StringUtils.isEmpty(version)) {
+            return "v1";
+        }
+        return version;
+    }
+
+    /**
      * 通过应用 ID 删除应用元信息
      */
     @Override
-    public boolean delete(AppMetaDeleteReq request) {
+    public boolean delete(AppMetaDeleteReq request, String operator) {
         String appId = request.getAppId();
         if (StringUtils.isEmpty(appId)) {
             return true;
@@ -235,7 +278,7 @@ public class AppMetaProviderImpl implements AppMetaProvider {
      * 保存应用元信息
      */
     @Override
-    public AppMetaDTO save(AppMetaUpdateReq request) {
+    public AppMetaDTO save(AppMetaUpdateReq request, String operator) {
         String appId = request.getAppId();
         JSONObject options = request.getOptions();
 
@@ -252,6 +295,6 @@ public class AppMetaProviderImpl implements AppMetaProvider {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "invalid parameter mode " + request.getMode());
         }
         appOptionService.updateOptions(appId, options, mode);
-        return get(appId);
+        return get(appId, operator);
     }
 }

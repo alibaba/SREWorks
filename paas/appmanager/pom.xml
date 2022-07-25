@@ -76,8 +76,9 @@
         <mybatis-spring-boot-starter.version>2.2.2</mybatis-spring-boot-starter.version>
         <aspectj.aspectjweaver.version>1.9.8</aspectj.aspectjweaver.version>
         <janino.version>3.1.6</janino.version>
-        <fabric8.version>5.7.2</fabric8.version>
+        <fabric8.version>5.8.1</fabric8.version>
         <redission.version>3.17.3</redission.version>
+        <jjwt.version>0.9.1</jjwt.version>
 
         <!--k8s-->
         <k8s.client.version>10.0.0</k8s.client.version>
@@ -425,6 +426,13 @@
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson</artifactId>
                 <version>${redission.version}</version>
+            </dependency>
+
+            <!-- jwt -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jjwt.version}</version>
             </dependency>
 
             <!-- minio -->

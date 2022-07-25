@@ -19,6 +19,7 @@
     <result column="operator_endpoint" jdbcType="VARCHAR" property="operatorEndpoint" />
     <result column="registry_endpoint" jdbcType="VARCHAR" property="registryEndpoint" />
     <result column="category" jdbcType="VARCHAR" property="category" />
+    <result column="extra" jdbcType="LONGVARCHAR" property="extra" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <!--@mbg.generated-->
@@ -84,7 +85,7 @@
     <!--@mbg.generated-->
     id, gmt_create, gmt_modified, unit_id, unit_name, endpoint, proxy_ip, proxy_port, 
     client_id, client_secret, username, `password`, operator_endpoint, registry_endpoint, 
-    category
+    category, extra
   </sql>
   <select id="selectByExample" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.UnitDOExample" resultMap="BaseResultMap">
     <!--@mbg.generated-->
@@ -124,12 +125,14 @@
       unit_name, endpoint, proxy_ip, 
       proxy_port, client_id, client_secret, 
       username, `password`, operator_endpoint, 
-      registry_endpoint, category)
+      registry_endpoint, category, extra
+      )
     values (#{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{unitId,jdbcType=VARCHAR}, 
       #{unitName,jdbcType=VARCHAR}, #{endpoint,jdbcType=VARCHAR}, #{proxyIp,jdbcType=VARCHAR}, 
       #{proxyPort,jdbcType=VARCHAR}, #{clientId,jdbcType=VARCHAR}, #{clientSecret,jdbcType=VARCHAR}, 
       #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{operatorEndpoint,jdbcType=VARCHAR}, 
-      #{registryEndpoint,jdbcType=VARCHAR}, #{category,jdbcType=VARCHAR})
+      #{registryEndpoint,jdbcType=VARCHAR}, #{category,jdbcType=VARCHAR}, #{extra,jdbcType=LONGVARCHAR}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.UnitDO" useGeneratedKeys="true">
     <!--@mbg.generated-->
@@ -177,6 +180,9 @@
       <if test="category != null">
         category,
       </if>
+      <if test="extra != null">
+        extra,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="gmtCreate != null">
@@ -220,6 +226,9 @@
       </if>
       <if test="category != null">
         #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="extra != null">
+        #{extra,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
@@ -279,6 +288,9 @@
       <if test="record.category != null">
         category = #{record.category,jdbcType=VARCHAR},
       </if>
+      <if test="record.extra != null">
+        extra = #{record.extra,jdbcType=LONGVARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -301,7 +313,8 @@
       `password` = #{record.password,jdbcType=VARCHAR},
       operator_endpoint = #{record.operatorEndpoint,jdbcType=VARCHAR},
       registry_endpoint = #{record.registryEndpoint,jdbcType=VARCHAR},
-      category = #{record.category,jdbcType=VARCHAR}
+      category = #{record.category,jdbcType=VARCHAR},
+      extra = #{record.extra,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -352,6 +365,9 @@
       <if test="category != null">
         category = #{category,jdbcType=VARCHAR},
       </if>
+      <if test="extra != null">
+        extra = #{extra,jdbcType=LONGVARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -371,7 +387,8 @@
       `password` = #{password,jdbcType=VARCHAR},
       operator_endpoint = #{operatorEndpoint,jdbcType=VARCHAR},
       registry_endpoint = #{registryEndpoint,jdbcType=VARCHAR},
-      category = #{category,jdbcType=VARCHAR}
+      category = #{category,jdbcType=VARCHAR},
+      extra = #{extra,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

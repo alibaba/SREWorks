@@ -1,6 +1,7 @@
 package com.alibaba.tesla.appmanager.server.controller;
 
 import com.alibaba.tesla.appmanager.api.provider.DeployConfigProvider;
+import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
@@ -12,10 +13,10 @@ import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigGenerate
 import com.alibaba.tesla.appmanager.domain.res.apppackage.ApplicationConfigurationGenerateRes;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigGenerateRes;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
-import com.alibaba.tesla.web.controller.BaseController;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -26,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/application-configurations")
 @RestController
 @Slf4j
-public class ApplicationConfigurationController extends BaseController {
+public class ApplicationConfigurationController extends AppManagerBaseController {
 
     @Autowired
     private DeployConfigProvider deployConfigProvider;
@@ -39,7 +40,8 @@ public class ApplicationConfigurationController extends BaseController {
     @PutMapping
     public TeslaBaseResult update(
             @RequestBody DeployConfigApplyTemplateReq request,
-            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
+            OAuth2Authentication auth) {
         if (StringUtils.isEmpty(request.getAppId())) {
             request.setAppId("");
         } else if (StringUtils.isEmpty(request.getEnvId())) {
@@ -60,7 +62,8 @@ public class ApplicationConfigurationController extends BaseController {
     @GetMapping
     public TeslaBaseResult get(
             @ModelAttribute DeployConfigGenerateReq request,
-            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
+            OAuth2Authentication auth) {
         if (StringUtils.isEmpty(request.getApiVersion())) {
             request.setApiVersion(DefaultConstant.API_VERSION_V1_ALPHA2);
         }
@@ -86,7 +89,8 @@ public class ApplicationConfigurationController extends BaseController {
     @DeleteMapping
     public TeslaBaseResult delete(
             @ModelAttribute DeployConfigDeleteReq request,
-            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
+            OAuth2Authentication auth) {
         if (StringUtils.isEmpty(request.getApiVersion())) {
             request.setApiVersion(DefaultConstant.API_VERSION_V1_ALPHA2);
         }

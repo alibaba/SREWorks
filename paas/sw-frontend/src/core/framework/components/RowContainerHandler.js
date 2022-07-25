@@ -41,13 +41,13 @@ class RowContainerHandler extends React.Component {
         let widgetModel = WidgetModel.CREATE_DEFAULT_INSTANCE();
         widgetModel.initFromMeta(widgetMeta);
         widgetModel.setNodeModel(nodeModel);
+        console.log(widgetMeta,nodeModel,widgetModel,'选择的元数据meta')
         elements[currentIndex] = widgetModel;
         onUpdate && onUpdate(row);
         this.setState({
             visible: false,
             currentIndex: -1
         });
-
     };
     getClipboard = () => {
         return localStorage.getItem("copyedModel");
@@ -57,7 +57,6 @@ class RowContainerHandler extends React.Component {
         let { elements } = row;
         let copyedModel = JSON.parse(model);
         copyedModel.uniqueKey = uuidv4();
-        debugger
         service.getWidgetRepository().then(category => {
             let allCompMeta = []
             category.forEach(cate => {

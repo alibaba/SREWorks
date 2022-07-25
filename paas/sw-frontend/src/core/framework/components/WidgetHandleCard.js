@@ -69,6 +69,7 @@ export default class WidgetHandleCard extends React.Component {
     loadWidgetMeta(widgetModel) {
         if (widgetModel) {
             return widgetLoader.getWidgetMeta(widgetModel).then(widgetMeta => {
+                console.log(widgetMeta,widgetModel,'loadedMeta')
                 //旧组件适配,带逐步替换
                 if (!widgetMeta) {
                     widgetMeta = getLegacyWidgetMeta(widgetModel);

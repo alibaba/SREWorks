@@ -5,8 +5,8 @@
 import { getBuiltInWidgetMetaMapping } from '../../core/BuiltInWidgets';
 
 const widgetMetasContext=require.context('./', true, /^\.\/meta\/[\s\S]*\.js$/);
-const builtInWidgetList=[...Object.values(getBuiltInWidgetMetaMapping())];
-console.log(builtInWidgetList,'builtInWidgetList====widgetRepository')
+let builtInWidgetList=[...Object.values(getBuiltInWidgetMetaMapping())];
+// builtInWidgetList = builtInWidgetList.push(window.CarouselCompBackup.CarouselCompMeta)
 const builtInWidgetCatgory=[
     {
         name:"base",
@@ -53,6 +53,11 @@ const builtInWidgetCatgory=[
         title:"自定义组件",
         children:[]
     },
+    {
+        name:"remote",
+        title:"远程组件",
+        children:[]
+    }
     // {
     //     name:"other",
     //     title:"其他",
@@ -78,7 +83,6 @@ builtInWidgetList.forEach(widgetMeta=>{
        }
     });
 });
-
 export function getBuiltInWidgetList(){
     return builtInWidgetList;
 }

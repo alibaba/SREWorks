@@ -40,6 +40,7 @@ export default class WidgetCard extends React.Component {
     componentWillMount() {
         const { widgetModel, nodeParams, actionParams } = this.props;
         widgetLoader.loadWidget(widgetModel).then(WidgetComponent => {
+            console.log(widgetModel,WidgetComponent,'加载到的目标组件')
             this.WidgetComponent = WidgetComponent;
             this.setState({
                 loading: false
@@ -247,7 +248,7 @@ export default class WidgetCard extends React.Component {
                     display: fold ? 'none' : undefined
                 }}
                 headStyle={{
-                    backgroundColor: headerColor ? headerColor : undefined,
+                    backgroundColor: headerColor ? (headerColor==='theme'? 'var(--PrimaryColor)' : headerColor): undefined,
                 }}
                 title={
                     headerExist && <div className="card-title-wrapper">

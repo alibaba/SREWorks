@@ -86,10 +86,13 @@ public class AppMetaProviderImpl implements AppMetaProvider {
     public Pagination<AppMetaDTO> list(AppMetaQueryReq request) {
         AppMetaQueryCondition condition = AppMetaQueryCondition.builder()
                 .appId(request.getAppId())
+                .appIdLike(request.getAppIdLike())
                 .optionKey(request.getOptionKey())
                 .optionValue(request.getOptionValue())
                 .page(request.getPage())
                 .pageSize(request.getPageSize())
+                .pagination(request.isPagination())
+                .withBlobs(request.isWithBlobs())
                 .build();
         Pagination<AppMetaDO> metaList = appMetaService.list(condition);
         return Pagination.transform(metaList, item -> {

@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.server.controller;
 
 import com.alibaba.tesla.appmanager.api.provider.AppMetaProvider;
 import com.alibaba.tesla.appmanager.api.provider.DeployConfigProvider;
+import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
@@ -17,10 +18,10 @@ import com.alibaba.tesla.appmanager.domain.res.appmeta.AppGetVersionRes;
 import com.alibaba.tesla.appmanager.domain.res.apppackage.ApplicationConfigurationGenerateRes;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigGenerateRes;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
-import com.alibaba.tesla.web.controller.BaseController;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -31,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/apps")
 @RestController
 @Slf4j
-public class AppController extends BaseController {
+public class AppController extends AppManagerBaseController {
 
     @Autowired
     private AppMetaProvider appMetaProvider;
@@ -47,7 +48,7 @@ public class AppController extends BaseController {
      * @apiParam (GET Parameters) {Number} pageSize 每页大小
      */
     @GetMapping
-    public TeslaBaseResult list(AppMetaQueryReq request) {
+    public TeslaBaseResult list(AppMetaQueryReq request, OAuth2Authentication auth) {
         Pagination<AppMetaDTO> pagination = appMetaProvider.list(request);
         return buildSucceedResult(pagination);
     }
@@ -60,7 +61,7 @@ public class AppController extends BaseController {
      * @apiParam (JSON Body) {Object} options 应用扩展信息
      */
     @PostMapping
-    public TeslaBaseResult create(@RequestBody AppMetaUpdateReq request) {
+    public TeslaBaseResult create(@RequestBody AppMetaUpdateReq request, OAuth2Authentication auth) {
         AppMetaDTO result = appMetaProvider.save(request);
         return buildSucceedResult(result);
     }
@@ -72,7 +73,7 @@ public class AppController extends BaseController {
      * @apiParam (Path Parameters) {String} appId 应用 ID
      */
     @GetMapping(value = "/{appId}")
-    public TeslaBaseResult get(@PathVariable String appId) {
+    public TeslaBaseResult get(@PathVariable String appId, OAuth2Authentication auth) {
         AppMetaDTO result = appMetaProvider.get(appId);
         if (result == null) {
             return buildClientErrorResult(String.format("cannot find app %s", appId));
@@ -87,7 +88,7 @@ public class AppController extends BaseController {
      * @apiParam (Path Parameters) {String} appId 应用 ID
      */
     @GetMapping(value = "/{appId}/version")
-    public TeslaBaseResult getVersion(@PathVariable String appId) {
+    public TeslaBaseResult getVersion(@PathVariable String appId, OAuth2Authentication auth) {
         AppMetaDTO result = appMetaProvider.get(appId);
         if (result == null || result.getOptions() == null) {
             // 不存在默认返回 v1
@@ -108,7 +109,8 @@ public class AppController extends BaseController {
      * @apiParam (JSON Body) {Object} options 应用扩展信息
      */
     @PutMapping(value = "/{appId}")
-    public TeslaBaseResult update(@PathVariable String appId, @RequestBody AppMetaUpdateReq request) {
+    public TeslaBaseResult update(
+            @PathVariable String appId, @RequestBody AppMetaUpdateReq request, OAuth2Authentication auth) {
         request.setAppId(appId);
         AppMetaDTO result = appMetaProvider.save(request);
         return buildSucceedResult(result);
@@ -122,7 +124,7 @@ public class AppController extends BaseController {
      * @apiParam (JSON Body) {Object} options 应用扩展信息
      */
     @PutMapping
-    public TeslaBaseResult updateCompatible(@RequestBody AppMetaUpdateReq request) {
+    public TeslaBaseResult updateCompatible(@RequestBody AppMetaUpdateReq request, OAuth2Authentication auth) {
         AppMetaDTO result = appMetaProvider.save(request);
         return buildSucceedResult(result);
     }
@@ -134,7 +136,8 @@ public class AppController extends BaseController {
      * @apiParam (Path Parameters) {String} appId 应用 ID
      */
     @DeleteMapping(value = "/{appId}")
-    public TeslaBaseResult delete(@PathVariable String appId, @ModelAttribute AppMetaDeleteReq request) {
+    public TeslaBaseResult delete(
+            @PathVariable String appId, @ModelAttribute AppMetaDeleteReq request, OAuth2Authentication auth) {
         if (StringUtils.isEmpty(appId)) {
             return buildSucceedResult(Boolean.TRUE);
         }
@@ -158,7 +161,8 @@ public class AppController extends BaseController {
     public TeslaBaseResult updateApplicationConfigurations(
             @PathVariable String appId,
             @RequestBody DeployConfigApplyTemplateReq request,
-            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
+            OAuth2Authentication auth) {
         request.setAppId(appId);
 
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
@@ -177,7 +181,8 @@ public class AppController extends BaseController {
     public TeslaBaseResult getApplicationConfigurations(
             @PathVariable String appId,
             @ModelAttribute DeployConfigGenerateReq request,
-            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
+            OAuth2Authentication auth) {
         if (StringUtils.isEmpty(request.getApiVersion())) {
             request.setApiVersion(DefaultConstant.API_VERSION_V1_ALPHA2);
         }
@@ -203,7 +208,8 @@ public class AppController extends BaseController {
     public TeslaBaseResult deleteApplicationConfigurations(
             @PathVariable String appId,
             @ModelAttribute DeployConfigDeleteReq request,
-            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
+            OAuth2Authentication auth) {
         if (StringUtils.isEmpty(request.getApiVersion())) {
             request.setApiVersion(DefaultConstant.API_VERSION_V1_ALPHA2);
         }

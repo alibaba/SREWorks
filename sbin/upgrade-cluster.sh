@@ -19,7 +19,12 @@ kubectl delete job sreworks-appmanager-cluster-initjob -nsreworks
 kubectl delete job sreworks-appmanager-postrun -nsreworks
 kubectl delete deployment sreworks-appmanager-operator-controller-manager -nsreworks
 kubectl delete deployment sreworks-appmanager-server -nsreworks
-kubectl delete job prod-dataops-skywalking-es-init -nsreworks-dataops
+
+es_init_count=$(kubectl get job prod-dataops-skywalking-es-init -n sreworks-dataops|wc -l)
+if [ $es_init_count -gt 0 ]; then
+   kubectl delete job prod-dataops-skywalking-es-init -nsreworks-dataops
+fi
+
 
 helm upgrade sreworks $script_dir/../chart/sreworks-chart --namespace sreworks -f /tmp/sreworks-values.yaml $*
 

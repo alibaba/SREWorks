@@ -7,15 +7,16 @@
   <meta name="theme-color" content="#000000">
   <script>
     window.__ABM_LOAD_START__ = (new Date).getTime();
+    window.REMOTE_COMP_LIST = []
   </script>
   <!--
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
     -->
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
-  <link rel="shortcut icon" href="%PUBLIC_URL%/new_favicon.png">
-  <link rel="stylesheet" type="text/css" href="%PUBLIC_URL%/screen_loading.css" />
-  <link rel="stylesheet" type="text/css" href="%PUBLIC_URL%/iconfont/iconfont.css" />
+  <link rel="manifest" href="./manifest.json">
+  <link rel="shortcut icon" href="./new_favicon.png">
+  <link rel="stylesheet" type="text/css" href="./screen_loading.css" />
+  <link rel="stylesheet" type="text/css" href="./iconfont/iconfont.css" />
   <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -38,6 +39,10 @@
   <noscript>
     You need to enable JavaScript to run this app.
   </noscript>
+  <script src="./common_vender/moment.min.js"></script>
+  <script src="./common_vender/moment-duration-format.min.js"></script>
+  <script src="./common_vender/react.production.min.js"></script>
+  <script src="./common_vender/react-dom.production.min.js"></script>
   <div id="root" style="min-width: 1400px;overflow: hidden">
     <div id="abm-pre-screen-loading">
       <div id="abm-pre-screen-loading-center">
@@ -48,7 +53,6 @@
           <div class="abm-pre-screen-object" id="abm-pre-screen-object_one"></div>
         </div>
         <h1 class="abm-pre-screen-text">
-          <span id="loading-mark">SREWorks</span>
         </h1>
         <!--<h1 class="abm-pre-screen-text">
             <span>Apsara Big Data Manager</span>
@@ -67,11 +71,13 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   <!-- for antd-theme-generator START -->
-  <link rel="stylesheet/less" type="text/css" href="%PUBLIC_URL%/color.less" />
-  <link rel="stylesheet/css" type="text/css" href="%PUBLIC_URL%/root.css" />
-  <!--<script type="text/javascript" src="%PUBLIC_URL%/system.js"></script>-->
-  <!--<script type="text/javascript" src="%PUBLIC_URL%/es6-promise.auto.min.js"></script>-->
-  <script type="text/javascript" src="%PUBLIC_URL%/config.js"></script>
+  <script src="./common_vender/antd.min.js"></script>
+  <script src="./common_vender/systemjs/system.min.js"></script>
+  <link rel="stylesheet/less" type="text/css" href="./color.less" />
+  <link rel="stylesheet/css" type="text/css" href="./root.css" />
+  <!-- <script type="text/javascript" src="%PUBLIC_URL%/system.js"></script>
+  <script type="text/javascript" src="%PUBLIC_URL%/es6-promise.auto.min.js"></script> -->
+  <script type="text/javascript" src="./config.js" ></script>
   <script>
     window.less = {
       async: false,
@@ -80,7 +86,9 @@
     };
     if (window.GlobalBackendConf && window.GlobalBackendConf.production) {
       var targetDom = document.getElementById('loading-mark')
-      targetDom.innerHTML = window.GlobalBackendConf['production']['platformName'] || "SREWorks"
+      if (targetDom) {
+        targetDom.innerHTML = window.GlobalBackendConf['production']['platformName'] || "SREWorks"
+      }
     }
   </script>
 </body>

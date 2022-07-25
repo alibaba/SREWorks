@@ -129,7 +129,7 @@ class GridCard extends React.Component {
         if (widgetConfig && widgetConfig.dataSourceMeta) {
             runtimeUrl = widgetConfig.dataSourceMeta
         }
-        this.loadAllData(runtimeUrl, filterParams).then(respData => {
+        runtimeUrl && runtimeUrl.api && this.loadAllData(runtimeUrl, filterParams).then(respData => {
             if (afterResponseHandler && afterResponseHandler.length > 50) {
                 respData = safeEval("(" + afterResponseHandler + ")(respData,nodeParams,httpClient)", { respData: respData, nodeParams: nodeParams, httpClient: httpClient });
                 if (respData instanceof Promise) {
@@ -162,6 +162,8 @@ class GridCard extends React.Component {
             this.setState({
                 loading: true,
             });
+        } else {
+            return false
         }
         let { page, pageSize, apiConf } = this.state;
         let beforeRequestHandler = '';
@@ -192,6 +194,9 @@ class GridCard extends React.Component {
                 reqParams = {...reqParams,...funcParams}
             }
             let finalUrl = api.url || api.api;
+            if(!finalUrl) {
+                return false
+            }
             if(finalUrl.includes('$(')) {
                 finalUrl = util.renderTemplateString(finalUrl,nodeParams)
             }

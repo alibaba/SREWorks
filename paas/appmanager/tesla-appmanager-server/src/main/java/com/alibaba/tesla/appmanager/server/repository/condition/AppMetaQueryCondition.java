@@ -21,6 +21,8 @@ public class AppMetaQueryCondition extends BaseCondition {
 
     private String appId;
 
+    private String appIdLike;
+
     private List<String> appIdList;
 
     private String optionKey;

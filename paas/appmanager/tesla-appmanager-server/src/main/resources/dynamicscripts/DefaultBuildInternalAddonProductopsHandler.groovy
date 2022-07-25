@@ -51,7 +51,7 @@ class DefaultInternalAddonProductopsHandler implements BuildComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 14
+    public static final Integer REVISION = 15
 
     /**
      * 弹内导出应用需要排除的应用 ID
@@ -108,20 +108,12 @@ class DefaultInternalAddonProductopsHandler implements BuildComponentHandler {
             FileUtils.copyURLToFile(new URL(remoteFile), exportPath.toFile(), 10 * 1000, 60 * 1000)
         } else {
             // 准备参数并导出数据
-            String endpoint = getEndpoint(appId, namespaceId, stageId, options)
+            String endpoint = getEndpoint(options)
+            String envIds = getEnvId(namespaceId, stageId, options)
             def url = String.format("%s/maintainer/export/apps", endpoint)
             def params = new HashMap<String, String>()
             params.put("appIds", appId)
-            if (StringUtils.isNotEmpty(options.getString("envIds"))) {
-                params.put("envIds", options.getString("envIds"))
-            } else if (StringUtils.isNotEmpty(namespaceId) && StringUtils.isNotEmpty(stageId)) {
-                params.put("envIds", namespaceId + "," + stageId)
-            } else if (StringUtils.isNotEmpty(options.getString("namespaceId"))
-                    && StringUtils.isNotEmpty(options.getString("stageId"))) {
-                params.put("envIds", options.getString("namespaceId") + "," + options.getString("stageId"))
-            } else {
-                params.put("envIds", "prod")
-            }
+            params.put("envIds", envIds)
             def urlBuilder = Objects.requireNonNull(HttpUrl.parse(url)).newBuilder()
             for (Map.Entry<String, String> entry : params.entrySet()) {
                 urlBuilder.addQueryParameter(entry.getKey(), entry.getValue())
@@ -201,26 +193,36 @@ class DefaultInternalAddonProductopsHandler implements BuildComponentHandler {
 
     /**
      * 获取 ProductOps 组件需要的 Endpoint (兼容各种历史问题)
-     * @param appId 应用 ID
-     * @param namespaceId Namespace ID
-     * @param stageId Stage ID
      * @param options 应用选项
      * @return Endpoint String
      */
-    private static String getEndpoint(String appId, String namespaceId, String stageId, JSONObject options) {
+    private static String getEndpoint(JSONObject options) {
         def endpoint = "http://" + (StringUtils.isEmpty(System.getenv("ENDPOINT_PAAS_PRODUCTOPS"))
                 ? "productops.gateway.tesla.alibaba-inc.com/"
                 : System.getenv("ENDPOINT_PAAS_PRODUCTOPS"))
-        def cloudType = System.getenv("CLOUD_TYPE")
-        if ("Internal" == cloudType
-                && EXCLUDE_APPS.contains(appId)
-                && StringUtils.isEmpty(options.getString("endpoint"))
-                && StringUtils.isEmpty(namespaceId)
-                && StringUtils.isEmpty(stageId)) {
-            endpoint = "http://productops-private.abm.alibaba-inc.com"
-        } else if (StringUtils.isNotEmpty(options.getString("endpoint"))) {
+        if (StringUtils.isNotEmpty(options.getString("endpoint"))) {
             endpoint = options.getString("endpoint")
         }
         return endpoint
+    }
+
+    /**
+     * 获取 EnvIds
+     * @param namespaceId Namespace ID
+     * @param stageId Stage ID
+     * @param options 应用选项
+     * @return
+     */
+    private static String getEnvId(String namespaceId, String stageId, JSONObject options) {
+        def envIds = "prod"
+        if (StringUtils.isNotEmpty(options.getString("envIds"))) {
+            envIds = options.getString("envIds")
+        } else if (StringUtils.isNotEmpty(namespaceId) && StringUtils.isNotEmpty(stageId)) {
+            envIds = namespaceId + "," + stageId
+        } else if (StringUtils.isNotEmpty(options.getString("namespaceId"))
+                && StringUtils.isNotEmpty(options.getString("stageId"))) {
+            envIds = options.getString("namespaceId") + "," + options.getString("stageId")
+        }
+        return envIds
     }
 }

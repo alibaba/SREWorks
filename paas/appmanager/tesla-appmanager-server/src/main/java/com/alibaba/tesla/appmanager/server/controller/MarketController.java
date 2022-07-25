@@ -268,7 +268,7 @@ public class MarketController extends AppManagerBaseController {
         if(request.getAppOptions() != null) {
             appMetaUpdateReq.setOptions(request.getAppOptions());
         }
-        appMetaProvider.save(appMetaUpdateReq);
+        appMetaProvider.save(appMetaUpdateReq, getOperator(auth));
 
         return buildSucceedResult(appPackageInfo);
     }

@@ -4,6 +4,8 @@ import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppMetaQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.AppMetaDO;
 
+import java.util.List;
+
 /**
  * 应用元信息服务
  *
@@ -47,4 +49,12 @@ public interface AppMetaService {
      * @param condition 查询条件
      */
     int delete(AppMetaQueryCondition condition);
+
+    /**
+     * 获取指定 operator 用户有权限的所有应用 ID 列表
+     *
+     * @param operator 用户
+     * @return List of AppID
+     */
+    List<String> listUserPermittedApp(String operator);
 }

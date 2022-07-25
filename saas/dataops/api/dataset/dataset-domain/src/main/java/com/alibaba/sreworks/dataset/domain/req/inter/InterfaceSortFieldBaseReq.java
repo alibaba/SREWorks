@@ -13,7 +13,7 @@ import lombok.Data;
 @Data
 @ApiModel(value="数据接口排序字段")
 public class InterfaceSortFieldBaseReq {
-    @ApiModelProperty(value ="原始字段", example = "time", required = true)
+    @ApiModelProperty(value ="索引字段", example = "time", required = true)
     String dim;
 
     @ApiModelProperty(value ="升序/降序", example = "asc", required = true)

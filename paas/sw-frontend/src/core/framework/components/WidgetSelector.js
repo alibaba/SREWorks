@@ -53,11 +53,12 @@ export default class WidgetSelector extends React.Component {
                         }
                     });
                 })
-                console.log(umdCompList,'umdCompList')
                 umdCompList && umdCompList.forEach(item => {
                     initCategory.forEach(lit => {
                         if (lit.name === 'remote') {
-                            window[item.name] && lit.children.push(window[item.name][item.name+'Meta'])
+                            let templateMeta = cloneDeep(window[item.name][item.name+'Meta']);
+                            templateMeta['info']['logos']['small'] = item['configObject']['icon'] || 'https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*pUkAQpefcx8AAAAAAAAAAABkARQnAQ'
+                            window[item.name] && lit.children.push(templateMeta)
                         }
                     });
                 })

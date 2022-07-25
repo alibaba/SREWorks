@@ -21,7 +21,7 @@ echo "============UPLOAD UDF ARTIFACT============"
 upload_response=$(curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/udfartifacts/${UDF_ARTIFACT_NAME}:upload-jar \
     -X POST \
     -F 'file=@/app/sbin/'${UDF_ARTIFACT_JAR})
-jar_uri=$(echo $upload_response | jq -r ".jarUri")
+export jar_uri=$(echo $upload_response | jq -r ".jarUri")
 
 
 ###### REGISTER UDF ARTIFACT
@@ -65,13 +65,70 @@ curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:exe
 
 
 ###### CREATE TABLE
-############ health alert
 echo "============CREATE TABLE============"
+
+############ parse metric data
+echo "============parse metric data============"
 curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:execute \
    -X POST \
    -H 'Content-Type: application/json' \
-   -d '{"statement":"CREATE TABLE `vvp`.`'${VVP_WORK_NS}'`.`source_sreworks_metric_data_kafka` (`uid` VARCHAR,`metricId` INT,`metricName` VARCHAR,`type` VARCHAR,`labels` MAP<VARCHAR, VARCHAR>,`ts` BIGINT,`value` FLOAT,`proc_time` AS PROCTIME()) COMMENT '\''指标数据源表'\'' WITH ('\''connector'\'' = '\''kafka'\'','\''properties.bootstrap.servers'\'' = '\''http://'${KAFKA_URL}''\'','\''topic'\'' = '\''sreworks-dataops-metric-data'\'','\''properties.group.id'\'' = '\''sreworks-dataops-metric-flink-group'\'','\''scan.startup.mode'\'' = '\''latest-offset'\'','\''value.fields-include'\'' = '\''ALL'\'','\''format'\'' = '\''json'\'','\''json.map-null-key.mode'\'' = '\''FAIL'\'','\''json.fail-on-missing-field'\'' = '\''true'\'','\''json.ignore-parse-errors'\'' = '\''false'\'');"}'
-#   -d '{"statement":"CREATE TABLE `vvp`.`'${VVP_WORK_NS}'`.`source_sreworks_metric_data_kafka` (`uid` VARCHAR,`metricId` INT,`metricName` VARCHAR,`type` VARCHAR,`labels` MAP<VARCHAR, VARCHAR>,`ts` BIGINT,`value` FLOAT,`msg_timestamp` TIMESTAMP(3) METADATA FROM '\''timestamp'\'',WATERMARK FOR `msg_timestamp` AS `msg_timestamp` - INTERVAL '\''1'\'' MINUTE) COMMENT '\''指标数据源表'\'' WITH ('\''connector'\'' = '\''kafka'\'','\''properties.bootstrap.servers'\'' = '\''http://'${KAFKA_URL}''\'','\''topic'\'' = '\''sreworks-dataops-metric-data'\'','\''properties.group.id'\'' = '\''sreworks-dataops-metric-flink-group'\'','\''scan.startup.mode'\'' = '\''latest-offset'\'','\''value.fields-include'\'' = '\''ALL'\'','\''format'\'' = '\''json'\'','\''json.map-null-key.mode'\'' = '\''FAIL'\'','\''json.fail-on-missing-field'\'' = '\''true'\'','\''json.ignore-parse-errors'\'' = '\''false'\'');"}'
+   -d '{"statement":"CREATE TABLE `vvp`.`'${VVP_WORK_NS}'`.`source_sreworks_telemetry_metric_kafka` (`metric` STRING ) COMMENT '\''可观测指标数据源表'\''WITH ('\''connector'\'' = '\''kafka'\'', '\''format'\'' = '\''raw'\'', '\''properties.bootstrap.servers'\'' = '\''http://'${KAFKA_URL}''\'', '\''properties.group.id'\'' = '\''source-sreworks-telemetry-metric-group'\'', '\''scan.startup.mode'\'' = '\''latest-offset'\'', '\''topic'\'' = '\''sreworks-telemetry-metric'\'', '\''value.fields-include'\'' = '\''ALL'\'');"}'
+
+curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:execute \
+   -X POST \
+   -H 'Content-Type: application/json' \
+   -d '{"statement":"CREATE VIEW `vvp`.`'${VVP_WORK_NS}'`.`pmdb_parsed_metric_view` (`metric_id`, `labels`, `value`, `timestamp` ) COMMENT '\''指标数据解析视图'\''AS SELECT E.metric_id AS metric_id, E.labels AS labels, E.`value` as `value`, E.`timestamp` as `timestamp` FROM  `vvp`.`'${VVP_WORK_NS}'`.`source_sreworks_telemetry_metric_kafka` t, lateral table (ParsePmdbMetricDataUdtf(t.metric)) as E (metric_id, labels, `value`, `timestamp`) ;"}'
+
+curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:execute \
+   -X POST \
+   -H 'Content-Type: application/json' \
+   -d '{"statement":"CREATE TABLE `vvp`.`'${VVP_WORK_NS}'`.`sink_sreworks_pmdb_parsed_metric_kafka` (`metric_id` INT, `labels` STRING, `value` FLOAT, `timestamp` BIGINT ) COMMENT '\''指标数据解析结果表'\''WITH ('\''connector'\'' = '\''kafka'\'', '\''format'\'' = '\''json'\'', '\''json.ignore-parse-errors'\'' = '\''true'\'', '\''json.map-null-key.mode'\'' = '\''DROP'\'', '\''properties.bootstrap.servers'\'' = '\''http://'${KAFKA_URL}''\'', '\''properties.group.id'\'' = '\''sink-sreworks-pmdb-parsed-metric-group'\'', '\''topic'\'' = '\''sreworks-pmdb-parsed-metric'\'', '\''value.fields-include'\'' = '\''ALL'\'');"}'
+
+
+############ push metric data
+echo "============push metric data============"
+curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:execute \
+   -X POST \
+   -H 'Content-Type: application/json' \
+   -d '{"statement":"CREATE TABLE `vvp`.`'${VVP_WORK_NS}'`.`source_sreworks_pmdb_parsed_metric_kafka` (`metric_id` INT, `labels` STRING, `value` FLOAT, `timestamp` BIGINT, `proc_time` AS PROCTIME() ) COMMENT '\''指标数据解析源表'\''WITH ('\''connector'\'' = '\''kafka'\'', '\''format'\'' = '\''json'\'', '\''json.fail-on-missing-field'\'' = '\''true'\'', '\''json.ignore-parse-errors'\'' = '\''false'\'', '\''json.map-null-key.mode'\'' = '\''FAIL'\'', '\''properties.bootstrap.servers'\'' = '\''http://'${KAFKA_URL}''\'', '\''properties.group.id'\'' = '\''source-sreworks-pmdb-parsed-metric-group'\'', '\''scan.startup.mode'\'' = '\''latest-offset'\'', '\''topic'\'' = '\''sreworks-pmdb-parsed-metric'\'', '\''value.fields-include'\'' = '\''ALL'\'');"}'
+
+curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:execute \
+   -X POST \
+   -H 'Content-Type: application/json' \
+   -d '{"statement":"CREATE TABLE `vvp`.`'${VVP_WORK_NS}'`.`dim_pmdb_metric_mysql` (`id` INT, `name` STRING, `type` STRING, `labels` STRING, PRIMARY KEY (`id`) NOT ENFORCED ) COMMENT '\''指标定义维度表'\''WITH ('\''connector'\'' = '\''jdbc'\'', '\''driver'\'' = '\''org.mariadb.jdbc.Driver'\'', '\''lookup.cache.max-rows'\'' = '\''1000'\'', '\''lookup.cache.ttl'\'' = '\''600s'\'', '\''password'\'' = '\'''${DATA_DB_PASSWORD}''\'', '\''table-name'\'' = '\''metric'\'', '\''url'\'' = '\''jdbc:mysql://'${DATA_DB_HOST}':'${DATA_DB_PORT}'/pmdb?useUnicode=true&characterEncoding=utf-8&useSSL=false'\'', '\''username'\'' = '\'''${DATA_DB_USER}''\'');"}'
+
+curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:execute \
+   -X POST \
+   -H 'Content-Type: application/json' \
+   -d '{"statement":"CREATE VIEW `vvp`.`'${VVP_WORK_NS}'`.`pmdb_raw_metric_data_view` (`metric_id`, `metric_name`, `type`, `ins_labels`, `metric_labels`, `timestamp`, `value` ) COMMENT '\''指标数据结果视图'\''AS SELECT t1.metric_id, t2.name as metric_name, t2.type, t1.labels as ins_labels, t2.labels as metric_labels, t1.`timestamp`, t1.`value` FROM `vvp`.`'${VVP_WORK_NS}'`.`source_sreworks_pmdb_parsed_metric_kafka` AS t1 INNER JOIN `vvp`.`'${VVP_WORK_NS}'`.`dim_pmdb_metric_mysql` FOR SYSTEM_TIME AS OF t1.`proc_time` AS t2 ON t2.`id` = t1.metric_id;"}'
+
+curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:execute \
+   -X POST \
+   -H 'Content-Type: application/json' \
+   -d '{"statement":"CREATE VIEW `vvp`.`'${VVP_WORK_NS}'`.`pmdb_metric_data_view` (`uid`, `metric_id`, `metric_name`, `type`, `labels`, `value`, `timestamp` ) COMMENT '\''指标数据解析视图'\''AS SELECT E.uid, v.metric_id, v.metric_name, v.type, E.labels, v.`value`, v.`timestamp` FROM  `vvp`.`'${VVP_WORK_NS}'`.`pmdb_raw_metric_data_view` v, lateral table (MergePmdbMetricLabelsUdtf(v.metric_id, v.ins_labels, v.metric_labels)) as E (uid, labels) ;"}'
+
+curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:execute \
+   -X POST \
+   -H 'Content-Type: application/json' \
+   -d '{"statement":"CREATE TABLE `vvp`.`'${VVP_WORK_NS}'`.`sink_pmdb_metric_instance_mysql` (`uid` STRING, `metric_id` INT, `labels` STRING, PRIMARY KEY (`uid`) NOT ENFORCED ) COMMENT '\''指标定义实例结果表'\''WITH ('\''connector'\'' = '\''jdbc'\'', '\''driver'\'' = '\''org.mariadb.jdbc.Driver'\'', '\''lookup.cache.max-rows'\'' = '\''1000'\'', '\''lookup.cache.ttl'\'' = '\''600s'\'', '\''password'\'' = '\'''${DATA_DB_PASSWORD}''\'', '\''table-name'\'' = '\''metric_instance'\'', '\''url'\'' = '\''jdbc:mysql://'${DATA_DB_HOST}':'${DATA_DB_PORT}'/pmdb?useUnicode=true&characterEncoding=utf-8&useSSL=false'\'', '\''username'\'' = '\'''${DATA_DB_USER}''\'');"}'
+
+curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:execute \
+   -X POST \
+   -H 'Content-Type: application/json' \
+   -d '{"statement":"CREATE TABLE `vvp`.`'${VVP_WORK_NS}'`.`sink_dwd_metric_data_es` (`id` STRING, `uid` STRING, `metric_id` INT, `metric_name` STRING, `labels` MAP<STRING, STRING>, `value` FLOAT, `type` STRING, `timestamp` BIGINT, `ds` STRING, PRIMARY KEY (`id`) NOT ENFORCED ) COMMENT '\''数仓指标数据结果表'\''WITH ('\''connector'\'' = '\''elasticsearch-7'\'', '\''hosts'\'' = '\''http://'${DATA_ES_HOST}':'${DATA_ES_PORT}''\'', '\''index'\'' = '\''dwd_original_metric_data_di'\'', '\''username'\'' = '\'''${DATA_ES_USER}''\'', '\''password'\'' = '\'''${DATA_ES_PASSWORD}'.'\'', '\''format'\'' = '\''json'\'');"}'
+
+curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:execute \
+   -X POST \
+   -H 'Content-Type: application/json' \
+   -d '{"statement":"CREATE TABLE `vvp`.`'${VVP_WORK_NS}'`.`sink_sreworks_metric_data_kafka` (`uid` STRING, `metricId` INT, `metricName` STRING, `labels` MAP<STRING, STRING>, `value` FLOAT, `type` STRING, `timestamp` BIGINT ) COMMENT '\''指标数据结果表'\''WITH ('\''connector'\'' = '\''kafka'\'', '\''format'\'' = '\''json'\'', '\''json.ignore-parse-errors'\'' = '\''true'\'', '\''json.map-null-key.mode'\'' = '\''DROP'\'', '\''properties.bootstrap.servers'\'' = '\''http://'${KAFKA_URL}''\'', '\''properties.group.id'\'' = '\''sink-sreworks-metric-data-group'\'', '\''topic'\'' = '\''sreworks-dataops-metric-data'\'', '\''value.fields-include'\'' = '\''ALL'\'');"}'
+
+
+############ health alert
+echo "============health alert============"
+curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:execute \
+   -X POST \
+   -H 'Content-Type: application/json' \
+   -d '{"statement":"CREATE TABLE `vvp`.`'${VVP_WORK_NS}'`.`source_sreworks_metric_data_kafka` (`uid` VARCHAR,`metricId` INT,`metricName` VARCHAR,`type` VARCHAR,`labels` MAP<VARCHAR, VARCHAR>,`timestamp` BIGINT,`value` FLOAT,`proc_time` AS PROCTIME()) COMMENT '\''指标数据源表'\'' WITH ('\''connector'\'' = '\''kafka'\'','\''properties.bootstrap.servers'\'' = '\''http://'${KAFKA_URL}''\'','\''topic'\'' = '\''sreworks-dataops-metric-data'\'','\''properties.group.id'\'' = '\''sreworks-dataops-metric-flink-group'\'','\''scan.startup.mode'\'' = '\''latest-offset'\'','\''value.fields-include'\'' = '\''ALL'\'','\''format'\'' = '\''json'\'','\''json.map-null-key.mode'\'' = '\''FAIL'\'','\''json.fail-on-missing-field'\'' = '\''true'\'','\''json.ignore-parse-errors'\'' = '\''false'\'');"}'
 
 curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:execute \
    -X POST \
@@ -91,15 +148,15 @@ curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:exe
 curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:execute \
    -X POST \
    -H 'Content-Type: application/json' \
-   -d '{"statement":"CREATE VIEW `vvp`.`'${VVP_WORK_NS}'`.`metric_data_alert_rule_view` (`uid`,`metricId`,`metricName`,`type`,`labels`,`ts`,`value`,`def_id`,`def_name`,`app_id`,`app_name`,`app_component_name`,`ex_config`) COMMENT '\''指标数值告警定义视图'\'' AS SELECT `t1`.`uid`, `t1`.`metricId`, `t1`.`metricName`, `t1`.`type`, `t1`.`labels`, `t1`.`ts`, `t1`.`value`, `t2`.`id` AS `def_id`, `t2`.`name` AS `def_name`, `t2`.`app_id`, `t2`.`app_name`, `t2`.`app_component_name`, `t2`.`ex_config` FROM `vvp`.`'${VVP_WORK_NS}'`.`source_sreworks_metric_data_kafka` AS t1 INNER JOIN `vvp`.`'${VVP_WORK_NS}'`.`dim_health_def_mysql` FOR SYSTEM_TIME AS OF `t1`.`proc_time` AS t2 ON t2.metric_id=t1.metricId WHERE t2.category='\''alert'\'';"}'
+   -d '{"statement":"CREATE VIEW `vvp`.`'${VVP_WORK_NS}'`.`metric_data_alert_rule_view` (`uid`,`metricId`,`metricName`,`type`,`labels`,`timestamp`,`value`,`def_id`,`def_name`,`app_id`,`app_name`,`app_component_name`,`ex_config`) COMMENT '\''指标数值告警定义视图'\'' AS SELECT `t1`.`uid`, `t1`.`metricId`, `t1`.`metricName`, `t1`.`type`, `t1`.`labels`, `t1`.`timestamp`, `t1`.`value`, `t2`.`id` AS `def_id`, `t2`.`name` AS `def_name`, `t2`.`app_id`, `t2`.`app_name`, `t2`.`app_component_name`, `t2`.`ex_config` FROM `vvp`.`'${VVP_WORK_NS}'`.`source_sreworks_metric_data_kafka` AS t1 INNER JOIN `vvp`.`'${VVP_WORK_NS}'`.`dim_health_def_mysql` FOR SYSTEM_TIME AS OF `t1`.`proc_time` AS t2 ON t2.metric_id=t1.metricId WHERE t2.category='\''alert'\'';"}'
 
 
 ############ health failure
+echo "============health failure============"
 curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:execute \
    -X POST \
    -H 'Content-Type: application/json' \
    -d '{"statement":"CREATE TABLE `vvp`.`'${VVP_WORK_NS}'`.`source_sreworks_health_incident_instance_kafka` (`id` BIGINT, `defId` INT, `appInstanceId` VARCHAR, `appComponentInstanceId` VARCHAR, `gmtOccur` BIGINT, `gmtRecovery` BIGINT, `cause` VARCHAR, `proc_time` AS PROCTIME()) COMMENT '\''异常实例数据源表'\'' WITH ('\''connector'\'' = '\''kafka'\'', '\''format'\'' = '\''json'\'', '\''json.fail-on-missing-field'\'' = '\''true'\'', '\''json.ignore-parse-errors'\'' = '\''false'\'', '\''json.map-null-key.mode'\'' = '\''FAIL'\'', '\''properties.bootstrap.servers'\'' = '\''http://'${KAFKA_URL}''\'', '\''properties.group.id'\'' = '\''sreworks-health-incident-flink-group'\'', '\''scan.startup.mode'\'' = '\''latest-offset'\'', '\''topic'\'' = '\''sreworks-health-incident'\'', '\''value.fields-include'\'' = '\''ALL'\'');"}'
-#   -d '{"statement":"CREATE TABLE `vvp`.`'${VVP_WORK_NS}'`.`source_sreworks_health_incident_instance_kafka` (`id` BIGINT, `defId` INT, `appInstanceId` VARCHAR, `appComponentInstanceId` VARCHAR, `gmtOccur` BIGINT, `gmtRecovery` BIGINT, `cause` VARCHAR, `msg_timestamp` TIMESTAMP(3) METADATA FROM '\''timestamp'\'', WATERMARK FOR `msg_timestamp` AS `msg_timestamp` - INTERVAL '\''1'\'' MINUTE) COMMENT '\''异常实例数据源表'\'' WITH ('\''connector'\'' = '\''kafka'\'', '\''format'\'' = '\''json'\'', '\''json.fail-on-missing-field'\'' = '\''true'\'', '\''json.ignore-parse-errors'\'' = '\''false'\'', '\''json.map-null-key.mode'\'' = '\''FAIL'\'', '\''properties.bootstrap.servers'\'' = '\''http://'${KAFKA_URL}''\'', '\''properties.group.id'\'' = '\''sreworks-health-incident-flink-group'\'', '\''scan.startup.mode'\'' = '\''latest-offset'\'', '\''topic'\'' = '\''sreworks-health-incident'\'', '\''value.fields-include'\'' = '\''ALL'\'');"}'
 
 curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:execute \
    -X POST \

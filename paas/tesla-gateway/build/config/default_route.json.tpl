@@ -206,26 +206,7 @@
         "order": 2500,
         "routeType": "PATH",
         "authHeader": true
-    },
-    {
-        "authLogin": true,
-        "enable": true,
-        "description": "V2 - 公共依赖服务 - 产品树",
-        "name": "v2_common_productops",
-        "url": "http://${CORE_STAGE_ID}-${CORE_APP_ID}-paas-productops/",
-        "serverType": "PAAS",
-        "forwardEnv": null,
-        "routeId": "v2_common_productops",
-        "host": null,
-        "authCheck": true,
-        "appId": "tesla",
-        "path": "/v2/common/productops/**",
-        "order": 2500,
-        "routeType": "PATH",
-        "authHeader": true,
-        "authIgnorePath": "/env"
-    },
-    {
+    },{
         "authLogin": true,
         "enable": true,
         "description": "V2 - AppManager",
@@ -242,8 +223,7 @@
         "routeType": "PATH",
         "authHeader": true,
         "authIgnorePath": "/realtime/app-instances"
-    },
-    {
+    },{
         "authLogin": true,
         "enable": true,
         "description": "V2 - 基础管控服务 - 操作服务",
@@ -260,7 +240,7 @@
         "routeType": "PATH",
         "authHeader": true
     },{
-        "authLogin": true,
+        "authLogin": false,
         "enable": true,
         "description": "V2 - 基础管控服务 - action all( action + frontend-service) ",
         "name": "v2_action_service",
@@ -269,12 +249,12 @@
         "forwardEnv": null,
         "routeId": "v2_action_service",
         "host": null,
-        "authCheck": true,
+        "authCheck": false,
         "appId": "tesla",
         "path": "/v2/foundation/frontend-service/**",
         "order": 2500,
         "routeType": "PATH",
-        "authHeader": true    
+        "authHeader": false    
     },{
         "name": "minio",
         "routeId": "minio",

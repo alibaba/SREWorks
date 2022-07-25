@@ -1,6 +1,8 @@
 package com.alibaba.sreworks.job.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONValidator;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
@@ -83,6 +85,19 @@ public class Requests {
     public static void checkResponseStatus(HttpResponse<String> response) throws Exception {
         if (response.statusCode() >= 300) {
             throw new Exception("response statusCode is " + response.statusCode() + " body is " + response.body());
+        } else {
+            String strBody = response.body();
+            if (StringUtils.isNotEmpty(strBody)) {
+                JSONValidator validator = JSONValidator.from(response.body());
+                boolean validJSON = validator.validate();
+                if (validJSON) {
+                    JSONObject body = JSONObject.parseObject(response.body());
+                    int execCode = body.getIntValue("code");
+                    if (execCode >= 300) {
+                        throw new Exception("response is " + response.body());
+                    }
+                }
+            }
         }
     }
 

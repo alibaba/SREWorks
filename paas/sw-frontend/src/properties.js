@@ -39,9 +39,9 @@
   */
  // 本地开发环境配置
  const development = {
-     baseUrl: '',
-     apiEndpoint: '',
-     gateway: ''
+     baseUrl: 'https://sreworks.c38cca9c474484bdc9873f44f733d8bcd.cn-beijing.alicontainer.com/',
+     apiEndpoint: 'https://sreworks.c38cca9c474484bdc9873f44f733d8bcd.cn-beijing.alicontainer.com/',
+     gateway: 'https://sreworks.c38cca9c474484bdc9873f44f733d8bcd.cn-beijing.alicontainer.com/'
  };
  // 日常环境配置项
  const daily = {

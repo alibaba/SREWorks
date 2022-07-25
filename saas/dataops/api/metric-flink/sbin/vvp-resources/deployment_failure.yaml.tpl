@@ -19,7 +19,7 @@ spec:
       artifact:
         additionalDependencies:
           - >-
-            s3://vvp/artifacts/namespaces/${VVP_WORK_NS}/udfs/${UDF_ARTIFACT_JAR}
+            ${jar_uri}
         flinkVersion: '1.14'
         kind: SQLSCRIPT
         sqlScript: |-

@@ -14,7 +14,6 @@ const SimpleProgressWebpackPlugin = require('simple-progress-webpack-plugin')
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
 const cdnPath = require('./cdnPath');
-const ThemeVariables = require('./generateTheme');
 const GlobalTheme = require('./globalTheme');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const threadLoader = require('thread-loader');
@@ -59,11 +58,11 @@ module.exports = {
                 .replace(/\\/g, '/'),
     },
     externals: {
-        // 'react': 'React',
-        // 'react-dom': 'ReactDOM',
-        // 'moment': 'moment',
-        // "moment-duration-format": "moment-duration-format",
-        // "antd": "antd",
+        'react': 'React',
+        'react-dom': 'ReactDOM',
+        'moment': 'moment',
+        "moment-duration-format": "moment-duration-format",
+        "antd": "antd",
     },
     optimization: {
         splitChunks: {
@@ -130,7 +129,6 @@ module.exports = {
                         options: {
                             formatter: eslintFormatter,
                             eslintPath: require.resolve('eslint'),
-
                         },
                         loader: require.resolve('eslint-loader'),
                     },
@@ -155,7 +153,6 @@ module.exports = {
                         use: [
                             'thread-loader',
                             {
-                                // loader: require.resolve('babel-loader'),
                                 loader: 'babel-loader',
                                 options: {
                                     // plugins: [
@@ -187,7 +184,6 @@ module.exports = {
                             {
                                 loader: require.resolve('less-loader'), // compiles Less to CSS
                                 options: {
-                                    // modifyVars: require('./generateTheme'),
                                     sourceMap: true,
                                     javascriptEnabled: true
                                 }

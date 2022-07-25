@@ -14,7 +14,7 @@ const SimpleProgressWebpackPlugin = require('simple-progress-webpack-plugin')
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
 //const cdnPath = require('./cdnPath');
-const ThemeVariables = require('./generateTheme');
+const GlobalTheme = require('./globalTheme');
 const threadLoader = require('thread-loader');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const publicPath = "/";
@@ -36,11 +36,11 @@ module.exports = {
     // This means they will be the "root" imports that are included in JS bundle.
     // The first two entry points enable "hot" CSS and auto-refreshes for JS.
     externals: {
-        // 'react': 'React',
-        // 'react-dom': 'ReactDOM',
-        // "antd":"antd",
-        // 'moment':'moment',
-        // "moment-duration-format":"moment-duration-format"
+        'react': 'React',
+        'react-dom': 'ReactDOM',
+        "antd":"antd",
+        'moment':'moment',
+        "moment-duration-format":"moment-duration-format"
     },
     entry: {
         index: [
@@ -188,7 +188,6 @@ module.exports = {
                             {
                                 loader: require.resolve('less-loader'), // compiles Less to CSS
                                 options: {
-                                    modifyVars: require('./generateTheme'),
                                     javascriptEnabled: true
                                 }
                             },
@@ -258,9 +257,13 @@ module.exports = {
         // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
         // You can remove this if you don't use Moment.js:
         new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-
+        new CopyWebpackPlugin([{
+            from: paths.appSrc + '/publicMedia',
+            to: paths.appBuild + '/static/publicMedia'
+        }
+        ]),
         new webpack.DefinePlugin({
-            THEMES: JSON.stringify(ThemeVariables)
+            THEMES: JSON.stringify(GlobalTheme)
         })
         //new BundleAnalyzerPlugin()
     ],

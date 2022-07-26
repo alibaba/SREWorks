@@ -15,6 +15,7 @@ const paths = require('./paths');
 const getClientEnvironment = require('./env');
 const cdnPath = require('./cdnPath');
 const GlobalTheme = require('./globalTheme');
+const runtimePaths = require('./runtimePaths');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const threadLoader = require('thread-loader');
 const publicPath = cdnPath();
@@ -44,7 +45,7 @@ module.exports = {
     // In production, we only want to load the polyfills and the app code.
     entry: {
         index: [require.resolve('./polyfills'), paths.appIndexJs],
-        vendor: ['lodash', 'react-jsx-parser', 'react-router', "react-router-dom", 'bizcharts'],
+        vendor: ['lodash', 'react-jsx-parser', 'react-router', "react-router-dom" ],
     },
     output: {
         // The build folder.
@@ -63,6 +64,8 @@ module.exports = {
         'moment': 'moment',
         "moment-duration-format": "moment-duration-format",
         "antd": "antd",
+        "systemjs": 'System',
+        "bizcharts": "BizCharts"
     },
     optimization: {
         splitChunks: {
@@ -173,7 +176,7 @@ module.exports = {
                                 //css位于“static/css”中，使用“../../”定位索引.html文件夹
                                 //生产中`路径.publicUrlOrPath`可以是相对路径
                                 options: paths.publicUrl.startsWith('.') ? { publicPath: '../../' } : {}
-                              },                          
+                            },
                             // 'thread-loader',
                             {
                                 loader: require.resolve('css-loader'),
@@ -198,7 +201,7 @@ module.exports = {
                                 //css位于“static/css”中，使用“../../”定位索引.html文件夹
                                 //生产中`路径.publicUrlOrPath`可以是相对路径
                                 options: paths.publicUrl.startsWith('.') ? { publicPath: '../../' } : {}
-                              },                          
+                            },
                             // 'thread-loader',
                             {
                                 loader: require.resolve('css-loader'),
@@ -246,7 +249,31 @@ module.exports = {
         new CopyWebpackPlugin([{
             from: paths.appSrc + '/publicMedia',
             to: paths.appBuild + '/static/publicMedia'
-        }
+        },
+        {
+            from: paths.appNodeModules + '/antd/dist/antd.min.js',
+            to: paths.appPublic + '/common_vendor/antd/' + runtimePaths.antdPath + '/antd.min.js'
+        },
+        {
+            from: paths.appNodeModules + '/react/umd/react.production.min.js',
+            to: paths.appPublic + '/common_vendor/react/' + runtimePaths.reactPath + '/react.production.min.js'
+        },
+        {
+            from: paths.appNodeModules + '/react-dom/umd/react-dom.production.min.js',
+            to: paths.appPublic + '/common_vendor/react-dom/' + runtimePaths.react_dom_path + '/react-dom.production.min.js'
+        },
+        {
+            from: paths.appNodeModules + '/moment/min/moment.min.js',
+            to: paths.appPublic + '/common_vendor/moment/' + runtimePaths.momentPath + '/moment.min.js'
+        },
+        {
+            from: paths.appNodeModules + '/systemjs/dist/system.min.js',
+            to: paths.appPublic + '/common_vendor/systemjs/' + runtimePaths.systemjsPath + '/system.min.js'
+        },
+        {
+            from: paths.appNodeModules + '/bizcharts/umd/BizCharts.min.js',
+            to: paths.appPublic + '/common_vendor/bizcharts/' + runtimePaths.bizchartsPath + '/BizCharts.min.js'
+        },
         ]),
         new webpack.DefinePlugin(env.stringified),
         new ManifestPlugin({

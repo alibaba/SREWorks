@@ -1,5 +1,6 @@
 const fs = require('fs-extra');
 const path = require('path');
+const paths = require('./paths')
 const getPackageJson = () => {
     var _packageJson = fs.readFileSync('./package.json')
     return JSON.parse(_packageJson)
@@ -24,12 +25,38 @@ var reactPath = getDependencyVesion(packagejson, 'react');
 var react_dom_path = getDependencyVesion(packagejson, 'react-dom');
 var systemjsPath = getDependencyVesion(packagejson, 'systemjs');
 var bizchartsPath = getDependencyVesion(packagejson, 'bizcharts');
+const dependency_arr = [{
+    from: paths.appNodeModules + '/antd/dist/antd.min.js',
+    to: paths.appPublic + '/common_vendor/antd/' + antdPath + '/antd.min.js'
+},
+{
+    from: paths.appNodeModules + '/react/umd/react.production.min.js',
+    to: paths.appPublic + '/common_vendor/react/' + reactPath + '/react.production.min.js'
+},
+{
+    from: paths.appNodeModules + '/react-dom/umd/react-dom.production.min.js',
+    to: paths.appPublic + '/common_vendor/react-dom/' + react_dom_path + '/react-dom.production.min.js'
+},
+{
+    from: paths.appNodeModules + '/moment/min/moment.min.js',
+    to: paths.appPublic + '/common_vendor/moment/' + momentPath + '/moment.min.js'
+},
+{
+    from: paths.appNodeModules + '/systemjs/dist/system.min.js',
+    to: paths.appPublic + '/common_vendor/systemjs/' + systemjsPath + '/system.min.js'
+},
+{
+    from: paths.appNodeModules + '/bizcharts/umd/BizCharts.min.js',
+    to: paths.appPublic + '/common_vendor/bizcharts/' + bizchartsPath + '/BizCharts.min.js'
+}]
 console.log("init runtime paths successfull")
+
 module.exports = {
     antdPath,
     momentPath,
     reactPath,
     react_dom_path,
     systemjsPath,
-    bizchartsPath
+    bizchartsPath,
+    dependency_arr
 }

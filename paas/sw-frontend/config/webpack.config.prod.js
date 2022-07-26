@@ -45,7 +45,7 @@ module.exports = {
     // In production, we only want to load the polyfills and the app code.
     entry: {
         index: [require.resolve('./polyfills'), paths.appIndexJs],
-        vendor: ['lodash', 'react-jsx-parser', 'react-router', "react-router-dom" ],
+        vendor: ['lodash', 'react-jsx-parser', 'react-router', "react-router-dom"],
     },
     output: {
         // The build folder.
@@ -250,30 +250,7 @@ module.exports = {
             from: paths.appSrc + '/publicMedia',
             to: paths.appBuild + '/static/publicMedia'
         },
-        {
-            from: paths.appNodeModules + '/antd/dist/antd.min.js',
-            to: paths.appPublic + '/common_vendor/antd/' + runtimePaths.antdPath + '/antd.min.js'
-        },
-        {
-            from: paths.appNodeModules + '/react/umd/react.production.min.js',
-            to: paths.appPublic + '/common_vendor/react/' + runtimePaths.reactPath + '/react.production.min.js'
-        },
-        {
-            from: paths.appNodeModules + '/react-dom/umd/react-dom.production.min.js',
-            to: paths.appPublic + '/common_vendor/react-dom/' + runtimePaths.react_dom_path + '/react-dom.production.min.js'
-        },
-        {
-            from: paths.appNodeModules + '/moment/min/moment.min.js',
-            to: paths.appPublic + '/common_vendor/moment/' + runtimePaths.momentPath + '/moment.min.js'
-        },
-        {
-            from: paths.appNodeModules + '/systemjs/dist/system.min.js',
-            to: paths.appPublic + '/common_vendor/systemjs/' + runtimePaths.systemjsPath + '/system.min.js'
-        },
-        {
-            from: paths.appNodeModules + '/bizcharts/umd/BizCharts.min.js',
-            to: paths.appPublic + '/common_vendor/bizcharts/' + runtimePaths.bizchartsPath + '/BizCharts.min.js'
-        },
+        ...runtimePaths.dependency_arr
         ]),
         new webpack.DefinePlugin(env.stringified),
         new ManifestPlugin({

@@ -41,4 +41,14 @@ public class AuthProperties {
      * JWT Secret Key
      */
     private String jwtSecretKey;
+
+    /**
+     * 鉴权引擎 (可选 authproxy/keycloak)
+     */
+    private String authEngine;
+
+    /**
+     * 权代服务 endpoint (可选)
+     */
+    private String authproxyEndpoint;
 }

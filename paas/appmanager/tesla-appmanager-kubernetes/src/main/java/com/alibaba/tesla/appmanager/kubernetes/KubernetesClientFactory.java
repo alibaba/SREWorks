@@ -88,6 +88,26 @@ public class KubernetesClientFactory {
      * @return Kubernetes Client
      */
     public DefaultKubernetesClient get(String clusterId) {
+        // 针对专有云场景，直接使用当前的 service account token
+        String cloudType = System.getenv("CLOUD_TYPE");
+        if ("ApsaraStack".equals(cloudType) || "ApsaraStackAgility".equals(cloudType)) {
+            DefaultKubernetesClient client = clientMap.get(clusterId);
+            if (client != null) {
+                return client;
+            }
+            synchronized (clientMap) {
+                // double check
+                client = clientMap.get(clusterId);
+                if (client != null) {
+                    return client;
+                }
+                DefaultKubernetesClient newClient = new DefaultKubernetesClient();
+                clientMap.put(clusterId, newClient);
+                log.info("kubernetes client for cluster {} has put into client map", clusterId);
+                return newClient;
+            }
+        }
+
         ClusterDTO clusterDTO = clusterProvider.get(clusterId);
         if (clusterDTO == null || clusterDTO.getClusterConfig() == null) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,
@@ -102,7 +122,7 @@ public class KubernetesClientFactory {
 
         synchronized (clientMap) {
             // double check
-            client = clientMap.get(clusterId);
+            client = clientMap.get(key);
             if (client != null) {
                 return client;
             }

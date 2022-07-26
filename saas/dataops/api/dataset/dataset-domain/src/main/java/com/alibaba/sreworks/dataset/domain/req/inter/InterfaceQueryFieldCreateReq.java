@@ -21,7 +21,7 @@ public class InterfaceQueryFieldCreateReq extends InterfaceQueryFieldBaseReq {
 
     @Override
     public String getDim() {
-        Preconditions.checkArgument(StringUtils.isNotEmpty(dim), "原始字段不允许为空");
+        Preconditions.checkArgument(StringUtils.isNotEmpty(dim), "索引字段不允许为空");
         return dim;
     }
 

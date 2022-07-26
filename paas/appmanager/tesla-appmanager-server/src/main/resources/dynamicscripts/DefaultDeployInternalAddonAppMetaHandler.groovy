@@ -52,7 +52,7 @@ class DefaultDeployInternalAddonAppMetaHandler implements DeployComponentHandler
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 9
+    public static final Integer REVISION = 10
 
     private static final String EXPORT_OPTION_FILE = "option.json"
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
@@ -98,7 +98,7 @@ class DefaultDeployInternalAddonAppMetaHandler implements DeployComponentHandler
         }
         data.setAppId(request.getAppId())
         data.setOptions(options)
-        def response = appMetaProvider.save(data)
+        def response = appMetaProvider.save(data, DefaultConstant.SYSTEM_OPERATOR)
         log.info("import app meta config success|appId={}|response={}",
                 request.getAppId(), JSONObject.toJSONString(response))
 

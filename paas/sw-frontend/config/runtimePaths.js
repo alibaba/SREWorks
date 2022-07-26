@@ -45,10 +45,30 @@ const dependency_arr = [{
 {
     from: paths.appNodeModules + '/systemjs/dist/system.min.js',
     to: paths.appBuild + '/common_vendor/systemjs/' + systemjsPath + '/system.min.js'
+}]
+// {
+//     from: paths.appNodeModules + '/bizcharts/umd/BizCharts.min.js',
+//     to: paths.appBuild + '/common_vendor/bizcharts/' + bizchartsPath + '/BizCharts.min.js'
+// }
+const dependency_arr_pre = [{
+    from: paths.appNodeModules + '/antd/dist/antd.min.js',
+    to: paths.appPublic + '/common_vendor/antd/' + antdPath + '/antd.min.js'
 },
 {
-    from: paths.appNodeModules + '/bizcharts/umd/BizCharts.min.js',
-    to: paths.appBuild + '/common_vendor/bizcharts/' + bizchartsPath + '/BizCharts.min.js'
+    from: paths.appNodeModules + '/react/umd/react.production.min.js',
+    to: paths.appPublic + '/common_vendor/react/' + reactPath + '/react.production.min.js'
+},
+{
+    from: paths.appNodeModules + '/react-dom/umd/react-dom.production.min.js',
+    to: paths.appPublic + '/common_vendor/react-dom/' + react_dom_path + '/react-dom.production.min.js'
+},
+{
+    from: paths.appNodeModules + '/moment/min/moment.min.js',
+    to: paths.appPublic + '/common_vendor/moment/' + momentPath + '/moment.min.js'
+},
+{
+    from: paths.appNodeModules + '/systemjs/dist/system.min.js',
+    to: paths.appPublic + '/common_vendor/systemjs/' + systemjsPath + '/system.min.js'
 }]
 console.log("init runtime paths successfull")
 
@@ -59,5 +79,6 @@ module.exports = {
     react_dom_path,
     systemjsPath,
     bizchartsPath,
-    dependency_arr
+    dependency_arr,
+    dependency_arr_pre
 }

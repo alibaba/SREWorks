@@ -45,7 +45,7 @@ module.exports = {
     // In production, we only want to load the polyfills and the app code.
     entry: {
         index: [require.resolve('./polyfills'), paths.appIndexJs],
-        vendor: ['lodash', 'react-jsx-parser', 'react-router', "react-router-dom"],
+        vendor: ['lodash', 'react-jsx-parser', 'react-router', "react-router-dom",'bizcharts'],
     },
     output: {
         // The build folder.
@@ -64,8 +64,7 @@ module.exports = {
         'moment': 'moment',
         "moment-duration-format": "moment-duration-format",
         "antd": "antd",
-        "systemjs": 'System',
-        "bizcharts": "BizCharts"
+        "systemjs": 'System'
     },
     optimization: {
         splitChunks: {

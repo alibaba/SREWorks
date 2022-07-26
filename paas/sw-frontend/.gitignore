@@ -6,6 +6,9 @@
 # less
 public/color.less
 
+# common_vendor
+public/common_vendor
+
 # testing
 /coverage
 

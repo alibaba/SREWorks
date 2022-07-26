@@ -17,7 +17,7 @@ const paths = require('./paths');
 const GlobalTheme = require('./globalTheme');
 const runtimePaths = require('./runtimePaths');
 const threadLoader = require('thread-loader');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+// const CopyWebpackPlugin = require('copy-webpack-plugin');
 const publicPath = "/";
 // `publicUrl` is just like `publicPath`, but we will provide it to our app
 // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
@@ -259,34 +259,6 @@ module.exports = {
         // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
         // You can remove this if you don't use Moment.js:
         new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-        new CopyWebpackPlugin([{
-            from: paths.appSrc + '/publicMedia',
-            to: paths.appBuild + '/static/publicMedia'
-        },        {
-            from: paths.appNodeModules + '/antd/dist/antd.min.js',
-            to: paths.appPublic + '/common_vendor/antd/' + runtimePaths.antdPath + '/antd.min.js'
-        },
-        {
-            from: paths.appNodeModules + '/react/umd/react.production.min.js',
-            to: paths.appPublic + '/common_vendor/react/' + runtimePaths.reactPath + '/react.production.min.js'
-        },
-        {
-            from: paths.appNodeModules + '/react-dom/umd/react-dom.production.min.js',
-            to: paths.appPublic + '/common_vendor/react-dom/' + runtimePaths.react_dom_path + '/react-dom.production.min.js'
-        },
-        {
-            from: paths.appNodeModules + '/moment/min/moment.min.js',
-            to: paths.appPublic + '/common_vendor/moment/' + runtimePaths.momentPath + '/moment.min.js'
-        },
-        {
-            from: paths.appNodeModules + '/systemjs/dist/system.min.js',
-            to: paths.appPublic + '/common_vendor/systemjs/' + runtimePaths.systemjsPath + '/system.min.js'
-        },
-        {
-            from: paths.appNodeModules + '/bizcharts/umd/BizCharts.min.js',
-            to: paths.appPublic + '/common_vendor/bizcharts/' + runtimePaths.bizchartsPath + '/BizCharts.min.js'
-        },
-        ]),
         new webpack.DefinePlugin({
             THEMES: JSON.stringify(GlobalTheme)
         })

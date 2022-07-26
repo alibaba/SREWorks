@@ -10,10 +10,13 @@ import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
+import com.alibaba.tesla.appmanager.domain.container.ComponentPackageTaskMessage;
 import com.alibaba.tesla.appmanager.domain.dto.ComponentPackageTaskDTO;
 import com.alibaba.tesla.appmanager.domain.dto.EnvMetaDTO;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.ComponentBinder;
-import com.alibaba.tesla.appmanager.domain.req.componentpackage.*;
+import com.alibaba.tesla.appmanager.domain.req.componentpackage.ComponentPackageTaskCreateReq;
+import com.alibaba.tesla.appmanager.domain.req.componentpackage.ComponentPackageTaskQueryReq;
+import com.alibaba.tesla.appmanager.domain.req.componentpackage.ComponentPackageTaskRetryReq;
 import com.alibaba.tesla.appmanager.meta.helm.repository.condition.HelmMetaQueryCondition;
 import com.alibaba.tesla.appmanager.meta.helm.repository.domain.HelmMetaDO;
 import com.alibaba.tesla.appmanager.meta.helm.service.HelmMetaService;
@@ -33,7 +36,6 @@ import com.alibaba.tesla.appmanager.server.service.appaddon.AppAddonService;
 import com.alibaba.tesla.appmanager.server.service.appmeta.AppMetaService;
 import com.alibaba.tesla.appmanager.server.service.apppackage.AppPackageTaskService;
 import com.alibaba.tesla.appmanager.server.service.pack.PackService;
-import com.alibaba.tesla.appmanager.domain.container.ComponentPackageTaskMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -125,51 +127,9 @@ public class PackServiceImpl implements PackService {
                 .componentName(componentName)
                 .version(component.getVersion())
                 .build();
-
+        
         try {
-            JSONObject options = new JSONObject();
-            if (BooleanUtils.isTrue(component.getUseRawOptions())) {
-                options = component.getOptions();
-            } else if (componentType.isKubernetesJob() || componentType.isKubernetesMicroservice()) {
-                options = buildOptions4K8sMicroService(
-                        appId, namespaceId, stageId, componentName, component.getBranch());
-            } else if (componentType.isResourceAddon()) {
-                String[] arr = componentName.split("@", 2);
-                if (arr.length != 2) {
-                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                            String.format("invalid resource addon name %s", componentName));
-                }
-                String addonId = arr[0];
-                String addonName = arr[1];
-                options = buildOptions4ResourceAddon(appId, namespaceId, stageId, addonId, addonName);
-            } else if (componentType.isInternalAddon()) {
-                options = buildOptions4InternalAddon(appId, namespaceId, stageId, componentName);
-            } else if (componentType.isHelm()) {
-                options = buildOptions4Helm(appId, componentName, component.getBranch());
-            }
-
-            // 存储组件默认部署配置 (可选)
-            if (StringUtils.isNotEmpty(component.getComponentConfiguration())) {
-                options.put("componentConfiguration", component.getComponentConfiguration());
-            }
-
-            // 针对前端配置的参数/Trait/依赖关系，全部存储到 Options 中
-            options.put("binderParameterValues", new JSONArray());
-            options.put("binderTraits", new JSONArray());
-            options.put("binderDependencies", new JSONArray());
-            if (CollectionUtils.isNotEmpty(component.getParamBinderList())) {
-                options.put("binderParameterValues",
-                        JSONArray.parseArray(JSONArray.toJSONString(component.getParamBinderList())));
-            }
-            if (CollectionUtils.isNotEmpty(component.getTraitBinderList())) {
-                options.put("binderTraits",
-                        JSONArray.parseArray(JSONArray.toJSONString(component.getTraitBinderList())));
-            }
-            if (CollectionUtils.isNotEmpty(component.getDependComponentList())) {
-                options.put("binderDependencies", component.getDependComponentList());
-            }
-            request.setOptions(options);
-
+            request.setOptions(generateBuildOptions(message));
             log.info("action=packService|doComponentPackageCreate|request={}", JSONObject.toJSONString(request));
             componentPackageProvider.createTask(request, message.getOperator());
         } catch (Exception e) {
@@ -191,10 +151,71 @@ public class PackServiceImpl implements PackService {
         }
     }
 
+    /**
+     * 生成组件包构建所需的 options 对象 (build.yaml)
+     *
+     * @param message 构建请求信息
+     * @return options (build.yaml -> json)
+     */
     @Override
-    public JSONObject buildOptions4InternalAddon(String appId, String namespaceId, String stageId, String addonId) {
-        log.info("action=packService|buildOptions4InternalAddon|enter|appId={}|addonId={}|namespaceId={}|stageId={}",
-                appId, addonId, namespaceId, stageId);
+    public JSONObject generateBuildOptions(ComponentPackageTaskMessage message) {
+        ComponentBinder component = message.getComponent();
+        String appId = message.getAppId();
+        String namespaceId = message.getNamespaceId();
+        String stageId = message.getStageId();
+        ComponentTypeEnum componentType = component.getComponentType();
+        Boolean isDevelop = component.getIsDevelop();
+        String componentName = component.getComponentName();
+
+        JSONObject options = new JSONObject();
+        if (BooleanUtils.isTrue(component.getUseRawOptions())) {
+            options = component.getOptions();
+        } else if (componentType.isKubernetesJob() || componentType.isKubernetesMicroservice()) {
+            options = buildOptions4K8sMicroService(
+                    appId, namespaceId, stageId, componentName, component.getBranch());
+        } else if (componentType.isResourceAddon()) {
+            String[] arr = componentName.split("@", 2);
+            if (arr.length != 2) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                        String.format("invalid resource addon name %s", componentName));
+            }
+            String addonId = arr[0];
+            String addonName = arr[1];
+            options = buildOptions4ResourceAddon(appId, namespaceId, stageId, addonId, addonName);
+        } else if (componentType.isInternalAddon()) {
+            options = buildOptions4InternalAddon(appId, namespaceId, stageId, componentName, isDevelop);
+        } else if (componentType.isHelm()) {
+            options = buildOptions4Helm(appId, componentName, component.getBranch());
+        }
+
+        // 存储组件默认部署配置 (可选)
+        if (StringUtils.isNotEmpty(component.getComponentConfiguration())) {
+            options.put("componentConfiguration", component.getComponentConfiguration());
+        }
+
+        // 针对前端配置的参数/Trait/依赖关系，全部存储到 Options 中
+        options.put("binderParameterValues", new JSONArray());
+        options.put("binderTraits", new JSONArray());
+        options.put("binderDependencies", new JSONArray());
+        if (CollectionUtils.isNotEmpty(component.getParamBinderList())) {
+            options.put("binderParameterValues",
+                    JSONArray.parseArray(JSONArray.toJSONString(component.getParamBinderList())));
+        }
+        if (CollectionUtils.isNotEmpty(component.getTraitBinderList())) {
+            options.put("binderTraits",
+                    JSONArray.parseArray(JSONArray.toJSONString(component.getTraitBinderList())));
+        }
+        if (CollectionUtils.isNotEmpty(component.getDependComponentList())) {
+            options.put("binderDependencies", component.getDependComponentList());
+        }
+        return options;
+    }
+
+    @Override
+    public JSONObject buildOptions4InternalAddon(
+            String appId, String namespaceId, String stageId, String addonId, Boolean isDevelop) {
+        log.info("action=packService|buildOptions4InternalAddon|enter|appId={}|addonId={}|namespaceId={}|" +
+                        "stageId={}|isDevelop={}", appId, addonId, namespaceId, stageId, isDevelop);
         if (INTERNAL_ADDON_DEVELOPMENT_META.equals(addonId)) {
             return new JSONObject();
         }
@@ -217,17 +238,19 @@ public class PackServiceImpl implements PackService {
         }
 
         JSONObject addonConfigJson = JSON.parseObject(appAddon.getAddonConfig());
+        JSONObject result = new JSONObject();
         if (addonConfigJson.containsKey("common")) {
-            return addonConfigJson.getJSONObject("common");
+            result = addonConfigJson.getJSONObject("common");
         }
-        return new JSONObject();
+        result.put("isDevelop", isDevelop);
+        return result;
     }
 
     @Override
     public JSONObject buildOptions4ResourceAddon(
             String appId, String namespaceId, String stageId, String addonId, String addonName) {
         log.info("action=packService|buildOptions4ResourceAddon|enter|appId={}|namespaceId={}|stageId={}|" +
-                        "addonId={}|addonName={}", appId, namespaceId, stageId, addonId, addonName);
+                "addonId={}|addonName={}", appId, namespaceId, stageId, addonId, addonName);
         AppAddonQueryCondition condition = AppAddonQueryCondition.builder()
                 .appId(appId)
                 .namespaceId(namespaceId)
@@ -254,7 +277,7 @@ public class PackServiceImpl implements PackService {
     public JSONObject buildOptions4K8sMicroService(
             String appId, String namespaceId, String stageId, String microServiceId, String branch) {
         log.info("action=packService|buildOptions4K8sMicroService|enter|appId={}|namespaceId={}|stageId={}|" +
-                        "microServiceId={}|branch={}", appId, namespaceId, stageId, microServiceId, branch);
+                "microServiceId={}|branch={}", appId, namespaceId, stageId, microServiceId, branch);
         K8sMicroserviceMetaQueryCondition microserviceMetaCondition = K8sMicroserviceMetaQueryCondition.builder()
                 .appId(appId)
                 .namespaceId(namespaceId)

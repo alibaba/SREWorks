@@ -26,7 +26,7 @@ public class InterfaceGroupFieldReq {
     @ApiModelProperty(value = "字段别名", example = "应用ID")
     String alias;
 
-    @ApiModelProperty(value = "原始字段", example = "appId")
+    @ApiModelProperty(value = "索引字段", example = "appId")
     String dim;
 
     @ApiModelProperty(value = "字段类型", example = "STRING")
@@ -44,7 +44,7 @@ public class InterfaceGroupFieldReq {
     }
 
     public String getDim() {
-        Preconditions.checkArgument(StringUtils.isNotEmpty(dim), "原始字段不允许为空");
+        Preconditions.checkArgument(StringUtils.isNotEmpty(dim), "索引字段不允许为空");
         return dim;
     }
 

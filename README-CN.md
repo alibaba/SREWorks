@@ -31,6 +31,7 @@ SREWorks 作为阿里云大数据SRE团队对SRE理念的工程实践，专注�
 - [快速安装](/paas/sw-frontend/docs/documents/rr5g10.md)
 - [源码安装](/paas/sw-frontend/docs/documents/mzz07m.md)
 - [产品文档](https://www.yuque.com/sreworks-doc/docs/)
+- [在线体验](https://wj.qq.com/s2/10565748/53da/)
 
 ## 路线图
 

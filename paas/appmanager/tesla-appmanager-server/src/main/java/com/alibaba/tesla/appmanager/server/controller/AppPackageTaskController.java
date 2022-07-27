@@ -177,6 +177,7 @@ public class AppPackageTaskController extends AppManagerBaseController {
                         .componentName(appComponent.getComponentName())
                         .componentLabel(appComponent.getComponentLabel())
                         .version(appComponent.getComponentVersion())
+                        .isDevelop(request.isDevelop())
                         .build();
                 if (appComponent.getComponentType().isKubernetesMicroservice()) {
                     componentBinder.setBranch(DefaultConstant.DEFAULT_REPO_BRANCH);

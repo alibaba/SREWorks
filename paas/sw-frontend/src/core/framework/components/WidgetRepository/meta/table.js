@@ -1,7 +1,7 @@
 /**
  * Created by caoshuaibiao on 2021/2/1.
  */
-export default  {
+export default {
     "id": "TABLE",
     "type": "TABLE",
     "name": "TABLE",
@@ -16,7 +16,7 @@ export default  {
         "logos": {
             "large": "",
             "small": require('./icons/table.svg'),
-            "fontClass":'TABLE'
+            "fontClass": 'TABLE'
         },
         "build": {
             "time": "",
@@ -27,7 +27,7 @@ export default  {
         "screenshots": [],
         "updated": "",
         "version": "",
-        "docs":"<div><a target='_blank' href='#/help/book/documents/ho617k.html#87-表格'>table配置</a></div><br />"+
+        "docs": "<div><a target='_blank' href='#/help/book/documents/ho617k.html#87-表格'>table配置</a></div><br />" +
             "<div><a target='_blank' href='https://ant.design/components/table-cn/#header'>列完整配置见antd Table Column 配置</a></div>"
     },
     "state": "",
@@ -80,7 +80,7 @@ export default  {
                     }
                 ],
                 "title": "表格",
-                "size":"small"
+                "size": "small"
             },
             "type": "TABLE"
         },
@@ -93,7 +93,7 @@ export default  {
                     "required": false,
                     "x-component": "EditTable",
                     "type": "string",
-                    "enableScroll":true,
+                    "enableScroll": true,
                     "x-component-props": {
                         "columns": [
                             {
@@ -144,9 +144,9 @@ export default  {
                     "required": false,
                     "type": "string",
                     "x-component": "Radio",
-                    "x-component-props":{
-                        "options":[{"value":"small","label":"small"},{"value":"middle","label":"middle"},{"value":"default","label":"large"}],
-                        "defaultValue":"small"
+                    "x-component-props": {
+                        "options": [{ "value": "small", "label": "small" }, { "value": "middle", "label": "middle" }, { "value": "default", "label": "large" }],
+                        "defaultValue": "small"
                     }
                 },
                 "paging": {
@@ -155,9 +155,9 @@ export default  {
                     "required": false,
                     "type": "string",
                     "x-component": "Radio",
-                    "initValue":false,
-                    "x-component-props":{
-                        "options":[{"value":true,"label":"是"},{"value":false,"label":"否"}],
+                    "initValue": false,
+                    "x-component-props": {
+                        "options": [{ "value": true, "label": "是" }, { "value": false, "label": "否" }],
                     }
                 },
                 "bordered": {
@@ -166,23 +166,30 @@ export default  {
                     "type": "string",
                     "required": false,
                     "x-component": "Radio",
-                    "initValue":true,
-                    "x-component-props":{
-                        "options":[{"value":true,"label":"是"},{"value":false,"label":"否"}],
+                    "initValue": true,
+                    "x-component-props": {
+                        "options": [{ "value": true, "label": "是" }, { "value": false, "label": "否" }],
                     }
-                  },
+                },
+                "rowColorMapping": {
+                    "description": "根据行数据中的值显示指定颜色,只支持'green','blue','red','yellow'和'themeColor'五种颜色,格式{dataIndex:值key,mapping:{'值1':'green'}}",
+                    "title": "行颜色定义",
+                    "required": false,
+                    "x-component": "JSON",
+                    "type": "string",
+                },
                 "emptyText": {
                     "description": "支持空数据自定义文案",
                     "title": "空数据文案",
                     "required": false,
                     "x-component": "Text",
-                    "initValue":"",
+                    "initValue": "",
                     "type": "string",
-                  },
+                },
             }
         },
-        "supportItemToolbar":true,
-        "supportToolbar":true,
+        "supportItemToolbar": true,
+        "supportToolbar": true,
         "dataMock": {}
     },
     "catgory": "base"

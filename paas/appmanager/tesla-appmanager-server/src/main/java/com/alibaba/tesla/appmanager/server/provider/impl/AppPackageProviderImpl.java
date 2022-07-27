@@ -313,7 +313,8 @@ public class AppPackageProviderImpl implements AppPackageProvider {
         String bucketName = storageFile.getBucketName();
         String objectName = storageFile.getObjectName();
         String url = storage.getObjectUrl(bucketName, objectName, DefaultConstant.DEFAULT_FILE_EXPIRATION);
-        return AppPackageUrlRes.builder().url(url).build();
+        String filename = packagePath.substring(packagePath.lastIndexOf("/") + 1);
+        return AppPackageUrlRes.builder().url(url).filename(filename).build();
     }
 
     /**

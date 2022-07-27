@@ -15,6 +15,7 @@ const paths = require('./paths');
 const getClientEnvironment = require('./env');
 const cdnPath = require('./cdnPath');
 const GlobalTheme = require('./globalTheme');
+const runtimePaths = require('./runtimePaths');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const threadLoader = require('thread-loader');
 const publicPath = cdnPath();
@@ -44,7 +45,7 @@ module.exports = {
     // In production, we only want to load the polyfills and the app code.
     entry: {
         index: [require.resolve('./polyfills'), paths.appIndexJs],
-        vendor: ['lodash', 'react-jsx-parser', 'react-router', "react-router-dom", 'bizcharts'],
+        vendor: ['lodash', 'react-jsx-parser', 'react-router', "react-router-dom",'bizcharts'],
     },
     output: {
         // The build folder.
@@ -63,6 +64,7 @@ module.exports = {
         'moment': 'moment',
         "moment-duration-format": "moment-duration-format",
         "antd": "antd",
+        "systemjs": 'System'
     },
     optimization: {
         splitChunks: {
@@ -173,7 +175,7 @@ module.exports = {
                                 //css位于“static/css”中，使用“../../”定位索引.html文件夹
                                 //生产中`路径.publicUrlOrPath`可以是相对路径
                                 options: paths.publicUrl.startsWith('.') ? { publicPath: '../../' } : {}
-                              },                          
+                            },
                             // 'thread-loader',
                             {
                                 loader: require.resolve('css-loader'),
@@ -198,7 +200,7 @@ module.exports = {
                                 //css位于“static/css”中，使用“../../”定位索引.html文件夹
                                 //生产中`路径.publicUrlOrPath`可以是相对路径
                                 options: paths.publicUrl.startsWith('.') ? { publicPath: '../../' } : {}
-                              },                          
+                            },
                             // 'thread-loader',
                             {
                                 loader: require.resolve('css-loader'),
@@ -246,7 +248,8 @@ module.exports = {
         new CopyWebpackPlugin([{
             from: paths.appSrc + '/publicMedia',
             to: paths.appBuild + '/static/publicMedia'
-        }
+        },
+        ...runtimePaths.dependency_arr
         ]),
         new webpack.DefinePlugin(env.stringified),
         new ManifestPlugin({

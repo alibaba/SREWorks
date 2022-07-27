@@ -1,6 +1,10 @@
 package com.alibaba.tesla.appmanager.server.service.appmeta.impl;
 
+import com.alibaba.tesla.appmanager.auth.service.PermissionService;
+import com.alibaba.tesla.appmanager.auth.util.PermissionUtil;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
+import com.alibaba.tesla.appmanager.domain.req.permission.CheckPermissionReq;
+import com.alibaba.tesla.appmanager.domain.res.permission.CheckPermissionRes;
 import com.alibaba.tesla.appmanager.server.repository.AppMetaRepository;
 import com.alibaba.tesla.appmanager.server.repository.AppOptionRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppMetaQueryCondition;
@@ -33,6 +37,9 @@ public class AppMetaServiceImpl implements AppMetaService {
 
     @Autowired
     private AppOptionRepository appOptionRepository;
+
+    @Autowired
+    private PermissionService permissionService;
 
     /**
      * 根据条件过滤应用元信息
@@ -110,5 +117,42 @@ public class AppMetaServiceImpl implements AppMetaService {
     @Override
     public int delete(AppMetaQueryCondition condition) {
         return appMetaRepository.deleteByCondition(condition);
+    }
+
+    /**
+     * 获取指定 operator 用户有权限的所有应用 ID 列表
+     *
+     * @param operator 用户
+     * @return List of AppID
+     */
+    @Override
+    public List<String> listUserPermittedApp(String operator) {
+        CheckPermissionReq request = CheckPermissionReq.builder()
+                .checkPermissions(generateEntireAppPermissions())
+                .operator(operator)
+                .build();
+        CheckPermissionRes result = permissionService.checkPermission(request);
+        return extractAppFromPermissions(result.getPermissions());
+    }
+
+    /**
+     * 获取当前系统的全量应用，并产出应用 ID Permission 列表
+     *
+     * @return 应用 ID Permission 列表
+     */
+    private List<String> generateEntireAppPermissions() {
+        List<String> permissions = new ArrayList<>();
+        List<AppMetaDO> records = appMetaRepository.selectByCondition(AppMetaQueryCondition.builder().build());
+        records.forEach(record -> permissions.add(PermissionUtil.generate("__app__", record.getAppId(), "manage")));
+        return permissions;
+    }
+
+    /**
+     * 从给定的应用 ID Permission 列表反解出实际的应用 ID 列表
+     *
+     * @return 应用 ID 列表
+     */
+    private List<String> extractAppFromPermissions(List<String> permissions) {
+        return permissions.stream().map(PermissionUtil::extract).collect(Collectors.toList());
     }
 }

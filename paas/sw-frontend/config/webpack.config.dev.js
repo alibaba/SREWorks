@@ -15,8 +15,9 @@ const getClientEnvironment = require('./env');
 const paths = require('./paths');
 //const cdnPath = require('./cdnPath');
 const GlobalTheme = require('./globalTheme');
+const runtimePaths = require('./runtimePaths');
 const threadLoader = require('thread-loader');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+// const CopyWebpackPlugin = require('copy-webpack-plugin');
 const publicPath = "/";
 // `publicUrl` is just like `publicPath`, but we will provide it to our app
 // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
@@ -24,6 +25,7 @@ const publicPath = "/";
 const publicUrl = '';
 // Get environment variables to inject into our app.
 const env = getClientEnvironment(publicUrl);
+
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
 // The production configuration is different and lives in a separate file.
@@ -40,7 +42,7 @@ module.exports = {
         'react-dom': 'ReactDOM',
         "antd":"antd",
         'moment':'moment',
-        "moment-duration-format":"moment-duration-format"
+        "systemjs": 'systemjs'
     },
     entry: {
         index: [
@@ -257,11 +259,6 @@ module.exports = {
         // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
         // You can remove this if you don't use Moment.js:
         new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-        new CopyWebpackPlugin([{
-            from: paths.appSrc + '/publicMedia',
-            to: paths.appBuild + '/static/publicMedia'
-        }
-        ]),
         new webpack.DefinePlugin({
             THEMES: JSON.stringify(GlobalTheme)
         })

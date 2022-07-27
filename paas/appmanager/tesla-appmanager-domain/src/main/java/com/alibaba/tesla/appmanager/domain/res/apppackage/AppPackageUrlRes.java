@@ -24,4 +24,9 @@ public class AppPackageUrlRes implements Serializable {
      * 包下载 URL 地址
      */
     private String url;
+
+    /**
+     * 包名
+     */
+    private String filename;
 }

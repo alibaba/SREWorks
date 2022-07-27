@@ -4,6 +4,7 @@ import com.alibaba.tesla.appmanager.api.provider.AppPackageProvider;
 import com.alibaba.tesla.appmanager.api.provider.AppPackageTaskProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
+import com.alibaba.tesla.appmanager.common.util.NetworkUtil;
 import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.dto.AppPackageDTO;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.*;
@@ -17,16 +18,23 @@ import com.alibaba.tesla.appmanager.server.service.apppackage.AppPackageTagServi
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.util.Collections;
 
 /**
@@ -249,6 +257,33 @@ public class AppPackageController extends AppManagerBaseController {
             OAuth2Authentication auth) {
         AppPackageUrlRes response = appPackageProvider.generateUrl(appPackageId, getOperator(auth));
         return buildSucceedResult(response);
+    }
+
+    /**
+     * @api {get} /apps/:appId/app-packages/:appPackageId/download 应用包直接下载
+     * @apiName GetApplicationPackageDownload
+     * @apiGroup 应用包 API
+     * @apiParam (Path Parameters) {String} appId 应用 ID
+     * @apiParam (Path Parameters) {String} appPackageId 应用包 ID
+     */
+    @GetMapping(value = "/{appPackageId}/download")
+    @ResponseBody
+    public ResponseEntity<Resource> download(
+            @PathVariable String appId,
+            @PathVariable("appPackageId") Long appPackageId,
+            OAuth2Authentication auth) throws IOException {
+        AppPackageUrlRes appPackageUrl = appPackageProvider.generateUrl(appPackageId, getOperator(auth));
+        File zipFile = Files.createTempFile("download", ".zip").toFile();
+        NetworkUtil.download(appPackageUrl.getUrl(), zipFile.getAbsolutePath());
+        zipFile.deleteOnExit();
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(zipFile));
+        HttpHeaders header = new HttpHeaders();
+        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + appId + "-" + appPackageUrl.getFilename());
+        return ResponseEntity.ok()
+                .headers(header)
+                .contentLength(zipFile.length())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
     }
 
     /**

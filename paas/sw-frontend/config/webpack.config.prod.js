@@ -176,7 +176,7 @@ module.exports = {
                                 //生产中`路径.publicUrlOrPath`可以是相对路径
                                 options: paths.publicUrl.startsWith('.') ? { publicPath: '../../' } : {}
                             },
-                            // 'thread-loader',
+                            'thread-loader',
                             {
                                 loader: require.resolve('css-loader'),
                                 options: {
@@ -201,7 +201,7 @@ module.exports = {
                                 //生产中`路径.publicUrlOrPath`可以是相对路径
                                 options: paths.publicUrl.startsWith('.') ? { publicPath: '../../' } : {}
                             },
-                            // 'thread-loader',
+                            'thread-loader',
                             {
                                 loader: require.resolve('css-loader'),
                                 options: {

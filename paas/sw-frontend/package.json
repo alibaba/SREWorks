@@ -139,7 +139,7 @@
   "scripts": {
     "analyzer": "set NODE_ENV=production npm_config_report=true && tnpm start",
     "analyze": "source-map-explorer build/static/js/index.*",
-    "start": "npm run pre && node ./config/generateTheme.js && node --max-old-space-size=4096 scripts/start.js",
+    "start": "node ./config/generateTheme.js && node --max-old-space-size=4096 scripts/start.js",
     "build": "node ./config/generateTheme.js && node --max-old-space-size=4096 scripts/build.js",
     "test": "node --max-old-space-size=4096 scripts/test.js --env=jsdom",
     "preCmd": "node --max-old-space-size=4096 scripts/pre_cmd.js",
@@ -198,6 +198,12 @@
       "import/no-webpack-loader-syntax": "off",
       "no-undef": "off",
       "no-restricted-globals": "off"
+    },
+    "settings": {
+      "react": {
+        "pragma": "React",
+        "version": "detect"
+      }
     }
   },
   "homepage": "./",

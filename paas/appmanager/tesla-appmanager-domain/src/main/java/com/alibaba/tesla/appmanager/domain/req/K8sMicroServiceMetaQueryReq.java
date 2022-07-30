@@ -44,4 +44,9 @@ public class K8sMicroServiceMetaQueryReq extends BaseRequest {
      * 微服务标示
      */
     private String microServiceId;
+
+    /**
+     * 架构
+     */
+    private String arch;
 }

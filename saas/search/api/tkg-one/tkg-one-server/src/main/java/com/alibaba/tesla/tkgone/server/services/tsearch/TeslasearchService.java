@@ -147,34 +147,6 @@ public class TeslasearchService {
                 backendStoreDTOs, null, JSONObject.toJSONString(queryGrammarJson), RequestMethod.POST));
     }
 
-    public JSONArray getRelationNodesMetaNum(String category, String type, String id) throws Exception {
-        JSONArray retArray = new JSONArray();
-        JSONObject jsonObject = elasticSearchSearchService.getTypeIdRelationNodeMetaInfo(type, id);
-        for (String relationType : jsonObject.keySet()) {
-            JSONObject tmpJson = new JSONObject();
-            tmpJson.put("type", relationType);
-            tmpJson.put("count", jsonObject.get(relationType));
-            retArray.add(tmpJson);
-        }
-        return retArray;
-    }
-
-    public JSONArray queryRelationNodesFromSize(String category, String type, String id, String relationType, int from,
-            int size) throws Exception {
-        JSONArray nodes = new JSONArray();
-        JSONArray relations = elasticSearchSearchService.getRelationNodes(type, id, relationType, from, size);
-        relations.toJavaList(JSONObject.class).forEach(relation -> {
-            String nodeId = relation.getJSONObject("endNodeInfo").getString(Constant.INNER_ID);
-            try {
-                nodes.addAll(getNodeByTypeId(category, relationType, nodeId).toJavaList(JSONObject.class));
-            } catch (Exception e) {
-                log.error(e);
-            }
-        });
-        return new JSONArray(new ArrayList<>(nodes));
-
-    }
-
     public JSONObject getExData(String category, String type, String id, String exDataName) throws Exception {
         JSONArray nodeArray = getNodeByTypeId(category, type, id);
         if (0 == nodeArray.size()) {

@@ -15,7 +15,6 @@ const getClientEnvironment = require('./env');
 const paths = require('./paths');
 //const cdnPath = require('./cdnPath');
 const GlobalTheme = require('./globalTheme');
-const runtimePaths = require('./runtimePaths');
 const threadLoader = require('thread-loader');
 // const CopyWebpackPlugin = require('copy-webpack-plugin');
 const publicPath = "/";

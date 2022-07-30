@@ -55,14 +55,19 @@ public class K8sMicroServiceMetaQuickUpdateReq {
     private String description;
 
     /**
-     * 类型
-     */
-    private String kind;
-
-    /**
      * 组件类型
      */
     private ComponentTypeEnum componentType;
+
+    /**
+     * 架构
+     */
+    private String arch;
+
+    /**
+     * 类型
+     */
+    private String kind;
 
     /**
      * 初始化容器对象

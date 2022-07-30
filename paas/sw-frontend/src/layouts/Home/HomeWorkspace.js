@@ -4,7 +4,7 @@
  */
 import React from "react";
 import { LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons';
-import { Layout, Alert, Carousel, Row, Col } from 'antd';
+import { Layout, Alert, Carousel, Row, Col, Button } from 'antd';
 import DesktopLayout from './DesktopLayout';
 import localeHelper from '../../utils/localeHelper';
 import { connect } from 'dva';
@@ -48,19 +48,18 @@ export default class HomeWorkspace extends React.Component {
 
     renderWorkspace = () => {
         let { home } = this.props;
-        let {widgetConfig} = this.props;
-        let {searchConfig} = widgetConfig;
+        let { widgetConfig } = this.props;
+        let { searchConfig } = widgetConfig;
         const { workspaces, desktopIndex } = home;
         const { currentUser } = this.props.global;
-        workspaces.forEach((item,index )=> {
-            if(index === 0) {
+        workspaces.forEach((item, index) => {
+            if (index === 0) {
                 item.hasSearch = true
             }
         })
         return workspaces.map(workspace => {
             return (
                 <div key={workspace.type} style={{ width: '100%', height: 'calc(95vh)' }}>
-                    {/* <CarouselCompSec.CarouselCompSec></CarouselCompSec.CarouselCompSec> */}
                     {
                         workspace.hasSearch && searchConfig &&
                         <div className="search-content">
@@ -83,7 +82,6 @@ export default class HomeWorkspace extends React.Component {
     };
 
     render() {
-        console.log(window,'挂载桌面')
         const settings = {
             infinite: true,
             speed: 500,
@@ -105,7 +103,7 @@ export default class HomeWorkspace extends React.Component {
         return (
             <div>
                 {
-                    (workspaces.length !==0) &&
+                    (workspaces.length !== 0) &&
                     <Carousel beforeChange={this.handleNext} {...settings} ref={slider => (this.slider = slider)}>
                         {cachedComp}
                     </Carousel>

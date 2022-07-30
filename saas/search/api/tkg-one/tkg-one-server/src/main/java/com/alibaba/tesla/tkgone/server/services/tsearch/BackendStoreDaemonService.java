@@ -147,8 +147,6 @@ public class BackendStoreDaemonService implements InitializingBean {
                     String task = elasticSearchDeleteByQueryService.deleteInvalidNodeNoWait(index,
                             Constant.UPSERT_TIME_FIELD,
                             Long.toString(System.currentTimeMillis() / 1000 - validData));
-                    elasticSearchDeleteByQueryService.deleteInvalidRelation(index,
-                            Long.toString(System.currentTimeMillis() / 1000 - validData));
                     log.info(String.format("clean invalid task: %s", task));
                 } catch (Exception e) {
                     log.error("清理过期数据错误: ", e);

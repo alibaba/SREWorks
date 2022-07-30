@@ -1,6 +1,7 @@
 package dynamicscripts
 
 import com.alibaba.fastjson.JSONObject
+import com.alibaba.tesla.appmanager.api.provider.K8sMicroServiceMetaProvider
 import com.alibaba.tesla.appmanager.autoconfig.SystemProperties
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant
 import com.alibaba.tesla.appmanager.common.enums.ComponentInstanceStatusEnum
@@ -10,7 +11,9 @@ import com.alibaba.tesla.appmanager.common.exception.AppErrorCode
 import com.alibaba.tesla.appmanager.common.exception.AppException
 import com.alibaba.tesla.appmanager.common.util.NetworkUtil
 import com.alibaba.tesla.appmanager.common.util.ZipUtil
+import com.alibaba.tesla.appmanager.domain.dto.K8sMicroServiceMetaDTO
 import com.alibaba.tesla.appmanager.domain.req.AppAddonCreateReq
+import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQueryReq
 import com.alibaba.tesla.appmanager.domain.req.componentinstance.ReportRtComponentInstanceStatusReq
 import com.alibaba.tesla.appmanager.domain.req.deploy.GetDeployComponentHandlerReq
 import com.alibaba.tesla.appmanager.domain.req.deploy.LaunchDeployComponentHandlerReq
@@ -19,8 +22,7 @@ import com.alibaba.tesla.appmanager.domain.res.deploy.LaunchDeployComponentHandl
 import com.alibaba.tesla.appmanager.meta.helm.repository.condition.HelmMetaQueryCondition
 import com.alibaba.tesla.appmanager.meta.helm.repository.domain.HelmMetaDO
 import com.alibaba.tesla.appmanager.meta.helm.service.HelmMetaService
-import com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.condition.K8sMicroserviceMetaQueryCondition
-import com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.domain.K8sMicroServiceMetaDO
+import com.alibaba.tesla.appmanager.meta.k8smicroservice.assembly.K8sMicroServiceMetaDtoConvert
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.service.K8sMicroserviceMetaService
 import com.alibaba.tesla.appmanager.server.repository.condition.AppAddonQueryCondition
 import com.alibaba.tesla.appmanager.server.repository.domain.AppAddonDO
@@ -28,17 +30,17 @@ import com.alibaba.tesla.appmanager.server.service.addon.AddonMetaService
 import com.alibaba.tesla.appmanager.server.service.appaddon.AppAddonService
 import com.alibaba.tesla.appmanager.server.service.deploy.handler.DeployComponentHandler
 import com.alibaba.tesla.appmanager.server.service.rtcomponentinstance.RtComponentInstanceService
+import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 
-import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-
 /**
  * 默认部署 AppMeta Groovy Handler
  *
@@ -63,7 +65,7 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 15
+    public static final Integer REVISION = 17
 
     private static final String EXPORT_OPTION_FILE = "option.json"
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
@@ -74,7 +76,13 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
     private SystemProperties systemProperties
 
     @Autowired
+    private K8sMicroServiceMetaProvider k8sMicroServiceMetaProvider
+
+    @Autowired
     private K8sMicroserviceMetaService k8sMicroserviceMetaService
+
+    @Autowired
+    private K8sMicroServiceMetaDtoConvert k8sMicroServiceMetaDtoConvert
 
     @Autowired
     private RtComponentInstanceService componentInstanceService
@@ -100,36 +108,33 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
         def exportPath = Paths.get(packageDir.toString(), EXPORT_OPTION_FILE)
 
         // 准备参数
-        def content = FileUtils.readFileToString(exportPath.toFile(), Charset.defaultCharset())
+        def content = FileUtils.readFileToString(exportPath.toFile(), StandardCharsets.UTF_8)
         def data = JSONObject.parseObject(content)
 
         // microservices
         if (data.getJSONArray("microservices") != null) {
-            for (k8sMicroServiceMetaDO in data.getJSONArray("microservices").toJavaList(K8sMicroServiceMetaDO.class)) {
-                def appId = k8sMicroServiceMetaDO.getAppId()
-                def microserviceId = k8sMicroServiceMetaDO.getMicroServiceId()
-                def namespaceId = k8sMicroServiceMetaDO.getNamespaceId()
-                def stageId = k8sMicroServiceMetaDO.getStageId()
-                K8sMicroServiceMetaDO microService = k8sMicroserviceMetaService
-                        .getByMicroServiceId(appId, microserviceId, namespaceId, stageId)
-                k8sMicroServiceMetaDO.setId(null);
-                k8sMicroServiceMetaDO.extFromString();
-                k8sMicroServiceMetaDO.init();
-                if (microService == null) {
-                    def response = k8sMicroserviceMetaService.create(k8sMicroServiceMetaDO)
-                    log.info("import(create) app meta microservice config success|appId={}|content={}|response={}",
-                            request.getAppId(), JSONObject.toJSONString(k8sMicroServiceMetaDO), JSONObject.toJSONString(response))
+            for (dto in data.getJSONArray("microservices").toJavaList(K8sMicroServiceMetaDTO.class)) {
+                def appId = dto.getAppId()
+                def microserviceId = dto.getMicroServiceId()
+                def namespaceId = dto.getNamespaceId()
+                def stageId = dto.getStageId()
+                def metaList = k8sMicroServiceMetaProvider
+                        .list(K8sMicroServiceMetaQueryReq.builder()
+                                .microServiceId(microserviceId)
+                                .appId(appId)
+                                .namespaceId(namespaceId)
+                                .stageId(stageId)
+                                .withBlobs(true)
+                                .pagination(false)
+                                .build())
+                if (CollectionUtils.isEmpty(metaList.getItems())) {
+                    def response = k8sMicroServiceMetaProvider.create(dto)
+                    log.info("import(create) app meta microservice config success|appId={}|dto={}|response={}",
+                            request.getAppId(), JSONObject.toJSONString(dto), JSONObject.toJSONString(response))
                 } else {
-                    K8sMicroserviceMetaQueryCondition condition = K8sMicroserviceMetaQueryCondition.builder()
-                            .appId(k8sMicroServiceMetaDO.getAppId())
-                            .namespaceId(k8sMicroServiceMetaDO.getNamespaceId())
-                            .stageId(k8sMicroServiceMetaDO.getStageId())
-                            .microServiceId(k8sMicroServiceMetaDO.getMicroServiceId())
-                            .withBlobs(true)
-                            .build();
-                    def response = k8sMicroserviceMetaService.update(k8sMicroServiceMetaDO, condition);
-                    log.info("import(update) app meta microservice config success |appId={}|content={}|response={}",
-                            request.getAppId(), JSONObject.toJSONString(k8sMicroServiceMetaDO), JSONObject.toJSONString(response))
+                    def response = k8sMicroServiceMetaProvider.update(dto)
+                    log.info("import(update) app meta microservice config success|appId={}|dto={}|response={}",
+                            request.getAppId(), JSONObject.toJSONString(dto), JSONObject.toJSONString(response))
                 }
             }
         }

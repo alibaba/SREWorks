@@ -93,6 +93,9 @@ public class K8sMicroServiceMetaRepositoryImpl implements K8sMicroServiceMetaRep
         if (StringUtils.isNotEmpty(condition.getStageIdNotEqualTo())) {
             criteria.andStageIdNotEqualTo(condition.getStageIdNotEqualTo());
         }
+        if (StringUtils.isNotEmpty(condition.getArch())) {
+            criteria.andArchEqualTo(condition.getArch());
+        }
         return example;
     }
 

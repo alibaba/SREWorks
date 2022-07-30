@@ -30,18 +30,34 @@ public interface K8sMicroServiceMetaProvider {
 
     /**
      * 创建 K8S Microservice
+     *
+     * @param dto K8S Microservice DTO 对象
+     * @return K8s Microservice DTO 对象
+     */
+    K8sMicroServiceMetaDTO create(K8sMicroServiceMetaDTO dto);
+
+    /**
+     * 创建 K8S Microservice (普通)
      */
     K8sMicroServiceMetaDTO create(K8sMicroServiceMetaUpdateReq request);
+
+    /**
+     * 创建 K8S Microservice (快速)
+     */
+    K8sMicroServiceMetaDTO create(K8sMicroServiceMetaQuickUpdateReq request);
+
+    /**
+     * 更新 K8S Microservice
+     *
+     * @param dto K8S Microservice DTO 对象
+     * @return K8s Microservice DTO 对象
+     */
+    K8sMicroServiceMetaDTO update(K8sMicroServiceMetaDTO dto);
 
     /**
      * 更新 K8s Microservice
      */
     K8sMicroServiceMetaDTO update(K8sMicroServiceMetaUpdateReq request);
-
-    /**
-     * 快速创建 K8S Microservice
-     */
-    K8sMicroServiceMetaDTO create(K8sMicroServiceMetaQuickUpdateReq request);
 
     /**
      * 快速更新 K8S Microservice

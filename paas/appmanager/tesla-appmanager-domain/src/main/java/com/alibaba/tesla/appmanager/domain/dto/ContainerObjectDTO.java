@@ -7,22 +7,28 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Container 对象 DTO (前端交互)
+ *
  * @author qianmo.zm@alibaba-inc.com
- * @date 2020/11/26.
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ContainerObjectDTO {
+
     /**
      * 分类
      */
     private ContainerTypeEnum containerType;
 
+    /**
+     * 标识
+     */
     private String name;
 
     /**
@@ -50,7 +56,6 @@ public class ContainerObjectDTO {
      */
     private String repoDomain;
 
-
     /**
      * 仓库分组
      */
@@ -67,9 +72,9 @@ public class ContainerObjectDTO {
     private String appName;
 
     /**
-     * 开启Repo创建
+     * 开启 Repo 创建
      */
-    private Boolean openCreateRepo;
+    private Boolean openCreateRepo = false;
 
     /**
      * 代码分支
@@ -77,24 +82,24 @@ public class ContainerObjectDTO {
     private String branch;
 
     /**
-     * Docker模板文件名称
+     * Dockerfile 模板文件名称
      */
     private String dockerfileTemplate;
 
     /**
-     * Docker模板文件变量
+     * Dockerfile 模板文件变量
      */
-    private List<ArgMetaDTO> dockerfileTemplateArgs;
+    private List<ArgMetaDTO> dockerfileTemplateArgs = new ArrayList<>();
 
     /**
-     * build变量
+     * 构建变量
      */
-    private List<ArgMetaDTO> buildArgs;
+    private List<ArgMetaDTO> buildArgs = new ArrayList<>();
 
     /**
      * 端口定义
      */
-    private List<PortMetaDTO> ports;
+    private List<PortMetaDTO> ports = new ArrayList<>();
 
     /**
      * 命令行定义
@@ -114,10 +119,8 @@ public class ContainerObjectDTO {
     public void initRepo() {
         int appNameIndex = repo.lastIndexOf("/");
         this.appName = repo.substring(appNameIndex + 1, repo.lastIndexOf("."));
-
         int repoGroupIndex = repo.lastIndexOf("/", appNameIndex - 1);
         this.repoGroup = repo.substring(repoGroupIndex + 1, appNameIndex);
-
         this.repoDomain = repo.substring(0, repoGroupIndex);
     }
 }

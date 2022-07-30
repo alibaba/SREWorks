@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.server.service.pack;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.ComponentPackageProvider;
+import com.alibaba.tesla.appmanager.autoconfig.SystemProperties;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.PackageTaskEnum;
 import com.alibaba.tesla.appmanager.common.util.VersionUtil;
@@ -65,6 +66,9 @@ public class TestServicePackDoComponentPackageCreate {
     @Mock
     private HelmMetaService helmMetaService;
 
+    @Mock
+    private SystemProperties systemProperties;
+
     private PackService packService;
 
     @Before
@@ -79,7 +83,8 @@ public class TestServicePackDoComponentPackageCreate {
                 appPackageTaskService,
                 appAddonService,
                 appMetaService,
-                helmMetaService
+                helmMetaService,
+                systemProperties
         ));
         Mockito.doReturn(new JSONObject())
                 .when(packService)

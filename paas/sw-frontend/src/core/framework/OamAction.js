@@ -349,6 +349,7 @@ class OamAction extends React.Component {
             action.__actionPlanExecutionTime = params.__actionPlanExecutionTime;
         }
         action.execute(allParams, params, actionButton).then(result => {
+            console.log(result, 'action操作返回')
             let feedbacks = result && result.feedbacks, receiveParams = (result && result.params) || {}, { modalWidth } = actionButton || {}, feedbackTitle = result && result.feedbackTitle;
             if (feedbacks && feedbacks.length > 0) {
                 let modalInfo = feedbacks[0];
@@ -436,7 +437,12 @@ class OamAction extends React.Component {
                     }
                 }
             } else {
-                message.success(localeHelper.get('Success', "操作已提交"));
+                // 提交文案返回内容自定义函数
+                let responseText = '';
+                if (action.responseHandler && action.responseHandler.length > 53) {
+                    responseText = safeEval("(" + action.responseHandler + ")(response)", { response: result});
+                }
+                message.success(responseText? responseText : localeHelper.get('Success', "操作已提交"));
                 if (execCallBack) execCallBack(allParams);
                 //增加执行后跳转
                 let jumpPath = action.jumpPath;
@@ -705,8 +711,8 @@ class OamAction extends React.Component {
      * @param params
      */
     handlePreSubmitAction = (params) => {
-        console.log(params,'params-lo')
-        if(!params) {
+        console.log(params, 'params-lo')
+        if (!params) {
             return false
         }
         let { action, remoteParams } = this.state, { nodeParams, userParams, actionParams } = this.props;
@@ -927,7 +933,7 @@ class OamAction extends React.Component {
                 if (visibleExpression && visibleExpression.length > 10) {
                     formVisible = safeEval(visibleExpression, { nodeParams: allNodeParams });
                 }
-            } catch(e) {
+            } catch (e) {
                 formVisible = true;
                 return true;
             }

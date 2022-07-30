@@ -35,4 +35,6 @@ public class K8sMicroserviceMetaQueryCondition extends BaseCondition {
     private String microServiceId;
 
     private List<ComponentTypeEnum> componentTypeList;
+
+    private String arch;
 }

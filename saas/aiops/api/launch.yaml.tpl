@@ -49,7 +49,7 @@ spec:
         - name: Global.DB_PORT
           value: '3306'
         - name: Global.DB_USER
-          value: root
+          value: '${DATAOPS_DB_USER}'
         - name: Global.DB_PASSWORD
           value: "${DATAOPS_DB_PASSWORD}"
         - name: Global.DB_NAME

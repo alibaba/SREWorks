@@ -774,6 +774,76 @@ public class K8sMicroServiceMetaDOExample {
             addCriterion("stage_id not between", value1, value2, "stageId");
             return (Criteria) this;
         }
+
+        public Criteria andArchIsNull() {
+            addCriterion("arch is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andArchIsNotNull() {
+            addCriterion("arch is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andArchEqualTo(String value) {
+            addCriterion("arch =", value, "arch");
+            return (Criteria) this;
+        }
+
+        public Criteria andArchNotEqualTo(String value) {
+            addCriterion("arch <>", value, "arch");
+            return (Criteria) this;
+        }
+
+        public Criteria andArchGreaterThan(String value) {
+            addCriterion("arch >", value, "arch");
+            return (Criteria) this;
+        }
+
+        public Criteria andArchGreaterThanOrEqualTo(String value) {
+            addCriterion("arch >=", value, "arch");
+            return (Criteria) this;
+        }
+
+        public Criteria andArchLessThan(String value) {
+            addCriterion("arch <", value, "arch");
+            return (Criteria) this;
+        }
+
+        public Criteria andArchLessThanOrEqualTo(String value) {
+            addCriterion("arch <=", value, "arch");
+            return (Criteria) this;
+        }
+
+        public Criteria andArchLike(String value) {
+            addCriterion("arch like", value, "arch");
+            return (Criteria) this;
+        }
+
+        public Criteria andArchNotLike(String value) {
+            addCriterion("arch not like", value, "arch");
+            return (Criteria) this;
+        }
+
+        public Criteria andArchIn(List<String> values) {
+            addCriterion("arch in", values, "arch");
+            return (Criteria) this;
+        }
+
+        public Criteria andArchNotIn(List<String> values) {
+            addCriterion("arch not in", values, "arch");
+            return (Criteria) this;
+        }
+
+        public Criteria andArchBetween(String value1, String value2) {
+            addCriterion("arch between", value1, value2, "arch");
+            return (Criteria) this;
+        }
+
+        public Criteria andArchNotBetween(String value1, String value2) {
+            addCriterion("arch not between", value1, value2, "arch");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

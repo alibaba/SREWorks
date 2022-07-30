@@ -58,14 +58,19 @@ public class K8sMicroServiceMetaDTO {
     private String description;
 
     /**
-     * 类型 (Deployment/StatefulSet/CloneSet/AdvancedStatefulSet)
-     */
-    private String kind;
-
-    /**
      * 组件类型
      */
     private ComponentTypeEnum componentType;
+
+    /**
+     * 架构
+     */
+    private String arch;
+
+    /**
+     * 类型 (Deployment/StatefulSet/CloneSet/AdvancedStatefulSet)
+     */
+    private String kind;
 
     /**
      * 环境变量定义

@@ -7,14 +7,12 @@ import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.ContainerTypeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
-import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.dto.ContainerObjectDTO;
 import com.alibaba.tesla.appmanager.domain.dto.K8sMicroServiceMetaDTO;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQuickUpdateReq;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaUpdateReq;
-import com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.domain.K8sMicroServiceMetaDO;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +20,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.yaml.snakeyaml.Yaml;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * K8S 微服务元信息 Controller
@@ -146,48 +145,6 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
         return buildSucceedResult(result);
     }
 
-    @PostMapping(params = {"type"})
-    public TeslaBaseResult createByYaml(
-            @PathVariable String appId,
-            @RequestParam("type") String type,
-            @RequestBody String body,
-            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
-        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
-        String namespaceId = container.getNamespaceId();
-        String stageId = container.getStageId();
-        if (StringUtils.isEmpty(type) || !type.equals("yaml")) {
-            return buildClientErrorResult("invalid type parameter");
-        }
-
-        Yaml yaml = SchemaUtil.createYaml(Arrays.asList(Iterable.class, Object.class));
-        Iterable<Object> iterable = yaml.loadAll(body);
-        List<K8sMicroServiceMetaUpdateReq> k8sMicroServiceMetaUpdateReqList = new ArrayList<>();
-        for (Object object : iterable) {
-            JSONObject root = new JSONObject((Map) object);
-            JSONObject options = root.getJSONObject("options");
-            String componentName = root.getString("componentName");
-            ComponentTypeEnum componentType = ComponentTypeEnum.valueOf(root.getString("componentType"));
-            K8sMicroServiceMetaUpdateReq k8sMicroServiceMetaUpdateReq = new K8sMicroServiceMetaUpdateReq();
-
-            K8sMicroServiceMetaDO k8sMicroServiceMetaDO = new K8sMicroServiceMetaDO();
-            k8sMicroServiceMetaDO.fromOptions(options);
-            k8sMicroServiceMetaUpdateReq.setEnvList(k8sMicroServiceMetaDO.getEnvList());
-            k8sMicroServiceMetaUpdateReq.setContainerObjectList(k8sMicroServiceMetaDO.getContainerObjectList());
-            k8sMicroServiceMetaUpdateReq.setAppId(appId);
-            k8sMicroServiceMetaUpdateReq.setNamespaceId(namespaceId);
-            k8sMicroServiceMetaUpdateReq.setStageId(stageId);
-            k8sMicroServiceMetaUpdateReq.setMicroServiceId(componentName);
-            k8sMicroServiceMetaUpdateReq.setName(componentName);
-            k8sMicroServiceMetaUpdateReq.setComponentType(componentType);
-            k8sMicroServiceMetaUpdateReqList.add(k8sMicroServiceMetaUpdateReq);
-        }
-
-        for (K8sMicroServiceMetaUpdateReq k8sMicroServiceMetaUpdateReq : k8sMicroServiceMetaUpdateReqList) {
-            metaProvider.create(k8sMicroServiceMetaUpdateReq);
-        }
-        return buildSucceedResult(k8sMicroServiceMetaUpdateReqList.size());
-    }
-
     /**
      * @api {get} /apps/:appId/k8s-microservices/:id 获取指定微服务详情
      * @apiName GetApplicationK8sMicroservice
@@ -260,30 +217,29 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
     private void repair(K8sMicroServiceMetaUpdateReq request) {
         List<ContainerObjectDTO> containerObjectList = request.getContainerObjectList();
         if (request.getComponentType() == ComponentTypeEnum.K8S_MICROSERVICE) {
-            ContainerObjectDTO mainContainer = containerObjectList.stream().filter(
-                            containerObject -> containerObject.getContainerType() == ContainerTypeEnum.CONTAINER).findFirst()
+            ContainerObjectDTO mainContainer = containerObjectList.stream()
+                    .filter(containerObject -> containerObject.getContainerType() == ContainerTypeEnum.CONTAINER)
+                    .findFirst()
                     .orElse(null);
-
             if (Objects.isNull(mainContainer)) {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS, "Container 缺失");
             }
             mainContainer.setName(request.getMicroServiceId());
-
-            containerObjectList.stream().filter(
-                    container -> container.getContainerType() == ContainerTypeEnum.INIT_CONTAINER).forEach(container -> {
-                container.setRepo(mainContainer.getRepo());
-                container.setBranch(mainContainer.getBranch());
-            });
+            containerObjectList.stream()
+                    .filter(container -> container.getContainerType() == ContainerTypeEnum.INIT_CONTAINER)
+                    .forEach(container -> {
+                        container.setRepo(mainContainer.getRepo());
+                        container.setBranch(mainContainer.getBranch());
+                    });
         } else if (request.getComponentType() == ComponentTypeEnum.K8S_JOB) {
             if (CollectionUtils.size(containerObjectList) != 1) {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS, "JOB 缺失");
             }
-
             ContainerObjectDTO jobContainer = containerObjectList.get(0);
             jobContainer.setName(request.getMicroServiceId());
         }
-
-        containerObjectList.stream().filter(container -> StringUtils.isNotEmpty(container.getServiceType())).forEach(
-                container -> container.setLanguage(SERVICE_TYPE_2_LANGUAGE.get(container.getServiceType())));
+        containerObjectList.stream()
+                .filter(container -> StringUtils.isNotEmpty(container.getServiceType()))
+                .forEach(container -> container.setLanguage(SERVICE_TYPE_2_LANGUAGE.get(container.getServiceType())));
     }
 }

@@ -1,6 +1,5 @@
 package com.alibaba.tesla.appmanager.domain.req;
 
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.domain.dto.ContainerObjectDTO;
 import com.alibaba.tesla.appmanager.domain.dto.EnvMetaDTO;
@@ -68,5 +67,8 @@ public class K8sMicroServiceMetaUpdateReq {
      */
     private ComponentTypeEnum componentType;
 
-    private JSONObject service;
+    /**
+     * 架构
+     */
+    private String arch;
 }

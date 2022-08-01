@@ -113,7 +113,6 @@ export default {
         updateWorkspace(state, { workspaces }) {
             let namespaceId = util.getNewBizApp().split(",")[1];
             let stageId = util.getNewBizApp().split(",")[2];
-            console.log('updateWorkspace-chufa', workspaces)
             AppService.postWorkspaces({ collectList: state.collectList, workspaces: workspaces }, namespaceId, stageId)
             return {
                 ...state,

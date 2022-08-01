@@ -79,7 +79,6 @@ class ActionService {
                 "notifyTime": action.notifyTime,
             };
         }
-        console.log(action.userInfo,'action.userInfo')
         let submitActionData={
             "actionType": action.actionType,
             "elementId": action.elementId,
@@ -107,7 +106,6 @@ class ActionService {
         };
         //console.log("submitActionData---->",submitActionData);
         //return Promise.resolve();
-        console.log(httpClient,'httpClient--')
         return httpClient.post(`${actionPrefix}/action/run`,submitActionData);
         //return httpClient.post(`http://30.5.16.57:7001/action/run`,submitActionData);
     }

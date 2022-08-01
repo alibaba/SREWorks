@@ -9,7 +9,6 @@ const { Statistic } = StatisticCard;
 
 export default class StatusList extends Component {
   render() {
-    console.log(this.props);
     let { widgetData = {}, widgetConfig = {}, actionParams, ...otherProps } = this.props;
     let { chartPlacement = "bottom", chartTitle = "", tooltip = "", footerList = [], mainList = [], cStyle = { width: 268 }, isOnlyChart = false, total = "", chartConfig = {}, chartData = [] } = widgetConfig;
     let { height = 60, width = 220, autoFit = false, extraConfig, xField, yField, percent, min, max, chartValue } = chartConfig;

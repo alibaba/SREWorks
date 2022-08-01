@@ -40,7 +40,6 @@ export default class WidgetCard extends React.Component {
     componentWillMount() {
         const { widgetModel, nodeParams, actionParams } = this.props;
         widgetLoader.loadWidget(widgetModel).then(WidgetComponent => {
-            console.log(widgetModel,WidgetComponent,'加载到的目标组件')
             this.WidgetComponent = WidgetComponent;
             this.setState({
                 loading: false

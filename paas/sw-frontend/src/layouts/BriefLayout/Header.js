@@ -108,7 +108,6 @@ const ModuleMenu = ({ currentModule, moduleData }) => {
 };
 
 const RedirectLink = ({ redirect, icon, label }) => {
-    console.log(redirect, label, 'redirect==')
     let redirectPath = redirect.path;
     if (redirect.path.startsWith("http")) {
         return <span onClick={() => window.open(redirect.path)} style={{ color: '#1890fe' }}>{icon ? <LegacyIcon type={icon} /> : null}{label}</span>;

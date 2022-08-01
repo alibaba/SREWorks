@@ -21,7 +21,6 @@ export default class HandleTag extends Component {
   };
 
   showInput = () => {
-    console.log(this.state.inputVisible, 'inputVisible')
     this.setState({ inputVisible: true }, () => this.input.focus());
   };
 
@@ -35,7 +34,6 @@ export default class HandleTag extends Component {
     if (inputValue && tags.indexOf(inputValue) === -1) {
       tags = [...tags, inputValue];
     }
-    console.log(tags);
     this.setState({
       tags,
       inputVisible: false,

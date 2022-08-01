@@ -45,7 +45,6 @@ class NodeContent extends React.Component {
             .then(dataSet => {
                 //由获取的内容数据生成路由
                 Object.assign(nodeParams, dataSet[1], { __frontend_route_path: match.path, __currentUser__: currentUser }, userParams, util.getUrlParams());
-                console.log("当前功能节点获取的参数集合----->", nodeParams);
                 dispatch({ type: 'node/initParams', initParams: { nodeParams: nodeParams } });
                 this.setState({
                     nodeParams: dataSet[1],

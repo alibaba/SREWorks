@@ -70,7 +70,6 @@ class OamContent extends React.Component {
 
     loadNodeFilters = (nodeId) => {
         let defaultFilterPath = [], { nodeConfig = {} } = this.props;
-        console.log("nodeConfig----->", nodeConfig);
         oamTreeService.getNodeFilters(nodeId).then(filterData => {
             let defaultFilter = false, defalutNodeList = [], filterNodeIds = [], urlSearchParams = util.getUrlParams(), allExistMapping = {};
             const transformFilter = function (filterData = [], perfix) {
@@ -223,7 +222,6 @@ class OamContent extends React.Component {
                         pathname: this.props.location.pathname,
                         search: util.objectToUrlParams(urlObject)
                     });
-                    console.log("当前功能节点获取的参数集合----->", nodeParams);
                     this.setState({
                         contentData: cdata,
                         routeData: routeData,
@@ -266,7 +264,6 @@ class OamContent extends React.Component {
     };
 
     handleOpenAction = (actionName, actionParams, callBack) => {
-        console.log("Open Action------>", actionName, actionParams, callBack);
         let count = this.state.openCount;
         this.setState({
             currentActionMix: { actionName: actionName, actionParams: actionParams, callBack: callBack },
@@ -275,7 +272,6 @@ class OamContent extends React.Component {
     };
 
     handleCloseAction = (action) => {
-        console.log("Close Action------>", action);
         let count = this.state.openCount;
         this.setState({
             currentActionMix: '',

@@ -161,7 +161,6 @@ class CascadeGroup extends PureComponent {
             }
         });
         let dynStates = {}, { form } = this.props;
-        //console.log("reqSelectItems---->",reqSelectItems);
         if (req.length) {
             this.setState({
                 loading: true
@@ -192,7 +191,6 @@ class CascadeGroup extends PureComponent {
                 } else {
                     dynStates[`${selectItem.name}Options`] = dataOptions;
                 }
-                //console.log("data2option,transform,optionMapping----->",data2option,transform,optionMapping);
                 if (defalutValue) {
                     form.setFieldsValue({
                         [selectItem.name]: defalutValue,
@@ -209,7 +207,6 @@ class CascadeGroup extends PureComponent {
     };
 
     fetchRemoteItemOption = (item, searchText) => {
-        //console.log("item,searchText-------->",item,searchText);
         let { form } = this.props, depend = Array.isArray(item.depend) ? item.depend : [item.depend];
         let params = form.getFieldsValue(depend);
         this.setState({
@@ -260,7 +257,6 @@ class CascadeGroup extends PureComponent {
         } else {
             loadParams[item.name] = Array.isArray(value) ? value.join(",") : value;
         }
-        //console.log("loadItems,loadParams------->",loadItems,loadParams);
         this.loadSelectItemsOption(loadItems, loadParams);
         //onChange&&onChange(value);
         //needOption是为了下拉选择把整个option选项输出

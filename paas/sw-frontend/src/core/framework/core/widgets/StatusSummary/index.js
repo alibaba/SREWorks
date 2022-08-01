@@ -16,7 +16,6 @@ export default class StatusSummary extends Component {
     let {widgetData = {}, widgetConfig = {}, actionParams, ...otherProps} = this.props;
     let {itemToolbar, formatList, statusList, segmentTitle,minHeight} = widgetConfig;
     let dataList = [];
-    console.log(widgetData,statusList,'状态概览')
     statusList && statusList.map(item => {
       dataList.push({
         value: _.get(widgetData, item.dataIndex),

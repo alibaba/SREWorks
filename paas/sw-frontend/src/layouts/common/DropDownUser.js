@@ -88,7 +88,6 @@ export default class DropDownUser extends React.Component {
   };
 
   onLanguageChange = (language) => {
-    //console.log("language--------->",language);
     //暂时只支持两种语言
     let lng = localStorage.getItem("t_lang_locale") === "zh_CN" ? "en_US" : "zh_CN";
     localStorage.setItem("t_lang_locale", lng);

@@ -149,7 +149,6 @@ const showConstExceptionNotification = debounce(function (title, message) {
 
 function isIgnoreException(reqConfig) {
     let { url='' } = reqConfig;
-    console.log(url,reqConfig,'核对url')
     //存在带参数的url需要去掉参数
     let urlFix = url.indexOf("?");
     if (urlFix > 0) {
@@ -216,7 +215,6 @@ request.interceptors.response.use(
         }
     },
     err => {//请求发生异常的统一处理
-        console.log(err, 'response-err')
         if (isIgnoreException(err.config || {})) {
             return Promise.reject(err);
         }

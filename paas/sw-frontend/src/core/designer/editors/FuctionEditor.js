@@ -84,7 +84,6 @@ class FunctionEditor extends Component {
         let params = {...nowData, ...values};
         if (params.id) {
           data.map((item, index) => {
-            console.log(item.id === params.id);
             if (item.id === params.id) {
               data.splice(index, 1, params);
             }

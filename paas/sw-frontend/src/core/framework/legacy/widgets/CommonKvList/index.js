@@ -148,9 +148,7 @@ class CommonKvList extends React.Component  {
 
     render() {
         const { mode, nodeId } = this.props;
-        //console.log(this.props , 'props--->')
         let {kvArray , colNum , title , type , border} = mode.config;
-        //console.log("this.state.kvData---->",this.state.kvData);
         return (
             <Spin spinning={this.state.loading}>
                 <Card title={title ? title : ''} className="common-kv-list" bordered={border} size="small">

@@ -262,7 +262,6 @@ export default class Parameter {
             let dataSource = new DataSource(this.dataSourceMeta);
             //此处的变量已经在生产参数项的时候已经被渲染了,暂时不需要取取运行时节点变量
             loader = dataSource.query(this.runtimeContext || {});
-            console.log(loader, 'parameter-action-dataSource')
         } else if (this.initApi && remote !== true) {
             loader = httpClient.get(this.initApi);
         }

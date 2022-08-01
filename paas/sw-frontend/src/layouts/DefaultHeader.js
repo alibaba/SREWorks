@@ -42,8 +42,6 @@ const MenuItemGroup = Menu.ItemGroup;
 const DefaultHeader = ({ siderFold, siderRespons, theme, siderOpenKeys, menuResponsVisible, moduleData, onSwitchSidebar,
     onSwitchTheme, onSwitchMenuMode, onRoleChange, onLanguageChange, onModuleMenuChang, currentModule, language,
     currentUser, moduleGroups, onEnvChang, onLogout, settings, currentProduct, envs }) => {
-    //const existGroup=moduleGroups.length>1;
-    // console.log(currentProduct,'currentProduct.docsUrl')
     const roles = currentUser.roles, cacheRole = cacheRepository.getRole(currentProduct.productId);
     const currentRole = roles.filter(role => role.roleId === cacheRole)[0];
 

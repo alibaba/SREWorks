@@ -23,7 +23,6 @@ let serviceMap = {
   },
 };
 const APITest = (props) => {
-  console.log(props,'APItest-服务测试')
   let { widgetConfig = {} } = props, sceneCodeProp = 'default', detectorCodeProp = 'drilldown';
   let { businessConfig } = widgetConfig
   sceneCodeProp = (businessConfig && businessConfig.sceneCode) || ''

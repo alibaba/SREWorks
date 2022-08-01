@@ -24,7 +24,6 @@ class ToolBarAdapter extends Component {
         const { nodeModel } = widgetModel;
         let { toolbar } = widgetConfig, toolbarData = null, docs = null, actionBar = null;
         let { filter = '', type,label='', actionList = [], docList = [], customRender } = widgetConfig[configIndex] || {};
-        console.log(widgetConfig[configIndex], 'filter==')
         let vActions = [], hActions = [];
         if (docList.length > 0) {
             docs = {
@@ -148,7 +147,6 @@ class ToolBarAdapter extends Component {
     render() {
         const { toolbarData } = this.state;
         const { hasLeftTab = false } = this.props;
-        console.log(hasLeftTab, 'hasLeftTab');
         if (!toolbarData) {
             return <div />
         }

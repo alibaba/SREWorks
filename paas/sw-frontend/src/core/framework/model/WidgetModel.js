@@ -38,7 +38,6 @@ export default class WidgetModel extends BaseModel {
 
     constructor(modelJson) {
         super(modelJson);
-        console.log(modelJson, 'modelJson')
         Object.assign(this, modelJson.config);
     }
 
@@ -47,14 +46,12 @@ export default class WidgetModel extends BaseModel {
      * @param widgetMeta
      */
     initFromMeta(widgetMeta) {
-        console.log(widgetMeta, '初始化widgetMeta')
         let { type, configSchema, name, id, info } = widgetMeta;
         this.type = type;
         this.name = name;
         this.id = id;
         this.info = info
         Object.assign(this.config || {}, configSchema.defaults.config);
-        //console.log(configSchema.defaults,"configSchema.defaults");
         Object.assign(this, configSchema.defaults.config);
     }
 
@@ -258,7 +255,6 @@ export default class WidgetModel extends BaseModel {
         } else if (display && display !== true) {
             return safeEval(display, { nodeParams: nodeParams });
         }
-        console.log(visibleExp, this, safeEval(visibleExp, { nodeParams: nodeParams }), 'visibleExp')
         if (visibleExp) {
             return safeEval(visibleExp, { nodeParams: nodeParams });
         }
@@ -289,7 +285,6 @@ export default class WidgetModel extends BaseModel {
      * 是否存在toolbar
      */
     hasToolbar() {
-        console.log(this, 'this=== widgetModel');
         let { toolbar = {} } = this;
         let { filter, type, actionList = [], docList = [], customRender } = toolbar;
         return filter || actionList.length > 0 || docList.length > 0 || customRender;

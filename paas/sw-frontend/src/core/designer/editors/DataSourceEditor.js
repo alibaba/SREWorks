@@ -60,7 +60,6 @@ class DataSource extends Component {
   }
 
   componentDidMount() {
-    //console.log("DataSourcePanel----componentDidMount------->", this.props);
     this.setState({
       value: Object.assign({
         beforeRequestHandler: 'function beforeRequest(nodeParams,){\n  return {}\n}',
@@ -133,7 +132,6 @@ class DataSource extends Component {
 
   removeFilter = (fkey) => {
     let { filters } = this.state, newFilters = [], { form, onChange } = this.props;
-    console.log(tempDS);
     filters.forEach(f => {
       if (f.key !== fkey) {
         newFilters.push(f);
@@ -145,7 +143,6 @@ class DataSource extends Component {
       let allValues = form.getFieldsValue();
       //console.log("allValues------>",allValues);
       // options.filters = {};
-      console.log(allValues);
       // Object.keys(allValues).forEach(fk => {
       //   if (fk.startsWith(FILTER)) {
       //     let fv = allValues[fk];
@@ -347,7 +344,6 @@ class DataSource extends Component {
   handleSubmit = () => {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        console.log(values);
         this.props.onChange(values);
       }
     });
@@ -356,7 +352,6 @@ class DataSource extends Component {
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form;
     let { typeList, value } = this.state;
-    //console.log("DataSourcePanel------->", this.props);
     let options = {
       modes: ["code", "tree"],
     };
@@ -385,9 +380,6 @@ class DataSource extends Component {
 
 export default Form.create({
   onValuesChange: (props, changedValues, allValues) => {
-    console.log("allValues:", allValues);
-    console.log("changedValues:", changedValues);
-    console.log("props:", props);
     //存在隐藏项因此,需要进行值合并处理
     props.onValuesChange && props.onValuesChange(changedValues, allValues.type ? Object.assign({}, props.value, allValues) : null);
   },

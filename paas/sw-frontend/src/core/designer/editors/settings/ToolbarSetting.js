@@ -23,9 +23,7 @@ class ToolbarSetting extends React.Component {
         let { widgetModel, config, noFilter, noHelp, configIndex = "toolbar" } = props;
         let paramsDef = [], toolbar = config[configIndex];
         let { filter, type = "button",label="操作", actionList = [], docList = [], customRender } = toolbar || {}, filterBlocks = [], actionBlocks = [];
-        console.log(widgetModel.nodeModel.getBlocks(), 'widgetModel.nodeModel.getBlocks()');
         widgetModel.nodeModel.getBlocks().forEach(block => {
-            console.log(block, 'block=============> action 区块列表')
             let { elementId, label, category } = block;
             let option = { value: elementId, label: label, category };
             if (category === Constants.BLOCK_CATEGORY_FILTER) {

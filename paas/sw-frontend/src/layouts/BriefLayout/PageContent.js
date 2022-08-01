@@ -71,7 +71,6 @@ export default class PageLayout extends React.Component {
     render() {
         const { menuProps, currentProduct, currentUser, content, layout = { showPageTitle: true } } = this.props;
         const { nameCn, description, descriptions = [] } = currentProduct;
-        console.log(this.props.layout, 'this.props.layout')
         return (
             <div className="brief-layout-page-content">
                 <PageHeader

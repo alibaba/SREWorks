@@ -145,7 +145,6 @@ export default class WorkspaceSetting extends React.Component {
             message.info("请先选择要设置的背景图片")
         }
         let { workspaces } = home;
-        console.log(mixImglist[activeBackgroundImgIndex], 'update-mixface');
         workspaces.forEach((item, index) => {
             if (index === targetDesktopIndex) {
                 item.background = mixImglist[activeBackgroundImgIndex]
@@ -180,7 +179,6 @@ export default class WorkspaceSetting extends React.Component {
     };
 
     onSubmit = (res) => {
-        console.log(res);
         const { dispatch, home } = this.props;
         let { customQuickList, collectList, workspaces, } = home;
         if (res) {

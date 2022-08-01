@@ -31,18 +31,8 @@ curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/udfartifacts/$
     -H 'Content-Type: application/json' \
     -d '{
         "name": "namespaces/'${VVP_WORK_NS}'/udfartifacts/'${UDF_ARTIFACT_NAME}'",
-        "jarUrl": '${jar_uri}'
+        "jarUrl": "'${jar_uri}'"
     }'
-
-####### REGISTER UDF ARTIFACT
-#echo "============REGISTER UDF ARTIFACT============"
-#curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/udfartifacts/${UDF_ARTIFACT_NAME} \
-#    -X PUT \
-#    -H 'Content-Type: application/json' \
-#    -d '{
-#        "name": "namespaces/'${VVP_WORK_NS}'/udfartifacts/'${UDF_ARTIFACT_NAME}'",
-#        "jarUrl": "s3://vvp/artifacts/namespaces/'${VVP_WORK_NS}'/udfs/'${UDF_ARTIFACT_JAR}'"
-#    }'
 
 
 ###### REGISTER UDF FUNCTION
@@ -54,13 +44,14 @@ curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:exe
         "CREATE FUNCTION IF NOT EXISTS `NoDataAlarm` AS '\''com.elasticsearch.cloud.monitor.metric.alarm.blink.udaf.NoDataAlarm'\''",
         "CREATE FUNCTION IF NOT EXISTS `ExtractTimeUdf` AS '\''com.elasticsearch.cloud.monitor.metric.common.blink.udf.ExtractTimeUdf'\''",
         "CREATE FUNCTION IF NOT EXISTS `TimeDelay` AS '\''com.elasticsearch.cloud.monitor.metric.alarm.blink.udf.TimeDelay'\''",
-        "CREATE FUNCTION IF NOT EXISTS `ParseContentUdtf` AS '\''com.elasticsearch.cloud.monitor.metric.common.blink.udtf.ParseContentUdtf'\''",
         "CREATE FUNCTION IF NOT EXISTS `DurationAlarm` AS '\''com.elasticsearch.cloud.monitor.metric.alarm.blink.udtf.DurationAlarm'\''",
-        "CREATE FUNCTION IF NOT EXISTS `splitEventList` AS '\''com.elasticsearch.cloud.monitor.metric.alarm.blink.udtf.splitEventList'\''",
         "CREATE FUNCTION IF NOT EXISTS `HealthAlert` AS '\''com.elasticsearch.cloud.monitor.metric.alarm.blink.udtf.HealthAlert'\''",
         "CREATE FUNCTION IF NOT EXISTS `HealthFailure` AS '\''com.elasticsearch.cloud.monitor.metric.alarm.blink.udtf.HealthFailure'\''",
-        "CREATE FUNCTION IF NOT EXISTS `PmdbMetricUidUdf` AS '\''com.elasticsearch.cloud.monitor.metric.common.blink.udf.PmdbMetricUidUdf'\''",
-        "CREATE FUNCTION IF NOT EXISTS `PmdbMetricInsUidUdf` AS '\''com.elasticsearch.cloud.monitor.metric.common.blink.udf.PmdbMetricInsUidUdf'\''"
+        "CREATE FUNCTION IF NOT EXISTS `ConvertJSON2StrUdf` AS '\''com.elasticsearch.cloud.monitor.metric.common.blink.udf.ConvertJSON2StrUdf'\''",
+        "CREATE FUNCTION IF NOT EXISTS `ConvertStr2JSONUdf` AS '\''com.elasticsearch.cloud.monitor.metric.common.blink.udf.ConvertStr2JSONUdf'\''",
+        "CREATE FUNCTION IF NOT EXISTS `MergePmdbMetricLabelsUdtf` AS '\''com.elasticsearch.cloud.monitor.metric.common.blink.udtf.MergePmdbMetricLabelsUdtf'\''",
+        "CREATE FUNCTION IF NOT EXISTS `GeneratePmdbMetricDataIdUdf` AS '\''com.elasticsearch.cloud.monitor.metric.common.blink.udf.GeneratePmdbMetricDataIdUdf'\''",
+        "CREATE FUNCTION IF NOT EXISTS `ParsePmdbMetricDataUdtf` AS '\''com.elasticsearch.cloud.monitor.metric.common.blink.udtf.ParsePmdbMetricDataUdtf'\''"
     ]'
 
 

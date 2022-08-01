@@ -162,7 +162,6 @@ export default class NodeModel {
 
     savePageModel() {
         let pageData = this.pageModel.toJSON();
-        console.log(pageData, 'pageData-init')
         pageData.nodeTypePath = this.nodeId;
         return service.saveMainPage(pageData)
     }
@@ -202,7 +201,6 @@ export default class NodeModel {
     // 从模板创建,json序列化替换appId等，规避类对象变为平面对象
     loadFromTemplate(stageId, originNodeTypeId) {
         let originAppId = originNodeTypeId && originNodeTypeId.split("|")[0];
-        console.log(originNodeTypeId,originAppId,'originNodeTypeId')
         if (this.nodeId) {
             return Promise.all([service.getMainPage(this.nodeId, stageId), service.getElements(this.nodeId, stageId)]).then(result => {
                 let blocks = [], forms = [];
@@ -222,7 +220,6 @@ export default class NodeModel {
                     item = JSON.parse(itemStr);
                     pageModelStr = pageModelStr.replace(toolbarBlockRegExp, newToolbarBlockId);
                 })
-                console.log(pageModelStr,'pageModelStr-pageModelStr')
                 let replacedPageModel = JSON.parse(pageModelStr)
                 let newPageId = uuidv4();
                 replacedPageModel.id = newPageId;
@@ -230,7 +227,6 @@ export default class NodeModel {
                 replacedPageModel.label = newPageId;
                 replacedPageModel.name = newPageId;
                 replacedPageModel.nodeTypePath = originNodeTypeId;
-                console.log(pageModelStr,replacedPageModel,originNodeTypeId,'pageModelStr-pageModelStr')
                 result[1].forEach(item => {
                     let { config, ...other } = item, itemData = {};
                     itemData = {

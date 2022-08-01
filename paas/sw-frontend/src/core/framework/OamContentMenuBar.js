@@ -139,7 +139,6 @@ class OamContentMenuBar extends React.Component {
     };
 
     handTimeChange = (timeRange) => {
-        //console.log("timeRange----->",timeRange);
         let { dispatch } = this.props;
         dispatch({
             type: 'node/updateParams', paramData: {
@@ -165,7 +164,6 @@ class OamContentMenuBar extends React.Component {
 
     render() {
         const { actions, nodeParams, filters = [], history, routeData, urlSearchParams, nodeId, userParams, menuBarHeader, menuLabel, filterMode, theme, hideActionHistory } = this.props, { menusData, showHistory } = this.state;
-        //console.log("filters------->",filters);
         let selectKeys = [];
         routeData.children.forEach(cp => {
             if (history.location.pathname.indexOf(cp.path + "/") > -1 || history.location.pathname.endsWith(cp.path)) {
@@ -237,7 +235,6 @@ class OamContentMenuBar extends React.Component {
             }).filter(r => r !== null)
             )
         }
-        //console.log("selectd------>",this.state.selected);
         return (
             <div className="globalBackground" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: menus.length > 0 ? 8 : 0 }} key={nodeId}>
                 <div style={{ display: 'flex' }}>

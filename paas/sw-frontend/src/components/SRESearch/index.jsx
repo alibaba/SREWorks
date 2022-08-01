@@ -30,7 +30,6 @@ class SRESearch extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log(props, 'props-category');
     this.currentRef = React.createRef();
     this.navType = '';
     this.state = {
@@ -125,7 +124,6 @@ class SRESearch extends React.Component {
     });
   }
   onSearch(value) {
-    console.log(value, typeof (value), 'searchValue-change--select');
     this.setState({ temp_search_content: value });
     if (value !== "") {
       this.setState({
@@ -138,7 +136,6 @@ class SRESearch extends React.Component {
     this.hasSearch = true;
   }
   handleChange = (e) => {
-    console.log(e.target.value, 'handlechange===');
     this.setState({
       textValue: e.target.value,
       overlayVisible: true,
@@ -160,11 +157,9 @@ class SRESearch extends React.Component {
     })
   }
   handleClickOutside = evt => {
-    console.log('clickoutside')
     const { overlayVisible, hotKeyWordsVisible } = this.state;
     const area = ReactDOM.findDOMNode(this.currentRef.current);
     if (!area.contains(evt.target) && (hotKeyWordsVisible || overlayVisible)) {
-      console.log('clickoutside', 'true');
       this.navType = '';
       this.setState({
         overlayVisible: false,
@@ -175,9 +170,6 @@ class SRESearch extends React.Component {
   };
 
   onKeyDown(e) {
-
-    console.log(e.keyCode === 13 && !this.hasSearch);
-    console.log(this.state.temp_search_content)
     if (e.keyCode === 13 && !this.hasSearch) {
       // this.refs['search-select'].blur();
       this.onSearch(this.state.search_content)

@@ -40,10 +40,8 @@ class index extends Component {
                 arr.push(item)
             }
         })
-        console.log(arr, 'arr--1')
         this.setState({ targetFields: arr }, () => {
             // this.submit()
-            console.log(this.state.targetFields, 'arr--2')
         })
     }
     debounceChange = (index, name, event) => {

@@ -76,7 +76,6 @@ class UserSelector extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps, '----nextprops---')
         if (!nextProps.value) {
             this.setState({ selected: [] })
         }

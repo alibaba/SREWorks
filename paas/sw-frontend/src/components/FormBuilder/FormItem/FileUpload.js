@@ -22,7 +22,6 @@ export default class FileUpload extends React.Component {
     render() {
         const { fileList } = this.state, { onChange, model } = this.props;
         let { defModel } = model, uploadProps = {};
-        console.log(defModel, model, 'defModel')
         if (defModel.type === 'async') {
             uploadProps = {
                 name: 'file',

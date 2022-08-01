@@ -21,7 +21,6 @@ class SRESearch extends Component {
     super(props);
     let { widgetConfig } = props;
     this.searchPath = widgetConfig.url || '';
-    console.log(this.props, 'props-category');
     this.currentRef = React.createRef();
     this.navType = '';
     this.state = {
@@ -50,7 +49,6 @@ class SRESearch extends Component {
     const { nodeParams } = this.props;
     if (urlStr.indexOf("$(") !== -1) {
       urlStr = util.renderTemplateString(urlStr, Object.assign({}, nodeParams, obj))
-      console.log(urlStr, 'urlStr-transform')
     }
     if (!widgetConfig.needSuggest) {
       return
@@ -82,11 +80,9 @@ class SRESearch extends Component {
     })
   }
   handleClickOutside = evt => {
-    console.log('clickoutside')
     const { hotKeyWordsVisible } = this.state;
     const area = ReactDOM.findDOMNode(this.currentRef.current);
     if (!area.contains(evt.target) && (hotKeyWordsVisible)) {
-      console.log('clickoutside', 'true');
       this.navType = '';
       this.setState({
         hotKeyWordsVisible: false,
@@ -126,7 +122,6 @@ class SRESearch extends Component {
     outputData[widgetConfig.keyType] = textValue
     let { dispatch } = this.props, paramData = { ___refresh_timestamp: (new Date()).getTime() };
     Object.assign(paramData, outputData)
-    console.log(paramData, 'paramData-search');
     dispatch({ type: 'node/updateParams', paramData: paramData });
   }
   render() {

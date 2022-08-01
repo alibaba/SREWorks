@@ -72,7 +72,6 @@ class MixFilterBar extends PureComponent {
     validate = () => {
         let pass = false, { onSubmit, items } = this.props, { filterTags } = this.state;
         this.props.form.validateFieldsAndScroll((err, values) => {
-            console.log("form values----->", values);
             if (!err) {
                 /*let allValues={};
                 Object.assign(allValues,values);
@@ -163,7 +162,6 @@ class MixFilterBar extends PureComponent {
 
     autoSubmit = () => {
         let submitValues = this.props.form.getFieldsValue(), needSubmit = false, prevValues = this.prevSubmitValues;
-        //console.log("submitValues---prevValues-->",submitValues,prevValues);
         //对比上次和本次的值发生改变了再进行查询,因为存在表单项个数不确定的场景(高级查询),因此需要相互对比。
         Object.keys(submitValues).forEach(key => {
             let subCompValue = submitValues[key], prevCompValue = prevValues[key];

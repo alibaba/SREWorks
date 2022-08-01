@@ -60,7 +60,6 @@ let appId = "app-dev";
 class MenuNavigation extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props, 'props========menuNavy');
     this.state = {
       dirTree: [],
       expandedKeys: [],
@@ -180,7 +179,6 @@ class MenuNavigation extends React.Component {
       this.getRootRoles();
     } else {
       let target = this._findNodeTrace(this.state.dirTree[0].children, node.level, { nodeTypePath: node.parentNodeTypePath })
-      console.log(target, this.state.dirTree, node.parentNodeTypePath, 'target---menugation');
       let selectedRoleList = (target && target.config && target.config.roleList) || []
       this.setState({
         filterRoles: allRoles.filter(item => {
@@ -198,7 +196,6 @@ class MenuNavigation extends React.Component {
       currentVersion: node.version,
       nodeRoles: node.config.roleList || []
     });
-    console.log(node, 'modify node');
     // extData = node.extData ? JSON.parse(node.extData) : {}
     // service.getNodeRoles({nodeTypePath: node.nodeTypePath}).then(resp => {
     //     this.setState({
@@ -234,7 +231,6 @@ class MenuNavigation extends React.Component {
   }
   _addNode(node) {
     let { dirTree, allRoles } = this.state;
-    console.log(node, 'addNdoe=======');
     if (node && node.isRootNode) {
       this.getRootRoles();
     } else {
@@ -362,7 +358,6 @@ class MenuNavigation extends React.Component {
   menuTitleRender = (item) => {
     item.config = item.config || {};
     const menu = <Menu onClick={e => {
-      console.log(e);
       e.domEvent.stopPropagation();
       switch (e.key) {
         case "modify-node":
@@ -797,7 +792,6 @@ class MenuNavigation extends React.Component {
             });
 
         } else {
-          console.log("this.node-->", this.node);
           let params = {
             nodeTypePath: this.node.nodeTypePath,
             version: this.node.version || 0,

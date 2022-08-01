@@ -107,7 +107,6 @@ class DefaultLayout extends React.Component {
             }
 
         };
-        console.log(accessRoutes, 'accessRoutes======defaultLayout');
         accessRoutes.forEach(moduleData => {
             let recursionDepth = 0;
             //模块级别
@@ -124,7 +123,6 @@ class DefaultLayout extends React.Component {
             })
         }
         Bus.on('themeChange', (themeType) => {
-            console.log(themeType,'themeType')
             let flag = false;
             if(themeType === 'navyBlue') {
                 flag = false

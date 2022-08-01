@@ -19,7 +19,6 @@ window.APPLICATION_LANGUAGE = (function () {
     const allLanguages = ['zh_CN', 'zh_MO', 'en_US'];
     const bccLng = allLanguages.indexOf(bccLanguage) > -1 ? bccLanguage : '';
     const cacheLanguage = localStorage.getItem("t_lang_locale") || "zh_CN";
-    console.log(bccLng ? bccLng : cacheLanguage)
     return bccLng ? bccLng : cacheLanguage;
 })();
 

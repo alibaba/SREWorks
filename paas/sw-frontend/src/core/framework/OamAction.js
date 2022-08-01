@@ -231,6 +231,7 @@ class OamAction extends React.Component {
 
     onClose = () => {
         this.setState({
+            // loading: false,
             dockVisible: false,
             feedbackVisible: false,
             showHistory: false
@@ -349,7 +350,6 @@ class OamAction extends React.Component {
             action.__actionPlanExecutionTime = params.__actionPlanExecutionTime;
         }
         action.execute(allParams, params, actionButton).then(result => {
-            console.log(result, 'action操作返回')
             let feedbacks = result && result.feedbacks, receiveParams = (result && result.params) || {}, { modalWidth } = actionButton || {}, feedbackTitle = result && result.feedbackTitle;
             if (feedbacks && feedbacks.length > 0) {
                 let modalInfo = feedbacks[0];

@@ -97,6 +97,11 @@ public class DefaultConstant {
 
     public static final String DEFAULT_REPO_BRANCH = "master";
 
+    /**
+     * 默认 K8S Microservice 类型
+     */
+    public static final String DEFAULT_K8S_MICROSERVICE_KIND = "AdvancedStatefulSet";
+
     public static final String INTERNAL_ADDON_DEVELOPMENT_META = "developmentmeta";
 
     public static final String INTERNAL_ADDON_APP_META = "appmeta";

@@ -104,7 +104,6 @@ class SRESearch extends React.Component {
   }
 
   onSearch(value) {
-    console.log(value, typeof (value), 'searchValue-change--select');
     this.setState({ temp_search_content: value });
     if (value !== "") {
       this.setState({
@@ -118,7 +117,6 @@ class SRESearch extends React.Component {
   }
 
   handleSearch = (value) => {
-    console.log(value, 'handlechange===');
     this.setState({
       search_content: value,
       is_force: false,
@@ -127,7 +125,6 @@ class SRESearch extends React.Component {
   };
 
   onChange(value, options = undefined) {
-    console.log(value, options, "change-value");
     if (!options) {
       this.setState({
         search_content: value,
@@ -142,7 +139,6 @@ class SRESearch extends React.Component {
   }
 
   handleClickOutside = evt => {
-    console.log('clickOutSide')
     this.setState({
       overlayVisible: false,
       is_force: false,
@@ -169,7 +165,6 @@ class SRESearch extends React.Component {
     })
   }
   onFocus() {
-    console.log(this.state.overlayVisible, 'overlayVisible');
     this.setState({ temp_search_content: '' });
     if (this.state.search_content !== "") {
       this.setState({
@@ -206,7 +201,6 @@ class SRESearch extends React.Component {
   }
 
   handleChange = (value, options) => {
-    console.log(value, options);
     this.setState({
       // isNeedSuggestion: true,
       temp_search_content: value,

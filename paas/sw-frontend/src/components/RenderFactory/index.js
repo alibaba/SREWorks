@@ -24,7 +24,6 @@ let renders={
     "common":commonRenders,
     "icon":icons
 };
-console.log("renders------>",renders);
 export default function getRenders() {
     return renders;
 }

@@ -711,7 +711,6 @@ class OamAction extends React.Component {
      * @param params
      */
     handlePreSubmitAction = (params) => {
-        console.log(params, 'params-lo')
         if (!params) {
             return false
         }

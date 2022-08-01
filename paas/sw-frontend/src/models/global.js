@@ -185,7 +185,6 @@ export default {
         switchLanguage(state, { language }) {
             localStorage.setItem('t_lang_locale', language);
             appService.switchLanguage(language);
-            //console.log("language-------->",language);
             return {
                 ...state,
                 language: language,
@@ -272,7 +271,6 @@ export default {
 
         // 修改全局配置平台名称和logo
         setplatformNameAndLogo(state, { payload }) {
-            console.log("初始化logo触发")
             return {
                 ...state,
                 ...payload

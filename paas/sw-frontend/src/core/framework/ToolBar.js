@@ -38,7 +38,6 @@ export default class ToolBar extends React.Component {
         let { timeSelector = false, widgetParams } = this.props;
         if (timeSelector) {
             let { type, defaultTime = {}, output } = timeSelector, initTime, urlParams = util.getUrlParams();
-            //console.log("urlparams------>",urlParams,this.props);
             let { stimeOffsetFromNow, etimeOffsetFromNow, stimeNow, etimeNow } = defaultTime,
                 stime = moment().subtract(1, 'hours'), etime = moment();
             //url中的时间优先级高于配置

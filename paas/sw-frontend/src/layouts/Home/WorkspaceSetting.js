@@ -359,7 +359,7 @@ export default class WorkspaceSetting extends React.Component {
                     visible={visible}
                     footer={footer()}
                     onCancel={this.handleCancel}
-                    width="60%"
+                    width="70%"
                     bodyStyle={{ padding: 0, height: 'calc(60vh)' }}
                 >
                     {
@@ -383,7 +383,7 @@ export default class WorkspaceSetting extends React.Component {
                                                             {
                                                                 !originMixImglist.includes(child.background) && <img className="icon" src={requiredImglist[0]} onClick={() => this.showSettingModal(i)} />
                                                             }
-                                                            <div class="icon-mask" onClick={() => this.showSettingModal(i)}></div>
+                                                            <div class="icon-mask" onClick={() => this.showSettingModal(i)}><div style={{color:'var(--PrimaryColor)',textAlign:'center',verticalAlign:'middle',lineHeight:'96px'}}>选择背景</div></div>
                                                         </div>
                                                     </div>
                                                     <div>

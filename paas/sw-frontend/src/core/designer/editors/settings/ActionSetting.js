@@ -139,7 +139,7 @@ class ActionSetting extends React.Component {
                 optionValues: [{ value: 'horizontal', label: '水平' }, { value: 'vertical', label: '垂直' }, { value: 'inline', label: '同行' }]
             });
             paramsDef.push({
-                type: FormElementType.MODAL_ACE, name: 'responseHandler', initValue: responseHandler || responseHandlerTpl, required: false, label: "action提交文案",
+                type: FormElementType.MODAL_ACE, name: 'responseHandler', initValue: responseHandler || responseHandlerTpl, required: false, label: "提交后展示信息",
                 tooltip: "action提交操作完成后的交互文案提示,默认提示‘操作已提交’",
                 defModel: scriptProps,
                 template: responseHandlerTpl

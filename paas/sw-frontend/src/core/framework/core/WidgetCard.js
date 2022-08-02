@@ -254,7 +254,7 @@ export default class WidgetCard extends React.Component {
                         {!headerColor && (this.wrapperType !== Constants.CARD_WRAPPER_ADVANCED) && title && <div className="card-wrapper-title-prefix" />}
                         <div style={{ display: 'flex' }}>
                             {
-                                title && <h2 style={{ margin: "auto", paddingLeft: '10px', fontSize: 14, color: headerColor ? "#fafafa" : undefined, marginRight: title ? '12px' : '0px' }}><JSXRender jsx={title || ''} /></h2>
+                                title && <h2 style={{ margin: "auto", paddingLeft: '10px', fontSize: 14, marginRight: title ? '12px' : '0px' }}><JSXRender jsx={title || ''} /></h2>
                             }
                             {toolbarLeft}
                         </div>

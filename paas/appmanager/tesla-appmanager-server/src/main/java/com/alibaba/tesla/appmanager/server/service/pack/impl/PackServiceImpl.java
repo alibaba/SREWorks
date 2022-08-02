@@ -169,6 +169,7 @@ public class PackServiceImpl implements PackService {
         String stageId = message.getStageId();
         ComponentTypeEnum componentType = component.getComponentType();
         String componentName = component.getComponentName();
+        Boolean isDevelop = component.getIsDevelop();
 
         JSONObject options = new JSONObject();
         if (BooleanUtils.isTrue(component.getUseRawOptions())) {
@@ -186,7 +187,7 @@ public class PackServiceImpl implements PackService {
             String addonName = arr[1];
             options = buildOptions4ResourceAddon(appId, namespaceId, stageId, addonId, addonName);
         } else if (componentType.isInternalAddon()) {
-            options = buildOptions4InternalAddon(appId, namespaceId, stageId, componentName);
+            options = buildOptions4InternalAddon(appId, namespaceId, stageId, componentName, isDevelop);
         } else if (componentType.isHelm()) {
             options = buildOptions4Helm(appId, componentName, component.getBranch());
         }
@@ -215,9 +216,10 @@ public class PackServiceImpl implements PackService {
     }
 
     @Override
-    public JSONObject buildOptions4InternalAddon(String appId, String namespaceId, String stageId, String addonId) {
+    public JSONObject buildOptions4InternalAddon(
+            String appId, String namespaceId, String stageId, String addonId, Boolean isDevelop) {
         log.info("action=packService|buildOptions4InternalAddon|enter|appId={}|addonId={}|namespaceId={}|" +
-                        "stageId={}", appId, addonId, namespaceId, stageId);
+                        "stageId={}|isDevelop={}", appId, addonId, namespaceId, stageId, isDevelop);
         if (INTERNAL_ADDON_DEVELOPMENT_META.equals(addonId)) {
             return new JSONObject();
         }
@@ -244,6 +246,7 @@ public class PackServiceImpl implements PackService {
         if (addonConfigJson.containsKey("common")) {
             result = addonConfigJson.getJSONObject("common");
         }
+        result.put("isDevelop", isDevelop);
         return result;
     }
 

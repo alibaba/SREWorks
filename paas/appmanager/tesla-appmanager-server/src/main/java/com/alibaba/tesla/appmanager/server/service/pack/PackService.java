@@ -16,7 +16,7 @@ public interface PackService {
 
     JSONObject generateBuildOptions(ComponentPackageTaskMessage message);
 
-    JSONObject buildOptions4InternalAddon(String appId, String namespaceId, String stageId, String addonId);
+    JSONObject buildOptions4InternalAddon(String appId, String namespaceId, String stageId, String addonId, Boolean isDevelop);
 
     JSONObject buildOptions4ResourceAddon(String appId, String namespaceId, String stageId, String addonId, String addonName);
 

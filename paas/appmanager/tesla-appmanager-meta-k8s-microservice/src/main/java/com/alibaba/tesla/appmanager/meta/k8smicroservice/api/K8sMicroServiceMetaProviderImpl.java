@@ -12,10 +12,7 @@ import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConf
 import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDO;
 import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
-import com.alibaba.tesla.appmanager.domain.dto.InitContainerDTO;
-import com.alibaba.tesla.appmanager.domain.dto.K8sMicroServiceMetaDTO;
-import com.alibaba.tesla.appmanager.domain.dto.LaunchDTO;
-import com.alibaba.tesla.appmanager.domain.dto.RepoDTO;
+import com.alibaba.tesla.appmanager.domain.dto.*;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQuickUpdateReq;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaUpdateReq;
@@ -120,6 +117,10 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
     public K8sMicroServiceMetaDTO create(K8sMicroServiceMetaUpdateReq request) {
         K8sMicroServiceMetaDTO dto = new K8sMicroServiceMetaDTO();
         ClassUtil.copy(request, dto);
+
+        // TODO: 等待前端增加 imagePush 字段后删除 (for 弹内)
+        addImagePushForInternal(dto);
+
         return create(dto);
     }
 
@@ -140,6 +141,10 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
     public K8sMicroServiceMetaDTO update(K8sMicroServiceMetaUpdateReq request) {
         K8sMicroServiceMetaDTO dto = new K8sMicroServiceMetaDTO();
         ClassUtil.copy(request, dto);
+
+        // TODO: 等待前端增加 imagePush 字段后删除 (for 弹内)
+        addImagePushForInternal(dto);
+
         return update(dto);
     }
 
@@ -498,5 +503,26 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
                 .isolateNamespaceId(metaNamespaceId)
                 .isolateStageId(metaStageId)
                 .build());
+    }
+
+    /**
+     * TODO: 等待前端增加 imagePush 字段后删除 (for 弹内)
+     * @param dto DTO
+     */
+    private void addImagePushForInternal(K8sMicroServiceMetaDTO dto) {
+        if (dto.getImagePushObject() == null) {
+            String arch = dto.getArch();
+            if (StringUtils.isEmpty(arch)) {
+                arch = "x86";
+                dto.setArch(arch);
+            }
+            dto.setImagePushObject(ImagePushDTO.builder()
+                    .imagePushRegistry(ImagePushRegistryDTO.builder()
+                            .dockerRegistry("reg.docker.alibaba-inc.com")
+                            .dockerNamespace(String.format("abm-private-%s", arch))
+                            .useBranchAsTag(true)
+                            .build())
+                    .build());
+        }
     }
 }

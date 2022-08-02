@@ -107,6 +107,7 @@ public class TestServicePackDoComponentPackageCreate {
                         .version(PACKAGE_VERSION)
                         .branch("master")
                         .useRawOptions(false)
+                        .isDevelop(true)
                         .build())
                 .packageTaskEnum(PackageTaskEnum.CREATE)
                 .build();

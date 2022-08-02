@@ -88,7 +88,7 @@ public class TestServicePackDoComponentPackageCreate {
         ));
         Mockito.doReturn(new JSONObject())
                 .when(packService)
-                .buildOptions4InternalAddon(APP_ID, NAMESPACE_ID, STAGE_ID, COMPONENT_NAME);
+                .buildOptions4InternalAddon(APP_ID, NAMESPACE_ID, STAGE_ID, COMPONENT_NAME, true);
     }
 
     @Test

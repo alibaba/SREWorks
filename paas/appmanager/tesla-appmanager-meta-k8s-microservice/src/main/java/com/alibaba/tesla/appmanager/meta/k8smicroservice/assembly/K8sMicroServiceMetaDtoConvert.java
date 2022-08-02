@@ -278,8 +278,12 @@ public class K8sMicroServiceMetaDtoConvert extends BaseDtoConvert<K8sMicroServic
             build.put("repo", containerObjectDTO.getRepo());
             build.put("branch", containerObjectDTO.getBranch());
             build.put("dockerfileTemplate", containerObjectDTO.getDockerfileTemplate());
-            build.put("ciAccount", containerObjectDTO.getCiAccount());
-            build.put("ciToken", containerObjectDTO.getCiToken());
+            if (StringUtils.isNotEmpty(containerObjectDTO.getCiAccount())) {
+                build.put("ciAccount", containerObjectDTO.getCiAccount());
+            }
+            if (StringUtils.isNotEmpty(containerObjectDTO.getCiToken())) {
+                build.put("ciToken", containerObjectDTO.getCiToken());
+            }
             if (StringUtils.isNotEmpty(containerObjectDTO.getRepoPath())) {
                 build.put("repoPath", containerObjectDTO.getRepoPath());
             }
@@ -354,9 +358,10 @@ public class K8sMicroServiceMetaDtoConvert extends BaseDtoConvert<K8sMicroServic
     private static void addImagePushProperties(JSONObject build, ImagePushDTO imagePushObject) {
         build.put("imagePush", true);
         if (Objects.nonNull(imagePushObject) && Objects.nonNull(imagePushObject.getImagePushRegistry())) {
-            build.put("imagePushRegistry", String.format("%s/%s",
-                    imagePushObject.getImagePushRegistry().getDockerRegistry(),
-                    imagePushObject.getImagePushRegistry().getDockerNamespace()));
+            ImagePushRegistryDTO registry = imagePushObject.getImagePushRegistry();
+            build.put("imagePushRegistry",
+                    String.format("%s/%s", registry.getDockerRegistry(), registry.getDockerNamespace()));
+            build.put("imagePushUseBranchAsTag", registry.isUseBranchAsTag());
         } else {
             SystemProperties systemProperties = BeanUtil.getBean(SystemProperties.class);
             build.put("imagePushRegistry", String.format("%s/%s",

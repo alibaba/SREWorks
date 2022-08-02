@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @RunWith(SpringRunner.class)
 @Slf4j
-public class TestTransformerExtToDTO {
+public class TestTransformerExtToDto {
 
     private static final long ID = 1L;
     private static final String APP_ID = "testapp";

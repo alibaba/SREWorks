@@ -7,7 +7,7 @@ force="false"
 while getopts 'f' OPT; do
     case $OPT in
         f) force="true";;
-        ?) func;;
+        ?) ;;
     esac
 done
 

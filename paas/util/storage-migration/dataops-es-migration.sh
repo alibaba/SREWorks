@@ -4,10 +4,12 @@ set -x
 set -e
 
 force="false"
-while getopts 'f' OPT; do
+limit=100
+while getopts 'fl:' OPT; do
     case $OPT in
         f) force="true";;
-        ?) func;;
+        l) limit="$OPTARG";;
+        ?) ;;
     esac
 done
 
@@ -33,7 +35,7 @@ echo $indices | jq -c .[].index | while read str_index; do
     index_mapping=$(jq '.[].mappings' ${index}.json)
     echo $index_mapping | curl -XPUT -H 'Content-Type: application/json' -u ${DATA_DEST_ES_USER}:${DATA_DEST_ES_PASSWORD} http://${DATA_DEST_ES_HOST}:${DATA_DEST_ES_PORT}/$index/_mapping -d @-
     rm -f ${index}.json
-    elasticdump --input=http://${DATA_ES_USER}:${DATA_ES_PASSWORD}@${DATA_ES_HOST}:${DATA_ES_PORT}/$index --output=http://${DATA_DEST_ES_USER}:${DATA_DEST_ES_PASSWORD}@${DATA_DEST_ES_HOST}:${DATA_DEST_ES_PORT}/$index --type=data
+    elasticdump --input=http://${DATA_ES_USER}:${DATA_ES_PASSWORD}@${DATA_ES_HOST}:${DATA_ES_PORT}/$index --output=http://${DATA_DEST_ES_USER}:${DATA_DEST_ES_PASSWORD}@${DATA_DEST_ES_HOST}:${DATA_DEST_ES_PORT}/$index --limit=${limit} --type=data
     echo "==========migrate index:"$index", end=========="
   fi
 done

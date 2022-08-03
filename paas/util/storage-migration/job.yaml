@@ -43,4 +43,6 @@ spec:
           value: "cb56b*****"
         - name: FORCE
           value: "true"
+        - name: ES_BATCH_LIMIT
+          value: "100"
 

@@ -71,6 +71,9 @@ public class GlobalAppPackageController extends AppManagerBaseController {
                 .build();
         appPackageTagService.insert(appPackageTagDO);
 
+        // 将应用appmeta部分执行launch导入
+
+
         return buildSucceedResult(appPackageDTO);
     }
 

@@ -1,11 +1,16 @@
 package com.alibaba.tesla.appmanager.plugin.controller;
 
-import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaUpdateReq;
+import com.alibaba.tesla.appmanager.api.provider.PluginProvider;
+import com.alibaba.tesla.appmanager.domain.dto.PluginMetaDTO;
 import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.alibaba.tesla.web.controller.BaseController;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 /**
  * Plugin 管理
@@ -18,11 +23,13 @@ import org.springframework.web.bind.annotation.*;
 public class PluginController extends BaseController {
 
 
+    @Autowired
+    private PluginProvider pluginProvider;
 
     /**
      * @api {get} /plugins 获取已安装的插件列表
      * @apiName GetPluginList
-     * @apiGroup 插件关联微服务 API
+     * @apiGroup 插件API
      */
     @GetMapping
     public TeslaBaseResult list(@ModelAttribute PluginQueryReq request) {
@@ -30,25 +37,38 @@ public class PluginController extends BaseController {
     }
 
     /**
-     * @api {post} /plugins/:pluginName 新增插件
-     * @apiName PostPlugin
-     * @apiGroup 插件关联微服务 API
-     * @apiParam (Path Parameters) {String} pluginName 应用 ID
-     * @apiParam (JSON Body) {String} microServiceId 微服务标识 ID
-     * @apiParam (JSON Body) {String} name 微服务名称
-     * @apiParam (JSON Body) {String} description 描述信息
-     * @apiParam (JSON Body) {Object[]} containerObjectList 容器对象列表
-     * @apiParam (JSON Body) {Object[]} envList 环境变量列表
-     * @apiParam (JSON Body) {String="K8S_MICROSERVICE","K8S_JOB"} componentType 组件类型
+     * @api {post} /plugins 新增插件
+     * @apiName CreatePlugin
+     * @apiGroup 插件API
      */
     @PostMapping
-    public TeslaBaseResult create(
-            @PathVariable String pluginName,
-            @RequestBody K8sMicroServiceMetaUpdateReq request,
-            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
+    public TeslaBaseResult create(@RequestParam("file") MultipartFile file) throws IOException {
 
-        return buildSucceedResult(null);
+        PluginMetaDTO pluginMeta = pluginProvider.create(file);
 
+        return buildSucceedResult(pluginMeta);
     }
+
+
+
+//    /**
+//     * @api {get} /plugins/:pluginName 获取插件信息
+//     * @apiName getPlugin
+//     * @apiGroup 获取插件
+//     */
+//    @GetMapping
+//    public TeslaBaseResult get(@PathVariable String pluginName) {
+//        return buildSucceedResult(null);
+//    }
+//
+//    /**
+//     * @api {get} /plugins/:pluginName/frontend/:frontendType 获取插件信息
+//     * @apiName getPlugin
+//     * @apiGroup 获取插件的前端
+//     */
+//    @GetMapping
+//    public TeslaBaseResult getFrontend(@PathVariable String pluginName, @PathVariable String frontendType) {
+//        return buildSucceedResult(null);
+//    }
 
 }

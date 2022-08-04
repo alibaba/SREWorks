@@ -86,5 +86,13 @@
         <mapper resource="mybatis/DagInstNodeDOMapper.xml"/>
         <mapper resource="mybatis/DagInstNodeStdDOMapper.xml"/>
         <mapper resource="mybatis/DagNodeDOMapper.xml"/>
+
+        <!-- plugin -->
+        <mapper resource="mybatis/PluginDefinitionDOMapper.xml"/>
+        <mapper resource="mybatis/PluginFrontendDOMapper.xml"/>
+        <mapper resource="mybatis/PluginResourceDOMapper.xml"/>
+        <mapper resource="mybatis/PluginResourceWorkflowRelDOMapper.xml"/>
+        <mapper resource="mybatis/PluginTagDOMapper.xml"/>
+
     </mappers>
 </configuration>

@@ -50,8 +50,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/traits**")
                     .antMatchers("/flow-manager/**")
                     .antMatchers("/traits/**")
-                    .antMatchers(HttpMethod.GET, "/units")
-                    .antMatchers(HttpMethod.GET, "/units/{unitId}")
                     .antMatchers(HttpMethod.POST, "/apps")
                     .antMatchers("/definition-schemas**")
                     .antMatchers(HttpMethod.GET, "/realtime/**");

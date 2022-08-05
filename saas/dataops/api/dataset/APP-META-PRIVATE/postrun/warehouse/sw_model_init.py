@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import datetime
 import requests
 from common.constant import host
 
@@ -5123,6 +5124,9 @@ def add_default_resource_price():
         "monthlyStoragePrice": 18.25,
         "currency": "CNY"
     }
+    now = datetime.datetime.now()
+    default_resource_price["ds"] = str(now.year)
+
     push_model_data_url = host["warehouse"] + "/dw/data/pushModelDataByName?modelName=RESOURCE_PRICE"
     r = requests.post(push_model_data_url, headers=headers, json=default_resource_price)
     if r.status_code == 200:

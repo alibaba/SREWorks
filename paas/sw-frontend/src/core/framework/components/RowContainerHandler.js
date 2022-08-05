@@ -227,6 +227,7 @@ class RowContainerHandler extends React.Component {
                     placement="right"
                     maskClosable={true}
                     destroyOnClose={true}
+                    mask={true}
                     extra={
                         <Space>
                             <Button type="primary" onClick={this.creatComp}>

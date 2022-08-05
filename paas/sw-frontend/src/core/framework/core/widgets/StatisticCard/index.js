@@ -4,7 +4,7 @@ import { StatisticCard } from "@ant-design/pro-card";
 import { Space, Tooltip } from "antd";
 import { TinyLineChart, TinyAreaChart, ProgressChart, LiquidChart, ColumnChart } from "bizcharts";
 import _ from 'lodash';
-let themeType = localStorage.getItem("tesla-theme");
+let themeType = localStorage.getItem("sreworks-theme");
 const { Statistic } = StatisticCard;
 
 export default class StatusList extends Component {

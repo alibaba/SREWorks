@@ -37,7 +37,7 @@ export default class SearchBar extends React.Component {
       <div className="search-wrapper-animation">
         {
           showSearch &&
-          <SRESearch teslaSearchPath={"gateway/v2/foundation/kg"}
+          <SRESearch sreworksSearchPath={"gateway/v2/foundation/kg"}
             userEmpId={currentUser.empId}
             category={`sreworks-search`}
             className="header-search-bar"

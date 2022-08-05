@@ -43,11 +43,11 @@ class TemplateSetting extends React.Component {
         //     optionValues:[{value:"blank",label:'空应用'}]
         // });
         paramsDef.push({
-            type: FormElementType.RADIO, name: 'layout', initValue: layout, required: true, label: "主菜单样式", inputTip: "顶部菜单的样式",
+            type: FormElementType.RADIO, name: 'layout', initValue: layout, required: true, label: "空间布局", inputTip: "页面菜单布局",
             optionValues: [
-                { value: "PaaS", label: '居中对齐' },
-                { value: "abm", label: '左对齐' },
-                { value: "empty", label: '无菜单' },
+                { value: "PaaS", label: '上下布局' },
+                { value: "abm", label: '左右布局' },
+                { value: "empty", label: '空布局' },
             ]
         });
         this.itemDef = paramsDef;

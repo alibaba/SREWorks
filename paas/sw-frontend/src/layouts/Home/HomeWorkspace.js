@@ -63,7 +63,7 @@ export default class HomeWorkspace extends React.Component {
                     {
                         workspace.hasSearch && searchConfig &&
                         <div className="search-content">
-                            <SRESearch teslaSearchPath={"gateway/v2/foundation/kg"}
+                            <SRESearch sreworksSearchPath={"gateway/v2/foundation/kg"}
                                 userEmpId={currentUser.empId}
                                 category={`sreworks-search`}
                                 className="header-search"

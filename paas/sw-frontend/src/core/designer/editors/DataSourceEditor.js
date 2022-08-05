@@ -37,7 +37,7 @@ const CMDB = Constants.DATASOURCE_CMDB;
 const nodeParams = Constants.DATASOURCE_NODEDATA;
 const FILTER = "FILTER", DS_TYPE_ENTITY = "entity", DS_TYPE_NONE = "none", DS_TYPE_JSON = "json";
 let tempDS = {}, tempFs = [];
-let themeType = localStorage.getItem('tesla-theme');
+let themeType = localStorage.getItem('sreworks-theme');
 class DataSource extends Component {
   constructor(props) {
     super(props);

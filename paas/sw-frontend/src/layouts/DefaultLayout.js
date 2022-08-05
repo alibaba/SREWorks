@@ -117,9 +117,9 @@ class DefaultLayout extends React.Component {
     componentDidMount() {
         //const { global,history} = this.props;
         //开启埋点统计
-        if(localStorage.getItem("tesla-theme") === "navyblue"){
+        if(localStorage.getItem("sreworks-theme") === "navyblue"){
             this.setState({
-                themeFlag: localStorage.getItem("tesla-theme") === "navyblue"? false : true
+                themeFlag: localStorage.getItem("sreworks-theme") === "navyblue"? false : true
             })
         }
         Bus.on('themeChange', (themeType) => {
@@ -148,7 +148,7 @@ class DefaultLayout extends React.Component {
     };
 
     onSwitchTheme = () => {
-        let themeType = (localStorage.getItem('tesla-theme') === 'navyblue' ? 'light' : "navyblue");
+        let themeType = (localStorage.getItem('sreworks-theme') === 'navyblue' ? 'light' : "navyblue");
         const { dispatch } = this.props;
         dispatch({ type: 'global/switchTheme', theme: themeType });
         {/* global THEMES */ }
@@ -333,7 +333,7 @@ class DefaultLayout extends React.Component {
                 {
                     properties.envFlag === properties.ENV.Internal ?
                         <div className="common-footer" key="_foot_key">
-                            {`Copyright© 2014-${(new Date()).getFullYear()} 阿里巴巴-${nameCn} Powered by Tesla`}
+                            {`Copyright© 2014-${(new Date()).getFullYear()} 阿里巴巴-${nameCn} Powered by SREWorks`}
                         </div> : null
                 }
             </div>
@@ -366,7 +366,7 @@ class DefaultLayout extends React.Component {
                         header.type === 'brief' ?
                             <div className="abm-default-brief-header-container ">
                                 <div style={{ paddingTop: 0 }} className="brief-sider-nav-toggleBar">
-                                    <SiderNavToggleBar theme={localStorage.getItem('tesla-theme')} />
+                                    <SiderNavToggleBar theme={localStorage.getItem('sreworks-theme')} />
                                 </div>
                                 <div>
                                     <BriefHeader {...headerProps} />

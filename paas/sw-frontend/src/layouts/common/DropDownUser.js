@@ -55,7 +55,7 @@ export default class DropDownUser extends React.Component {
   }
 
   onSwitchTheme = () => {
-    let themeType = (localStorage.getItem("tesla-theme") === "navyblue" ? "light" : "navyblue");
+    let themeType = (localStorage.getItem("sreworks-theme") === "navyblue" ? "light" : "navyblue");
     const { dispatch } = this.props;
     dispatch({ type: "global/switchTheme", theme: themeType });
     {/* global THEMES */
@@ -107,7 +107,7 @@ export default class DropDownUser extends React.Component {
     this.setState({
       selectedColor: color
     })
-    let themeType = (localStorage.getItem("tesla-theme") === "navyblue" ? "navyblue" : "light");
+    let themeType = (localStorage.getItem("sreworks-theme") === "navyblue" ? "navyblue" : "light");
     if (!window.less) {
       return
     } else {
@@ -123,7 +123,7 @@ export default class DropDownUser extends React.Component {
     }
   }
   componentDidMount() {
-    let themeType = (localStorage.getItem("tesla-theme") === "navyblue" ? "navyblue" : "light");
+    let themeType = (localStorage.getItem("sreworks-theme") === "navyblue" ? "navyblue" : "light");
     if (!window.less) {
       return
     }
@@ -175,7 +175,7 @@ export default class DropDownUser extends React.Component {
         {!isOnlyLogout && <MenuItemGroup title={localeHelper.get("common.theme.setting", "主题设置")}>
           <Menu.Item key="theme">
             <Switch onChange={this.onSwitchTheme}
-              defaultChecked={localStorage.getItem("tesla-theme") === "light"}
+              defaultChecked={localStorage.getItem("sreworks-theme") === "light"}
               size="small" checkedChildren="亮"
               unCheckedChildren="暗" />
           </Menu.Item>

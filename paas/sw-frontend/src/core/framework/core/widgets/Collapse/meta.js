@@ -143,7 +143,7 @@ export default {
               },
               {
                 "editProps":{
-                  "inputTip": " 例 __app_id__ === tesla",
+                  "inputTip": " 例 __app_id__ === sreworks",
                   "type": 1,
                 },
                 "dataIndex": "disabledExp",
@@ -151,7 +151,7 @@ export default {
               },
               {
                 "editProps":{
-                  "inputTip": " 例 __app_id__ === tesla",
+                  "inputTip": " 例 __app_id__ === sreworks",
                   "type": 1,
                 },
                 "title": "是否显示箭头表达式",

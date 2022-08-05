@@ -8,7 +8,6 @@ import  OamWidget from '../../../OamWidget';
 
 function BuiltInBusiness(props) {
     let {widgetConfig = {},...otherProps} = props;
-    console.log(props,'props-内置业务')
     let {businessType,businessConfig} = widgetConfig;
     return <OamWidget {...otherProps} widget={{type:businessType,config:businessConfig}}/>;
 

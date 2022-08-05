@@ -32,12 +32,13 @@ class ActionSetting extends React.Component {
     constructor(props) {
         super(props);
         let { widgetModel, config } = props;
-        let paramsDef = [], { api, bodyType, form, method, column, labelSpan, beforeHandler, beforeSubmitHandler, hintFunction, refresh, jumpPath, label, blocks, submitLabel = "执行", confirmUrl, formLayout } = config;
+        let paramsDef = [], { api, bodyType, form, method, column, labelSpan, beforeHandler, beforeSubmitHandler, hintFunction, refresh, responseHandler,jumpPath, label, blocks, submitLabel = "执行", confirmUrl, formLayout } = config;
         this.isStep = widgetModel.isStepAction();
         let scriptProps = { height: 360, disableShowDiff: true, mode: "javascript" };
         let beforeHandlerTpl = 'function beforeHandler(nodeParams){\n  return {type:"",message:"",title:"",pass:true,transformParams:false,dynamicItems:[]}\n}';
         let beforeSubmitHandlerTpl = 'function beforeSubmitHandler(nodeParams,formValues,httpClient){\n  return {type:"",message:"",title:"",pass:true,transformParams:{}}\n}';
         let hintHandlerTpl = 'function hintHandler(nodeParams,formValues){\n  return ""\n}';
+        let responseHandlerTpl = 'function responseHandler(response){\n  return ""\n}';
         if (widgetModel.type === 'STEP_FORM') {
             paramsDef.push({
                 type: FormElementType.SELECT, name: 'column', initValue: column, required: false, label: "一行几列", inputTip: "一行放置几个表单项",
@@ -132,19 +133,20 @@ class ActionSetting extends React.Component {
                 defModel: scriptProps,
                 template: hintHandlerTpl
             });
-
             paramsDef.push({
                 type: FormElementType.RADIO, name: 'formLayout', initValue: formLayout || 'horizontal', required: true, label: "表单项布局",
                 tooltip: "单个表单的label和输入项之间的布局关系",
                 optionValues: [{ value: 'horizontal', label: '水平' }, { value: 'vertical', label: '垂直' }, { value: 'inline', label: '同行' }]
             });
-
+            paramsDef.push({
+                type: FormElementType.MODAL_ACE, name: 'responseHandler', initValue: responseHandler || responseHandlerTpl, required: false, label: "提交后展示信息",
+                tooltip: "action提交操作完成后的交互文案提示,默认提示‘操作已提交’",
+                defModel: scriptProps,
+                template: responseHandlerTpl
+            });
         }
         this.itemDef = paramsDef;
-
     }
-
-
     buildingFormElements = () => {
         let { form } = this.props;
         let formChildrens = this.itemDef.map(item => FormElementFactory.createFormItem(item, form, this.isStep ? {
@@ -200,13 +202,13 @@ class ActionSetting extends React.Component {
                 <Col span={8}>
                     {
                         [
+                            formChildrens[14],
                             formChildrens[9],
                             formChildrens[10],
                             formChildrens[11],
-                            formChildrens[12],
+                            formChildrens[12]
                         ]
                     }
-
                 </Col>
             </Row>
 

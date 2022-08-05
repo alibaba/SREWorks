@@ -1,12 +1,11 @@
 const webpack = require('webpack');
-const path = require('path');
 const paths = require('./paths');
 const runtimePaths = require('./runtimePaths');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: {
-        vendor: ['bizcharts'],
+        vendor: ['lodash'],
     },
     output: {
         filename: '[name].dll.js',
@@ -14,6 +13,7 @@ module.exports = {
         library: "[name]_[hash]"
     },
     plugins: [
+        // 目标操作
         new CopyWebpackPlugin([
             ...runtimePaths.dependency_arr_pre
         ]),

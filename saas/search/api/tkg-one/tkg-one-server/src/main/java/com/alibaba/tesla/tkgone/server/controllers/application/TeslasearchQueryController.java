@@ -194,34 +194,6 @@ public class TeslasearchQueryController extends BaseController {
         }).collect(Collectors.toList()));
     }
 
-    @RequestMapping(value = "/relation_node_nums_group_by_type", method = RequestMethod.GET)
-    public TeslaBaseResult relationNodeNumsGroupByType(String category, String type, String ID) throws Exception {
-        type = categoryConfigService.getRealTypeByAlias(category, type);
-        JSONArray jsonArray = teslasearchService.getRelationNodesMetaNum(category, type, ID);
-        jsonArray = jsonArray == null ? new JSONArray() : jsonArray;
-        for (JSONObject jsonObject : jsonArray.toJavaList(JSONObject.class)) {
-            jsonObject.put("type", categoryConfigService.getCategoryTypeAlias(category, jsonObject.getString("type")));
-        }
-        jsonArray.add(JSONObject.parseObject("{\"count\": 1, \"type\": \"基础信息\"}"));
-        return buildSucceedResult(JSONArray.parseArray(jsonArray.toString()));
-    }
-
-    @RequestMapping(value = "/query_relation_nodes_from_size", method = RequestMethod.GET)
-    public TeslaBaseResult queryRelationNodesFromSize(String category, String type, String ID,
-            @RequestParam(value = "relation_type") String relationType, int page, int size) throws Exception {
-        relationType = categoryConfigService.getRealTypeByAlias(category, relationType);
-        type = categoryConfigService.getRealTypeByAlias(category, type);
-        JSONArray nodes;
-        if ("基础信息".equals(relationType)) {
-            nodes = teslasearchService.getNodeByTypeId(category, type, ID);
-        } else {
-            nodes = teslasearchService.queryRelationNodesFromSize(category, type, ID, relationType, (page - 1) * size,
-                    size);
-        }
-        return buildSucceedResult(nodes.toJavaList(JSONObject.class).stream()
-                .map(node -> addEx.buildRetNode(category, node)).collect(Collectors.toList()));
-    }
-
     @RequestMapping(value = "/get_ex_data", method = RequestMethod.GET)
     public TeslaBaseResult getExData(String category, String type, String id, String name) throws Exception {
         type = categoryConfigService.getRealTypeByAlias(category, type);

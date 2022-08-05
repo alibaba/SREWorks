@@ -8,6 +8,8 @@ public/color.less
 
 # common_vendor
 public/common_vendor
+/build.zip
+/test.sh
 
 # testing
 /coverage

@@ -93,7 +93,6 @@ export default {
                     params = paramData;
                 }
             }
-            console.log("params------->", params);
             let paramsSet = Object.assign({}, state.nodeParams, params), userParamsSet = Object.assign({}, state.userParams, params);
             window[DEBUGGER_KEY] = {
                 nodeParams: paramsSet,

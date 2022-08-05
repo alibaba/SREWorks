@@ -200,7 +200,6 @@ export default class ParameterDefiner {
         this.paramMapping.forEach(pm => {
             parameter.push(pm.parameter);
         });
-        console.log(this.paramMapping, parameter, "this.paramMapping", 'this.paramMapping====parameter');
         return parameter;
     }
 
@@ -252,7 +251,6 @@ export default class ParameterDefiner {
         parameters.forEach(parameter => {
             //let paramValue=paramsValue[parameter.name];
             let paramValue = _.get(paramsValue, parameter.name);
-            console.log(paramValue, paramsValue, 'paramValue=====ParametersValue');
             if (paramsValue.hasOwnProperty(parameter.name) || ((parameter.name.includes(".")) && paramValue)) {
                 parameter.updateValue(paramValue);
             } else {

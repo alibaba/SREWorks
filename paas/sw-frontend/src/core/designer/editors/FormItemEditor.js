@@ -70,7 +70,6 @@ class FormItemEditor extends PureComponent {
         itemDefs.forEach(function (item) {
             let layout = formItemLayout || defaultFormItemLayout;
             formChildrens.push(FormElementFactory.createFormItem(item, form, layout));
-            console.log(formChildrens, 'formChildrens')
         });
 
         return (

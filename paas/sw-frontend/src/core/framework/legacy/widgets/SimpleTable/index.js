@@ -46,7 +46,6 @@ class SimpleTable extends React.Component {
             footChecked: false,
             footIndete: false
         };
-        console.log(props.widgetData, 'widgetConfig-dataSourceMeta')
     }
 
     getApiConf = () => {
@@ -73,7 +72,6 @@ class SimpleTable extends React.Component {
 
     componentWillMount() {
         const { mode, nodeId, openAction, parameters, nodeParams, widgetData, widgetConfig = {} } = this.props;
-        //console.log("SimpleTable:mode---nodeParams-->",mode,nodeParams,this.props);
         let { rowActions, api, paging = false, filters, dynamicColumnsUrl } = mode.config, columns = [], dispalyItems = false, hasOper = false, { itemToolbar } = widgetConfig;
         if (this.props.widgetConfig && this.props.widgetConfig.dataSourceMeta) {
             paging = (this.props.widgetConfig && this.props.widgetConfig.paging) || false
@@ -215,7 +213,6 @@ class SimpleTable extends React.Component {
     };
     componentDidUpdate(prevProps) {
         let { mode, parameters, nodeParams } = this.props, { apiConf } = this.state;
-        console.log(apiConf, 'page-conf');
         if (apiConf && apiConf.url && !_.isEqual(prevProps.nodeParams, nodeParams)) {//前端api方式配置
             let api = apiConf;
             //let nowRenderString=util.renderTemplateString(JSON.stringify(api),this.getNodeParams());
@@ -283,7 +280,6 @@ class SimpleTable extends React.Component {
     };
 
     handleOpenRowAction = (name, record, callback) => {
-        console.log(name, record, callback, 'row-action')
         const { openAction, mode } = this.props;
         let outputs = mode.config.outputs, params = { ...record };
         if (outputs) {
@@ -295,7 +291,6 @@ class SimpleTable extends React.Component {
                 }
             })
         }
-        console.log(this.props, name, params, callback, 'callback--------')
         openAction(name, params, callback)
     };
 
@@ -364,7 +359,6 @@ class SimpleTable extends React.Component {
         if (filterParams) {
             tableParams.filters = filterParams
         }
-        //console.log("tableParams------->",tableParams);
         let dynamiConf = {}, { outputs, selectable = {}, checkbox, border, headerActions, headerLinks, title, api, footerActions, customPagination = {}, expandedRow, size = "small", bordered = false,rowColorMapping } = mode.config;
         if (outputs && (checkbox !== false && checkbox !== 'false') && outputs.length) {
             let rowSelection = {};

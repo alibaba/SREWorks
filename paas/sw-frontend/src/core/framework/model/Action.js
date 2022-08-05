@@ -60,7 +60,6 @@ export default class Action {
         this.id = actionData.id;
         this.parameterDefiner = new ParameterDefiner(actionData.parameterDefiner, this.runtimeContext);
 
-        console.log(this.parameterDefiner, 'parameterDefiner===== action.js')
         this.size = actionData.size ? actionData.size : "default";
         this.refresh = actionData.refresh && actionData.refresh[0] ? actionData.refresh[0] : "N";
         this.actionData = actionData;
@@ -99,9 +98,7 @@ export default class Action {
         } else {
             return Promise.all([inputParamDef, this.getChangInputItems()]).then(results => {
                 let items = results[0], changeItems = results[1];
-                console.log(results[0], results[1], 'inputParamDef----items');
                 items.push(...changeItems);
-                console.log(items, 'inputParamDef----items');
                 return items;
             });
         }

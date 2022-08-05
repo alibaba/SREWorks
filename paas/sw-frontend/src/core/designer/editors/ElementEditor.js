@@ -89,7 +89,6 @@ export default class ElementEditor extends React.Component {
         })
     }
     setCommonConfig = (cfg) => {
-        console.log(cfg, 'custom-update')
         this.commonConfig = Object.assign(this.commonConfig, cfg);
         if (cfg.hasWrapper) {
             this.setState({
@@ -125,7 +124,6 @@ export default class ElementEditor extends React.Component {
         let { widgetModel } = this.state, { onSave } = this.props;
         let config = Object.assign({}, this.commonConfig);
         widgetModel.updateConfig(config);
-        console.log(widgetModel, config, 'widgetModel-update');
         onSave && onSave(widgetModel);
     };
 

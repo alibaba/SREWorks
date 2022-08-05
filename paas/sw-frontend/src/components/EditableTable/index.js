@@ -30,7 +30,6 @@ class EditableTable extends React.Component {
     constructor(props) {
         super(props);
         let { columns = [], dataSource, form } = props;
-        console.log(columns, 'columns==== editable');
         this.columns = columns.map(column => {
             column = JSON.parse(JSON.stringify(column));
             //根据定义的可编辑属性生成表单构建器属性
@@ -41,7 +40,6 @@ class EditableTable extends React.Component {
             }
             return column;
         });
-        console.log(dataSource, props, 'dataSource====dataSource')
         //对每条数据生成一个唯一的编辑key
         let rowData = dataSource && dataSource.map(row => {
             return {
@@ -83,10 +81,8 @@ class EditableTable extends React.Component {
     };
 
     handleSave = (record) => {
-        console.log(record, 'record==handleSave');
         let { form, editStatusChanged } = this.props, { rowData } = this.state;
         let editRowValues = form.getFieldsValue();
-        console.log(editRowValues, 'editRowValues')
         rowData.forEach(r => {
             if (r.__edit_key__ === record.__edit_key__) {
                 Object.assign(r, editRowValues[r.__edit_key__])
@@ -105,12 +101,10 @@ class EditableTable extends React.Component {
         let newRow = { __edit_key__: uuidv4() }, { onChange, editStatusChanged } = this.props;
         //增加新增行存在初始值的显示
         this.columns.forEach(column => {
-            console.log(column.editProps.name, 'column.editProps.name');
             if (column.editProps && column.editProps.hasOwnProperty("initValue")) {
                 newRow[column.editProps.name] = column.editProps.initValue;
             }
         });
-        console.log(newRow, 'newRow')
         this.setState({
             rowData: [...this.state.rowData, newRow],
             editingRow: newRow
@@ -125,12 +119,10 @@ class EditableTable extends React.Component {
             let { __edit_key__, ...otherData } = r;
             return otherData;
         });
-        console.log(rowData, 'change rowData')
         onChange && onChange(newData);
     };
     render() {
         let { form, enableRemove, enableAdd, enableScroll, isCanRemove, ...tableProps } = this.props, { editingRow, rowData } = this.state;
-        console.log(this.columns, 'this.columns==index')
         let tableColumns = this.columns.map(column => {
             if (column.editProps) {
                 return {
@@ -162,7 +154,6 @@ class EditableTable extends React.Component {
                         }
                         //单选模式显示状态下赋值
                         if (column.editProps.type === FormElementType.SELECT) {
-                            console.log(record, column.editProps.name, 'FormElementType.SELECT');
                             if (record[column.editProps.name + "Option"]
                                 && record[column.editProps.name + "Option"].label) {
                                 text = record[column.editProps.name + "Option"].label;

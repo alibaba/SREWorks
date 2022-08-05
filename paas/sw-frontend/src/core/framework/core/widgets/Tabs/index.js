@@ -54,7 +54,6 @@ export default class TabsRender extends Component {
       searchObj = queryString.parse(hashString.split("?")[1]);
     }
     if (searchObj.tab && tabPnaeKeys.includes(searchObj.tab)) {
-      console.log(tabPanes, tabPnaeKeys, searchObj, 'tabPanes');
       this.setState({
         activeKey: searchObj.tab
       })

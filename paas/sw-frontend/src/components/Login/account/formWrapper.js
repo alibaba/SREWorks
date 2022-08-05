@@ -67,7 +67,6 @@ class CustomFormComponent extends React.Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('base component Received values of form: ', values);
                 if (!values.phone) {
                     values.phone = values.firstphone + this.phoneValue;
                 }

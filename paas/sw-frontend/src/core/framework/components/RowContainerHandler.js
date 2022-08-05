@@ -41,7 +41,6 @@ class RowContainerHandler extends React.Component {
         let widgetModel = WidgetModel.CREATE_DEFAULT_INSTANCE();
         widgetModel.initFromMeta(widgetMeta);
         widgetModel.setNodeModel(nodeModel);
-        console.log(widgetMeta,nodeModel,widgetModel,'选择的元数据meta')
         elements[currentIndex] = widgetModel;
         onUpdate && onUpdate(row);
         this.setState({
@@ -123,7 +122,6 @@ class RowContainerHandler extends React.Component {
 
     rowConfigEdit = () => {
         let { row, reload } = this.state, { onUpdate } = this.props;
-        console.log(row, '已有row2')
         Modal.confirm({
             title: '行属性',
             icon: '',

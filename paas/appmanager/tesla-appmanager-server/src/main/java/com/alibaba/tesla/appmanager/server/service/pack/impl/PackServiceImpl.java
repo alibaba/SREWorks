@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.ComponentPackageProvider;
+import com.alibaba.tesla.appmanager.autoconfig.SystemProperties;
 import com.alibaba.tesla.appmanager.common.enums.AppPackageTaskStatusEnum;
 import com.alibaba.tesla.appmanager.common.enums.ComponentPackageTaskStateEnum;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
@@ -23,6 +24,7 @@ import com.alibaba.tesla.appmanager.meta.helm.service.HelmMetaService;
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.condition.K8sMicroserviceMetaQueryCondition;
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.domain.K8sMicroServiceMetaDO;
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.service.K8sMicroserviceMetaService;
+import com.alibaba.tesla.appmanager.meta.k8smicroservice.util.K8sMicroServiceUtil;
 import com.alibaba.tesla.appmanager.server.repository.AppPackageTaskRepository;
 import com.alibaba.tesla.appmanager.server.repository.ComponentPackageTaskRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppAddonQueryCondition;
@@ -66,6 +68,7 @@ public class PackServiceImpl implements PackService {
     private final AppAddonService appAddonService;
     private final AppMetaService appMetaService;
     private final HelmMetaService helmMetaService;
+    private final SystemProperties systemProperties;
 
     public PackServiceImpl(
             ComponentPackageProvider componentPackageProvider,
@@ -73,7 +76,7 @@ public class PackServiceImpl implements PackService {
             K8sMicroserviceMetaService k8sMicroserviceMetaService,
             AppPackageTaskRepository appPackageTaskRepository, AppPackageTaskService appPackageTaskService,
             AppAddonService appAddonService, AppMetaService appMetaService,
-            HelmMetaService helmMetaService) {
+            HelmMetaService helmMetaService, SystemProperties systemProperties) {
         this.componentPackageProvider = componentPackageProvider;
         this.componentPackageTaskRepository = componentPackageTaskRepository;
         this.k8sMicroserviceMetaService = k8sMicroserviceMetaService;
@@ -82,6 +85,7 @@ public class PackServiceImpl implements PackService {
         this.appAddonService = appAddonService;
         this.appMetaService = appMetaService;
         this.helmMetaService = helmMetaService;
+        this.systemProperties = systemProperties;
     }
 
     @Override
@@ -164,8 +168,8 @@ public class PackServiceImpl implements PackService {
         String namespaceId = message.getNamespaceId();
         String stageId = message.getStageId();
         ComponentTypeEnum componentType = component.getComponentType();
-        Boolean isDevelop = component.getIsDevelop();
         String componentName = component.getComponentName();
+        Boolean isDevelop = component.getIsDevelop();
 
         JSONObject options = new JSONObject();
         if (BooleanUtils.isTrue(component.getUseRawOptions())) {
@@ -302,9 +306,11 @@ public class PackServiceImpl implements PackService {
             log.error("action=packService|buildOptions4K8sMicroService|ERROR|message=app not exists|appId={}", appId);
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "app not exists");
         }
-
-        List<EnvMetaDTO> appEnvList = new ArrayList<>();
-        return microserviceMetaList.getItems().get(0).getOptionsAndReplaceBranch(branch, appEnvList);
+        K8sMicroServiceMetaDO meta = microserviceMetaList.getItems().get(0);
+        String dockerRegistry = systemProperties.getDockerRegistry();
+        String dockerNamespace = systemProperties.getDockerNamespace();
+        return K8sMicroServiceUtil.replaceOptionsBranch(
+                meta.getComponentType(), meta.getOptions(), branch, dockerRegistry, dockerNamespace);
     }
 
     @Override

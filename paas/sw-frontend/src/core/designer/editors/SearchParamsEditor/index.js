@@ -52,7 +52,6 @@ export default class SearchParamsEditor extends Component {
         // if (this.props.value && this.props.value.length > 20) {
         //     this.value = this.props.value
         // }
-        console.log(this.props.value, this.value, '传入props.value')
         return <div className="card-tab-panel">
             <AceEditor
                 mode="json"

@@ -1,21 +1,23 @@
 package com.alibaba.tesla.appmanager.meta.k8smicroservice.api;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.K8sMicroServiceMetaProvider;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
-import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.service.GitService;
 import com.alibaba.tesla.appmanager.common.util.*;
+import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConfigQueryCondition;
+import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDO;
 import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
-import com.alibaba.tesla.appmanager.domain.dto.InitContainerDTO;
-import com.alibaba.tesla.appmanager.domain.dto.K8sMicroServiceMetaDTO;
-import com.alibaba.tesla.appmanager.domain.dto.RepoDTO;
+import com.alibaba.tesla.appmanager.domain.dto.*;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQuickUpdateReq;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaUpdateReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpdateReq;
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.assembly.K8sMicroServiceMetaDtoConvert;
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.condition.K8sMicroserviceMetaQueryCondition;
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.domain.K8sMicroServiceMetaDO;
@@ -23,12 +25,15 @@ import com.alibaba.tesla.appmanager.meta.k8smicroservice.service.K8sMicroservice
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * K8S 微应用元信息接口
@@ -39,17 +44,20 @@ import java.util.Objects;
 @Service
 public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvider {
 
-    @Autowired
-    private K8sMicroServiceMetaDtoConvert k8sMicroServiceMetaDtoConvert;
+    private final K8sMicroServiceMetaDtoConvert k8sMicroServiceMetaDtoConvert;
+    private final K8sMicroserviceMetaService k8SMicroserviceMetaService;
+    private final GitService gitService;
+    private final DeployConfigService deployConfigService;
 
-    @Autowired
-    private K8sMicroserviceMetaService k8SMicroserviceMetaService;
-
-    @Autowired
-    private GitService gitService;
-
-    @Autowired
-    private DeployConfigService deployConfigService;
+    public K8sMicroServiceMetaProviderImpl(
+            K8sMicroServiceMetaDtoConvert k8sMicroServiceMetaDtoConvert,
+            K8sMicroserviceMetaService k8SMicroserviceMetaService,
+            GitService gitService, DeployConfigService deployConfigService) {
+        this.k8sMicroServiceMetaDtoConvert = k8sMicroServiceMetaDtoConvert;
+        this.k8SMicroserviceMetaService = k8SMicroserviceMetaService;
+        this.gitService = gitService;
+        this.deployConfigService = deployConfigService;
+    }
 
     /**
      * 分页查询微应用元信息
@@ -59,8 +67,7 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
         K8sMicroserviceMetaQueryCondition condition = new K8sMicroserviceMetaQueryCondition();
         ClassUtil.copy(request, condition);
         Pagination<K8sMicroServiceMetaDO> metaList = k8SMicroserviceMetaService.list(condition);
-        metaList.getItems().forEach(K8sMicroServiceMetaDO::repoFromString);
-        return Pagination.transform(metaList, item -> k8sMicroServiceMetaDtoConvert.to(item));
+        return Pagination.transform(metaList, k8sMicroServiceMetaDtoConvert::to);
     }
 
     /**
@@ -77,12 +84,8 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
             return null;
         }
 
-        K8sMicroServiceMetaDO k8sMicroServiceMetaDO = page.getItems().get(0);
-        k8sMicroServiceMetaDO.extFromString();
-
-        K8sMicroServiceMetaDTO dto = new K8sMicroServiceMetaDTO();
-        ClassUtil.copy(k8sMicroServiceMetaDO, dto);
-        return dto;
+        K8sMicroServiceMetaDO meta = page.getItems().get(0);
+        return k8sMicroServiceMetaDtoConvert.to(meta);
     }
 
     /**
@@ -108,91 +111,124 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
     }
 
     /**
-     * 创建 K8S Microservice
+     * 创建 K8S Microservice (普通)
      */
     @Override
     public K8sMicroServiceMetaDTO create(K8sMicroServiceMetaUpdateReq request) {
-        K8sMicroServiceMetaDO metaDO = new K8sMicroServiceMetaDO();
-        ClassUtil.copy(request, metaDO);
-        return create(metaDO);
+        K8sMicroServiceMetaDTO dto = new K8sMicroServiceMetaDTO();
+        ClassUtil.copy(request, dto);
+
+        // TODO: 等待前端增加 imagePush 字段后删除 (for 弹内)
+        addImagePushForInternal(dto);
+
+        return create(dto);
     }
 
     /**
-     * 更新 K8s Microservice
+     * 创建 K8S Microservice (快速)
+     */
+    @Override
+    public K8sMicroServiceMetaDTO create(K8sMicroServiceMetaQuickUpdateReq request) {
+        K8sMicroServiceMetaDTO dto = new K8sMicroServiceMetaDTO();
+        ClassUtil.copy(request, dto);
+        return create(dto);
+    }
+
+    /**
+     * 更新 K8s Microservice (普通)
      */
     @Override
     public K8sMicroServiceMetaDTO update(K8sMicroServiceMetaUpdateReq request) {
-        K8sMicroServiceMetaDO metaDO = new K8sMicroServiceMetaDO();
-        ClassUtil.copy(request, metaDO);
-        return update(metaDO);
+        K8sMicroServiceMetaDTO dto = new K8sMicroServiceMetaDTO();
+        ClassUtil.copy(request, dto);
+
+        // TODO: 等待前端增加 imagePush 字段后删除 (for 弹内)
+        addImagePushForInternal(dto);
+
+        return update(dto);
     }
 
-    @Override
-    public K8sMicroServiceMetaDTO create(K8sMicroServiceMetaQuickUpdateReq request) {
-        K8sMicroServiceMetaDO metaDO = new K8sMicroServiceMetaDO();
-        ClassUtil.copy(request, metaDO);
-        return create(metaDO);
-    }
-
+    /**
+     * 更新 K8s Microservice (快速)
+     */
     @Override
     public K8sMicroServiceMetaDTO update(K8sMicroServiceMetaQuickUpdateReq request) {
-        K8sMicroServiceMetaDO metaDO = new K8sMicroServiceMetaDO();
-        ClassUtil.copy(request, metaDO);
-        return update(metaDO);
+        K8sMicroServiceMetaDTO dto = new K8sMicroServiceMetaDTO();
+        ClassUtil.copy(request, dto);
+        return update(dto);
     }
 
-    private K8sMicroServiceMetaDTO create(K8sMicroServiceMetaDO metaDO) {
-        metaDO.init();
+    /**
+     * 创建 K8S Microservice
+     *
+     * @param dto K8S Microservice DTO 对象
+     * @return K8s Microservice DTO 对象
+     */
+    @Override
+    public K8sMicroServiceMetaDTO create(K8sMicroServiceMetaDTO dto) {
+        K8sMicroServiceMetaDO meta = k8sMicroServiceMetaDtoConvert.from(dto);
 
-        if (metaDO.getRepoObject() != null) {
-            RepoDTO repo = metaDO.getRepoObject();
-            if(!ShellUtil.check(repo.getRepo(), repo.getCiAccount(), repo.getCiToken())){
-                if(StringUtils.isNotEmpty(metaDO.getRepoObject().getRepoTemplateUrl())){
-                    autoCreateRepo(metaDO);
-                }else{
-                    /**
-                     * 如果没有设置模板且Project不存在，则直接创建Project
-                     */
-                    GitlabUtil.createProject(repo.getRepoDomain(), repo.getRepoGroup(), repo.getRepoProject(), repo.getCiToken());
+        // SREWorks: repo object 创建 Gitlab repo
+        if (dto.getRepoObject() != null) {
+            RepoDTO repo = dto.getRepoObject();
+            if (!ShellUtil.check(repo.getRepo(), repo.getCiAccount(), repo.getCiToken())) {
+                if (StringUtils.isNotEmpty(dto.getRepoObject().getRepoTemplateUrl())) {
+                    autoCreateRepo(dto);
+                } else {
+                    // 如果没有设置模板且 Project 不存在，则直接创建 Project
+                    GitlabUtil.createProject(repo.getRepoDomain(), repo.getRepoGroup(),
+                            repo.getRepoProject(), repo.getCiToken());
                 }
             }
         }
 
-        k8SMicroserviceMetaService.create(metaDO);
-
-        if (CollectionUtils.isNotEmpty(metaDO.getContainerObjectList())) {
-            gitService.createRepoList(metaDO.getContainerObjectList());
+        // 非 SREworks: 检查并创建相关 repo
+        if (CollectionUtils.isNotEmpty(dto.getContainerObjectList())) {
+            gitService.createRepoList(dto.getContainerObjectList());
         }
 
-        return k8sMicroServiceMetaDtoConvert.to(metaDO);
+        k8SMicroserviceMetaService.create(meta);
+        refreshDeployConfig(dto);
+        return k8sMicroServiceMetaDtoConvert.to(meta);
     }
 
-    private K8sMicroServiceMetaDTO update(K8sMicroServiceMetaDO metaDO) {
-        metaDO.init();
-
+    /**
+     * 更新 K8S Microservice
+     *
+     * @param dto K8S Microservice DTO 对象
+     * @return K8s Microservice DTO 对象
+     */
+    @Override
+    public K8sMicroServiceMetaDTO update(K8sMicroServiceMetaDTO dto) {
+        K8sMicroServiceMetaDO meta = k8sMicroServiceMetaDtoConvert.from(dto);
         K8sMicroserviceMetaQueryCondition condition = K8sMicroserviceMetaQueryCondition.builder()
-                .appId(metaDO.getAppId())
-                .namespaceId(metaDO.getNamespaceId())
-                .stageId(metaDO.getStageId())
-                .microServiceId(metaDO.getMicroServiceId())
+                .appId(dto.getAppId())
+                .namespaceId(dto.getNamespaceId())
+                .stageId(dto.getStageId())
+                .microServiceId(dto.getMicroServiceId())
                 .build();
-        k8SMicroserviceMetaService.update(metaDO, condition);
-        return k8sMicroServiceMetaDtoConvert.to(metaDO);
+        k8SMicroserviceMetaService.update(meta, condition);
+        refreshDeployConfig(dto);
+        return k8sMicroServiceMetaDtoConvert.to(meta);
     }
 
-    private void autoCreateRepo(K8sMicroServiceMetaDO metaDO) throws AppException {
-        RepoDTO repoDTO = metaDO.getRepoObject();
+    /**
+     * 根据 K8S Microservice DTO 对象自动创建 Repo
+     *
+     * @param dto K8S Microservice DTO 对象
+     */
+    private void autoCreateRepo(K8sMicroServiceMetaDTO dto) {
+        RepoDTO repoDTO = dto.getRepoObject();
         GitlabUtil.createProject(repoDTO.getRepoDomain(), repoDTO.getRepoGroup(), repoDTO.getRepoProject(),
                 repoDTO.getCiToken());
-
-        String zipFile = metaDO.getAppId() + "." + metaDO.getMicroServiceId() + ".zip";
+        String zipFile = dto.getAppId() + "." + dto.getMicroServiceId() + ".zip";
         File zipFilePath = HttpUtil.download(repoDTO.getRepoTemplateUrl(), zipFile);
 
         String unZipDir = StringUtils.substringBeforeLast(zipFilePath.getAbsolutePath(), ".");
         log.info(">>>k8sMicroServiceMetaProvider|autoCreateRepo|unZipDir={}", unZipDir);
         ZipUtil.unzip(zipFilePath.getAbsolutePath(), unZipDir);
 
-        List<InitContainerDTO> initContainerList = metaDO.getInitContainerList();
+        List<InitContainerDTO> initContainerList = dto.getInitContainerList();
         String scriptPath = unZipDir + File.separator + "sw.sh";
         if (CollectionUtils.isNotEmpty(initContainerList)) {
             for (InitContainerDTO initContainerDTO : initContainerList) {
@@ -202,10 +238,291 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
             }
         }
 
-
         ShellUtil.push(scriptPath, repoDTO.getRepo(), repoDTO.getCiAccount(), repoDTO.getCiToken());
-
         FileUtil.deleteDir(zipFilePath);
         FileUtil.deleteDir(new File(unZipDir));
+    }
+
+    /**
+     * 根据 K8S Microservice DTO 对象刷新当前的 Deploy Config 表中
+     *
+     * @param meta K8S Microservice DTO
+     */
+    private void refreshDeployConfig(K8sMicroServiceMetaDTO meta) {
+        LaunchDTO launchObject = meta.getLaunchObject();
+        if (launchObject == null) {
+            log.info("appId: " + meta.getAppId() + " launchObject is null, skip");
+            return;
+        }
+
+        JSONObject configObject = new JSONObject();
+        JSONArray parameterValues = new JSONArray();
+        JSONArray traits = new JSONArray();
+        JSONArray scopes = new JSONArray();
+
+        JSONObject nsScopeObject = new JSONObject();
+        JSONObject nsObject = new JSONObject();
+        JSONObject nsSpecObject = new JSONObject();
+        nsSpecObject.put("autoCreate", true);
+        if (launchObject.getNamespaceResourceLimit() != null) {
+            JSONObject resourceQuotaObject = new JSONObject();
+            resourceQuotaObject.put("name", "sreworks-resource-limit");
+            resourceQuotaObject.put("spec", launchObject.getNamespaceResourceLimit());
+            nsSpecObject.put("resourceQuota", resourceQuotaObject);
+        }
+        nsObject.put("spec", nsSpecObject);
+        nsObject.put("apiVersion", "core.oam.dev/v1alpha2");
+        nsObject.put("kind", "Namespace");
+        nsScopeObject.put("scopeRef", nsObject);
+        scopes.add(nsScopeObject);
+
+        configObject.put("revisionName", "K8S_MICROSERVICE|" + meta.getMicroServiceId() + "|_");
+
+        /** - name: service.trait.abm.io
+         *    runtime: post
+         *    spec:
+         *      ports:
+         *      - protocol: TCP
+         *        port: 80
+         *        targetPort: 5000
+         */
+        JSONObject svcSpec = new JSONObject();
+        JSONArray svcSpecPorts = new JSONArray();
+        JSONObject portObject = new JSONObject();
+
+        List<String> ports = new ArrayList<>(8);
+        if (StringUtils.isNotBlank(launchObject.getServicePorts())) {
+            ports = Arrays.stream(launchObject.getServicePorts().split(",")).collect(Collectors.toList());
+        } else if (!Objects.isNull(launchObject.getServicePort())) {
+            ports.add(launchObject.getServicePort().toString());
+        } else {
+            ports.add("7001");
+        }
+        for (String port : ports) {
+            portObject.put("protocol", "TCP");
+            if (port.split(":").length > 1) {
+                portObject.put("port", port.split(":")[0]);
+                portObject.put("targetPort", Long.valueOf(port.split(":")[1]));
+            } else {
+                portObject.put("port", 80);
+                portObject.put("targetPort", Long.valueOf(port));
+            }
+            svcSpecPorts.add(portObject);
+        }
+
+        if (launchObject.getServiceLabels() != null) {
+            svcSpec.put("labels", launchObject.getServiceLabels());
+        }
+        svcSpec.put("ports", svcSpecPorts);
+
+        JSONObject svcTrait = new JSONObject();
+        svcTrait.put("name", "service.trait.abm.io");
+        svcTrait.put("runtime", "post");
+        svcTrait.put("spec", svcSpec);
+        traits.add(svcTrait);
+
+        if (StringUtils.isNotBlank(launchObject.getGatewayRoute())) {
+
+            /** - name: gateway.trait.abm.io
+             *    runtime: post
+             *    spec:
+             *      path: /aiops/aisp/**
+             *      servicePort: 80
+             *      serviceName: '{{ Global.STAGE_ID }}-aiops-aisp.sreworks-aiops'
+             */
+
+            JSONObject gatewayTrait = new JSONObject();
+            JSONObject gatewaySpec = new JSONObject();
+            String gatewayRoute = launchObject.getGatewayRoute();
+            if (!launchObject.getGatewayRoute().startsWith("/")) {
+                gatewayRoute = "/" + gatewayRoute;
+            }
+            if (!launchObject.getGatewayRoute().endsWith("*")) {
+                gatewayRoute = gatewayRoute + "/**";
+            }
+            gatewaySpec.put("path", gatewayRoute);
+            gatewaySpec.put("serviceName", "{{ Global.STAGE_ID }}-" + meta.getAppId() + "-" + meta.getMicroServiceId() + ".{{ Global.NAMESPACE_ID }}");
+            gatewayTrait.put("name", "gateway.trait.abm.io");
+            gatewayTrait.put("runtime", "post");
+            gatewayTrait.put("spec", gatewaySpec);
+            if (launchObject.getGatewayRouteOrder() != null) {
+                gatewaySpec.put("order", launchObject.getGatewayRouteOrder());
+            }
+            if (launchObject.getGatewayAuthEnabled() != null) {
+                gatewaySpec.put("authEnabled", launchObject.getGatewayAuthEnabled());
+            }
+
+            traits.add(gatewayTrait);
+        }
+
+        if (launchObject.getReplicas() != null) {
+
+            /**
+             *         - name: REPLICAS
+             *           value: 2
+             *           toFieldPaths:
+             *             - spec.replicas
+             */
+            JSONObject replicaValueObject = new JSONObject();
+            JSONArray toFieldPaths = new JSONArray();
+            toFieldPaths.add("spec.replicas");
+            replicaValueObject.put("name", "REPLICAS");
+            replicaValueObject.put("value", launchObject.getReplicas());
+            replicaValueObject.put("toFieldPaths", toFieldPaths);
+            parameterValues.add(replicaValueObject);
+        }
+
+        if (StringUtils.isNotBlank(launchObject.getTimezone())) {
+            /**
+             *         - name: timezoneSync.trait.abm.io
+             *           runtime: pre
+             *           spec:
+             *             timezone: Asia/Shanghai
+             */
+
+            JSONObject timezoneTrait = new JSONObject();
+            JSONObject timezoneSpec = new JSONObject();
+
+            timezoneSpec.put("timezone", launchObject.getTimezone());
+            timezoneTrait.put("name", "timezoneSync.trait.abm.io");
+            timezoneTrait.put("runtime", "pre");
+            timezoneTrait.put("spec", timezoneSpec);
+
+            traits.add(timezoneTrait);
+        }
+
+        if (launchObject.getPodLabels() != null) {
+            /**
+             * name: podPatch.trait.abm.io
+             * runtime: pre
+             * spec:
+             *     metadata:
+             *       labels:
+             *         a: b
+             *       annotations:
+             *         c: d
+             */
+            JSONObject podPatchTrait = new JSONObject();
+            JSONObject podPatchSpec = new JSONObject();
+            JSONObject podMetadata = new JSONObject();
+
+            podPatchTrait.put("name", "podPatch.trait.abm.io");
+            podPatchTrait.put("runtime", "pre");
+            if (launchObject.getPodLabels() != null) {
+                podMetadata.put("labels", launchObject.getPodLabels());
+            }
+            podPatchSpec.put("metadata", podMetadata);
+            podPatchTrait.put("spec", podPatchSpec);
+            traits.add(podPatchTrait);
+        }
+
+        JSONObject traitEnvMapList = new JSONObject();
+        traitEnvMapList.put("APP_INSTANCE_ID", "{{ spec.labels[\"labels.appmanager.oam.dev/appInstanceId\"] }}");
+        JSONArray traitEnvList = new JSONArray();
+
+        for (String env : meta.getEnvKeyList()) {
+            if (StringUtils.isBlank(env)) {
+                continue;
+            }
+            String[] kv = env.split("=");
+            String key = kv[0];
+            if (traitEnvMapList.containsKey(key)) {
+                traitEnvList.add(key);
+            }
+            if (kv.length > 1) {
+                JSONObject valueObject = new JSONObject();
+                valueObject.put("name", "Global." + key);
+                valueObject.put("value", kv[1]);
+                parameterValues.add(valueObject);
+            }
+        }
+
+        if (traitEnvList.size() > 0) {
+            JSONObject envTrait = new JSONObject();
+            JSONArray dataOutputs = new JSONArray();
+            envTrait.put("dataInputs", new JSONArray());
+            envTrait.put("name", "systemEnv.trait.abm.io");
+            envTrait.put("runtime", "pre");
+            envTrait.put("spec", new JSONObject());
+            for (int i = 0; i < traitEnvList.size(); i++) {
+                String envKey = traitEnvList.getString(i);
+                String envMapValue = traitEnvMapList.getString(envKey);
+                JSONObject dataOutputObject = new JSONObject();
+                dataOutputObject.put("fieldPath", envMapValue);
+                dataOutputObject.put("name", "Global." + envKey);
+                dataOutputs.add(dataOutputObject);
+            }
+            envTrait.put("dataOutputs", dataOutputs);
+            traits.add(envTrait);
+        }
+
+        String systemTypeId = new DeployConfigTypeId(ComponentTypeEnum.RESOURCE_ADDON, "system-env@system-env").toString();
+
+        List<DeployConfigDO> configs = deployConfigService.list(
+                DeployConfigQueryCondition.builder()
+                        .appId(meta.getAppId())
+                        .typeId(systemTypeId)
+                        .envId("")
+                        .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                        .enabled(true)
+                        .isolateNamespaceId(meta.getNamespaceId())
+                        .isolateStageId(meta.getStageId())
+                        .build()
+        );
+
+        // 如果存在system-env则直接进行依赖
+        // todo: 判断自身的变量在system-env中有才进行依赖
+        if (configs.size() > 0) {
+            JSONArray dependencies = new JSONArray();
+            JSONObject componentSystem = new JSONObject();
+            componentSystem.put("component", "RESOURCE_ADDON|system-env@system-env");
+            dependencies.add(componentSystem);
+            configObject.put("dependencies", dependencies);
+        }
+
+        configObject.put("parameterValues", parameterValues);
+        configObject.put("traits", traits);
+        configObject.put("scopes", scopes);
+
+        Yaml yaml = SchemaUtil.createYaml(JSONObject.class);
+        String typeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE, meta.getMicroServiceId()).toString();
+        String metaNamespaceId = meta.getNamespaceId();
+        String metaStageId = meta.getStageId();
+        // TODO: FOR SREWORKS ONLY TEMPORARY
+        if (EnvUtil.isSreworks()) {
+            metaNamespaceId = EnvUtil.defaultNamespaceId();
+            metaStageId = EnvUtil.defaultStageId();
+        }
+        deployConfigService.update(DeployConfigUpdateReq.builder()
+                .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                .appId(meta.getAppId())
+                .typeId(typeId)
+                .envId("")
+                .inherit(false)
+                .config(yaml.dumpAsMap(configObject))
+                .isolateNamespaceId(metaNamespaceId)
+                .isolateStageId(metaStageId)
+                .build());
+    }
+
+    /**
+     * TODO: 等待前端增加 imagePush 字段后删除 (for 弹内)
+     * @param dto DTO
+     */
+    private void addImagePushForInternal(K8sMicroServiceMetaDTO dto) {
+        if (dto.getImagePushObject() == null) {
+            String arch = dto.getArch();
+            if (StringUtils.isEmpty(arch)) {
+                arch = "x86";
+                dto.setArch(arch);
+            }
+            dto.setImagePushObject(ImagePushDTO.builder()
+                    .imagePushRegistry(ImagePushRegistryDTO.builder()
+                            .dockerRegistry("reg.docker.alibaba-inc.com")
+                            .dockerNamespace(String.format("abm-private-%s", arch))
+                            .useBranchAsTag(true)
+                            .build())
+                    .build());
+        }
     }
 }

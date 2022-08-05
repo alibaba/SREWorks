@@ -29,7 +29,6 @@ class FlatList extends Component {
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log(this.props.search_content, nextProps.search_content, 'this.props.search_content, nextProps.search_content')
         if (!_.isEqual(this.props.search_content, nextProps.search_content) || nextProps.is_force) {
         }
         this.setState({
@@ -40,7 +39,6 @@ class FlatList extends Component {
         let fullpath = '';
         if (path) {
             fullpath = properties.baseUrl + "#/" + path
-            console.log(fullpath, path, 'click-path-list')
             window.open(fullpath)
         }
     }

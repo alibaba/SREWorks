@@ -35,7 +35,6 @@ class TabFilterSetting extends Component {
     changeSetting = (newData) => {
         const { onChange } = this.props;
         onChange && onChange(newData);
-        console.log(newData, 'newData')
         this.setState({ dataSource: newData })
     }
     editStatusChanged = (flag) => {

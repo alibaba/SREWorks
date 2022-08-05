@@ -109,7 +109,6 @@ export default class DateRange extends React.Component {
     }
 
     handleDisabledDate = current => {
-        //console.log("current----->",current.format("YYYY-MM-DD HH:mm:ss"));
         const { referDate } = this.state;
         const { limitRang } = this.props;
         let arr = limitRang.split(""), suffix, num;

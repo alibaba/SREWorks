@@ -44,7 +44,6 @@ class FileUploadSingle extends Component {
             },
             onChange: (info) => {
                 let { fileList = [] } = info;
-                console.log(fileList, 'info fileList');
                 if (info.file.status !== 'uploading') {
                     //console.log(info.file, info.fileList);
                 }

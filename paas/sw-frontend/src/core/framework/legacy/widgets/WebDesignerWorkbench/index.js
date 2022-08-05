@@ -101,7 +101,6 @@ class WebDesignerWorkbench extends Component {
             templateType: "blank",
             layout: "PaaS"
         };
-        console.log(props,this.state.appId,util.getNewBizApp(this.state.appId),'根因-ops')
     }
 
     componentWillMount() {
@@ -194,7 +193,6 @@ class WebDesignerWorkbench extends Component {
             appId
         }
         httpClient.post("gateway/v2/foundation/appmanager/apps", params, { headers: { 'X-Biz-App': `${appId},${properties.defaultNamespace},dev` } }).then(result => {
-            console.log(result)
         }).catch(error => {
             console.log(error)
         })

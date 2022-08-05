@@ -70,7 +70,6 @@ export default class OamStepAction extends React.Component {
     };
 
     openAction = () => {
-        console.log('已执行提交---打开分步')
         this.setState({
             dockVisible: true,
         });

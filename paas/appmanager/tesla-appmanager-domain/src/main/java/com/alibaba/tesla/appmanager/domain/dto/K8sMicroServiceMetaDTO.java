@@ -1,7 +1,10 @@
 package com.alibaba.tesla.appmanager.domain.dto;
 
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
@@ -11,6 +14,9 @@ import java.util.List;
  * @date 2020/09/28.
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class K8sMicroServiceMetaDTO {
     /**
      * 主键
@@ -58,14 +64,19 @@ public class K8sMicroServiceMetaDTO {
     private String description;
 
     /**
-     * 类型 (Deployment/StatefulSet/CloneSet/AdvancedStatefulSet)
-     */
-    private String kind;
-
-    /**
      * 组件类型
      */
     private ComponentTypeEnum componentType;
+
+    /**
+     * 架构
+     */
+    private String arch;
+
+    /**
+     * 类型 (Deployment/StatefulSet/CloneSet/AdvancedStatefulSet)
+     */
+    private String kind;
 
     /**
      * 环境变量定义

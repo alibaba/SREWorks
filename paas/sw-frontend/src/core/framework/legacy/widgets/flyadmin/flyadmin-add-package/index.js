@@ -172,7 +172,6 @@ class FlyAdminAddPackage extends React.Component {
     let params = {
       appId: this.props.nodeParams.app_id,
     };
-    console.log(this.props.nodeParams.app_id)
     let { packageData } = this.state;
     flyAdminService.getApplicationVersion(params)
       .then(data => {

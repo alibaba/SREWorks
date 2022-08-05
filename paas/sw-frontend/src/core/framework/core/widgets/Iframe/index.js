@@ -27,7 +27,6 @@ export default class CustomRender extends Component {
             var bHeight = document.documentElement.clientHeight;
             var dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
             var height = Math.max(bHeight, dHeight);
-            console.log(height,'scrollHeight')
             iframe.height = height - 84;
             }catch (ex){}
         }

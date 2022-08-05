@@ -32,7 +32,6 @@ export default class DesktopLayout extends React.Component {
     }
 
     handleRemoveItem = (e, item) => {
-        console.log("handleRemoveItem----->", item);
         const { dispatch, home } = this.props;
         const { workspaces, desktopIndex } = home;
         let temIndex = 0;

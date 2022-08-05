@@ -145,7 +145,6 @@ export default class WorkspaceSetting extends React.Component {
             message.info("请先选择要设置的背景图片")
         }
         let { workspaces } = home;
-        console.log(mixImglist[activeBackgroundImgIndex], 'update-mixface');
         workspaces.forEach((item, index) => {
             if (index === targetDesktopIndex) {
                 item.background = mixImglist[activeBackgroundImgIndex]
@@ -180,7 +179,6 @@ export default class WorkspaceSetting extends React.Component {
     };
 
     onSubmit = (res) => {
-        console.log(res);
         const { dispatch, home } = this.props;
         let { customQuickList, collectList, workspaces, } = home;
         if (res) {
@@ -361,7 +359,7 @@ export default class WorkspaceSetting extends React.Component {
                     visible={visible}
                     footer={footer()}
                     onCancel={this.handleCancel}
-                    width="60%"
+                    width="70%"
                     bodyStyle={{ padding: 0, height: 'calc(60vh)' }}
                 >
                     {
@@ -385,7 +383,7 @@ export default class WorkspaceSetting extends React.Component {
                                                             {
                                                                 !originMixImglist.includes(child.background) && <img className="icon" src={requiredImglist[0]} onClick={() => this.showSettingModal(i)} />
                                                             }
-                                                            <div class="icon-mask" onClick={() => this.showSettingModal(i)}></div>
+                                                            <div class="icon-mask" onClick={() => this.showSettingModal(i)}><div style={{color:'var(--PrimaryColor)',textAlign:'center',verticalAlign:'middle',lineHeight:'96px'}}>选择背景</div></div>
                                                         </div>
                                                     </div>
                                                     <div>

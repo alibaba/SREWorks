@@ -24,7 +24,6 @@ class JsonEditor extends Component {
         this.themeType = localStorage.getItem('tesla-theme');
         let { widgetData = "", onChange, model, mode, target } = props;
         this.mode = model && (mode || (model.defModel && model.defModel.mode));
-        //console.log("value-----this.mode--->",value,this.mode,model);
         try {
             if (typeof widgetData === 'object') {
                 if (this.mode === 'json') {

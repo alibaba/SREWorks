@@ -145,7 +145,6 @@ class Service {
     }
 
     getElements(nodeTypePath,stageId) {
-        console.log(stageId,'stageId-click')
         let params = {};
         let productId = getProductName()
         if(stageId) {

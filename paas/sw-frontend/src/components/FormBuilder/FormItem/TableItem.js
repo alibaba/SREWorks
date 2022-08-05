@@ -17,9 +17,7 @@ export default class TableItem extends React.Component {
         super(props);
         let { model, onChange } = props;
         this.config = model.defModel || {};
-        console.log(model.initValue, 'takeItem=====defmodel');
         this.data = model.initValue || [];
-        console.log(this.data, props, 'this.data',)
         //存在外界传入非数组的数据,转换为数组防止数据格式有问题
         if (!Array.isArray(this.data)) {
             this.data = [this.data]

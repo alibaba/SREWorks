@@ -71,7 +71,6 @@ class BlockSetting extends React.Component {
         super(props);
         let { config } = props;
         let paramsDef = [], { label, name, category, tags = "private" } = config;
-        console.log("config------>", config);
         paramsDef.push({
             type: FormElementType.RADIO, name: 'category', initValue: category, required: true, label: "区块类型",
             optionValues: [
@@ -131,7 +130,6 @@ export default class BlockEditor extends React.Component {
         super(props);
         let { editorData = { config: {} }, nodeModel } = props, pageModel;
         if (editorData) {
-            console.log(editorData,'editorData-editorData');
             pageModel = new PageModel(editorData);
         } else {
             pageModel = PageModel.CREATE_DEFAULT_INSTANCE();

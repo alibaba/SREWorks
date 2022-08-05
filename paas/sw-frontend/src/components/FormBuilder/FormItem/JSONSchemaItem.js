@@ -187,7 +187,6 @@ function getAtomItem(name, props, path, json) {
     let uiType = props["x-component"], itemName = `${path.replace(/\//g, ".")}.${name.replace(/\./g, "~")}`, visibleExp = props["x-visibleExp"], validateType = props["x-validateType"];
     let { description, title, required, pattern, enableScroll, initValue } = props;
     let initValueEdit = _.get(json, itemName) === undefined ? initValue : _.get(json, itemName);
-    console.log(json, _.get(json, itemName), json['config'].hasOwnProperty(itemName), 'JsonSchema-json')
     let commonProps = {
         name: itemName, required: required, initValue: initValueEdit, label: title, validateReg: pattern, visibleExp: visibleExp,
         tooltip: description,

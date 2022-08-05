@@ -84,14 +84,12 @@ export const renderTemplateJsonObject = (jsonObj, paramsSet, noValueToEmpty = tr
                 replaceVars.forEach(varStr => {
                     let paramKey = varStr.replace("$(", "").replace(")", "");
                     let renderValue = _.get(paramsSet, paramKey);
-                    //console.log("renderValue------>",varStr,renderValue);
                     if ((typeof renderValue) !== "undefined") {
                         let varTmp = "\\$\\(" + paramKey + "\\)";
                         let rex = new RegExp(varTmp, 'g');
                         if (renderValue === null) {
                             renderValue = "";
                         }
-                        //console.log("value.replace(rex, renderValue)------>",value.replace(rex, renderValue));
                         value = value.replace(rex, renderValue);
                     }
                 });

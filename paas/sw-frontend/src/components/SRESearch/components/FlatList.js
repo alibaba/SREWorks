@@ -19,7 +19,7 @@ class FlatList extends Component {
         this.state = {
             loading: false,
             suggestList: [],
-            teslaSearchPath: props.teslaSearchPath,
+            sreworksSearchPath: props.sreworksSearchPath,
             search_content: props.search_content,
             category: props.category,
             moreLinkPrefix: props.moreLinkPrefix,
@@ -88,7 +88,7 @@ FlatList.propTypes = {
     userEmpId: PropTypes.string,
     is_force: PropTypes.bool,
     category: PropTypes.string,
-    teslaSearchPath: PropTypes.string,
+    sreworksSearchPath: PropTypes.string,
     search_content: PropTypes.string,
 };
 FlatList.defaultProps = {};

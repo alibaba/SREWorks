@@ -18,7 +18,7 @@ class TabsRender extends Component {
         this.state = {
             loading: false,
             tabList: [],
-            teslaSearchPath: props.teslaSearchPath,
+            sreworksSearchPath: props.sreworksSearchPath,
             search_content: props.search_content,
             category: props.category,
             moreLinkPrefix: props.moreLinkPrefix,
@@ -29,12 +29,12 @@ class TabsRender extends Component {
 
     }
 
-    getTabList(userEmpId, teslaSearchPath, category, search_content) {
+    getTabList(userEmpId, sreworksSearchPath, category, search_content) {
         if (search_content !== '') {
             this.setState({
                 loading: true
             })
-            SearchService.searchTypeList(userEmpId, teslaSearchPath, category, search_content)
+            SearchService.searchTypeList(userEmpId, sreworksSearchPath, category, search_content)
                 .then(res => {
                     this.setState({
                         tabList: res,
@@ -55,12 +55,12 @@ class TabsRender extends Component {
 
 
     componentWillMount() {
-        this.getTabList(this.props.userEmpId, this.props.teslaSearchPath, this.props.category, this.props.search_content)
+        this.getTabList(this.props.userEmpId, this.props.sreworksSearchPath, this.props.category, this.props.search_content)
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
         if (!_.isEqual(this.props.search_content, nextProps.search_content) || nextProps.is_force) {
-            this.getTabList(nextProps.userEmpId, nextProps.teslaSearchPath, nextProps.category, nextProps.search_content)
+            this.getTabList(nextProps.userEmpId, nextProps.sreworksSearchPath, nextProps.category, nextProps.search_content)
         }
         this.setState({
             isVisible: nextProps.isVisible
@@ -80,7 +80,7 @@ class TabsRender extends Component {
                                         <TabContentListRender
                                             key={`${item.type}${item.count}`}
                                             userEmpId={this.props.userEmpId}
-                                            teslaSearchPath={this.state.teslaSearchPath}
+                                            sreworksSearchPath={this.state.sreworksSearchPath}
                                             category={this.state.category}
                                             moreLinkPrefix={this.state.moreLinkPrefix}
                                             search_content={this.state.search_content}
@@ -106,7 +106,7 @@ TabsRender.propTypes = {
     userEmpId: PropTypes.string,
     is_force: PropTypes.bool,
     category: PropTypes.string,
-    teslaSearchPath: PropTypes.string,
+    sreworksSearchPath: PropTypes.string,
     search_content: PropTypes.string,
     moreLinkPrefix: PropTypes.string,
 };

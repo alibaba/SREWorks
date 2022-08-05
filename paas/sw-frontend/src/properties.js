@@ -39,9 +39,9 @@
   */
  // 本地开发环境配置
  const development = {
-     baseUrl: 'https://sreworks.c38cca9c474484bdc9873f44f733d8bcd.cn-beijing.alicontainer.com/',
-     apiEndpoint: 'https://sreworks.c38cca9c474484bdc9873f44f733d8bcd.cn-beijing.alicontainer.com/',
-     gateway: 'https://sreworks.c38cca9c474484bdc9873f44f733d8bcd.cn-beijing.alicontainer.com/'
+     baseUrl: '',
+     apiEndpoint: '',
+     gateway: ''
  };
  // 日常环境配置项
  const daily = {
@@ -112,6 +112,7 @@
  
  //导出给组件库使用
  window.__TESLA_COMPONENT_LIB_CONFIG = properties;
+ window.__SREWORKS_COMPONENT_LIB_CONFIG = properties;
  
  export default properties;
  

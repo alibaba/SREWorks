@@ -6,7 +6,7 @@ import appService from '../core/services/appService'
 import properties from 'appRoot/properties';
 import cacheRepository from '../utils/cacheRepository';
 
-let themeType = localStorage.getItem('tesla-theme') ? localStorage.getItem('tesla-theme') : 'light';
+let themeType = localStorage.getItem('sreworks-theme') ? localStorage.getItem('sreworks-theme') : 'light';
 //let themeType ='dark';
 export default {
     namespace: 'global',
@@ -119,7 +119,7 @@ export default {
             }
         },
         switchTheme(state, { theme }) {
-            localStorage.setItem('tesla-theme', theme);
+            localStorage.setItem('sreworks-theme', theme);
             return {
                 ...state,
                 theme: theme,

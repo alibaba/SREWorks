@@ -94,7 +94,7 @@ const DefaultHeader = ({ siderFold, siderRespons, theme, siderOpenKeys, menuResp
                     <MenuItemGroup title={localeHelper.get("common.theme.setting", "主题设置")}>
                         <Menu.Item key="theme">
                             <Switch onChange={onSwitchTheme}
-                                defaultChecked={localStorage.getItem("tesla-theme") === "light"}
+                                defaultChecked={localStorage.getItem("sreworks-theme") === "light"}
                                 size="small" checkedChildren="亮"
                                 unCheckedChildren="暗" />
                         </Menu.Item>

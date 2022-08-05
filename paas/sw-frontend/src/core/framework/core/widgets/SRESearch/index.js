@@ -91,7 +91,7 @@ class SRESearch extends Component {
     }
   };
   componentWillMount() {
-    // this.getHotKeywords(this.props.userEmpId, this.props.teslaSearchPath, this.props.category, 10);
+    // this.getHotKeywords(this.props.userEmpId, this.props.sreworksSearchPath, this.props.category, 10);
     // if (this.props.isShowKeywords) {
     //   this.getCommonKeywords();
     // }
@@ -171,7 +171,7 @@ class SRESearch extends Component {
 SRESearch.propTypes = {
   userEmpId: PropTypes.string,
   category: PropTypes.string,
-  teslaSearchPath: PropTypes.string,
+  sreworksSearchPath: PropTypes.string,
   placeholder: PropTypes.string,
   moreLinkPrefix: PropTypes.string,
   className: PropTypes.string,

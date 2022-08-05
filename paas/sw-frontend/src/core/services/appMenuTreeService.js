@@ -24,7 +24,7 @@ function getHeader(app) {
     }
 }
 function getProductName(){
-    //从路径获取应用名,如果没有则默认为tesla主站
+    //从路径获取应用名,如果没有则默认为sreworks主站
     let productName=window.location.hash.split("/")[1];
     if(!productName) {
         if(properties.defaultProduct&&!properties.defaultProduct.includes("$")){

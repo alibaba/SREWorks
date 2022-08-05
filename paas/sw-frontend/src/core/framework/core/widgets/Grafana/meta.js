@@ -36,14 +36,14 @@ export default {
     "defaults": {
       "type": "Alert",
       "config": {
-        "url": "https://tesla.alibaba-inc.com/m3/d/Q3EsbbLiz/teslaliu-cheng-ping-tai-bao-biao?from=1544025600000&orgId=1&to=1544189013000&panelId=1&embedded&submenu",
+        "url": "",
       },
     },
     "schema": {
       "type": "object",
       "properties": {
         "url": {
-          "description": "",
+          "description": "Grafana链接地址,该组件提供一个iframe容器，需将Grafana链接地址配置到此处",
           "title": "Grafana链接地址",
           "required": true,
           "x-component": "Text",

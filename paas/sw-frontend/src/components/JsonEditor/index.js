@@ -76,7 +76,7 @@ export default class JsonEditor extends Component {
     }
 
     render() {
-        let {style={},theme=localStorage.getItem('tesla-theme')}=this.props;
+        let {style={},theme=localStorage.getItem('sreworks-theme')}=this.props;
         return <div ref={r => this.container = r} className={"jsoneditor_darkTheme"} style={style}/>;
     }
 }

@@ -32,12 +32,6 @@ class FormElementAPI {
         })
     }
 
-    getRequireList(query) {
-        return httpClient.post('tesla-portal/workorder/require/workOrders', query).then(res => {
-            return { success: true, data: res };
-        });
-    }
-
     getItemData(url, params) {
         return httpClient.get(url, {
             params: params

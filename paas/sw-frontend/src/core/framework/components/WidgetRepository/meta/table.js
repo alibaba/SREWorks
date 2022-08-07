@@ -172,9 +172,10 @@ export default {
                     }
                 },
                 "rowColorMapping": {
-                    "description": "根据行数据中的值显示指定颜色,只支持'green','blue','red','yellow'和'themeColor'五种颜色,格式{dataIndex:值key,mapping:{'值1':'green'}}",
+                    "description": "根据行数据中的值显示指定颜色,支持green,blue,red,yellow和themeColor五种颜色",
                     "title": "行颜色定义",
                     "required": false,
+                    "initValue": {"dataIndex":"key","mapping":{"value1":"green"}},
                     "x-component": "JSON",
                     "type": "string",
                 },

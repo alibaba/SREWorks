@@ -19,11 +19,11 @@ import OamWidget from '../../../../../core/framework/OamWidget';
 import DefaultItemToolbar from '../../../../../core/framework/core/DefaultItemToolbar';
 import PagedTable from './PagedTable';
 
-const rowClassMapping={
-    "red":"bg_red",
-    "blue":"bg_blue",
-    "green":"bg_green",
-    "yellow":"bg_yellow",
+const rowClassMapping = {
+    "red": "bg_red",
+    "blue": "bg_blue",
+    "green": "bg_green",
+    "yellow": "bg_yellow",
     "themeColor": "bg_theme"
 };
 
@@ -359,7 +359,7 @@ class SimpleTable extends React.Component {
         if (filterParams) {
             tableParams.filters = filterParams
         }
-        let dynamiConf = {}, { outputs, selectable = {}, checkbox, border, headerActions, headerLinks, title, api, footerActions, customPagination = {}, expandedRow, size = "small", bordered = false,rowColorMapping } = mode.config;
+        let dynamiConf = {}, { outputs, selectable = {}, checkbox, border, headerActions, headerLinks, title, api, footerActions, customPagination = {}, expandedRow, size = "small", bordered = false, rowColorMapping } = mode.config;
         if (outputs && (checkbox !== false && checkbox !== 'false') && outputs.length) {
             let rowSelection = {};
             //rowSelection.type=selectable.type||'checkbox';
@@ -368,12 +368,16 @@ class SimpleTable extends React.Component {
             dynamiConf.rowSelection = rowSelection;
         }
         //行根据值显示不同的颜色
-        if (rowColorMapping && Object.keys(rowColorMapping).length > 0) {
+        if (rowColorMapping && Object.keys(rowColorMapping).length > 0 && rowColorMapping.dataIndex) {
             let colorMappingKey = rowColorMapping.dataIndex;
             dynamiConf.rowClassName = (record, index) => {
                 //数字/boolean类型无法做key因此转为字符串
-                let keyValue = _.get(record, colorMappingKey) + "";
-                return rowClassMapping[rowColorMapping.mapping[keyValue]]
+                try {
+                    let keyValue = _.get(record, colorMappingKey) + "";
+                    return rowClassMapping[rowColorMapping.mapping[keyValue]]
+                } catch (err) {
+                    return ""
+                }
             }
         }
         if (selectable.type === 'click') {

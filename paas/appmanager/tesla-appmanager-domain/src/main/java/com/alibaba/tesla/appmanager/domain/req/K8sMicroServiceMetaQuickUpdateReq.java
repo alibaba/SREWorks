@@ -1,10 +1,7 @@
 package com.alibaba.tesla.appmanager.domain.req;
 
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
-import com.alibaba.tesla.appmanager.domain.dto.ImagePushDTO;
-import com.alibaba.tesla.appmanager.domain.dto.InitContainerDTO;
-import com.alibaba.tesla.appmanager.domain.dto.LaunchDTO;
-import com.alibaba.tesla.appmanager.domain.dto.RepoDTO;
+import com.alibaba.tesla.appmanager.domain.dto.*;
 import lombok.Data;
 
 import java.util.List;
@@ -65,9 +62,19 @@ public class K8sMicroServiceMetaQuickUpdateReq {
     private String arch;
 
     /**
-     * 类型
+     * 类型 (Deployment/StatefulSet/CloneSet/AdvancedStatefulSet)
      */
     private String kind;
+
+    /**
+     * 环境变量定义
+     */
+    private List<EnvMetaDTO> envList;
+
+    /**
+     * 构建对象
+     */
+    private List<ContainerObjectDTO> containerObjectList;
 
     /**
      * 初始化容器对象

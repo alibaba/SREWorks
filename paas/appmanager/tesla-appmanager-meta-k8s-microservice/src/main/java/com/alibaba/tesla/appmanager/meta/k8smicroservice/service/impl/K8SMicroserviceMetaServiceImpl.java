@@ -1,5 +1,8 @@
 package com.alibaba.tesla.appmanager.meta.k8smicroservice.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
+import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.K8sMicroServiceMetaRepository;
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.condition.K8sMicroserviceMetaQueryCondition;
@@ -37,6 +40,26 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
     }
 
     /**
+     * 根据条件获取单个微应用元信息
+     *
+     * @param condition 过滤条件
+     * @return K8sMicroServiceMetaDO
+     */
+    @Override
+    public K8sMicroServiceMetaDO get(K8sMicroserviceMetaQueryCondition condition) {
+        List<K8sMicroServiceMetaDO> metaList = k8sMicroServiceMetaRepository.selectByCondition(condition);
+        if (metaList.size() == 0) {
+            return null;
+        } else if (metaList.size() == 1) {
+            return metaList.get(0);
+        } else {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("multiple k8s microservice meta found, abort|condition=%s",
+                            JSONObject.toJSONString(condition)));
+        }
+    }
+
+    /**
      * 根据主键 ID 获取微应用元信息
      *
      * @param id 微应用元信息主键 ID
@@ -52,18 +75,20 @@ public class K8SMicroserviceMetaServiceImpl implements K8sMicroserviceMetaServic
      *
      * @param appId          应用 ID
      * @param microServiceId 微服务标识
+     * @param arch           架构
      * @param namespaceId    Namespace ID
      * @param stageId        Stage ID
      * @return K8sMicroServiceMetaDO
      */
     @Override
     public K8sMicroServiceMetaDO getByMicroServiceId(
-            String appId, String microServiceId, String namespaceId, String stageId) {
+            String appId, String microServiceId, String arch, String namespaceId, String stageId) {
         K8sMicroserviceMetaQueryCondition condition = K8sMicroserviceMetaQueryCondition.builder()
                 .microServiceId(microServiceId)
                 .appId(appId)
                 .namespaceId(namespaceId)
                 .stageId(stageId)
+                .arch(arch)
                 .withBlobs(true)
                 .build();
         List<K8sMicroServiceMetaDO> metaList = k8sMicroServiceMetaRepository.selectByCondition(condition);

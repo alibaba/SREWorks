@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.meta.k8smicroservice.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.K8sMicroServiceMetaProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
@@ -7,11 +8,13 @@ import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.ContainerTypeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.dto.ContainerObjectDTO;
 import com.alibaba.tesla.appmanager.domain.dto.K8sMicroServiceMetaDTO;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQuickUpdateReq;
+import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaUpdateByOptionReq;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaUpdateReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.google.common.collect.ImmutableMap;
@@ -20,7 +23,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.yaml.snakeyaml.Yaml;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -142,6 +147,33 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
         request.setComponentType(ComponentTypeEnum.K8S_MICROSERVICE);
         request.setName(request.getMicroServiceId());
         K8sMicroServiceMetaDTO result = metaProvider.update(request);
+        return buildSucceedResult(result);
+    }
+
+    @PostMapping(params = {"type"})
+    public TeslaBaseResult createByYaml(
+            @PathVariable String appId,
+            @RequestParam("type") String type,
+            @RequestBody String bodyStr,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
+        if (StringUtils.isEmpty(type) || !type.equals("yaml")) {
+            return buildClientErrorResult("invalid type parameter");
+        }
+
+        Yaml yaml = SchemaUtil.createYaml(JSONArray.class);
+        List<JSONObject> body = JSONArray.parseArray(JSONArray.toJSONString(yaml.loadAll(bodyStr)), JSONObject.class);
+        List<K8sMicroServiceMetaDTO> result = new ArrayList<>();
+        for (JSONObject options : body) {
+            result.addAll(metaProvider.updateByOption(K8sMicroServiceMetaUpdateByOptionReq.builder()
+                    .appId(appId)
+                    .namespaceId(namespaceId)
+                    .stageId(stageId)
+                    .body(options)
+                    .build()));
+        }
         return buildSucceedResult(result);
     }
 

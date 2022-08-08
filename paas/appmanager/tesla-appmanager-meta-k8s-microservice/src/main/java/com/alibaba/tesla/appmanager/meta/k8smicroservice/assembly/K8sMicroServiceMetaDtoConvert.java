@@ -3,7 +3,6 @@ package com.alibaba.tesla.appmanager.meta.k8smicroservice.assembly;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.tesla.appmanager.autoconfig.SystemProperties;
 import com.alibaba.tesla.appmanager.common.assembly.BaseDtoConvert;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
@@ -14,8 +13,9 @@ import com.alibaba.tesla.appmanager.common.util.ClassUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.dto.*;
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.domain.K8sMicroServiceMetaDO;
-import com.alibaba.tesla.dag.common.BeanUtil;
+import com.google.common.base.Enums;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -144,6 +144,8 @@ public class K8sMicroServiceMetaDtoConvert extends BaseDtoConvert<K8sMicroServic
             tempEnvList = dto.getEnvKeyList().stream()
                     .map(envKey -> EnvMetaDTO.builder()
                             .name(envKey)
+                            .defaultValue("")
+                            .comment(envKey)
                             .build())
                     .collect(Collectors.toList());
         }
@@ -163,6 +165,168 @@ public class K8sMicroServiceMetaDtoConvert extends BaseDtoConvert<K8sMicroServic
         result.setMicroServiceExt(extStr);
         result.setOptions(optionStr);
         return result;
+    }
+
+    /**
+     * 从 options 解析出 DTO 对象
+     *
+     * @param body        Options (build.yaml)
+     * @param appId       应用 ID
+     * @param namespaceId Namespace ID
+     * @param stageId     Stage ID
+     * @return DTO 对象
+     */
+    public List<K8sMicroServiceMetaDTO> to(JSONObject body, String appId, String namespaceId, String stageId) {
+        String componentType = body.getString("componentType");
+        String componentName = body.getString("componentName");
+        JSONObject options = body.getJSONObject("options");
+        if (StringUtils.isAnyEmpty(componentType, componentName) || options == null) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    "componentType/componentName/options are required in body");
+        }
+
+        // 解析 arch 对象列表
+        JSONObject archMap = options.getJSONObject("arch");
+        List<JSONObject> rawOptions = new ArrayList<>();
+        if (archMap == null) {
+            options.put("arch", DefaultConstant.DEFAULT_ARCH);
+            rawOptions.add(options);
+        } else {
+            for (String arch : archMap.keySet()) {
+                JSONObject current = archMap.getJSONObject(arch);
+                current.put("arch", arch);
+                rawOptions.add(current);
+            }
+        }
+
+        // 生成 DTO 对象列表
+        List<K8sMicroServiceMetaDTO> results = new ArrayList<>();
+        for (JSONObject rawOption : rawOptions) {
+            K8sMicroServiceMetaDTO current = new K8sMicroServiceMetaDTO();
+
+            // 基础信息
+            current.setAppId(appId);
+            current.setNamespaceId(namespaceId);
+            current.setStageId(stageId);
+            current.setMicroServiceId(componentName);
+            current.setName(componentName);
+            current.setDescription(componentName);
+            current.setComponentType(Enums.getIfPresent(ComponentTypeEnum.class, componentType).orNull());
+            if (current.getComponentType() == null) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                        String.format("invalid component type in microservice %s", componentName));
+            }
+
+            // basis
+            String arch = rawOption.getString("arch");
+            String kind = rawOption.getString("kind");
+            if (StringUtils.isEmpty(kind)) {
+                kind = "Deployment";
+            }
+            current.setKind(kind);
+            current.setArch(arch);
+
+            // 环境变量
+            JSONArray envArray = options.getJSONArray("env");
+            List<EnvMetaDTO> envList = new ArrayList<>();
+            if (CollectionUtils.isNotEmpty(envArray)) {
+                envArray.forEach(envObject -> envList.add(EnvMetaDTO.builder()
+                        .name(envObject.toString())
+                        .comment(envObject.toString())
+                        .defaultValue("")
+                        .build()));
+            }
+            current.setEnvList(envList);
+
+            // initContainers/containers/job
+            JSONObject lastBuild = null;
+            List<ContainerObjectDTO> containerObjectList = new ArrayList<>();
+            JSONArray initContainers = rawOption.getJSONArray("initContainers");
+            if (CollectionUtils.isNotEmpty(initContainers)) {
+                for (int i = 0; i < initContainers.size(); i++) {
+                    lastBuild = initContainers.getJSONObject(i).getJSONObject("build");
+                    containerObjectList.add(
+                            getContainerObjectDTO(initContainers.getJSONObject(i), ContainerTypeEnum.INIT_CONTAINER));
+                }
+            }
+            JSONArray containers = rawOption.getJSONArray("containers");
+            if (CollectionUtils.isNotEmpty(containers)) {
+                for (int i = 0; i < containers.size(); i++) {
+                    lastBuild = containers.getJSONObject(i).getJSONObject("build");
+                    containerObjectList.add(
+                            getContainerObjectDTO(containers.getJSONObject(i), ContainerTypeEnum.CONTAINER));
+                }
+            }
+            JSONObject job = rawOption.getJSONObject("job");
+            if (job != null) {
+                lastBuild = job.getJSONObject("build");
+                containerObjectList.add(getContainerObjectDTO(job, ContainerTypeEnum.K8S_JOB));
+            }
+            current.setContainerObjectList(containerObjectList);
+
+            // imagePushObject
+            if (lastBuild != null) {
+                String imagePushRegistry = lastBuild.getString("imagePushRegistry");
+                String dockerSecretName = lastBuild.getString("dockerSecretName");
+                boolean imagePushUseBranchAsTag = lastBuild.getBooleanValue("imagePushUseBranchAsTag");
+                if (StringUtils.isNotEmpty(imagePushRegistry)) {
+                    String[] arr = imagePushRegistry.split("/");
+                    if (arr.length != 2) {
+                        throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                "invalid imagePushRegistry in build object");
+                    }
+                    current.setImagePushObject(ImagePushDTO.builder()
+                            .dockerSecretName(dockerSecretName)
+                            .imagePushRegistry(ImagePushRegistryDTO.builder()
+                                    .dockerRegistry(arr[0])
+                                    .dockerNamespace(arr[1])
+                                    .useBranchAsTag(imagePushUseBranchAsTag)
+                                    .build())
+                            .build());
+                }
+            }
+
+            results.add(current);
+        }
+        return results;
+    }
+
+    /**
+     * options 对象中的 container 对象转换为 ContainerObjectDTO 对象
+     *
+     * @param container     Container JSONObject 对象
+     * @param containerType Container 类型
+     * @return ContainerObjectDTO
+     */
+    private ContainerObjectDTO getContainerObjectDTO(JSONObject container, ContainerTypeEnum containerType) {
+        ContainerObjectDTO containerObjectDTO = new ContainerObjectDTO();
+        containerObjectDTO.setContainerType(containerType);
+        containerObjectDTO.setName(container.getString("name"));
+
+        JSONObject build = container.getJSONObject("build");
+        containerObjectDTO.setRepo(build.getString("repo"));
+        containerObjectDTO.setBranch(build.getString("branch"));
+        containerObjectDTO.setDockerfileTemplate(build.getString("dockerfileTemplate"));
+
+        List<ArgMetaDTO> dockerfileTemplateArgs = new ArrayList<>();
+        if (MapUtils.isNotEmpty(build.getJSONObject("dockerfileTemplateArgs"))) {
+            build.getJSONObject("dockerfileTemplateArgs").forEach((k, v) ->
+                    dockerfileTemplateArgs.add(ArgMetaDTO.builder().name(k).value((String) v).build())
+            );
+        }
+
+        containerObjectDTO.setDockerfileTemplateArgs(dockerfileTemplateArgs);
+        List<ArgMetaDTO> buildArgs = new ArrayList<>();
+        if (MapUtils.isNotEmpty(build.getJSONObject("args"))) {
+            build.getJSONObject("args").forEach((k, v) -> buildArgs.add(ArgMetaDTO.builder().name(k)
+                    .value((String) v).build())
+            );
+        }
+        containerObjectDTO.setBuildArgs(buildArgs);
+        if (CollectionUtils.isNotEmpty(container.getJSONArray("command"))) {
+            containerObjectDTO.setCommand(container.getJSONArray("command").toJavaList(String.class));
+        }
+        return containerObjectDTO;
     }
 
     /**
@@ -316,14 +480,8 @@ public class K8sMicroServiceMetaDtoConvert extends BaseDtoConvert<K8sMicroServic
                 });
                 container.put("ports", ports);
             }
-            if (StringUtils.isNotEmpty(containerObjectDTO.getCommand())) {
-                if (StringUtils.isEmpty(containerObjectDTO.getCommand())) {
-                    container.put("command", new JSONArray());
-                } else {
-                    JSONArray commandArray = JSONArray.parseArray(JSONArray.toJSONString(
-                            containerObjectDTO.getCommand().split("\\s+")));
-                    container.put("command", commandArray);
-                }
+            if (containerObjectDTO.getCommand() != null) {
+                container.put("command", containerObjectDTO.getCommand());
             }
 
             if (componentType == ComponentTypeEnum.K8S_JOB) {
@@ -356,16 +514,12 @@ public class K8sMicroServiceMetaDtoConvert extends BaseDtoConvert<K8sMicroServic
      * @param build 构建对象
      */
     private static void addImagePushProperties(JSONObject build, ImagePushDTO imagePushObject) {
-        build.put("imagePush", true);
         if (Objects.nonNull(imagePushObject) && Objects.nonNull(imagePushObject.getImagePushRegistry())) {
             ImagePushRegistryDTO registry = imagePushObject.getImagePushRegistry();
+            build.put("imagePush", true);
             build.put("imagePushRegistry",
                     String.format("%s/%s", registry.getDockerRegistry(), registry.getDockerNamespace()));
             build.put("imagePushUseBranchAsTag", registry.isUseBranchAsTag());
-        } else {
-            SystemProperties systemProperties = BeanUtil.getBean(SystemProperties.class);
-            build.put("imagePushRegistry", String.format("%s/%s",
-                    systemProperties.getDockerRegistry(), systemProperties.getDockerNamespace()));
         }
     }
 }

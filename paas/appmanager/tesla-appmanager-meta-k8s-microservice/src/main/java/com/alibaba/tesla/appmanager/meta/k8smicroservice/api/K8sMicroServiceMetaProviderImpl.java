@@ -131,10 +131,6 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
     public K8sMicroServiceMetaDTO create(K8sMicroServiceMetaUpdateReq request) {
         K8sMicroServiceMetaDTO dto = new K8sMicroServiceMetaDTO();
         ClassUtil.copy(request, dto);
-
-        // TODO: 等待前端增加 imagePush 字段后删除 (for 弹内默认创建)
-        addImagePushForInternal(dto);
-
         return create(dto);
     }
 

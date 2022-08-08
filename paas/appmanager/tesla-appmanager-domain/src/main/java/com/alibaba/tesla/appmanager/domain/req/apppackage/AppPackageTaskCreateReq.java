@@ -53,5 +53,8 @@ public class AppPackageTaskCreateReq {
      */
     private boolean storeConfiguration = true;
 
+    /**
+     * 是否包含开发态内容
+     */
     private boolean develop;
 }

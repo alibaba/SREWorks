@@ -20,6 +20,14 @@ public interface K8sMicroserviceMetaService {
     Pagination<K8sMicroServiceMetaDO> list(K8sMicroserviceMetaQueryCondition condition);
 
     /**
+     * 根据条件获取单个微应用元信息
+     *
+     * @param condition 过滤条件
+     * @return K8sMicroServiceMetaDO
+     */
+    K8sMicroServiceMetaDO get(K8sMicroserviceMetaQueryCondition condition);
+
+    /**
      * 根据主键 ID 获取微应用元信息
      *
      * @param id 微应用元信息主键 ID
@@ -32,11 +40,13 @@ public interface K8sMicroserviceMetaService {
      *
      * @param appId 应用 ID
      * @param microServiceId 微服务标识
+     * @param arch 架构
      * @param namespaceId Namespace ID
      * @param stageId Stage ID
      * @return K8sMicroServiceMetaDO
      */
-    K8sMicroServiceMetaDO getByMicroServiceId(String appId, String microServiceId, String namespaceId, String stageId);
+    K8sMicroServiceMetaDO getByMicroServiceId(
+            String appId, String microServiceId, String arch, String namespaceId, String stageId);
 
     /**
      * 更新指定的微应用元信息

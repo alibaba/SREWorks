@@ -11,7 +11,6 @@ import com.alibaba.tesla.appmanager.common.exception.AppErrorCode
 import com.alibaba.tesla.appmanager.common.exception.AppException
 import com.alibaba.tesla.appmanager.common.util.NetworkUtil
 import com.alibaba.tesla.appmanager.common.util.ZipUtil
-import com.alibaba.tesla.appmanager.domain.dto.K8sMicroServiceMetaDTO
 import com.alibaba.tesla.appmanager.domain.req.AppAddonCreateReq
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQueryReq
 import com.alibaba.tesla.appmanager.domain.req.componentinstance.ReportRtComponentInstanceStatusReq
@@ -23,6 +22,7 @@ import com.alibaba.tesla.appmanager.meta.helm.repository.condition.HelmMetaQuery
 import com.alibaba.tesla.appmanager.meta.helm.repository.domain.HelmMetaDO
 import com.alibaba.tesla.appmanager.meta.helm.service.HelmMetaService
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.assembly.K8sMicroServiceMetaDtoConvert
+import com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.domain.K8sMicroServiceMetaDO
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.service.K8sMicroserviceMetaService
 import com.alibaba.tesla.appmanager.server.repository.condition.AppAddonQueryCondition
 import com.alibaba.tesla.appmanager.server.repository.domain.AppAddonDO
@@ -65,7 +65,7 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 17
+    public static final Integer REVISION = 18
 
     private static final String EXPORT_OPTION_FILE = "option.json"
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
@@ -113,7 +113,8 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
 
         // microservices
         if (data.getJSONArray("microservices") != null) {
-            for (dto in data.getJSONArray("microservices").toJavaList(K8sMicroServiceMetaDTO.class)) {
+            for (raw in data.getJSONArray("microservices").toJavaList(K8sMicroServiceMetaDO.class)) {
+                def dto = k8sMicroServiceMetaDtoConvert.to(raw)
                 def appId = dto.getAppId()
                 def microserviceId = dto.getMicroServiceId()
                 def namespaceId = dto.getNamespaceId()

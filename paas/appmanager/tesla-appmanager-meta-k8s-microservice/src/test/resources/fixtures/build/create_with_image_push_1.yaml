@@ -1,0 +1,21 @@
+componentType: K8S_MICROSERVICE
+componentName: paas-authproxy
+options:
+  arch:
+    x86:
+      containers:
+        - ports:
+            - containerPort: 7001
+          name: server
+          build:
+            imagePush: true
+            imagePushRegistry: test.com/abm-private-x86
+            imagePushUseBranchAsTag: true
+            args:
+              TAG: live
+            dockerfileTemplateArgs:
+              MAVEN_IMAGE: "test.com/abm-aone/maven"
+              JRE8_IMAGE: "test.com/abm-aone/openjdk8"
+            dockerfileTemplate: Dockerfile.tpl
+            branch: live
+            repo: http://gitlab.test.com/test/test.git

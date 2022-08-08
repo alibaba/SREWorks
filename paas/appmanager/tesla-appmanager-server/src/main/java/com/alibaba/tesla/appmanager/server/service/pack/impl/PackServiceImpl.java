@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.ComponentPackageProvider;
 import com.alibaba.tesla.appmanager.autoconfig.SystemProperties;
+import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.AppPackageTaskStatusEnum;
 import com.alibaba.tesla.appmanager.common.enums.ComponentPackageTaskStateEnum;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
@@ -306,11 +307,24 @@ public class PackServiceImpl implements PackService {
             log.error("action=packService|buildOptions4K8sMicroService|ERROR|message=app not exists|appId={}", appId);
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "app not exists");
         }
-        K8sMicroServiceMetaDO meta = microserviceMetaList.getItems().get(0);
+
+        // 如果存在多条 arch 记录，那么进行多 arch options 适配
         String dockerRegistry = systemProperties.getDockerRegistry();
         String dockerNamespace = systemProperties.getDockerNamespace();
-        return K8sMicroServiceUtil.replaceOptionsBranch(
-                meta.getComponentType(), meta.getOptions(), branch, dockerRegistry, dockerNamespace);
+        List<K8sMicroServiceMetaDO> items = microserviceMetaList.getItems();
+        JSONObject options = new JSONObject();
+        options.put("arch", new JSONObject());
+        for (K8sMicroServiceMetaDO item : items) {
+            String arch = item.getArch();
+            if (StringUtils.isEmpty(arch)) {
+                arch = DefaultConstant.DEFAULT_ARCH;
+            }
+            JSONObject current = K8sMicroServiceUtil.replaceOptionsBranch(
+                    item.getComponentType(), item.getOptions(), branch, dockerRegistry, dockerNamespace);
+            options.getJSONObject("arch").put(arch, current);
+        }
+        return options;
+
     }
 
     @Override

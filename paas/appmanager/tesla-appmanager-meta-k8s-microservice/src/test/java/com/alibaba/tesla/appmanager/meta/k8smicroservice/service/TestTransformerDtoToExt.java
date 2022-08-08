@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.meta.k8smicroservice.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.K8sMicroServiceMetaProvider;
+import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.ContainerTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.RepoTypeEnum;
@@ -122,6 +123,29 @@ public class TestTransformerDtoToExt {
      */
     @Test
     public void testTransformerForInternal() {
+        // 准备 DTO 对象
+        JSONObject ext = new JSONObject();
+        ext.put("imagePush", ImagePushDTO.builder()
+                .imagePushRegistry(ImagePushRegistryDTO.builder()
+                        .dockerRegistry("reg.docker.alibaba-inc.com")
+                        .dockerNamespace("abm-private-x86")
+                        .useBranchAsTag(true)
+                        .build())
+                .build());
+        Mockito.doReturn(K8sMicroServiceMetaDO.builder()
+                        .microServiceExt(ext.toJSONString())
+                        .build())
+                .when(metaService)
+                .get(K8sMicroserviceMetaQueryCondition.builder()
+                        .appId(APP_ID)
+                        .arch(ARCH)
+                        .microServiceId(MICROSERVICE_ID)
+                        .namespaceId(NAMESPACE_ID)
+                        .stageId(STAGE_ID)
+                        .withBlobs(true)
+                        .build());
+
+        // run
         K8sMicroServiceMetaDTO raw = generateMetaDTO(false);
         K8sMicroServiceMetaUpdateReq request = new K8sMicroServiceMetaUpdateReq();
         ClassUtil.copy(raw, request);
@@ -140,8 +164,10 @@ public class TestTransformerDtoToExt {
                 .namespaceId(NAMESPACE_ID)
                 .stageId(STAGE_ID)
                 .microServiceId(MICROSERVICE_ID)
+                .arch(DefaultConstant.DEFAULT_ARCH)
                 .build());
         JSONObject options = SchemaUtil.toSchema(JSONObject.class, meta.getOptions()).getJSONObject("options");
+        log.info("metaDO: {}", JSONObject.toJSONString(meta));
         assertThat(options.getJSONArray("containers").getJSONObject(0).getJSONObject("build").getBoolean("imagePush")).isTrue();
         assertThat(options.getJSONArray("containers").getJSONObject(0).getJSONObject("build").getString("imagePushRegistry")).isEqualTo("reg.docker.alibaba-inc.com/abm-private-x86");
         assertThat(options.getJSONArray("containers").getJSONObject(0).getJSONObject("build").getBoolean("imagePushUseBranchAsTag")).isTrue();

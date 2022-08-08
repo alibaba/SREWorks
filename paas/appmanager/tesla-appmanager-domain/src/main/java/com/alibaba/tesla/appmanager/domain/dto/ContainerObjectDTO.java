@@ -104,7 +104,7 @@ public class ContainerObjectDTO {
     /**
      * 命令行定义
      */
-    private String command;
+    private List<String> command;
 
     /**
      * 开发语言

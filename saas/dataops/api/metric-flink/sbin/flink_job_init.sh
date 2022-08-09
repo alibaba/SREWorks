@@ -7,6 +7,9 @@ do
     sleep 10
 done
 
+###### S3 bucket
+$JOB_ROOT/mc alias set sw http://${MINIO_ENDPOINT} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}
+$JOB_ROOT/mc mb -p sw/vvp
 
 ###### CREATE UDF ARTIFACT
 echo "============CREATE UDF ARTIFACT============"
@@ -106,7 +109,7 @@ curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:exe
 curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:execute \
    -X POST \
    -H 'Content-Type: application/json' \
-   -d '{"statement":"CREATE TABLE `vvp`.`'${VVP_WORK_NS}'`.`sink_dwd_metric_data_es` (`id` STRING, `uid` STRING, `metric_id` INT, `metric_name` STRING, `labels` MAP<STRING, STRING>, `value` FLOAT, `type` STRING, `timestamp` BIGINT, `ds` STRING, PRIMARY KEY (`id`) NOT ENFORCED ) COMMENT '\''数仓指标数据结果表'\''WITH ('\''connector'\'' = '\''elasticsearch-7'\'', '\''hosts'\'' = '\''http://'${DATA_ES_HOST}':'${DATA_ES_PORT}''\'', '\''index'\'' = '\''dwd_original_metric_data_di'\'', '\''username'\'' = '\'''${DATA_ES_USER}''\'', '\''password'\'' = '\'''${DATA_ES_PASSWORD}'.'\'', '\''format'\'' = '\''json'\'');"}'
+   -d '{"statement":"CREATE TABLE `vvp`.`'${VVP_WORK_NS}'`.`sink_dwd_metric_data_es` (`id` STRING, `uid` STRING, `metric_id` INT, `metric_name` STRING, `labels` MAP<STRING, STRING>, `value` FLOAT, `type` STRING, `timestamp` BIGINT, `ds` STRING, PRIMARY KEY (`id`) NOT ENFORCED ) COMMENT '\''数仓指标数据结果表'\''WITH ('\''connector'\'' = '\''elasticsearch-7'\'', '\''hosts'\'' = '\''http://'${DATA_ES_HOST}':'${DATA_ES_PORT}''\'', '\''index'\'' = '\''dwd_original_metric_data_di'\'', '\''username'\'' = '\'''${DATA_ES_USER}''\'', '\''password'\'' = '\'''${DATA_ES_PASSWORD}''\'', '\''format'\'' = '\''json'\'');"}'
 
 curl http://${VVP_ENDPOINT}/sql/v1beta1/namespaces/${VVP_WORK_NS}/sqlscripts:execute \
    -X POST \
@@ -209,3 +212,20 @@ curl http://${VVP_ENDPOINT}/api/v1/namespaces/${VVP_WORK_NS}/deployments \
     -H "Content-Type: application/yaml" \
     -H "Accept: application/yaml" \
     --data-binary @/app/sbin/vvp-resources/deployment_failure.yaml
+
+
+echo "============CREATE PARSED PMDB METRIC DATA DEPLOYMENT============"
+envsubst < ${JOB_ROOT}/vvp-resources/deployment_parse_pmdb_metric_data.yaml.tpl > ${JOB_ROOT}/vvp-resources/deployment_parse_pmdb_metric_data.yaml
+curl http://${VVP_ENDPOINT}/api/v1/namespaces/${VVP_WORK_NS}/deployments \
+    -X POST \
+    -H "Content-Type: application/yaml" \
+    -H "Accept: application/yaml" \
+    --data-binary @/app/sbin/vvp-resources/deployment_parse_pmdb_metric_data.yaml
+
+echo "============CREATE PUSH PMDB METRIC DATA DEPLOYMENT============"
+envsubst < ${JOB_ROOT}/vvp-resources/deployment_push_pmdb_metric_data.yaml.tpl > ${JOB_ROOT}/vvp-resources/deployment_push_pmdb_metric_data.yaml
+curl http://${VVP_ENDPOINT}/api/v1/namespaces/${VVP_WORK_NS}/deployments \
+    -X POST \
+    -H "Content-Type: application/yaml" \
+    -H "Accept: application/yaml" \
+    --data-binary @/app/sbin/vvp-resources/deployment_push_pmdb_metric_data.yaml

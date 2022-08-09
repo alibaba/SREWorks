@@ -29,6 +29,9 @@ spec:
       org.apache.flink.streaming.examples: DEBUG
   kubernetes:
     pods:
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '9249'
       envVars:
       - name: KEY
         value: VALUE

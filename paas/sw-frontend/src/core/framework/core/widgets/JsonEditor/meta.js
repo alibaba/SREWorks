@@ -32,7 +32,7 @@ export default {
       "defaults": {
         "type": "JsonEditor",
         "config": {
-        "url": "https://tesla.alibaba-inc.com/m3/d/Q3EsbbLiz/teslaliu-cheng-ping-tai-bao-biao?from=1544025600000&orgId=1&to=1544189013000&panelId=1&embedded&submenu",
+        "url": ""
         },
       },
       "schema": {

@@ -15,7 +15,7 @@ import { Popover } from 'antd';
 import SearchService from '../services/service';
 
 
-let WrapLog = (NeedLogComponent, teslaSearchPath) => {
+let WrapLog = (NeedLogComponent, sreworksSearchPath) => {
 
 
     class InnerComponent extends Component {

@@ -26,7 +26,7 @@ const formItemLayout = {
         md: { span: 16 },
     },
 };
-let themeType = localStorage.getItem('tesla-theme');
+let themeType = localStorage.getItem('sreworks-theme');
 export default class SearchParamsEditor extends Component {
     constructor(props) {
         super(props);

@@ -1,5 +1,54 @@
 from kubernetes import client, config
 import time
+import os
+from oauthlib.oauth2 import LegacyApplicationClient
+from requests_oauthlib import OAuth2Session
+from datetime import datetime
+
+CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
+ENDPOINT = 'http://sreworks-appmanager'
+# CLIENT_ID = os.getenv('APPMANAGER_CLIENT_ID')
+CLIENT_ID = "superclient"
+# CLIENT_SECRET = os.getenv('APPMANAGER_CLIENT_SECRET')
+CLIENT_SECRET = "stLCjCPKbWmki65DsAj2jPoeBLPimpJa"
+# USERNAME = os.getenv('APPMANAGER_ACCESS_ID')
+USERNAME = "superuser"
+# PASSWORD = os.getenv('APPMANAGER_ACCESS_SECRET')
+PASSWORD = "yJfIYmjAiCL0ondV3kY7e5x6kVTpvC3h"
+
+appSet = {'health','search','ocenter','aiops','app','upload','help','dataops','job','cluster','team','system','healing'}
+jobSet = {'health','search','ocenter','aiops','app','upload','help','dataops','job','cluster','team','system','healing','core'}
+core = {'template','swadmin','desktop'}
+jobSum = 14
+
+class AppManagerClient(object):
+
+    def __init__(self, endpoint, client_id, client_secret, username, password):
+        os.environ.setdefault('OAUTHLIB_INSECURE_TRANSPORT', '1')
+        self._endpoint = endpoint
+        self._client_id = client_id
+        self._client_secret = client_secret
+        self._username = username
+        self._password = password
+        self._token = self._fetch_token()
+
+    @property
+    def client(self):
+        return OAuth2Session(self._client_id, token=self._token)
+
+    def _fetch_token(self):
+        """
+        获取 appmanager access token
+        """
+        oauth = OAuth2Session(client=LegacyApplicationClient(client_id=CLIENT_ID))
+        return oauth.fetch_token(
+            token_url=os.path.join(ENDPOINT, 'oauth/token'),
+            username=self._username,
+            password=self._password,
+            client_id=self._client_id,
+            client_secret=self._client_secret
+        )
+
 
 class KubernetesTools(object):
     def __init__(self):
@@ -24,6 +73,17 @@ class KubernetesTools(object):
                 continue
             events.append(item)
         return events
+
+    def get_init_time(self):
+        cms = self.core.list_namespaced_config_map("sreworks")
+        t = 0
+        for cm in cms.items:
+            if cm.metadata.name == "init-configmap":
+                t = cm.metadata.creation_timestamp
+                break
+        t = t.strftime("%Y-%m-%d %H:%M:%S")
+        t = datetime.strptime(t,"%Y-%m-%d %H:%M:%S")
+        return t
 
 
 class Diagnosis(object):
@@ -80,51 +140,87 @@ class Diagnosis(object):
 
         return "123"
 
+    # 场景3. 检查appmanager运行是否正常,初始化是否完成
     def check_appmanager(self):
+        try:
+            appmanagerClient = AppManagerClient(ENDPOINT, CLIENT_ID, CLIENT_SECRET, USERNAME, PASSWORD)
+        except Exception:
+            return None
+        return appmanagerClient
 
-        # 场景3. 检查appmanager运行是否正常,初始化是否完成
-
-        return "123"
 
 
-def process_check(ktools: KubernetesTools, last_info) -> bool:
-    apps = set()
+
+def process_check(ktools: KubernetesTools, appmanagerClient: AppManagerClient, last_info) -> bool:
     completed_apps = set()
+    completed_jobs = set()
+    uncompleted_jobs = set()
 
     for job in ktools.batch.list_namespaced_job(namespace='sreworks').items:
         if not job.metadata.name.endswith("-init-job"):
             continue
         app_name = job.metadata.name.replace('-init-job', '').replace('sreworks-saas-', '').replace('sreworks-', '')
-        apps.add(app_name)
+        if app_name == 'demoapp':
+            continue
         if job.status.succeeded == 1:
             completed_apps.add(app_name)
+        else:
+            uncompleted_jobs.add(app_name)
+    unknown_jobs = jobSet - completed_jobs - uncompleted_jobs
+    if unknown_jobs:
+        res = appmanagerClient.client.get(
+            ENDPOINT + "/realtime/app-instances?stageId=pre,prod&optionKey=source&optionValue=swadmin&page=1&pageSize=100")
+        appDatas = res.json()
+        for v in appDatas['data']['items']:
+            if v['status'] != 'PENDING' and v['status'] != 'ERROR':
+                completed_apps.add(v['appId'])
+        for j in unknown_jobs:
+            if j in completed_apps:
+                completed_jobs.add(j)
+            else:
+                flag = 1
+                for c in core:
+                    if c not in completed_apps:
+                        flag = 0
+                if flag:
+                    completed_jobs.add(j)
+                else:
+                    uncompleted_jobs.add(j)
 
     message = last_info["diagnosis"].execute()
 
     stdout = ''
-    stdout += 'Progress: %.2f%% \n' % (len(completed_apps) / len(apps) * 100.0)
-    stdout += 'Installing: %s \n' % ' | '.join(apps - completed_apps)
-    stdout += 'Finished: %s \n' % ' | '.join(completed_apps)
+    stdout += 'Progress: %.2f%% \n' % (len(completed_jobs) / jobSum * 100.0)
+    stdout += 'Installing: %s \n' % ' | '.join(uncompleted_jobs)
+    stdout += 'Finished: %s \n' % ' | '.join(completed_jobs)
     if message is not None:
         stdout += 'Message: %s \n' % message
 
     if last_info["stdout"] != stdout:
-        print("%sUseTime: %s\n" % (stdout, int(time.time()) - last_info["start_time"]))
+        print("%sUseTime: %s\n" % (stdout, str(datetime.now() - last_info["start_time"]).split(".")[0]))
         last_info["stdout"] = stdout
 
-    if apps == completed_apps:
+    if jobSet == completed_jobs:
         return False
 
     return True
 
 
 if __name__ == '__main__':
-    # config.load_kube_config()        # 在服务器上使用该方法
-    config.load_incluster_config()       # 在pod中用该方法
+    # config.load_kube_config()  # 在服务器上使用该方法
+    config.load_incluster_config()  # 在pod中用该方法
     ktools = KubernetesTools()
-    diagnosis = Diagnosis(ktools)
+    diagnosis = Diagnosis(ktools)  # 诊断类
+    appmanagerClient = diagnosis.check_appmanager()
+    if not appmanagerClient:
+        print('Waiting for appmanager initialization.')
+    # 检测appmanager是否初始化结束
+    while not appmanagerClient:
+        time.sleep(20)
+        appmanagerClient = diagnosis.check_appmanager()
 
-    last_info = {"stdout": "", "start_time": int(time.time()), "diagnosis": diagnosis}
-
-    while process_check(ktools, last_info):
+    t=ktools.get_init_time()
+    last_info = {"stdout": "", "start_time": t, "diagnosis": diagnosis}
+    while process_check(ktools,appmanagerClient, last_info):
         time.sleep(10)
+    print("SREWorks installation is complete!")

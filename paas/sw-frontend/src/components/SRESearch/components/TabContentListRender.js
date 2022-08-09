@@ -37,7 +37,7 @@ class TabContentListRender extends Component {
     this.setState({
       loading: true,
     });
-    SearchService.searchTypeElements(this.props.userEmpId, this.props.teslaSearchPath, this.props.category, this.props.search_content, this.props.type, page, 10)
+    SearchService.searchTypeElements(this.props.userEmpId, this.props.sreworksSearchPath, this.props.category, this.props.search_content, this.props.type, page, 10)
       .then(res => {
         if (res.length === 0) {
           this.setState({
@@ -63,7 +63,7 @@ class TabContentListRender extends Component {
 
   render() {
 
-    const WrapLogA = WrapLog("a", this.props.teslaSearchPath);
+    const WrapLogA = WrapLog("a", this.props.sreworksSearchPath);
     const search_content = this.props.search_content;
 
     RegExp.quote = function (str) {
@@ -154,7 +154,7 @@ class TabContentListRender extends Component {
 
 TabContentListRender.propTypes = {
   userEmpId: PropTypes.string,
-  teslaSearchPath: PropTypes.string,
+  sreworksSearchPath: PropTypes.string,
   category: PropTypes.string,
   moreLinkPrefix: PropTypes.string,
   search_content: PropTypes.string,

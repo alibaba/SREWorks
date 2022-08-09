@@ -87,7 +87,6 @@ export default class GridCheckBox extends React.Component {
         }
       });
     }
-    console.log(checkedMap, 'app-store')
     this.setState({
       checkedMap,
     });

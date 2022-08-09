@@ -83,9 +83,9 @@ module.exports = {
             path.resolve(info.absoluteResourcePath).replace(/\\/g, '/'),
     },
     optimization: {
-        splitChunks: {
-            chunks: "all"
-        },
+        // splitChunks: {
+        //     chunks: "all"
+        // },
         namedModules: true,
         nodeEnv: 'development'
     },

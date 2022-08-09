@@ -8,9 +8,9 @@ import httpClient from "../../../utils/httpClient";
 class Service {
 
 
-  searchTypeList(userEmpId, teslaSearchPath, category, search_content) {
+  searchTypeList(userEmpId, sreworksSearchPath, category, search_content) {
     // httpClient.get("gateway/v2/foundation/appmanager/instances", {params: params})
-    return httpClient.get(`${teslaSearchPath}/teslasearch/query/node_nums_group_by_type`,
+    return httpClient.get(`${sreworksSearchPath}/teslasearch/query/node_nums_group_by_type`,
       {
         params: {
           _userEmpId: userEmpId,
@@ -20,8 +20,8 @@ class Service {
       });
   }
 
-  searchTypeElements(userEmpId, teslaSearchPath, category, search_content, type, page, pageSize) {
-    return httpClient.get(`${teslaSearchPath}/teslasearch/query/query_nodes_from_size_add_exlink`,
+  searchTypeElements(userEmpId, sreworksSearchPath, category, search_content, type, page, pageSize) {
+    return httpClient.get(`${sreworksSearchPath}/teslasearch/query/query_nodes_from_size_add_exlink`,
       {
         params: {
           _userEmpId: userEmpId,
@@ -34,8 +34,8 @@ class Service {
       });
   }
 
-  searchSuggestions(userEmpId, teslaSearchPath, category, search_content, page, pageSize) {
-    return httpClient.get(`${teslaSearchPath}/sreworkssearch/query/suggest`, {
+  searchSuggestions(userEmpId, sreworksSearchPath, category, search_content, page, pageSize) {
+    return httpClient.get(`${sreworksSearchPath}/sreworkssearch/query/suggest`, {
       params: {
         _userEmpId: userEmpId,
         category: category,
@@ -46,8 +46,8 @@ class Service {
     });
   }
 
-  getHotKeywords(userEmpId, teslaSearchPath, category, limit = 10) {
-    return httpClient.get(`${teslaSearchPath}/sreworkssearch/query/get_hot_keywords`, {
+  getHotKeywords(userEmpId, sreworksSearchPath, category, limit = 10) {
+    return httpClient.get(`${sreworksSearchPath}/sreworkssearch/query/get_hot_keywords`, {
       params: {
         _userEmpId: userEmpId,
         category: category,
@@ -56,8 +56,8 @@ class Service {
     });
   }
 
-  getCommonKeywords(userEmpId, teslaSearchPath, category, limit = 5) {
-    return httpClient.get(`${teslaSearchPath}/teslasearch/get_meta/get_common_keyword`, {
+  getCommonKeywords(userEmpId, sreworksSearchPath, category, limit = 5) {
+    return httpClient.get(`${sreworksSearchPath}/teslasearch/get_meta/get_common_keyword`, {
       params: {
         _userEmpId: userEmpId,
         category: category,

@@ -17,44 +17,6 @@ import _ from 'lodash';
 const FormItem = Form.Item;
 
 const Option = Select.Option;
-
-/*let model={
-    "items": [
-        {
-            "name": "project",
-            "depend": "",
-            "required": true,
-            "initValue":"",
-            "label": "应用",
-            "url":"http://rap2api.alibaba-inc.com/app/mock/2727/api/select/datasource",
-            "mode":"",
-            "data2option":{value:"",label:""},
-            "optionsIndex":"items"
-            "searchType":"",
-        },
-        {
-            "name": "group",
-            "depend": "project",
-            "required": true,
-            "initValue":"",
-            "label": "分组",
-            "url":"http://rap2api.alibaba-inc.com/app/mock/2727/api/select/datasource",
-            "mode":"",
-            "searchType":"",
-        },
-        {
-            "name": "host",
-            "depend": "group",//或者为数组 如["group","project"]
-            "required": true,
-            "initValue":[],
-            "label": "机器",
-            "url":"http://rap2api.alibaba-inc.com/app/mock/2727/api/select/datasource",
-            "mode":"multiple",
-            "searchType":"",
-        },
-    ]
-};*/
-
 class CascadeGroup extends PureComponent {
 
     constructor(props) {

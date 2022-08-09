@@ -50,8 +50,8 @@ class SRESearch extends React.Component {
   }
 
 
-  getHotKeywords(userEmpId, teslaSearchPath, category, limit) {
-    SearchService.getHotKeywords(userEmpId, teslaSearchPath, category, limit)
+  getHotKeywords(userEmpId, sreworksSearchPath, category, limit) {
+    SearchService.getHotKeywords(userEmpId, sreworksSearchPath, category, limit)
       .then(res => {
         this.setState({
           hotKeyOptions: res,
@@ -61,8 +61,8 @@ class SRESearch extends React.Component {
       });
   }
 
-  getCommonKeywords(userEmpId, teslaSearchPath, category, limit) {
-    SearchService.getCommonKeywords(userEmpId, teslaSearchPath, category, limit)
+  getCommonKeywords(userEmpId, sreworksSearchPath, category, limit) {
+    SearchService.getCommonKeywords(userEmpId, sreworksSearchPath, category, limit)
       .then(res => {
         this.setState({
           keywords: res,
@@ -74,9 +74,9 @@ class SRESearch extends React.Component {
       });
   }
 
-  getSuggestionList(userEmpId, teslaSearchPath, category, search_content, page, pageSize) {
+  getSuggestionList(userEmpId, sreworksSearchPath, category, search_content, page, pageSize) {
     if (search_content !== "") {
-      SearchService.searchSuggestions(userEmpId, teslaSearchPath, category, search_content, page, pageSize)
+      SearchService.searchSuggestions(userEmpId, sreworksSearchPath, category, search_content, page, pageSize)
         .then(res => {
           this.setState({
             options: res,
@@ -90,7 +90,7 @@ class SRESearch extends React.Component {
           });
         });
     } else if (search_content === "") {
-      this.getHotKeywords(userEmpId, teslaSearchPath, category, 10);
+      this.getHotKeywords(userEmpId, sreworksSearchPath, category, 10);
     }
 
   }
@@ -121,7 +121,7 @@ class SRESearch extends React.Component {
       search_content: value,
       is_force: false,
     });
-    this.getSuggestionListDebounce(this.props.userEmpId, this.props.teslaSearchPath, this.props.category, value, 1, 10);
+    this.getSuggestionListDebounce(this.props.userEmpId, this.props.sreworksSearchPath, this.props.category, value, 1, 10);
   };
 
   onChange(value, options = undefined) {
@@ -130,7 +130,7 @@ class SRESearch extends React.Component {
         search_content: value,
         isNeedSuggestion: true,
       });
-      this.getSuggestionListDebounce(this.props.userEmpId, this.props.teslaSearchPath, this.props.category, value, 1, 10);
+      this.getSuggestionListDebounce(this.props.userEmpId, this.props.sreworksSearchPath, this.props.category, value, 1, 10);
     } else {
       this.setState({
         isNeedSuggestion: false,
@@ -177,7 +177,7 @@ class SRESearch extends React.Component {
         isNeedSuggestion: true,
       });
     }
-    this.getSuggestionListDebounce(this.props.userEmpId, this.props.teslaSearchPath, this.props.category, this.state.temp_search_content, 1, 10);
+    this.getSuggestionListDebounce(this.props.userEmpId, this.props.sreworksSearchPath, this.props.category, this.state.temp_search_content, 1, 10);
 
   }
 
@@ -194,9 +194,9 @@ class SRESearch extends React.Component {
   }
 
   componentWillMount() {
-    // this.getHotKeywords(this.props.userEmpId, this.props.teslaSearchPath, this.props.category, 10);
+    // this.getHotKeywords(this.props.userEmpId, this.props.sreworksSearchPath, this.props.category, 10);
     if (this.props.isShowKeywords) {
-      this.getCommonKeywords(this.props.userEmpId, this.props.teslaSearchPath, this.props.category, this.props.keywordNum);
+      this.getCommonKeywords(this.props.userEmpId, this.props.sreworksSearchPath, this.props.category, this.props.keywordNum);
     }
   }
 
@@ -220,7 +220,7 @@ class SRESearch extends React.Component {
         // search_content: "",
         isNeedSuggestion: true,
       });
-      this.getSuggestionListDebounce(this.props.userEmpId, this.props.teslaSearchPath, this.props.category, value, 1, 10);
+      this.getSuggestionListDebounce(this.props.userEmpId, this.props.sreworksSearchPath, this.props.category, value, 1, 10);
     }
   };
 
@@ -332,7 +332,7 @@ var clickOutsideConfig = {
 SRESearch.propTypes = {
   userEmpId: PropTypes.string,
   category: PropTypes.string,
-  teslaSearchPath: PropTypes.string,
+  sreworksSearchPath: PropTypes.string,
   placeholder: PropTypes.string,
   moreLinkPrefix: PropTypes.string,
   className: PropTypes.string,

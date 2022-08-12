@@ -55,7 +55,7 @@ export default class WidgetSelector extends React.Component {
                 })
                 umdCompList && umdCompList.forEach(item => {
                     initCategory.forEach(lit => {
-                        if (lit.name === 'remote') {
+                        if (lit.name === 'remote' && window[item.name]) {
                             let templateMeta = cloneDeep(window[item.name][item.name+'Meta']);
                             templateMeta['info']['logos']['small'] = item['configObject']['icon'] || 'https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*pUkAQpefcx8AAAAAAAAAAABkARQnAQ'
                             window[item.name] && lit.children.push(templateMeta)

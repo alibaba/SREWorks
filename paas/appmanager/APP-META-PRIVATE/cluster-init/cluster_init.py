@@ -140,8 +140,8 @@ def init_cluster(r):
     items = r.get("%s/clusters" % ENDPOINT, headers=HEADERS).json().get('data', {}).get('items', [])
     for item in items:
         cluster_mapping[item['clusterId']] = {
-            'masterUrl': item.get('clusterConfig', {}).get('clusters')[0].get('cluster', {}).get('server'),
-            'oauthToken': item.get('clusterConfig', {}).get('users')[0].get('user', {}).get('token'),
+            'masterUrl': item.get('clusterConfig', {}).get('clusters',[{}])[0].get('cluster', {}).get('server'),
+            'oauthToken': item.get('clusterConfig', {}).get('users',[{}])[0].get('user', {}).get('token'),
         }
 
     # 获取当前的 masterUrl 和 oauthToken 信息

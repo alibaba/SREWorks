@@ -22,10 +22,45 @@ CLIENT_ID = os.getenv('APPMANAGER_CLIENT_ID')
 CLIENT_SECRET = os.getenv('APPMANAGER_CLIENT_SECRET')
 USERNAME = os.getenv('APPMANAGER_ACCESS_ID')
 PASSWORD = os.getenv('APPMANAGER_ACCESS_SECRET')
-CREATOR = '122592'
+CREATOR = '999999999999'
 HEADERS = {
     'X-EmpId': CREATOR
 }
+
+def generateKubeconfig(apiServer, token):
+
+    return {
+        "apiVersion": "v1",
+        "clusters": [
+            {
+                "cluster": {
+                    "insecure-skip-tls-verify": True,
+                    "server": apiServer
+                },
+                "name": "sreworks_cluster"
+            }
+        ],
+        "contexts": [
+            {
+                "context": {
+                    "cluster": "sreworks_cluster",
+                    "user": "sreworks_admin"
+                },
+                "name": "t"
+            }
+        ],
+        "current-context": "t",
+        "kind": "Config",
+        "preferences": {},
+        "users": [
+            {
+                "name": "sreworks_admin",
+                "user": {
+                    "token": token,
+                }
+            }
+        ]
+    }
 
 
 class AppManagerClient(object):
@@ -65,10 +100,7 @@ def _insert_cluster(r, cluster, master_url, oauth_token):
         'clusterId': cluster,
         'clusterName': cluster,
         'clusterType': 'kubernetes',
-        'clusterConfig': {
-            'masterUrl': master_url,
-            'oauthToken': oauth_token,
-        },
+        'clusterConfig': generateKubeconfig(master_url, oauth_token),
         'masterFlag': True if cluster == 'master' else False,
     })
     if response.json().get('code') == 200:
@@ -87,10 +119,7 @@ def _update_cluster(r, cluster, master_url, oauth_token):
     response = r.put("%s/clusters/%s" % (ENDPOINT, cluster), headers=HEADERS, json={
         'clusterName': cluster,
         'clusterType': 'kubernetes',
-        'clusterConfig': {
-            'masterUrl': master_url,
-            'oauthToken': oauth_token,
-        },
+        'clusterConfig': generateKubeconfig(master_url, oauth_token),
         'masterFlag': True if cluster == 'master' else False,
     })
     if response.json().get('code') == 200:
@@ -111,8 +140,8 @@ def init_cluster(r):
     items = r.get("%s/clusters" % ENDPOINT, headers=HEADERS).json().get('data', {}).get('items', [])
     for item in items:
         cluster_mapping[item['clusterId']] = {
-            'masterUrl': item.get('clusterConfig', {}).get('masterUrl'),
-            'oauthToken': item.get('clusterConfig', {}).get('oauthToken'),
+            'masterUrl': item.get('clusterConfig', {}).get('clusters')[0].get('cluster', {}).get('server'),
+            'oauthToken': item.get('clusterConfig', {}).get('users')[0].get('user', {}).get('token'),
         }
 
     # 获取当前的 masterUrl 和 oauthToken 信息

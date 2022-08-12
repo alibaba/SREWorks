@@ -100,7 +100,7 @@ def _insert_cluster(r, cluster, master_url, oauth_token):
         'clusterId': cluster,
         'clusterName': cluster,
         'clusterType': 'kubernetes',
-        'clusterConfig': generateKubeconfig(master_url, oauth_token),
+        'clusterConfig': {"kube": generateKubeconfig(master_url, oauth_token)},
         'masterFlag': True if cluster == 'master' else False,
     })
     if response.json().get('code') == 200:
@@ -119,7 +119,7 @@ def _update_cluster(r, cluster, master_url, oauth_token):
     response = r.put("%s/clusters/%s" % (ENDPOINT, cluster), headers=HEADERS, json={
         'clusterName': cluster,
         'clusterType': 'kubernetes',
-        'clusterConfig': generateKubeconfig(master_url, oauth_token),
+        'clusterConfig': {"kube": generateKubeconfig(master_url, oauth_token)},
         'masterFlag': True if cluster == 'master' else False,
     })
     if response.json().get('code') == 200:
@@ -140,8 +140,8 @@ def init_cluster(r):
     items = r.get("%s/clusters" % ENDPOINT, headers=HEADERS).json().get('data', {}).get('items', [])
     for item in items:
         cluster_mapping[item['clusterId']] = {
-            'masterUrl': item.get('clusterConfig', {}).get('clusters',[{}])[0].get('cluster', {}).get('server'),
-            'oauthToken': item.get('clusterConfig', {}).get('users',[{}])[0].get('user', {}).get('token'),
+            'masterUrl': item.get('clusterConfig', {}).get("kube", {}).get('clusters',[{}])[0].get('cluster', {}).get('server'),
+            'oauthToken': item.get('clusterConfig', {}).get("kube", {}).get('users',[{}])[0].get('user', {}).get('token'),
         }
 
     # 获取当前的 masterUrl 和 oauthToken 信息

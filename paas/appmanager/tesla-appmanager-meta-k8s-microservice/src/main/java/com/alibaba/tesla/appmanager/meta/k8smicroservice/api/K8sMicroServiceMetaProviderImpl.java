@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.K8sMicroServiceMetaProvider;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
+import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
+import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.service.GitService;
 import com.alibaba.tesla.appmanager.common.util.*;
@@ -15,6 +17,7 @@ import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.dto.*;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQuickUpdateReq;
+import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaUpdateByOptionReq;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaUpdateReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpdateReq;
@@ -26,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -89,6 +93,16 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
     }
 
     /**
+     * 通过条件查询微应用元信息
+     */
+    @Override
+    public K8sMicroServiceMetaDTO get(K8sMicroServiceMetaQueryReq request) {
+        K8sMicroserviceMetaQueryCondition condition = new K8sMicroserviceMetaQueryCondition();
+        ClassUtil.copy(request, condition);
+        return k8sMicroServiceMetaDtoConvert.to(k8SMicroserviceMetaService.get(condition));
+    }
+
+    /**
      * 通过微应用 ID 删除微应用元信息
      */
     @Override
@@ -117,10 +131,6 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
     public K8sMicroServiceMetaDTO create(K8sMicroServiceMetaUpdateReq request) {
         K8sMicroServiceMetaDTO dto = new K8sMicroServiceMetaDTO();
         ClassUtil.copy(request, dto);
-
-        // TODO: 等待前端增加 imagePush 字段后删除 (for 弹内)
-        addImagePushForInternal(dto);
-
         return create(dto);
     }
 
@@ -135,16 +145,68 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
     }
 
     /**
+     * 根据 options Yaml (build.yaml) 创建 K8s MicroService
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public List<K8sMicroServiceMetaDTO> updateByOption(K8sMicroServiceMetaUpdateByOptionReq request) {
+        String appId = request.getAppId();
+        String namespaceId = request.getNamespaceId();
+        String stageId = request.getStageId();
+        JSONObject body = request.getBody();
+        if (StringUtils.isAnyEmpty(appId, namespaceId, stageId) || body == null) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "appId/namespaceId/stageId/body are required");
+        }
+
+        List<K8sMicroServiceMetaDTO> dtoList = k8sMicroServiceMetaDtoConvert.to(body, appId, namespaceId, stageId);
+        if (CollectionUtils.isEmpty(dtoList)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "convert options failed");
+        }
+        List<K8sMicroServiceMetaDTO> results = new ArrayList<>();
+        for (K8sMicroServiceMetaDTO dto : dtoList) {
+            String microServiceId = dto.getMicroServiceId();
+            String arch = dto.getArch();
+            K8sMicroServiceMetaDO current = k8SMicroserviceMetaService
+                    .getByMicroServiceId(appId, microServiceId, arch, namespaceId, stageId);
+            if (current == null) {
+                results.add(create(dto));
+                log.info("k8s microservice has created by options|appId={}|namespaceId={}|stageId={}|body={}",
+                        appId, namespaceId, stageId, body.toJSONString());
+            } else {
+                results.add(update(dto));
+                log.info("k8s microservice has updated by options|appId={}|namespaceId={}|stageId={}|body={}",
+                        appId, namespaceId, stageId, body.toJSONString());
+            }
+        }
+        return results;
+    }
+
+    /**
      * 更新 K8s Microservice (普通)
      */
     @Override
     public K8sMicroServiceMetaDTO update(K8sMicroServiceMetaUpdateReq request) {
+        K8sMicroserviceMetaQueryCondition condition = K8sMicroserviceMetaQueryCondition.builder()
+                .appId(request.getAppId())
+                .microServiceId(request.getMicroServiceId())
+                .arch(request.getArch())
+                .namespaceId(request.getNamespaceId())
+                .stageId(request.getStageId())
+                .withBlobs(true)
+                .build();
+        K8sMicroServiceMetaDO dbMeta = k8SMicroserviceMetaService.get(condition);
+        if (dbMeta == null) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("cannot find k8s microservice meta|condition=%s",
+                            JSONObject.toJSONString(condition)));
+        }
+
+        // 更新记录，并在请求的基础上覆盖 imagePushObject 对象 (如果请求未提供, 兼容历史版本前端)
         K8sMicroServiceMetaDTO dto = new K8sMicroServiceMetaDTO();
         ClassUtil.copy(request, dto);
-
-        // TODO: 等待前端增加 imagePush 字段后删除 (for 弹内)
-        addImagePushForInternal(dto);
-
+        if (dto.getImagePushObject() == null) {
+            dto.setImagePushObject(k8sMicroServiceMetaDtoConvert.to(dbMeta).getImagePushObject());
+        }
         return update(dto);
     }
 
@@ -189,7 +251,15 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
 
         k8SMicroserviceMetaService.create(meta);
         refreshDeployConfig(dto);
-        return k8sMicroServiceMetaDtoConvert.to(meta);
+        K8sMicroServiceMetaDO result = k8SMicroserviceMetaService.get(K8sMicroserviceMetaQueryCondition.builder()
+                .appId(dto.getAppId())
+                .microServiceId(dto.getMicroServiceId())
+                .namespaceId(dto.getNamespaceId())
+                .stageId(dto.getStageId())
+                .arch(dto.getArch())
+                .withBlobs(true)
+                .build());
+        return k8sMicroServiceMetaDtoConvert.to(result);
     }
 
     /**
@@ -199,6 +269,7 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
      * @return K8s Microservice DTO 对象
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public K8sMicroServiceMetaDTO update(K8sMicroServiceMetaDTO dto) {
         K8sMicroServiceMetaDO meta = k8sMicroServiceMetaDtoConvert.from(dto);
         K8sMicroserviceMetaQueryCondition condition = K8sMicroserviceMetaQueryCondition.builder()
@@ -206,10 +277,12 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
                 .namespaceId(dto.getNamespaceId())
                 .stageId(dto.getStageId())
                 .microServiceId(dto.getMicroServiceId())
+                .arch(dto.getArch())
+                .withBlobs(true)
                 .build();
         k8SMicroserviceMetaService.update(meta, condition);
         refreshDeployConfig(dto);
-        return k8sMicroServiceMetaDtoConvert.to(meta);
+        return k8sMicroServiceMetaDtoConvert.to(k8SMicroserviceMetaService.get(condition));
     }
 
     /**
@@ -506,7 +579,8 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
     }
 
     /**
-     * TODO: 等待前端增加 imagePush 字段后删除 (for 弹内)
+     * TODO: 等待前端增加 imagePush 字段后删除 (for 弹内默认创建)
+     *
      * @param dto DTO
      */
     private void addImagePushForInternal(K8sMicroServiceMetaDTO dto) {
@@ -519,8 +593,8 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
             dto.setImagePushObject(ImagePushDTO.builder()
                     .imagePushRegistry(ImagePushRegistryDTO.builder()
                             .dockerRegistry("reg.docker.alibaba-inc.com")
-                            .dockerNamespace(String.format("abm-private-%s", arch))
-                            .useBranchAsTag(true)
+                            .dockerNamespace("abm-internal")
+                            .useBranchAsTag(false)
                             .build())
                     .build());
         }

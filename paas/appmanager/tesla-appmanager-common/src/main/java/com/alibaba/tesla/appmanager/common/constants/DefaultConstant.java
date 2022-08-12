@@ -41,6 +41,11 @@ public class DefaultConstant {
     public static final int DEFAULT_FILE_EXPIRATION = 36000;
 
     /**
+     * 默认架构
+     */
+    public static final String DEFAULT_ARCH = "x86";
+
+    /**
      * 初始化版本
      */
     public static final String INIT_VERSION = "1.0.0";

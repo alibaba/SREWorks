@@ -1,9 +1,7 @@
 package com.alibaba.tesla.appmanager.domain.req;
 
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
-import com.alibaba.tesla.appmanager.domain.dto.ContainerObjectDTO;
-import com.alibaba.tesla.appmanager.domain.dto.EnvMetaDTO;
-import com.alibaba.tesla.appmanager.domain.dto.ImagePushDTO;
+import com.alibaba.tesla.appmanager.domain.dto.*;
 import lombok.Data;
 
 import java.util.List;
@@ -64,9 +62,9 @@ public class K8sMicroServiceMetaUpdateReq {
     private String arch;
 
     /**
-     * 容器对象
+     * 类型 (Deployment/StatefulSet/CloneSet/AdvancedStatefulSet)
      */
-    private List<ContainerObjectDTO> containerObjectList;
+    private String kind;
 
     /**
      * 环境变量定义
@@ -74,7 +72,32 @@ public class K8sMicroServiceMetaUpdateReq {
     private List<EnvMetaDTO> envList;
 
     /**
+     * 构建对象
+     */
+    private List<ContainerObjectDTO> containerObjectList;
+
+    /**
+     * 初始化容器对象
+     */
+    private List<InitContainerDTO> initContainerList;
+
+    /**
+     * 环境变量Key定义
+     */
+    private List<String> envKeyList;
+
+    /**
+     * 仓库配置
+     */
+    private RepoDTO repoObject;
+
+    /**
      * 镜像推送配置
      */
     private ImagePushDTO imagePushObject;
+
+    /**
+     * 部署对象
+     */
+    private LaunchDTO launchObject;
 }

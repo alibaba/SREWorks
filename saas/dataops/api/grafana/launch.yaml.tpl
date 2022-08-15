@@ -109,6 +109,9 @@ spec:
           flink:
             flink-dashboard:
               file: dashboards/flink-dashboard.json
+          cost:
+            cost-dashboard:
+              file: dashboards/cost-dashboard.json
         dashboardProviders:
           dashboardproviders.yaml:
             apiVersion: 1
@@ -121,5 +124,13 @@ spec:
               editable: true
               options:
                 path: /var/lib/grafana/dashboards/flink
+            - name: 'cost'
+              orgId: 1
+              folder: 'sreworks-dataops'
+              type: file
+              disableDeletion: false
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/cost
       toFieldPaths:
       - "spec.values"

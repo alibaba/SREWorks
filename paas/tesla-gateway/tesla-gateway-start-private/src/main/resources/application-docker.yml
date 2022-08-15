@@ -89,7 +89,7 @@ tesla:
       store-nacos-group: ${STORE_NACOS_GROUP:""}
       store-nacos-namespace: ${NACOS_NAMESPACE}
       store-nacos-addr: ${NACOS_ENDPOINT}
-      enabled-cros: false
+      enabled-cros: true
       default-route-data-id: abm-paas-gateway.default-route.${REGION:"default"}_${IDC_ROOM:"default"}
       enable-doc: ${GATEWAY_ENABLE_DOC:false}
       reload-config: ${GATEWAY_RELOAD_CONFIG:false}

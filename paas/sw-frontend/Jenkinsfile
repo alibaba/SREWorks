@@ -13,13 +13,13 @@ pipeline {
         pollSCM('* * * * *')
     }
     environment {
-        IMAGE_PREFIX = "reg.docker.alibaba-inc.com/sw/paas-frontend"
+        IMAGE_PREFIX = ""
     }
     agent any
     parameters {
-        string(name: 'ALPINE_X86_IMAGE', defaultValue: 'reg.docker.alibaba-inc.com/alibaba_apsara_paas/alpine:v1.0.0', description: '')
-        string(name: 'X86_IMAGE_PREFIX', defaultValue: 'reg.docker.alibaba-inc.com/abm-aone/paas-frontend', description: '')
-        string(name: 'X86_OSSUTIL_URL', defaultValue: 'http://gosspublic.alicdn.com/ossutil/1.6.10/ossutil64', description: '')
+        string(name: 'ALPINE_X86_IMAGE', defaultValue: '', description: '')
+        string(name: 'X86_IMAGE_PREFIX', defaultValue: '', description: '')
+        string(name: 'X86_OSSUTIL_URL', defaultValue: '', description: '')
     }
     stages {
         stage("Clone Repo") {

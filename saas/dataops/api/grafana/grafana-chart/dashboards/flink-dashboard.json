@@ -15,8 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
-  "iteration": 1660185387460,
+  "iteration": 1660620979423,
   "links": [],
   "panels": [
     {
@@ -2799,7 +2798,9 @@
       "datasource": "dataops-prometheus",
       "description": "",
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "unit": "short"
+        },
         "overrides": []
       },
       "fill": 1,
@@ -2849,7 +2850,7 @@
             }
           ],
           "exemplar": true,
-          "expr": "flink_taskmanager_job_task_numBytesInPerSecond{sessionClusterName=\"$session_cluster\", job_name=~\"$job_name\"}",
+          "expr": "flink_taskmanager_job_task_numRecordsInPerSecond{sessionClusterName=\"$session_cluster\", job_name=~\"$job_name\"}",
           "interval": "",
           "legendFormat": "{{job_name}}",
           "metrics": [
@@ -2884,7 +2885,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:664",
-          "format": "decbytes",
+          "format": "short",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -2916,7 +2917,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "sreworks-session-cluster",
           "value": "sreworks-session-cluster"
         },
@@ -2947,7 +2948,7 @@
       {
         "allValue": ".*",
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "All",
           "value": "$__all"
         },
@@ -2978,7 +2979,7 @@
       {
         "allValue": ".*",
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "All",
           "value": "$__all"
         },
@@ -3009,7 +3010,7 @@
       {
         "allValue": ".*",
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "All",
           "value": "$__all"
         },
@@ -3047,5 +3048,5 @@
   "timezone": "",
   "title": "Flink作业监控大盘",
   "uid": "23GGv4m4z",
-  "version": 12
+  "version": 1
 }

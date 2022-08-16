@@ -41,8 +41,7 @@ function getServedPath(appPackageJson) {
 const namespace={
   'react-native': 'react-native-web',
   'appRoot': path.resolve('src'),
-  'appAssets': path.resolve('src/assets'),
-   happypack: path.resolve('./node_modules/happypack'),
+  'appAssets': path.resolve('src/assets')
 };
 
 // config after eject: we're in ./config/

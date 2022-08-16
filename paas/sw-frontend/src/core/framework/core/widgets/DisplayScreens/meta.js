@@ -24,7 +24,7 @@ export default {
       "screenshots": [],
       "updated": "",
       "version": "",
-      "docs": "<a target='_blank' href='https://bizcharts.alibaba-inc.com/product/BizCharts4/demo/306'>组件文档地址</a>",
+      "docs": "<a target='_blank' href='https://bizcharts.taobao.com/product/BizCharts4/category/77/page/143'>组件文档地址</a>",
     },
     "state": "",
     "latestVersion": "1.0",

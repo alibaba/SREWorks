@@ -101,7 +101,6 @@
     "eslint-plugin-react": "7.20.0",
     "file-loader": "4.2.0",
     "fs-extra": "3.0.1",
-    "happypack": "^5.0.0",
     "html-webpack-plugin": "^4.4.1",
     "html-webpack-tags-plugin": "^2.0.17",
     "jest": "20.0.4",

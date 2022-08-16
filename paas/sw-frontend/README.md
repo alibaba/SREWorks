@@ -3,17 +3,15 @@
 ```
   curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
 ```
-2. 安装 node,版本大于6，不高于10.24.1
+2. 安装 node,版本大于14
 ```
 nvm install 8.9.1
 nvm alias default 8.9.1
 ```
 
-3.安装 tnpm
+3.安装 npm install
 
-```
 
-  npm i -g tnpm --registry=http://registry.npm.alibaba-inc.com
 ```
 
 #### 开始

@@ -45,22 +45,6 @@ const DefaultHeader = ({ siderFold, siderRespons, theme, siderOpenKeys, menuResp
     const roles = currentUser.roles, cacheRole = cacheRepository.getRole(currentProduct.productId);
     const currentRole = roles.filter(role => role.roleId === cacheRole)[0];
 
-    const UserTitle = () => (
-        <div style={{ display: "flex", alignItems: "center" }}>
-            <Avatar
-                style={{ verticalAlign: 'middle' }}
-                src={`https://work.alibaba-inc.com/photo/${currentUser.empId}.30x30.jpg`}
-            />
-            <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: '5px', color: 'rgba(255,255,255,0.8)' }}>
-                <span style={{ maxWidth: 50, lineHeight: 1.6 }} className="text-overflow">{!currentUser ? '' : currentUser.nickNameCn || currentUser.nickName || currentUser.loginName || currentUser.name}</span>
-            </div>
-        </div>
-    );
-
-    /**
-     * 大数据管家右边顶部菜单
-     * @constructor
-     */
     const TopBar = () => (
         <div style={{ display: "flex", marginTop: 3 }}>
             {
@@ -139,9 +123,9 @@ const DefaultHeader = ({ siderFold, siderRespons, theme, siderOpenKeys, menuResp
                     </MenuItemGroup>
                 </Menu>
             }>
-                <a>
+                {/* <a>
                     <UserTitle />
-                </a>
+                </a> */}
             </Dropdown>
         </div>
     );

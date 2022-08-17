@@ -77,3 +77,23 @@
         color: @primary-color;
     }
 }
+.tab-filter-position {
+    text-align: right;
+    justify-content: flex-end;
+    .ant-tabs-nav-wrap {
+        justify-content: flex-end;
+    }
+} 
+.tab-filter-position-radio {
+    margin-left: 10px;
+    margin-top: 4px;
+    .ant-radio-group {
+        display: flex;
+        flex-direction: column;
+        label {
+            span {
+                text-overflow: ellipsis;
+            }
+        }
+    }
+}

@@ -92,6 +92,9 @@ public class K8sMicroServiceMetaDtoConvert extends BaseDtoConvert<K8sMicroServic
             result.setRepoObject(JSON.parseObject(repoString, RepoDTO.class));
         }
         String imagePushString = microServiceExtJson.getString("imagePush");
+        if (StringUtils.isEmpty(imagePushString)) {
+            imagePushString = microServiceExtJson.getString("image");
+        }
         if (StringUtils.isNotEmpty(imagePushString)) {
             result.setImagePushObject(JSON.parseObject(imagePushString, ImagePushDTO.class));
         }
@@ -174,9 +177,12 @@ public class K8sMicroServiceMetaDtoConvert extends BaseDtoConvert<K8sMicroServic
      * @param appId       应用 ID
      * @param namespaceId Namespace ID
      * @param stageId     Stage ID
+     * @param productId   归属产品 ID
+     * @param releaseId   归属发布版本 ID
      * @return DTO 对象
      */
-    public List<K8sMicroServiceMetaDTO> to(JSONObject body, String appId, String namespaceId, String stageId) {
+    public List<K8sMicroServiceMetaDTO> to(
+            JSONObject body, String appId, String namespaceId, String stageId, String productId, String releaseId) {
         String componentType = body.getString("componentType");
         String componentName = body.getString("componentName");
         JSONObject options = body.getJSONObject("options");
@@ -211,6 +217,8 @@ public class K8sMicroServiceMetaDtoConvert extends BaseDtoConvert<K8sMicroServic
             current.setMicroServiceId(componentName);
             current.setName(componentName);
             current.setDescription(componentName);
+            current.setProductId(productId);
+            current.setReleaseId(releaseId);
             current.setComponentType(Enums.getIfPresent(ComponentTypeEnum.class, componentType).orNull());
             if (current.getComponentType() == null) {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS,

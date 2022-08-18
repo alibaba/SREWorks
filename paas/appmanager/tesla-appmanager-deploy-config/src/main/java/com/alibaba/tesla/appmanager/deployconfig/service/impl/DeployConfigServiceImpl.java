@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.deployconfig.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.api.provider.ProductReleaseProvider;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
@@ -23,6 +24,7 @@ import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpdateRe
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigApplyTemplateRes;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigGenerateRes;
 import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
+import com.alibaba.tesla.dag.common.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -71,6 +73,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
         String envId = req.getEnvId();
         String config = req.getConfig();
         boolean enabled = req.isEnabled();
+        String productId = req.getProductId();
+        String releaseId = req.getReleaseId();
         if (StringUtils.isAnyEmpty(apiVersion, config)) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                     "invalid apply template request, apiVersion/config are required");
@@ -83,14 +87,15 @@ public class DeployConfigServiceImpl implements DeployConfigService {
         String parameterTypeId = new DeployConfigTypeId(DeployConfigTypeId.TYPE_PARAMETER_VALUES).toString();
         items.add(applySingleConfig(apiVersion, appId, parameterTypeId, envId,
                 SchemaUtil.toYamlStr(schema.getSpec().getParameterValues(), DeployAppSchema.ParameterValue.class),
-                enabled, false, isolateNamespace, isolateStage));
+                enabled, false, isolateNamespace, isolateStage, productId, releaseId));
         // 保存 components 配置
         for (DeployAppSchema.SpecComponent component : schema.getSpec().getComponents()) {
             DeployAppRevisionName revision = DeployAppRevisionName.valueOf(component.getRevisionName());
             String componentTypeId = new DeployConfigTypeId(
                     revision.getComponentType(), revision.getComponentName()).toString();
             items.add(applySingleConfig(apiVersion, appId, componentTypeId, envId,
-                    SchemaUtil.toYamlMapStr(component), enabled, false, isolateNamespace, isolateStage));
+                    SchemaUtil.toYamlMapStr(component), enabled, false, isolateNamespace, isolateStage,
+                    productId, releaseId));
         }
         return DeployConfigApplyTemplateRes.<DeployConfigDO>builder().items(items).build();
     }
@@ -169,13 +174,16 @@ public class DeployConfigServiceImpl implements DeployConfigService {
         String typeId = req.getTypeId();
         String config = req.getConfig();
         boolean inherit = req.isInherit();
-        if (StringUtils.isAnyEmpty(apiVersion, appId, typeId) || (StringUtils.isEmpty(config) && !inherit)) {
+        String productId = req.getProductId();
+        String releaseId = req.getReleaseId();
+        if (StringUtils.isAnyEmpty(apiVersion, appId, typeId)
+                || (StringUtils.isEmpty(config) && !inherit && StringUtils.isAnyEmpty(productId, releaseId))) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                     String.format("invalid deploy config update request|request=%s", JSONObject.toJSONString(req)));
         }
 
         return applySingleConfig(apiVersion, appId, typeId, envId, config, true, inherit,
-                isolateNamespaceId, isolateStageId);
+                isolateNamespaceId, isolateStageId, productId, releaseId);
     }
 
     /**
@@ -299,10 +307,16 @@ public class DeployConfigServiceImpl implements DeployConfigService {
             }
             String config = best.getConfig();
             if (StringUtils.isEmpty(config)) {
-                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                        String.format("invalid inherit config, cannot get config by typeId %s|appRecords=%s|" +
-                                        "rootRecords=%s", typeId, JSONArray.toJSONString(filterAppRecords),
-                                JSONArray.toJSONString(filterRootRecords)));
+                if (StringUtils.isNotEmpty(best.getProductId()) && StringUtils.isNotEmpty(best.getReleaseId())) {
+                    config = fetchConfigInGit(best.getProductId(), best.getReleaseId(), appId, typeId);
+                    log.info("fetch config in git succeed|productId={}|releaseId={}|appId={}|typeId={}|config={}",
+                            best.getProductId(), best.getReleaseId(), appId, typeId, config);
+                } else {
+                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                            String.format("invalid inherit config, cannot get config by typeId %s|appRecords=%s|" +
+                                            "rootRecords=%s", typeId, JSONArray.toJSONString(filterAppRecords),
+                                    JSONArray.toJSONString(filterRootRecords)));
+                }
             }
             switch (DeployConfigTypeId.valueOf(typeId).getType()) {
                 case DeployConfigTypeId.TYPE_PARAMETER_VALUES:
@@ -313,6 +327,12 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                     DeployAppSchema.SpecComponent component = enrichComponentScopes(
                             req, SchemaUtil.toSchema(DeployAppSchema.SpecComponent.class, config));
                     schema.getSpec().getComponents().add(component);
+                    break;
+                case DeployConfigTypeId.TYPE_POLICIES:
+                    schema.getSpec().setPolicies(SchemaUtil.toSchemaList(DeployAppSchema.Policy.class, config));
+                    break;
+                case DeployConfigTypeId.TYPE_WORKFLOW:
+                    schema.getSpec().setWorkflow(SchemaUtil.toSchema(DeployAppSchema.Workflow.class, config));
                     break;
                 default:
                     break;
@@ -446,12 +466,12 @@ public class DeployConfigServiceImpl implements DeployConfigService {
     /**
      * 根据指定条件寻找最佳部署配置
      *
-     * @param appRecords         指定应用下的 deploy config 配置
-     * @param rootRecords        根 deploy config 配置 (无 appId，全局配置)
-     * @param unitId             单元 ID
-     * @param clusterId          集群 ID
-     * @param namespaceId        Namespace ID
-     * @param stageId            Stage ID
+     * @param appRecords  指定应用下的 deploy config 配置
+     * @param rootRecords 根 deploy config 配置 (无 appId，全局配置)
+     * @param unitId      单元 ID
+     * @param clusterId   集群 ID
+     * @param namespaceId Namespace ID
+     * @param stageId     Stage ID
      * @return 最佳配置记录
      */
     private DeployConfigDO findBestConfigInRecordsBySpecifiedName(
@@ -607,11 +627,14 @@ public class DeployConfigServiceImpl implements DeployConfigService {
      * @param inherit            是否继承
      * @param isolateNamespaceId 隔离 Namespace ID
      * @param isolateStageId     隔离 Stage ID
+     * @param productId          产品 ID
+     * @param releaseId          发布版本 ID
      * @return DeployConfigDO
      */
     private DeployConfigDO applySingleConfig(
             String apiVersion, String appId, String typeId, String envId, String config,
-            boolean enabled, boolean inherit, String isolateNamespaceId, String isolateStageId) {
+            boolean enabled, boolean inherit, String isolateNamespaceId, String isolateStageId,
+            String productId, String releaseId) {
         if (StringUtils.isEmpty(envId)) {
             envId = "";
         }
@@ -645,6 +668,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                 .deleted(false)
                 .namespaceId(isolateNamespaceId)
                 .stageId(isolateStageId)
+                .productId(productId)
+                .releaseId(releaseId)
                 .build());
         DeployConfigQueryCondition configCondition = DeployConfigQueryCondition.builder()
                 .appId(appId)
@@ -668,6 +693,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                     .inherit(inherit)
                     .namespaceId(isolateNamespaceId)
                     .stageId(isolateStageId)
+                    .productId(productId)
+                    .releaseId(releaseId)
                     .build();
             try {
                 deployConfigRepository.insert(result);
@@ -685,6 +712,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
             item.setConfig(config);
             item.setEnabled(enabled);
             item.setInherit(inherit);
+            item.setProductId(productId);
+            item.setReleaseId(releaseId);
             try {
                 deployConfigRepository.updateByCondition(item, configCondition);
             } catch (Exception e) {
@@ -694,10 +723,54 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                                 ExceptionUtils.getStackTrace(e)));
             }
             log.info("deploy config has updated in database|apiVersion={}|appId={}|typeId={}|envId={}|revision={}|" +
-                            "enable={}|inherit={}|namespaceId={}|stageId={}", apiVersion, appId, typeId, envId,
-                    revision, enabled, inherit, isolateNamespaceId, isolateStageId);
+                            "enable={}|inherit={}|namespaceId={}|stageId={}|productId={}|releaseId={}", apiVersion,
+                    appId, typeId, envId, revision, enabled, inherit, isolateNamespaceId, isolateStageId, productId,
+                    releaseId);
             result = item;
         }
         return result;
+    }
+
+    /**
+     * 根据产品/发布版本对应的基线配置，从 Git 中获取对应的 Application Configuration 片段信息
+     *
+     * @param productId 产品 ID
+     * @param releaseId 发布版本 ID
+     * @param appId     应用 ID
+     * @param typeId    类型 ID
+     * @return Config 内容
+     */
+    private String fetchConfigInGit(String productId, String releaseId, String appId, String typeId) {
+        ProductReleaseProvider productReleaseProvider = BeanUtil.getBean(ProductReleaseProvider.class);
+        String config = productReleaseProvider.getLaunchYaml(productId, releaseId, appId);
+        DeployAppSchema schema = SchemaUtil.toSchema(DeployAppSchema.class, config);
+        DeployConfigTypeId deployConfigType = DeployConfigTypeId.valueOf(typeId);
+        String errorMessage = String.format("could not find a component configuration that satisfies the condition|" +
+                        "productId=%s|releaseId=%s|appId=%s|typeId=%s",
+                productId, releaseId, appId, typeId);
+        switch (deployConfigType.getType()) {
+            case DeployConfigTypeId.TYPE_PARAMETER_VALUES:
+                return SchemaUtil.toYamlStr(schema.getSpec().getParameterValues(),
+                        DeployAppSchema.ParameterValue.class);
+            case DeployConfigTypeId.TYPE_COMPONENTS:
+                String componentType = deployConfigType.getAttr(DeployConfigTypeId.ATTR_COMPONENT_TYPE);
+                String componentName = deployConfigType.getAttr(DeployConfigTypeId.ATTR_COMPONENT_NAME);
+                if (componentType == null || componentName == null) {
+                    throw new AppException(AppErrorCode.INVALID_USER_ARGS, errorMessage);
+                }
+                String revisionName = String.format("%s|%s|_", componentType, componentName);
+                for (DeployAppSchema.SpecComponent component : schema.getSpec().getComponents()) {
+                    if (component.getRevisionName().equals(revisionName)) {
+                        return SchemaUtil.toYamlMapStr(component);
+                    }
+                }
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS, errorMessage);
+            case DeployConfigTypeId.TYPE_POLICIES:
+                return SchemaUtil.toYamlStr(schema.getSpec().getPolicies(), DeployAppSchema.Policy.class);
+            case DeployConfigTypeId.TYPE_WORKFLOW:
+                return SchemaUtil.toYamlMapStr(schema.getSpec().getWorkflow());
+            default:
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS, errorMessage);
+        }
     }
 }

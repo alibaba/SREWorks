@@ -864,6 +864,216 @@ public class WorkflowTaskDOExample {
             addCriterion("lock_version not between", value1, value2, "lockVersion");
             return (Criteria) this;
         }
+
+        public Criteria andDeployAppUnitIdIsNull() {
+            addCriterion("deploy_app_unit_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppUnitIdIsNotNull() {
+            addCriterion("deploy_app_unit_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppUnitIdEqualTo(String value) {
+            addCriterion("deploy_app_unit_id =", value, "deployAppUnitId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppUnitIdNotEqualTo(String value) {
+            addCriterion("deploy_app_unit_id <>", value, "deployAppUnitId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppUnitIdGreaterThan(String value) {
+            addCriterion("deploy_app_unit_id >", value, "deployAppUnitId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppUnitIdGreaterThanOrEqualTo(String value) {
+            addCriterion("deploy_app_unit_id >=", value, "deployAppUnitId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppUnitIdLessThan(String value) {
+            addCriterion("deploy_app_unit_id <", value, "deployAppUnitId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppUnitIdLessThanOrEqualTo(String value) {
+            addCriterion("deploy_app_unit_id <=", value, "deployAppUnitId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppUnitIdLike(String value) {
+            addCriterion("deploy_app_unit_id like", value, "deployAppUnitId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppUnitIdNotLike(String value) {
+            addCriterion("deploy_app_unit_id not like", value, "deployAppUnitId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppUnitIdIn(List<String> values) {
+            addCriterion("deploy_app_unit_id in", values, "deployAppUnitId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppUnitIdNotIn(List<String> values) {
+            addCriterion("deploy_app_unit_id not in", values, "deployAppUnitId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppUnitIdBetween(String value1, String value2) {
+            addCriterion("deploy_app_unit_id between", value1, value2, "deployAppUnitId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppUnitIdNotBetween(String value1, String value2) {
+            addCriterion("deploy_app_unit_id not between", value1, value2, "deployAppUnitId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppNamespaceIdIsNull() {
+            addCriterion("deploy_app_namespace_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppNamespaceIdIsNotNull() {
+            addCriterion("deploy_app_namespace_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppNamespaceIdEqualTo(String value) {
+            addCriterion("deploy_app_namespace_id =", value, "deployAppNamespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppNamespaceIdNotEqualTo(String value) {
+            addCriterion("deploy_app_namespace_id <>", value, "deployAppNamespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppNamespaceIdGreaterThan(String value) {
+            addCriterion("deploy_app_namespace_id >", value, "deployAppNamespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppNamespaceIdGreaterThanOrEqualTo(String value) {
+            addCriterion("deploy_app_namespace_id >=", value, "deployAppNamespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppNamespaceIdLessThan(String value) {
+            addCriterion("deploy_app_namespace_id <", value, "deployAppNamespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppNamespaceIdLessThanOrEqualTo(String value) {
+            addCriterion("deploy_app_namespace_id <=", value, "deployAppNamespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppNamespaceIdLike(String value) {
+            addCriterion("deploy_app_namespace_id like", value, "deployAppNamespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppNamespaceIdNotLike(String value) {
+            addCriterion("deploy_app_namespace_id not like", value, "deployAppNamespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppNamespaceIdIn(List<String> values) {
+            addCriterion("deploy_app_namespace_id in", values, "deployAppNamespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppNamespaceIdNotIn(List<String> values) {
+            addCriterion("deploy_app_namespace_id not in", values, "deployAppNamespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppNamespaceIdBetween(String value1, String value2) {
+            addCriterion("deploy_app_namespace_id between", value1, value2, "deployAppNamespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppNamespaceIdNotBetween(String value1, String value2) {
+            addCriterion("deploy_app_namespace_id not between", value1, value2, "deployAppNamespaceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppStageIdIsNull() {
+            addCriterion("deploy_app_stage_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppStageIdIsNotNull() {
+            addCriterion("deploy_app_stage_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppStageIdEqualTo(String value) {
+            addCriterion("deploy_app_stage_id =", value, "deployAppStageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppStageIdNotEqualTo(String value) {
+            addCriterion("deploy_app_stage_id <>", value, "deployAppStageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppStageIdGreaterThan(String value) {
+            addCriterion("deploy_app_stage_id >", value, "deployAppStageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppStageIdGreaterThanOrEqualTo(String value) {
+            addCriterion("deploy_app_stage_id >=", value, "deployAppStageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppStageIdLessThan(String value) {
+            addCriterion("deploy_app_stage_id <", value, "deployAppStageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppStageIdLessThanOrEqualTo(String value) {
+            addCriterion("deploy_app_stage_id <=", value, "deployAppStageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppStageIdLike(String value) {
+            addCriterion("deploy_app_stage_id like", value, "deployAppStageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppStageIdNotLike(String value) {
+            addCriterion("deploy_app_stage_id not like", value, "deployAppStageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppStageIdIn(List<String> values) {
+            addCriterion("deploy_app_stage_id in", values, "deployAppStageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppStageIdNotIn(List<String> values) {
+            addCriterion("deploy_app_stage_id not in", values, "deployAppStageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppStageIdBetween(String value1, String value2) {
+            addCriterion("deploy_app_stage_id between", value1, value2, "deployAppStageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppStageIdNotBetween(String value1, String value2) {
+            addCriterion("deploy_app_stage_id not between", value1, value2, "deployAppStageId");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

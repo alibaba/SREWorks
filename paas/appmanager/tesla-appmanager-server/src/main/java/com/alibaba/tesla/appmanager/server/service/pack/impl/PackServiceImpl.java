@@ -47,7 +47,9 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.alibaba.tesla.appmanager.common.constants.DefaultConstant.INTERNAL_ADDON_APP_META;
 import static com.alibaba.tesla.appmanager.common.constants.DefaultConstant.INTERNAL_ADDON_DEVELOPMENT_META;
@@ -312,19 +314,34 @@ public class PackServiceImpl implements PackService {
         String dockerRegistry = systemProperties.getDockerRegistry();
         String dockerNamespace = systemProperties.getDockerNamespace();
         List<K8sMicroServiceMetaDO> items = microserviceMetaList.getItems();
-        JSONObject options = new JSONObject();
-        options.put("arch", new JSONObject());
-        for (K8sMicroServiceMetaDO item : items) {
-            String arch = item.getArch();
-            if (StringUtils.isEmpty(arch)) {
-                arch = DefaultConstant.DEFAULT_ARCH;
-            }
-            JSONObject current = K8sMicroServiceUtil.replaceOptionsBranch(
-                    item.getComponentType(), item.getOptions(), branch, dockerRegistry, dockerNamespace);
-            options.getJSONObject("arch").put(arch, current);
+        if (items.size() == 0) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "empty k8s microservice list");
         }
-        return options;
 
+        if (items.size() == 1) {
+            return K8sMicroServiceUtil.replaceOptionsBranch(
+                    items.get(0).getComponentType(), items.get(0).getOptions(), branch, dockerRegistry, dockerNamespace);
+        } else {
+            JSONObject options = new JSONObject();
+            Set<String> envSet = new HashSet<>();
+            options.put("arch", new JSONObject());
+            for (K8sMicroServiceMetaDO item : items) {
+                String arch = item.getArch();
+                if (StringUtils.isEmpty(arch)) {
+                    arch = DefaultConstant.DEFAULT_ARCH;
+                }
+                JSONObject current = K8sMicroServiceUtil.replaceOptionsBranch(
+                        item.getComponentType(), item.getOptions(), branch, dockerRegistry, dockerNamespace);
+                JSONArray currentEnv = current.getJSONArray("env");
+                if (currentEnv != null && currentEnv.size() > 0) {
+                    envSet.addAll(currentEnv.toJavaList(String.class));
+                }
+                options.getJSONObject("arch").put(arch, current);
+                options.put("kind", current.getString("kind"));
+            }
+            options.put("env", JSONArray.parseArray(JSONArray.toJSONString(new ArrayList<>(envSet))));
+            return options;
+        }
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.alibaba.tesla.appmanager.workflow.action.impl.workflowtask;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.DeployAppProvider;
+import com.alibaba.tesla.appmanager.api.provider.UnitProvider;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.DeployAppStateEnum;
 import com.alibaba.tesla.appmanager.common.enums.WorkflowTaskEventEnum;
@@ -15,6 +17,7 @@ import com.alibaba.tesla.appmanager.workflow.event.loader.WorkflowTaskStateActio
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO;
 import com.google.common.base.Enums;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -33,6 +36,9 @@ public class WaitingWorkflowTaskStateAction implements WorkflowTaskStateAction, 
     @Autowired
     private DeployAppProvider deployAppProvider;
 
+    @Autowired
+    private UnitProvider unitProvider;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         publisher.publishEvent(new WorkflowTaskStateActionLoadedEvent(
@@ -49,6 +55,9 @@ public class WaitingWorkflowTaskStateAction implements WorkflowTaskStateAction, 
     @Override
     public void run(WorkflowTaskDO task) {
         Long deployAppId = task.getDeployAppId();
+        String deployAppUnitId = task.getDeployAppUnitId();
+        String deployAppNamespaceId = task.getDeployAppNamespaceId();
+        String deployAppStageId = task.getDeployAppStageId();
         if (deployAppId == null || deployAppId == 0) {
             log.info("skip workflow task waiting process|workflowInstanceId={}|workflowTaskId={}|taskStatus={}",
                     task.getWorkflowInstanceId(), task.getId(), task.getTaskStatus());
@@ -57,7 +66,16 @@ public class WaitingWorkflowTaskStateAction implements WorkflowTaskStateAction, 
         }
 
         DeployAppGetReq request = DeployAppGetReq.builder().deployAppId(deployAppId).build();
-        DeployAppDTO deployApp = deployAppProvider.get(request, DefaultConstant.SYSTEM_OPERATOR);
+        DeployAppDTO deployApp;
+        if (StringUtils.isNotEmpty(deployAppUnitId)
+                || StringUtils.isNotEmpty(deployAppNamespaceId)
+                || StringUtils.isNotEmpty(deployAppStageId)) {
+            JSONObject response = unitProvider.getDeployment(deployAppUnitId,
+                    DeployAppGetReq.builder().deployAppId(deployAppId).build());
+            deployApp = response.toJavaObject(DeployAppDTO.class);
+        } else {
+            deployApp = deployAppProvider.get(request, DefaultConstant.SYSTEM_OPERATOR);
+        }
         DeployAppStateEnum deployStatus = Enums
                 .getIfPresent(DeployAppStateEnum.class, deployApp.getDeployStatus()).orNull();
         if (deployStatus == null) {

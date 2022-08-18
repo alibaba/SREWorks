@@ -50,4 +50,14 @@ public class DeployConfigUpdateReq {
      * Stage ID
      */
     private String isolateStageId;
+
+    /**
+     * 归属产品 ID
+     */
+    private String productId;
+
+    /**
+     * 归属发布版本 ID
+     */
+    private String releaseId;
 }

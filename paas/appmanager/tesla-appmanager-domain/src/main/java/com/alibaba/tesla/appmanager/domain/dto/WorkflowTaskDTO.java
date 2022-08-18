@@ -35,6 +35,11 @@ public class WorkflowTaskDTO {
     private Date gmtModified;
 
     /**
+     * 批次 ID
+     */
+    private Long batchId;
+
+    /**
      * Workflow 实例 ID
      */
     private Long workflowInstanceId;
@@ -78,6 +83,21 @@ public class WorkflowTaskDTO {
      * 部署单 ID
      */
     private Long deployAppId;
+
+    /**
+     * 部署单归属 Unit ID
+     */
+    private String deployAppUnitId;
+
+    /**
+     * 部署单归属 Namespace ID
+     */
+    private String deployAppNamespaceId;
+
+    /**
+     * 部署单归属 Stage ID
+     */
+    private String deployAppStageId;
 
     /**
      * 乐观锁版本

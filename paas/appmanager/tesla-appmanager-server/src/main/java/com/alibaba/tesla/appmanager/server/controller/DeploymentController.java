@@ -98,6 +98,10 @@ public class DeploymentController extends AppManagerBaseController {
     public TeslaBaseResult get(
             @PathVariable("deployAppId") Long deployAppId, OAuth2Authentication auth
     ) throws Exception {
+        if (deployAppId == 0) {
+            return buildSucceedResult(new DeployAppDTO());
+        }
+        
         DeployAppGetReq request = DeployAppGetReq.builder()
                 .deployAppId(deployAppId)
                 .build();

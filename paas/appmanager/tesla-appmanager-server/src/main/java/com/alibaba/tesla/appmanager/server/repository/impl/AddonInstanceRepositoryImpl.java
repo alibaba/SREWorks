@@ -8,7 +8,7 @@ import com.alibaba.tesla.appmanager.server.repository.AddonInstanceRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.AddonInstanceQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.AddonInstanceDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.AddonInstanceDOExample;
-import com.alibaba.tesla.appmanager.server.repository.mapper.AddonInstanceMapper;
+import com.alibaba.tesla.appmanager.server.repository.mapper.AddonInstanceDOMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,31 +24,21 @@ import java.util.stream.Collectors;
 public class AddonInstanceRepositoryImpl implements AddonInstanceRepository {
 
     @Autowired
-    private AddonInstanceMapper addonInstanceMapper;
+    private AddonInstanceDOMapper addonInstanceDOMapper;
 
     @Override
     public long countByCondition(AddonInstanceQueryCondition condition) {
-        return addonInstanceMapper.countByExample(buildExample(condition));
+        return addonInstanceDOMapper.countByExample(buildExample(condition));
     }
 
     @Override
     public int deleteByCondition(AddonInstanceQueryCondition condition) {
-        return addonInstanceMapper.deleteByExample(buildExample(condition));
-    }
-
-    @Override
-    public int deleteByPrimaryKey(Long id) {
-        return addonInstanceMapper.deleteByPrimaryKey(id);
+        return addonInstanceDOMapper.deleteByExample(buildExample(condition));
     }
 
     @Override
     public int insert(AddonInstanceDO record) {
-        return addonInstanceMapper.insertSelective(insertDate(record));
-    }
-
-    @Override
-    public int insertOrUpdate(AddonInstanceDO record) {
-        return addonInstanceMapper.insertOrUpdateSelective(insertDate(record));
+        return addonInstanceDOMapper.insertSelective(insertDate(record));
     }
 
     @Override
@@ -66,7 +56,7 @@ public class AddonInstanceRepositoryImpl implements AddonInstanceRepository {
 
     @Override
     public List<AddonInstanceDO> selectByCondition(AddonInstanceQueryCondition condition) {
-        List<AddonInstanceDO> tasks = addonInstanceMapper.selectByExample(buildExample(condition));
+        List<AddonInstanceDO> tasks = addonInstanceDOMapper.selectByExample(buildExample(condition));
         Map<String, String> addonAttrs = condition.getAddonAttrs();
         if (addonAttrs == null || addonAttrs.size() == 0) {
             return tasks;
@@ -78,18 +68,8 @@ public class AddonInstanceRepositoryImpl implements AddonInstanceRepository {
     }
 
     @Override
-    public AddonInstanceDO selectByPrimaryKey(Long id) {
-        return addonInstanceMapper.selectByPrimaryKey(id);
-    }
-
-    @Override
-    public int updateByCondition(AddonInstanceDO record, AddonInstanceQueryCondition condition) {
-        return addonInstanceMapper.updateByExampleSelective(updateDate(record), buildExample(condition));
-    }
-
-    @Override
     public int updateByPrimaryKey(AddonInstanceDO record) {
-        return addonInstanceMapper.updateByPrimaryKeySelective(updateDate(record));
+        return addonInstanceDOMapper.updateByPrimaryKeySelective(updateDate(record));
     }
 
     private AddonInstanceDOExample buildExample(AddonInstanceQueryCondition condition) {

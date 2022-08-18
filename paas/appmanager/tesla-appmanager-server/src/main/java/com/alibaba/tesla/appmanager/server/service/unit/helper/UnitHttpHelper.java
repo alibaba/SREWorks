@@ -18,6 +18,8 @@ import java.io.IOException;
  */
 public class UnitHttpHelper {
 
+    private static String LOCALHOST = "localhost";
+
     /**
      * 获取指定单元的 appmanager 的 auth token
      *
@@ -83,7 +85,9 @@ public class UnitHttpHelper {
      */
     public static OkHttpClient getHttpClient(UnitDO unit) {
         OkHttpClient httpClient;
-        if (StringUtils.isNotEmpty(unit.getProxyIp()) && Integer.parseInt(unit.getProxyPort()) > 0) {
+        if (unit.getEndpoint().contains(LOCALHOST)) {
+            httpClient = HttpClientFactory.getHttpClient();
+        } else if (StringUtils.isNotEmpty(unit.getProxyIp()) && Integer.parseInt(unit.getProxyPort()) > 0) {
             httpClient = HttpClientFactory.getHttpClient(unit.getProxyIp(), Integer.parseInt(unit.getProxyPort()));
         } else {
             httpClient = HttpClientFactory.getHttpClient();

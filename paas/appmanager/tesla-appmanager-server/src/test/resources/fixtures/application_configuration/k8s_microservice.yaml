@@ -14,6 +14,25 @@ spec:
     - name: WHOAMI
       value: 999999999999999
   components:
+    - revisionName: "RESOURCE_ADDON|terraform@test|_"
+      scopes:
+        - scopeRef:
+            apiVersion: flyadmin.alibaba.com/v1alpha1
+            kind: Namespace
+            name: default
+      parameterValues:
+        - name: environments
+          value:
+            - name: A
+              value: B
+          toFieldPaths:
+            - spec.environments
+        - name: git
+          value:
+            repo: "pe3/terraform-test.git"
+            branch: "master"
+          toFieldPaths:
+            - spec.configuration.git
     - revisionName: K8S_MICROSERVICE|server|_
       scopes:
         - scopeRef:
@@ -28,6 +47,8 @@ spec:
             apiVersion: flyadmin.alibaba.com/v1alpha1
             kind: Stage
             name: dev
+      dependencies:
+        - component: RESOURCE_ADDON|terraform@test
     - revisionName: K8S_JOB|job|_
       scopes:
         - scopeRef:
@@ -42,3 +63,5 @@ spec:
             apiVersion: flyadmin.alibaba.com/v1alpha1
             kind: Stage
             name: dev
+      dependencies:
+        - component: RESOURCE_ADDON|terraform@test

@@ -36,4 +36,14 @@ public class K8sMicroServiceMetaUpdateByOptionReq {
      * 配置项 JSONObject (componentType/componentName/options...)
      */
     private JSONObject body;
+
+    /**
+     * 归属产品 ID
+     */
+    private String productId;
+
+    /**
+     * 归属发布版本 ID
+     */
+    private String releaseId;
 }

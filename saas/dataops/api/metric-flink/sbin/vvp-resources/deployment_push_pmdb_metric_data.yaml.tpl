@@ -65,6 +65,8 @@ spec:
         execution.checkpointing.interval: 10s
         execution.checkpointing.min-pause: 10s
         high-availability: vvp-kubernetes
+        metrics.reporters: prom
+        metrics.reporter.prom.port: '9249'
         metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
         state.backend: filesystem
         taskmanager.memory.managed.fraction: '0.0'

@@ -8,7 +8,11 @@ export default class FormElementType {
     /**
      * 基本显示元素类型定义
      */
-
+    /**
+     * 图标选择器
+     * @type {number}
+     */
+     static ICON_SELECTOR = 170;
     /**
      * 一般输入
      * 数据格式:{type:1,name:'string',initValue:'',required:true,label:"标题"}
@@ -256,7 +260,8 @@ export default class FormElementType {
         { value: 110, label: '隐藏式输入框' },
         { value: 28, label: 'cron表达式组件' },
         { value: 29, label: '动态表单项' },
-        { value: 814, label: '多图片上传' }
+        { value: 814, label: '多图片上传' },
+        { value: 170, label: '图标选择器' }
     ];
 
     constructor() {

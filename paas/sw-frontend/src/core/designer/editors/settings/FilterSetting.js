@@ -34,7 +34,7 @@ class FilterSetting extends React.Component {
         let { widgetModel, config } = props;
         this.isFilterForm = widgetModel.type === 'FILTER_FORM';
         this.isTabFilter = widgetModel.type === 'FILTER_TAB';
-        let paramsDef = [], { outputName = '', form, column, labelSpan, autoSubmit, enterSubmit, hasBackground = false, showSearch = true, tabType = "Button", tabSize = "default", tabPosition = 'left', scenes = [],visibleExpression='' } = config;
+        let paramsDef = [], { outputName = '', form, column, labelSpan, autoSubmit, enterSubmit, hasBackground = false, showSearch = true, tabType = "Button", tabSize = "default", tabPosition = 'top-left', scenes = [],visibleExpression='' } = config;
         paramsDef.push({ type: FormElementType.INPUT, name: 'outputName', initValue: outputName, required: false, label: "输出对象名称", tooltip: "过滤器表单值输出到填写的参数名对象中,为空时表单项值全部独立输出到节点参数域中" });
         if (this.isFilterForm) {
             paramsDef.push({
@@ -78,8 +78,8 @@ class FilterSetting extends React.Component {
                 { type: FormElementType.INPUT, name: 'outputName', initValue: outputName, required: false, label: "输出对象名称", tooltip: "过滤器表单值输出到填写的参数名对象中,为空时表单项值全部独立输出到节点参数域中" },
                 {
                     type: FormElementType.RADIO, name: 'tabPosition', initValue: tabPosition, required: false, label: "tab展示位置",
-                    optionValues: [{ value: 'left', label: 'left' }, { value: 'right', label: 'right' }],
-                    tooltip: "tab的展示位置,left表示紧随标题,right表示居右"
+                    optionValues: [{ value: 'top-left', label: '左上' }, { value: 'top-right', label: '右上' },{ value: 'left', label: '左' }],
+                    tooltip: "tab的展示位置,左上表示紧随标题,右上表示居右，左下表示竖向过滤器"
                 },
                 {
                     type: FormElementType.RADIO, name: 'tabSize', initValue: tabSize, required: false, label: "tab展示大小",

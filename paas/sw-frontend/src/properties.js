@@ -39,15 +39,15 @@
   */
  // 本地开发环境配置
  const development = {
-     baseUrl: '',
-     apiEndpoint: '',
-     gateway: ''
+     baseUrl: 'http://dev.sreworks.net/',
+     apiEndpoint: 'http://dev.sreworks.net/',
+     gateway: 'http://dev.sreworks.net/'
  };
  // 日常环境配置项
  const daily = {
-     baseUrl: '',
-     apiEndpoint: '',
-     gateway: ''
+     baseUrl: 'http://dev.sreworks.net/',
+     apiEndpoint: 'http://dev.sreworks.net/',
+     gateway: 'http://dev.sreworks.net/'
  };
  // mocks 环境配置
  const mocks = {

@@ -214,7 +214,7 @@ export default class WorkspaceSetting extends React.Component {
     getImageList = () => {
         const { dispatch } = this.props;
         AppService.getDesktopBackgroundList().then(res => {
-            let imgList = res.imgList || []
+            let imgList = (res && res.imgList) || []
             this.setState({ imgList });
             dispatch({
                 type: 'home/setImgList',

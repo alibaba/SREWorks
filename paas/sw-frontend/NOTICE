@@ -116,7 +116,6 @@ eslint-plugin-react
 extract-text-webpack-plugin
 file-loader
 fs-extra
-happypack
 html-webpack-plugin
 less-loader
 less-vars-to-js

@@ -77,15 +77,14 @@ module.exports = function (proxy, allowedHost) {
       disableDotRule: true,
     },
     public: allowedHost,
-    proxy,
-    // proxy: {
-    //   "/gateway": {
-    //     target: "https://sreworks.c38cca9c474484bdc9873f44f733d8bcd.cn-beijing.alicontainer.com/",
-    //     changeOrigin: true,
-    //     cookieDomainRewrite:"localhost"
-    //     // cookieDomainRewrite: "30.225.0.197"
-    //   }
-    // },
+    // proxy,
+    proxy: {
+      "/gateway": {
+        target: "http://dev.sreworks.net/",
+        changeOrigin: true,
+        cookieDomainRewrite:"localhost"
+      }
+    },
     setup(app) {
       // This lets us open files from the runtime error overlay.
       app.use(errorOverlayMiddleware());

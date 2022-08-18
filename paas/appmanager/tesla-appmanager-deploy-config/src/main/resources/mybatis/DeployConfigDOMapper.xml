@@ -17,6 +17,8 @@
     <result column="inherit" jdbcType="BOOLEAN" property="inherit" />
     <result column="namespace_id" jdbcType="VARCHAR" property="namespaceId" />
     <result column="stage_id" jdbcType="VARCHAR" property="stageId" />
+    <result column="product_id" jdbcType="VARCHAR" property="productId" />
+    <result column="release_id" jdbcType="VARCHAR" property="releaseId" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <!--@mbg.generated-->
@@ -81,7 +83,7 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, gmt_create, gmt_modified, app_id, type_id, env_id, api_version, current_revision, 
-    enabled, config, `inherit`, namespace_id, stage_id
+    enabled, config, `inherit`, namespace_id, stage_id, product_id, release_id
   </sql>
   <select id="selectByExample" parameterType="com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDOExample" resultMap="BaseResultMap">
     <!--@mbg.generated-->
@@ -94,9 +96,7 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
+    order by id desc
   </select>
   <delete id="deleteByExample" parameterType="com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDOExample">
     <!--@mbg.generated-->
@@ -145,6 +145,12 @@
       <if test="stageId != null">
         stage_id,
       </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="releaseId != null">
+        release_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="gmtCreate != null">
@@ -182,6 +188,12 @@
       </if>
       <if test="stageId != null">
         #{stageId,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseId != null">
+        #{releaseId,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -234,6 +246,12 @@
       </if>
       <if test="record.stageId != null">
         stage_id = #{record.stageId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.productId != null">
+        product_id = #{record.productId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.releaseId != null">
+        release_id = #{record.releaseId,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null">

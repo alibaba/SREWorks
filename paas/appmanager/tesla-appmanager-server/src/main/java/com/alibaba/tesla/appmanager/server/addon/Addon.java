@@ -3,7 +3,9 @@ package com.alibaba.tesla.appmanager.server.addon;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.domain.schema.ComponentSchema;
 import com.alibaba.tesla.appmanager.server.addon.req.ApplyAddonInstanceReq;
+import com.alibaba.tesla.appmanager.server.addon.req.CheckAddonInstanceExpiredReq;
 import com.alibaba.tesla.appmanager.server.addon.req.ReleaseAddonInstanceReq;
+import com.alibaba.tesla.appmanager.server.addon.res.ApplyAddonRes;
 
 /**
  * Addon 统一描述接口
@@ -18,14 +20,24 @@ public interface Addon {
      * @param request 创建请求
      * @return dataOutput 数据
      */
-    ComponentSchema applyInstance(ApplyAddonInstanceReq request);
+    ApplyAddonRes apply(ApplyAddonInstanceReq request);
 
     /**
      * 释放 Addon 实例
      *
      * @param request 释放请求
      */
-    void releaseInstance(ReleaseAddonInstanceReq request);
+    void release(ReleaseAddonInstanceReq request);
+
+    /**
+     * 检查 Addon 实例是否过期 (过期意味着需要重新 applyInstance)
+     *
+     * @param request 检查请求
+     * @return true or false
+     */
+    default boolean checkExpired(CheckAddonInstanceExpiredReq request) {
+        return false;
+    }
 
     /**
      * 获取 Addon 唯一标识符

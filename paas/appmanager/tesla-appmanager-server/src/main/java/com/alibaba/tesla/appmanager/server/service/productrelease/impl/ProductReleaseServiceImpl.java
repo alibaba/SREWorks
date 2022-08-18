@@ -11,6 +11,7 @@ import com.alibaba.tesla.appmanager.common.service.GitService;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.AppPackageTaskCreateReq;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.ComponentBinder;
+import com.alibaba.tesla.appmanager.domain.req.git.GitFetchFileReq;
 import com.alibaba.tesla.appmanager.domain.req.productrelease.*;
 import com.alibaba.tesla.appmanager.domain.res.apppackage.AppPackageTaskCreateRes;
 import com.alibaba.tesla.appmanager.domain.res.productrelease.CheckProductReleaseTaskRes;
@@ -65,9 +66,6 @@ public class ProductReleaseServiceImpl implements ProductReleaseService {
 
     @Autowired
     private GitService gitService;
-
-    @Autowired
-    private AppPackageTaskProvider appPackageTaskProvider;
 
     /**
      * 获取当前系统中的全部 Schduler 列表
@@ -130,6 +128,45 @@ public class ProductReleaseServiceImpl implements ProductReleaseService {
                 .productReleaseRel(productReleaseRel)
                 .appRelList(appRelList)
                 .build();
+    }
+
+    /**
+     * 获取指定 productId + releaseId + appId 的 launch yaml 文件内容
+     *
+     * @param productId 产品 ID
+     * @param releaseId 发布版本 ID
+     * @param appId     应用 ID
+     * @return launch yaml 文件内容
+     */
+    @Override
+    public String getLaunchYaml(String productId, String releaseId, String appId) {
+        ProductDO product = productRepository.getByCondition(ProductQueryCondition.builder()
+                .productId(productId)
+                .build());
+        ProductReleaseAppRelDO appRel = productReleaseAppRelRepository.getByCondition(
+                ProductReleaseAppRelQueryCondition.builder()
+                        .productId(productId)
+                        .releaseId(releaseId)
+                        .appId(appId)
+                        .build());
+        if (product == null || appRel == null) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("cannot find launch yaml|productId=%s|releaseId=%s|appId=%s",
+                            productId, releaseId, appId));
+        }
+        String repo = product.getBaselineGitAddress();
+        String ciAccount = product.getBaselineGitUser();
+        String ciToken = product.getBaselineGitToken();
+        String launchPath = appRel.getBaselineLaunchPath();
+        String branch = appRel.getBaselineGitBranch();
+        StringBuilder logString = new StringBuilder();
+        return gitService.fetchFile(logString, GitFetchFileReq.builder()
+                .repo(repo)
+                .ciAccount(ciAccount)
+                .ciToken(ciToken)
+                .branch(branch)
+                .filePath(launchPath)
+                .build());
     }
 
     /**
@@ -263,81 +300,5 @@ public class ProductReleaseServiceImpl implements ProductReleaseService {
         } else {
             log.info("mark product release task success|taskId={}|count=1|status={}", taskId, toStatus);
         }
-    }
-
-    /**
-     * 在产品发布版本任务中创建 AppPackage 打包任务
-     *
-     * @param request 请求内容
-     * @return 应用包任务 ID
-     */
-    @Override
-    public CreateAppPackageTaskInProductReleaseTaskRes createAppPackageTaskInProductReleaseTask(
-            CreateAppPackageTaskInProductReleaseTaskReq request) {
-        // Git 切换到自己的分支
-        gitService.checkoutBranch(request.getLogContent(), request.getBranch(), request.getDir());
-        log.info("git repo has checkout to branch {}|dir={}|productId={}|releaseId={}",
-                request.getBranch(), request.getDir().toString(), request.getProductId(), request.getReleaseId());
-
-        // 创建应用包任务
-        AppPackageTaskCreateRes res = appPackageTaskProvider.create(
-                AppPackageTaskCreateReq.builder()
-                        .appId(request.getAppId())
-                        .tags(Collections.singletonList(request.getTag()))
-                        .components(buildYamlToComponentBinderList(request.getDir(), request.getBuildPath()))
-                        .build(),
-                DefaultConstant.SYSTEM_OPERATOR);
-        Long appPackageTaskId = res.getAppPackageTaskId();
-
-        // 插入关联数据
-        ProductReleaseTaskAppPackageTaskRelDO appPackageTaskRelDO = ProductReleaseTaskAppPackageTaskRelDO.builder()
-                .taskId(request.getTaskId())
-                .appPackageTaskId(appPackageTaskId)
-                .build();
-        int count = productReleaseTaskAppPackageTaskRelRepository.insert(appPackageTaskRelDO);
-        if (count == 0) {
-            throw new AppException(AppErrorCode.UNKNOWN_ERROR, "cannot insert product release task app package task " +
-                    "rel, count=0|task={}", JSONObject.toJSONString(appPackageTaskRelDO));
-        }
-        log.info("product release task app package task rel has created|taskId={}|appPackageTaskId={}|request={}",
-                request.getTaskId(), appPackageTaskId, JSONObject.toJSONString(request));
-
-        return CreateAppPackageTaskInProductReleaseTaskRes.builder()
-                .appPackageTaskId(appPackageTaskId)
-                .build();
-    }
-
-    /**
-     * 将指定的 build.yaml 文件转换为内部的 ComponentBinder List 对象
-     *
-     * @param dir       Git Clone 的本地目录
-     * @param buildPath 构建文件 Yaml 路径
-     * @return List of ComponentBinder
-     */
-    private List<ComponentBinder> buildYamlToComponentBinderList(Path dir, String buildPath) {
-        Yaml yaml = SchemaUtil.createYaml(Arrays.asList(Iterable.class, Object.class));
-        Path actualPath = dir.resolve(buildPath);
-        Iterable<Object> iterable;
-        try {
-            iterable = yaml.loadAll(new String(Files.readAllBytes(actualPath)));
-        } catch (IOException e) {
-            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                    String.format("load build path failed, path=%s", actualPath));
-        }
-
-        List<ComponentBinder> results = new ArrayList<>();
-        for (Object object : iterable) {
-            JSONObject root = new JSONObject((Map) object);
-            JSONObject options = root.getJSONObject("options");
-            String componentName = root.getString("componentName");
-            ComponentTypeEnum componentType = ComponentTypeEnum.valueOf(root.getString("componentType"));
-            results.add(ComponentBinder.builder()
-                    .componentType(componentType)
-                    .componentName(componentName)
-                    .useRawOptions(true)
-                    .options(options)
-                    .build());
-        }
-        return results;
     }
 }

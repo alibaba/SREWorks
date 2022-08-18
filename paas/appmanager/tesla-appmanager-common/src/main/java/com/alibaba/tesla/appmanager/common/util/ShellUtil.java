@@ -3,6 +3,7 @@ package com.alibaba.tesla.appmanager.common.util;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -30,7 +31,17 @@ public class ShellUtil {
          * git ls-remote https://sreworks_public:sreworkspublic123@code.aliyun.com/sreworks_public/aac.git
          */
         StringBuilder cmd = new StringBuilder();
-        cmd.append("git ").append(" ls-remote ").append(repoUrl.replace("https://", "https://" + ciAccount + ":" + ciToken + "@"));
+        String authRepoUrl;
+        if(StringUtils.isNotEmpty(ciAccount) && StringUtils.isNotEmpty(ciToken)){
+            if (repoUrl.startsWith("http://")) {
+                authRepoUrl = repoUrl.replace("http://", "http://" + ciAccount + ":" + ciToken + "@");
+            } else {
+                authRepoUrl = repoUrl.replace("https://", "https://" + ciAccount + ":" + ciToken + "@");
+            }
+        }else {
+            authRepoUrl = repoUrl;
+        }
+        cmd.append("git ").append(" ls-remote ").append(authRepoUrl);
         return exec(cmd.toString());
     }
 

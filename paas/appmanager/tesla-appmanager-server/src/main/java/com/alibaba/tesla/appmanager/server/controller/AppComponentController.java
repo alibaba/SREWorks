@@ -33,13 +33,14 @@ public class AppComponentController extends AppManagerBaseController {
     public TeslaBaseResult list(
             @PathVariable String appId,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
+            @ModelAttribute AppComponentQueryReq req,
             OAuth2Authentication auth) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
-        AppComponentQueryReq request = AppComponentQueryReq.builder()
+        return buildSucceedResult(appComponentProvider.list(AppComponentQueryReq.builder()
                 .appId(appId)
                 .namespaceId(container.getNamespaceId())
                 .stageId(container.getStageId())
-                .build();
-        return buildSucceedResult(appComponentProvider.list(request, getOperator(auth)));
+                .arch(req.getArch())
+                .build(), getOperator(auth)));
     }
 }

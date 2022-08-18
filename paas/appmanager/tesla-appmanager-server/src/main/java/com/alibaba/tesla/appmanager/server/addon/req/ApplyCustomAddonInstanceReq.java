@@ -42,7 +42,7 @@ public class ApplyCustomAddonInstanceReq implements Serializable {
     private String addonVersion;
 
     /**
-     * Addon Name (namespaceId, addonId, addonVersion 下唯一)
+     * Addon Name
      */
     private String addonName;
 

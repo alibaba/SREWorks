@@ -83,6 +83,15 @@ public class SuccessDeployAppStateAction implements DeployAppStateAction, Applic
         }
 
         for (WorkflowTaskDTO item : workflowTasks.getItems()) {
+            String unitId = item.getDeployAppUnitId();
+            String namespaceId = item.getDeployAppNamespaceId();
+            String stageId = item.getDeployAppStageId();
+            if (StringUtils.isNotEmpty(unitId) || StringUtils.isNotEmpty(namespaceId)
+                    || StringUtils.isNotEmpty(stageId)) {
+                log.info("current associated workflow task is remoteness, skip|deployAppId={}|deployAppUnitId={}|" +
+                        "deployAppNamespaceId={}|deployAppStageId={}", order.getId(), unitId, namespaceId, stageId);
+                continue;
+            }
             log.info("find associated workflow task, publish TRIGGER_UPDATE to it|workflowInstanceId={}|" +
                     "workflowTaskId={}|deployAppId={}|deployStatus={}", item.getWorkflowInstanceId(),
                     item.getId(), order.getId(), order.getDeployStatus());

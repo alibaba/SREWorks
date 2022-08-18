@@ -16,6 +16,9 @@
     <result column="task_status" jdbcType="VARCHAR" property="taskStatus" />
     <result column="deploy_app_id" jdbcType="BIGINT" property="deployAppId" />
     <result column="lock_version" jdbcType="INTEGER" property="lockVersion" />
+    <result column="deploy_app_unit_id" jdbcType="VARCHAR" property="deployAppUnitId" />
+    <result column="deploy_app_namespace_id" jdbcType="VARCHAR" property="deployAppNamespaceId" />
+    <result column="deploy_app_stage_id" jdbcType="VARCHAR" property="deployAppStageId" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO">
     <!--@mbg.generated-->
@@ -86,7 +89,8 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, gmt_create, gmt_modified, workflow_instance_id, app_id, gmt_start, gmt_end, task_type, 
-    task_stage, task_status, deploy_app_id, lock_version
+    task_stage, task_status, deploy_app_id, lock_version, deploy_app_unit_id, deploy_app_namespace_id, 
+    deploy_app_stage_id
   </sql>
   <sql id="Blob_Column_List">
     <!--@mbg.generated-->
@@ -105,9 +109,7 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
+    order by id
   </select>
   <select id="selectByExample" parameterType="com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDOExample" resultMap="BaseResultMap">
     <!--@mbg.generated-->
@@ -120,9 +122,7 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
+    order by id
   </select>
   <delete id="deleteByExample" parameterType="com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDOExample">
     <!--@mbg.generated-->
@@ -168,6 +168,15 @@
       <if test="lockVersion != null">
         lock_version,
       </if>
+      <if test="deployAppUnitId != null">
+        deploy_app_unit_id,
+      </if>
+      <if test="deployAppNamespaceId != null">
+        deploy_app_namespace_id,
+      </if>
+      <if test="deployAppStageId != null">
+        deploy_app_stage_id,
+      </if>
       <if test="taskProperties != null">
         task_properties,
       </if>
@@ -208,6 +217,15 @@
       </if>
       <if test="lockVersion != null">
         #{lockVersion,jdbcType=INTEGER},
+      </if>
+      <if test="deployAppUnitId != null">
+        #{deployAppUnitId,jdbcType=VARCHAR},
+      </if>
+      <if test="deployAppNamespaceId != null">
+        #{deployAppNamespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="deployAppStageId != null">
+        #{deployAppStageId,jdbcType=VARCHAR},
       </if>
       <if test="taskProperties != null">
         #{taskProperties,jdbcType=LONGVARCHAR},
@@ -260,6 +278,15 @@
       <if test="record.deployAppId != null">
         deploy_app_id = #{record.deployAppId,jdbcType=BIGINT},
       </if>
+      <if test="record.deployAppUnitId != null">
+        deploy_app_unit_id = #{record.deployAppUnitId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deployAppNamespaceId != null">
+        deploy_app_namespace_id = #{record.deployAppNamespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deployAppStageId != null">
+        deploy_app_stage_id = #{record.deployAppStageId,jdbcType=VARCHAR},
+      </if>
       <if test="record.taskProperties != null">
         task_properties = #{record.taskProperties,jdbcType=LONGVARCHAR},
       </if>
@@ -273,7 +300,6 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO">
-    <!--@mbg.generated-->
     update am_workflow_task
     <set>
       <if test="gmtCreate != null">
@@ -306,6 +332,15 @@
       <if test="deployAppId != null">
         deploy_app_id = #{deployAppId,jdbcType=BIGINT},
       </if>
+      <if test="deployAppUnitId != null">
+        deploy_app_unit_id = #{deployAppUnitId,jdbcType=VARCHAR},
+      </if>
+      <if test="deployAppNamespaceId != null">
+        deploy_app_namespace_id = #{deployAppNamespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="deployAppStageId != null">
+        deploy_app_stage_id = #{deployAppStageId,jdbcType=VARCHAR},
+      </if>
       <if test="taskProperties != null">
         task_properties = #{taskProperties,jdbcType=LONGVARCHAR},
       </if>
@@ -327,5 +362,12 @@
     where workflow_instance_id = #{workflowInstanceId,jdbcType=BIGINT} and id <![CDATA[ > ]]> #{workflowTaskId,jdbcType=BIGINT} and task_status = 'PENDING'
     order by id
     limit 1
+  </select>
+
+  <select id="listRunningRemoteTask" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from am_workflow_task
+    where deploy_app_unit_id is not null and deploy_app_unit_id != '' and task_status = 'WAITING'
   </select>
 </mapper>

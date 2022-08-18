@@ -1,6 +1,7 @@
 package com.alibaba.tesla.appmanager.server.job;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.api.provider.ProductReleaseProvider;
 import com.alibaba.tesla.appmanager.autoconfig.PackageProperties;
 import com.alibaba.tesla.appmanager.autoconfig.SystemProperties;
 import com.alibaba.tesla.appmanager.common.constants.ProductReleaseConstant;
@@ -72,6 +73,9 @@ public class ProductReleaseSchedulerJob {
      * Task Executor Lock
      */
     private final Object taskExecutorLock = new Object();
+
+    @Autowired
+    private ProductReleaseProvider productReleaseProvider;
 
     @Autowired
     private ProductReleaseService productReleaseService;
@@ -402,7 +406,7 @@ public class ProductReleaseSchedulerJob {
                     tag = item.getTag();
                 }
                 String buildPath = item.getBaselineBuildPath();
-                CreateAppPackageTaskInProductReleaseTaskRes appPackageTaskRes = productReleaseService
+                CreateAppPackageTaskInProductReleaseTaskRes appPackageTaskRes = productReleaseProvider
                         .createAppPackageTaskInProductReleaseTask(
                                 CreateAppPackageTaskInProductReleaseTaskReq.builder()
                                         .logContent(logContent)

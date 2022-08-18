@@ -33,4 +33,11 @@ public interface WorkflowTaskDOMapper {
     WorkflowTaskDO nextPendingTask(
             @Param("workflowInstanceId") Long workflowInstanceId,
             @Param("workflowTaskId") Long workflowTaskId);
+
+    /**
+     * 列出当前所有正在运行中的远程 workflow task
+     *
+     * @return List or WorkflowTaskDO
+     */
+    List<WorkflowTaskDO> listRunningRemoteTask();
 }

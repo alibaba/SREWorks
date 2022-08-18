@@ -1,9 +1,11 @@
 package com.alibaba.tesla.appmanager.server.service.productrelease;
 
 import com.alibaba.tesla.appmanager.common.enums.ProductReleaseTaskStatusEnum;
-import com.alibaba.tesla.appmanager.domain.req.productrelease.*;
+import com.alibaba.tesla.appmanager.domain.req.productrelease.CheckProductReleaseTaskReq;
+import com.alibaba.tesla.appmanager.domain.req.productrelease.CreateProductReleaseTaskReq;
+import com.alibaba.tesla.appmanager.domain.req.productrelease.ListProductReleaseTaskAppPackageTaskReq;
+import com.alibaba.tesla.appmanager.domain.req.productrelease.ListProductReleaseTaskReq;
 import com.alibaba.tesla.appmanager.domain.res.productrelease.CheckProductReleaseTaskRes;
-import com.alibaba.tesla.appmanager.domain.res.productrelease.CreateAppPackageTaskInProductReleaseTaskRes;
 import com.alibaba.tesla.appmanager.domain.res.productrelease.CreateProductReleaseTaskRes;
 import com.alibaba.tesla.appmanager.server.repository.domain.ProductReleaseSchedulerDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.ProductReleaseTaskAppPackageTaskRelDO;
@@ -43,6 +45,16 @@ public interface ProductReleaseService {
      * @return 全量信息
      */
     ProductReleaseBO get(String productId, String releaseId);
+
+    /**
+     * 获取指定 productId + releaseId + appId 的 launch yaml 文件内容
+     *
+     * @param productId 产品 ID
+     * @param releaseId 发布版本 ID
+     * @param appId     应用 ID
+     * @return launch yaml 文件内容
+     */
+    String getLaunchYaml(String productId, String releaseId, String appId);
 
     /**
      * 创建产品发布版本任务实例
@@ -94,13 +106,4 @@ public interface ProductReleaseService {
      */
     void markProductReleaseTaskStatus(
             String taskId, ProductReleaseTaskStatusEnum fromStatus, ProductReleaseTaskStatusEnum toStatus);
-
-    /**
-     * 在产品发布版本任务中创建 AppPackage 打包任务
-     *
-     * @param request 请求内容
-     * @return 应用包任务 ID
-     */
-    CreateAppPackageTaskInProductReleaseTaskRes createAppPackageTaskInProductReleaseTask(
-            CreateAppPackageTaskInProductReleaseTaskReq request);
 }

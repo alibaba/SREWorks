@@ -29,7 +29,6 @@ public class K8sMicroServiceUtil {
         JSONObject root = yaml.loadAs(options, JSONObject.class);
         JSONObject optionsJson = root.getJSONObject("options");
         optionsJson.putIfAbsent("kind", DefaultConstant.DEFAULT_K8S_MICROSERVICE_KIND);
-        optionsJson.put("env", optionsJson.getJSONArray("env"));
 
         switch (componentType) {
             case K8S_JOB:

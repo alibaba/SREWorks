@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.server.provider.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.AppMetaProvider;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
@@ -7,6 +8,8 @@ import com.alibaba.tesla.appmanager.common.enums.AppOptionUpdateModeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
+import com.alibaba.tesla.appmanager.common.util.EnvUtil;
+import com.alibaba.tesla.appmanager.common.util.RequestUtil;
 import com.alibaba.tesla.appmanager.domain.dto.AppDeployEnvironmentDTO;
 import com.alibaba.tesla.appmanager.domain.dto.AppMetaDTO;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaDeleteReq;
@@ -31,6 +34,7 @@ import com.alibaba.tesla.appmanager.server.service.rtappinstance.RtAppInstanceSe
 import com.google.common.base.Enums;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -295,6 +299,31 @@ public class AppMetaProviderImpl implements AppMetaProvider {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "invalid parameter mode " + request.getMode());
         }
         appOptionService.updateOptions(appId, options, mode);
+
+        // 默认开启前端
+        if (!EnvUtil.isSreworks()) {
+            try {
+                JSONObject body = new JSONObject();
+                body.put("admins", new JSONArray());
+                body.put("appId", appId);
+                body.put("options", new JSONObject());
+                body.put("templateName", "blank_app");
+                body.put("version", 0);
+                body.put("environments", new JSONArray());
+                body.getJSONArray("environments").add("default,daily");
+                JSONObject headers = new JSONObject();
+                headers.put("X-BizTenant", "alibaba");
+                headers.put("X-EmpId", operator);
+                headers.put("X-Biz-App", String.format("%s,default,daily", appId));
+                String bodyStr = JSONObject.toJSONString(body);
+                String response = RequestUtil.post("http://productops.internal.tesla.alibaba-inc.com/apps/init",
+                        new JSONObject(), bodyStr, headers);
+                log.info("create app init response|operator={}|appId={}|body={}|headers={}|response={}",
+                        operator, appId, bodyStr, JSONObject.toJSONString(headers), response);
+            } catch (Exception e) {
+                log.warn("init frontend failed, skip|appId={}|exception={}", appId, ExceptionUtils.getStackTrace(e));
+            }
+        }
         return get(appId, operator);
     }
 }

@@ -36,7 +36,7 @@
         <mapper resource="mybatis/DeployComponentDOMapper.xml"/>
         <mapper resource="mybatis/DeployComponentAttrDOMapper.xml"/>
         <mapper resource="mybatis/AddonMetaMapper.xml"/>
-        <mapper resource="mybatis/AddonInstanceMapper.xml"/>
+        <mapper resource="mybatis/AddonInstanceDOMapper.xml"/>
         <mapper resource="mybatis/AddonInstanceTaskMapper.xml"/>
         <mapper resource="mybatis/AppPackageTaskDOMapper.xml"/>
         <mapper resource="mybatis/AppAddonDOMapper.xml"/>

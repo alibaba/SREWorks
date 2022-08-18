@@ -45,6 +45,7 @@ public class TestK8sMicroServiceUtil {
     public void testReplaceOptionsBranch() {
         JSONObject res = K8sMicroServiceUtil.replaceOptionsBranch(
                 ComponentTypeEnum.K8S_MICROSERVICE, OPTIONS, "newbranch", "docker.test.com", "testgroup");
+        log.info("final options: {}", JSONObject.toJSONString(res));
         assertThat(res.getJSONArray("containers").getJSONObject(0).getJSONObject("build").getString("branch")).isEqualTo("newbranch");
         assertThat(res.getJSONArray("containers").getJSONObject(0).getJSONObject("build").getBoolean("imagePush")).isEqualTo(true);
         assertThat(res.getJSONArray("containers").getJSONObject(0).getJSONObject("build").getString("imagePushRegistry")).isEqualTo("docker.test.com/testgroup");

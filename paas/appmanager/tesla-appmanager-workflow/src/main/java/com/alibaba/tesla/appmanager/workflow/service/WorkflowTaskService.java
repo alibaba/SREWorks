@@ -6,6 +6,8 @@ import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowTaskQu
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO;
 
+import java.util.List;
+
 /**
  * 工作流任务 服务
  *
@@ -29,6 +31,13 @@ public interface WorkflowTaskService {
      * @return List of WorkflowTask
      */
     Pagination<WorkflowTaskDO> list(WorkflowTaskQueryCondition condition);
+
+    /**
+     * 列出当前所有正在运行中的远程 workflow task
+     *
+     * @return List or WorkflowTaskDO
+     */
+    List<WorkflowTaskDO> listRunningRemoteTask();
 
     /**
      * 更新指定的 Workflow 任务实例

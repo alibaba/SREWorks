@@ -154,6 +154,8 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
     public TeslaBaseResult createByYaml(
             @PathVariable String appId,
             @RequestParam("type") String type,
+            @RequestParam("productId") String productId,
+            @RequestParam("releaseId") String releaseId,
             @RequestBody String bodyStr,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
@@ -171,6 +173,8 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
                     .appId(appId)
                     .namespaceId(namespaceId)
                     .stageId(stageId)
+                    .productId(productId)
+                    .releaseId(releaseId)
                     .body(options)
                     .build()));
         }

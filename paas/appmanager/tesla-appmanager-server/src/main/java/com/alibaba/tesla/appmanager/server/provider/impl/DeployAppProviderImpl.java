@@ -47,7 +47,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -235,40 +234,6 @@ public class DeployAppProviderImpl implements DeployAppProvider {
         if (appPackageDO != null) {
             appPackageId = appPackageDO.getId();
             packageVersion = appPackageDO.getPackageVersion();
-        }
-
-        // TODO: 如果是远程单元部署，那么临时 sync 到目标单元，临时方案，等待 workflow 完成后迁移
-        if (StringUtils.isNotEmpty(unitId) && appPackageId > 0) {
-            UnitDO unitDO = unitService.get(UnitQueryCondition.builder().unitId(unitId).build());
-            if (unitDO.getCategory().equals(DefaultConstant.PRIVATE_ABM_CATEGORY)) {
-                try {
-                    JSONObject syncResponse = unitService.syncRemote(unitId, appPackageId);
-                    JSONObject syncResponseData = syncResponse.getJSONObject("data");
-                    if (syncResponseData == null) {
-                        throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                                String.format("sync to remote unit failed, syncResponse=%s", syncResponse.toJSONString()));
-                    }
-                    appPackageId = syncResponseData.getLongValue("id");
-                    if (appPackageId == 0) {
-                        throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                                String.format("sync to remote unit failed, syncResponse=%s", syncResponse.toJSONString()));
-                    }
-                    DeployAppSchema rawSchema = SchemaUtil.toSchema(DeployAppSchema.class, request.getConfiguration());
-                    rawSchema.getMetadata().getAnnotations().setUnitId("");
-                    rawSchema.getMetadata().getAnnotations().setAppPackageId(appPackageId);
-                    JSONObject launchResponse = unitService.launchDeployment(unitId, DeployAppLaunchReq.builder()
-                            .appPackageId(appPackageId)
-                            .configuration(SchemaUtil.toYamlMapStr(rawSchema))
-                            .autoEnvironment(request.getAutoEnvironment())
-                            .removeSuffix(request.getRemoveSuffix())
-                            .build());
-                    return launchResponse.toJavaObject(DeployAppPackageLaunchRes.class);
-                } catch (Exception e) {
-                    throw new AppException(AppErrorCode.NETWORK_ERROR,
-                            String.format("cannot launch deployment in unit %s|appPackageId=%d|exception=%s",
-                                    unitId, appPackageId, ExceptionUtils.getStackTrace(e)));
-                }
-            }
         }
 
         // 创建 App 部署单

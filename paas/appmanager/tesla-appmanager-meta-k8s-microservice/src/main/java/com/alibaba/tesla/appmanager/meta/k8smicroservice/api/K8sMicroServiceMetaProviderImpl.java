@@ -153,12 +153,15 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
         String appId = request.getAppId();
         String namespaceId = request.getNamespaceId();
         String stageId = request.getStageId();
+        String productId = request.getProductId();
+        String releaseId = request.getReleaseId();
         JSONObject body = request.getBody();
         if (StringUtils.isAnyEmpty(appId, namespaceId, stageId) || body == null) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "appId/namespaceId/stageId/body are required");
         }
 
-        List<K8sMicroServiceMetaDTO> dtoList = k8sMicroServiceMetaDtoConvert.to(body, appId, namespaceId, stageId);
+        List<K8sMicroServiceMetaDTO> dtoList = k8sMicroServiceMetaDtoConvert
+                .to(body, appId, namespaceId, stageId, productId, releaseId);
         if (CollectionUtils.isEmpty(dtoList)) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "convert options failed");
         }
@@ -205,6 +208,8 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
         K8sMicroServiceMetaDTO dto = new K8sMicroServiceMetaDTO();
         ClassUtil.copy(request, dto);
         if (dto.getImagePushObject() == null) {
+            log.warn("invalid image push object from request|request={}|dto={}",
+                    JSONObject.toJSONString(request), JSONObject.toJSONString(dto));
             dto.setImagePushObject(k8sMicroServiceMetaDtoConvert.to(dbMeta).getImagePushObject());
         }
         return update(dto);
@@ -250,7 +255,11 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
         }
 
         k8SMicroserviceMetaService.create(meta);
-        refreshDeployConfig(dto);
+        if (EnvUtil.isSreworks()) {
+            refreshDeployConfigForSreworks(dto);
+        } else {
+            refreshDeployConfig(dto);
+        }
         K8sMicroServiceMetaDO result = k8SMicroserviceMetaService.get(K8sMicroserviceMetaQueryCondition.builder()
                 .appId(dto.getAppId())
                 .microServiceId(dto.getMicroServiceId())
@@ -281,8 +290,70 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
                 .withBlobs(true)
                 .build();
         k8SMicroserviceMetaService.update(meta, condition);
-        refreshDeployConfig(dto);
+        if (EnvUtil.isSreworks()) {
+            refreshDeployConfigForSreworks(dto);
+        } else {
+            refreshDeployConfig(dto);
+        }
         return k8sMicroServiceMetaDtoConvert.to(k8SMicroserviceMetaService.get(condition));
+    }
+
+    /**
+     * 自动维护 K8S Microservice 对应的 Deploy Config 配置
+     *
+     * @param dto K8S Microservice DTO
+     */
+    private void refreshDeployConfig(K8sMicroServiceMetaDTO dto) {
+        if (StringUtils.isNotEmpty(dto.getProductId()) && StringUtils.isNotEmpty(dto.getReleaseId())) {
+            deployConfigService.update(DeployConfigUpdateReq.builder()
+                    .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                    .appId(dto.getAppId())
+                    .typeId(new DeployConfigTypeId(DeployConfigTypeId.TYPE_PARAMETER_VALUES).toString())
+                    .envId("")
+                    .inherit(false)
+                    .config("")
+                    .isolateNamespaceId(dto.getNamespaceId())
+                    .isolateStageId(dto.getStageId())
+                    .productId(dto.getProductId())
+                    .releaseId(dto.getReleaseId())
+                    .build());
+            deployConfigService.update(DeployConfigUpdateReq.builder()
+                    .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                    .appId(dto.getAppId())
+                    .typeId(new DeployConfigTypeId(dto.getComponentType(), dto.getMicroServiceId()).toString())
+                    .envId("")
+                    .inherit(false)
+                    .config("")
+                    .isolateNamespaceId(dto.getNamespaceId())
+                    .isolateStageId(dto.getStageId())
+                    .productId(dto.getProductId())
+                    .releaseId(dto.getReleaseId())
+                    .build());
+            deployConfigService.update(DeployConfigUpdateReq.builder()
+                    .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                    .appId(dto.getAppId())
+                    .typeId(new DeployConfigTypeId(DeployConfigTypeId.TYPE_POLICIES).toString())
+                    .envId("")
+                    .inherit(false)
+                    .config("")
+                    .isolateNamespaceId(dto.getNamespaceId())
+                    .isolateStageId(dto.getStageId())
+                    .productId(dto.getProductId())
+                    .releaseId(dto.getReleaseId())
+                    .build());
+            deployConfigService.update(DeployConfigUpdateReq.builder()
+                    .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                    .appId(dto.getAppId())
+                    .typeId(new DeployConfigTypeId(DeployConfigTypeId.TYPE_WORKFLOW).toString())
+                    .envId("")
+                    .inherit(false)
+                    .config("")
+                    .isolateNamespaceId(dto.getNamespaceId())
+                    .isolateStageId(dto.getStageId())
+                    .productId(dto.getProductId())
+                    .releaseId(dto.getReleaseId())
+                    .build());
+        }
     }
 
     /**
@@ -321,7 +392,7 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
      *
      * @param meta K8S Microservice DTO
      */
-    private void refreshDeployConfig(K8sMicroServiceMetaDTO meta) {
+    private void refreshDeployConfigForSreworks(K8sMicroServiceMetaDTO meta) {
         LaunchDTO launchObject = meta.getLaunchObject();
         if (launchObject == null) {
             log.info("appId: " + meta.getAppId() + " launchObject is null, skip");
@@ -576,27 +647,5 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
                 .isolateNamespaceId(metaNamespaceId)
                 .isolateStageId(metaStageId)
                 .build());
-    }
-
-    /**
-     * TODO: 等待前端增加 imagePush 字段后删除 (for 弹内默认创建)
-     *
-     * @param dto DTO
-     */
-    private void addImagePushForInternal(K8sMicroServiceMetaDTO dto) {
-        if (dto.getImagePushObject() == null) {
-            String arch = dto.getArch();
-            if (StringUtils.isEmpty(arch)) {
-                arch = "x86";
-                dto.setArch(arch);
-            }
-            dto.setImagePushObject(ImagePushDTO.builder()
-                    .imagePushRegistry(ImagePushRegistryDTO.builder()
-                            .dockerRegistry("reg.docker.alibaba-inc.com")
-                            .dockerNamespace("abm-internal")
-                            .useBranchAsTag(false)
-                            .build())
-                    .build());
-        }
     }
 }

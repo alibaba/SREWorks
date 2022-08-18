@@ -31,7 +31,7 @@ public class ApplyAddonInstanceReq implements Serializable {
     private String addonId;
 
     /**
-     * Addon Name (namespaceId, addonId, addonVersion 下唯一)
+     * Addon Name
      */
     private String addonName;
 
@@ -39,6 +39,11 @@ public class ApplyAddonInstanceReq implements Serializable {
      * Addon 属性字典
      */
     private Map<String, String> addonAttrs;
+
+    /**
+     * 上一次 Addon Schema
+     */
+    private ComponentSchema lastSchema;
 
     /**
      * Addon Schema

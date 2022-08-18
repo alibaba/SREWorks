@@ -105,6 +105,16 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
     }
 
     /**
+     * 列出当前所有正在运行中的远程 workflow task
+     *
+     * @return List or WorkflowTaskDO
+     */
+    @Override
+    public List<WorkflowTaskDO> listRunningRemoteTask() {
+        return workflowTaskRepository.listRunningRemoteTask();
+    }
+
+    /**
      * 更新指定的 Workflow 任务实例
      *
      * @param task Workflow 任务实例
@@ -225,6 +235,9 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
         returnedTask.setTaskErrorMessage("");
         if (output.getDeployAppId() != null && output.getDeployAppId() > 0) {
             returnedTask.setDeployAppId(output.getDeployAppId());
+            returnedTask.setDeployAppUnitId(output.getDeployAppUnitId());
+            returnedTask.setDeployAppNamespaceId(output.getDeployAppNamespaceId());
+            returnedTask.setDeployAppStageId(output.getDeployAppStageId());
         }
 
         // 保存 Workflow 快照

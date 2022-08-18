@@ -1,6 +1,7 @@
 package com.alibaba.tesla.appmanager.auth.controller;
 
 import com.alibaba.tesla.web.controller.BaseController;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
@@ -15,6 +16,7 @@ import java.util.Map;
  */
 public class AppManagerBaseController extends BaseController {
 
+    private static final String UNKNOWN_USER = "UNKNOWN";
     private static final String USERNAME = "user_name";
     private static final String COMPATIBLE_EMP_ID = "emp_id";
 
@@ -26,7 +28,7 @@ public class AppManagerBaseController extends BaseController {
      */
     protected String getOperator(OAuth2Authentication auth) {
         if (auth == null) {
-            return "UNKNOWN";
+            return UNKNOWN_USER;
         }
         OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) auth.getDetails();
         String tokenValue = details.getTokenValue();
@@ -36,5 +38,16 @@ public class AppManagerBaseController extends BaseController {
         } else {
             return String.valueOf(additionalInformation.getOrDefault(USERNAME, "UNKNOWN"));
         }
+    }
+
+    /**
+     * 获取当前的操作用户
+     */
+    protected String getOperator(OAuth2Authentication auth, String empId) {
+        String operator = getOperator(auth);
+        if (UNKNOWN_USER.equals(operator) && StringUtils.isNotEmpty(empId)) {
+            return empId;
+        }
+        return operator;
     }
 }

@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.server.service.unit;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
+import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppGetReq;
 import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppLaunchReq;
 import com.alibaba.tesla.appmanager.server.repository.condition.UnitQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.UnitDO;
@@ -38,6 +39,15 @@ public interface UnitService {
             throws IOException, URISyntaxException;
 
     /**
+     * 查询单元环境部署详情
+     *
+     * @param unitId 但愿 ID
+     * @param getReq 查询请求
+     * @return
+     */
+    JSONObject getDeployment(String unitId, DeployAppGetReq getReq);
+
+    /**
      * 通用单元 HTTP 请求转发
      * <p>
      * 要求 request 中的 URL 必须遵循 /units/{unitId}/? 的形式
@@ -49,7 +59,7 @@ public interface UnitService {
      * @param response   Http 响应
      */
     void proxy(String unitId, String method, String requestUri,
-                   HttpServletRequest request, HttpServletResponse response);
+               HttpServletRequest request, HttpServletResponse response);
 
     /**
      * 根据 unitId 获取指定的单元信息

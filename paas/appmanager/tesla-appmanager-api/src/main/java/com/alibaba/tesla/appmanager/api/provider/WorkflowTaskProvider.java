@@ -4,6 +4,8 @@ import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.WorkflowTaskDTO;
 import com.alibaba.tesla.appmanager.domain.req.workflow.WorkflowTaskListReq;
 
+import java.util.List;
+
 /**
  * 工作流任务 Provider
  *
@@ -27,6 +29,13 @@ public interface WorkflowTaskProvider {
      * @return List of WorkflowTask
      */
     Pagination<WorkflowTaskDTO> list(WorkflowTaskListReq request);
+
+    /**
+     * 列出当前所有正在运行中的远程 workflow task
+     *
+     * @return List or WorkflowTaskDTO
+     */
+    List<WorkflowTaskDTO> listRunningRemoteTask();
 
     /**
      * 更新指定的 Workflow 任务实例

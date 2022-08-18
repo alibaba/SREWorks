@@ -12,6 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * 工作流任务 Provider
  *
@@ -57,6 +60,18 @@ public class WorkflowTaskProviderImpl implements WorkflowTaskProvider {
                 .deployAppId(request.getDeployAppId())
                 .build());
         return Pagination.transform(tasks, item -> convert.to(item));
+    }
+
+    /**
+     * 列出当前所有正在运行中的远程 workflow task
+     *
+     * @return List or WorkflowTaskDTO
+     */
+    @Override
+    public List<WorkflowTaskDTO> listRunningRemoteTask() {
+        return workflowTaskService.listRunningRemoteTask().stream()
+                .map(item -> convert.to(item))
+                .collect(Collectors.toList());
     }
 
     /**

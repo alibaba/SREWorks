@@ -90,9 +90,7 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
+    order by id desc
   </select>
   <select id="selectByExample" parameterType="com.alibaba.tesla.appmanager.trait.repository.domain.TraitDOExample" resultMap="BaseResultMap">
     select
@@ -105,9 +103,7 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
+    order by id desc
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
     select 
@@ -316,9 +312,7 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
+    order by id desc
   </select>
   <select id="selectByExampleWithRowbounds" parameterType="com.alibaba.tesla.appmanager.trait.repository.domain.TraitDOExample" resultMap="BaseResultMap">
     select
@@ -331,8 +325,6 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
+    order by id desc
   </select>
 </mapper>

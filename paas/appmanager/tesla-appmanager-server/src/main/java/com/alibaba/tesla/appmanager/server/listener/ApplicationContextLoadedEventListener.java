@@ -58,6 +58,7 @@ public class ApplicationContextLoadedEventListener implements ApplicationListene
             "/dynamicscripts/DefaultBuildResourceAddonHandler.groovy",
             "/dynamicscripts/DefaultDeployResourceAddonHandler.groovy",
             "/dynamicscripts/TraitHostAliases.groovy",
+            "/dynamicscripts/TraitHostNetwork.groovy",
             "/dynamicscripts/TraitSystemEnv.groovy",
             "/dynamicscripts/TraitNodeSelector.groovy",
             "/dynamicscripts/MicroserviceComponentWatchKubernetesInformerHandler.groovy",
@@ -71,6 +72,7 @@ public class ApplicationContextLoadedEventListener implements ApplicationListene
             "/dynamicscripts/InternalAddonV2ProductopsComponentHandler.groovy",
             "/dynamicscripts/InternalAddonV2ProductopsComponentDestroyHandler.groovy",
             "/dynamicscripts/WorkflowDeployHandler.groovy",
+            "/dynamicscripts/WorkflowRemoteDeployHandler.groovy",
             "/dynamicscripts/WorkflowSuspendHandler.groovy",
             "/dynamicscripts/PolicyTopologyHandler.groovy",
             "/dynamicscripts/PolicyOverrideHandler.groovy"

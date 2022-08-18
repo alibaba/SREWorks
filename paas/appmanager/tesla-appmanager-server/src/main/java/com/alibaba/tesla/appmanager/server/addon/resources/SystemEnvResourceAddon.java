@@ -8,6 +8,7 @@ import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.schema.ComponentSchema;
 import com.alibaba.tesla.appmanager.server.addon.BaseAddon;
 import com.alibaba.tesla.appmanager.server.addon.req.ApplyAddonInstanceReq;
+import com.alibaba.tesla.appmanager.server.addon.res.ApplyAddonRes;
 import com.alibaba.tesla.appmanager.server.event.loader.AddonLoadedEvent;
 import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
@@ -76,7 +77,7 @@ public class SystemEnvResourceAddon extends BaseAddon {
     }
 
     @Override
-    public ComponentSchema applyInstance(ApplyAddonInstanceReq request) {
+    public ApplyAddonRes apply(ApplyAddonInstanceReq request) {
         ComponentSchema schema = request.getSchema();
         JSONObject spec = (JSONObject) schema.getSpec().getWorkload().getSpec();
         JSONArray keys = spec.getJSONArray("keys");
@@ -90,6 +91,9 @@ public class SystemEnvResourceAddon extends BaseAddon {
             envVars.put(keyStr, value);
         }
         schema.overwriteWorkloadSpecVars(ImmutableMap.of("env", envVars));
-        return schema;
+        return ApplyAddonRes.builder()
+                .componentSchema(schema)
+                .signature(null)
+                .build();
     }
 }

@@ -100,4 +100,14 @@ public class K8sMicroServiceMetaQuickUpdateReq {
      * 部署对象
      */
     private LaunchDTO launchObject;
+
+    /**
+     * 归属产品 ID
+     */
+    private String productId;
+
+    /**
+     * 归属发布版本 ID
+     */
+    private String releaseId;
 }

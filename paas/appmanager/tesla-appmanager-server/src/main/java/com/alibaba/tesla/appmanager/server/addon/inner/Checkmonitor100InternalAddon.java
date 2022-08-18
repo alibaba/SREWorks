@@ -4,7 +4,6 @@ import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.util.AddonUtil;
 import com.alibaba.tesla.appmanager.domain.schema.ComponentSchema;
 import com.alibaba.tesla.appmanager.server.addon.BaseAddon;
-import com.alibaba.tesla.appmanager.server.addon.req.ApplyAddonInstanceReq;
 import com.alibaba.tesla.appmanager.server.event.loader.AddonLoadedEvent;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -54,16 +53,5 @@ public class Checkmonitor100InternalAddon extends BaseAddon {
     public void init() {
         publisher.publishEvent(new AddonLoadedEvent(
                 this, AddonUtil.combineAddonKey(getAddonType(), getAddonId()), this.getClass().getSimpleName()));
-    }
-
-    /**
-     * 内置组件不需要做任何申请的事情
-     *
-     * @param request 创建请求
-     * @return
-     */
-    @Override
-    public ComponentSchema applyInstance(ApplyAddonInstanceReq request) {
-        return request.getSchema();
     }
 }

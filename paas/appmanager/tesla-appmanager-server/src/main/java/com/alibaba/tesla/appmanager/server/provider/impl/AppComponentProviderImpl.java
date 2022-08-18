@@ -48,12 +48,14 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         String appId = request.getAppId();
         String namespaceId = request.getNamespaceId();
         String stageId = request.getStageId();
+        String arch = request.getArch();
         List<AppComponentDTO> result = new ArrayList<>();
 
         // 获取 K8S 微应用组件
         K8sMicroServiceMetaQueryReq k8sMicroServiceMetaQueryReq = new K8sMicroServiceMetaQueryReq();
         k8sMicroServiceMetaQueryReq.setAppId(appId);
         k8sMicroServiceMetaQueryReq.setNamespaceId(namespaceId);
+        k8sMicroServiceMetaQueryReq.setArch(arch);
         k8sMicroServiceMetaQueryReq.setStageId(stageId);
         k8sMicroServiceMetaQueryReq.setPagination(false);
         k8SMicroServiceMetaProvider.list(k8sMicroServiceMetaQueryReq).getItems()

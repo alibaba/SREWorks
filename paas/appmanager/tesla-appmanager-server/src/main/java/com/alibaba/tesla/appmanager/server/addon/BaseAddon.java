@@ -1,15 +1,14 @@
 package com.alibaba.tesla.appmanager.server.addon;
 
-import com.alibaba.tesla.appmanager.domain.schema.ComponentSchema;
 import com.alibaba.tesla.appmanager.server.addon.req.ApplyAddonInstanceReq;
 import com.alibaba.tesla.appmanager.server.addon.req.ReleaseAddonInstanceReq;
+import com.alibaba.tesla.appmanager.server.addon.res.ApplyAddonRes;
 import com.alibaba.tesla.appmanager.server.repository.AddonInstanceRepository;
 import com.alibaba.tesla.appmanager.server.repository.AddonMetaRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.AddonInstanceQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.condition.AddonMetaQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.AddonMetaDO;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -52,14 +51,17 @@ public abstract class BaseAddon implements Addon {
     }
 
     /**
-     * 创建 Addon 实例
+     * 申请 Addon 实例
      *
      * @param request 创建请求
      * @return addonInstanceId
      */
     @Override
-    public ComponentSchema applyInstance(ApplyAddonInstanceReq request) {
-        throw new NotImplementedException("applyInstance interface must be implemented");
+    public ApplyAddonRes apply(ApplyAddonInstanceReq request) {
+        return ApplyAddonRes.builder()
+                .componentSchema(request.getSchema())
+                .signature(null)
+                .build();
     }
 
     /**
@@ -68,7 +70,7 @@ public abstract class BaseAddon implements Addon {
      * @param request 释放请求
      */
     @Override
-    public void releaseInstance(ReleaseAddonInstanceReq request) {
+    public void release(ReleaseAddonInstanceReq request) {
         String addonInstanceId = request.getAddonInstanceId();
         addonInstanceRepository.deleteByCondition(AddonInstanceQueryCondition.builder()
                 .addonInstanceId(request.getAddonInstanceId())

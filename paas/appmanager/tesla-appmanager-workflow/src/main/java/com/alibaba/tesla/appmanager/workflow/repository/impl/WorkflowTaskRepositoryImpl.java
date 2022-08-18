@@ -84,6 +84,16 @@ public class WorkflowTaskRepositoryImpl implements WorkflowTaskRepository {
         return mapper.nextPendingTask(workflowInstanceId, workflowTaskId);
     }
 
+    /**
+     * 列出当前所有正在运行中的远程 workflow task
+     *
+     * @return List or WorkflowTaskDO
+     */
+    @Override
+    public List<WorkflowTaskDO> listRunningRemoteTask() {
+        return mapper.listRunningRemoteTask();
+    }
+
     private WorkflowTaskDOExample buildExample(WorkflowTaskQueryCondition condition) {
         WorkflowTaskDOExample example = new WorkflowTaskDOExample();
         WorkflowTaskDOExample.Criteria criteria = example.createCriteria();
@@ -104,6 +114,15 @@ public class WorkflowTaskRepositoryImpl implements WorkflowTaskRepository {
         }
         if (condition.getDeployAppId() != null && condition.getDeployAppId() > 0) {
             criteria.andDeployAppIdEqualTo(condition.getDeployAppId());
+        }
+        if (StringUtils.isNotEmpty(condition.getDeployAppUnitId())) {
+            criteria.andDeployAppUnitIdEqualTo(condition.getDeployAppUnitId());
+        }
+        if (StringUtils.isNotEmpty(condition.getDeployAppNamespaceId())) {
+            criteria.andDeployAppNamespaceIdEqualTo(condition.getDeployAppNamespaceId());
+        }
+        if (StringUtils.isNotEmpty(condition.getDeployAppStageId())) {
+            criteria.andDeployAppStageIdEqualTo(condition.getDeployAppStageId());
         }
         return example;
     }

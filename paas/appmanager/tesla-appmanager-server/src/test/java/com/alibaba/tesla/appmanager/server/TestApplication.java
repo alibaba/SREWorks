@@ -30,7 +30,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         "com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.mapper",
         "com.alibaba.tesla.appmanager.deployconfig.repository.mapper",
         "com.alibaba.tesla.appmanager.workflow.repository.mapper",
-        "com.alibaba.tesla.dag.repository.mapper"
+        "com.alibaba.tesla.dag.repository.mapper",
+        "com.alibaba.tesla.appmanager.plugin.repository.mapper",
 })
 @EnableTransactionManagement
 @EnableAsync

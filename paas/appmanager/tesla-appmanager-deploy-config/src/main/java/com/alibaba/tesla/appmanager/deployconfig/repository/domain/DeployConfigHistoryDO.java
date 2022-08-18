@@ -83,4 +83,8 @@ public class DeployConfigHistoryDO {
      * Stage ID
      */
     private String stageId;
+
+    private String productId;
+
+    private String releaseId;
 }

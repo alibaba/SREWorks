@@ -3,6 +3,7 @@ package com.alibaba.tesla.appmanager.server.dag.nodes;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.constants.AppFlowParamKey;
 import com.alibaba.tesla.appmanager.common.constants.AppFlowVariableKey;
+import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.AddonInstanceTaskStatusEnum;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.ParameterValueSetPolicy;
@@ -24,8 +25,11 @@ import com.alibaba.tesla.dag.local.AbstractLocalNodeBase;
 import com.alibaba.tesla.dag.model.domain.dagnode.DagInstNodeRunRet;
 import com.google.common.base.Enums;
 import com.hubspot.jinjava.Jinjava;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -76,7 +80,21 @@ public class DeployAppWaitAddonNode extends AbstractLocalNodeBase {
         for (DeployAppSchema.DataOutput dataOutput : dataOutputs) {
             String fieldPath = dataOutput.getFieldPath();
             String name = dataOutput.getName();
-            String value = jinjava.render(fieldPath, workload);
+            Object value;
+            try {
+                if (fieldPath.startsWith("{{")) {
+                    // Jinja 渲染方式
+                    value = jinjava.render(fieldPath, workload);
+                } else {
+                    DocumentContext workloadContext = JsonPath.parse(JSONObject.toJSONString(workload));
+                    value = workloadContext.read(DefaultConstant.JSONPATH_PREFIX + fieldPath);
+                }
+            } catch (Exception e) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                        String.format("cannot fetch dataOutput in workload|fieldPath=%s|name=%s|exception=%s|" +
+                                "workload=%s", fieldPath, name, ExceptionUtils.getStackTrace(e),
+                                JSONObject.toJSONString(workload)));
+            }
             DeployAppHelper.recursiveSetParameters(parameters, null, Arrays.asList(name.split("\\.")), value,
                     ParameterValueSetPolicy.OVERWRITE_ON_CONFILICT);
             log.info("dataOutput has put into overwrite parameters|name={}|value={}|deployId={}|fieldPath={}",

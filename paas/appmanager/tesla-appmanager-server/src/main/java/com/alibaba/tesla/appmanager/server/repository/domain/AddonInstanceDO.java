@@ -5,19 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
  * 附加组件实例
- *
- * @author yaoxing.gyx@alibaba-inc.com
  */
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class AddonInstanceDO implements Serializable {
+@NoArgsConstructor
+public class AddonInstanceDO {
+    private static final long serialVersionUID = 1L;
     /**
      * ID
      */
@@ -73,7 +71,10 @@ public class AddonInstanceDO implements Serializable {
      */
     private String dataOutput;
 
-    private static final long serialVersionUID = 1L;
+    /**
+     * 签名
+     */
+    private String signature;
 
     /**
      * 返回申请过程消耗的时间
@@ -84,6 +85,6 @@ public class AddonInstanceDO implements Serializable {
         if (gmtCreate == null || gmtModified == null) {
             return "unknown";
         }
-        return String.format("%dms", (gmtModified.getTime() - gmtCreate.getTime()) / 1000);
+        return String.format("%d", (gmtModified.getTime() - gmtCreate.getTime()) / 1000);
     }
 }

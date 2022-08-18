@@ -5,6 +5,8 @@ import com.alibaba.tesla.appmanager.api.provider.UnitProvider;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.ClassUtil;
 import com.alibaba.tesla.appmanager.domain.dto.UnitDTO;
+import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppGetReq;
+import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppLaunchReq;
 import com.alibaba.tesla.appmanager.domain.req.unit.UnitCreateReq;
 import com.alibaba.tesla.appmanager.domain.req.unit.UnitDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.unit.UnitQueryReq;
@@ -50,6 +52,31 @@ public class UnitProviderImpl implements UnitProvider {
     @Override
     public JSONObject syncRemote(String unitId, Long appPackageId) throws IOException, URISyntaxException {
         return unitService.syncRemote(unitId, appPackageId);
+    }
+
+    /**
+     * 启动单元环境部署
+     *
+     * @param unitId    单元 ID
+     * @param launchReq 实际部署请求
+     * @return
+     */
+    @Override
+    public JSONObject launchDeployment(String unitId, DeployAppLaunchReq launchReq)
+            throws IOException, URISyntaxException {
+        return unitService.launchDeployment(unitId, launchReq);
+    }
+
+    /**
+     * 查询单元环境部署详情
+     *
+     * @param unitId 但愿 ID
+     * @param getReq 查询请求
+     * @return
+     */
+    @Override
+    public JSONObject getDeployment(String unitId, DeployAppGetReq getReq) {
+        return unitService.getDeployment(unitId, getReq);
     }
 
     /**

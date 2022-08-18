@@ -3,6 +3,8 @@ package com.alibaba.tesla.appmanager.api.provider;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.UnitDTO;
+import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppGetReq;
+import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppLaunchReq;
 import com.alibaba.tesla.appmanager.domain.req.unit.UnitCreateReq;
 import com.alibaba.tesla.appmanager.domain.req.unit.UnitDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.unit.UnitQueryReq;
@@ -26,6 +28,25 @@ public interface UnitProvider {
      * @return
      */
     JSONObject syncRemote(String unitId, Long appPackageId) throws IOException, URISyntaxException;
+
+    /**
+     * 启动单元环境部署
+     *
+     * @param unitId    单元 ID
+     * @param launchReq 实际部署请求
+     * @return
+     */
+    JSONObject launchDeployment(String unitId, DeployAppLaunchReq launchReq)
+            throws IOException, URISyntaxException;
+
+    /**
+     * 查询单元环境部署详情
+     *
+     * @param unitId 但愿 ID
+     * @param getReq 查询请求
+     * @return
+     */
+    JSONObject getDeployment(String unitId, DeployAppGetReq getReq);
 
     /**
      * 根据条件查询单元

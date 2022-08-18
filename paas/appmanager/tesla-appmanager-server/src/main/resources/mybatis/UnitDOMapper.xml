@@ -98,7 +98,7 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    order by id desc
+    order by unit_id desc
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--@mbg.generated-->

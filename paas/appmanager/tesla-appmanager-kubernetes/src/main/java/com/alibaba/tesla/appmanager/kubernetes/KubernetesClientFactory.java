@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.ClusterProvider;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.common.util.EnvUtil;
 import com.alibaba.tesla.appmanager.domain.dto.ClusterDTO;
 import io.fabric8.kubernetes.api.model.AuthInfo;
 import io.fabric8.kubernetes.api.model.Cluster;
@@ -90,7 +91,9 @@ public class KubernetesClientFactory {
     public DefaultKubernetesClient get(String clusterId) {
         // 针对专有云场景，直接使用当前的 service account token
         String cloudType = System.getenv("CLOUD_TYPE");
-        if ("ApsaraStack".equals(cloudType) || "ApsaraStackAgility".equals(cloudType)) {
+        if ("ApsaraStack".equals(cloudType)
+                || "ApsaraStackAgility".equals(cloudType)
+                || (EnvUtil.isSreworks() && "master".equals(clusterId))) {
             DefaultKubernetesClient client = clientMap.get(clusterId);
             if (client != null) {
                 return client;

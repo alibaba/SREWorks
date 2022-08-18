@@ -282,7 +282,8 @@ public class RtAppInstanceServiceImpl implements RtAppInstanceService {
     public Pagination<RtAppInstanceDO> list(RtAppInstanceQueryCondition condition) {
         List<RtAppInstanceDO> result = rtAppInstanceRepository.selectByCondition(condition);
         for (RtAppInstanceDO appInstance : result) {
-            if (AppInstanceStatusEnum.PENDING.toString().equals(appInstance.getStatus())) {
+            if (AppInstanceStatusEnum.PENDING.toString().equals(appInstance.getStatus())
+                    || AppInstanceStatusEnum.UPDATING.toString().equals(appInstance.getStatus())) {
                 asyncTriggerStatusUpdate(appInstance.getAppInstanceId());
             }
         }

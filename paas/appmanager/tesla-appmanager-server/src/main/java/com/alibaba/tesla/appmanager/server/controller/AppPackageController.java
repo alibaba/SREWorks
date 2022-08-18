@@ -159,7 +159,7 @@ public class AppPackageController extends AppManagerBaseController {
             @Valid @ModelAttribute AppPackageImportReq request,
             RequestEntity<InputStream> entity,
             OAuth2Authentication auth) {
-        request.setAppId(appId);
+        request.setAppId(appId.replace("..", ""));
         request.setPackageCreator(getOperator(auth));
         if (request.getForce() == null) {
             request.setForce(true);

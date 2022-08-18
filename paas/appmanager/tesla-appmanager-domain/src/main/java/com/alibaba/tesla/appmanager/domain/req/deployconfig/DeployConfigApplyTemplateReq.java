@@ -45,4 +45,14 @@ public class DeployConfigApplyTemplateReq {
      * Stage ID
      */
     private String isolateStageId;
+
+    /**
+     * Product ID
+     */
+    private String productId;
+
+    /**
+     * Release ID
+     */
+    private String releaseId;
 }

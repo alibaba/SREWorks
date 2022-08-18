@@ -31,4 +31,9 @@ public class AppComponentQueryReq extends BaseRequest {
      * Stage ID
      */
     private String stageId;
+
+    /**
+     * 架构
+     */
+    private String arch;
 }

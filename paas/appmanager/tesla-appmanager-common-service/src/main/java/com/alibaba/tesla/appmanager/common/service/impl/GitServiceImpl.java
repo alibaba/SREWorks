@@ -10,20 +10,18 @@ import com.alibaba.tesla.appmanager.common.util.GitlabUtil;
 import com.alibaba.tesla.appmanager.common.util.StringUtil;
 import com.alibaba.tesla.appmanager.domain.dto.ContainerObjectDTO;
 import com.alibaba.tesla.appmanager.domain.req.git.GitCloneReq;
+import com.alibaba.tesla.appmanager.domain.req.git.GitFetchFileReq;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @Slf4j
@@ -111,6 +109,42 @@ public class GitServiceImpl implements GitService {
     }
 
     /**
+     * 获取远端 Git 仓库中的指定文件内容
+     *
+     * @param logContent 日志 StringBuilder
+     * @param request    抓取文件请求
+     * @return 文件内容
+     */
+    @Override
+    public String fetchFile(StringBuilder logContent, GitFetchFileReq request) {
+        Path tmpDir = null;
+        try {
+            tmpDir = Files.createTempDirectory("appmanager_repo_fetch_file_");
+            String branch = request.getBranch();
+            String filepath = request.getFilePath();
+            String repo = getAuthorizedRepo(GitCloneReq.builder()
+                    .repo(request.getRepo())
+                    .ciAccount(request.getCiAccount())
+                    .ciToken(request.getCiToken())
+                    .build());
+            String command = String.format("cd %s; git clone -b %s --no-checkout --depth=1 --no-tags %s .; git restore " +
+                "--staged %s; git checkout %s", tmpDir.toString(), branch, repo, filepath, filepath);
+            logContent.append(String.format("run command: %s\n", command));
+            logContent.append(CommandUtil.runLocalCommand(command));
+            return new String(Files.readAllBytes(Paths.get(tmpDir.toString(), filepath)));
+        } catch (IOException e) {
+            throw new AppException(AppErrorCode.UNKNOWN_ERROR, "cannot create temp directory", e);
+        } finally {
+            if (tmpDir != null) {
+                String tmpDirStr = tmpDir.toString();
+                if (tmpDir.toFile().delete()) {
+                    logContent.append(String.format("builder tmp dir has deleted %s", tmpDirStr));
+                }
+            }
+        }
+    }
+
+    /**
      * 切换分支
      *
      * @param logContent 日志 StringBuilder
@@ -168,7 +202,7 @@ public class GitServiceImpl implements GitService {
             }
 
             GitlabUtil.createProject(containerObjectDTO.getRepoDomain(), containerObjectDTO.getRepoGroup(),
-                containerObjectDTO.getAppName(), token);
+                    containerObjectDTO.getAppName(), token);
         }
     }
 }

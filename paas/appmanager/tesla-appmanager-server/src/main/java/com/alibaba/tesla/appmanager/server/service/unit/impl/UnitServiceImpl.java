@@ -7,6 +7,7 @@ import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.NetworkUtil;
 import com.alibaba.tesla.appmanager.domain.core.StorageFile;
+import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppGetReq;
 import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppLaunchReq;
 import com.alibaba.tesla.appmanager.server.repository.UnitRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppPackageQueryCondition;
@@ -30,7 +31,6 @@ import org.springframework.util.CollectionUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -135,6 +135,39 @@ public class UnitServiceImpl implements UnitService {
         HttpUrl finalUrl = urlBuilder.build();
         try {
             Request.Builder requestBuilder = new Request.Builder().url(finalUrl).post(body);
+            JSONObject response = NetworkUtil.sendRequest(httpClient, requestBuilder, authToken);
+            return response.getJSONObject("data");
+        } catch (Exception e) {
+            throw new AppException(AppErrorCode.NETWORK_ERROR,
+                    String.format("cannot send request to unit|unitId=%s|url=%s|exception=%s",
+                            unitId, finalUrl, ExceptionUtils.getStackTrace(e)));
+        }
+    }
+
+    /**
+     * 查询单元环境部署详情
+     *
+     * @param unitId 但愿 ID
+     * @param getReq 查询请求
+     * @return
+     */
+    @Override
+    public JSONObject getDeployment(String unitId, DeployAppGetReq getReq) {
+        // 获取目标单元信息
+        UnitDO unit = get(UnitQueryCondition.builder().unitId(unitId).build());
+        if (unit == null) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "the unit you provided does not exists");
+        }
+        OkHttpClient httpClient = UnitHttpHelper.getHttpClient(unit);
+        String authToken = UnitHttpHelper.getAuthToken(unit, httpClient);
+
+        // 发起部署请求
+        String urlPrefix = NetworkUtil.concatenateStr(unit.getEndpoint(),
+                String.format("deployments/%d", getReq.getDeployAppId()));
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(urlPrefix)).newBuilder();
+        HttpUrl finalUrl = urlBuilder.build();
+        try {
+            Request.Builder requestBuilder = new Request.Builder().url(finalUrl).get();
             JSONObject response = NetworkUtil.sendRequest(httpClient, requestBuilder, authToken);
             return response.getJSONObject("data");
         } catch (Exception e) {

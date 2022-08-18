@@ -36,6 +36,21 @@ public class ExecuteWorkflowHandlerRes implements Serializable {
     private Long deployAppId;
 
     /**
+     * 部署单归属 Unit ID
+     */
+    private String deployAppUnitId;
+
+    /**
+     * 部署单归属 Namespace ID
+     */
+    private String deployAppNamespaceId;
+
+    /**
+     * 部署单归属 Stage ID
+     */
+    private String deployAppStageId;
+
+    /**
      * 是否暂停
      */
     private boolean suspend;

@@ -8,11 +8,11 @@ import com.alibaba.tesla.appmanager.deployconfig.repository.DeployConfigHistoryR
 import com.alibaba.tesla.appmanager.deployconfig.repository.DeployConfigRepository;
 import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConfigQueryCondition;
 import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDO;
+import com.alibaba.tesla.appmanager.deployconfig.service.impl.DeployConfigServiceImpl;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigGenerateReq;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigGenerateRes;
 import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
-import com.alibaba.tesla.appmanager.deployconfig.service.impl.DeployConfigServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
@@ -31,8 +31,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @Slf4j

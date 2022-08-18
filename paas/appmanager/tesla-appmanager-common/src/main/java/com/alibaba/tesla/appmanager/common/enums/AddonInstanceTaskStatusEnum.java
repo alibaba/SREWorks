@@ -46,7 +46,7 @@ public enum AddonInstanceTaskStatusEnum {
      * @return list of string
      */
     public static List<String> runningStatusList() {
-        return Arrays.asList(PENDING.toString(), RUNNING.toString(), WAIT_FOR_OP.toString());
+        return Arrays.asList(PENDING.toString(), RUNNING.toString());
     }
 
     /**

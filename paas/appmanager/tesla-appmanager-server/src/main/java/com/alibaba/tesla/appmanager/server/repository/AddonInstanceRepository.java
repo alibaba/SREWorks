@@ -10,19 +10,11 @@ public interface AddonInstanceRepository {
 
     int deleteByCondition(AddonInstanceQueryCondition condition);
 
-    int deleteByPrimaryKey(Long id);
-
     int insert(AddonInstanceDO record);
-
-    int insertOrUpdate(AddonInstanceDO record);
 
     AddonInstanceDO getByCondition(AddonInstanceQueryCondition condition);
 
     List<AddonInstanceDO> selectByCondition(AddonInstanceQueryCondition condition);
-
-    AddonInstanceDO selectByPrimaryKey(Long id);
-
-    int updateByCondition(AddonInstanceDO record, AddonInstanceQueryCondition condition);
 
     int updateByPrimaryKey(AddonInstanceDO record);
 }

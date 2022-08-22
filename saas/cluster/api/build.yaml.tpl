@@ -33,6 +33,18 @@ options:
         ciAccount: ${SOURCE_CI_ACCOUNT}
         ciToken: ${SOURCE_CI_TOKEN}
 
+    - name: init-cluster
+      build:
+        imagePush: ${IMAGE_BUILD_ENABLE}
+        imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
+        dockerfileTemplateArgs:
+          PYTHON3_IMAGE: ${PYTHON3_IMAGE}
+        dockerfileTemplate: Dockerfile-init-cluster.tpl
+        repoPath: saas/cluster/api/clustermanage
+        branch: ${SOURCE_BRANCH}
+        repo: ${SOURCE_REPO}
+        ciAccount: ${SOURCE_CI_ACCOUNT}
+        ciToken: ${SOURCE_CI_TOKEN}
 
   env:
     - DB_HOST

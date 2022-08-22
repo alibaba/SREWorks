@@ -109,6 +109,8 @@ data:
   DATA_ES_USER: {{ .Values.saas.dataops.esUser | quote }}
   DATA_ES_PASSWORD: {{ .Values.saas.dataops.esPassword | quote }}
 
+  DATA_PROM_HOST: "localhost"
+  DATA_PROM_PORT: "80"
 
   ACCOUNT_SUPER_CLIENT_ID: {{ .Values.appmanager.gateway.account_super_client_id }}
   ACCOUNT_SUPER_CLIENT_SECRET: {{ .Values.appmanager.gateway.account_super_client_secret }}

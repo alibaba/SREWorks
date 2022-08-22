@@ -205,7 +205,7 @@ class AnomalyDetection(BentoService):
                 day_timezone = timezone.localize(day)
                 return int(datetime.datetime.timestamp(day_timezone))
 
-            detect_result['ts'] = detect_result.astype(str)
+            detect_result['ts'] = detect_result['ts'].astype(str)
             detect_result['timestamp'] = detect_result['ts'].apply(str2timestamp)
             result_column_list = ['timestamp', 'value', 'anomaly']
 

@@ -99,7 +99,7 @@ public abstract class AbstractScriptTaskHandler extends AbstractTaskHandler {
                     break;
                 }
                 if (res > 0) {
-                    log.info("xxxxxxx: " + id);
+                    log.info("task instance id: " + id);
                     BeansUtil.context.getBean(ElasticTaskInstanceService.class)
                         .appendString(id, key, new String(buffer, 0, res, StandardCharsets.UTF_8));
                 }

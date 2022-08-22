@@ -61,8 +61,12 @@ public class AppController extends AppManagerBaseController {
      * @apiParam (JSON Body) {Object} options 应用扩展信息
      */
     @PostMapping
-    public TeslaBaseResult create(@RequestBody AppMetaUpdateReq request, OAuth2Authentication auth) {
-        AppMetaDTO result = appMetaProvider.save(request, getOperator(auth));
+    public TeslaBaseResult create(
+            @RequestBody AppMetaUpdateReq request,
+            @RequestHeader(value = "X-EmpId", required = false) String empId,
+            OAuth2Authentication auth) {
+        String operator = getOperator(auth, empId);
+        AppMetaDTO result = appMetaProvider.save(request, operator);
         return buildSucceedResult(result);
     }
 
@@ -103,9 +107,13 @@ public class AppController extends AppManagerBaseController {
      */
     @PutMapping(value = "/{appId}")
     public TeslaBaseResult update(
-            @PathVariable String appId, @RequestBody AppMetaUpdateReq request, OAuth2Authentication auth) {
+            @PathVariable String appId,
+            @RequestBody AppMetaUpdateReq request,
+            @RequestHeader(value = "X-EmpId", required = false) String empId,
+            OAuth2Authentication auth) {
+        String operator = getOperator(auth, empId);
         request.setAppId(appId);
-        AppMetaDTO result = appMetaProvider.save(request, getOperator(auth));
+        AppMetaDTO result = appMetaProvider.save(request, operator);
         return buildSucceedResult(result);
     }
 

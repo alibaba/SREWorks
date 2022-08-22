@@ -954,6 +954,146 @@ public class DeployConfigDOExample {
             addCriterion("stage_id not between", value1, value2, "stageId");
             return (Criteria) this;
         }
+
+        public Criteria andProductIdIsNull() {
+            addCriterion("product_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductIdIsNotNull() {
+            addCriterion("product_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductIdEqualTo(String value) {
+            addCriterion("product_id =", value, "productId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductIdNotEqualTo(String value) {
+            addCriterion("product_id <>", value, "productId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductIdGreaterThan(String value) {
+            addCriterion("product_id >", value, "productId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductIdGreaterThanOrEqualTo(String value) {
+            addCriterion("product_id >=", value, "productId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductIdLessThan(String value) {
+            addCriterion("product_id <", value, "productId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductIdLessThanOrEqualTo(String value) {
+            addCriterion("product_id <=", value, "productId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductIdLike(String value) {
+            addCriterion("product_id like", value, "productId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductIdNotLike(String value) {
+            addCriterion("product_id not like", value, "productId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductIdIn(List<String> values) {
+            addCriterion("product_id in", values, "productId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductIdNotIn(List<String> values) {
+            addCriterion("product_id not in", values, "productId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductIdBetween(String value1, String value2) {
+            addCriterion("product_id between", value1, value2, "productId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductIdNotBetween(String value1, String value2) {
+            addCriterion("product_id not between", value1, value2, "productId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReleaseIdIsNull() {
+            addCriterion("release_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReleaseIdIsNotNull() {
+            addCriterion("release_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReleaseIdEqualTo(String value) {
+            addCriterion("release_id =", value, "releaseId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReleaseIdNotEqualTo(String value) {
+            addCriterion("release_id <>", value, "releaseId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReleaseIdGreaterThan(String value) {
+            addCriterion("release_id >", value, "releaseId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReleaseIdGreaterThanOrEqualTo(String value) {
+            addCriterion("release_id >=", value, "releaseId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReleaseIdLessThan(String value) {
+            addCriterion("release_id <", value, "releaseId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReleaseIdLessThanOrEqualTo(String value) {
+            addCriterion("release_id <=", value, "releaseId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReleaseIdLike(String value) {
+            addCriterion("release_id like", value, "releaseId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReleaseIdNotLike(String value) {
+            addCriterion("release_id not like", value, "releaseId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReleaseIdIn(List<String> values) {
+            addCriterion("release_id in", values, "releaseId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReleaseIdNotIn(List<String> values) {
+            addCriterion("release_id not in", values, "releaseId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReleaseIdBetween(String value1, String value2) {
+            addCriterion("release_id between", value1, value2, "releaseId");
+            return (Criteria) this;
+        }
+
+        public Criteria andReleaseIdNotBetween(String value1, String value2) {
+            addCriterion("release_id not between", value1, value2, "releaseId");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

@@ -18,6 +18,11 @@ public class DeployConfigTypeId {
 
     public static final String TYPE_PARAMETER_VALUES = "parameterValues";
     public static final String TYPE_COMPONENTS = "components";
+    public static final String TYPE_POLICIES = "policies";
+    public static final String TYPE_WORKFLOW = "workflow";
+
+    public static final String ATTR_COMPONENT_TYPE = "ComponentType";
+    public static final String ATTR_COMPONENT_NAME = "ComponentName";
 
     @Getter
     private final String type;
@@ -32,14 +37,29 @@ public class DeployConfigTypeId {
     public DeployConfigTypeId(ComponentTypeEnum componentType) {
         this.type = TYPE_COMPONENTS;
         this.attrs = new ArrayList<>();
-        this.attrs.add(Pair.of("ComponentType", componentType.toString()));
+        this.attrs.add(Pair.of(ATTR_COMPONENT_TYPE, componentType.toString()));
     }
 
     public DeployConfigTypeId(ComponentTypeEnum componentType, String componentName) {
         this.type = TYPE_COMPONENTS;
         this.attrs = new ArrayList<>();
-        this.attrs.add(Pair.of("ComponentType", componentType.toString()));
-        this.attrs.add(Pair.of("ComponentName", componentName));
+        this.attrs.add(Pair.of(ATTR_COMPONENT_TYPE, componentType.toString()));
+        this.attrs.add(Pair.of(ATTR_COMPONENT_NAME, componentName));
+    }
+
+    /**
+     * 获取 DeployConfigType 中的指定 key 对应的属性值
+     *
+     * @param key Key
+     * @return Value (null if not exists)
+     */
+    public String getAttr(String key) {
+        for (Pair<String, String> attr : attrs) {
+            if (attr.getKey().equals(key)) {
+                return attr.getValue();
+            }
+        }
+        return null;
     }
 
     public static DeployConfigTypeId valueOf(String typeId) {

@@ -75,6 +75,12 @@ public class WorkflowTaskDO {
      */
     private Integer lockVersion;
 
+    private String deployAppUnitId;
+
+    private String deployAppNamespaceId;
+
+    private String deployAppStageId;
+
     /**
      * Workflow 任务节点属性 (JSONObject 字符串)
      */

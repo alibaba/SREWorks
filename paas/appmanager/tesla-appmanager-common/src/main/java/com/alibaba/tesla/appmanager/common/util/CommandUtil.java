@@ -116,7 +116,7 @@ public class CommandUtil {
      * @param command 原始命令
      * @return 调整后的命令数组
      */
-    private static String[] getBashCommand(String command) {
+    public static String[] getBashCommand(String command) {
         String[] actualCommand;
         command = command.replaceAll("\\(", "\\\\(");
         command = command.replaceAll("\\)", "\\\\)");

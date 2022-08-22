@@ -46,4 +46,19 @@ public class WorkflowTaskQueryCondition extends BaseCondition {
      * 部署单 ID
      */
     private Long deployAppId;
+
+    /**
+     * 部署单归属 Unit
+     */
+    private String deployAppUnitId;
+
+    /**
+     * 部署单归属 Namespace
+     */
+    private String deployAppNamespaceId;
+
+    /**
+     * 部署单归属 Stage
+     */
+    private String deployAppStageId;
 }

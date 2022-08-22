@@ -75,7 +75,12 @@ public enum AppErrorCode {
     /**
      * MetaQ 异常
      */
-    MQ_ERROR(10012, "MQ_ERROR");
+    MQ_ERROR(10012, "MQ_ERROR"),
+
+    /**
+     * 认证异常
+     */
+    AUTHORIZED_ERROR(10013, "AUTHORIZED_ERROR");
 
     private final int code;
     private final String description;

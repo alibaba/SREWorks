@@ -99,8 +99,8 @@ public class ConfigmapTrait extends BaseTrait {
         String clusterId = getComponent().getClusterId();
         if (StringUtils.isEmpty(clusterId)) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                String.format("cannot find clusterId in workload labels|workload=%s",
-                    JSONObject.toJSONString(workloadRef)));
+                    String.format("cannot find clusterId in workload labels|workload=%s",
+                            JSONObject.toJSONString(workloadRef)));
         }
         DefaultKubernetesClient client = clientFactory.get(clusterId);
 
@@ -142,9 +142,9 @@ public class ConfigmapTrait extends BaseTrait {
                 }
                 JSONArray updateDatas = new JSONArray();
                 updateDatas.add(JSONObject.parseObject(JSONObject.toJSONString(ImmutableMap.of(
-                        "configMapRef", ImmutableMap.of(
-                            "name", target.getString("configmap"))
-                    )
+                                "configMapRef", ImmutableMap.of(
+                                        "name", target.getString("configmap"))
+                        )
                 )));
                 if (target.getString("initContainer") != null) {
                     updateContainers("initContainer", target.getString("initContainer"), "envFrom", updateDatas);
@@ -174,17 +174,25 @@ public class ConfigmapTrait extends BaseTrait {
                 }
                 JSONArray volumes = new JSONArray();
                 volumes.add(JSONObject.parseObject(JSONObject.toJSONString(ImmutableMap.of(
-                    "name", target.getString("configmap"),
-                    "configMap", ImmutableMap.of(
-                        "name", target.getString("configmap")
-                    )
+                        "name", target.getString("configmap"),
+                        "configMap", ImmutableMap.of(
+                                "name", target.getString("configmap")
+                        )
                 ))));
                 updateVolumes(volumes);
                 JSONArray updateDatas = new JSONArray();
-                updateDatas.add(JSONObject.parseObject(JSONObject.toJSONString(ImmutableMap.of(
-                    "name", target.getString("configmap"),
-                    "mountPath", target.getString("mountPath")
-                ))));
+                if (StringUtils.isNotEmpty(target.getString("subPath"))) {
+                    updateDatas.add(JSONObject.parseObject(JSONObject.toJSONString(ImmutableMap.of(
+                            "name", target.getString("configmap"),
+                            "mountPath", target.getString("mountPath"),
+                            "subPath", target.getString("subPath")
+                    ))));
+                } else {
+                    updateDatas.add(JSONObject.parseObject(JSONObject.toJSONString(ImmutableMap.of(
+                            "name", target.getString("configmap"),
+                            "mountPath", target.getString("mountPath")
+                    ))));
+                }
                 if (target.getString("initContainer") != null) {
                     updateContainers("initContainer", target.getString("initContainer"), "volumeMounts", updateDatas);
                 } else if (target.getString("container") != null) {
@@ -210,13 +218,13 @@ public class ConfigmapTrait extends BaseTrait {
                 for (int j = 0; j < target.getJSONArray("values").size(); j++) {
                     JSONObject v = target.getJSONArray("values").getJSONObject(j);
                     updateEnvs.add(JSONObject.parseObject(JSONObject.toJSONString(ImmutableMap.of(
-                        "name", v.getString("name"),
-                        "valueFrom", ImmutableMap.of(
-                            "configMapKeyRef", ImmutableMap.of(
-                                "name", v.getString("configmap"),
-                                "key", v.getString("key")
+                            "name", v.getString("name"),
+                            "valueFrom", ImmutableMap.of(
+                                    "configMapKeyRef", ImmutableMap.of(
+                                            "name", v.getString("configmap"),
+                                            "key", v.getString("key")
+                                    )
                             )
-                        )
                     ))));
                 }
                 if (target.getString("initContainer") != null) {
@@ -246,9 +254,9 @@ public class ConfigmapTrait extends BaseTrait {
         JSONArray containers;
         if (workloadSpec.get("cloneSet") != null) {
             JSONObject cloneSetSpec = workloadSpec
-                .getJSONObject("cloneSet")
-                .getJSONObject("template")
-                .getJSONObject("spec");
+                    .getJSONObject("cloneSet")
+                    .getJSONObject("template")
+                    .getJSONObject("spec");
             containers = cloneSetSpec.getJSONArray(type + "s");
         } else if (workloadSpec.get("advancedStatefulSet") != null) {
             JSONObject advancedStatefulSetSpec = workloadSpec
@@ -256,7 +264,7 @@ public class ConfigmapTrait extends BaseTrait {
                     .getJSONObject("template")
                     .getJSONObject("spec");
             containers = advancedStatefulSetSpec.getJSONArray(type + "s");
-        } else if("Deployment".equals(workloadSpec.getString("kind"))){
+        } else if ("Deployment".equals(workloadSpec.getString("kind"))) {
             containers = workloadSpec.getJSONArray(type + "s");
         } else {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "not supported");
@@ -289,9 +297,9 @@ public class ConfigmapTrait extends BaseTrait {
         JSONArray volumes;
         if (workloadSpec.get("cloneSet") != null) {
             JSONObject cloneSetSpec = workloadSpec
-                .getJSONObject("cloneSet")
-                .getJSONObject("template")
-                .getJSONObject("spec");
+                    .getJSONObject("cloneSet")
+                    .getJSONObject("template")
+                    .getJSONObject("spec");
             volumes = cloneSetSpec.getJSONArray("volumes");
             if (volumes == null) {
                 cloneSetSpec.put("volumes", new JSONArray());
@@ -299,9 +307,9 @@ public class ConfigmapTrait extends BaseTrait {
             }
         } else if (workloadSpec.get("advancedStatefulSet") != null) {
             JSONObject advancedStatefulSetSpec = workloadSpec
-                .getJSONObject("advancedStatefulSet")
-                .getJSONObject("template")
-                .getJSONObject("spec");
+                    .getJSONObject("advancedStatefulSet")
+                    .getJSONObject("template")
+                    .getJSONObject("spec");
             volumes = advancedStatefulSetSpec.getJSONArray("volumes");
             if (volumes == null) {
                 advancedStatefulSetSpec.put("volumes", new JSONArray());
@@ -325,17 +333,17 @@ public class ConfigmapTrait extends BaseTrait {
      * @return JSONObject
      */
     private JSONObject generateConfigmap(
-        String namespace, String name, Object data, Object labels, Object annotations) {
+            String namespace, String name, Object data, Object labels, Object annotations) {
         String configmapStr = JSONObject.toJSONString(ImmutableMap.of(
-            "apiVersion", "v1",
-            "kind", "ConfigMap",
-            "metadata", ImmutableMap.of(
-                "namespace", namespace,
-                "name", name,
-                "labels", labels,
-                "annotations", annotations
-            ),
-            "data", data
+                "apiVersion", "v1",
+                "kind", "ConfigMap",
+                "metadata", ImmutableMap.of(
+                        "namespace", namespace,
+                        "name", name,
+                        "labels", labels,
+                        "annotations", annotations
+                ),
+                "data", data
         ));
         JSONObject configmap = JSONObject.parseObject(configmapStr);
         return configmap;
@@ -357,14 +365,14 @@ public class ConfigmapTrait extends BaseTrait {
             String namespace = getComponent().getNamespaceId();
             String name = configmap.getJSONObject("metadata").getString("name");
             Resource<ConfigMap> resource = client.configMaps()
-                .load(new ByteArrayInputStream(configmap.toJSONString().getBytes(StandardCharsets.UTF_8)));
+                    .load(new ByteArrayInputStream(configmap.toJSONString().getBytes(StandardCharsets.UTF_8)));
             try {
                 ConfigMap current = client.configMaps().inNamespace(namespace).withName(name).get();
                 if (current == null) {
                     ConfigMap result = resource.create();
                     log.info("cr yaml has created in kubernetes|cluster={}|namespace={}|name={}|cr={}" +
-                            "result={}", client, namespace, name, configmap.toJSONString(),
-                        JSONObject.toJSONString(result));
+                                    "result={}", client, namespace, name, configmap.toJSONString(),
+                            JSONObject.toJSONString(result));
                 } else {
                     Map<String, String> newData = new HashMap<>();
                     for (Map.Entry<String, Object> entry : configmap.getJSONObject("data").entrySet()) {
@@ -373,21 +381,21 @@ public class ConfigmapTrait extends BaseTrait {
                     JSONObject finalLabels = labels;
                     JSONObject finalAnnotations = annotations;
                     ConfigMap result = client.configMaps()
-                        .inNamespace(namespace)
-                        .withName(name)
-                        .edit(s -> new ConfigMapBuilder(s)
-                            .editMetadata()
-                            .withLabels(JSON.parseObject(finalLabels.toJSONString(), new TypeReference<Map<String, String>>() {
-                            }))
-                            .withAnnotations(JSON.parseObject(finalAnnotations.toJSONString(), new TypeReference<Map<String, String>>() {
-                            }))
-                            .endMetadata()
-                            .withData(newData)
-                            .build());
+                            .inNamespace(namespace)
+                            .withName(name)
+                            .edit(s -> new ConfigMapBuilder(s)
+                                    .editMetadata()
+                                    .withLabels(JSON.parseObject(finalLabels.toJSONString(), new TypeReference<Map<String, String>>() {
+                                    }))
+                                    .withAnnotations(JSON.parseObject(finalAnnotations.toJSONString(), new TypeReference<Map<String, String>>() {
+                                    }))
+                                    .endMetadata()
+                                    .withData(newData)
+                                    .build());
                     log.info("cr yaml has updated in kubernetes|cluster={}|namespace={}|name={}|labels={}|" +
-                            "annotations={}|newData={}|result={}", client, namespace, name,
-                        JSONObject.toJSONString(labels), JSONObject.toJSONString(annotations),
-                        JSONObject.toJSONString(newData), JSONObject.toJSONString(result));
+                                    "annotations={}|newData={}|result={}", client, namespace, name,
+                            JSONObject.toJSONString(labels), JSONObject.toJSONString(annotations),
+                            JSONObject.toJSONString(newData), JSONObject.toJSONString(result));
                 }
             } catch (KubernetesClientException e) {
                 if (e.getCode() == 422) {
@@ -398,8 +406,8 @@ public class ConfigmapTrait extends BaseTrait {
             }
         } catch (Exception e) {
             String errorMessage = String.format("apply cr yaml to kubernetes failed|cluster=%s|" +
-                    "exception=%s|cr=%s", client, ExceptionUtils.getStackTrace(e),
-                configmap.toJSONString());
+                            "exception=%s|cr=%s", client, ExceptionUtils.getStackTrace(e),
+                    configmap.toJSONString());
             log.error(errorMessage);
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, errorMessage);
         }

@@ -645,52 +645,62 @@ public class AddonInstanceDOExample {
             return (Criteria) this;
         }
 
-        public Criteria andAddonAttrsEqualTo(Object value) {
+        public Criteria andAddonAttrsEqualTo(String value) {
             addCriterion("addon_attrs =", value, "addonAttrs");
             return (Criteria) this;
         }
 
-        public Criteria andAddonAttrsNotEqualTo(Object value) {
+        public Criteria andAddonAttrsNotEqualTo(String value) {
             addCriterion("addon_attrs <>", value, "addonAttrs");
             return (Criteria) this;
         }
 
-        public Criteria andAddonAttrsGreaterThan(Object value) {
+        public Criteria andAddonAttrsGreaterThan(String value) {
             addCriterion("addon_attrs >", value, "addonAttrs");
             return (Criteria) this;
         }
 
-        public Criteria andAddonAttrsGreaterThanOrEqualTo(Object value) {
+        public Criteria andAddonAttrsGreaterThanOrEqualTo(String value) {
             addCriterion("addon_attrs >=", value, "addonAttrs");
             return (Criteria) this;
         }
 
-        public Criteria andAddonAttrsLessThan(Object value) {
+        public Criteria andAddonAttrsLessThan(String value) {
             addCriterion("addon_attrs <", value, "addonAttrs");
             return (Criteria) this;
         }
 
-        public Criteria andAddonAttrsLessThanOrEqualTo(Object value) {
+        public Criteria andAddonAttrsLessThanOrEqualTo(String value) {
             addCriterion("addon_attrs <=", value, "addonAttrs");
             return (Criteria) this;
         }
 
-        public Criteria andAddonAttrsIn(List<Object> values) {
+        public Criteria andAddonAttrsLike(String value) {
+            addCriterion("addon_attrs like", value, "addonAttrs");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddonAttrsNotLike(String value) {
+            addCriterion("addon_attrs not like", value, "addonAttrs");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddonAttrsIn(List<String> values) {
             addCriterion("addon_attrs in", values, "addonAttrs");
             return (Criteria) this;
         }
 
-        public Criteria andAddonAttrsNotIn(List<Object> values) {
+        public Criteria andAddonAttrsNotIn(List<String> values) {
             addCriterion("addon_attrs not in", values, "addonAttrs");
             return (Criteria) this;
         }
 
-        public Criteria andAddonAttrsBetween(Object value1, Object value2) {
+        public Criteria andAddonAttrsBetween(String value1, String value2) {
             addCriterion("addon_attrs between", value1, value2, "addonAttrs");
             return (Criteria) this;
         }
 
-        public Criteria andAddonAttrsNotBetween(Object value1, Object value2) {
+        public Criteria andAddonAttrsNotBetween(String value1, String value2) {
             addCriterion("addon_attrs not between", value1, value2, "addonAttrs");
             return (Criteria) this;
         }
@@ -832,6 +842,76 @@ public class AddonInstanceDOExample {
 
         public Criteria andDataOutputNotBetween(String value1, String value2) {
             addCriterion("data_output not between", value1, value2, "dataOutput");
+            return (Criteria) this;
+        }
+
+        public Criteria andSignatureIsNull() {
+            addCriterion("signature is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSignatureIsNotNull() {
+            addCriterion("signature is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSignatureEqualTo(String value) {
+            addCriterion("signature =", value, "signature");
+            return (Criteria) this;
+        }
+
+        public Criteria andSignatureNotEqualTo(String value) {
+            addCriterion("signature <>", value, "signature");
+            return (Criteria) this;
+        }
+
+        public Criteria andSignatureGreaterThan(String value) {
+            addCriterion("signature >", value, "signature");
+            return (Criteria) this;
+        }
+
+        public Criteria andSignatureGreaterThanOrEqualTo(String value) {
+            addCriterion("signature >=", value, "signature");
+            return (Criteria) this;
+        }
+
+        public Criteria andSignatureLessThan(String value) {
+            addCriterion("signature <", value, "signature");
+            return (Criteria) this;
+        }
+
+        public Criteria andSignatureLessThanOrEqualTo(String value) {
+            addCriterion("signature <=", value, "signature");
+            return (Criteria) this;
+        }
+
+        public Criteria andSignatureLike(String value) {
+            addCriterion("signature like", value, "signature");
+            return (Criteria) this;
+        }
+
+        public Criteria andSignatureNotLike(String value) {
+            addCriterion("signature not like", value, "signature");
+            return (Criteria) this;
+        }
+
+        public Criteria andSignatureIn(List<String> values) {
+            addCriterion("signature in", values, "signature");
+            return (Criteria) this;
+        }
+
+        public Criteria andSignatureNotIn(List<String> values) {
+            addCriterion("signature not in", values, "signature");
+            return (Criteria) this;
+        }
+
+        public Criteria andSignatureBetween(String value1, String value2) {
+            addCriterion("signature between", value1, value2, "signature");
+            return (Criteria) this;
+        }
+
+        public Criteria andSignatureNotBetween(String value1, String value2) {
+            addCriterion("signature not between", value1, value2, "signature");
             return (Criteria) this;
         }
     }

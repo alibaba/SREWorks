@@ -1,6 +1,8 @@
 package com.alibaba.tesla.appmanager.workflow.util;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.DeployAppProvider;
+import com.alibaba.tesla.appmanager.api.provider.UnitProvider;
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
@@ -11,6 +13,7 @@ import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
 import com.alibaba.tesla.appmanager.dynamicscript.core.GroovyHandlerFactory;
 import com.alibaba.tesla.appmanager.workflow.dynamicscript.PolicyHandler;
 import com.alibaba.tesla.dag.common.BeanUtil;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 /**
  * Workflow Handler 工具类
@@ -75,5 +78,30 @@ public class WorkflowHandlerUtil {
                 .build();
         DeployAppPackageLaunchRes res = deployAppProvider.launch(req, creator);
         return res.getDeployAppId();
+    }
+
+    /**
+     * 执行远端部署，并返回部署单 ID
+     *
+     * @param unitId        单元 ID
+     * @param configuration 部署配置文件
+     * @return 部署单 ID
+     */
+    public static Long deployRemoteUnit(String unitId, DeployAppSchema configuration) {
+        UnitProvider unitProvider = BeanUtil.getBean(UnitProvider.class);
+        if (unitProvider == null) {
+            throw new AppException(AppErrorCode.UNKNOWN_ERROR, "cannot find UnitProvider bean");
+        }
+        DeployAppLaunchReq req = DeployAppLaunchReq.builder()
+                .configuration(SchemaUtil.toYamlMapStr(configuration))
+                .build();
+        try {
+            JSONObject res = unitProvider.launchDeployment(unitId, req);
+            return res.getLong("deployAppId");
+        } catch (Exception e) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("launch remote unit deployment failed|unitId=%s|req=%s|exception=%s",
+                            unitId, JSONObject.toJSONString(req), ExceptionUtils.getStackTrace(e)));
+        }
     }
 }

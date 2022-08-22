@@ -79,4 +79,14 @@ public class DeployConfigDTO {
      * Stage ID
      */
     private String stageId;
+
+    /**
+     * 产品 ID
+     */
+    private String productId;
+
+    /**
+     * 发布版本 ID
+     */
+    private String releaseId;
 }

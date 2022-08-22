@@ -21,7 +21,9 @@ RUN wget -O /app/helm "https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/h
     && wget -O /app/kustomize "https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/kustomize" \
     && chmod +x /app/kustomize \
     && wget -O /app/kubectl "https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/kubectl" \
-    && chmod +x /app/kubectl
+    && chmod +x /app/kubectl \
+    && wget -O /app/terraform "https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/terraform" \
+    && chmod +x /app/terraform
 
 WORKDIR /app
 ENTRYPOINT ["/app/sbin/run_sreworks.sh"]

@@ -51,9 +51,9 @@ data:
   APPMANAGER_KAFKA_BROKERS: {{ template "server.kafkaBroker" . }}
   APPMANAGER_KAFKA_DEFAULT_BROKER_PORT: {{ .Values.server.kafkaBrokerPort | quote }}
   APPMANAGER_ENABLE_AUTH: {{ .Values.server.enableAuth | quote }}
-  ACCOUNT_SUPER_CLIENT_ID: {{ .Values.gateway.account_super_client_id | quote }}
-  ACCOUNT_SUPER_CLIENT_SECRET: {{ .Values.gateway.account_super_client_secret | quote }}
-  ACCOUNT_SUPER_ID: {{ .Values.gateway.account_super_id | quote }}
-  ACCOUNT_SUPER_SECRET_KEY: {{ .Values.gateway.account_super_secret_key | quote }} 
+  ACCOUNT_SUPER_CLIENT_ID: {{ .Values.gateway.account_super_client_id | default "common" | quote }}
+  ACCOUNT_SUPER_CLIENT_SECRET: {{ .Values.gateway.account_super_client_secret | default "default" | quote }}
+  ACCOUNT_SUPER_ID: {{ .Values.gateway.account_super_id | default "admin" | quote }}
+  ACCOUNT_SUPER_SECRET_KEY: {{ .Values.gateway.account_super_secret_key | default "default-key" | quote }} 
  
 {{- end -}}

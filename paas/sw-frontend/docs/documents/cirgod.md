@@ -221,4 +221,4 @@ SREWorks站点网关访问：<br />![image.png](/pictures/1648697800262-33961a6d
 ### 2.3 平台架构
 ![image.png](/pictures/1645435949305-0405bd48-2955-4165-9cd7-59db31a03a91.png)
 
-![image.png](/pictures/1648564100901-9117f12f-7bc2-4be6-b024-edbb7556d4ca.png)
+![image.png](/pictures/1659607049308-6e370119-09a7-4323-b292-4bedde7381e2.png)

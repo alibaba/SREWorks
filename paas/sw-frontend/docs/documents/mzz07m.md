@@ -55,7 +55,7 @@ docker login --username=sre****s your-registry.***.com
 
 <a name="jiRmc"></a>
 # 2. SREWorks部署&构建运维应用容器镜像
- 步骤与快速安装大致相同，替换helm install参数， 触发运维应用来自源码的容器镜像构建
+ 步骤与快速安装大致相同，替换helm install参数， 触发运维应用来自源码的容器镜像构建，注意按照附录1和附录2替换参数
 ```shell
 helm install sreworks $SW_ROOT/chart/sreworks-chart \
     --kubeconfig="****" \
@@ -68,7 +68,7 @@ helm install sreworks $SW_ROOT/chart/sreworks-chart \
 ```
 
 <a name="jPt3U"></a>
-# 3. Helm安装参数清单
+# 附录1. Helm安装参数清单
 如果需要构建完的运维应用上传到自定义容器镜像仓库，请在执行helm安装命令时候传入以下的参数
 ```shell
 # 平台名称
@@ -90,12 +90,12 @@ helm install sreworks $SW_ROOT/chart/sreworks-chart \
 --set appmanager.server.docker.namespace="builds"
 
 # 源码构建模式的源码仓库来源
---set source.branch="v1.1"
+--set source.branch="v1.2"
 --set source.repo="https://code.aliyun.com/sreworks_public/mirror.git"
 
 ```
 <a name="M4cYp"></a>
-# 4. 源码构建依赖资源清单
+# 附录2. 源码构建依赖资源清单
 在纯内网构建或者部分资源替换场景，需要用户自行准备资源，可参考下面的清单。
 
 <a name="F2jkU"></a>

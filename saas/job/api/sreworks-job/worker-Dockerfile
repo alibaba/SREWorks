@@ -12,5 +12,5 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN pip3 config set global.index-url http://mirrors.aliyun.com/pypi/simple && pip3 config set global.trusted-host mirrors.aliyun.com
 RUN pip3 install requests python-dateutil==1.4 --pre gql[aiohttp]
 COPY entrypoint.sh /app/entrypoint.sh
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
 

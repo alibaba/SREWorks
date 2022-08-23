@@ -9,5 +9,5 @@ USER root
 WORKDIR /root
 COPY --from=build /app/sreworks-job-master/target/sreworks-job.jar /app/sreworks-job.jar
 COPY entrypoint.sh /app/entrypoint.sh
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
 

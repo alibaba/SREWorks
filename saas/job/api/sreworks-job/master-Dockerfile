@@ -8,5 +8,6 @@ FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/openjdk11:alpine-jre AS
 USER root
 WORKDIR /root
 COPY --from=build /app/sreworks-job-master/target/sreworks-job.jar /app/sreworks-job.jar
-ENTRYPOINT ["java", "-Xmx${JVM_XMX}", "-Xms${JVM_XMS}", "-XX:ActiveProcessorCount=2", "-jar", "/app/sreworks-job.jar"]
+COPY entrypoint.sh /app/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
 

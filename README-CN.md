@@ -1,9 +1,22 @@
-# SREWorks
+<p align="center">
+  <img src="paas/sw-frontend/src/publicMedia/sreworks-logo.png" width="120">
+</p>
+<h1 align="center"> SREWorks </h1>
+<h2 align="center"> 云原生数智运维平台 </h2>
+<p align="center">
+  <a href="./LICENSE"><img src="https://img.shields.io/github/license/alibaba/sreworks" /></a>
+  <img src="https://img.shields.io/github/repo-size/alibaba/sreworks" />
+</p>
 
-[![GitHub](https://img.shields.io/github/license/alibaba/sreworks)](./LICENSE)
-[![GitHub](https://img.shields.io/github/repo-size/alibaba/sreworks)](#)
+<p align="center">
+   <a href="https://www.yuque.com/sreworks-doc/docs" target="_blank">产品文档</a> 
+</p>
 
-[English](README.md) | 中文
+---
+
+<p align="center">
+   <a href="README.md">English<a/> | 中文
+</p>
 
 ## 介绍
 

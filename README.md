@@ -1,10 +1,23 @@
-# SREWorks
-### Cloud Native DataOps & AIOps Platform
+<p align="center">
+  <img src="paas/sw-frontend/src/publicMedia/sreworks-logo.png" width="120">
+</p>
+<h1 align="center"> SREWorks </h1>
+<h2 align="center"> Cloud Native DataOps & AIOps Platform </h2>
+<p align="center">
+  <a href="./LICENSE"><img src="https://img.shields.io/github/license/alibaba/sreworks" /></a>
+  <img src="https://img.shields.io/github/repo-size/alibaba/sreworks" />
+</p>
 
-[![GitHub](https://img.shields.io/github/license/alibaba/sreworks)](./LICENSE)
-[![GitHub](https://img.shields.io/github/repo-size/alibaba/sreworks)](#)
+<p align="center">
+   <a href="https://www.yuque.com/sreworks-doc/docs" target="_blank">Documentation</a> 
+</p>
 
-English | [中文](README-CN.md)
+---
+
+<p align="center">
+   English | <a href="README-CN.md">中文<a/>
+</p>
+
 
 ## Introduction
 

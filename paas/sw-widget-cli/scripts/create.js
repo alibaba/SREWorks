@@ -19,7 +19,7 @@ yarn-debug.log*
 yarn-error.log*
 /.idea
 `;
-const isInGitRepository=()=> {
+const isInGitRepository = () => {
   try {
     execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
     return true;
@@ -27,7 +27,7 @@ const isInGitRepository=()=> {
     return false;
   }
 }
-const  tryGitInit=(appPath)=> {
+const tryGitInit = (appPath) => {
   let didInit = false;
   try {
     execSync('git --version', { stdio: 'ignore', cwd: appPath });
@@ -56,7 +56,7 @@ const  tryGitInit=(appPath)=> {
     return false;
   }
 }
-const create=(appName, appPath) => {
+const create = (appName, appPath) => {
   const ownPath = path.dirname(require.resolve(path.join(__dirname, '..', 'package.json')));
   const appPackage = {};
   appPackage.name = appName;
@@ -126,76 +126,78 @@ const create=(appName, appPath) => {
     "uuid": "^3.3.2"
   };
 
-  appPackage.devDependencies = {"antd-theme-generator": "1.1.6",
-  "autoprefixer": "^10.2.5",
-  "babel-core": "6.26.3",
-  "babel-eslint": "7.2.3",
-  "babel-jest": "20.0.3",
-  "babel-loader": "7.0.0",
-  "babel-plugin-add-module-exports": "^0.2.1",
-  "babel-plugin-import": "^1.6.2",
-  "babel-plugin-transform-decorators-legacy": "^1.3.5",
-  "babel-preset-es2015": "^6.24.1",
-  "babel-preset-react": "^6.24.1",
-  "babel-preset-react-app": "^3.1.0",
-  "babel-preset-stage-0": "^6.24.1",
-  "babel-runtime": "6.26.0",
-  "case-sensitive-paths-webpack-plugin": "2.1.1",
-  "chalk": "1.1.3",
-  "css-loader": "0.28.4",
-  "dotenv": "4.0.0",
-  "dva": "2.4.1",
-  "dva-loading": "^1.0.4",
-  "eslint": "3.19.0",
-  "eslint-config-react-app": "^1.0.5",
-  "eslint-loader": "3.0.4",
-  "eslint-plugin-flowtype": "4.7.0",
-  "eslint-plugin-import": "2.20.0",
-  "eslint-plugin-jsx-a11y": "6.2.0",
-  "eslint-plugin-react": "7.20.0",
-  "file-loader": "4.2.0",
-  "fs-extra": "3.0.1",
-  "happypack": "^5.0.0",
-  "html-webpack-plugin": "^4.4.1",
-  "html-webpack-tags-plugin": "^2.0.17",
-  "jest": "20.0.4",
-  "less": "^3.10.3",
-  "less-loader": "^5.0.0",
-  "less-vars-to-js": "^1.2.1",
-  "mini-css-extract-plugin": "^1.6.2",
-  "node-sass": "4.14.1",
-  "object-assign": "4.1.1",
-  "optimize-css-assets-webpack-plugin": "^5.0.3",
-  "postcss-flexbugs-fixes": "3.0.0",
-  "postcss-loader": "2.0.6",
-  "react-dev-utils": "^7.0.5",
-  "react-error-overlay": "^1.0.9",
-  "react-highlight-words": "^0.17.0",
-  "sass-loader": "^9.0.3",
-  "shelljs": "^0.8.2",
-  "simple-progress-webpack-plugin": "^1.1.2",
-  "source-map-explorer": "1.4.0",
-  "speed-measure-webpack-plugin": "^1.5.0",
-  "style-loader": "1.3.0",
-  "sw-precache-webpack-plugin": "0.11.4",
-  "terser-webpack-plugin": "^4.2.3",
-  "terser-webpack-plugin-legacy": "^1.2.3",
-  "thread-loader": "^3.0.4",
-  "url-loader": "4.1.1",
-  "webpack": "4.44.2",
-  "webpack-bundle-analyzer": "^3.9.0",
-  "webpack-cli": "^3.3.12",
-  "webpack-dev-server": "^3.11.3",
-  "webpack-manifest-plugin": "2.2.0",
-  "webpack-parallel-uglify-plugin": "^0.4",
-  "whatwg-fetch": "2.0.3",
-  "yargs": "^14.2.1"
-};
+  appPackage.devDependencies = {
+    "antd-theme-generator": "1.2.2",
+    "autoprefixer": "^10.2.5",
+    "babel-core": "6.26.3",
+    "babel-eslint": "7.2.3",
+    "babel-jest": "20.0.3",
+    "babel-loader": "7.0.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-import": "^1.6.2",
+    "babel-plugin-transform-decorators-legacy": "^1.3.5",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-react-app": "^3.1.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-runtime": "6.26.0",
+    "case-sensitive-paths-webpack-plugin": "2.1.1",
+    "chalk": "1.1.3",
+    "css-loader": "0.28.4",
+    "dotenv": "4.0.0",
+    "dva": "2.4.1",
+    "dva-loading": "^1.0.4",
+    "eslint": "3.19.0",
+    "eslint-config-react-app": "^1.0.5",
+    "eslint-loader": "3.0.4",
+    "eslint-plugin-flowtype": "4.7.0",
+    "eslint-plugin-import": "2.20.0",
+    "eslint-plugin-jsx-a11y": "6.2.0",
+    "eslint-plugin-react": "7.20.0",
+    "file-loader": "4.2.0",
+    "fs-extra": "3.0.1",
+    "happypack": "^5.0.0",
+    "html-webpack-plugin": "^4.4.1",
+    "html-webpack-tags-plugin": "^2.0.17",
+    "jest": "20.0.4",
+    "less": "^3.10.3",
+    "less-loader": "^5.0.0",
+    "less-vars-to-js": "^1.2.1",
+    "mini-css-extract-plugin": "^1.6.2",
+    "node-sass": "4.14.1",
+    "object-assign": "4.1.1",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "postcss-flexbugs-fixes": "3.0.0",
+    "postcss-loader": "2.0.6",
+    "react-dev-utils": "^7.0.5",
+    "react-error-overlay": "^1.0.9",
+    "react-highlight-words": "^0.17.0",
+    "sass-loader": "^9.0.3",
+    "shelljs": "^0.8.2",
+    "simple-progress-webpack-plugin": "^1.1.2",
+    "source-map-explorer": "1.4.0",
+    "speed-measure-webpack-plugin": "^1.5.0",
+    "style-loader": "1.3.0",
+    "sw-precache-webpack-plugin": "0.11.4",
+    "terser-webpack-plugin": "^4.2.3",
+    "terser-webpack-plugin-legacy": "^1.2.3",
+    "thread-loader": "^3.0.4",
+    "url-loader": "4.1.1",
+    "webpack": "4.44.2",
+    "webpack-bundle-analyzer": "^3.9.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.3",
+    "webpack-manifest-plugin": "2.2.0",
+    "webpack-parallel-uglify-plugin": "^0.4",
+    "whatwg-fetch": "2.0.3",
+    "yargs": "^14.2.1"
+  };
   // Setup the script rules
   appPackage.scripts = {
     start: 'cross-env-shell PORT=4000 components-new start',
     build: 'components-new build',
     update: 'components-new update -l',
+    umd: "node --max-old-space-size=4096 scripts/buildUmd.js",
     check: 'node ./scripts/check',
     test: 'cross-env TEST_SETUP_FILES=./scripts/setupTests.js components-new test --env=jsdom',
     'fix-stylelint': 'stylelint ./src/**/*.{css,less} --fix',
@@ -203,12 +205,69 @@ const create=(appName, appPath) => {
     'fix-lint': 'npm run fix-stylelint && npm run fix-prettier',
   };
   appPackage.browserslist = ['>0.2%', 'not dead', 'not ie <= 11', 'not op_mini all'];
+  appPackage.jest = {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}"
+    ],
+    "setupFiles": [
+      "<rootDir>/config/polyfills.js"
+    ],
+    "testMatch": [
+      "<rootDir>/src/**/__tests__/**/*.js?(x)",
+      "<rootDir>/src/**/?(*.)(spec|test).js?(x)"
+    ],
+    "testEnvironment": "node",
+    "testURL": "http://localhost",
+    "transform": {
+      "^.+\\.(js|jsx)$": "<rootDir>/node_modules/babel-jest",
+      "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
+      "^(?!.*\\.(js|jsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
+    },
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"
+    ],
+    "moduleNameMapper": {
+      "^react-native$": "react-native-web"
+    },
+    "moduleFileExtensions": [
+      "web.js",
+      "js",
+      "json",
+      "web.jsx",
+      "jsx"
+    ]
+  }
+  appPackage.babel = {
+    "presets": [
+      "react-app",
+      "es2015",
+      "react",
+      "stage-0"
+    ],
+    "plugins": [
+      "add-module-exports",
+      "transform-decorators-legacy"
 
+    ]
+  }
+  appPackage.eslintConfig = {
+    "extends": "react-app",
+    "rules": {
+      "import/no-webpack-loader-syntax": "off",
+      "no-undef": "off",
+      "no-restricted-globals": "off"
+    }
+  }
+  appPackage.homePage = "./"
+  appPackage.resolutions = {
+    "react": "16.14.0",
+    "react-dom": "16.14.0"
+  }
   fs.writeFileSync(path.join(appPath, 'package.json'), JSON.stringify(appPackage, null, 2) + os.EOL);
 
   fs.copySync(path.join(ownPath, 'template'), appPath);
-  fs.copySync(path.join(ownPath, 'config'), path.join(appPath,'config'));
-  fs.copySync(path.join(ownPath, 'scripts'), path.join(appPath,'scripts'));
+  fs.copySync(path.join(ownPath, 'config'), path.join(appPath, 'config'));
+  fs.copySync(path.join(ownPath, 'scripts'), path.join(appPath, 'scripts'));
 
   fs.copySync(path.join(ownPath, 'webpack.config.js'), path.join(appPath, 'webpack.config.js'));
   fs.copySync(path.join(ownPath, 'abc.json'), path.join(appPath, 'abc.json'));

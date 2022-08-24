@@ -2,7 +2,7 @@
   <img src="paas/sw-frontend/src/publicMedia/sreworks-logo.png" width="120">
 </p>
 <h1 align="center"> SREWorks </h1>
-<h2 align="center"> 云原生数智运维平台 </h2>
+<p align="center"><b> 云原生数智运维平台 </b></p>
 <p align="center">
   <a href="./LICENSE"><img src="https://img.shields.io/github/license/alibaba/sreworks" /></a>
   <img src="https://img.shields.io/github/repo-size/alibaba/sreworks" />

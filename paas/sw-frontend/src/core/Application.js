@@ -53,17 +53,26 @@ class Application extends React.Component {
     try {
       let compList = await MenuTreeService.getCustomList();
       let remoteComList = compList.filter(item => item.configObject.componentType === 'UMD');
-      let pros = [], recievedList = [];
+      let vueCompList = compList.filter(item => item.configObject.componentType === 'VUE_UMD');
+      let pros = [], recievedList = [],prosVue =[], recievedVueList = [];
       remoteComList.forEach(item => {
         if (item.configObject && item.configObject.umdUrl) {
           pros.push(Promise.resolve(window.System.import(item.configObject.umdUrl)))
           recievedList.push(item.name)
         }
       })
+      vueCompList.forEach(item => {
+        if (item.configObject && item.configObject.umdUrl) {
+          prosVue.push(Promise.resolve(window.System.import(item.configObject.umdUrl)))
+          recievedVueList.push(item.name)
+        }
+      })
       let remoteComp = await Promise.all(pros);
-      window['REMOTE_COMP_LIST'] = recievedList
+      window['REMOTE_COMP_LIST'] = recievedList;
+      let vueComp = await Promise.all(prosVue);
+      window['REMOTE_VUE_LIST'] = recievedVueList;
     } catch (error) {
-      message.info('获取远程组件列表失败')
+      console.log(error);
     }
   }
   getEnvLabel = () => {

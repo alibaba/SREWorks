@@ -57,6 +57,11 @@ const builtInWidgetCatgory=[
         name:"remote",
         title:"远程组件",
         children:[]
+    },
+    {
+        name:"vue",
+        title:"异构组件",
+        children:[]
     }
     // {
     //     name:"other",

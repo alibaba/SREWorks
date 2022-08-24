@@ -33,6 +33,7 @@ export default class WidgetSelector extends React.Component {
             service.getCustomList().then(customList => {
                 let jsxCompList = customList.filter(item => item.configObject.componentType === 'JSX');
                 let umdCompList = customList.filter(item => item.configObject.componentType === 'UMD');
+                let vueCompList = customList.filter(item => item.configObject.componentType === 'VUE_UMD');
                 initCategory.forEach(lit => {
                     if (lit.name === 'custom' || lit.name === 'remote') {
                         lit.children = []
@@ -56,6 +57,15 @@ export default class WidgetSelector extends React.Component {
                 umdCompList && umdCompList.forEach(item => {
                     initCategory.forEach(lit => {
                         if (lit.name === 'remote' && window[item.name]) {
+                            let templateMeta = cloneDeep(window[item.name][item.name+'Meta']);
+                            templateMeta['info']['logos']['small'] = item['configObject']['icon'] || 'https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*pUkAQpefcx8AAAAAAAAAAABkARQnAQ'
+                            window[item.name] && lit.children.push(templateMeta)
+                        }
+                    });
+                })
+                vueCompList && vueCompList.forEach(item => {
+                    initCategory.forEach(lit => {
+                        if (lit.name === 'vue' && window[item.name]) {
                             let templateMeta = cloneDeep(window[item.name][item.name+'Meta']);
                             templateMeta['info']['logos']['small'] = item['configObject']['icon'] || 'https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*pUkAQpefcx8AAAAAAAAAAABkARQnAQ'
                             window[item.name] && lit.children.push(templateMeta)

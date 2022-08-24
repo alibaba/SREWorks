@@ -17,6 +17,8 @@ import JSXRender from './JSXRender';
 
 import './index.less';
 
+const VueWrapper = window['vuera']['VueWrapper'];
+
 export default class WidgetCard extends React.Component {
 
     constructor(props) {
@@ -40,6 +42,12 @@ export default class WidgetCard extends React.Component {
     componentWillMount() {
         const { widgetModel, nodeParams, actionParams } = this.props;
         widgetLoader.loadWidget(widgetModel).then(WidgetComponent => {
+            // if(window['REMOTE_VUE_LIST'].includes(widgetModel.type)) {
+            //     let comp = window[widgetModel.type][widgetModel.type]
+            //     this.WidgetComponent = (<compWrapper component={comp}/>)
+            // } else {
+            //     this.WidgetComponent = WidgetComponent;
+            // }
             this.WidgetComponent = WidgetComponent;
             this.setState({
                 loading: false
@@ -121,7 +129,12 @@ export default class WidgetCard extends React.Component {
         } else if (Constants.BLOCK === widgetModel.type) {
             cardContent = <Block {...otherProps} widgetConfig={runtimeConfig} actionParams={Object.assign({}, actionParams, widgetData)} widgetData={widgetData} />;
         } else if (WidgetComponent) {
-            cardContent = <WidgetComponent {...otherProps} widgetConfig={runtimeConfig} actionParams={Object.assign({}, actionParams, widgetData)} widgetData={widgetData} />
+            if(window['REMOTE_VUE_LIST'].includes(widgetModel.type)) {
+                let comp = (window[widgetModel.type] && window[widgetModel.type][widgetModel.type]) || <div>未定义组件</div>
+                cardContent = <VueWrapper widgetConfig={runtimeConfig} component={comp}/>
+            } else {
+                cardContent = <WidgetComponent {...otherProps} widgetConfig={runtimeConfig} actionParams={Object.assign({}, actionParams, widgetData)} widgetData={widgetData} />
+            }
         } else {
             if (this.wrapperType !== Constants.CARD_WRAPPER_NONE) {
                 let { title, ...otherConfig } = runtimeConfig;

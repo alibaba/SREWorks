@@ -8,6 +8,7 @@
   <script>
     window.__ABM_LOAD_START__ = (new Date).getTime();
     window.REMOTE_COMP_LIST = []
+    window.REMOTE_VUE_LIST = []
   </script>
   <!--
       manifest.json provides metadata used when your web app is added to the
@@ -17,6 +18,7 @@
   <link rel="shortcut icon" href="./new_favicon.png">
   <link rel="stylesheet" type="text/css" href="./screen_loading.css" />
   <link rel="stylesheet" type="text/css" href="./iconfont/iconfont.css" />
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
   <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -42,6 +44,9 @@
   <script src="./common_vendor/moment/2.27.0/moment.min.js"></script>
   <script src="./common_vendor/react/16.14.0/react.production.min.js"></script>
   <script src="./common_vendor/react-dom/16.14.0/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.7.9/dist/vue.js"></script>
+  <script src="https://unpkg.com/vuera"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
   <div id="root" style="min-width: 1400px;overflow: hidden">
     <div id="abm-pre-screen-loading">
       <div id="abm-pre-screen-loading-center">

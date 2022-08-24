@@ -3,7 +3,7 @@ global:
 
   images:
     registry: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks
-    tag: v0.5
+    tag: v1.2
     imagePullPolicy: Always 
 
 home:
@@ -61,5 +61,8 @@ server:
 
 installMode: default
 
-
-
+gateway:
+  account_super_client_id: common
+  account_super_client_secret: default
+  account_super_id: admin
+  account_super_secret_key: default

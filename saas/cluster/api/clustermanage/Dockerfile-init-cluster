@@ -1,8 +1,12 @@
 FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/python:3.9.12-alpine
 
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+
+RUN apk add mariadb-dev python3-dev gcc musl-dev
+
 RUN pip config set global.index-url http://mirrors.aliyun.com/pypi/simple && pip config set global.trusted-host mirrors.aliyun.com
 
-RUN pip install mysqlclient 
+RUN pip install mysqlclient
 
 COPY ./APP-META-PRIVATE/init /run
 

@@ -1,0 +1,9 @@
+FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/python:3.9.12-alpine
+
+RUN pip config set global.index-url http://mirrors.aliyun.com/pypi/simple && pip config set global.trusted-host mirrors.aliyun.com
+
+RUN pip install mysqlclient 
+
+COPY ./APP-META-PRIVATE/init /run
+
+ENTRYPOINT ["python", "/run/init-cluster.py"]

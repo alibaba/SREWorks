@@ -2,7 +2,7 @@ FROM {{ PYTHON3_IMAGE }}
 
 RUN pip config set global.index-url {{PYTHON_PIP}} && pip config set global.trusted-host {{PYTHON_PIP_DOMAIN}}
 
-#RUN mkdir /run
+RUN pip install mysqlclient 
 
 COPY ./APP-META-PRIVATE/init /run
 

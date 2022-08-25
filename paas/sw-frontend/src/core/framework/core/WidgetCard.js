@@ -125,10 +125,7 @@ export default class WidgetCard extends React.Component {
         } else if (WidgetComponent) {
             if(window['REMOTE_VUE_LIST'].includes(widgetModel.type)) {
                 let comp = (window[widgetModel.type] && window[widgetModel.type][widgetModel.type]) || <div>未定义组件</div>
-                let compConfig = {
-                    currentValue: runtimeConfig.currentValue
-                }
-                cardContent = <VueWrapper widgetConfig={compConfig} component={comp}/>
+                cardContent = <VueWrapper widgetConfig={runtimeConfig} component={comp}/>
             } else {
                 cardContent = <WidgetComponent {...otherProps} widgetConfig={runtimeConfig} actionParams={Object.assign({}, actionParams, widgetData)} widgetData={widgetData} />
             }
@@ -169,7 +166,7 @@ export default class WidgetCard extends React.Component {
             hiddenHandle = <span><a style={{ color: headerColor && (this.wrapperType === Constants.CARD_WRAPPER_DEFAULT || this.wrapperType === Constants.CARD_WRAPPER_ADVANCED) ? "#fafafa" : undefined, position: 'relative', top: 7, right: 4 }} onClick={this.handleClose}><CloseOutlined /></a></span>
         }
         let toolbarLeft = null, toolbarRight = null;
-        if (filterConfig.title && filterConfig.title === "TAB过滤项" && filterConfig.tabPosition && filterConfig.tabPosition === 'left') {
+        if (filterConfig.title && filterConfig.title === "TAB过滤项" && filterConfig.tabPosition && filterConfig.tabPosition === 'top-left') {
             toolbarLeft = <ToolBar {...this.props} handleParamsChanged={this.handleParamsChanged} hasLeftTab={true} widgetConfig={runtimeConfig} />
             if (foldHandle || hiddenHandle) {
                 toolbarRight = (

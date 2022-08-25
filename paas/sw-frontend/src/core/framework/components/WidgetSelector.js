@@ -35,7 +35,7 @@ export default class WidgetSelector extends React.Component {
                 let umdCompList = customList.filter(item => item.configObject.componentType === 'UMD');
                 let vueCompList = customList.filter(item => item.configObject.componentType === 'VUE_UMD');
                 initCategory.forEach(lit => {
-                    if (lit.name === 'custom' || lit.name === 'remote') {
+                    if (lit.name === 'custom' || lit.name === 'remote' || lit.name === 'vue') {
                         lit.children = []
                     }
                 });

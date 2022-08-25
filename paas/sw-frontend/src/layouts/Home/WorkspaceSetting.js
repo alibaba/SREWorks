@@ -25,6 +25,8 @@ import { localImglist, requiredImglist } from "./localImglist";
 import cacheRepository from "../../utils/cacheRepository";
 const { TabPane } = Tabs;
 
+// let VueWrapper = window['vuera']['VueWrapper'];
+// let vuecalendar = window['vuecalendar']['vuecalendar'];
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -54,6 +56,9 @@ export default class WorkspaceSetting extends React.Component {
             bacgroundSettingVisible: false,
             targetDesktopIndex: -1,
             activeBackgroundImgIndex: -1,
+            widgetConfig: {
+                currentValue:'2022-09-02'
+            }
         }
     }
 
@@ -285,6 +290,13 @@ export default class WorkspaceSetting extends React.Component {
         }
         return productName;
     }
+    changeDate=()=> {
+        this.setState({
+            widgetConfig: {
+                currentValue:'2022-09-07'
+            }
+        })
+    }
     render() {
         const { visible, settingType, quickVisible, isDelete } = this.state, { home } = this.props;
         const { imgList, loading, bacgroundSettingVisible, activeBackgroundImgIndex } = this.state;
@@ -303,6 +315,7 @@ export default class WorkspaceSetting extends React.Component {
             }
             return null
         };
+        const {widgetConfig} = this.state;
         return (
             <div className="workspace-setting">
                 <div className="edit-icon">
@@ -441,6 +454,10 @@ export default class WorkspaceSetting extends React.Component {
                                         </div>
                                     </div>
                                 </Spin>
+                            </TabPane>
+                            <TabPane tab="vue" key="vue">
+                                <Button type="primary" onClick={this.changeDate}>改变日期</Button>
+                                {/* <VueWrapper widgetConfig={widgetConfig} component={vuecalendar}/> */}
                             </TabPane>
                         </Tabs>
                     }

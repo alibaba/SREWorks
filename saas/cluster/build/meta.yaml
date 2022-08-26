@@ -1,0 +1,274 @@
+appId: cluster
+componentPackages:
+- componentName: clustermanage
+  componentType: K8S_MICROSERVICE
+  packageCreator: '999999999'
+  packageExt: |
+    apiVersion: core.oam.dev/v1alpha2
+    kind: Component
+    metadata:
+      name: microservice-cluster-clustermanage
+      annotations:
+        annotations.appmanager.oam.dev/version: "3.5.3+20220826024853436401"
+      labels:
+        labels.appmanager.oam.dev/appId: "cluster"
+        labels.appmanager.oam.dev/componentName: "clustermanage"
+        labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+        labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+        appId: "cluster"
+        componentName: "clustermanage"
+        stageId: "PLACEHOLDER_STAGE_ID"
+    spec:
+      workload:
+        apiVersion: apps.abm.io/v1
+        kind: Microservice
+        metadata:
+          namespace: "PLACEHOLDER_NAMESPACE_ID"
+          name: "PLACEHOLDER_NAME"
+          labels:
+            labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+            labels.appmanager.oam.dev/appId: "cluster"
+            labels.appmanager.oam.dev/componentName: "clustermanage"
+            labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+            labels.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            labels.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            labels.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+            stageId: "PLACEHOLDER_STAGE_ID"
+            appId: "cluster"
+            componentName: "clustermanage"
+          annotations:
+            annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
+            annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
+            annotations.appmanager.oam.dev/version: "3.5.3+20220826024853436401"
+            annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+        spec:
+          kind: Deployment
+          replicas: 1
+          env:
+            DB_HOST: "{{ Global.DB_HOST }}"
+            DB_PORT: "{{ Global.DB_PORT }}"
+            DB_USER: "{{ Global.DB_USER }}"
+            DB_PASSWORD: "{{ Global.DB_PASSWORD }}"
+            DB_NAME: "{{ Global.DB_NAME }}"
+            COOKIE_DOMAIN: "{{ Global.COOKIE_DOMAIN }}"
+            APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL: "{{ Global.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL }}"
+            APPMANAGER_PACKAGE_ENDPOINT: "{{ Global.APPMANAGER_PACKAGE_ENDPOINT }}"
+            APPMANAGER_PACKAGE_ACCESS_KEY: "{{ Global.APPMANAGER_PACKAGE_ACCESS_KEY }}"
+            APPMANAGER_PACKAGE_SECRET_KEY: "{{ Global.APPMANAGER_PACKAGE_SECRET_KEY }}"
+            APPMANAGER_ENDPOINT: "{{ Global.APPMANAGER_ENDPOINT }}"
+            AUTHPROXY_ENDPOINT: "{{ Global.AUTHPROXY_ENDPOINT }}"
+            APPMANAGER_USERNAME: "{{ Global.APPMANAGER_USERNAME }}"
+            APPMANAGER_PASSWORD: "{{ Global.APPMANAGER_PASSWORD }}"
+            APPMANAGER_CLIENT_ID: "{{ Global.APPMANAGER_CLIENT_ID }}"
+            APPMANAGER_CLIENT_SECRET: "{{ Global.APPMANAGER_CLIENT_SECRET }}"
+          initContainers:
+          - name: "db-migration"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/cluster-clustermanage-db-migration:1661482133993"
+          - name: "init-cluster"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/cluster-clustermanage-init-cluster:1661482133993"
+          containers:
+          - name: "clustermanage"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/cluster-clustermanage-clustermanage:1661482133993"
+  packageMd5: ab273afd5b0efc1798e843a457bc0b7d
+  packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"saas/cluster/api/clustermanage","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/build"},"name":"clustermanage"}],"env":["DB_HOST","DB_PORT","DB_USER","DB_PASSWORD","DB_NAME","COOKIE_DOMAIN","APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL","APPMANAGER_PACKAGE_ENDPOINT","APPMANAGER_PACKAGE_ACCESS_KEY","APPMANAGER_PACKAGE_SECRET_KEY","APPMANAGER_ENDPOINT","AUTHPROXY_ENDPOINT","APPMANAGER_USERNAME","APPMANAGER_PASSWORD","APPMANAGER_CLIENT_ID","APPMANAGER_CLIENT_SECRET"],"initContainers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile-db-migration","ciAccount":"public","ciToken":"public","repoPath":"saas/cluster/api/clustermanage","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/build"},"name":"db-migration"},{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile-init-cluster","ciAccount":"public","ciToken":"public","repoPath":"saas/cluster/api/clustermanage","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/build"},"name":"init-cluster"}],"componentConfiguration":"revisionName: K8S_MICROSERVICE|clustermanage|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 7001\n- name: gateway.trait.abm.io\n  runtime: post\n  spec:\n    path: /sreworks/clustermanage/**\n    authEnabled: true\n    serviceName: ''{{ Global.STAGE_ID }}-cluster-clustermanage.{{ Global.NAMESPACE_ID }}''\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n- name: Global.DB_NAME\n  value: sreworks_meta\n- name: Global.APPMANAGER_ENDPOINT\n  value: http://sreworks-appmanager\n- name: Global.AUTHPROXY_ENDPOINT\n  value: http://prod-flycore-paas-authproxy\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
+  packageVersion: 3.5.3+20220826024853436401
+  relativePath: K8S_MICROSERVICE_clustermanage.zip
+- componentName: productopsv2
+  componentType: INTERNAL_ADDON
+  packageCreator: '999999999'
+  packageExt: |
+    apiVersion: core.oam.dev/v1alpha2
+    kind: Component
+    metadata:
+      name: microservice-cluster-productopsv2
+      annotations:
+        annotations.appmanager.oam.dev/version: "1.0.4+20220826024853347811"
+      labels:
+        labels.appmanager.oam.dev/appId: "cluster"
+        labels.appmanager.oam.dev/componentName: "productopsv2"
+        labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+        labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+        appId: "cluster"
+        componentName: "productopsv2"
+        stageId: "PLACEHOLDER_STAGE_ID"
+    spec:
+      workload:
+        apiVersion: apps.abm.io/v1
+        kind: Microservice
+        metadata:
+          namespace: "PLACEHOLDER_NAMESPACE_ID"
+          name: "PLACEHOLDER_NAME"
+          labels:
+            labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+            labels.appmanager.oam.dev/appId: "cluster"
+            labels.appmanager.oam.dev/componentName: "productopsv2"
+            labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+            labels.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            labels.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            labels.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+            stageId: "PLACEHOLDER_STAGE_ID"
+            appId: "cluster"
+            componentName: "productopsv2"
+          annotations:
+            annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
+            annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
+            annotations.appmanager.oam.dev/version: "1.0.4+20220826024853347811"
+            annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+        spec:
+          targetEndpoint: ''
+  packageMd5: ebecdfd73b7e9b7fe98a9acd1b81f9ba
+  packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"componentConfiguration":"clusterId: ''''\ndataInputs: []\ndataOutputs: []\ndependencies: []\nnamespaceId: ''''\nparameterValues: []\nrevisionName: INTERNAL_ADDON|productopsv2|_\nscopes: []\nstageId: ''''\ntraits: []\n","isDevelop":true,"binderTraits":[]}'
+  packageVersion: 1.0.4+20220826024853347811
+  relativePath: INTERNAL_ADDON_productopsv2.zip
+- componentName: system-env@system-env
+  componentType: RESOURCE_ADDON
+  packageCreator: '999999999'
+  packageExt: |
+    apiVersion: core.oam.dev/v1alpha2
+    kind: Component
+    metadata:
+      name: resource-addon--
+      annotations:
+        annotations.appmanager.oam.dev/version: ""
+      labels:
+        labels.appmanager.oam.dev/appId: ""
+        labels.appmanager.oam.dev/componentName: ""
+        labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+        labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+        appId: ""
+        componentName: ""
+        stageId: "PLACEHOLDER_STAGE_ID"
+    spec:
+      workload:
+        apiVersion: apps.abm.io/v1
+        kind: Config
+        metadata:
+          namespace: "PLACEHOLDER_NAMESPACE_ID"
+          name: "PLACEHOLDER_NAME"
+          labels:
+            labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+            labels.appmanager.oam.dev/appId: ""
+            labels.appmanager.oam.dev/componentName: ""
+            labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+            labels.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            labels.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            labels.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+          annotations:
+            annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
+            annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
+            annotations.appmanager.oam.dev/version: ""
+            annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+        spec: {}
+  packageMd5: fa7154565ce5c859542a71e49873c5a0
+  packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"componentConfiguration":"clusterId: ''''\ndataInputs: []\ndataOutputs:\n- fieldPath: ''{{ spec.env.DB_HOST }}''\n  name: Global.DB_HOST\n- fieldPath: ''{{ spec.env.DB_PASSWORD }}''\n  name: Global.DB_PASSWORD\n- fieldPath: ''{{ spec.env.DB_PORT }}''\n  name: Global.DB_PORT\n- fieldPath: ''{{ spec.env.DB_USER }}''\n  name: Global.DB_USER\n- fieldPath: ''{{ spec.env.APPMANAGER_ACCESS_ID }}''\n  name: Global.APPMANAGER_USERNAME\n- fieldPath: ''{{ spec.env.APPMANAGER_ACCESS_SECRET }}''\n  name: Global.APPMANAGER_PASSWORD\n- fieldPath: ''{{ spec.env.APPMANAGER_CLIENT_ID }}''\n  name: Global.APPMANAGER_CLIENT_ID\n- fieldPath: ''{{ spec.env.APPMANAGER_CLIENT_SECRET }}''\n  name: Global.APPMANAGER_CLIENT_SECRET\n- fieldPath: ''{{ spec.env.COOKIE_DOMAIN }}''\n  name: Global.COOKIE_DOMAIN\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ACCESS_KEY }}''\n  name: Global.APPMANAGER_PACKAGE_ACCESS_KEY\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_SECRET_KEY }}''\n  name: Global.APPMANAGER_PACKAGE_SECRET_KEY\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL }}''\n  name: Global.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT }}''\n  name: Global.APPMANAGER_PACKAGE_ENDPOINT\n- fieldPath: ''{{ spec.env.STORAGE_CLASS }}''\n  name: Global.STORAGE_CLASS\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_CLIENT_ID }}''\n  name: Global.ACCOUNT_SUPER_CLIENT_ID\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_CLIENT_SECRET }}''\n  name: Global.ACCOUNT_SUPER_CLIENT_SECRET\ndependencies: []\nnamespaceId: ''''\nparameterValues:\n- name: keys\n  toFieldPaths:\n  - spec.keys\n  value:\n  - DB_HOST\n  - DB_PASSWORD\n  - DB_PORT\n  - DB_USER\n  - APPMANAGER_ACCESS_ID\n  - APPMANAGER_ACCESS_SECRET\n  - APPMANAGER_CLIENT_ID\n  - APPMANAGER_CLIENT_SECRET\n  - COOKIE_DOMAIN\n  - APPMANAGER_PACKAGE_ACCESS_KEY\n  - APPMANAGER_PACKAGE_SECRET_KEY\n  - APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL\n  - APPMANAGER_PACKAGE_ENDPOINT\n  - STORAGE_CLASS\n  - ACCOUNT_SUPER_CLIENT_ID\n  - ACCOUNT_SUPER_CLIENT_SECRET\nrevisionName: RESOURCE_ADDON|system-env@system-env|1.0\nscopes: []\nstageId: ''''\ntraits: []\n","binderTraits":[]}'
+  packageVersion: 1.0.3+20220826024853348218
+  relativePath: RESOURCE_ADDON_system-env@system-env.zip
+- componentName: developmentmeta
+  componentType: INTERNAL_ADDON
+  packageCreator: '999999999'
+  packageExt: |-
+    apiVersion: core.oam.dev/v1alpha2
+    kind: Component
+    metadata:
+      name: internal-addon-cluster-developmentmeta
+      annotations:
+        annotations.appmanager.oam.dev/version: "1.0.4+20220826024853821375"
+      labels:
+        labels.appmanager.oam.dev/appId: "cluster"
+        labels.appmanager.oam.dev/componentName: "developmentmeta"
+        labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+        labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+        appId: "cluster"
+        componentName: "developmentmeta"
+        stageId: "PLACEHOLDER_STAGE_ID"
+    spec:
+      workload:
+        apiVersion: apps.abm.io/v1
+        kind: DevelopmentmetaConfig
+        metadata:
+          namespace: "PLACEHOLDER_NAMESPACE_ID"
+          name: "PLACEHOLDER_NAME"
+          labels:
+            labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+            labels.appmanager.oam.dev/appId: "cluster"
+            labels.appmanager.oam.dev/componentName: "developmentmeta"
+            labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+            labels.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            labels.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            labels.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+            stageId: "PLACEHOLDER_STAGE_ID"
+            appId: "cluster"
+            componentName: "developmentmeta"
+          annotations:
+            annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
+            annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
+            annotations.appmanager.oam.dev/version: "1.0.4+20220826024853821375"
+            annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+        spec: {}
+  packageMd5: ba42b09a11fb75a4e0c6c80a875fa3e9
+  packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
+  packageVersion: 1.0.4+20220826024853821375
+  relativePath: INTERNAL_ADDON_developmentmeta.zip
+- componentName: appmeta
+  componentType: INTERNAL_ADDON
+  packageCreator: '999999999'
+  packageExt: |
+    apiVersion: core.oam.dev/v1alpha2
+    kind: Component
+    metadata:
+      name: internal-addon-cluster-appmeta
+      annotations:
+        annotations.appmanager.oam.dev/version: "1.0.4+20220826024853735120"
+      labels:
+        labels.appmanager.oam.dev/appId: "cluster"
+        labels.appmanager.oam.dev/componentName: "appmeta"
+        labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+        labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+        appId: "cluster"
+        componentName: "appmeta"
+        stageId: "PLACEHOLDER_STAGE_ID"
+    spec:
+      workload:
+        apiVersion: apps.abm.io/v1
+        kind: AppmetaConfig
+        metadata:
+          namespace: "PLACEHOLDER_NAMESPACE_ID"
+          name: "PLACEHOLDER_NAME"
+          labels:
+            labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+            labels.appmanager.oam.dev/appId: "cluster"
+            labels.appmanager.oam.dev/componentName: "appmeta"
+            labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+            labels.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            labels.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            labels.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+            stageId: "PLACEHOLDER_STAGE_ID"
+            appId: "cluster"
+            componentName: "appmeta"
+          annotations:
+            annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
+            annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
+            annotations.appmanager.oam.dev/version: "1.0.4+20220826024853735120"
+            annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+        spec:
+          overwriteIsDevelopment: false
+          overwriteBuiltIn: false
+  packageMd5: f5a863fa4526cc3f251d773dc0417e00
+  packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
+  packageVersion: 1.0.4+20220826024853735120
+  relativePath: INTERNAL_ADDON_appmeta.zip
+packageCreator: '999999999'
+packageVersion: 1.0.0+20220826035501124576
+tags:
+- release=sreworks/x86_64
+- on-sale

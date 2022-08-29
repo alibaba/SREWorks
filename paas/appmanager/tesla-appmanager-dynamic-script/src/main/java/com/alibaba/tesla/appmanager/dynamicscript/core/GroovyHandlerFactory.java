@@ -15,14 +15,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -55,51 +53,24 @@ public class GroovyHandlerFactory {
     /**
      * 定时检查并刷新 Groovy Handler
      */
-    @Scheduled(cron = "${appmanager.cron-job.groovy-handler-factory-refresh:0 * * * * *}")
-    public void cronRefresh() {
-        List<String> keyList = new ArrayList<>(VERSION_MAP.keySet());
-        for (String key : keyList) {
-            KeyStore keyStore = keySplit(key);
-            DynamicScriptQueryCondition condition = DynamicScriptQueryCondition.builder()
-                    .kind(keyStore.getKind())
-                    .name(keyStore.getName())
-                    .build();
-            DynamicScriptDO script = dynamicScriptService.get(condition);
-            if (script == null) {
-                log.warn("cannot get dynamic script from database|kind={}|name={}",
-                        keyStore.getKind(), keyStore.getName());
-                continue;
-            }
+    @Scheduled(cron = "${appmanager.cron-job.groovy-handler-factory-refresh}")
+    public void refresh() {
+        List<DynamicScriptDO> scripts = dynamicScriptService.list(DynamicScriptQueryCondition.builder().build());
+        for (DynamicScriptDO script : scripts) {
+            String kind = script.getKind();
+            String name = script.getName();
+            String key = keyGenerator(kind, name);
             Integer revision = script.getCurrentRevision();
-            if (!revision.equals(VERSION_MAP.getOrDefault(key, -1))) {
+            if (!VERSION_MAP.containsKey(key) || !revision.equals(VERSION_MAP.getOrDefault(key, -1))) {
                 synchronized (GroovyHandlerFactory.class) {
                     try {
-                        create(keyStore.getKind(), keyStore.getName());
-                        log.info("refresh groovy handler finished|kind={}|name={}", keyStore.getKind(), keyStore.getName());
+                        createOrUpdate(kind, name);
                     } catch (AppException e) {
                         log.error("cannot refresh groovy handler|message={}", e.getErrorMessage());
                     }
                 }
             } else {
-                log.debug("no need to refresh groovy handler|kind={}|name={}", keyStore.getKind(), keyStore.getName());
-            }
-        }
-    }
-
-    /**
-     * 启动时加载全量脚本
-     */
-    public void init() throws IOException {
-        List<DynamicScriptDO> scripts = dynamicScriptService.list(DynamicScriptQueryCondition.builder().build());
-        for (DynamicScriptDO script : scripts) {
-            String kind = script.getKind();
-            synchronized (GroovyHandlerFactory.class) {
-                try {
-                    create(kind, script.getName());
-                } catch (Exception e) {
-                    log.error("init groovy script failed, please check it|kind={}|name={}|exception={}",
-                            kind, script.getName(), ExceptionUtils.getStackTrace(e));
-                }
+                log.debug("no need to refresh groovy handler|kind={}|name={}", kind, name);
             }
         }
     }
@@ -163,7 +134,7 @@ public class GroovyHandlerFactory {
             if (groovyHandler != null) {
                 return scriptClass.cast(groovyHandler);
             }
-            groovyHandler = create(kind, name);
+            groovyHandler = createOrUpdate(kind, name);
         }
         return scriptClass.cast(groovyHandler);
     }
@@ -262,6 +233,16 @@ public class GroovyHandlerFactory {
                             DynamicScriptKindEnum.DEPLOY_ABM_HELM_COMPONENT.toString(),
                             DefaultConstant.DEFAULT_GROOVY_HANDLER);
                 }
+            case SCRIPT:
+                if (ComponentActionEnum.BUILD.equals(action)) {
+                    return get(scriptClass,
+                            DynamicScriptKindEnum.BUILD_SCRIPT_COMPONENT.toString(),
+                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                } else {
+                    return get(scriptClass,
+                            DynamicScriptKindEnum.DEPLOY_SCRIPT_COMPONENT.toString(),
+                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                }
             case ABM_STATUS:
                 if (ComponentActionEnum.BUILD.equals(action)) {
                     return get(scriptClass,
@@ -293,7 +274,7 @@ public class GroovyHandlerFactory {
                                 DynamicScriptKindEnum.DEPLOY_IA_TIANJI_PRODUCTOPS_COMPONENT.toString(),
                                 DefaultConstant.DEFAULT_GROOVY_HANDLER);
                     }
-                }else if ("productops".equals(componentName)) {
+                } else if ("productops".equals(componentName)) {
                     if (ComponentActionEnum.BUILD.equals(action)) {
                         return get(scriptClass,
                                 DynamicScriptKindEnum.BUILD_IA_PRODUCTOPS_COMPONENT.toString(),
@@ -358,7 +339,7 @@ public class GroovyHandlerFactory {
      * @param name 动态脚本唯一标识
      * @return Handler
      */
-    private GroovyHandler create(String kind, String name) {
+    private GroovyHandler createOrUpdate(String kind, String name) {
         String key = keyGenerator(kind, name);
         DynamicScriptQueryCondition condition = DynamicScriptQueryCondition.builder()
                 .kind(kind)

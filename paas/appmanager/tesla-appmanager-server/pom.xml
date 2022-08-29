@@ -83,6 +83,10 @@
             <groupId>com.alibaba.tesla</groupId>
             <artifactId>tesla-appmanager-market</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba.tesla</groupId>
+            <artifactId>tesla-appmanager-storage</artifactId>
+        </dependency>
 
         <!-- spring -->
         <dependency>

@@ -69,6 +69,10 @@ public class ApplicationContextLoadedEventListener implements ApplicationListene
             "/dynamicscripts/JobComponentDestroyHandler.groovy",
             "/dynamicscripts/HelmComponentHandler.groovy",
             "/dynamicscripts/HelmComponentDestroyHandler.groovy",
+            "/dynamicscripts/ScriptComponentBuildHandler.groovy",
+            "/dynamicscripts/ScriptComponentDeployHandler.groovy",
+            "/dynamicscripts/ScriptComponentHandler.groovy",
+            "/dynamicscripts/ScriptComponentWatchCronHandler.groovy",
             "/dynamicscripts/InternalAddonV2ProductopsComponentHandler.groovy",
             "/dynamicscripts/InternalAddonV2ProductopsComponentDestroyHandler.groovy",
             "/dynamicscripts/WorkflowDeployHandler.groovy",
@@ -93,7 +97,7 @@ public class ApplicationContextLoadedEventListener implements ApplicationListene
     public void onApplicationEvent(ApplicationContextLoadedEvent event) {
         try {
             initDefaultScripts();
-            groovyHandlerFactory.init();
+            groovyHandlerFactory.refresh();
             informerManager.init();
         } catch (Exception e) {
             throw new AppException(AppErrorCode.UNKNOWN_ERROR, "cannot init groovy handler factory", e);

@@ -30,7 +30,7 @@ public class CleanAppPackageJob {
     @Autowired
     private Storage storage;
 
-    @Scheduled(cron = "${appmanager.cron-job.clean-app-package:-}")
+    @Scheduled(cron = "${appmanager.cron-job.clean-app-package}")
     @SchedulerLock(name = "cleanAppPackage")
     public void execute() {
         Integer defaultKeepNumbers = packageProperties.getDefaultKeepNumbers();

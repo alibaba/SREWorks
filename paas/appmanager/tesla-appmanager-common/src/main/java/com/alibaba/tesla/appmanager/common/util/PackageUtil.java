@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.common.util;
 
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 
+import com.alibaba.tesla.appmanager.common.enums.PluginKindEnum;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -10,6 +11,30 @@ import org.apache.commons.lang3.StringUtils;
  * @author yaoxing.gyx@alibaba-inc.com
  */
 public class PackageUtil {
+
+    /**
+     * 生成 plugin 的远端路径 (全包历史)
+     *
+     * @param kind    类型
+     * @param name    名称
+     * @param version 版本
+     * @return 实际远端路径
+     */
+    public static String buildPluginHistoryRemotePath(PluginKindEnum kind, String name, String version) {
+        return String.format("plugins/history/%s/%s/%s.zip", kind, name, version);
+    }
+
+    /**
+     * 生成 plugin 的远端路径 (单个文件)
+     *
+     * @param kind         类型
+     * @param name         名称
+     * @param relativePath 相对远端路径
+     * @return 实际远端路径
+     */
+    public static String buildPluginCurrentRemotePath(PluginKindEnum kind, String name, String relativePath) {
+        return String.format("plugins/current/%s/%s/%s", kind, name, relativePath);
+    }
 
     /**
      * 生成 component package 的远端路径

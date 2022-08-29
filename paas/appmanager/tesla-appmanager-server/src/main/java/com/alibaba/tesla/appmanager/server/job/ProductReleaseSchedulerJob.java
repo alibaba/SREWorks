@@ -139,8 +139,8 @@ public class ProductReleaseSchedulerJob {
     /**
      * 启动时初始化，外加定时触发更新增量数据
      */
-    @Scheduled(cron = "${appmanager.cron-job.product-release-scheduler:0/10 * * * * *}")
-    @SchedulerLock(name = "productReleaseSchedulerJob")
+    @Scheduled(cron = "${appmanager.cron-job.product-release-scheduler}")
+    @SchedulerLock(name = "productReleaseSchedulerJob", lockAtLeastFor = "9s")
     public void run() {
         if (!systemProperties.isEnableProductTaskExecutor()) {
             return;

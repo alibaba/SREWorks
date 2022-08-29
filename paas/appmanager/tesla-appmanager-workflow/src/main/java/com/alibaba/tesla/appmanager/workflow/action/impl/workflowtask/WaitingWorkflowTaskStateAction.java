@@ -95,7 +95,7 @@ public class WaitingWorkflowTaskStateAction implements WorkflowTaskStateAction, 
                 break;
             case FAILURE:
             case WAIT_FOR_OP:
-                log.info("the deployment has been completed, but reached FAILURE/WAIT_FOR_OP status, and the workflow" +
+                log.warn("the deployment has been completed, but reached FAILURE/WAIT_FOR_OP status, and the workflow" +
                         "task has ended waiting|workflowInstanceId={}|workflowTaskId={}|deployAppId={}|" +
                         "deployStatus={}|errorMessage={}", task.getWorkflowInstanceId(), task.getId(),
                         deployApp.getId(), deployApp.getDeployStatus(), deployApp.getDeployErrorMessage());
@@ -104,7 +104,7 @@ public class WaitingWorkflowTaskStateAction implements WorkflowTaskStateAction, 
                 publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.WAITING_FAILED, task));
                 break;
             case EXCEPTION:
-                log.info("the deployment has been completed, but reached EXCEPTION status, and the workflow" +
+                log.error("the deployment has been completed, but reached EXCEPTION status, and the workflow" +
                                 "task has ended waiting|workflowInstanceId={}|workflowTaskId={}|deployAppId={}|" +
                                 "deployStatus={}|errorMessage={}", task.getWorkflowInstanceId(), task.getId(),
                         deployApp.getId(), deployApp.getDeployStatus(), deployApp.getDeployErrorMessage());

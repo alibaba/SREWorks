@@ -36,9 +36,11 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -55,6 +57,7 @@ import java.util.*;
  * @DATE: 2021-03-09
  * @Description:
  **/
+@EnableRetry(proxyTargetClass = true)
 @Service("K8sMicroserviceComponenPackage")
 @Slf4j
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
@@ -69,6 +72,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
     private static final HashMap<Long, Set<String>> taskPodMap = new HashMap<>();
     private static final HashMap<Long, Set<String>> succeedPodMap = new HashMap<>();
     private static final HashMap<Long, String> taskTargetDirMap = new HashMap<>();
+    private static final HashMap<Long, Set<String>> taskRemoteObjectMap = new HashMap<>();
     private static final String flag = new String();
     private CoreV1Api api;
 
@@ -132,6 +136,8 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
 
         //4. build pod
         String podTpl = loadClassPathFile(KANIKO_TPL_PATH);
+        List<V1Pod> waitBuildPodList = new LinkedList<>();
+        Set<String> remoteObjectSet = new HashSet<>();
         for (int index = 0; index < containers.size(); index++) {
             JSONObject container = containers.getJSONObject(index);
             try {
@@ -140,16 +146,26 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
                     String podName = genPodName(taskDO.getAppId(), taskDO.getComponentName(), existImage, taskDO.getId(), tag);
                     publisher.publishEvent(new SucceedKanikoPodEvent(this, podName));
                 } else {
-                    buildImage(api, container, podTpl, taskDO, relativePath, tag);
+                    V1Pod containerBuildPod = genKanikoPod(api, container, podTpl, taskDO, relativePath, tag, remoteObjectSet);
+                    waitBuildPodList.add(containerBuildPod);
                 }
             } catch (Exception e) {
-                log.error("action=buildImage|| can not build {} container image, Message:{} Exception:{}", container.getString("name"), e.getMessage(), e.getCause());
+                log.error("action=genKanikoPod|| can not build {} container image,Message:{} Exception:{}", container.getString("name"), e.getMessage(), e.getCause());
                 String podName = genPodName(taskDO.getAppId(), taskDO.getComponentName(), container.getString("name"),
                         taskDO.getId(), tag);
                 publisher.publishEvent(new DeleteKanikoPodEvent(this, podName));
                 updateDataFailRecord(taskDO.getId(), e.getMessage());
             }
-
+            taskRemoteObjectMap.put(taskDO.getId(), remoteObjectSet);
+            for (V1Pod v1Pod : waitBuildPodList) {
+                try {
+                    api.createNamespacedPod(systemProperties.getK8sNamespace(), v1Pod, null, null, null);
+                } catch (Exception e) {
+                    log.error("action=createPod|| can not create pod {} container image,Message:{} Exception:{}", v1Pod.toString(), e.getMessage(), e.getCause());
+                    publisher.publishEvent(new DeleteKanikoPodEvent(this, v1Pod.getMetadata().getName()));
+                    updateDataFailRecord(taskDO.getId(), e.getMessage());
+                }
+            }
         }
     }
 
@@ -199,8 +215,8 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
         return destination.concat("/").concat(image);
     }
 
-    private void buildImage(CoreV1Api api, JSONObject container, String podTpl,
-                            ComponentPackageTaskDO taskDO, String relativePath, long tag)
+    private V1Pod genKanikoPod(CoreV1Api api, JSONObject container, String podTpl,
+                            ComponentPackageTaskDO taskDO, String relativePath, long tag, Set<String> remoteObjectSet)
             throws Exception {
         Object nameOb = JsonUtil.recursiveGetParameter(container,
                 Collections.singletonList("name"));
@@ -249,6 +265,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
                 .buildKanikoBuildRemotePath(taskDO.getAppId(), taskDO.getComponentType(), taskDO.getComponentName(), containerName,
                         taskDO.getPackageVersion());
         storage.putObject(bucketName, remotePath, buildAbsolutePath + compressTarName);
+        remoteObjectSet.add(remotePath);
         StorageFile storageFile = new StorageFile(bucketName, remotePath);
         log.info("kaniko build package has uploaded to storage||componentPackageTaskId={}||bucketName={}||" +
                 "remotePath={}||localPath={}", taskDO.getId(), bucketName, remotePath, buildAbsolutePath + compressTarName);
@@ -308,7 +325,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
         } catch (ApiException e) {
             log.info("clean pod");
         }
-        api.createNamespacedPod(systemProperties.getK8sNamespace(), v1Pod, null, null, null);
+        return v1Pod;
     }
 
     private boolean gitClone(String localDir, JSONObject container) {
@@ -457,6 +474,16 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
         CommandUtil.runLocalCommand(deleteCommand);
     }
 
+    private void deleteRemoteObject(Set<String> remoteObjectSet) {
+        if (CollectionUtils.isEmpty(remoteObjectSet)) {
+            log.info("action=deleteRemoteObject|| remoteObjectSet is Empty!");
+            return;
+        }
+        for (String ob : remoteObjectSet) {
+            storage.removeObject(packageProperties.getBucketName(), ob);
+        }
+    }
+
     @Transactional(rollbackFor = Exception.class)
     public void updateDataFailRecord(Long taskId, String taskLog) {
         ComponentPackageTaskDO taskDO = componentPackageTaskRepository.getByCondition(
@@ -517,6 +544,8 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
                                     String targetFileDir = taskTargetDirMap.remove(taskId);
                                     packageComponentZip(taskId, taskLog.toString(), targetFileDir);
                                     deleteDir(targetFileDir);
+                                    Set<String> remoteObjectSet = taskRemoteObjectMap.remove(taskId);
+                                    deleteRemoteObject(remoteObjectSet);
                                     publisher.publishEvent(new SucceedComponentPackageTaskEvent(this, taskId));
                                 } catch (Exception e) {
                                     log.error("action=waitBuildPodAndPackage|| something wrong when operate package zip!message={}||exception={}", e.getMessage(), e.getCause());
@@ -551,6 +580,8 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
                                 updateDataFailRecord(taskId, taskLog.toString());
                                 String targetFileDir = taskTargetDirMap.remove(taskId);
                                 deleteDir(targetFileDir);
+                                Set<String> remoteObjectSet = taskRemoteObjectMap.remove(taskId);
+                                deleteRemoteObject(remoteObjectSet);
                             } finally {
                                 publisher.publishEvent(new FailedComponentPackageTaskEvent(this, taskId));
                             }
@@ -573,6 +604,8 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
                                 succeedPodMap.remove(taskId);
                                 String targetFileDir = taskTargetDirMap.remove(taskId);
                                 deleteDir(targetFileDir);
+                                Set<String> remoteObjectSet = taskRemoteObjectMap.remove(taskId);
+                                deleteRemoteObject(remoteObjectSet);
                             } finally {
                                 publisher.publishEvent(new FailedComponentPackageTaskEvent(this, taskId));
                             }

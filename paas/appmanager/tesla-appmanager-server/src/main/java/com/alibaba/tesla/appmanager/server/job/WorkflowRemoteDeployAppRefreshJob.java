@@ -28,8 +28,8 @@ public class WorkflowRemoteDeployAppRefreshJob {
     @Autowired
     private WorkflowTaskProvider workflowTaskProvider;
 
-    @Scheduled(cron = "${appmanager.cron-job.workflow-remote-deploy-app-refresh:0/10 * * * * *}")
-    @SchedulerLock(name = "workflowRemoteDeployAppRefreshJob")
+    @Scheduled(cron = "${appmanager.cron-job.workflow-remote-deploy-app-refresh}")
+    @SchedulerLock(name = "workflowRemoteDeployAppRefreshJob", lockAtLeastFor = "19s")
     public void execute() {
         List<WorkflowTaskDTO> tasks = workflowTaskProvider.listRunningRemoteTask();
         if (tasks.size() == 0) {

@@ -8,16 +8,18 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 /**
- * @author jiongen.zje@alibaba-inc.com
- * @date 2022/08/03.
+ * Plugin Definition DTO
+ *
+ * @author yaoxing.gyx@alibaba-inc.com
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PluginMetaDTO {
+public class PluginDefinitionDTO {
+
     /**
-     * 主键
+     * ID
      */
     private Long id;
 
@@ -27,26 +29,47 @@ public class PluginMetaDTO {
     private Date gmtCreate;
 
     /**
-     * 修改时间
+     * 最后修改时间
      */
     private Date gmtModified;
 
     /**
-     * 插件名称
+     * Plugin 类型
+     */
+    private String pluginKind;
+
+    /**
+     * Plugin 唯一标识
      */
     private String pluginName;
+
     /**
-     * 插件版本
+     * Plugin 版本
      */
     private String pluginVersion;
 
     /**
-     * 插件版本
+     * 是否已安装注册
      */
-    private String pluginDescription;
+    private Boolean pluginRegistered;
+
     /**
      * Plugin 包路径
      */
     private String packagePath;
 
+    /**
+     * Plugin 描述
+     */
+    private String pluginDescription;
+
+    /**
+     * Plugin 依赖 (JSON Array)
+     */
+    private String pluginDependencies;
+
+    /**
+     * Plugin Schema
+     */
+    private String pluginSchema;
 }

@@ -25,7 +25,7 @@ public class CleanDagInstJob {
     @Autowired
     private SystemProperties systemProperties;
 
-    @Scheduled(cron = "${appmanager.cron-job.clean-dag-inst:-}")
+    @Scheduled(cron = "${appmanager.cron-job.clean-dag-inst}")
     @SchedulerLock(name = "cleanDagInst")
     public void execute() {
         Integer keepSeconds = systemProperties.getFlowHistoryKeepSeconds();

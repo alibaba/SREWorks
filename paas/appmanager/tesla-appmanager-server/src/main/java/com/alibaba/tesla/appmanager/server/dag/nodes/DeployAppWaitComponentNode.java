@@ -3,6 +3,7 @@ package com.alibaba.tesla.appmanager.server.dag.nodes;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.constants.AppFlowParamKey;
 import com.alibaba.tesla.appmanager.common.constants.AppFlowVariableKey;
+import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentAttrTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentStateEnum;
 import com.alibaba.tesla.appmanager.common.enums.ParameterValueSetPolicy;
@@ -19,6 +20,8 @@ import com.alibaba.tesla.dag.local.AbstractLocalNodeBase;
 import com.alibaba.tesla.dag.model.domain.dagnode.DagInstNodeRunRet;
 import com.google.common.base.Enums;
 import com.hubspot.jinjava.Jinjava;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -69,7 +72,21 @@ public class DeployAppWaitComponentNode extends AbstractLocalNodeBase {
         for (DeployAppSchema.DataOutput dataOutput : dataOutputs) {
             String fieldPath = dataOutput.getFieldPath();
             String name = dataOutput.getName();
-            String value = jinjava.render(fieldPath, workload);
+            if (StringUtils.isAnyEmpty(fieldPath, name)) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS, "name/fieldPath are required in dataOutputs");
+            }
+            Object value;
+            if (fieldPath.contains("{{")) {
+                value = jinjava.render(fieldPath, workload);
+            } else {
+                // JSONPath 寻址方式
+                if (!fieldPath.startsWith("spec.")) {
+                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                            String.format("invalid field path in dataOuput %s", JSONObject.toJSONString(dataOutput)));
+                }
+                DocumentContext workloadContext = JsonPath.parse(JSONObject.toJSONString(workload));
+                value = workloadContext.read(DefaultConstant.JSONPATH_PREFIX + fieldPath);
+            }
             dataOutputMap.put(name, value);
             DeployAppHelper.recursiveSetParameters(parameters, null, Arrays.asList(name.split("\\.")), value,
                     ParameterValueSetPolicy.OVERWRITE_ON_CONFILICT);

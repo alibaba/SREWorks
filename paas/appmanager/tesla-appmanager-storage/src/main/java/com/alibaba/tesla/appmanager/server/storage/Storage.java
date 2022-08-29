@@ -19,6 +19,15 @@ public interface Storage {
     boolean bucketExists(String bucketName);
 
     /**
+     * 获取文件内容字符串 (限小文件)
+     *
+     * @param bucketName Bucket 名称
+     * @param objectPath 文件名称
+     * @return 文件内容字符串
+     */
+    String getObjectContent(String bucketName, String objectPath);
+
+    /**
      * 检测 对象 是否存在
      *
      * @param bucketName Bucket 名称

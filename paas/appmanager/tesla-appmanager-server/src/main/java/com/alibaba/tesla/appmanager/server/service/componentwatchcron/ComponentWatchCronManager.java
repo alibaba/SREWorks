@@ -206,7 +206,7 @@ public class ComponentWatchCronManager {
     /**
      * 5s 定时工作
      */
-    @Scheduled(cron = "${appmanager.cron-job.cron-job-manager-refresh-5s:0/5 * * * * *}")
+    @Scheduled(cron = "${appmanager.cron-job.cron-job-manager-refresh-5s}")
     @SchedulerLock(name = "cronJobManagerFactoryRefresh5s")
     public void refresh5s() throws InterruptedException {
         Pagination<RtComponentInstanceDO> componentInstances = rtComponentInstanceService
@@ -224,7 +224,7 @@ public class ComponentWatchCronManager {
     /**
      * 10s 定时工作
      */
-    @Scheduled(cron = "${appmanager.cron-job.cron-job-manager-refresh-10s:0/10 * * * * *}")
+    @Scheduled(cron = "${appmanager.cron-job.cron-job-manager-refresh-10s}")
     @SchedulerLock(name = "cronJobManagerFactoryRefresh10s")
     public void refresh10s() throws InterruptedException {
         Pagination<RtComponentInstanceDO> componentInstances = rtComponentInstanceService
@@ -242,7 +242,7 @@ public class ComponentWatchCronManager {
     /**
      * 30s 定时工作
      */
-    @Scheduled(cron = "${appmanager.cron-job.cron-job-manager-refresh-30s:0/30 * * * * *}")
+    @Scheduled(cron = "${appmanager.cron-job.cron-job-manager-refresh-30s}")
     @SchedulerLock(name = "cronJobManagerFactoryRefresh30s")
     public void refresh30s() throws InterruptedException {
         Pagination<RtComponentInstanceDO> componentInstances = rtComponentInstanceService
@@ -260,7 +260,7 @@ public class ComponentWatchCronManager {
     /**
      * 1m 定时工作
      */
-    @Scheduled(cron = "${appmanager.cron-job.cron-job-manager-refresh-1m:0 0/1 * * * *}")
+    @Scheduled(cron = "${appmanager.cron-job.cron-job-manager-refresh-1m}")
     @SchedulerLock(name = "cronJobManagerFactoryRefresh1m")
     public void refresh1m() throws InterruptedException {
         Pagination<RtComponentInstanceDO> componentInstances = rtComponentInstanceService
@@ -278,7 +278,7 @@ public class ComponentWatchCronManager {
     /**
      * 2m 定时工作
      */
-    @Scheduled(cron = "${appmanager.cron-job.cron-job-manager-refresh-2m:0 0/2 * * * *}")
+    @Scheduled(cron = "${appmanager.cron-job.cron-job-manager-refresh-2m}")
     @SchedulerLock(name = "cronJobManagerFactoryRefresh2m")
     public void refresh2m() throws InterruptedException {
         Pagination<RtComponentInstanceDO> componentInstances = rtComponentInstanceService
@@ -296,7 +296,7 @@ public class ComponentWatchCronManager {
     /**
      * 3m 定时工作
      */
-    @Scheduled(cron = "${appmanager.cron-job.cron-job-manager-refresh-3m:0 0/3 * * * *}")
+    @Scheduled(cron = "${appmanager.cron-job.cron-job-manager-refresh-3m}")
     @SchedulerLock(name = "cronJobManagerFactoryRefresh3m")
     public void refresh3m() throws InterruptedException {
         Pagination<RtComponentInstanceDO> componentInstances = rtComponentInstanceService
@@ -314,7 +314,7 @@ public class ComponentWatchCronManager {
     /**
      * 4m 定时工作
      */
-    @Scheduled(cron = "${appmanager.cron-job.cron-job-manager-refresh-4m:0 0/4 * * * *}")
+    @Scheduled(cron = "${appmanager.cron-job.cron-job-manager-refresh-4m}")
     @SchedulerLock(name = "cronJobManagerFactoryRefresh4m")
     public void refresh4m() throws InterruptedException {
         Pagination<RtComponentInstanceDO> componentInstances = rtComponentInstanceService
@@ -332,7 +332,7 @@ public class ComponentWatchCronManager {
     /**
      * 5m 定时工作
      */
-    @Scheduled(cron = "${appmanager.cron-job.cron-job-manager-refresh-5m:0 0/5 * * * *}")
+    @Scheduled(cron = "${appmanager.cron-job.cron-job-manager-refresh-5m}")
     @SchedulerLock(name = "cronJobManagerFactoryRefresh5m")
     public void refresh5m() throws InterruptedException {
         Pagination<RtComponentInstanceDO> componentInstances = rtComponentInstanceService
@@ -350,7 +350,7 @@ public class ComponentWatchCronManager {
     /**
      * 1h 定时工作 (FAILED)
      */
-    @Scheduled(cron = "${appmanager.cron-job.cron-job-manager-refresh-5m:0 0 0/1 * * *}")
+    @Scheduled(cron = "${appmanager.cron-job.cron-job-manager-refresh-1h}")
     @SchedulerLock(name = "cronJobManagerFactoryRefresh1h")
     public void refresh1h() throws InterruptedException {
         Pagination<RtComponentInstanceDO> componentInstances = rtComponentInstanceService

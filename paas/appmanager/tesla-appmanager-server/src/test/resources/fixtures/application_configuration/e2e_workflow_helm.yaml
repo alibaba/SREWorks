@@ -6,32 +6,86 @@ metadata:
     appInstanceName: "test-app-instance"
   name: deploy-workflow
 spec:
+  parameterValues:
+    - name: "PRE_KUBECONFIG"
+      value: ""
+    - name: "PROD_KUBECONFIG"
+      value: ""
   components:
     - revisionName: ABM_HELM|helm-demo-chart@0.0.1@test|_
-      scopes:
-        - scopeRef:
-            apiVersion: flyadmin.alibaba.com/v1alpha1
-            kind: Namespace
-            name: default
+    - revisionName: SCRIPT|helm-demo-chart|_
+      dataOutputs:
+        - name: testvalue
+          fieldPath: "spec.dataOutputs.a"
+      parameterValues:
+        - name: scriptName
+          value: "helm-demo-chart-script/v1"
+          toFieldPaths:
+          - "spec.scriptName"
+      dependencies:
+        - component: ABM_HELM|helm-demo-chart@0.0.1@test
   policies:
+    - name: topology-pre-env
+      type: topology
+      properties:
+        namespace: "pre-env"
     - type: override
-      name: staging-configuration
+      name: override-pre-env
       properties:
         components:
           - revisionName: ABM_HELM|helm-demo-chart@0.0.1@test|_
+            dataInputs:
+              - valueFrom:
+                  dataOutputName: "Global.PRE_KUBECONFIG"
+                toFieldPaths:
+                  - spec.base64Kubeconfig
             parameterValues:
               - name: name
-                value: "testhelm"
+                value: "testhelm-pre"
                 toFieldPaths:
                   - spec.name
-              - name: base64Kubeconfig
-                value: ""
+          - revisionName: SCRIPT|helm-demo-chart|_
+            dataInputs:
+              - valueFrom:
+                  dataOutputName: "Global.PRE_KUBECONFIG"
+                toFieldPaths:
+                  - spec.base64Kubeconfig
+    - name: topology-prod-env
+      type: topology
+      properties:
+        namespace: "prod-env"
+    - type: override
+      name: override-prod-env
+      properties:
+        components:
+          - revisionName: ABM_HELM|helm-demo-chart@0.0.1@test|_
+            dataInputs:
+              - valueFrom:
+                  dataOutputName: "Global.PROD_KUBECONFIG"
+                toFieldPaths:
+                  - spec.base64Kubeconfig
+            parameterValues:
+              - name: name
+                value: "testhelm-prod"
+                toFieldPaths:
+                  - spec.name
+          - revisionName: SCRIPT|helm-demo-chart|_
+            dataInputs:
+              - valueFrom:
+                  dataOutputName: "Global.PROD_KUBECONFIG"
                 toFieldPaths:
                   - spec.base64Kubeconfig
   workflow:
     steps:
       - type: deploy
-        name: deploy-staging
+        name: deploy-env-pre
         properties:
           policies:
-            - "staging-configuration"
+            - "topology-pre-env"
+            - "override-pre-env"
+      - type: deploy
+        name: deploy-env-prod
+        properties:
+          policies:
+            - "topology-prod-env"
+            - "override-prod-env"

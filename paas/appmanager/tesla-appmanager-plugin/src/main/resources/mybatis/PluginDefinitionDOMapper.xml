@@ -7,6 +7,7 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="plugin_kind" jdbcType="VARCHAR" property="pluginKind" />
     <result column="plugin_name" jdbcType="VARCHAR" property="pluginName" />
     <result column="plugin_version" jdbcType="VARCHAR" property="pluginVersion" />
     <result column="plugin_registered" jdbcType="BOOLEAN" property="pluginRegistered" />
@@ -17,7 +18,7 @@
     <!--@Table am_plugin_definition-->
     <result column="plugin_description" jdbcType="LONGVARCHAR" property="pluginDescription" />
     <result column="plugin_dependencies" jdbcType="LONGVARCHAR" property="pluginDependencies" />
-    <result column="plugin_extra" jdbcType="LONGVARCHAR" property="pluginExtra" />
+    <result column="plugin_schema" jdbcType="LONGVARCHAR" property="pluginSchema" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <!--@mbg.generated-->
@@ -81,11 +82,12 @@
   </sql>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, gmt_create, gmt_modified, plugin_name, plugin_version, plugin_registered, package_path
+    id, gmt_create, gmt_modified, plugin_kind, plugin_name, plugin_version, plugin_registered, 
+    package_path
   </sql>
   <sql id="Blob_Column_List">
     <!--@mbg.generated-->
-    plugin_description, plugin_dependencies, plugin_extra
+    plugin_description, plugin_dependencies, plugin_schema
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDOExample" resultMap="ResultMapWithBLOBs">
     <!--@mbg.generated-->
@@ -138,14 +140,14 @@
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDO" useGeneratedKeys="true">
     <!--@mbg.generated-->
-    insert into am_plugin_definition (gmt_create, gmt_modified, plugin_name, 
-      plugin_version, plugin_registered, package_path, 
-      plugin_description, plugin_dependencies, 
-      plugin_extra)
-    values (#{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{pluginName,jdbcType=VARCHAR}, 
-      #{pluginVersion,jdbcType=VARCHAR}, #{pluginRegistered,jdbcType=BOOLEAN}, #{packagePath,jdbcType=VARCHAR}, 
-      #{pluginDescription,jdbcType=LONGVARCHAR}, #{pluginDependencies,jdbcType=LONGVARCHAR}, 
-      #{pluginExtra,jdbcType=LONGVARCHAR})
+    insert into am_plugin_definition (gmt_create, gmt_modified, plugin_kind, 
+      plugin_name, plugin_version, plugin_registered, 
+      package_path, plugin_description, plugin_dependencies, 
+      plugin_schema)
+    values (#{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{pluginKind,jdbcType=VARCHAR}, 
+      #{pluginName,jdbcType=VARCHAR}, #{pluginVersion,jdbcType=VARCHAR}, #{pluginRegistered,jdbcType=BOOLEAN}, 
+      #{packagePath,jdbcType=VARCHAR}, #{pluginDescription,jdbcType=LONGVARCHAR}, #{pluginDependencies,jdbcType=LONGVARCHAR}, 
+      #{pluginSchema,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDO" useGeneratedKeys="true">
     <!--@mbg.generated-->
@@ -156,6 +158,9 @@
       </if>
       <if test="gmtModified != null">
         gmt_modified,
+      </if>
+      <if test="pluginKind != null">
+        plugin_kind,
       </if>
       <if test="pluginName != null">
         plugin_name,
@@ -175,8 +180,8 @@
       <if test="pluginDependencies != null">
         plugin_dependencies,
       </if>
-      <if test="pluginExtra != null">
-        plugin_extra,
+      <if test="pluginSchema != null">
+        plugin_schema,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -185,6 +190,9 @@
       </if>
       <if test="gmtModified != null">
         #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pluginKind != null">
+        #{pluginKind,jdbcType=VARCHAR},
       </if>
       <if test="pluginName != null">
         #{pluginName,jdbcType=VARCHAR},
@@ -204,8 +212,8 @@
       <if test="pluginDependencies != null">
         #{pluginDependencies,jdbcType=LONGVARCHAR},
       </if>
-      <if test="pluginExtra != null">
-        #{pluginExtra,jdbcType=LONGVARCHAR},
+      <if test="pluginSchema != null">
+        #{pluginSchema,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
@@ -229,6 +237,9 @@
       <if test="record.gmtModified != null">
         gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.pluginKind != null">
+        plugin_kind = #{record.pluginKind,jdbcType=VARCHAR},
+      </if>
       <if test="record.pluginName != null">
         plugin_name = #{record.pluginName,jdbcType=VARCHAR},
       </if>
@@ -247,8 +258,8 @@
       <if test="record.pluginDependencies != null">
         plugin_dependencies = #{record.pluginDependencies,jdbcType=LONGVARCHAR},
       </if>
-      <if test="record.pluginExtra != null">
-        plugin_extra = #{record.pluginExtra,jdbcType=LONGVARCHAR},
+      <if test="record.pluginSchema != null">
+        plugin_schema = #{record.pluginSchema,jdbcType=LONGVARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -261,13 +272,14 @@
     set id = #{record.id,jdbcType=BIGINT},
       gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
+      plugin_kind = #{record.pluginKind,jdbcType=VARCHAR},
       plugin_name = #{record.pluginName,jdbcType=VARCHAR},
       plugin_version = #{record.pluginVersion,jdbcType=VARCHAR},
       plugin_registered = #{record.pluginRegistered,jdbcType=BOOLEAN},
       package_path = #{record.packagePath,jdbcType=VARCHAR},
       plugin_description = #{record.pluginDescription,jdbcType=LONGVARCHAR},
       plugin_dependencies = #{record.pluginDependencies,jdbcType=LONGVARCHAR},
-      plugin_extra = #{record.pluginExtra,jdbcType=LONGVARCHAR}
+      plugin_schema = #{record.pluginSchema,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -278,6 +290,7 @@
     set id = #{record.id,jdbcType=BIGINT},
       gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
+      plugin_kind = #{record.pluginKind,jdbcType=VARCHAR},
       plugin_name = #{record.pluginName,jdbcType=VARCHAR},
       plugin_version = #{record.pluginVersion,jdbcType=VARCHAR},
       plugin_registered = #{record.pluginRegistered,jdbcType=BOOLEAN},
@@ -295,6 +308,9 @@
       </if>
       <if test="gmtModified != null">
         gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pluginKind != null">
+        plugin_kind = #{pluginKind,jdbcType=VARCHAR},
       </if>
       <if test="pluginName != null">
         plugin_name = #{pluginName,jdbcType=VARCHAR},
@@ -314,8 +330,8 @@
       <if test="pluginDependencies != null">
         plugin_dependencies = #{pluginDependencies,jdbcType=LONGVARCHAR},
       </if>
-      <if test="pluginExtra != null">
-        plugin_extra = #{pluginExtra,jdbcType=LONGVARCHAR},
+      <if test="pluginSchema != null">
+        plugin_schema = #{pluginSchema,jdbcType=LONGVARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -325,13 +341,14 @@
     update am_plugin_definition
     set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      plugin_kind = #{pluginKind,jdbcType=VARCHAR},
       plugin_name = #{pluginName,jdbcType=VARCHAR},
       plugin_version = #{pluginVersion,jdbcType=VARCHAR},
       plugin_registered = #{pluginRegistered,jdbcType=BOOLEAN},
       package_path = #{packagePath,jdbcType=VARCHAR},
       plugin_description = #{pluginDescription,jdbcType=LONGVARCHAR},
       plugin_dependencies = #{pluginDependencies,jdbcType=LONGVARCHAR},
-      plugin_extra = #{pluginExtra,jdbcType=LONGVARCHAR}
+      plugin_schema = #{pluginSchema,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDO">
@@ -339,6 +356,7 @@
     update am_plugin_definition
     set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      plugin_kind = #{pluginKind,jdbcType=VARCHAR},
       plugin_name = #{pluginName,jdbcType=VARCHAR},
       plugin_version = #{pluginVersion,jdbcType=VARCHAR},
       plugin_registered = #{pluginRegistered,jdbcType=BOOLEAN},

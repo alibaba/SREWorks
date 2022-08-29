@@ -60,7 +60,7 @@ public class InformerManager {
     /**
      * 启动时进行当前 DB 中全量集群的第一次注册工作 (同时进行定时刷新)
      */
-    @Scheduled(cron = "${appmanager.cron-job.informer-manager-refresh:0 * * * * *}")
+    @Scheduled(cron = "${appmanager.cron-job.informer-manager-refresh}")
     @SchedulerLock(name = "informerManagerFactoryRefresh")
     public void init() throws IOException {
         Pagination<ClusterDO> clusters = clusterService.list(ClusterQueryCondition.builder()

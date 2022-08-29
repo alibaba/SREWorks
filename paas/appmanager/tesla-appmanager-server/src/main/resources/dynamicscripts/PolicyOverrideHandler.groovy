@@ -11,7 +11,6 @@ import com.alibaba.tesla.appmanager.workflow.dynamicscript.PolicyHandler
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
 /**
  * Policy Override Handler
  *
@@ -35,7 +34,7 @@ class PolicyOverrideHandler implements PolicyHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 0
+    public static final Integer REVISION = 3
 
     @Override
     ExecutePolicyHandlerRes execute(ExecutePolicyHandlerReq request) throws InterruptedException {
@@ -47,11 +46,10 @@ class PolicyOverrideHandler implements PolicyHandler {
                 def revisionName = DeployAppRevisionName.valueOf(component.getRevisionName())
                 if (overrideRevisionName.getComponentType() == revisionName.getComponentType()
                         && overrideRevisionName.getComponentName() == revisionName.getComponentName()) {
-//                    enrichScopes(component, overrideComponent.getJSONArray("scopes"))
-//                    enrichTraits(component, overrideComponent.getJSONArray("traits"))
-//                    enrichDataInputs(component, overrideComponent.getJSONArray("dataInputs"))
-//                    enrichDataOutputs(component, overrideComponent.getJSONArray("dataOutputs"))
-//                    enrichDependencies(component, overrideComponent.getJSONArray("dependencies"))
+                    enrichTraits(component, overrideComponent.getJSONArray("traits"))
+                    enrichDataInputs(component, overrideComponent.getJSONArray("dataInputs"))
+                    enrichDataOutputs(component, overrideComponent.getJSONArray("dataOutputs"))
+                    enrichDependencies(component, overrideComponent.getJSONArray("dependencies"))
                     enrichParameterValues(component, overrideComponent.getJSONArray("parameterValues"))
                 }
             }
@@ -60,6 +58,73 @@ class PolicyOverrideHandler implements PolicyHandler {
                 .context(request.getContext())
                 .configuration(configuration)
                 .build()
+    }
+
+    private static DeployAppSchema.SpecComponentTrait enrichTraits(
+            DeployAppSchema.SpecComponent component, JSONArray data) {
+        if (data == null || data.size() == 0) {
+            return
+        }
+        if (component.getTraits() == null) {
+            component.setTraits(new ArrayList<DeployAppSchema.SpecComponentTrait>())
+        }
+        def overrideTraits = data.toJavaList(DeployAppSchema.SpecComponentTrait)
+        for (def overrideItem : overrideTraits) {
+            boolean found = false
+            for (def item : component.getTraits()) {
+                if (item.getName() == overrideItem.getName()) {
+                    found = true
+                    item.setRuntime(overrideItem.getRuntime())
+                    item.setParameterValues(overrideItem.getParameterValues())
+                    item.setSpec(overrideItem.getSpec())
+                    item.setDataInputs(overrideItem.getDataInputs())
+                    item.setDataOutputs(overrideItem.getDataOutputs())
+                    break
+                }
+            }
+            if (!found) {
+                component.getTraits().add(overrideItem)
+            }
+        }
+    }
+
+    private static void enrichDataInputs(DeployAppSchema.SpecComponent component, JSONArray data) {
+        if (data == null || data.size() == 0) {
+            return
+        }
+        if (component.getDataInputs() == null) {
+            component.setDataInputs(new ArrayList<DeployAppSchema.DataInput>())
+        }
+        def overrideDataInputs = data.toJavaList(DeployAppSchema.DataInput)
+        for (def overrideItem : overrideDataInputs) {
+            component.getDataInputs().add(overrideItem)
+        }
+    }
+
+    private static void enrichDataOutputs(DeployAppSchema.SpecComponent component, JSONArray data) {
+        if (data == null || data.size() == 0) {
+            return
+        }
+        if (component.getDataOutputs() == null) {
+            component.setDataOutputs(new ArrayList<DeployAppSchema.DataOutput>())
+        }
+        def overrideDataOutputs = data.toJavaList(DeployAppSchema.DataOutput)
+        for (def overrideItem : overrideDataOutputs) {
+            component.getDataOutputs().add(overrideItem)
+        }
+    }
+
+    private static void enrichDependencies(DeployAppSchema.SpecComponent component, JSONArray data) {
+        if (data == null || data.size() == 0) {
+            return
+        }
+        if (component.getDependencies() == null) {
+            component.setDependencies(new ArrayList<DeployAppSchema.Dependency>())
+        }
+        def overrideDataOutputs = data.toJavaList(DeployAppSchema.DataOutput)
+        for (def overrideItem : overrideDataOutputs) {
+            component.getDataOutputs().add(overrideItem)
+        }
     }
 
     private static void enrichParameterValues(DeployAppSchema.SpecComponent component, JSONArray data) {

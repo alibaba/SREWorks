@@ -78,6 +78,16 @@ public enum DynamicScriptKindEnum {
     DEPLOY_ABM_HELM_COMPONENT,
 
     /**
+     * 构建 Script 模块
+     */
+    BUILD_SCRIPT_COMPONENT,
+
+    /**
+     * 部署 Script 模块
+     */
+    DEPLOY_SCRIPT_COMPONENT,
+
+    /**
      * 构建 ABM Status 模块
      */
     BUILD_ABM_STATUS_COMPONENT,
@@ -220,5 +230,10 @@ public enum DynamicScriptKindEnum {
     /**
      * V2: Policy
      */
-    POLICY
+    POLICY,
+
+    /**
+     * V2: Custom Status
+     */
+    CUSTOM_STATUS;
 }

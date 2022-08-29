@@ -8,8 +8,10 @@ import io.minio.Result;
 import io.minio.errors.ErrorResponseException;
 import io.minio.messages.Item;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -55,6 +57,24 @@ public class MinioStorage extends BaseStorage implements Storage {
         } catch (Exception e) {
             throw new AppException(AppErrorCode.STORAGE_ERROR,
                     String.format("Check bucket %s existence failed", bucketName), e);
+        }
+    }
+
+    /**
+     * 获取文件内容字符串 (限小文件)
+     *
+     * @param bucketName Bucket 名称
+     * @param objectPath 文件名称
+     * @return 文件内容字符串
+     */
+    @Override
+    public String getObjectContent(String bucketName, String objectPath) {
+        try {
+            InputStream obj = minioClient.getObject(bucketName, objectPath);
+            return IOUtils.toString(obj, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            throw new AppException(AppErrorCode.STORAGE_ERROR,
+                    String.format("Read %s failed in bucket %s", objectPath, bucketName), e);
         }
     }
 

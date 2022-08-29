@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class CleanDockerImageJob {
 
-    @Scheduled(cron = "${appmanager.cron-job.clean-docker-image:-}")
+    @Scheduled(cron = "${appmanager.cron-job.clean-docker-image}")
     @SchedulerLock(name = "cleanDockerImage")
     public void execute() {
         String command = "docker image prune -a --force --filter \"until=168h\"";

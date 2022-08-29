@@ -54,8 +54,8 @@ public class DeploymentStatusSafetyJob {
     @Autowired
     private DeployAppService deployAppService;
 
-    @Scheduled(cron = "${appmanager.cron-job.deploy-app-status-safety:-}")
-    @SchedulerLock(name = "deploymentStatusSafetyJob")
+    @Scheduled(cron = "${appmanager.cron-job.deploy-app-status-safety}")
+    @SchedulerLock(name = "deploymentStatusSafetyJob", lockAtLeastFor = "250s")
     public void execute() {
         long limit = systemProperties.getDeploymentMaxRunningSeconds() * 1000;
         long currentTime = System.currentTimeMillis();

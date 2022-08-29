@@ -7,7 +7,6 @@ import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.constants.PackAppPackageVariableKey;
 import com.alibaba.tesla.appmanager.common.enums.AppPackageTaskStatusEnum;
 import com.alibaba.tesla.appmanager.common.enums.ComponentPackageTaskStateEnum;
-import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.DagTypeEnum;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.AppPackageTaskCreateReq;
@@ -78,8 +77,8 @@ public class AppPackageFreshJob {
 
     private static final String ERROR_PREX = "error:";
 
-    @Scheduled(cron = "${appmanager.cron-job.app-refresh:-}")
-    @SchedulerLock(name = "appPackageFreshJob")
+    @Scheduled(cron = "${appmanager.cron-job.app-refresh}")
+    @SchedulerLock(name = "appPackageFreshJob", lockAtLeastFor = "4s")
     public void scheduledTask() {
         AppPackageTaskQueryCondition condition = AppPackageTaskQueryCondition.builder()
                 .taskStatusList(Arrays.asList(

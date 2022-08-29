@@ -58,7 +58,7 @@ public class BuildStatusSafetyJob {
         this.componentPackageTaskService = componentPackageTaskService;
     }
 
-    @Scheduled(cron = "${appmanager.cron-job.build-status-safety:-}")
+    @Scheduled(cron = "${appmanager.cron-job.build-status-safety}")
     @SchedulerLock(name = "buildStatusSafetyJob")
     public void execute() {
         long limit = systemProperties.getBuildMaxRunningSeconds() * 1000;

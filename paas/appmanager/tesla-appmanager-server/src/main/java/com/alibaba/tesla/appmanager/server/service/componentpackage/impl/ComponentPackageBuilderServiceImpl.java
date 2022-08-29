@@ -20,8 +20,8 @@ import com.alibaba.tesla.appmanager.server.repository.ComponentPackageTaskReposi
 import com.alibaba.tesla.appmanager.server.repository.condition.ComponentPackageTaskQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.ComponentPackageDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.ComponentPackageTaskDO;
-import com.alibaba.tesla.appmanager.server.service.componentpackage.ComponentPackageBuilderService;
 import com.alibaba.tesla.appmanager.server.service.componentpackage.ComponentPackageBuilderExecutorManager;
+import com.alibaba.tesla.appmanager.server.service.componentpackage.ComponentPackageBuilderService;
 import com.alibaba.tesla.appmanager.server.service.componentpackage.handler.BuildComponentHandler;
 import com.alibaba.tesla.appmanager.server.service.componentpackage.instance.ComponentPackageBase;
 import com.alibaba.tesla.appmanager.server.storage.Storage;

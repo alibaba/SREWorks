@@ -31,12 +31,17 @@ public class PluginDefinitionDO {
     private Date gmtModified;
 
     /**
+     * Plugin 类型
+     */
+    private String pluginKind;
+
+    /**
      * Plugin 唯一标识
      */
     private String pluginName;
 
     /**
-     * Plugin 版本 (SemVer)
+     * Plugin 版本
      */
     private String pluginVersion;
 
@@ -61,7 +66,7 @@ public class PluginDefinitionDO {
     private String pluginDependencies;
 
     /**
-     * Plugin 附加信息 (JSON Object)
+     * Plugin Schema
      */
-    private String pluginExtra;
+    private String pluginSchema;
 }

@@ -49,8 +49,8 @@ public class RtAppInstanceStatusUpdateJob {
         }
     }
 
-    @Scheduled(cron = "${appmanager.cron-job.rt-app-instance-status-update:0/10 * * * * *}")
-    @SchedulerLock(name = "rtAppInstanceStatusUpdateJob")
+    @Scheduled(cron = "${appmanager.cron-job.rt-app-instance-status-update}")
+    @SchedulerLock(name = "rtAppInstanceStatusUpdateJob", lockAtLeastFor = "9s")
     public void run() throws InterruptedException {
         synchronized (threadPoolExecutorLock) {
             if (threadPoolExecutor == null) {

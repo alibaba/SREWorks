@@ -1,0 +1,27 @@
+{
+  "name": "@sreworks/app",
+  "version": "0.0.0-alpha.0",
+  "private": true,
+  "description": "",
+  "keywords": [],
+  "license": "Apache-2.0",
+  "author": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rimraf dist && babel src -d dist"
+  },
+  "dependencies": {
+    "@sreworks/components": "^0.0.0-alpha.0",
+    "@sreworks/framework": "^0.0.0-alpha.0",
+    "@sreworks/widgets": "^0.0.0-alpha.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.18.10",
+    "@babel/core": "7.18.13",
+    "@babel/preset-env": "7.18.10",
+    "@babel/preset-react": "7.18.6"
+  },
+  "installConfig": {
+    "hoistingLimits": "workspaces"
+  }
+}

@@ -26,9 +26,9 @@ public class WorkerService {
     @Autowired
     ElasticTaskInstanceRepository taskInstanceRepository;
 
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 30000)
     public void fixedSchedule() {
-        workerRepository.deleteAllByGmtModifiedBefore(System.currentTimeMillis() - 20000);
+        workerRepository.deleteAllByGmtModifiedBefore(System.currentTimeMillis() - 310000);
     }
 
     public List<Object> listExecType() {

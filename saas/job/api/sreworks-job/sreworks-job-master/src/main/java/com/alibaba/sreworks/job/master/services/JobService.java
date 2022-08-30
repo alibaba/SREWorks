@@ -311,6 +311,7 @@ public class JobService {
         ElasticJobInstance elasticJobInstance = jobInstanceRepository.save(jobInstance);
 
         while(jobInstanceRepository.findFirstById(jobInstanceId) == null) {
+            log.warn("Check Job Instance:{} Not Exist, Waiting", jobInstanceId);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {

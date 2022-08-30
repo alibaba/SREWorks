@@ -263,6 +263,10 @@ public class JobService {
         }
         if (job.getTriggerType().equals(JobTriggerType.CRON.getType())) {
             jobTriggerService.getJobTrigger(job.getTriggerType()).toggleState(id, state);
+            JSONObject triggerConf = JSONObject.parseObject(job.getTriggerConf());
+            triggerConf.put("enabled", state);
+            job.setTriggerConf(triggerConf.toJSONString());
+            jobRepository.saveAndFlush(job);
         }
     }
 

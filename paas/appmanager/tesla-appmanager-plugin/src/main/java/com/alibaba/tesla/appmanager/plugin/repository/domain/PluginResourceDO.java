@@ -36,7 +36,7 @@ public class PluginResourceDO {
     private Long pluginName;
 
     /**
-     * Plugin 版本 (SemVer)
+     * Plugin 版本
      */
     private String pluginVersion;
 

@@ -1,7 +1,6 @@
 package com.alibaba.tesla.appmanager.plugin.controller;
 
 import com.alibaba.tesla.appmanager.api.provider.PluginProvider;
-import com.alibaba.tesla.appmanager.domain.dto.PluginMetaDTO;
 import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.alibaba.tesla.web.controller.BaseController;
@@ -38,37 +37,11 @@ public class PluginController extends BaseController {
 
     /**
      * @api {post} /plugins 新增插件
-     * @apiName CreatePlugin
+     * @apiName UploadPlugin
      * @apiGroup 插件API
      */
     @PostMapping
-    public TeslaBaseResult create(@RequestParam("file") MultipartFile file) throws IOException {
-
-        PluginMetaDTO pluginMeta = pluginProvider.create(file);
-
-        return buildSucceedResult(pluginMeta);
+    public TeslaBaseResult upload(@RequestParam("file") MultipartFile file) throws IOException {
+        return buildSucceedResult(pluginProvider.upload(file, true));
     }
-
-
-
-//    /**
-//     * @api {get} /plugins/:pluginName 获取插件信息
-//     * @apiName getPlugin
-//     * @apiGroup 获取插件
-//     */
-//    @GetMapping
-//    public TeslaBaseResult get(@PathVariable String pluginName) {
-//        return buildSucceedResult(null);
-//    }
-//
-//    /**
-//     * @api {get} /plugins/:pluginName/frontend/:frontendType 获取插件信息
-//     * @apiName getPlugin
-//     * @apiGroup 获取插件的前端
-//     */
-//    @GetMapping
-//    public TeslaBaseResult getFrontend(@PathVariable String pluginName, @PathVariable String frontendType) {
-//        return buildSucceedResult(null);
-//    }
-
 }

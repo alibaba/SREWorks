@@ -84,7 +84,12 @@ public enum ComponentTypeEnum {
     /**
      * ABM ES Status Component
      */
-    ABM_ES_STATUS;
+    ABM_ES_STATUS,
+
+    /**
+     * 脚本类型
+     */
+    SCRIPT;
 
     public static ComponentTypeEnum parse(String value) {
         ComponentTypeEnum result = Enums.getIfPresent(ComponentTypeEnum.class, value).orNull();

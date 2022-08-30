@@ -1,23 +1,18 @@
 package com.alibaba.tesla.appmanager.plugin.api;
 
 import com.alibaba.tesla.appmanager.api.provider.PluginProvider;
-import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
-import com.alibaba.tesla.appmanager.common.util.ZipUtil;
-import com.alibaba.tesla.appmanager.domain.dto.PluginMetaDTO;
-import com.alibaba.tesla.appmanager.domain.schema.PluginDefinitionSchema;
+import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
+import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.domain.dto.PluginDefinitionDTO;
+import com.alibaba.tesla.appmanager.plugin.assembly.PluginDefinitionDtoConvert;
 import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDO;
 import com.alibaba.tesla.appmanager.plugin.service.PluginDefinitionService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * Plugin Provider 实现
@@ -28,42 +23,26 @@ import java.nio.file.Paths;
 @Slf4j
 public class PluginProviderImpl implements PluginProvider {
 
+    @Autowired
+    private PluginDefinitionService pluginDefinitionService;
 
-    private final PluginDefinitionService pluginDefinitionService;
+    @Autowired
+    private PluginDefinitionDtoConvert pluginDefinitionDtoConvert;
 
-    public PluginProviderImpl(PluginDefinitionService pluginDefinitionService) {
-        this.pluginDefinitionService = pluginDefinitionService;
-    }
-
+    /**
+     * 上传插件 (默认不启用)
+     *
+     * @param file  API 上传文件
+     * @param force 是否强制上传覆盖
+     * @return PluginDefinitionDTO
+     */
     @Override
-    public PluginMetaDTO create(MultipartFile pluginUploadFile) throws IOException {
-
-        File zipFile = Files.createTempFile("plugin", ".zip").toFile();
-        pluginUploadFile.transferTo(zipFile);
-
-        Path workDirFile = Files.createTempDirectory("plugin");
-        String workDirAbsPath = workDirFile.toFile().getAbsolutePath();
-        ZipUtil.unzip(zipFile.getAbsolutePath(), workDirAbsPath);
-        zipFile.delete();
-
-        String defYaml = FileUtils.readFileToString(Paths.get(workDirAbsPath, "/definition.yaml").toFile(), StandardCharsets.UTF_8);
-        PluginDefinitionSchema defYamlObject = SchemaUtil.toSchema(PluginDefinitionSchema.class, defYaml);
-
-        PluginDefinitionDO pluginDefinitionRecord = PluginDefinitionDO.builder()
-                .pluginVersion(defYamlObject.getPluginVersion())
-                .pluginName(defYamlObject.getPluginName())
-                .pluginDescription(defYamlObject.getPluginDescription())
-                .packagePath("")
-                .build();
-
-        pluginDefinitionService.create(pluginDefinitionRecord);
-
-        PluginMetaDTO pluginMeta = PluginMetaDTO.builder()
-                .pluginName(pluginDefinitionRecord.getPluginName())
-                .pluginVersion(pluginDefinitionRecord.getPluginVersion())
-                .pluginDescription(pluginDefinitionRecord.getPluginDescription())
-                .build();
-
-        return pluginMeta;
+    public PluginDefinitionDTO upload(MultipartFile file, boolean force) {
+        try {
+            PluginDefinitionDO definition = pluginDefinitionService.upload(file, force);
+            return pluginDefinitionDtoConvert.to(definition);
+        } catch (IOException e) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "upload plugin failed", e);
+        }
     }
 }

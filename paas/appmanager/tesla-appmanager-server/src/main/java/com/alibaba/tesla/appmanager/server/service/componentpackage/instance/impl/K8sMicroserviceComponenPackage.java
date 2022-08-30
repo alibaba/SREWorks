@@ -100,7 +100,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
     public void init() {
         this.api = kanikoInformerFactory.getDefaultApi();
         publisher.publishEvent(new ComponentPackageLoadEvent(
-                this, COMPONENT_TYPE.name(), this.getClass().getSimpleName()));
+            this, COMPONENT_TYPE.name(), this.getClass().getSimpleName()));
     }
 
     /**
@@ -152,19 +152,20 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
             } catch (Exception e) {
                 log.error("action=genKanikoPod|| can not build {} container image,Message:{} Exception:{}", container.getString("name"), e.getMessage(), e.getCause());
                 String podName = genPodName(taskDO.getAppId(), taskDO.getComponentName(), container.getString("name"),
-                        taskDO.getId(), tag);
+                    taskDO.getId(), tag);
                 publisher.publishEvent(new DeleteKanikoPodEvent(this, podName));
                 updateDataFailRecord(taskDO.getId(), e.getMessage());
             }
-            taskRemoteObjectMap.put(taskDO.getId(), remoteObjectSet);
-            for (V1Pod v1Pod : waitBuildPodList) {
-                try {
-                    api.createNamespacedPod(systemProperties.getK8sNamespace(), v1Pod, null, null, null);
-                } catch (Exception e) {
-                    log.error("action=createPod|| can not create pod {} container image,Message:{} Exception:{}", v1Pod.toString(), e.getMessage(), e.getCause());
-                    publisher.publishEvent(new DeleteKanikoPodEvent(this, v1Pod.getMetadata().getName()));
-                    updateDataFailRecord(taskDO.getId(), e.getMessage());
-                }
+        }
+        taskRemoteObjectMap.put(taskDO.getId(), remoteObjectSet);
+        log.info("action=start apply kaniko pod|| podList:{}", remoteObjectSet);
+        for (V1Pod v1Pod : waitBuildPodList) {
+            try {
+                api.createNamespacedPod(systemProperties.getK8sNamespace(), v1Pod, null, null, null);
+            } catch (Exception e) {
+                log.error("action=createPod|| can not create pod {} container image,Message:{} Exception:{}", v1Pod.toString(), e.getMessage(), e.getCause());
+                publisher.publishEvent(new DeleteKanikoPodEvent(this, v1Pod.getMetadata().getName()));
+                updateDataFailRecord(taskDO.getId(), e.getMessage());
             }
         }
     }
@@ -205,21 +206,21 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
             return existImage;
         }
         String imageBaseName = String.format("%s-%s-%s", taskDO.getAppId(), taskDO.getComponentName(),
-                container.get("name"));
+            container.get("name"));
         String image = imageBaseName + ":" + tag;
         String destination = JsonUtil.recursiveGetString(container, Arrays.asList("build", "imagePushRegistry"));
         if (StringUtils.isEmpty(destination)) {
             throw new AppException(AppErrorCode.USER_CONFIG_ERROR,
-                    "Can not find imagePushRegistry from build.yaml");
+                "Can not find imagePushRegistry from build.yaml");
         }
         return destination.concat("/").concat(image);
     }
 
     private V1Pod genKanikoPod(CoreV1Api api, JSONObject container, String podTpl,
-                            ComponentPackageTaskDO taskDO, String relativePath, long tag, Set<String> remoteObjectSet)
-            throws Exception {
+        ComponentPackageTaskDO taskDO, String relativePath, long tag, Set<String> remoteObjectSet)
+        throws Exception {
         Object nameOb = JsonUtil.recursiveGetParameter(container,
-                Collections.singletonList("name"));
+            Collections.singletonList("name"));
         String containerName = nameOb != null ? nameOb.toString() : "default";
 
         // 渲染 dockerfileTpl
@@ -246,10 +247,10 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
         File dockerTemplateFile = new File(buildAbsolutePath + tplName);
         if (!dockerTemplateFile.exists()) {
             throw new AppException(AppErrorCode.USER_CONFIG_ERROR,
-                    "Can not find dockerfileTemplateFile:" + dockerTemplateFile.getAbsolutePath());
+                "Can not find dockerfileTemplateFile:" + dockerTemplateFile.getAbsolutePath());
         }
         JSONObject dockerTemplateArgs = JSONObject.parseObject(JSONObject.toJSONString(
-                JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "dockerfileTemplateArgs"))));
+            JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "dockerfileTemplateArgs"))));
         String dockerTemplateRaw = IOUtils.toString(new FileInputStream(dockerTemplateFile), StandardCharsets.UTF_8);
         String dockerFileStr = jinjaRender(dockerTemplateRaw, dockerTemplateArgs);
         // 3. 生成 dockerfile
@@ -262,13 +263,13 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
 
         String bucketName = packageProperties.getBucketName();
         String remotePath = PackageUtil
-                .buildKanikoBuildRemotePath(taskDO.getAppId(), taskDO.getComponentType(), taskDO.getComponentName(), containerName,
-                        taskDO.getPackageVersion());
+            .buildKanikoBuildRemotePath(taskDO.getAppId(), taskDO.getComponentType(), taskDO.getComponentName(), containerName,
+                taskDO.getPackageVersion());
         storage.putObject(bucketName, remotePath, buildAbsolutePath + compressTarName);
         remoteObjectSet.add(remotePath);
         StorageFile storageFile = new StorageFile(bucketName, remotePath);
         log.info("kaniko build package has uploaded to storage||componentPackageTaskId={}||bucketName={}||" +
-                "remotePath={}||localPath={}", taskDO.getId(), bucketName, remotePath, buildAbsolutePath + compressTarName);
+            "remotePath={}||localPath={}", taskDO.getId(), bucketName, remotePath, buildAbsolutePath + compressTarName);
 
         // 5. 渲染 kaniko pod
         JSONObject parameters = new JSONObject();
@@ -277,7 +278,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
         String podName = genPodName(taskDO.getAppId(), taskDO.getComponentName(), containerName, taskDO.getId(), tag);
         parameters.put("POD_NAME", podName);
         JSONObject buildArgs = JSONObject.parseObject(JSONObject.toJSONString(
-                JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "args"))));
+            JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "args"))));
         if (buildArgs != null) {
             JSONArray args = new JSONArray();
             for (String key : buildArgs.keySet()) {
@@ -287,7 +288,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
             parameters.put("BUILD_ARGS", args);
         }
         JSONArray imageTags = JSONArray.parseArray(JSONObject.toJSONString(
-                JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "imagePushTags"))));
+            JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "imagePushTags"))));
         JSONArray destinations = new JSONArray();
         destinations.add(container.getString("image"));
         if (imageTags != null) {
@@ -311,7 +312,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
         }
         // 携带flag设定
         JSONArray configKanikoFlags = JSONArray.parseArray(JSONObject.toJSONString(
-                JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "configKanikoFlags"))));
+            JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "configKanikoFlags"))));
         if (configKanikoFlags != null) {
             parameters.put("CONFIG_KANIKO_FLAGS", configKanikoFlags);
         }
@@ -321,7 +322,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
         V1Pod v1Pod = SchemaUtil.toSchema(V1Pod.class, render);
         try {
             api.deleteNamespacedPod(podName.toString(), systemProperties.getK8sNamespace(), null,
-                    null, null, null, null, null);
+                null, null, null, null, null);
         } catch (ApiException e) {
             log.info("clean pod");
         }
@@ -340,7 +341,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
         String gitHttpRep;
         if (repoPara == null) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                    "can not found git repo from the container yaml path: build.repo!");
+                "can not found git repo from the container yaml path: build.repo!");
         } else {
             String repo = repoPara.toString();
             if (repo.startsWith(HTTP_PREFIX)) {
@@ -370,7 +371,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
     }
 
     private void generateMetaYaml(ComponentPackageTaskDO taskDO,
-                                  JSONObject packageOptions, String targetFileDir) throws IOException {
+        JSONObject packageOptions, String targetFileDir) throws IOException {
 
         packageOptions.put("appId", taskDO.getAppId());
         packageOptions.put("version", taskDO.getPackageVersion());
@@ -396,7 +397,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
 
     private void packageComponentZip(Long taskId, String taskLog, String targetFileDir) throws IOException {
         ComponentPackageTaskDO taskDO = componentPackageTaskRepository.getByCondition(
-                ComponentPackageTaskQueryCondition.builder().id(taskId).build());
+            ComponentPackageTaskQueryCondition.builder().id(taskId).build());
         String zipFilePath = targetFileDir + "component_package_task.zip";
         ZipFile zip = new ZipFile(zipFilePath);
         ZipParameters zipParameters = new ZipParameters();
@@ -421,32 +422,32 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
 
         String bucketName = packageProperties.getBucketName();
         String remotePath = PackageUtil
-                .buildComponentPackageRemotePath(taskDO.getAppId(), taskDO.getComponentType(), taskDO.getComponentName(),
-                        taskDO.getPackageVersion());
+            .buildComponentPackageRemotePath(taskDO.getAppId(), taskDO.getComponentType(), taskDO.getComponentName(),
+                taskDO.getPackageVersion());
         storage.putObject(bucketName, remotePath, zipFilePath);
         StorageFile storageFile = new StorageFile(bucketName, remotePath);
         log.info("component package has uploaded to storage||componentPackageTaskId={}||bucketName={}||" +
-                "remotePath={}||localPath={}", taskDO.getId(), bucketName, remotePath, zipFilePath);
+            "remotePath={}||localPath={}", taskDO.getId(), bucketName, remotePath, zipFilePath);
 
         // 增加 Component Package 包记录
         ComponentPackageDO componentPackageDO = ComponentPackageDO.builder()
-                .appId(taskDO.getAppId())
-                .componentType(taskDO.getComponentType())
-                .componentName(taskDO.getComponentName())
-                .packageVersion(taskDO.getPackageVersion())
-                .packageCreator(taskDO.getPackageCreator())
-                .packageMd5(targetFileMd5)
-                .packagePath(storageFile.toPath())
-                .packageOptions(taskDO.getPackageOptions())
-                .componentSchema(fileToString(targetFileDir + "meta.yaml"))
-                .build();
+            .appId(taskDO.getAppId())
+            .componentType(taskDO.getComponentType())
+            .componentName(taskDO.getComponentName())
+            .packageVersion(taskDO.getPackageVersion())
+            .packageCreator(taskDO.getPackageCreator())
+            .packageMd5(targetFileMd5)
+            .packagePath(storageFile.toPath())
+            .packageOptions(taskDO.getPackageOptions())
+            .componentSchema(fileToString(targetFileDir + "meta.yaml"))
+            .build();
         taskDO.setPackagePath(storageFile.toPath());
         taskDO.setPackageMd5(targetFileMd5);
         updateDataSuccessRecord(componentPackageDO, taskDO, taskLog);
         log.info("component package task has inserted to db||componentPackageTaskId={}||" +
-                        "componentPackageId={}||appId={}||componentType={}||componentName={}||version={}||md5={}",
-                taskDO.getAppPackageTaskId(), componentPackageDO.getId(), taskDO.getAppId(), taskDO.getComponentType(),
-                taskDO.getComponentName(), taskDO.getPackageVersion(), targetFileMd5);
+                "componentPackageId={}||appId={}||componentType={}||componentName={}||version={}||md5={}",
+            taskDO.getAppPackageTaskId(), componentPackageDO.getId(), taskDO.getAppId(), taskDO.getComponentType(),
+            taskDO.getComponentName(), taskDO.getPackageVersion(), targetFileMd5);
     }
 
     /**
@@ -458,7 +459,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
      */
     @Transactional(rollbackFor = Exception.class)
     public void updateDataSuccessRecord(ComponentPackageDO componentPackageDO, ComponentPackageTaskDO taskDO,
-                                        String taskLog) {
+        String taskLog) {
         componentPackageRepository.insert(componentPackageDO);
         taskDO.setComponentPackageId(componentPackageDO.getId());
         taskDO.setTaskLog(taskLog);
@@ -487,7 +488,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
     @Transactional(rollbackFor = Exception.class)
     public void updateDataFailRecord(Long taskId, String taskLog) {
         ComponentPackageTaskDO taskDO = componentPackageTaskRepository.getByCondition(
-                ComponentPackageTaskQueryCondition.builder().id(taskId).build());
+            ComponentPackageTaskQueryCondition.builder().id(taskId).build());
         if (taskDO.getTaskStatus().equalsIgnoreCase(AppPackageTaskStatusEnum.FAILURE.name())) {
             return;
         }
@@ -498,10 +499,10 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
     private String genPodName(String appId, String componentName, String containerName, Long taskId, long tag) {
         StringBuilder podName = new StringBuilder();
         podName.append("appmanager-build-").append(appId).append("-")
-                .append(componentName).append("-")
-                .append(containerName).append("-")
-                .append(taskId).append("-")
-                .append(tag);
+            .append(componentName).append("-")
+            .append(containerName).append("-")
+            .append(taskId).append("-")
+            .append(tag);
         return podName.toString();
     }
 
@@ -511,6 +512,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
         String podName = event.getPodName();
         String[] split = podName.split("-");
         Long taskId = Long.valueOf(split[split.length - 2]);
+        checkFinishTask(taskId, podName);
         if (taskPodMap.containsKey(taskId)) {
             synchronized (flag) {
                 switch (event.getCurrentStatus()) {
@@ -525,14 +527,14 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
                                 for (String runPod : taskPodMap.get(taskId)) {
                                     try {
                                         String podLog = api.readNamespacedPodLog(runPod, systemProperties.getK8sNamespace(),
-                                                null, null, null, null, null, null, null, null, null);
+                                            null, null, null, null, null, null, null, null, null);
                                         taskLog.append(podName).append("-log:\n").append(podLog).append("\n");
                                     } catch (ApiException e) {
                                         log.warn("action=KanikoSucceedOp||can not read kaniko pod log:{}", runPod);
                                     }
                                     try {
                                         api.deleteNamespacedPod(runPod, systemProperties.getK8sNamespace(), null,
-                                                null, null, null, null, null);
+                                            null, null, null, null, null);
                                     } catch (ApiException e) {
                                         log.warn("action=KanikoSucceedOp||clean pod error:{}", e.getResponseBody());
                                     }
@@ -560,7 +562,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
                             StringBuilder taskLog = new StringBuilder();
                             try {
                                 String podLog = api.readNamespacedPodLog(podName, systemProperties.getK8sNamespace(),
-                                        null, null, null, null, null, null, null, null, null);
+                                    null, null, null, null, null, null, null, null, null);
                                 taskLog.append(podName).append("-log:\n").append(podLog).append("\n");
                             } catch (ApiException e) {
                                 log.warn("action=KanikoFailedOp||can not read pod log:{}", podName);
@@ -568,7 +570,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
                             for (String runPod : taskPodMap.get(taskId)) {
                                 try {
                                     api.deleteNamespacedPod(runPod, systemProperties.getK8sNamespace(), null,
-                                            null, null, null, null, null);
+                                        null, null, null, null, null);
                                 } catch (ApiException e) {
                                     log.warn("action=KanikoFailedOp||clean pod error:{}", e.getResponseBody());
                                 }
@@ -593,7 +595,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
                             for (String runPod : taskPodMap.get(taskId)) {
                                 try {
                                     api.deleteNamespacedPod(runPod, systemProperties.getK8sNamespace(), null,
-                                            null, null, null, null, null);
+                                        null, null, null, null, null);
                                 } catch (ApiException e) {
                                     log.warn("action=KanikoFailedOp||clean pod error:{}", e.getResponseBody());
                                 }
@@ -613,6 +615,24 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
                         break;
                     }
                     default:
+                }
+            }
+        }
+    }
+
+    private void checkFinishTask(Long taskId, String podName) {
+        ComponentPackageTaskDO taskDO = componentPackageTaskRepository.getByCondition(
+            ComponentPackageTaskQueryCondition.builder().id(taskId).build());
+        if (taskDO==null) {
+            return;
+        } else {
+            if (taskDO.getTaskStatus().equalsIgnoreCase(AppPackageTaskStatusEnum.FAILURE.name()) ||
+                taskDO.getTaskStatus().equalsIgnoreCase(AppPackageTaskStatusEnum.SUCCESS.name())) {
+                try {
+                    api.deleteNamespacedPod(podName, systemProperties.getK8sNamespace(), null,
+                        null, null, null, null, null);
+                } catch (ApiException e) {
+                    log.warn("action=checkFinishTask||clean pod error:{}", e.getResponseBody());
                 }
             }
         }

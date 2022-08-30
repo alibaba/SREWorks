@@ -41,7 +41,10 @@ module.exports = {
         'react-dom': 'ReactDOM',
         "antd":"antd",
         'moment':'moment',
-        "systemjs": 'systemjs'
+        "systemjs": 'systemjs',
+        "element-ui": "ELEMENT",
+        "vue": "Vue",
+        "vuera": "vuera"
     },
     entry: {
         index: [

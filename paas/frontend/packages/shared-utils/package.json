@@ -1,0 +1,27 @@
+{
+  "name": "@sreworks/shared-utils",
+  "version": "0.0.0-alpha.0",
+  "description": "",
+  "keywords": [],
+  "license": "Apache-2.0",
+  "author": "",
+  "main": "dist/index.js",
+  "module": "src/index.js",
+  "scripts": {
+    "build": "rimraf dist && babel src -d dist",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.18.10",
+    "@babel/core": "7.18.13",
+    "@babel/preset-env": "7.18.10",
+    "babel-jest": "29.0.1",
+    "jest": "29.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "installConfig": {
+    "hoistingLimits": "workspaces"
+  }
+}

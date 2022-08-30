@@ -285,6 +285,76 @@ public class PluginDefinitionDOExample {
             return (Criteria) this;
         }
 
+        public Criteria andPluginKindIsNull() {
+            addCriterion("plugin_kind is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPluginKindIsNotNull() {
+            addCriterion("plugin_kind is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPluginKindEqualTo(String value) {
+            addCriterion("plugin_kind =", value, "pluginKind");
+            return (Criteria) this;
+        }
+
+        public Criteria andPluginKindNotEqualTo(String value) {
+            addCriterion("plugin_kind <>", value, "pluginKind");
+            return (Criteria) this;
+        }
+
+        public Criteria andPluginKindGreaterThan(String value) {
+            addCriterion("plugin_kind >", value, "pluginKind");
+            return (Criteria) this;
+        }
+
+        public Criteria andPluginKindGreaterThanOrEqualTo(String value) {
+            addCriterion("plugin_kind >=", value, "pluginKind");
+            return (Criteria) this;
+        }
+
+        public Criteria andPluginKindLessThan(String value) {
+            addCriterion("plugin_kind <", value, "pluginKind");
+            return (Criteria) this;
+        }
+
+        public Criteria andPluginKindLessThanOrEqualTo(String value) {
+            addCriterion("plugin_kind <=", value, "pluginKind");
+            return (Criteria) this;
+        }
+
+        public Criteria andPluginKindLike(String value) {
+            addCriterion("plugin_kind like", value, "pluginKind");
+            return (Criteria) this;
+        }
+
+        public Criteria andPluginKindNotLike(String value) {
+            addCriterion("plugin_kind not like", value, "pluginKind");
+            return (Criteria) this;
+        }
+
+        public Criteria andPluginKindIn(List<String> values) {
+            addCriterion("plugin_kind in", values, "pluginKind");
+            return (Criteria) this;
+        }
+
+        public Criteria andPluginKindNotIn(List<String> values) {
+            addCriterion("plugin_kind not in", values, "pluginKind");
+            return (Criteria) this;
+        }
+
+        public Criteria andPluginKindBetween(String value1, String value2) {
+            addCriterion("plugin_kind between", value1, value2, "pluginKind");
+            return (Criteria) this;
+        }
+
+        public Criteria andPluginKindNotBetween(String value1, String value2) {
+            addCriterion("plugin_kind not between", value1, value2, "pluginKind");
+            return (Criteria) this;
+        }
+
         public Criteria andPluginNameIsNull() {
             addCriterion("plugin_name is null");
             return (Criteria) this;

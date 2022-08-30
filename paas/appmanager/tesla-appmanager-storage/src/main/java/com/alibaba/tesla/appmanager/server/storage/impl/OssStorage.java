@@ -6,13 +6,16 @@ import com.alibaba.tesla.appmanager.server.storage.Storage;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
+import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.OSSObjectSummary;
 import com.aliyun.oss.model.ObjectListing;
 import com.aliyun.oss.model.CannedAccessControlList;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,6 +47,32 @@ public class OssStorage extends BaseStorage implements Storage {
         } catch (Exception e) {
             throw new AppException(AppErrorCode.STORAGE_ERROR,
                     String.format("Check bucket %s existence failed", bucketName), e);
+        }
+    }
+
+    /**
+     * 获取文件内容字符串 (限小文件)
+     *
+     * @param bucketName Bucket 名称
+     * @param objectPath 文件名称
+     * @return 文件内容字符串
+     */
+    @Override
+    public String getObjectContent(String bucketName, String objectPath) {
+        OSSObject obj = ossClient.getObject(bucketName, objectPath);
+        if (obj == null) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("Object %s not exists in bucket %s", objectPath, bucketName));
+        }
+        if (obj.getObjectMetadata().getContentLength() > MAX_GET_OBJECT_CONTENT_LENGTH) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    "The specified file (%s) could not be read because the file is too large", objectPath);
+        }
+        try {
+            return IOUtils.toString(obj.getObjectContent(), StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            throw new AppException(AppErrorCode.STORAGE_ERROR,
+                    String.format("Read %s failed in bucket %s", objectPath, bucketName), e);
         }
     }
 
@@ -86,8 +115,6 @@ public class OssStorage extends BaseStorage implements Storage {
         }
     }
 
-
-
     /**
      * 上传本地文件到远端存储
      *
@@ -111,7 +138,7 @@ public class OssStorage extends BaseStorage implements Storage {
      * 设置文件的权限为公共读
      */
     @Override
-    public void setObjectAclPublic(String bucketName, String remotePath){
+    public void setObjectAclPublic(String bucketName, String remotePath) {
         ossClient.setObjectAcl(bucketName, remotePath, CannedAccessControlList.PublicRead);
     }
 

@@ -440,17 +440,25 @@ public class RtAppInstanceServiceImpl implements RtAppInstanceService {
                 record.setAppInstanceName(appInstanceName);
                 record.setVersion(version);
                 record.setOwnerReference(ownerReferenceStr);
-                int updated = rtAppInstanceRepository.updateByCondition(record, condition);
-                if (updated > 0) {
-                    log.info("change appInstanceId/version field in app instance record|newAppInstanceId={}|" +
-                                    "newVersion={}|newAppInstanceName={}|newOwnerReference={}|condition={}",
+                try {
+                    int updated = rtAppInstanceRepository.updateByCondition(record, condition);
+                    if (updated > 0) {
+                        log.info("change appInstanceId/version field in app instance record|newAppInstanceId={}|" +
+                                        "newVersion={}|newAppInstanceName={}|newOwnerReference={}|condition={}",
+                                appInstanceId, version, appInstanceName, ownerReferenceStr,
+                                JSONObject.toJSONString(condition));
+                    } else {
+                        log.warn("change appInstanceId/version field in app instance record failed|newAppInstanceId={}|" +
+                                        "newVersion={}|newAppInstanceName={}|newOwnerReference={}|condition={}",
+                                appInstanceId, version, appInstanceName, ownerReferenceStr,
+                                JSONObject.toJSONString(condition));
+                    }
+                } catch (Exception e) {
+                    log.error("cannot update app instance record|newAppInstanceId={}|newVersion={}|" +
+                            "newAppInstanceName={}|newOwnerReference={}|condition={}|record={}|exception={}",
                             appInstanceId, version, appInstanceName, ownerReferenceStr,
-                            JSONObject.toJSONString(condition));
-                } else {
-                    log.warn("change appInstanceId/version field in app instance record failed|newAppInstanceId={}|" +
-                                    "newVersion={}|newAppInstanceName={}|newOwnerReference={}|condition={}",
-                            appInstanceId, version, appInstanceName, ownerReferenceStr,
-                            JSONObject.toJSONString(condition));
+                            JSONObject.toJSONString(condition), JSONObject.toJSONString(record),
+                            ExceptionUtils.getStackTrace(e));
                 }
             }
             return record;

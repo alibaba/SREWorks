@@ -56,6 +56,9 @@ public class DagJobTaskNode extends AbstractLocalNodeBase {
         ElasticJobInstanceRepository jobInstanceRepository = BeansUtil.context.getBean(
             ElasticJobInstanceRepository.class);
         ElasticJobInstance jobInstance = jobInstanceRepository.findFirstByScheduleInstanceId(dagInstId);
+        if (jobInstance == null) {
+            return;
+        }
         jobInstance.setGmtEnd(System.currentTimeMillis());
         jobInstance.setStatus(JobInstanceStatus.EXCEPTION.name());
         jobInstanceRepository.save(jobInstance);
@@ -100,10 +103,10 @@ public class DagJobTaskNode extends AbstractLocalNodeBase {
                 }
             }
         } catch (Exception e) {
+            log.error("Start DagJobTaskNode Exception ", e);
             toException();
             throw e;
         }
-
     }
 
     @Override

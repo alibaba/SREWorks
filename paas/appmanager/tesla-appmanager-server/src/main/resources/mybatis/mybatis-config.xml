@@ -24,8 +24,6 @@
         <mapper resource="mybatis/AppPackageDOMapper.xml"/>
         <mapper resource="mybatis/AppPackageTagDOMapper.xml"/>
         <mapper resource="mybatis/AppPackageComponentRelDOMapper.xml"/>
-        <mapper resource="mybatis/ComponentDOMapper.xml"/>
-        <mapper resource="mybatis/ComponentHistoryDOMapper.xml"/>
         <mapper resource="mybatis/ComponentPackageDOMapper.xml"/>
         <mapper resource="mybatis/ComponentPackageTaskDOMapper.xml"/>
         <mapper resource="mybatis/CustomAddonInstanceDOMapper.xml"/>

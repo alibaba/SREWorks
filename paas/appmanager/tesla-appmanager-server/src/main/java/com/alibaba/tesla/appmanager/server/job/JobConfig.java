@@ -19,7 +19,7 @@ import javax.sql.DataSource;
 @Slf4j
 @Configuration
 @EnableScheduling
-@EnableSchedulerLock(defaultLockAtMostFor = "10m")
+@EnableSchedulerLock(defaultLockAtMostFor = "10m", defaultLockAtLeastFor = "5s")
 public class JobConfig {
 
     /**
@@ -30,6 +30,7 @@ public class JobConfig {
      */
     @Bean
     public LockProvider lockProvider(DataSource dataSource) {
+        log.info("lock provider has registered");
         return new JdbcTemplateLockProvider(
                 JdbcTemplateLockProvider.Configuration.builder()
                         .withJdbcTemplate(new JdbcTemplate(dataSource))

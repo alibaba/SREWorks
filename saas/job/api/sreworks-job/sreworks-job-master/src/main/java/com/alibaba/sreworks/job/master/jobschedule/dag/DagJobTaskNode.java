@@ -41,21 +41,24 @@ public class DagJobTaskNode extends AbstractLocalNodeBase {
             .build()
     );
 
+    private String jobInstanceId = globalVariable.getString("sreworksJobInstanceId");
+
     private String taskInstanceId;
 
     private void toRunning() {
         ElasticJobInstanceRepository jobInstanceRepository = BeansUtil.context
             .getBean(ElasticJobInstanceRepository.class);
         log.info("dagInstId: {}", dagInstId);
-        ElasticJobInstance jobInstance = jobInstanceRepository.findFirstByScheduleInstanceId(dagInstId);
+        ElasticJobInstance jobInstance = jobInstanceRepository.findFirstById(jobInstanceId);
         jobInstance.setStatus(JobInstanceStatus.RUNNING.name());
+        jobInstance.setScheduleInstanceId(dagInstId);
         jobInstanceRepository.save(jobInstance);
     }
 
     private void toException() {
         ElasticJobInstanceRepository jobInstanceRepository = BeansUtil.context.getBean(
             ElasticJobInstanceRepository.class);
-        ElasticJobInstance jobInstance = jobInstanceRepository.findFirstByScheduleInstanceId(dagInstId);
+        ElasticJobInstance jobInstance = jobInstanceRepository.findFirstById(jobInstanceId);
         if (jobInstance == null) {
             return;
         }
@@ -73,7 +76,7 @@ public class DagJobTaskNode extends AbstractLocalNodeBase {
             TaskInstanceService taskInstanceService = BeansUtil.context.getBean(TaskInstanceService.class);
             ElasticJobInstanceRepository jobInstanceRepository = BeansUtil.context
                 .getBean(ElasticJobInstanceRepository.class);
-            ElasticJobInstance elasticJobInstance = jobInstanceRepository.findFirstByScheduleInstanceId(dagInstId);
+            ElasticJobInstance elasticJobInstance = jobInstanceRepository.findFirstById(jobInstanceId);;
             globalParams.put("elasticJobInstanceId", elasticJobInstance.getId());
             globalVariable.putAll(globalParams);
             globalParams.putAll(globalVariable);
@@ -99,7 +102,7 @@ public class DagJobTaskNode extends AbstractLocalNodeBase {
                     case INIT:
                     case RUNNING:
                     default:
-                        Thread.sleep(500);
+                        Thread.sleep(1000);
                 }
             }
         } catch (Exception e) {

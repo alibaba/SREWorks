@@ -294,19 +294,33 @@ public class JobService {
 
         tags.addAll(job.tags());
         tags = tags.stream().distinct().collect(Collectors.toList());
-        Long scheduleInstanceId = jobScheduleService.getJobSchedule(job.getScheduleType()).start(id, jobVarConf);
+
         ElasticJobInstance jobInstance = new ElasticJobInstance();
-        jobInstance.setId(UUID.randomUUID().toString().replace("-", ""));
+        String jobInstanceId = UUID.randomUUID().toString().replace("-", "");
+        jobInstance.setId(jobInstanceId);
         jobInstance.setOperator(operator);
         jobInstance.setGmtCreate(System.currentTimeMillis());
         jobInstance.setGmtExecute(System.currentTimeMillis());
         jobInstance.setJobId(id);
         jobInstance.setJob(JSONObject.toJSONString(new SreworksJobDTO(job)));
         jobInstance.setVarConf(JSONObject.toJSONString(jobVarConf));
-        jobInstance.setScheduleInstanceId(scheduleInstanceId);
+//        jobInstance.setScheduleInstanceId(scheduleInstanceId);
         jobInstance.setStatus(JobInstanceStatus.INIT.name());
         jobInstance.setTags(tags);
         jobInstance.setTraceIds(traceIds);
-        return jobInstanceRepository.save(jobInstance);
+        ElasticJobInstance elasticJobInstance = jobInstanceRepository.save(jobInstance);
+
+        while(jobInstanceRepository.findFirstById(jobInstanceId) == null) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                log.warn("", ex);
+            }
+        }
+
+        jobVarConf.put("sreworksJobInstanceId", jobInstanceId);
+        jobScheduleService.getJobSchedule(job.getScheduleType()).start(id, jobVarConf);
+
+        return elasticJobInstance;
     }
 }

@@ -41,7 +41,7 @@ public class DagJobTaskNode extends AbstractLocalNodeBase {
             .build()
     );
 
-    private String jobInstanceId = globalVariable.getString("sreworksJobInstanceId");
+    private String jobInstanceId;
 
     private String taskInstanceId;
 
@@ -71,6 +71,7 @@ public class DagJobTaskNode extends AbstractLocalNodeBase {
     public DagInstNodeRunRet run() throws Exception {
         log.info("start DagJobTaskNode");
         try {
+            jobInstanceId = globalVariable.getString("sreworksJobInstanceId");
             toRunning();
             TaskService taskService = BeansUtil.context.getBean(TaskService.class);
             TaskInstanceService taskInstanceService = BeansUtil.context.getBean(TaskInstanceService.class);

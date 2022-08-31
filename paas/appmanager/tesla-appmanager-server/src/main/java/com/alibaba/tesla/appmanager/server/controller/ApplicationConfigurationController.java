@@ -13,6 +13,7 @@ import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigGenerate
 import com.alibaba.tesla.appmanager.domain.res.apppackage.ApplicationConfigurationGenerateRes;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigGenerateRes;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
  *
  * @author yaoxing.gyx@alibaba-inc.com
  */
+@Tag(name = "部署配置 API")
 @RequestMapping("/application-configurations")
 @RestController
 @Slf4j

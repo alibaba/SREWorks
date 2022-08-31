@@ -9,6 +9,7 @@ import com.alibaba.tesla.appmanager.domain.req.stage.StageCreateReq;
 import com.alibaba.tesla.appmanager.domain.req.stage.StageQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.stage.StageUpdateReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -25,6 +26,7 @@ import javax.validation.constraints.NotEmpty;
  * @author yaoxing.gyx@alibaba-inc.com
  */
 @Slf4j
+@Tag(name = "Stage API")
 @RequestMapping
 @RestController
 public class StageController extends AppManagerBaseController {

@@ -27,6 +27,10 @@
             <groupId>com.alibaba.tesla</groupId>
             <artifactId>tesla-appmanager-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba.tesla</groupId>
+            <artifactId>tesla-appmanager-spring</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>io.sreworks</groupId>

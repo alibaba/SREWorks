@@ -157,6 +157,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase,
             }
         }
         taskRemoteObjectMap.put(taskDO.getId(), remoteObjectSet);
+        log.info("action=start apply kaniko pod|| podList:{}", remoteObjectSet);
         for (V1Pod v1Pod : waitBuildPodList) {
             try {
                 api.createNamespacedPod(systemProperties.getK8sNamespace(), v1Pod, null, null, null);

@@ -156,15 +156,16 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
                 publisher.publishEvent(new DeleteKanikoPodEvent(this, podName));
                 updateDataFailRecord(taskDO.getId(), e.getMessage());
             }
-            taskRemoteObjectMap.put(taskDO.getId(), remoteObjectSet);
-            for (V1Pod v1Pod : waitBuildPodList) {
-                try {
-                    api.createNamespacedPod(systemProperties.getK8sNamespace(), v1Pod, null, null, null);
-                } catch (Exception e) {
-                    log.error("action=createPod|| can not create pod {} container image,Message:{} Exception:{}", v1Pod.toString(), e.getMessage(), e.getCause());
-                    publisher.publishEvent(new DeleteKanikoPodEvent(this, v1Pod.getMetadata().getName()));
-                    updateDataFailRecord(taskDO.getId(), e.getMessage());
-                }
+        }
+        taskRemoteObjectMap.put(taskDO.getId(), remoteObjectSet);
+        log.info("action=start apply kaniko pod|| podList:{}", remoteObjectSet);
+        for (V1Pod v1Pod : waitBuildPodList) {
+            try {
+                api.createNamespacedPod(systemProperties.getK8sNamespace(), v1Pod, null, null, null);
+            } catch (Exception e) {
+                log.error("action=createPod|| can not create pod {} container image,Message:{} Exception:{}", v1Pod.toString(), e.getMessage(), e.getCause());
+                publisher.publishEvent(new DeleteKanikoPodEvent(this, v1Pod.getMetadata().getName()));
+                updateDataFailRecord(taskDO.getId(), e.getMessage());
             }
         }
     }
@@ -511,6 +512,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
         String podName = event.getPodName();
         String[] split = podName.split("-");
         Long taskId = Long.valueOf(split[split.length - 2]);
+        checkFinishTask(taskId, podName);
         if (taskPodMap.containsKey(taskId)) {
             synchronized (flag) {
                 switch (event.getCurrentStatus()) {
@@ -613,6 +615,24 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase, App
                         break;
                     }
                     default:
+                }
+            }
+        }
+    }
+
+    private void checkFinishTask(Long taskId, String podName) {
+        ComponentPackageTaskDO taskDO = componentPackageTaskRepository.getByCondition(
+            ComponentPackageTaskQueryCondition.builder().id(taskId).build());
+        if (taskDO==null) {
+            return;
+        } else {
+            if (taskDO.getTaskStatus().equalsIgnoreCase(AppPackageTaskStatusEnum.FAILURE.name()) ||
+            taskDO.getTaskStatus().equalsIgnoreCase(AppPackageTaskStatusEnum.SUCCESS.name())) {
+                try {
+                    api.deleteNamespacedPod(podName, systemProperties.getK8sNamespace(), null,
+                        null, null, null, null, null);
+                } catch (ApiException e) {
+                    log.warn("action=checkFinishTask||clean pod error:{}", e.getResponseBody());
                 }
             }
         }

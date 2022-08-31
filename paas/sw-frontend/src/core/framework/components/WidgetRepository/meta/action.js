@@ -41,5 +41,5 @@ export default {
         "schema": {},
         "dataMock": {}
     },
-    "catgory": "action"
+    "category": "action"
 };

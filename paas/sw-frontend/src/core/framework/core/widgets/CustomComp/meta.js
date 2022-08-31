@@ -74,5 +74,5 @@ export default {
         },
         "dataMock": {},
     },
-    "catgory": "custom",
+    "category": "custom",
 };

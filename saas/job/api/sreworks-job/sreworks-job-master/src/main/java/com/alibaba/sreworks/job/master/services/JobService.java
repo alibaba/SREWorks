@@ -310,13 +310,9 @@ public class JobService {
         jobInstance.setTraceIds(traceIds);
         ElasticJobInstance elasticJobInstance = jobInstanceRepository.save(jobInstance);
 
-        while(jobInstanceRepository.findFirstById(jobInstanceId) == null) {
-            log.warn("Check job instance:{} not exist, waiting", jobInstanceId);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                log.warn("", ex);
-            }
+        if (checkInstanceInvisible(jobInstanceId)) {
+            log.error("Check job instance:{} is invisible", jobInstanceId);
+            return elasticJobInstance;
         }
 
         jobVarConf.put("sreworksJobInstanceId", jobInstanceId);
@@ -324,5 +320,24 @@ public class JobService {
         long dagInstId = jobScheduleService.getJobSchedule(job.getScheduleType()).start(id, jobVarConf);
         log.info("Started job, dagInstId:{}, jobInstanceId:{}", dagInstId, jobInstanceId);
         return elasticJobInstance;
+    }
+
+    private boolean checkInstanceInvisible(String jobInstanceId) {
+        int retryTime = 5;
+        int invokeTime = 0;
+        while (invokeTime < retryTime) {
+            if (jobInstanceRepository.findFirstById(jobInstanceId) == null) {
+                log.warn("Check job instance:{} is invisible, waiting...", jobInstanceId);
+                invokeTime++;
+                try {
+                    Thread.sleep(1000 * invokeTime);
+                } catch (InterruptedException ex) {
+                    log.warn("", ex);
+                }
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 }

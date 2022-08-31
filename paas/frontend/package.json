@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "build:all": "yarn workspaces foreach run build",
+    "lint": "prettier --write \"**/src/*.js?(x)\"",
     "test": "jest",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"

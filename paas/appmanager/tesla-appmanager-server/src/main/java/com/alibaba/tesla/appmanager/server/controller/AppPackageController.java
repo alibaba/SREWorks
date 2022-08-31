@@ -16,6 +16,7 @@ import com.alibaba.tesla.appmanager.server.repository.condition.AppPackageTagQue
 import com.alibaba.tesla.appmanager.server.repository.domain.AppPackageTagDO;
 import com.alibaba.tesla.appmanager.server.service.apppackage.AppPackageTagService;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -43,6 +44,7 @@ import java.util.Collections;
  * @author yaoxing.gyx@alibaba-inc.com
  */
 @Slf4j
+@Tag(name = "应用包 API")
 @RequestMapping("/apps/{appId}/app-packages")
 @RestController
 public class AppPackageController extends AppManagerBaseController {

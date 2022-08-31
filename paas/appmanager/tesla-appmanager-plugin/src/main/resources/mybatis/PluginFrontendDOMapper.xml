@@ -89,18 +89,6 @@
     </if>
     order by id desc
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    <!--@mbg.generated-->
-    select 
-    <include refid="Base_Column_List" />
-    from am_plugin_frontend
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    <!--@mbg.generated-->
-    delete from am_plugin_frontend
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
   <delete id="deleteByExample" parameterType="com.alibaba.tesla.appmanager.plugin.repository.domain.PluginFrontendDOExample">
     <!--@mbg.generated-->
     delete from am_plugin_frontend
@@ -108,15 +96,6 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.alibaba.tesla.appmanager.plugin.repository.domain.PluginFrontendDO" useGeneratedKeys="true">
-    <!--@mbg.generated-->
-    insert into am_plugin_frontend (gmt_create, gmt_modified, plugin_name, 
-      plugin_version, `name`, config
-      )
-    values (#{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{pluginName,jdbcType=VARCHAR}, 
-      #{pluginVersion,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{config,jdbcType=LONGVARCHAR}
-      )
-  </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.alibaba.tesla.appmanager.plugin.repository.domain.PluginFrontendDO" useGeneratedKeys="true">
     <!--@mbg.generated-->
     insert into am_plugin_frontend
@@ -197,55 +176,5 @@
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
-  </update>
-  <update id="updateByExample" parameterType="map">
-    <!--@mbg.generated-->
-    update am_plugin_frontend
-    set id = #{record.id,jdbcType=BIGINT},
-      gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
-      plugin_name = #{record.pluginName,jdbcType=VARCHAR},
-      plugin_version = #{record.pluginVersion,jdbcType=VARCHAR},
-      `name` = #{record.name,jdbcType=VARCHAR},
-      config = #{record.config,jdbcType=LONGVARCHAR}
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.alibaba.tesla.appmanager.plugin.repository.domain.PluginFrontendDO">
-    <!--@mbg.generated-->
-    update am_plugin_frontend
-    <set>
-      <if test="gmtCreate != null">
-        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="gmtModified != null">
-        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
-      </if>
-      <if test="pluginName != null">
-        plugin_name = #{pluginName,jdbcType=VARCHAR},
-      </if>
-      <if test="pluginVersion != null">
-        plugin_version = #{pluginVersion,jdbcType=VARCHAR},
-      </if>
-      <if test="name != null">
-        `name` = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="config != null">
-        config = #{config,jdbcType=LONGVARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.alibaba.tesla.appmanager.plugin.repository.domain.PluginFrontendDO">
-    <!--@mbg.generated-->
-    update am_plugin_frontend
-    set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
-      plugin_name = #{pluginName,jdbcType=VARCHAR},
-      plugin_version = #{pluginVersion,jdbcType=VARCHAR},
-      `name` = #{name,jdbcType=VARCHAR},
-      config = #{config,jdbcType=LONGVARCHAR}
-    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

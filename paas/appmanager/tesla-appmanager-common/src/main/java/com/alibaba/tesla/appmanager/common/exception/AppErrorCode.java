@@ -80,7 +80,12 @@ public enum AppErrorCode {
     /**
      * 认证异常
      */
-    AUTHORIZED_ERROR(10013, "AUTHORIZED_ERROR");
+    AUTHORIZED_ERROR(10013, "AUTHORIZED_ERROR"),
+
+    /**
+     * Groovy 脚本异常
+     */
+    GROOVY_ERROR(10014, "GROOVY_ERROR");
 
     private final int code;
     private final String description;

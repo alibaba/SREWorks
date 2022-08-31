@@ -3,7 +3,9 @@ package com.alibaba.tesla.appmanager.plugin.api;
 import com.alibaba.tesla.appmanager.api.provider.PluginProvider;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.PluginDefinitionDTO;
+import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginEnableReq;
 import com.alibaba.tesla.appmanager.plugin.assembly.PluginDefinitionDtoConvert;
 import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDO;
@@ -29,6 +31,18 @@ public class PluginProviderImpl implements PluginProvider {
 
     @Autowired
     private PluginDefinitionDtoConvert pluginDefinitionDtoConvert;
+
+    /**
+     * 获取插件列表
+     *
+     * @param request 查询插件列表请求
+     * @return 插件列表
+     */
+    @Override
+    public Pagination<PluginDefinitionDTO> list(PluginQueryReq request) {
+        Pagination<PluginDefinitionDO> records = pluginService.list(request);
+        return Pagination.transform(records, record -> pluginDefinitionDtoConvert.to(record));
+    }
 
     /**
      * 启用指定插件

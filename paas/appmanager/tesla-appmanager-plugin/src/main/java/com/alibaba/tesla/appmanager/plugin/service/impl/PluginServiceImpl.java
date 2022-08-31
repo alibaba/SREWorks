@@ -7,11 +7,14 @@ import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.PluginKindEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.common.pagination.Pagination;
+import com.alibaba.tesla.appmanager.common.util.ClassUtil;
 import com.alibaba.tesla.appmanager.common.util.PackageUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.common.util.ZipUtil;
 import com.alibaba.tesla.appmanager.domain.core.ScriptIdentifier;
 import com.alibaba.tesla.appmanager.domain.core.StorageFile;
+import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginEnableReq;
 import com.alibaba.tesla.appmanager.domain.schema.PluginDefinitionSchema;
 import com.alibaba.tesla.appmanager.dynamicscript.repository.condition.DynamicScriptQueryCondition;
@@ -41,6 +44,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Plugin 服务
@@ -73,6 +77,20 @@ public class PluginServiceImpl implements PluginService {
 
     @Autowired
     private Storage storage;
+
+    /**
+     * 获取插件列表
+     *
+     * @param request 查询插件列表请求
+     * @return 插件列表
+     */
+    @Override
+    public Pagination<PluginDefinitionDO> list(PluginQueryReq request) {
+        PluginDefinitionQueryCondition condition = new PluginDefinitionQueryCondition();
+        ClassUtil.copy(request, condition);
+        List<PluginDefinitionDO> records = pluginDefinitionRepository.selectByCondition(condition);
+        return Pagination.valueOf(records, Function.identity());
+    }
 
     /**
      * 启用指定插件
@@ -293,9 +311,9 @@ public class PluginServiceImpl implements PluginService {
      * 加载全部 Groovy Scripts
      *
      * @param definitionSchema Plugin Definition Schema
-     * @param pluginZip        插件 Zip 文件本地目录
+     * @param pluginDir        插件 Zip 文件本地目录
      */
-    private void loadGroovyScripts(PluginDefinitionSchema definitionSchema, Path pluginZip) {
+    private void loadGroovyScripts(PluginDefinitionSchema definitionSchema, Path pluginDir) {
         PluginKindEnum pluginKind = definitionSchema.getPluginKind();
         String pluginName = definitionSchema.getPluginName();
         String pluginVersion = definitionSchema.getPluginVersion();
@@ -313,7 +331,7 @@ public class PluginServiceImpl implements PluginService {
             String filePath = file.getPath();
             String code;
             try {
-                code = new String(Files.readAllBytes(Paths.get(pluginZip.toFile().toString(), filePath)));
+                code = new String(Files.readAllBytes(Paths.get(pluginDir.toFile().toString(), filePath)));
             } catch (IOException e) {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                         "cannot read groovy code from local plugin zip", e);
@@ -334,7 +352,7 @@ public class PluginServiceImpl implements PluginService {
             if (!identifier.getKind().equals(fileKind) || !identifier.getName().equals(fileName)) {
                 throw new AppException(AppErrorCode.GROOVY_ERROR,
                         String.format("mismatched kind/name in groovy script|definitionKind=%s|definitionName=%s|" +
-                                "codeKind=%s|codeName=%s", fileKind, fileName, identifier.getKind(),
+                                        "codeKind=%s|codeName=%s", fileKind, fileName, identifier.getKind(),
                                 identifier.getName()));
             }
 
@@ -354,19 +372,32 @@ public class PluginServiceImpl implements PluginService {
      * 将插件自身携带的所有 Frontend 资源更新到 DB 中
      *
      * @param definitionSchema Plugin Definition Schema
-     * @param pluginZip        插件 Zip 文件本地目录
+     * @param pluginDir        插件 Zip 文件本地目录
      */
-    private void updatePluginFrontend(PluginDefinitionSchema definitionSchema, Path pluginZip) {
+    private void updatePluginFrontend(PluginDefinitionSchema definitionSchema, Path pluginDir) {
+        PluginKindEnum pluginKind = definitionSchema.getPluginKind();
+        String pluginName = definitionSchema.getPluginName();
+        String pluginVersion = definitionSchema.getPluginVersion();
+        PluginDefinitionSchema.SchematicFrontend schematic = definitionSchema.getSpec().getSchematic().getFrontend();
+        if (schematic == null) {
+            log.info("no need to import plugin frontend in current plugin|pluginKind={}|pluginName={}|pluginVersion={}",
+                    pluginKind, pluginName, pluginVersion);
+            return;
+        }
 
+        for (PluginDefinitionSchema.SchematicFrontendFile file : schematic.getFiles()) {
+            String fileKind = file.getKind();
+            String filePath = file.getPath();
+        }
     }
 
     /**
      * 上传插件自身的每个文件到 Storage 存储中
      *
      * @param definitionSchema Plugin Definition Schema
-     * @param pluginZip        插件 Zip 文件本地目录
+     * @param pluginDir        插件 Zip 文件本地目录
      */
-    private void uploadPluginFilesToStorage(PluginDefinitionSchema definitionSchema, Path pluginZip) {
+    private void uploadPluginFilesToStorage(PluginDefinitionSchema definitionSchema, Path pluginDir) {
 
     }
 }

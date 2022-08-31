@@ -1,5 +1,7 @@
 package com.alibaba.tesla.appmanager.plugin.service;
 
+import com.alibaba.tesla.appmanager.common.pagination.Pagination;
+import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginEnableReq;
 import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDO;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +14,14 @@ import java.io.IOException;
  * @author yaoxing.gyx@alibaba-inc.com
  */
 public interface PluginService {
+
+    /**
+     * 获取插件列表
+     *
+     * @param request 查询插件列表请求
+     * @return 插件列表
+     */
+    Pagination<PluginDefinitionDO> list(PluginQueryReq request);
 
     /**
      * 启用指定插件

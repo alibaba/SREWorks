@@ -56,5 +56,5 @@ export default {
         },
         "dataMock": {},
     },
-    "catgory": "biz",
+    "category": "biz",
 };

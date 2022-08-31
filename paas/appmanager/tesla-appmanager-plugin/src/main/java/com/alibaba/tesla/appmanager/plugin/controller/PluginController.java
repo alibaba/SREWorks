@@ -32,7 +32,7 @@ public class PluginController extends AppManagerBaseController {
     @Operation(summary = "查询插件列表")
     @GetMapping
     public TeslaBaseResult list(@ModelAttribute PluginQueryReq request, OAuth2Authentication auth) {
-        return buildSucceedResult(null);
+        return buildSucceedResult(pluginProvider.list(request));
     }
 
     @Operation(summary = "上传插件")

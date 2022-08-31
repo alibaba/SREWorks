@@ -184,7 +184,6 @@ class ContentWithPathPanel extends React.Component {
 
     onSelectChange = (value, selectedOptions) => {
         let { selectChanged } = this.props;
-        //console.log("value, selectedOptions----->",value, selectedOptions);
         this.genRoute(this.state.menusData);
         this.setState({
             selectParam: [...selectedOptions].pop().selectParam,

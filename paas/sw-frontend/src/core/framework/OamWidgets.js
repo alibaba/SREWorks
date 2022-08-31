@@ -182,7 +182,6 @@ export default class OamWidgets extends React.Component {
         } else {
             urlSearchParams.nodeId = nodeId;
         }
-        //console.log("OamWidgets---defaultTab---->",defaultTab,this.props);
         let menus = [];
         if (children.length) {
             menus = routeData.children.map(({ path, icon, label, config }) => {

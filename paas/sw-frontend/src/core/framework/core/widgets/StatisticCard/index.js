@@ -4,12 +4,11 @@ import { StatisticCard } from "@ant-design/pro-card";
 import { Space, Tooltip } from "antd";
 import { TinyLineChart, TinyAreaChart, ProgressChart, LiquidChart, ColumnChart } from "bizcharts";
 import _ from 'lodash';
-let themeType = localStorage.getItem("tesla-theme");
+let themeType = localStorage.getItem("sreworks-theme");
 const { Statistic } = StatisticCard;
 
 export default class StatusList extends Component {
   render() {
-    console.log(this.props);
     let { widgetData = {}, widgetConfig = {}, actionParams, ...otherProps } = this.props;
     let { chartPlacement = "bottom", chartTitle = "", tooltip = "", footerList = [], mainList = [], cStyle = { width: 268 }, isOnlyChart = false, total = "", chartConfig = {}, chartData = [] } = widgetConfig;
     let { height = 60, width = 220, autoFit = false, extraConfig, xField, yField, percent, min, max, chartValue } = chartConfig;

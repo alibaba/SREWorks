@@ -39,7 +39,7 @@ public class HeartBeatService {
         report();
     }
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 60000)
     public void report() {
         String address = String.format("http://%s:%s", HostUtil.LOCAL_HOST, serverPort);
         HttpResponse<String> response;

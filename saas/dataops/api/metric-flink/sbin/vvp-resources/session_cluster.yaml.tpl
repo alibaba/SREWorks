@@ -22,6 +22,9 @@ spec:
       memory: 1g
   flinkConfiguration:
     taskmanager.numberOfTaskSlots: 4
+    metrics.reporters: prom
+    metrics.reporter.prom.port: '9249'
+    metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
   logging:
     loggingProfile: default
     log4jLoggers:
@@ -29,6 +32,9 @@ spec:
       org.apache.flink.streaming.examples: DEBUG
   kubernetes:
     pods:
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '9249'
       envVars:
       - name: KEY
         value: VALUE

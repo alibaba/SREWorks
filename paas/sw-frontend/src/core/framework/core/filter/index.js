@@ -65,7 +65,6 @@ class Filter extends Component {
                 },
                 elementId: config.uniqueKey
             };
-            console.log(widgetConfig, 'parameterDefiner for action filter')
             this.setState({ actionData });
         }
 
@@ -100,7 +99,6 @@ class Filter extends Component {
     }
     render() {
         const { actionData,visible } = this.state, { mode, widgetModel } = this.props;
-        console.log(this.props, 'widgetModel===INDEX');
         if (!actionData) {
             return <div style={{ width: "100%", height: "100%", justifyContent: "center", alignItems: "center", display: "flex" }}><h3>请定义过滤项</h3></div>
         }

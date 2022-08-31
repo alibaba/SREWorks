@@ -43,11 +43,11 @@ class TemplateSetting extends React.Component {
         //     optionValues:[{value:"blank",label:'空应用'}]
         // });
         paramsDef.push({
-            type: FormElementType.RADIO, name: 'layout', initValue: layout, required: true, label: "主菜单样式", inputTip: "顶部菜单的样式",
+            type: FormElementType.RADIO, name: 'layout', initValue: layout, required: true, label: "空间布局", inputTip: "页面菜单布局",
             optionValues: [
-                { value: "PaaS", label: '居中对齐' },
-                { value: "abm", label: '左对齐' },
-                { value: "empty", label: '无菜单' },
+                { value: "PaaS", label: '上下布局' },
+                { value: "abm", label: '左右布局' },
+                { value: "empty", label: '空布局' },
             ]
         });
         this.itemDef = paramsDef;
@@ -192,19 +192,18 @@ class WebDesignerWorkbench extends Component {
             roleId: `${appId}:guest`,
             appId
         }
-        httpClient.post("gateway/v2/foundation/appmanager/apps", params, { headers: { 'X-Biz-App': util.getNewBizApp(appId) } }).then(result => {
-            console.log(result)
+        httpClient.post("gateway/v2/foundation/appmanager/apps", params, { headers: { 'X-Biz-App': `${appId},${properties.defaultNamespace},dev` } }).then(result => {
         }).catch(error => {
             console.log(error)
         })
-        httpClient.post("gateway/v2/common/authProxy/roles", roleParams, { headers: { 'X-Biz-App': util.getNewBizApp(appId) } }).then(result => {
+        httpClient.post("gateway/v2/common/authProxy/roles", roleParams, { headers: { 'X-Biz-App': `${appId},${properties.defaultNamespace},dev` } }).then(result => {
             console.log(result)
         }).catch(error => {
             console.log(error)
         })
         // 应后端要求的临时初始化方案
         let addonParams = { "addonType": "INTERNAL_ADDON", "addonName": "productopsv2", "addonId": "productopsv2" }
-        httpClient.post(`gateway/v2/foundation/appmanager/apps/${appId}/addon`, addonParams, { headers: { 'X-Biz-App': util.getNewBizApp(appId) } }).then(result => {
+        httpClient.post(`gateway/v2/foundation/appmanager/apps/${appId}/addon`, addonParams, { headers: { 'X-Biz-App': `${appId},${properties.defaultNamespace},dev` } }).then(result => {
             console.log(result)
         }).catch(error => {
             console.log(error)
@@ -216,7 +215,7 @@ class WebDesignerWorkbench extends Component {
         //     stageLabel = cacheRepository.getEnv(currentProduct.productId)==='dev'? 'dev' : 'prod';
         // }
         let stageLabel = 'dev'
-        return httpClient.post(productopsPrefix + "/apps/init?stageId=" + stageLabel, blankTemplate, { headers: { 'X-Biz-App': util.getNewBizApp(appId) } }).then(result => {
+        return httpClient.post(productopsPrefix + "/apps/init?stageId=" + stageLabel, blankTemplate, { headers: { 'X-Biz-App': `${appId},${properties.defaultNamespace},dev` } }).then(result => {
             this.setState({
                 exists: true,
                 showCreate: false

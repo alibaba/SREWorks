@@ -21,10 +21,9 @@ import _ from "lodash";
 class JsonEditor extends Component {
     constructor(props) {
         super(props);
-        this.themeType = localStorage.getItem('tesla-theme');
+        this.themeType = localStorage.getItem('sreworks-theme');
         let { widgetData = "", onChange, model, mode, target } = props;
         this.mode = model && (mode || (model.defModel && model.defModel.mode));
-        //console.log("value-----this.mode--->",value,this.mode,model);
         try {
             if (typeof widgetData === 'object') {
                 if (this.mode === 'json') {

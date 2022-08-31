@@ -20,11 +20,10 @@ import _ from "lodash";
 class AceViewer extends Component {
     constructor(props) {
         super(props);
-        this.themeType = localStorage.getItem('tesla-theme');
+        this.themeType = localStorage.getItem('sreworks-theme');
         let { value, onChange, model, mode, target } = props;
         this.mode = model && (mode || (model.defModel && model.defModel.mode));
         this.target = model && (target || (model.defModel && model.defModel.target));
-        //console.log("value-----this.mode--->",value,this.mode,model);
         try {
             if (typeof value === 'object') {
                 if (this.mode === 'json') {

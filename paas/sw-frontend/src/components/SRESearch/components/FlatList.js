@@ -19,7 +19,7 @@ class FlatList extends Component {
         this.state = {
             loading: false,
             suggestList: [],
-            teslaSearchPath: props.teslaSearchPath,
+            sreworksSearchPath: props.sreworksSearchPath,
             search_content: props.search_content,
             category: props.category,
             moreLinkPrefix: props.moreLinkPrefix,
@@ -29,7 +29,6 @@ class FlatList extends Component {
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log(this.props.search_content, nextProps.search_content, 'this.props.search_content, nextProps.search_content')
         if (!_.isEqual(this.props.search_content, nextProps.search_content) || nextProps.is_force) {
         }
         this.setState({
@@ -40,7 +39,6 @@ class FlatList extends Component {
         let fullpath = '';
         if (path) {
             fullpath = properties.baseUrl + "#/" + path
-            console.log(fullpath, path, 'click-path-list')
             window.open(fullpath)
         }
     }
@@ -90,7 +88,7 @@ FlatList.propTypes = {
     userEmpId: PropTypes.string,
     is_force: PropTypes.bool,
     category: PropTypes.string,
-    teslaSearchPath: PropTypes.string,
+    sreworksSearchPath: PropTypes.string,
     search_content: PropTypes.string,
 };
 FlatList.defaultProps = {};

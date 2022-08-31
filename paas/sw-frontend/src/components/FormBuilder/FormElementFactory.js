@@ -54,6 +54,7 @@ import FileUploadSingle from './FormItem/FileUploadSingle';
 import EditTableCut from '../EditTableCut';
 import SRECron from '../../components/SRECron';
 import DynamicForm from '../Dynamic';
+import IconSelector from './FormItem/IconSelector';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -431,6 +432,9 @@ export default class FormElementFactory {
                 break;
             case FormElementType.DYNAMIC_FORM:
                 itemElement = <DynamicForm form={form} key={item.name} model={item} style={{ visibility: hidden ? 'hidden' : 'visible' }} />;
+                break;
+            case FormElementType.ICON_SELECTOR:
+                itemElement = <IconSelector key={item.name} {...item} />
                 break;
             default:
                 return <div key="_undefined_formItem">{localeHelper.get('common.undefindFromEle', '未定义表单元素')}</div>

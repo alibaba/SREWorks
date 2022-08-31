@@ -65,8 +65,10 @@ spec:
                     state.backend: filesystem
                     taskmanager.memory.managed.fraction: 0.0 # no managed memory needed for filesystem statebackend
                     high-availability: vvp-kubernetes
+                    metrics.reporters: prom
+                    metrics.reporter.prom.port: '9249'
                     metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
-                 execution.checkpointing.interval: 10s
+                    execution.checkpointing.interval: 10s
                     execution.checkpointing.externalized-checkpoint-retention: RETAIN_ON_CANCELLATION
         
           sqlService:
@@ -85,10 +87,10 @@ spec:
           resources:
             limits:
               cpu: 500m
-              memory: 512Mi
+              memory: 1Gi
             requests:
               cpu: 250m
-              memory: 512Mi
+              memory: 1Gi
 
         gateway:
           repository: "${VVP_GATEWAY_REPO}"
@@ -96,10 +98,10 @@ spec:
           resources:
             limits:
               cpu: 500m
-              memory: 1Gi
+              memory: 1.25Gi
             requests:
               cpu: 250m
-              memory: 1Gi
+              memory: 1.25Gi
 
         ui:
           repository: "${VVP_UI_REPO}"

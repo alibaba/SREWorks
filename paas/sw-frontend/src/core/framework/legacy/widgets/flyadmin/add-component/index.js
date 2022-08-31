@@ -68,7 +68,6 @@ class FlyAdminAddComponent extends React.Component {
       });
   };
   onSelectChange = (selectedRowKeys, selectedRows) => {
-    console.log("selectedRowKeys changed: ", selectedRowKeys);
     this.setState({ selectedRowKeys, selectedRows });
   };
 
@@ -120,7 +119,6 @@ class FlyAdminAddComponent extends React.Component {
             service(params).then(res => {
               if (res) {
                 message.success("创建成功");
-                console.log(this.props, 'this.props');
                 this.setState({ loading: false }, this.props.onClose && this.props.onClose(true));
               }
             });

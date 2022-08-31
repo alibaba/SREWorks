@@ -104,7 +104,7 @@ class WidgetSetting extends React.Component {
         }
         );
         paramsDef.push({ type: FormElementType.COLOR_PICKER, name: 'backgroundColorObj', defaultColor: backgroundColor, required: false, label: "卡片背景色", tooltip: "整个卡片的背景色", enableAlpha: false });
-        paramsDef.push({ type: FormElementType.COLOR_PICKER, name: 'headerColorObj', defaultColor: headerColor, required: false, label: "卡片标题色", tooltip: "卡片头的背景色", enableAlpha: false });
+        paramsDef.push({ type: FormElementType.INPUT, name: 'headerColorObj', initValue: headerColor, required: false, label: "卡片标题色", tooltip: "卡片头的背景色，直接输入颜色色号即可，输入‘theme’，则保持和主题色同步", enableAlpha: false });
         this.itemDef = paramsDef;
 
     }
@@ -183,7 +183,9 @@ const WidgetSettingForm = Form.create({
             otherConfig.backgroundColor = backgroundColorObj.color;
         }
         if (headerColorObj) {
-            otherConfig.headerColor = headerColorObj.color;
+            // otherConfig.headerColor = headerColorObj.color;
+            //改造卡片头部，允许配置主题色变量
+            otherConfig.headerColor = headerColorObj
         }
         props.onValuesChange && props.onValuesChange(changedValues, otherConfig)
     }

@@ -231,6 +231,7 @@ class OamAction extends React.Component {
 
     onClose = () => {
         this.setState({
+            // loading: false,
             dockVisible: false,
             feedbackVisible: false,
             showHistory: false
@@ -436,7 +437,12 @@ class OamAction extends React.Component {
                     }
                 }
             } else {
-                message.success(localeHelper.get('Success', "操作已提交"));
+                // 提交文案返回内容自定义函数
+                let responseText = '';
+                if (action.responseHandler && action.responseHandler.length > 53) {
+                    responseText = safeEval("(" + action.responseHandler + ")(response)", { response: result});
+                }
+                message.success(responseText? responseText : localeHelper.get('Success', "操作已提交"));
                 if (execCallBack) execCallBack(allParams);
                 //增加执行后跳转
                 let jumpPath = action.jumpPath;
@@ -705,8 +711,7 @@ class OamAction extends React.Component {
      * @param params
      */
     handlePreSubmitAction = (params) => {
-        console.log(params,'params-lo')
-        if(!params) {
+        if (!params) {
             return false
         }
         let { action, remoteParams } = this.state, { nodeParams, userParams, actionParams } = this.props;
@@ -927,7 +932,7 @@ class OamAction extends React.Component {
                 if (visibleExpression && visibleExpression.length > 10) {
                     formVisible = safeEval(visibleExpression, { nodeParams: allNodeParams });
                 }
-            } catch(e) {
+            } catch (e) {
                 formVisible = true;
                 return true;
             }

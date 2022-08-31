@@ -71,7 +71,6 @@ export default class GridCheckBox extends React.Component {
 
   handleClick = child => {
     const { dataSource, isSingle, isDelete } = this.props;
-    console.log(child, 'app-store')
     if (isDelete) return;
     let { checkedMap } = this.state;
     let value = [];
@@ -88,7 +87,6 @@ export default class GridCheckBox extends React.Component {
         }
       });
     }
-    console.log(checkedMap, 'app-store')
     this.setState({
       checkedMap,
     });

@@ -104,5 +104,5 @@ export default  {
         },
         "dataMock": {}
     },
-    "catgory": "base"
+    "category": "base"
 };

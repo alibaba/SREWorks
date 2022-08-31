@@ -279,8 +279,12 @@ spec:
           value: "${KAFKA_ENDPOINT}:9092" 
         - name: Global.ES_URL
           value: "{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-elasticsearch-master:9200"
-
-
-
-
-
+        - name: Global.DATA_ES_HOST
+          value: "${DATA_ES_HOST}"
+        - name: Global.DATA_ES_PORT
+          value: "${DATA_ES_PORT}"
+        - name: Global.DATA_ES_USER
+          value: "${DATA_ES_USER}"
+        - name: Global.DATA_ES_PASSWORD
+          value: "${DATA_ES_PASSWORD}"
+ 

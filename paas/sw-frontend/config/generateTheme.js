@@ -8,7 +8,6 @@ let options = {
   stylesDir: path.join(__dirname, '../src'),
   varFile: path.join(__dirname, '../src/themes/index.less'),
   mainLessFile: path.join(__dirname, '../src/index.less'),
-  outputFilePath: path.join(__dirname, '../build/color.less'), // if provided, file will be created with generated less/styles
   // themeVariables是需要修改的antd变量值
   themeVariables: [
     '@primary-color',
@@ -56,17 +55,22 @@ let options = {
     '@header-bg-color',
     '@nprogress-color'
   ],
+  outputFilePath: path.join(__dirname, '../public/color.less'), // if provided, file will be created with generated less/styles
 };
 // 本地开发生成样式文件
-if(process.env.DEPLOY_ENV === 'local'||process.env.DEPLOY_ENV === 'mocks') {
-  options.outputFilePath = path.join(__dirname, '../public/color.less')
-}
-
+// if(process.env.DEPLOY_ENV === 'local'||process.env.DEPLOY_ENV === 'mocks') {
+//   options.outputFilePath = path.join(__dirname, '../public/color.less')
+// }
 // 设置主题，生成color.less文件，把所有的变量相关样式合成到这个文件下
-generateTheme(options);
+generateTheme(options).then(less => {
+  console.log('Theme generated successfully');
+})
+  .catch(error => {
+    console.log('Error', error);
+  });
 
-module.exports = {
-    navyblue: lessToJs(fs.readFileSync(path.join(__dirname, '../src/themes/navyblue.less'), 'utf8')),
-    dark: lessToJs(fs.readFileSync(path.join(__dirname, '../src/themes/dark.less'), 'utf8')),
-    light: lessToJs(fs.readFileSync(path.join(__dirname, '../src/themes/light.less'), 'utf8'))
-}
+// module.exports = {
+//     navyblue: lessToJs(fs.readFileSync(path.join(__dirname, '../src/themes/navyblue.less'), 'utf8')),
+//     dark: lessToJs(fs.readFileSync(path.join(__dirname, '../src/themes/dark.less'), 'utf8')),
+//     light: lessToJs(fs.readFileSync(path.join(__dirname, '../src/themes/light.less'), 'utf8'))
+// }

@@ -212,14 +212,12 @@ class FlyAdminDeploy extends React.Component {
   };
 
   close = () => {
-    console.log(this.props, 'this.props');
     this.props.onClose && this.props.onClose();
   };
 
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form;
     let { envList, currentEnv, listVar, editTableConfig, loadingList, loading, typeList } = this.state;
-    console.log(typeList);
     const onCancel = () => {
 
     }

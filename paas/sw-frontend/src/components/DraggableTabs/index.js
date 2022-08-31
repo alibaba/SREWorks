@@ -67,10 +67,6 @@ export default class DraggableTabs extends Component {
       return;
     }
 
-    console.log(this.props.items);
-    console.log("=wkh!");
-    console.log(result);
-
     const items = reorder(
       this.props.items,
       result.source.index,

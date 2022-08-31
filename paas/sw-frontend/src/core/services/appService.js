@@ -84,7 +84,7 @@ class AppService {
     getAppInitData(){
         let productName=getProductName(),settingReq=[];
         let params = {nodeId:`${productName}|app|I`,level:-1,cache:false};
-        params['stageId'] = cacheRepository.getBizEnv(productName)==='prod'? 'prod' : 'dev';
+        params['stageId'] = cacheRepository.getBizEnv(productName)==='dev'? 'dev' : 'prod';
         settingReq.push(httpClient.get("gateway/v2/foundation/appmanager/apps/"+productName));
         settingReq.push(Promise.resolve([]));
         settingReq.push(httpClient.get(

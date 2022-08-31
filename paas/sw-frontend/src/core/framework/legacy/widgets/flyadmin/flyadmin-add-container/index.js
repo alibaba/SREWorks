@@ -70,7 +70,7 @@ class FlyAdminAddContainer extends React.Component {
         values.containerType = config.containerType;
         if (values.repoType === "INNER_REPO") {
           values.repoGroup = values.repoGroup || "alisre";
-          values.repoDomain = values.repoDomain || "http://gitlab.alibaba-inc.com";
+          values.repoDomain = values.repoDomain || "";
           values.repo = `${values.repoDomain}/${values.repoGroup}/` + values.appName + ".git";
         }
         if (config.type === "JOB") {
@@ -151,7 +151,7 @@ class FlyAdminAddContainer extends React.Component {
           rules: [{ required: true, message: "请输入 Git 仓库地址" }],
         })(
           <Input placeholder="请输入 Git 仓库地址"
-            addonBefore={`${(nowData.repoDomain) || "http://gitlab.alibaba-inc.com"}/${(nowData.repoGroup) || "alisre"}/`}
+            addonBefore={`${(nowData.repoDomain) || ""}/${(nowData.repoGroup) || "alisre"}/`}
             addonAfter=".git" />,
         )}
       </Form.Item>}

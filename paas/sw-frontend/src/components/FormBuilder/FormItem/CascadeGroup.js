@@ -17,44 +17,6 @@ import _ from 'lodash';
 const FormItem = Form.Item;
 
 const Option = Select.Option;
-
-/*let model={
-    "items": [
-        {
-            "name": "project",
-            "depend": "",
-            "required": true,
-            "initValue":"",
-            "label": "应用",
-            "url":"http://rap2api.alibaba-inc.com/app/mock/2727/api/select/datasource",
-            "mode":"",
-            "data2option":{value:"",label:""},
-            "optionsIndex":"items"
-            "searchType":"",
-        },
-        {
-            "name": "group",
-            "depend": "project",
-            "required": true,
-            "initValue":"",
-            "label": "分组",
-            "url":"http://rap2api.alibaba-inc.com/app/mock/2727/api/select/datasource",
-            "mode":"",
-            "searchType":"",
-        },
-        {
-            "name": "host",
-            "depend": "group",//或者为数组 如["group","project"]
-            "required": true,
-            "initValue":[],
-            "label": "机器",
-            "url":"http://rap2api.alibaba-inc.com/app/mock/2727/api/select/datasource",
-            "mode":"multiple",
-            "searchType":"",
-        },
-    ]
-};*/
-
 class CascadeGroup extends PureComponent {
 
     constructor(props) {
@@ -161,7 +123,6 @@ class CascadeGroup extends PureComponent {
             }
         });
         let dynStates = {}, { form } = this.props;
-        //console.log("reqSelectItems---->",reqSelectItems);
         if (req.length) {
             this.setState({
                 loading: true
@@ -192,7 +153,6 @@ class CascadeGroup extends PureComponent {
                 } else {
                     dynStates[`${selectItem.name}Options`] = dataOptions;
                 }
-                //console.log("data2option,transform,optionMapping----->",data2option,transform,optionMapping);
                 if (defalutValue) {
                     form.setFieldsValue({
                         [selectItem.name]: defalutValue,
@@ -209,7 +169,6 @@ class CascadeGroup extends PureComponent {
     };
 
     fetchRemoteItemOption = (item, searchText) => {
-        //console.log("item,searchText-------->",item,searchText);
         let { form } = this.props, depend = Array.isArray(item.depend) ? item.depend : [item.depend];
         let params = form.getFieldsValue(depend);
         this.setState({
@@ -260,7 +219,6 @@ class CascadeGroup extends PureComponent {
         } else {
             loadParams[item.name] = Array.isArray(value) ? value.join(",") : value;
         }
-        //console.log("loadItems,loadParams------->",loadItems,loadParams);
         this.loadSelectItemsOption(loadItems, loadParams);
         //onChange&&onChange(value);
         //needOption是为了下拉选择把整个option选项输出

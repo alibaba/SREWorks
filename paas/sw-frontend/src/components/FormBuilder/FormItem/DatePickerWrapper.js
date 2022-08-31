@@ -41,7 +41,6 @@ class DatePickerWrapper extends Component {
   };
 
   render() {
-    //console.log("this.props", this.props);
     let { type } = this.props;
     let isNeedDisableDate = _.get(this.props, "item.defModel.isNeedDisableDate", false);
     let disableMaxTime = _.parseInt(_.get(this.props, "item.defModel.disableMaxTime", moment().unix()));

@@ -21,7 +21,7 @@ public class InterfaceGroupFieldBaseReq {
     @ApiModelProperty(value = "字段别名", example = "应用ID")
     String alias;
 
-    @ApiModelProperty(value = "原始字段", example = "appId")
+    @ApiModelProperty(value = "索引字段", example = "appId")
     String dim;
 
     @ApiModelProperty(value = "字段类型", example = "STRING")

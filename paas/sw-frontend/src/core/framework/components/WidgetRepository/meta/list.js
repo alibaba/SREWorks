@@ -147,5 +147,5 @@
 //       "supportItemToolbar":true,
 //       "dataMock": {},
 //     },
-//     "catgory": "base",
+//     "category": "base",
 //   };

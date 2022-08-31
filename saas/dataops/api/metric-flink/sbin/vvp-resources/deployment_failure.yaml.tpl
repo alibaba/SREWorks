@@ -19,7 +19,7 @@ spec:
       artifact:
         additionalDependencies:
           - >-
-            s3://vvp/artifacts/namespaces/${VVP_WORK_NS}/udfs/${UDF_ARTIFACT_JAR}
+            ${jar_uri}
         flinkVersion: '1.14'
         kind: SQLSCRIPT
         sqlScript: |-
@@ -39,6 +39,8 @@ spec:
         execution.checkpointing.interval: 10s
         execution.checkpointing.min-pause: 10s
         high-availability: vvp-kubernetes
+        metrics.reporters: prom
+        metrics.reporter.prom.port: '9249'
         metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
         state.backend: filesystem
         taskmanager.memory.managed.fraction: '0.0'

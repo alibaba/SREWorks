@@ -445,7 +445,6 @@ export default class PageEditor extends React.Component {
     }
     render() {
         let { pageModel, showPreview, sourceJSON, esSearchStr, openDrawer, showJson, activeKey, showTemplateList, confirmLoading, templateList, activeTarget, getTemplateLoading, saveOrCreat, activePanel, categoryList, templateForm, templateModal } = this.state, { height = 620, nodeData, contentLoading } = this.props;
-        console.log(pageModel, 'pageModel-init')
         let tabEditorContentStyle = { height: height - 42, overflowY: "auto", overflowX: "none" }, { config } = nodeData;
         let { pageLayoutType = Constants.PAGE_LAYOUT_TYPE_CUSTOM } = config, containerModel = pageModel.getRootWidgetModel();
         return (
@@ -520,7 +519,7 @@ export default class PageEditor extends React.Component {
                             }
                         />
                     </TabPane>
-                    <TabPane tab={<span><DeploymentUnitOutlined style={{ marginRight: 8 }} />页面参数</span>} key="searchparams">
+                    {/* <TabPane tab={<span><DeploymentUnitOutlined style={{ marginRight: 8 }} />页面参数</span>} key="searchparams">
                         <SearchParamsEditor value={esSearchStr || null}
                             onValuesChange={(changedValues, allValues) => {
                                 pageModel.setEsSearch(changedValues);
@@ -528,7 +527,7 @@ export default class PageEditor extends React.Component {
                                     esSearchStr: pageModel.getEsSearch()
                                 })
                             }} />
-                    </TabPane>
+                    </TabPane> */}
                 </Tabs>
                 <Drawer
                     title={showJson ? "页面源码" : "页面预览"}

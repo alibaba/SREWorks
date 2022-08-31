@@ -1,3 +1,8 @@
+
+{{- if hasPrefix "http://NODE_IP:" .Values.appmanager.home.url -}}
+{{ fail "Please replace the NODE_IP value to real node ip in appmanager.home.url" }}
+{{- end -}}
+
 {{- if eq .Values.installMode "default" -}}
 
 apiVersion: v1
@@ -104,6 +109,8 @@ data:
   DATA_ES_USER: {{ .Values.saas.dataops.esUser | quote }}
   DATA_ES_PASSWORD: {{ .Values.saas.dataops.esPassword | quote }}
 
+  DATA_PROM_HOST: "localhost"
+  DATA_PROM_PORT: "80"
 
   ACCOUNT_SUPER_CLIENT_ID: {{ .Values.appmanager.gateway.account_super_client_id }}
   ACCOUNT_SUPER_CLIENT_SECRET: {{ .Values.appmanager.gateway.account_super_client_secret }}
@@ -113,6 +120,7 @@ data:
   HOME_BUILD: {{ .Values.build.isHome | quote }}
   ONLY_BASE: {{ .Values.saas.onlyBase | quote }}
 
+  ADMIN_INIT_PASSWORD: {{ .Values.adminInitPassword | quote }}
 
 kind: ConfigMap
 metadata:

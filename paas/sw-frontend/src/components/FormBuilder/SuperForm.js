@@ -107,7 +107,6 @@ export default class SuperForm extends React.Component  {
     validate = () => {
         let pass=false,{onSubmit,items}=this.props;
         this.action_form_container.validateFieldsAndScroll((err, values) => {
-            console.log("form values----->",values);
             if (!err) {
                 let allValues={};
                 /*items.forEach((item,index)=> {

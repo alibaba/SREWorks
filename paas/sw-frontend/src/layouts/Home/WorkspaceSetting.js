@@ -54,6 +54,9 @@ export default class WorkspaceSetting extends React.Component {
             bacgroundSettingVisible: false,
             targetDesktopIndex: -1,
             activeBackgroundImgIndex: -1,
+            widgetConfig: {
+                currentValue:'2022-09-02'
+            }
         }
     }
 
@@ -145,7 +148,6 @@ export default class WorkspaceSetting extends React.Component {
             message.info("请先选择要设置的背景图片")
         }
         let { workspaces } = home;
-        console.log(mixImglist[activeBackgroundImgIndex], 'update-mixface');
         workspaces.forEach((item, index) => {
             if (index === targetDesktopIndex) {
                 item.background = mixImglist[activeBackgroundImgIndex]
@@ -180,7 +182,6 @@ export default class WorkspaceSetting extends React.Component {
     };
 
     onSubmit = (res) => {
-        console.log(res);
         const { dispatch, home } = this.props;
         let { customQuickList, collectList, workspaces, } = home;
         if (res) {
@@ -216,7 +217,7 @@ export default class WorkspaceSetting extends React.Component {
     getImageList = () => {
         const { dispatch } = this.props;
         AppService.getDesktopBackgroundList().then(res => {
-            let imgList = res.imgList || []
+            let imgList = (res && res.imgList) || []
             this.setState({ imgList });
             dispatch({
                 type: 'home/setImgList',
@@ -287,6 +288,13 @@ export default class WorkspaceSetting extends React.Component {
         }
         return productName;
     }
+    changeDate=()=> {
+        this.setState({
+            widgetConfig: {
+                currentValue:'2022-09-07'
+            }
+        })
+    }
     render() {
         const { visible, settingType, quickVisible, isDelete } = this.state, { home } = this.props;
         const { imgList, loading, bacgroundSettingVisible, activeBackgroundImgIndex } = this.state;
@@ -305,6 +313,7 @@ export default class WorkspaceSetting extends React.Component {
             }
             return null
         };
+        const {widgetConfig} = this.state;
         return (
             <div className="workspace-setting">
                 <div className="edit-icon">
@@ -361,7 +370,7 @@ export default class WorkspaceSetting extends React.Component {
                     visible={visible}
                     footer={footer()}
                     onCancel={this.handleCancel}
-                    width="60%"
+                    width="70%"
                     bodyStyle={{ padding: 0, height: 'calc(60vh)' }}
                 >
                     {
@@ -385,7 +394,7 @@ export default class WorkspaceSetting extends React.Component {
                                                             {
                                                                 !originMixImglist.includes(child.background) && <img className="icon" src={requiredImglist[0]} onClick={() => this.showSettingModal(i)} />
                                                             }
-                                                            <div class="icon-mask" onClick={() => this.showSettingModal(i)}></div>
+                                                            <div class="icon-mask" onClick={() => this.showSettingModal(i)}><div style={{color:'var(--PrimaryColor)',textAlign:'center',verticalAlign:'middle',lineHeight:'96px'}}>选择背景</div></div>
                                                         </div>
                                                     </div>
                                                     <div>

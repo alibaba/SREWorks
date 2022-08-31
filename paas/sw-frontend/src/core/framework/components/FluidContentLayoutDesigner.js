@@ -34,7 +34,6 @@ class FluidContentLayoutDesigner extends Component {
             })
             props.containerModel.widgets.push(fluidWidget);
         }
-        console.log(props, 'props-block')
         //bad small
         fluidWidget.config && fluidWidget.config.rows && fluidWidget.config.rows.map(row => {
             row.elements.forEach((element, index) => {

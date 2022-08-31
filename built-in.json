@@ -1,0 +1,13 @@
+[{
+  "appId":"template",
+  "packagePath": "saas/template/build"
+},{
+  "appId": "job",
+  "packagePath": "saas/job/build"
+},{
+  "appId": "app",
+  "packagePath": "saas/app/build"
+},{
+  "appId": "cluster",
+  "packagePath": "saas/cluster/build"
+}]

@@ -40,7 +40,6 @@ export default class OamWidget extends React.Component {
                 });
             });
         } else {
-            //console.log("widgetTemp----->",widget,"mode---->",this.getMode(widget),"this.props.nodeParams---->",this.props.nodeParams);
             this.setState({
                 modeTemplate: widget,
                 mode: this.getMode(widget)
@@ -116,7 +115,6 @@ export default class OamWidget extends React.Component {
         if (!props) props = this.props;
         let { nodeParams, widgetParams = {} } = props, urlParams = util.getUrlParams();
         let paramsSet = Object.assign({}, nodeParams, urlParams, widgetParams);
-        //console.log("OamWidget ParamsSet----->",paramsSet);
         let keys = Object.keys(paramsSet);
         /*let keys=Object.keys(paramsSet);
         let modeString=JSON.stringify(modeTemplate);
@@ -155,7 +153,6 @@ export default class OamWidget extends React.Component {
                 replaceVars.forEach(varStr => {
                     let paramKey = varStr.replace("$(", "").replace(")", "");
                     let renderValue = _.get(paramsSet, paramKey);
-                    //console.log("renderValue------>",varStr,renderValue);
                     //临时把"$(row."作为运行时内置替换变量,进行规避，防止节点中出现table等其他含有的运行时变量进行了脏替换。
                     if ((typeof renderValue) !== "undefined" && !varStr.includes("$(row.")) {
                         let varTmp = "\\$\\(" + paramKey + "\\)";
@@ -163,7 +160,6 @@ export default class OamWidget extends React.Component {
                         if (renderValue === null) {
                             renderValue = "";
                         }
-                        //console.log("value.replace(rex, renderValue)------>",value.replace(rex, renderValue));
                         value = value.replace(rex, renderValue);
                     }
                 });
@@ -183,7 +179,6 @@ export default class OamWidget extends React.Component {
             return value;
         });
         if (children) mode.children = children;
-        //console.log("mode--clone-->",JSON.parse(JSON.stringify(mode)));
         mode.__template = modeTemplate;
         mode.config = mode.config || {};
         let cardWrapper = mode.config.cardWrapper;
@@ -202,7 +197,6 @@ export default class OamWidget extends React.Component {
             };
         }
         if (mode.config.widgetDataSource || mode.config.dataSourceMeta) {
-            console.log(mode.config.dataSourceMeta, 'mode.config.dataSourceMeta')
             let dataSouce = mode.config.widgetDataSource || mode.config.dataSourceMeta
             this.loadData(dataSouce, mode)
         }

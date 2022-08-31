@@ -71,8 +71,9 @@ spec:
               type: elasticsearch
               url: http://${DATA_ES_HOST}:${DATA_ES_PORT}
               database: "[metricbeat]*"
-              basic_auth_user: "${DATA_ES_USER}"
-              basic_auth_password: "${DATA_ES_PASSWORD}"
+              basicAuth: true
+              basicAuthUser: "${DATA_ES_USER}"
+              basicAuthPassword: "${DATA_ES_PASSWORD}"
               access: proxy
               isDefault: true
               jsonData:
@@ -83,8 +84,9 @@ spec:
               type: elasticsearch
               url: http://${DATA_ES_HOST}:${DATA_ES_PORT}
               database: "[filebeat]*"
-              basic_auth_user: "${DATA_ES_USER}"
-              basic_auth_password: "${DATA_ES_PASSWORD}"
+              basicAuth: true
+              basicAuthUser: "${DATA_ES_USER}"
+              basicAuthPassword: "${DATA_ES_PASSWORD}"
               access: proxy
               isDefault: false
               jsonData:
@@ -93,10 +95,42 @@ spec:
                 esVersion: 70
                 logMessageField: message
                 logLevelField: fields.level
-            #- name: dataset
+            - name: dataops-prometheus
+              type: prometheus
+              access: proxy
+              httpMethod: POST
+              url: http://${DATA_PROM_HOST}:${DATA_PROM_PORT}
+            # - name: dataset
             #  type: marcusolsson-json-datasource
             #  url: http://{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-dataset.{{ Global.NAMESPACE_ID }}
             #  access: proxy
             #  isDefault: false
+        dashboards:
+          flink:
+            flink-dashboard:
+              file: dashboards/flink-dashboard.json
+          cost:
+            cost-dashboard:
+              file: dashboards/cost-dashboard.json
+        dashboardProviders:
+          dashboardproviders.yaml:
+            apiVersion: 1
+            providers:
+            - name: 'flink'
+              orgId: 1
+              folder: 'sreworks-dataops'
+              type: file
+              disableDeletion: false
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/flink
+            - name: 'cost'
+              orgId: 1
+              folder: 'sreworks-dataops'
+              type: file
+              disableDeletion: false
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/cost
       toFieldPaths:
       - "spec.values"

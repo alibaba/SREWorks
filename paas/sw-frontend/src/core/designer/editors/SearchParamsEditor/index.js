@@ -26,7 +26,7 @@ const formItemLayout = {
         md: { span: 16 },
     },
 };
-let themeType = localStorage.getItem('tesla-theme');
+let themeType = localStorage.getItem('sreworks-theme');
 export default class SearchParamsEditor extends Component {
     constructor(props) {
         super(props);
@@ -52,7 +52,6 @@ export default class SearchParamsEditor extends Component {
         // if (this.props.value && this.props.value.length > 20) {
         //     this.value = this.props.value
         // }
-        console.log(this.props.value, this.value, '传入props.value')
         return <div className="card-tab-panel">
             <AceEditor
                 mode="json"

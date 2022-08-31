@@ -27,7 +27,7 @@ import FormElementFactory from '../../../components/FormBuilder/FormElementFacto
 import Constants from '../../framework/model/Constants';
 import DataSourceEditor from "./DataSourceEditor";
 import widgetLoader from '../../framework/core/WidgetLoader';
-import ReactMarkdown from "react-markdown/with-html";
+import ReactMarkdown from "react-markdown";
 import { getLegacyWidgetMeta } from '../../framework/components/WidgetRepository';
 import AceViewer from '../../../components/FormBuilder/FormItem/AceViewer';
 import debounce from 'lodash.debounce';
@@ -89,7 +89,6 @@ export default class ElementEditor extends React.Component {
         })
     }
     setCommonConfig = (cfg) => {
-        console.log(cfg, 'custom-update')
         this.commonConfig = Object.assign(this.commonConfig, cfg);
         if (cfg.hasWrapper) {
             this.setState({
@@ -125,7 +124,6 @@ export default class ElementEditor extends React.Component {
         let { widgetModel } = this.state, { onSave } = this.props;
         let config = Object.assign({}, this.commonConfig);
         widgetModel.updateConfig(config);
-        console.log(widgetModel, config, 'widgetModel-update');
         onSave && onSave(widgetModel);
     };
 
@@ -263,7 +261,7 @@ export default class ElementEditor extends React.Component {
                             (widgetMeta.configSchema.schema && Object.keys(widgetMeta.configSchema.schema).length) || widgetMeta.configSchema.supportItemToolbar
                         ) &&
                         <TabPane key="custom" tab={<span>组件属性</span>}>
-                            <Row>
+                            <Row style={tabContentStyle}>
                                 <Col span={16}>
                                     <div>
                                         {

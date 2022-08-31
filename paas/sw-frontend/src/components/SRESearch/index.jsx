@@ -30,7 +30,6 @@ class SRESearch extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log(props, 'props-category');
     this.currentRef = React.createRef();
     this.navType = '';
     this.state = {
@@ -79,12 +78,12 @@ class SRESearch extends React.Component {
     })
   }
   getHotKeywords = () => {
-    const { userEmpId, teslaSearchPath, category } = this.props;
+    const { userEmpId, sreworksSearchPath, category } = this.props;
     if(!this.state.searchServiceFlag) {
       message.warn("搜索服务未部署");
       return false
     }
-    SearchService.getHotKeywords(userEmpId, teslaSearchPath, category, 10)
+    SearchService.getHotKeywords(userEmpId, sreworksSearchPath, category, 10)
       .then(res => {
         this.setState({
           hotKeyOptions: res,
@@ -94,14 +93,14 @@ class SRESearch extends React.Component {
       });
   }
   getSuggestionList() {
-    const { userEmpId, teslaSearchPath, category } = this.props;
+    const { userEmpId, sreworksSearchPath, category } = this.props;
     const { textValue } = this.state;
     if(!this.state.searchServiceFlag) {
       message.warn("搜索服务未部署");
       return false
     }
     if (textValue !== "") {
-      SearchService.searchSuggestions(userEmpId, teslaSearchPath, category, textValue, 1, 10)
+      SearchService.searchSuggestions(userEmpId, sreworksSearchPath, category, textValue, 1, 10)
         .then(res => {
           this.setState({
             hotKeyOptions: res,
@@ -125,7 +124,6 @@ class SRESearch extends React.Component {
     });
   }
   onSearch(value) {
-    console.log(value, typeof (value), 'searchValue-change--select');
     this.setState({ temp_search_content: value });
     if (value !== "") {
       this.setState({
@@ -138,7 +136,6 @@ class SRESearch extends React.Component {
     this.hasSearch = true;
   }
   handleChange = (e) => {
-    console.log(e.target.value, 'handlechange===');
     this.setState({
       textValue: e.target.value,
       overlayVisible: true,
@@ -160,11 +157,9 @@ class SRESearch extends React.Component {
     })
   }
   handleClickOutside = evt => {
-    console.log('clickoutside')
     const { overlayVisible, hotKeyWordsVisible } = this.state;
     const area = ReactDOM.findDOMNode(this.currentRef.current);
     if (!area.contains(evt.target) && (hotKeyWordsVisible || overlayVisible)) {
-      console.log('clickoutside', 'true');
       this.navType = '';
       this.setState({
         overlayVisible: false,
@@ -175,9 +170,6 @@ class SRESearch extends React.Component {
   };
 
   onKeyDown(e) {
-
-    console.log(e.keyCode === 13 && !this.hasSearch);
-    console.log(this.state.temp_search_content)
     if (e.keyCode === 13 && !this.hasSearch) {
       // this.refs['search-select'].blur();
       this.onSearch(this.state.search_content)
@@ -187,7 +179,7 @@ class SRESearch extends React.Component {
   }
 
   componentWillMount() {
-    // this.getHotKeywords(this.props.userEmpId, this.props.teslaSearchPath, this.props.category, 10);
+    // this.getHotKeywords(this.props.userEmpId, this.props.sreworksSearchPath, this.props.category, 10);
     // if (this.props.isShowKeywords) {
     //   this.getCommonKeywords();
     // }
@@ -283,7 +275,7 @@ class SRESearch extends React.Component {
 SRESearch.propTypes = {
   userEmpId: PropTypes.string,
   category: PropTypes.string,
-  teslaSearchPath: PropTypes.string,
+  sreworksSearchPath: PropTypes.string,
   placeholder: PropTypes.string,
   moreLinkPrefix: PropTypes.string,
   className: PropTypes.string,

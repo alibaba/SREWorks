@@ -7,6 +7,7 @@ import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.RtComponentInstanceDTO;
 import com.alibaba.tesla.appmanager.domain.req.rtcomponentinstance.RtComponentInstanceQueryReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author yaoxing.gyx@alibaba-inc.com
  */
 @Slf4j
+@Tag(name = "组件实例 API")
 @RequestMapping("/realtime/component-instances")
 @RestController
 public class RtComponentInstanceController extends AppManagerBaseController {

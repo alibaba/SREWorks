@@ -11,6 +11,7 @@ import com.alibaba.tesla.appmanager.domain.schema.AppPackageSchema;
 import com.alibaba.tesla.appmanager.server.repository.domain.AppPackageTagDO;
 import com.alibaba.tesla.appmanager.server.service.apppackage.AppPackageTagService;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Slf4j
+@Tag(name = "全局应用包 API")
 @RequestMapping("/app-packages")
 @RestController
 public class GlobalAppPackageController extends AppManagerBaseController {

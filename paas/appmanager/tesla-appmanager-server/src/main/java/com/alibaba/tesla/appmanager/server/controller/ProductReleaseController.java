@@ -4,6 +4,7 @@ import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.server.job.ProductReleaseSchedulerJob;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -16,11 +17,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotEmpty;
 
 /**
- * Namespace 管理
+ * 产品发布版本管理
  *
  * @author yaoxing.gyx@alibaba-inc.com
  */
 @Slf4j
+@Tag(name = "产品发布版本 API")
 @RequestMapping("/products/{productId:.+}/releases/{releaseId:.+}")
 @RestController
 public class ProductReleaseController extends AppManagerBaseController {

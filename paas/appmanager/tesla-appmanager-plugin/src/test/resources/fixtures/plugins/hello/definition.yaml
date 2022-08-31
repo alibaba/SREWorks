@@ -1,0 +1,27 @@
+apiVersion: core.oam.dev/v1beta1
+kind: ComponentDefinition
+metadata:
+  name: TestComponent
+  annotations:
+    definition.oam.dev/description: "component for test"
+    definition.oam.dev/version: "1.0.0"
+    definition.oam.dev/tags: "a=b,c=d"
+spec:
+  workload:
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+  schematic: 
+    groovy:
+      files:
+        - kind: COMPONENT
+          name: TEST_COMPONENT
+          path: dynamicscripts/TestComponent.groovy
+    frontend:
+      files:
+        - kind: CREATE
+          path: frontend/create.json
+    resources:
+      files:
+        - kind: YAML
+          path: resources/hello.yaml

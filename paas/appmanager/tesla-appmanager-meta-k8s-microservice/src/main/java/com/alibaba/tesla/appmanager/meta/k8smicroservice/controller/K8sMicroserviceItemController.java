@@ -18,6 +18,7 @@ import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaUpdateByOption
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaUpdateReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.google.common.collect.ImmutableMap;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +36,7 @@ import java.util.Objects;
  *
  * @author qianmo.zm@alibaba-inc.com
  */
+@Tag(name = "K8S 微服务 API")
 @RequestMapping("/apps/{appId}/k8s-microservices")
 @RestController
 @Slf4j

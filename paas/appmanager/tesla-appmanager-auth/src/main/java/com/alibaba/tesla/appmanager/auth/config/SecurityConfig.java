@@ -1,6 +1,7 @@
 package com.alibaba.tesla.appmanager.auth.config;
 
 import com.alibaba.tesla.appmanager.autoconfig.AuthProperties;
+import com.alibaba.tesla.appmanager.autoconfig.SystemProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -19,6 +20,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AuthProperties authProperties;
+
+    @Autowired
+    private SystemProperties systemProperties;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -44,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         if (authProperties.getEnableAuth()) {
-            web.ignoring()
+            WebSecurity.IgnoredRequestConfigurer pre = web.ignoring()
                     .antMatchers("/status.taobao")
                     .antMatchers("/actuator/**")
                     .antMatchers("/traits**")
@@ -53,6 +57,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.POST, "/apps")
                     .antMatchers("/definition-schemas**")
                     .antMatchers(HttpMethod.GET, "/realtime/**");
+            if (systemProperties.isEnableOpenApiUi()) {
+                pre.antMatchers("/doc.html")
+                        .antMatchers("/webjars**")
+                        .antMatchers("/webjars/**")
+                        .antMatchers("/v3/api-docs*")
+                        .antMatchers("/v3/api-docs/*");
+            }
         } else {
             web.ignoring().antMatchers("/**");
         }

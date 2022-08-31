@@ -150,7 +150,6 @@ public class BackendStoreService {
         JSONObject ret = new JSONObject();
         NodeAndRelation nodeAndRelation = backendStoreService.saveBackendStoreData(backendStoreData, partition);
         elasticSearchUpsertService.upserts(source, nodeAndRelation.getNodes());
-        elasticSearchUpsertService.insertRelationList(nodeAndRelation.getRelations());
         return ret;
     }
 
@@ -159,7 +158,6 @@ public class BackendStoreService {
         JSONObject ret = new JSONObject();
         NodeAndRelation nodeAndRelation = backendStoreService.saveBackendStoreData(backendStoreData, partition);
         elasticSearchUpsertService.upserts(source, nodeAndRelation.getNodes(), consumeStime, consumerDto);
-        elasticSearchUpsertService.insertRelationList(nodeAndRelation.getRelations());
         return ret;
     }
 

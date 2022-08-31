@@ -25,7 +25,6 @@ class ScreenSetting extends React.Component {
         let paramsDef = [], chartBlocks = [];
         let { chartDisplayConfig = {} } = config;
         widgetModel.nodeModel.getBlocks().forEach(block => {
-            console.log(props.config, 'block=============> action 区块列表')
             let { elementId, elements, label, category } = block;
             if (elements && elements[0] && elements[0]['config'] && elements[0]['config']['rows'] && elements[0]['config']['rows'][0] && elements[0]['config']['rows'][0]['elements']) {
                 let elementArray = elements[0]['config']['rows'][0]['elements'];

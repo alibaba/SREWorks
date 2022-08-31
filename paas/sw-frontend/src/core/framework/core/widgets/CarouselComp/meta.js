@@ -130,5 +130,5 @@ export default {
     "supportItemToolbar":false,
     "dataMock": {},
   },
-  "catgory": "staticComp",
+  "category": "staticComp",
 };

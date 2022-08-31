@@ -26,7 +26,7 @@ spec:
             httpGet:
               path: /status.taobao
               port: 7001
-            initialDelaySeconds: 120
+            initialDelaySeconds: 1200
             failureThreshold: 5
             periodSeconds: 20
           image: {{ template "images.server" . }}

@@ -6,7 +6,7 @@ import appService from '../core/services/appService'
 import properties from 'appRoot/properties';
 import cacheRepository from '../utils/cacheRepository';
 
-let themeType = localStorage.getItem('tesla-theme') ? localStorage.getItem('tesla-theme') : 'light';
+let themeType = localStorage.getItem('sreworks-theme') ? localStorage.getItem('sreworks-theme') : 'light';
 //let themeType ='dark';
 export default {
     namespace: 'global',
@@ -51,6 +51,7 @@ export default {
         platformName: 'SREworks',
         platformLogo: '//g.alicdn.com/bcc/bigdata-manager/new_favicon.png',
         btnLoading: false,
+        remoteComp: [],
     },
     subscriptions: {
         setup({ dispatch }) {
@@ -118,7 +119,7 @@ export default {
             }
         },
         switchTheme(state, { theme }) {
-            localStorage.setItem('tesla-theme', theme);
+            localStorage.setItem('sreworks-theme', theme);
             return {
                 ...state,
                 theme: theme,
@@ -184,7 +185,6 @@ export default {
         switchLanguage(state, { language }) {
             localStorage.setItem('t_lang_locale', language);
             appService.switchLanguage(language);
-            //console.log("language-------->",language);
             return {
                 ...state,
                 language: language,
@@ -271,7 +271,6 @@ export default {
 
         // 修改全局配置平台名称和logo
         setplatformNameAndLogo(state, { payload }) {
-            console.log("初始化logo触发")
             return {
                 ...state,
                 ...payload
@@ -289,6 +288,13 @@ export default {
                 ...state,
                 ...payload
             }
+        },
+        // 挂载远程组件列表到window
+        assignRemoteComp(state, { payload }) {
+            return {
+                ...state,
+                ...payload
+            };
         }
     },
 }

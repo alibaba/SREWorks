@@ -89,7 +89,6 @@ class PagedTable extends Component {
                     item.__row_uuid = uuidv4()
                 }
             })
-            console.log(respData, 'respData-3')
             let total = respData.total || respData.length || tdata.length || 0
             this.setState({
                 loading: false,
@@ -182,7 +181,6 @@ class PagedTable extends Component {
             if (!columnData && columnData !== 0 && columnData !== false) return "";
             let text = (columnData.value || columnData.value === 0 ? columnData.value : columnData), path = columnData.path, color = columnData.color;
             if (text === 0 || text === false) { text = text + "" }
-            //console.log("text---->",text,"path---->",path);
             if (path) {
                 return <a onClick={() => this.handleColumnHref(path, rowData)}>{text}</a>;
             }

@@ -84,7 +84,7 @@ export default  {
           "type": "string",
           "title": "参数转换",
           "required": true,
-          "description": "参数有label（参数的名称）,dataIndex(参数key),span（占据的位置，默认1列）,href（配置该参数后变为链接形式），render（可配置自定义渲染内容）",
+          "description": "参数有label（参数的名称）,dataIndex(参数key),span（包含列的数量，可理解为表格所占列宽比）,href（配置该参数后变为链接形式），render（可配置自定义渲染内容）",
           "x-component": "EditTable",
           "x-component-props":{
             "columns": [
@@ -118,7 +118,7 @@ export default  {
               {
                 "editProps": {
                   "required": false,
-                  "inputTip":"占据的位置，默认1列",
+                  "inputTip":"包含列的数量，默认1列",
                   "type": 1
                 },
                 "dataIndex": "span",
@@ -203,5 +203,5 @@ export default  {
     "supportItemToolbar":true,
     "dataMock": {}
   },
-  "catgory": "base"
+  "category": "base"
 };

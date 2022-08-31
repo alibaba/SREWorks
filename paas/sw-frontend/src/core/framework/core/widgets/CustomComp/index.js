@@ -17,7 +17,6 @@ export default class index extends Component {
     componentWillMount() {
         let { widgetData, widgetModel, widgetConfig } = this.props;
         service.getCustomList().then(customList => {
-            console.log(customList,'customList-customList')
             customList && customList.forEach(element => {
                 if (element.name === widgetModel.compName || element.name === widgetModel.name || element.name === widgetConfig.compName) {
                     this.setState({

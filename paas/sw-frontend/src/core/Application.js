@@ -14,10 +14,12 @@ import Home from '../layouts/Home';
 import * as util from './../utils/utils';
 import cacheRepository from './../utils/cacheRepository';
 import JsonEditor from '../components/JsonEditor';
+import MenuTreeService from './services/appMenuTreeService'
 
-@connect(({ node }) => ({
+@connect(({ node, global }) => ({
   nodeParams: node.nodeParams,
-  actionParams: node.actionParams
+  actionParams: node.actionParams,
+  remoteComp: global.remoteComp
 }))
 class Application extends React.Component {
 
@@ -28,7 +30,9 @@ class Application extends React.Component {
       isModalVisible: false
     }
   }
-
+  componentWillMount() {
+    this.loadRemoteComp();
+  }
   componentDidMount() {
     const { dispatch, routes, app, global } = this.props;
     global.app = app;
@@ -44,6 +48,32 @@ class Application extends React.Component {
     link.href = platformLogo;
     document.getElementsByTagName('head')[0].appendChild(link);
     document.title = platformName;
+  }
+  loadRemoteComp = async () => {
+    try {
+      let compList = await MenuTreeService.getCustomList();
+      let remoteComList = compList.filter(item => item.configObject.componentType === 'UMD');
+      let vueCompList = compList.filter(item => item.configObject.componentType === 'VUE_UMD');
+      let pros = [], recievedList = [],prosVue =[], recievedVueList = [];
+      remoteComList.forEach(item => {
+        if (item.configObject && item.configObject.umdUrl) {
+          pros.push(Promise.resolve(window.System.import(item.configObject.umdUrl)))
+          recievedList.push(item.name)
+        }
+      })
+      vueCompList.forEach(item => {
+        if (item.configObject && item.configObject.umdUrl) {
+          prosVue.push(Promise.resolve(window.System.import(item.configObject.umdUrl)))
+          recievedVueList.push(item.name)
+        }
+      })
+      let remoteComp = await Promise.all(pros);
+      window['REMOTE_COMP_LIST'] = recievedList;
+      let vueComp = await Promise.all(prosVue);
+      window['REMOTE_VUE_LIST'] = recievedVueList;
+    } catch (error) {
+      console.log(error);
+    }
   }
   getEnvLabel = () => {
     let bizApp = util.getNewBizApp();

@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 @Data
 @ApiModel(value="数据接口排序字段")
 public class InterfaceSortFieldReq {
-    @ApiModelProperty(value ="原始字段", example = "time", required = true)
+    @ApiModelProperty(value ="索引字段", example = "time", required = true)
     String dim;
 
     @ApiModelProperty(value ="升序/降序", example = "asc", required = true)
@@ -29,7 +29,7 @@ public class InterfaceSortFieldReq {
     String format;
 
     public String getDim() {
-        Preconditions.checkArgument(StringUtils.isNotEmpty(dim), "原始字段不允许为空");
+        Preconditions.checkArgument(StringUtils.isNotEmpty(dim), "索引字段不允许为空");
         return dim;
     }
 

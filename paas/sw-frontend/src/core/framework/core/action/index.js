@@ -23,7 +23,6 @@ class Action extends Component {
         const { nodeModel } = widgetModel;
         let { form, blocks, uniqueKey, parameters, ...other } = widgetConfig;
         //分步表单,分步表单只能通过区块去定义,分步操作不支持页面存在其他区块
-        console.log("widgetModel-------->", this.props, blocks);
         if (widgetModel.type === 'STEP_ACTION' && blocks) {
             //由区块提取其中定义的表单，然后拼装成原分步action中的数据模型
             let actionData = {
@@ -73,6 +72,7 @@ class Action extends Component {
                             label: label,
                             actionType: b === blocks.length - 1 ? "API" : "READ",
                             parameterDefiner: parameterDefiner,
+                            isDrawer: true,
                         },
                         id: 99999,
                         elementId: otherConfig.uniqueKey

@@ -205,7 +205,7 @@ public final class Constant {
     public final static String REDIS_REINDEX_NEWEST_UUID = "reindexNewestUuid";
 
     /*** graph db on es ***/
-    public final static String GRAPH_DB_INDEX_NAME = ".relation";
+//    public final static String GRAPH_DB_INDEX_NAME = ".relation";
 
     public final static String BACKEND_STORE_PATTERNS_SPLIT_SYMBOL = ";";
     public final static int HASHMAP_INIT_CAPACITY = 1000;

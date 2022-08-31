@@ -14,9 +14,6 @@ import { cloneDeep } from 'lodash';
 const { Panel } = Collapse;
 
 const { Search } = Input;
-
-
-
 export default class WidgetSelector extends React.Component {
 
     constructor(props) {
@@ -34,13 +31,15 @@ export default class WidgetSelector extends React.Component {
             let initCategory = [...widgetCategory];
             let customTemplate = widgetCategory.find(item => item.name === 'custom') ? widgetCategory.find(item => item.name === 'custom')['children'][0] : {};
             service.getCustomList().then(customList => {
-                console.log(customList, customTemplate, '自定义组件列表');
+                let jsxCompList = customList.filter(item => item.configObject.componentType === 'JSX');
+                let umdCompList = customList.filter(item => item.configObject.componentType === 'UMD');
+                let vueCompList = customList.filter(item => item.configObject.componentType === 'VUE_UMD');
                 initCategory.forEach(lit => {
-                    if (lit.name === 'custom') {
+                    if (lit.name === 'custom' || lit.name === 'remote' || lit.name === 'vue') {
                         lit.children = []
                     }
                 });
-                customList && customList.forEach(item => {
+                jsxCompList && jsxCompList.forEach(item => {
                     let cloneTemplate = cloneDeep(customTemplate);
                     cloneTemplate['id'] = item.componentId;
                     cloneTemplate['title'] = item.name;
@@ -52,6 +51,24 @@ export default class WidgetSelector extends React.Component {
                     initCategory.forEach(lit => {
                         if (lit.name === 'custom') {
                             lit.children.push(cloneTemplate)
+                        }
+                    });
+                })
+                umdCompList && umdCompList.forEach(item => {
+                    initCategory.forEach(lit => {
+                        if (lit.name === 'remote' && window[item.name]) {
+                            let templateMeta = cloneDeep(window[item.name][item.name+'Meta']);
+                            templateMeta['info']['logos']['small'] = item['configObject']['icon'] || 'https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*pUkAQpefcx8AAAAAAAAAAABkARQnAQ'
+                            window[item.name] && lit.children.push(templateMeta)
+                        }
+                    });
+                })
+                vueCompList && vueCompList.forEach(item => {
+                    initCategory.forEach(lit => {
+                        if (lit.name === 'vue' && window[item.name]) {
+                            let templateMeta = cloneDeep(window[item.name][item.name+'Meta']);
+                            templateMeta['info']['logos']['small'] = item['configObject']['icon'] || 'https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*pUkAQpefcx8AAAAAAAAAAABkARQnAQ'
+                            window[item.name] && lit.children.push(templateMeta)
                         }
                     });
                 })
@@ -163,7 +180,9 @@ export default class WidgetSelector extends React.Component {
                                                 const { info = { logos: {} } } = widgetMeta;
                                                 const { small = "", large = "",fontClass="" } = info.logos;
                                                 let icon = null, src = null, pic = small || large;
-                                                if (pic.includes("http") || pic.includes(".png") || pic.startsWith("data:")) {
+                                                if (pic instanceof Object) {
+                                                    src = pic.default
+                                                }else if(pic.includes("http") || pic.includes(".png") || pic.startsWith("data:")) {
                                                     src = pic
                                                 } else {
                                                     icon = pic

@@ -32,7 +32,6 @@ export default class ContentLayout extends React.PureComponent {
     createElement = (widget) => {
         let gridPos = widget.gridPos || unknownPos, { containerModel, isBlock } = this.props;
         //布局之间的间隙默认为10因此减去
-        console.log(this.props, '是否缺少type');
         return (
             <div key={widget.uniqueKey} data-grid={gridPos}>
                 <WidgetHandleCard {...this.props}
@@ -111,7 +110,6 @@ export default class ContentLayout extends React.PureComponent {
     };
 
     handlePreviewOpenAction = (action, actionParams = {}, callBack) => {
-        console.log("Open Action------>", action, actionParams, callBack);
         if (typeof action === 'string') {
             action = { name: action }
         }

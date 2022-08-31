@@ -159,7 +159,6 @@ class PageHeaderLayout extends React.Component {
         let newUserParams = Object.assign({}, userParams, util.getUrlParams());
         topGroupMapping = {};
         routeItem = [];
-        console.log(props, 'routeData=========routeData');
         const genRoute = function (routeData) {
             if (!routeData) {
                 return
@@ -206,12 +205,10 @@ class PageHeaderLayout extends React.Component {
 
 
     render() {
-        console.log(routeItem, 'routeItem=======routeItem 布局组件')
         const { routeData, location, widgetConfig, widgetData = {} } = this.props;
         const { title, logoUrl, description, descriptions = [], paddingInner = 0, statistics, height, contentPadding, width, topMenuType = 'menu' } = widgetConfig, { pathname } = location;
         let leftSiderMenu = null, toolbarItem = null;
         let leftKey = Object.keys(topGroupMapping).filter(topKey => pathname.startsWith(topKey))[0];
-        console.log(this.props, 'widgetConfig')
         if (leftKey) {
             leftSiderMenu = <LeftMenus {...this.props} routeData={topGroupMapping[leftKey]} />
         }

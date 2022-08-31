@@ -47,7 +47,6 @@ class RowContainerHandler extends React.Component {
             visible: false,
             currentIndex: -1
         });
-
     };
     getClipboard = () => {
         return localStorage.getItem("copyedModel");
@@ -57,7 +56,6 @@ class RowContainerHandler extends React.Component {
         let { elements } = row;
         let copyedModel = JSON.parse(model);
         copyedModel.uniqueKey = uuidv4();
-        debugger
         service.getWidgetRepository().then(category => {
             let allCompMeta = []
             category.forEach(cate => {
@@ -124,7 +122,6 @@ class RowContainerHandler extends React.Component {
 
     rowConfigEdit = () => {
         let { row, reload } = this.state, { onUpdate } = this.props;
-        console.log(row, '已有row2')
         Modal.confirm({
             title: '行属性',
             icon: '',
@@ -230,6 +227,7 @@ class RowContainerHandler extends React.Component {
                     placement="right"
                     maskClosable={true}
                     destroyOnClose={true}
+                    mask={true}
                     extra={
                         <Space>
                             <Button type="primary" onClick={this.creatComp}>

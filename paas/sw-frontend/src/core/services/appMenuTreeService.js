@@ -4,7 +4,7 @@
 
 import  httpClient from '../../utils/httpClient';
 import * as util from '../../utils/utils'
-import {getBuiltInWidgetCatgory} from '../framework/components/WidgetRepository';
+import {getBuiltInWidgetCategory} from '../framework/components/WidgetRepository';
 import properties from 'appRoot/properties';
 import cacheRepository from '../../utils/cacheRepository'
 
@@ -24,7 +24,7 @@ function getHeader(app) {
     }
 }
 function getProductName(){
-    //从路径获取应用名,如果没有则默认为tesla主站
+    //从路径获取应用名,如果没有则默认为sreworks主站
     let productName=window.location.hash.split("/")[1];
     if(!productName) {
         if(properties.defaultProduct&&!properties.defaultProduct.includes("$")){
@@ -145,7 +145,6 @@ class Service {
     }
 
     getElements(nodeTypePath,stageId) {
-        console.log(stageId,'stageId-click')
         let params = {};
         let productId = getProductName()
         if(stageId) {
@@ -227,7 +226,7 @@ class Service {
     }
 
     getWidgetRepository(){
-        return Promise.resolve(getBuiltInWidgetCatgory());
+        return Promise.resolve(getBuiltInWidgetCategory());
     }
 
     getNodeParams (nodeId,parameters={}) {

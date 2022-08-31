@@ -9,7 +9,7 @@ const url = require('url');
 const appDirectory = fs.realpathSync(process.cwd());
 const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
 
-const envPublicUrl = process.env.PUBLIC_URL;
+const envPublicUrl = process.env['PUBLIC_URL'];
 
 function ensureSlash(path, needsSlash) {
   const hasSlash = path.endsWith('/');
@@ -41,8 +41,7 @@ function getServedPath(appPackageJson) {
 const namespace={
   'react-native': 'react-native-web',
   'appRoot': path.resolve('src'),
-  'appAssets': path.resolve('src/assets'),
-   happypack: path.resolve('./node_modules/happypack'),
+  'appAssets': path.resolve('src/assets')
 };
 
 // config after eject: we're in ./config/
@@ -59,5 +58,6 @@ module.exports = {
   appNodeModules: resolveApp('node_modules'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
-  namespace:namespace
+  namespace:namespace,
+  packConfig: resolveApp('config'),
 };

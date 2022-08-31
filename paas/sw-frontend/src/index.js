@@ -9,6 +9,10 @@ import createLoading from 'dva-loading';
 import createHistory from 'history/createHashHistory';
 import router from './router';
 import AppService from './core/services/appService';
+import MenuTreeService from './core/services/appMenuTreeService'
+//不能去掉用于引入less.js来换肤使用
+import less from 'less';
+import 'antd/dist/antd.less';
 import 'antd/dist/antd.css';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -16,8 +20,6 @@ import * as util from './utils/utils';
 import { dispatch } from 'dva'
 
 import './index.less';
-//不能去掉用于引入less.js来换肤使用
-import less from 'less';
 import { httpClient } from './core';
 
 const app = dva({
@@ -35,13 +37,13 @@ const models = modelsContext.keys().map(key => modelsContext(key), []);
 models.forEach(m => app.model(m));
 
 //读取样式,根据不同的应用场景需要动态的适配
-let themeType = localStorage.getItem('tesla-theme');
+let themeType = localStorage.getItem('sreworks-theme');
 if (!themeType) {
-    localStorage.setItem('tesla-theme', 'light');
+    localStorage.setItem('sreworks-theme', 'light');
 }
 if (themeType === 'dark') {
     themeType = 'navyblue';
-    localStorage.setItem('tesla-theme', 'navyblue');
+    localStorage.setItem('sreworks-theme', 'navyblue');
 }
 {/* global THEMES */ }
 if (themeType === 'navyblue') window.less.modifyVars(THEMES[themeType]);
@@ -67,6 +69,7 @@ app.router(router);
     } catch (error) {
         app.start('#root');
     }
-})()
+})();
+
 
 

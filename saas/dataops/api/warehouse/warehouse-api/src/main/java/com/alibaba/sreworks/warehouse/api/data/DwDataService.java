@@ -59,45 +59,7 @@ public interface DwDataService extends BasicApi {
     default JSONObject convertToESData(JSONObject data, String partitionFormat, JSONObject modelFields) {
         JSONObject esData = new JSONObject();
 
-        for(String fieldName : modelFields.keySet()) {
-            JSONObject swField = modelFields.getJSONObject(fieldName);
-            ColumnType fieldType = ColumnType.valueOf(swField.getString("type").toUpperCase());
-            try {
-                esData.put(swField.getString("dim"), parseFieldValue(data.get(fieldName), fieldName, fieldType, swField.getBoolean("nullable")));
-            } catch (Exception ex) {
-                throw new RuntimeException(String.format("入库前数据校验失败, 请仔细核对元信息定义, 详情:%s",ex));
-            }
-
-            // generate doc id
-            if (fieldName.equals(DwConstant.PRIMARY_FIELD)) {
-                esData.put(DwConstant.META_ID, esData.get(swField.getString("dim")));
-            }
-
-            if (fieldName.equals(DwConstant.PARTITION_FIELD) && data.containsKey(DwConstant.PARTITION_FIELD)) {
-                String ds = esData.getString(swField.getString("dim"));
-                switch (partitionFormat) {
-                    case DwConstant.PARTITION_BY_HOUR:
-                        Preconditions.checkArgument(ds.length() == DwConstant.FORMAT_HOUR.length(), "时间分区字段非法, 合法格式:" + DwConstant.FORMAT_HOUR);
-                        break;
-                    case DwConstant.PARTITION_BY_DAY:
-                        Preconditions.checkArgument(ds.length() == DwConstant.FORMAT_DAY.length(), "时间分区字段非法, 合法格式:" + DwConstant.FORMAT_DAY);
-                        break;
-                    case DwConstant.PARTITION_BY_MONTH:
-                        Preconditions.checkArgument(ds.length() == DwConstant.FORMAT_MONTH.length(), "时间分区字段非法, 合法格式:" + DwConstant.FORMAT_MONTH);
-                        break;
-                    case DwConstant.PARTITION_BY_YEAR:
-                        Preconditions.checkArgument(ds.length() == DwConstant.FORMAT_YEAR.length(), "时间分区字段非法, 合法格式:" + DwConstant.FORMAT_YEAR);
-                        break;
-//                    case DwConstant.PARTITION_BY_WEEK:
-//                        Preconditions.checkArgument(ds.length() == DwConstant.FORMAT_WEEK.length(), "时间分区字段非法, 合法格式:" + DwConstant.FORMAT_WEEK);
-//                        break;
-                    default:
-                        Preconditions.checkArgument(ds.length() == DwConstant.FORMAT_DAY.length(), "时间分区字段非法, 默认按天分区, 合法格式:" + DwConstant.FORMAT_DAY);
-                }
-
-                esData.put(DwConstant.PARTITION_DIM, ds);
-            }
-        }
+        // generate default ds
         if (!data.containsKey(DwConstant.PARTITION_FIELD)) {
             String ds;
             switch (partitionFormat) {
@@ -113,14 +75,53 @@ public interface DwDataService extends BasicApi {
                 case DwConstant.PARTITION_BY_YEAR:
                     ds = DateTimeFormatter.ofPattern(DwConstant.FORMAT_YEAR).format(LocalDateTime.now());
                     break;
-//                case DwConstant.PARTITION_BY_WEEK:
-//                    esData.put(DwConstant.PARTITION_DIM, DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDateTime.now()));
-//                    break;
+                case DwConstant.PARTITION_BY_WEEK:
+                    ds = DateTimeFormatter.ofPattern(DwConstant.FORMAT_WEEK).format(LocalDateTime.now());
+                    break;
                 default:
                     ds = DateTimeFormatter.ofPattern(DwConstant.FORMAT_DAY).format(LocalDateTime.now());
             }
+            data.put(DwConstant.PARTITION_DIM, ds);
+        }
 
-            esData.put(DwConstant.PARTITION_DIM, ds);
+        for(String fieldName : modelFields.keySet()) {
+            JSONObject swField = modelFields.getJSONObject(fieldName);
+            ColumnType fieldType = ColumnType.valueOf(swField.getString("type").toUpperCase());
+            try {
+                esData.put(swField.getString("dim"), parseFieldValue(data.get(fieldName), fieldName, fieldType, swField.getBoolean("nullable")));
+            } catch (Exception ex) {
+                throw new RuntimeException(String.format("入库前数据校验失败, 请仔细核对元信息定义, 详情:%s",ex));
+            }
+
+            // generate doc id
+            if (fieldName.equals(DwConstant.PRIMARY_FIELD)) {
+                esData.put(DwConstant.META_ID, esData.get(swField.getString("dim")));
+            }
+
+            if (fieldName.equals(DwConstant.PARTITION_FIELD)) {
+                String ds = esData.getString(swField.getString("dim"));
+                switch (partitionFormat) {
+                    case DwConstant.PARTITION_BY_HOUR:
+                        Preconditions.checkArgument(ds.length() == DwConstant.FORMAT_HOUR.length(), "时间分区字段非法, 合法格式:" + DwConstant.FORMAT_HOUR);
+                        break;
+                    case DwConstant.PARTITION_BY_DAY:
+                        Preconditions.checkArgument(ds.length() == DwConstant.FORMAT_DAY.length(), "时间分区字段非法, 合法格式:" + DwConstant.FORMAT_DAY);
+                        break;
+                    case DwConstant.PARTITION_BY_MONTH:
+                        Preconditions.checkArgument(ds.length() == DwConstant.FORMAT_MONTH.length(), "时间分区字段非法, 合法格式:" + DwConstant.FORMAT_MONTH);
+                        break;
+                    case DwConstant.PARTITION_BY_YEAR:
+                        Preconditions.checkArgument(ds.length() == DwConstant.FORMAT_YEAR.length(), "时间分区字段非法, 合法格式:" + DwConstant.FORMAT_YEAR);
+                        break;
+                    case DwConstant.PARTITION_BY_WEEK:
+                        Preconditions.checkArgument(ds.length() == DwConstant.FORMAT_WEEK.length(), "时间分区字段非法, 合法格式:" + DwConstant.FORMAT_WEEK);
+                        break;
+                    default:
+                        Preconditions.checkArgument(ds.length() == DwConstant.FORMAT_DAY.length(), "时间分区字段非法, 默认按天分区, 合法格式:" + DwConstant.FORMAT_DAY);
+                }
+
+                esData.put(DwConstant.PARTITION_DIM, ds);
+            }
         }
 
         // generate doc id

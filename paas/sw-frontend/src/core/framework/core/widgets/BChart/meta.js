@@ -186,5 +186,5 @@ export default {
       "supportItemToolbar":true,
       "dataMock": {},
     },
-    "catgory": "charts",
+    "category": "charts",
   };

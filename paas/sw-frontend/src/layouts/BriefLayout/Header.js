@@ -108,7 +108,6 @@ const ModuleMenu = ({ currentModule, moduleData }) => {
 };
 
 const RedirectLink = ({ redirect, icon, label }) => {
-    console.log(redirect, label, 'redirect==')
     let redirectPath = redirect.path;
     if (redirect.path.startsWith("http")) {
         return <span onClick={() => window.open(redirect.path)} style={{ color: '#1890fe' }}>{icon ? <LegacyIcon type={icon} /> : null}{label}</span>;
@@ -129,17 +128,6 @@ const RedirectLink = ({ redirect, icon, label }) => {
     );
 };
 
-const UserTitle = ({ currentUser }) => (
-    <div style={{ maxWidth: 100, display: "flex", alignItems: "center", height: 50, }}>
-        <Avatar
-            style={{ verticalAlign: 'middle' }}
-            src={`https://work.alibaba-inc.com/photo/${currentUser.empId}.80x80.jpg`}
-        />
-        <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: '8px' }}>
-            <span style={{ maxWidth: 50, lineHeight: 1.6, paddingTop: 0 }} className="text-overflow">{!currentUser ? '' : currentUser.nickNameCn || currentUser.nickName || currentUser.loginName || currentUser.name}</span>
-        </div>
-    </div>
-);
 @connect(({ global }) => ({ global }))
 export default class Header extends React.Component {
 

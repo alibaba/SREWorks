@@ -1,9 +1,23 @@
-# SREWorks
+<p align="center">
+  <img src="paas/sw-frontend/src/publicMedia/sreworks-logo.png" width="120">
+</p>
+<h1 align="center"> SREWorks </h1>
+<p align="center"><b> Cloud Native DataOps & AIOps Platform </b></p>
+<p align="center">
+  <a href="./LICENSE"><img src="https://img.shields.io/github/license/alibaba/sreworks" /></a>
+  <img src="https://img.shields.io/github/repo-size/alibaba/sreworks" />
+</p>
 
-[![GitHub](https://img.shields.io/github/license/alibaba/sreworks)](./LICENSE)
-[![GitHub](https://img.shields.io/github/repo-size/alibaba/sreworks)](#)
+<p align="center">
+   <a href="https://www.yuque.com/sreworks-doc/docs" target="_blank">Documentation</a> 
+</p>
 
-English | [中文](README-CN.md)
+---
+
+<p align="center">
+   English | <a href="README-CN.md">中文<a/>
+</p>
+
 
 ## Introduction
 
@@ -24,6 +38,7 @@ There are many excellent open-source O & M platforms that reflect cloud-native s
 - [Quick Install](/paas/sw-frontend/docs/documents/rr5g10.md)
 - [Installation from source code](/paas/sw-frontend/docs/documents/mzz07m.md)
 - [Document](https://www.yuque.com/sreworks-doc/docs/)
+- [Online Demo](https://wj.qq.com/s2/10565748/53da/)
 
 ## Roadmap
 

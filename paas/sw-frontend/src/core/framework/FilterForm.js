@@ -80,7 +80,6 @@ class FilterForm extends PureComponent {
     validate = () => {
         let pass = false, { onSubmit, items } = this.props;
         this.props.form.validateFieldsAndScroll((err, values) => {
-            console.log("form values----->", values);
             if (!err) {
                 let allValues = {};
                 /*items.forEach((item,index)=> {
@@ -151,7 +150,6 @@ class FilterForm extends PureComponent {
 
     autoSubmit = () => {
         let submitValues = this.props.form.getFieldsValue(), needSubmit = false, prevValues = this.prevSubmitValues;
-        //console.log("submitValues---prevValues-->",submitValues,prevValues);
         //对比上次和本次的值发生改变了再进行查询,因为存在表单项个数不确定的场景(高级查询),因此需要相互对比。
         Object.keys(submitValues).forEach(key => {
             let subCompValue = submitValues[key], prevCompValue = prevValues[key];
@@ -223,7 +221,7 @@ class FilterForm extends PureComponent {
                                             <div style={{ display: 'flex', marginRight: index === base.length - 1 ? 0 : 24 }} key={index}>
                                                 {
                                                     normal.label &&
-                                                    <div className="ant-form-item-label">
+                                                    <div className="ant-form-item-label" style={{marginTop:3}}>
                                                         <label title={normal.label}>{normal.label}
                                                             {
                                                                 normal.tooltip &&

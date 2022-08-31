@@ -81,7 +81,7 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20180813</version>
+            <version>20210307</version>
         </dependency>
         <dependency>
             <groupId>commons-configuration</groupId>

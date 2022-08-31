@@ -58,7 +58,7 @@ public class EntityDataServiceImpl extends DwCommonService implements DwDataServ
         }
 
         List<JSONObject> esDatas = datas.parallelStream().map(data -> convertToESData(data, swEntity.getPartitionFormat(), entityFields)).filter(data -> !data.isEmpty()).collect(Collectors.toList());
-        return doFlushDatas(swEntity.getTableAlias(), swEntity.getTableName(), swEntity.getLifecycle(), esDatas);
+        return doFlushDatas(swEntity.getTableAlias(), swEntity.getTableName(), swEntity.getPartitionFormat(), swEntity.getLifecycle(), esDatas);
     }
 
     @Override

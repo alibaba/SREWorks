@@ -1,7 +1,6 @@
 package com.alibaba.tesla.tkgone.server.services.database.elasticsearch;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.tesla.tkgone.server.common.Constant;
 import com.alibaba.tesla.tkgone.server.services.config.BackendStoreConfigService;
 import com.alibaba.tesla.tkgone.server.services.config.CategoryConfigService;
 import com.alibaba.tesla.tkgone.server.services.config.ElasticSearchConfigService;
@@ -89,16 +88,5 @@ public class ElasticSearchDeleteByQueryService extends ElasticSearchBasic {
     public JSONObject queryDeletingTasks(String index) throws Exception {
         String uri = String.format("/_tasks/?detailed=true&actions=*/delete/byquery");
         return getOrPost(uri, index, null, null, RequestMethod.GET, true);
-    }
-
-    public String deleteInvalidRelation(String type, String border) throws Exception {
-        JSONObject queryJson = JSONObject.parseObject(String.format(
-                "{" + "    \"OR\": [" + "        {" + "            \"AND\": {"
-                        + "                \"startNodeInfo.%s\": \"%s\"" + "            }" + "        }," + "        {"
-                        + "            \"AND\": {" + "                \"endNodeInfo.%s\": \"%s\"" + "            }"
-                        + "        }" + "    ]," + "    \"range\": {" + "        \"%s\": [null, \"%s\"]" + "    }"
-                        + "}",
-                Constant.INNER_TYPE, type, Constant.INNER_TYPE, type, Constant.UPSERT_TIME_FIELD, border));
-        return deleteByQueryNoWait(Constant.GRAPH_DB_INDEX_NAME, queryJson);
     }
 }

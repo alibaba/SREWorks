@@ -76,7 +76,6 @@ class ParameterMappingTree extends PureComponent {
         }else{
             parameterDefiner.clearParamMapping(parameter.name);
         }
-        //console.log("parameterDefiner------->",parameterDefiner);
     };
     renderTreeNodes = (paramTree,parentKey) => {
         return paramTree.map((item,index) => {
@@ -92,7 +91,6 @@ class ParameterMappingTree extends PureComponent {
     };
     render() {
         let {parameterDefiner}=this.props;
-        //console.log("parameterDefiner.getNotMapping()----->",parameterDefiner.getNotMapping());
         return (
             <Tree
                 checkable

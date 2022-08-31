@@ -13,7 +13,6 @@ import AppService from '../../core/services/appService'
 import './index.less';
 import _ from "lodash";
 import properties from '../../properties';
-import { urlToRequest } from 'loader-utils';
 import { localImglist, requiredImglist } from "./localImglist";
 
 const { Content } = Layout;
@@ -107,7 +106,7 @@ class HomeLayout extends React.Component {
     }
     let { loading } = this.state;
     return (
-      <div className="abm-home-page" style={{ backgroundImage: `url(${backgroundImgeUrl})`, backgroundPosition: 'center bottom', backgroundRepeat: 'no-repeat', backgroundColor: 'rgb(51, 51, 51)' }} >
+      <div className="abm-home-page" style={{ backgroundImage: `url(${backgroundImgeUrl})`, backgroundPosition: 'center bottom', backgroundRepeat: 'no-repeat', backgroundColor: 'rgb(51, 51, 51)',backgroundSize:"cover" }} >
         <Layout style={{ background: "transparent" }}>
           <HomeHeader />
           <Layout style={{ background: "transparent" }}>

@@ -21,7 +21,6 @@ class SRESearch extends Component {
     super(props);
     let { widgetConfig } = props;
     this.searchPath = widgetConfig.url || '';
-    console.log(this.props, 'props-category');
     this.currentRef = React.createRef();
     this.navType = '';
     this.state = {
@@ -50,7 +49,6 @@ class SRESearch extends Component {
     const { nodeParams } = this.props;
     if (urlStr.indexOf("$(") !== -1) {
       urlStr = util.renderTemplateString(urlStr, Object.assign({}, nodeParams, obj))
-      console.log(urlStr, 'urlStr-transform')
     }
     if (!widgetConfig.needSuggest) {
       return
@@ -82,11 +80,9 @@ class SRESearch extends Component {
     })
   }
   handleClickOutside = evt => {
-    console.log('clickoutside')
     const { hotKeyWordsVisible } = this.state;
     const area = ReactDOM.findDOMNode(this.currentRef.current);
     if (!area.contains(evt.target) && (hotKeyWordsVisible)) {
-      console.log('clickoutside', 'true');
       this.navType = '';
       this.setState({
         hotKeyWordsVisible: false,
@@ -95,7 +91,7 @@ class SRESearch extends Component {
     }
   };
   componentWillMount() {
-    // this.getHotKeywords(this.props.userEmpId, this.props.teslaSearchPath, this.props.category, 10);
+    // this.getHotKeywords(this.props.userEmpId, this.props.sreworksSearchPath, this.props.category, 10);
     // if (this.props.isShowKeywords) {
     //   this.getCommonKeywords();
     // }
@@ -126,7 +122,6 @@ class SRESearch extends Component {
     outputData[widgetConfig.keyType] = textValue
     let { dispatch } = this.props, paramData = { ___refresh_timestamp: (new Date()).getTime() };
     Object.assign(paramData, outputData)
-    console.log(paramData, 'paramData-search');
     dispatch({ type: 'node/updateParams', paramData: paramData });
   }
   render() {
@@ -176,7 +171,7 @@ class SRESearch extends Component {
 SRESearch.propTypes = {
   userEmpId: PropTypes.string,
   category: PropTypes.string,
-  teslaSearchPath: PropTypes.string,
+  sreworksSearchPath: PropTypes.string,
   placeholder: PropTypes.string,
   moreLinkPrefix: PropTypes.string,
   className: PropTypes.string,

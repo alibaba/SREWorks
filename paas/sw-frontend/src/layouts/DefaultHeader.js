@@ -42,27 +42,9 @@ const MenuItemGroup = Menu.ItemGroup;
 const DefaultHeader = ({ siderFold, siderRespons, theme, siderOpenKeys, menuResponsVisible, moduleData, onSwitchSidebar,
     onSwitchTheme, onSwitchMenuMode, onRoleChange, onLanguageChange, onModuleMenuChang, currentModule, language,
     currentUser, moduleGroups, onEnvChang, onLogout, settings, currentProduct, envs }) => {
-    //const existGroup=moduleGroups.length>1;
-    // console.log(currentProduct,'currentProduct.docsUrl')
     const roles = currentUser.roles, cacheRole = cacheRepository.getRole(currentProduct.productId);
     const currentRole = roles.filter(role => role.roleId === cacheRole)[0];
 
-    const UserTitle = () => (
-        <div style={{ display: "flex", alignItems: "center" }}>
-            <Avatar
-                style={{ verticalAlign: 'middle' }}
-                src={`https://work.alibaba-inc.com/photo/${currentUser.empId}.30x30.jpg`}
-            />
-            <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: '5px', color: 'rgba(255,255,255,0.8)' }}>
-                <span style={{ maxWidth: 50, lineHeight: 1.6 }} className="text-overflow">{!currentUser ? '' : currentUser.nickNameCn || currentUser.nickName || currentUser.loginName || currentUser.name}</span>
-            </div>
-        </div>
-    );
-
-    /**
-     * 大数据管家右边顶部菜单
-     * @constructor
-     */
     const TopBar = () => (
         <div style={{ display: "flex", marginTop: 3 }}>
             {
@@ -96,7 +78,7 @@ const DefaultHeader = ({ siderFold, siderRespons, theme, siderOpenKeys, menuResp
                     <MenuItemGroup title={localeHelper.get("common.theme.setting", "主题设置")}>
                         <Menu.Item key="theme">
                             <Switch onChange={onSwitchTheme}
-                                defaultChecked={localStorage.getItem("tesla-theme") === "light"}
+                                defaultChecked={localStorage.getItem("sreworks-theme") === "light"}
                                 size="small" checkedChildren="亮"
                                 unCheckedChildren="暗" />
                         </Menu.Item>
@@ -141,9 +123,9 @@ const DefaultHeader = ({ siderFold, siderRespons, theme, siderOpenKeys, menuResp
                     </MenuItemGroup>
                 </Menu>
             }>
-                <a>
+                {/* <a>
                     <UserTitle />
-                </a>
+                </a> */}
             </Dropdown>
         </div>
     );

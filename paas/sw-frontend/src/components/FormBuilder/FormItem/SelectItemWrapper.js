@@ -141,7 +141,6 @@ export default class SelectItemWrapper extends React.Component {
 
     onChange = (value, option) => {
         let { onChange, selectType, form, item } = this.props;
-        console.log(item, option, value, 'this.props.item');
         this.setState({
             selectValue: value
         });

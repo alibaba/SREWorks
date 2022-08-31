@@ -66,7 +66,6 @@ export default class Workbench extends React.Component {
         };
         genPathNodeMapping(treeData[0]);
         nodeData = pathNodeMapping[nodeTypeId];
-        console.log(pathNodeMapping,nodeTypeId,'pathNodeMapping')
         this.loadNodeModel(nodeTypeId,nodeData,true);
     }
     recursionFind(treeData, nodeTypeId) {
@@ -114,7 +113,6 @@ export default class Workbench extends React.Component {
     };
 
     onNodeClick = (nodeTypeId, nodeData) => {
-        console.log(nodeTypeId, nodeData, 'click-nodeTypeId')
         this.setState({
             nodeTypeId: nodeTypeId
         })

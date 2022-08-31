@@ -10,7 +10,6 @@ export default class MarkdownComp extends Component {
   render() {
     let { widgetConfig = {}, widgetData = '' } = this.props;
     let { paddingNumTop = 20, paddingNumLeft = 20 } = widgetConfig;
-    // console.log(jsxDom,'jsxDom-jsxRender');
     let initData = "请配置markdown文档"
     let finalData = widgetData || initData
     return <div className="markdown-react" style={{ paddingTop: (paddingNumTop && Number(paddingNumTop)) || 20, paddingLeft: (paddingNumLeft && Number(paddingNumLeft)) || 20, paddingRight: (paddingNumLeft && Number(paddingNumLeft)) || 20 }}>

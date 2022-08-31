@@ -24,17 +24,6 @@ export default class HomeHeader extends React.Component {
   render() {
     const { currentUser } = this.props.global;
     const { platformLogo, platformName } = properties;
-    const UserTitle = () => (
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <Avatar
-          style={{ verticalAlign: 'middle' }}
-          src={`https://work.alibaba-inc.com/photo/${currentUser.empId}.30x30.jpg`}
-        />
-        <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: '5px', color: 'rgba(255,255,255,0.8)' }}>
-          <span style={{ maxWidth: 50, lineHeight: 1.6 }} className="text-overflow">{!currentUser ? '' : currentUser.nickNameCn || currentUser.nickName || currentUser.loginName || currentUser.name}</span>
-        </div>
-      </div>
-    );
     return (
       <div className="header">
         <div className="left-logo">
@@ -58,7 +47,6 @@ export default class HomeHeader extends React.Component {
         </div>
         <div className="right-user">
           <DropDownUser isOnlyLogout>
-            {/* <span className="block-item"><img className="userImg" alt="userImg" src={`https://work.alibaba-inc.com/photo/${currentUser.empId}.30x30.jpg`} /></span> */}
           </DropDownUser>
         </div>
       </div>

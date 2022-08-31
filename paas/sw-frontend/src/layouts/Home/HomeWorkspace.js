@@ -4,7 +4,7 @@
  */
 import React from "react";
 import { LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons';
-import { Layout, Alert, Carousel, Row, Col } from 'antd';
+import { Layout, Alert, Carousel, Row, Col, Button } from 'antd';
 import DesktopLayout from './DesktopLayout';
 import localeHelper from '../../utils/localeHelper';
 import { connect } from 'dva';
@@ -12,6 +12,8 @@ import SRESearch from "../../components/SRESearch";
 import Bus from '../../utils/eventBus';
 import properties from "../../properties";
 import { debounce } from "lodash";
+
+// const CarouselCompSec = window.CarouselCompSec
 @connect(({ home, global }) => ({
     home: home,
     global: global
@@ -46,12 +48,12 @@ export default class HomeWorkspace extends React.Component {
 
     renderWorkspace = () => {
         let { home } = this.props;
-        let {widgetConfig} = this.props;
-        let {searchConfig} = widgetConfig;
+        let { widgetConfig } = this.props;
+        let { searchConfig } = widgetConfig;
         const { workspaces, desktopIndex } = home;
         const { currentUser } = this.props.global;
-        workspaces.forEach((item,index )=> {
-            if(index === 0) {
+        workspaces.forEach((item, index) => {
+            if (index === 0) {
                 item.hasSearch = true
             }
         })
@@ -61,7 +63,7 @@ export default class HomeWorkspace extends React.Component {
                     {
                         workspace.hasSearch && searchConfig &&
                         <div className="search-content">
-                            <SRESearch teslaSearchPath={"gateway/v2/foundation/kg"}
+                            <SRESearch sreworksSearchPath={"gateway/v2/foundation/kg"}
                                 userEmpId={currentUser.empId}
                                 category={`sreworks-search`}
                                 className="header-search"
@@ -101,7 +103,7 @@ export default class HomeWorkspace extends React.Component {
         return (
             <div>
                 {
-                    (workspaces.length !==0) &&
+                    (workspaces.length !== 0) &&
                     <Carousel beforeChange={this.handleNext} {...settings} ref={slider => (this.slider = slider)}>
                         {cachedComp}
                     </Carousel>

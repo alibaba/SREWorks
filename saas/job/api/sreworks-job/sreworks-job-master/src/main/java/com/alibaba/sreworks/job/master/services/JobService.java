@@ -311,7 +311,7 @@ public class JobService {
         ElasticJobInstance elasticJobInstance = jobInstanceRepository.save(jobInstance);
 
         while(jobInstanceRepository.findFirstById(jobInstanceId) == null) {
-            log.warn("Check Job Instance:{} Not Exist, Waiting", jobInstanceId);
+            log.warn("Check job instance:{} not exist, waiting", jobInstanceId);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
@@ -320,8 +320,9 @@ public class JobService {
         }
 
         jobVarConf.put("sreworksJobInstanceId", jobInstanceId);
-        jobScheduleService.getJobSchedule(job.getScheduleType()).start(id, jobVarConf);
-
+        log.info("Ready to start job, jobInstanceId:{}", jobInstanceId);
+        long dagInstId = jobScheduleService.getJobSchedule(job.getScheduleType()).start(id, jobVarConf);
+        log.info("Started job, dagInstId:{}, jobInstanceId:{}", dagInstId, jobInstanceId);
         return elasticJobInstance;
     }
 }

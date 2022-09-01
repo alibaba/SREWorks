@@ -72,8 +72,8 @@ public class KanikoInformerFactory implements DisposableBean {
             apiClientMap.put(DEFAULT_K8S_CLIENT, client);
             informerFactoryMap.put(DEFAULT_K8S_INFORMER_FACTORY, informerFactory);
             apiMap.put(DEFAULT_K8S_API, api);
-            startListenPod();
-            log.info("action=K8sClientProviderImpl|| K8sClientProvider init success!");
+            // startListenPod();
+            log.info("action=KanikoInformerFactory|| K8sClientProvider init success!");
         }
     }
 

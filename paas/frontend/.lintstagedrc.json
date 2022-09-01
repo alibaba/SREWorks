@@ -1,0 +1,4 @@
+{
+  "**/src/*.js": ["prettier --write", "git add"],
+  "package.json": ["sort-package-json", "git add"]
+}

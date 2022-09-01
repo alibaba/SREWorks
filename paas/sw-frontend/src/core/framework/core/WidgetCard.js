@@ -259,7 +259,7 @@ export default class WidgetCard extends React.Component {
                 }}
                 title={
                     headerExist && <div className="card-title-wrapper">
-                        {!headerColor && (this.wrapperType !== Constants.CARD_WRAPPER_ADVANCED) && title && <div className="card-wrapper-title-prefix" />}
+                        { (this.wrapperType !== Constants.CARD_WRAPPER_ADVANCED) && title && <div className="card-wrapper-title-prefix" />}
                         <div style={{ display: 'flex' }}>
                             {
                                 title && <h2 style={{ margin: "auto", paddingLeft: '10px', fontSize: 14, marginRight: title ? '12px' : '0px' }}><JSXRender jsx={title || ''} /></h2>

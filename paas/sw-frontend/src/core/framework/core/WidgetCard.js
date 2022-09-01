@@ -125,7 +125,8 @@ export default class WidgetCard extends React.Component {
         } else if (WidgetComponent) {
             if(window['REMOTE_VUE_LIST'].includes(widgetModel.type)) {
                 let comp = (window[widgetModel.type] && window[widgetModel.type][widgetModel.type]) || <div>未定义组件</div>
-                cardContent = <VueWrapper widgetConfig={runtimeConfig} component={comp}/>
+                console.log(runtimeConfig,'widgetProps-widgetProps-out')
+                cardContent = <VueWrapper {...otherProps} widgetConfig={runtimeConfig} component={comp} widgetData={widgetData} />
             } else {
                 cardContent = <WidgetComponent {...otherProps} widgetConfig={runtimeConfig} actionParams={Object.assign({}, actionParams, widgetData)} widgetData={widgetData} />
             }

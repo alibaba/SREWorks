@@ -23,6 +23,11 @@ public class SystemProperties {
     private boolean enableProductTaskExecutor = true;
 
     /**
+     * 是否开启 doc.html (Knife4j)
+     */
+    private boolean enableOpenApiUi = false;
+
+    /**
      * 流程历史保留时长（秒）
      */
     private Integer flowHistoryKeepSeconds = 86400;

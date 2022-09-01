@@ -41,5 +41,5 @@
         "schema": {},
         "dataMock": {}
     },
-    "catgory": "filter"
+    "category": "filter"
 };

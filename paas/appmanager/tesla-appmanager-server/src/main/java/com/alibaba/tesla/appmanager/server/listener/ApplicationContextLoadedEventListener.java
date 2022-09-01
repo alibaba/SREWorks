@@ -2,15 +2,16 @@ package com.alibaba.tesla.appmanager.server.listener;
 
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.domain.core.ScriptIdentifier;
 import com.alibaba.tesla.appmanager.dynamicscript.core.GroovyHandlerFactory;
 import com.alibaba.tesla.appmanager.dynamicscript.repository.condition.DynamicScriptQueryCondition;
 import com.alibaba.tesla.appmanager.dynamicscript.service.DynamicScriptService;
+import com.alibaba.tesla.appmanager.dynamicscript.util.GroovyUtil;
 import com.alibaba.tesla.appmanager.server.service.informer.InformerManager;
 import com.alibaba.tesla.appmanager.spring.event.ApplicationContextLoadedEvent;
 import groovy.lang.GroovyClassLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.ClassPathResource;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
@@ -125,35 +125,12 @@ public class ApplicationContextLoadedEventListener implements ApplicationListene
                     code = readFileContent(groovyPath);
                 }
                 Class<?> clazz = groovyClassLoader.parseClass(code);
-                String kind = null, name = null;
-                Integer revision = null;
-                for (Field f : clazz.getFields()) {
-                    if (f.getType().equals(String.class) || f.getType().equals(Integer.class)) {
-                        String key = f.getName();
-                        Object value = f.get(null);
-                        switch (key) {
-                            case "KIND":
-                                kind = (String) value;
-                                break;
-                            case "NAME":
-                                name = (String) value;
-                                break;
-                            case "REVISION":
-                                revision = (Integer) value;
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
-                if (StringUtils.isEmpty(kind) || StringUtils.isEmpty(name) || revision == null) {
-                    throw new RuntimeException(String.format("invalid groovy handler %s", groovyPath));
-                }
+                ScriptIdentifier identifier = GroovyUtil.getScriptIdentifierFromClass(clazz);
                 DynamicScriptQueryCondition condition = DynamicScriptQueryCondition.builder()
-                        .kind(kind)
-                        .name(name)
+                        .kind(identifier.getKind())
+                        .name(identifier.getName())
                         .build();
-                dynamicScriptService.initScript(condition, revision, code);
+                dynamicScriptService.initScript(condition, identifier.getRevision(), code);
             } catch (Exception e) {
                 throw new AppException(AppErrorCode.UNKNOWN_ERROR,
                         String.format("cannot initialize default scripts in resources directory: %s", groovyPath), e);

@@ -41,24 +41,24 @@ public class DagJobTaskNode extends AbstractLocalNodeBase {
             .build()
     );
 
+    private String jobInstanceId;
+
     private String taskInstanceId;
 
     private void toRunning() {
         ElasticJobInstanceRepository jobInstanceRepository = BeansUtil.context
             .getBean(ElasticJobInstanceRepository.class);
-        log.info("dagInstId: {}", dagInstId);
-        ElasticJobInstance jobInstance = jobInstanceRepository.findFirstByScheduleInstanceId(dagInstId);
+        ElasticJobInstance jobInstance = jobInstanceRepository.findFirstById(jobInstanceId);
+        jobInstance.setGmtExecute(System.currentTimeMillis());
         jobInstance.setStatus(JobInstanceStatus.RUNNING.name());
+        jobInstance.setScheduleInstanceId(dagInstId);
         jobInstanceRepository.save(jobInstance);
     }
 
     private void toException() {
         ElasticJobInstanceRepository jobInstanceRepository = BeansUtil.context.getBean(
             ElasticJobInstanceRepository.class);
-        ElasticJobInstance jobInstance = jobInstanceRepository.findFirstByScheduleInstanceId(dagInstId);
-        if (jobInstance == null) {
-            return;
-        }
+        ElasticJobInstance jobInstance = jobInstanceRepository.findFirstById(jobInstanceId);
         jobInstance.setGmtEnd(System.currentTimeMillis());
         jobInstance.setStatus(JobInstanceStatus.EXCEPTION.name());
         jobInstanceRepository.save(jobInstance);
@@ -66,20 +66,23 @@ public class DagJobTaskNode extends AbstractLocalNodeBase {
 
     @Override
     public DagInstNodeRunRet run() throws Exception {
-        log.info("start DagJobTaskNode");
+        log.info("Start dagJobTaskNode");
         try {
+            jobInstanceId = globalVariable.getString("sreworksJobInstanceId");
+            log.info("Scheduled job, dagInstId:{}, jobInstanceId:{}", dagInstId, jobInstanceId);
             toRunning();
             TaskService taskService = BeansUtil.context.getBean(TaskService.class);
             TaskInstanceService taskInstanceService = BeansUtil.context.getBean(TaskInstanceService.class);
             ElasticJobInstanceRepository jobInstanceRepository = BeansUtil.context
                 .getBean(ElasticJobInstanceRepository.class);
-            ElasticJobInstance elasticJobInstance = jobInstanceRepository.findFirstByScheduleInstanceId(dagInstId);
+            ElasticJobInstance elasticJobInstance = jobInstanceRepository.findFirstById(jobInstanceId);;
             globalParams.put("elasticJobInstanceId", elasticJobInstance.getId());
             globalVariable.putAll(globalParams);
             globalParams.putAll(globalVariable);
             Long taskId = params.getLong("taskId");
-            String taskInstanceId = taskService.start(taskId, globalParams, "dag");
-            setTaskInstanceId(taskInstanceId);
+            log.info("Ready to start jobTask, jobInstanceId:{}, taskId:{}", jobInstanceId, taskId);
+            taskInstanceId = taskService.start(taskId, globalParams, "dag");
+            log.info("Started jobTask, taskId:{}, taskInstanceId:{}", taskId, taskInstanceId);
             while (true) {
                 ElasticTaskInstanceDTO elasticTaskInstanceDTO = taskInstanceService.get(taskInstanceId);
                 TaskInstanceStatus status = TaskInstanceStatus.valueOf(elasticTaskInstanceDTO.getStatus());
@@ -99,11 +102,11 @@ public class DagJobTaskNode extends AbstractLocalNodeBase {
                     case INIT:
                     case RUNNING:
                     default:
-                        Thread.sleep(500);
+                        Thread.sleep(1000);
                 }
             }
         } catch (Exception e) {
-            log.error("Start DagJobTaskNode Exception ", e);
+            log.error("Start dagJobTaskNode exception ", e);
             toException();
             throw e;
         }

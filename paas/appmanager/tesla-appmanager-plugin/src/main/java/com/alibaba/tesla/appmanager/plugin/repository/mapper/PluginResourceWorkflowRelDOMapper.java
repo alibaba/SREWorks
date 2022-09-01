@@ -13,21 +13,9 @@ public interface PluginResourceWorkflowRelDOMapper {
 
     int deleteByExample(PluginResourceWorkflowRelDOExample example);
 
-    int deleteByPrimaryKey(Long id);
-
-    int insert(PluginResourceWorkflowRelDO record);
-
     int insertSelective(PluginResourceWorkflowRelDO record);
 
     List<PluginResourceWorkflowRelDO> selectByExample(PluginResourceWorkflowRelDOExample example);
 
-    PluginResourceWorkflowRelDO selectByPrimaryKey(Long id);
-
     int updateByExampleSelective(@Param("record") PluginResourceWorkflowRelDO record, @Param("example") PluginResourceWorkflowRelDOExample example);
-
-    int updateByExample(@Param("record") PluginResourceWorkflowRelDO record, @Param("example") PluginResourceWorkflowRelDOExample example);
-
-    int updateByPrimaryKeySelective(PluginResourceWorkflowRelDO record);
-
-    int updateByPrimaryKey(PluginResourceWorkflowRelDO record);
 }

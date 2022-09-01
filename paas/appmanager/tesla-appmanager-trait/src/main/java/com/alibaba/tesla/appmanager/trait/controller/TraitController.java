@@ -8,6 +8,7 @@ import com.alibaba.tesla.appmanager.domain.req.trait.TraitQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.trait.TraitReconcileReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.alibaba.tesla.web.controller.BaseController;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import java.util.HashMap;
  * @author yaoxing.gyx@alibaba-inc.com
  */
 @Slf4j
+@Tag(name = "Trait API")
 @RequestMapping("/traits")
 @RestController
 public class TraitController extends BaseController {

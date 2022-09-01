@@ -7,7 +7,7 @@ import { getBuiltInWidgetMetaMapping } from '../../core/BuiltInWidgets';
 const widgetMetasContext=require.context('./', true, /^\.\/meta\/[\s\S]*\.js$/);
 let builtInWidgetList=[...Object.values(getBuiltInWidgetMetaMapping())];
 // builtInWidgetList = builtInWidgetList.push(window.CarouselCompBackup.CarouselCompMeta)
-const builtInWidgetCatgory=[
+const builtInWidgetCategory=[
     {
         name:"base",
         title:"基础组件",
@@ -82,8 +82,8 @@ widgetMetasContext.keys().forEach(key => {
 //合并新的组件渲染引擎机制,此处需全部迁移至新的里面
 
 builtInWidgetList.forEach(widgetMeta=>{
-    builtInWidgetCatgory.forEach(cat=>{
-       if(cat.name===(widgetMeta.catgory||"other")){
+    builtInWidgetCategory.forEach(cat=>{
+       if(cat.name===(widgetMeta.category||"other")){
            cat.children.push(widgetMeta);
        }
     });
@@ -92,8 +92,8 @@ export function getBuiltInWidgetList(){
     return builtInWidgetList;
 }
 
-export function getBuiltInWidgetCatgory() {
-    return builtInWidgetCatgory;
+export function getBuiltInWidgetCategory() {
+    return builtInWidgetCategory;
 }
 
 export function getLegacyWidgetMeta(model) {

@@ -9,7 +9,7 @@ componentPackages:
     metadata:
       name: microservice-job-job-master
       annotations:
-        annotations.appmanager.oam.dev/version: "6.2.6+20220823121345531713"
+        annotations.appmanager.oam.dev/version: "9.0.5+20220831110640268138"
       labels:
         labels.appmanager.oam.dev/appId: "job"
         labels.appmanager.oam.dev/componentName: "job-master"
@@ -39,7 +39,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "6.2.6+20220823121345531713"
+            annotations.appmanager.oam.dev/version: "9.0.5+20220831110640268138"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -63,15 +63,15 @@ componentPackages:
             DB_PASSWORD: "{{ Global.DB_PASSWORD }}"
           initContainers:
           - name: "db-migration"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/job-job-master-db-migration:1661256825012"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/job-job-master-db-migration:1661944000560"
           - name: "init"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/job-job-master-init:1661256825012"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/job-job-master-init:1661944000560"
           containers:
           - name: "job-master"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/job-job-master-job-master:1661256825012"
-  packageMd5: 34260e7580e85325c2157041e34195cf
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/job-job-master-job-master:1661944000560"
+  packageMd5: 80b5da9960d901a42a31a49cf0a138a6
   packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"master-Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"saas/job/api/sreworks-job","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/build"},"name":"job-master"}],"env":["DB_HOST","DB_PORT","DB_USER","ES_PASSWORD","DB_NAME","REDIS_HOST","REDIS_PORT","REDIS_DATABASE","REDIS_PASSWORD","ES_USERNAME","JVM_XMX","JVM_XMS","ES_ENDPOINT","DB_PASSWORD"],"initContainers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile-db-migration","ciAccount":"public","ciToken":"public","repoPath":"saas/job/api/sreworks-job","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/build"},"name":"db-migration"},{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile-init","ciAccount":"public","ciToken":"public","repoPath":"saas/job/api/sreworks-job","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/build"},"name":"init"}],"componentConfiguration":"revisionName: K8S_MICROSERVICE|job-master|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 17001\n- name: gateway.trait.abm.io\n  runtime: post\n  spec:\n    path: /sreworks-job/**\n    authEnabled: true\n    serviceName: ''{{ Global.STAGE_ID }}-job-job-master.{{ Global.NAMESPACE_ID }}''\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n- name: Global.ES_PASSWORD\n  value: sreworkses123.\n- name: Global.DB_NAME\n  value: sreworks_saas_job\n- name: Global.REDIS_HOST\n  value: sreworks-redis-master.sreworks\n- name: Global.REDIS_PORT\n  value: ''6379''\n- name: Global.REDIS_DATABASE\n  value: ''0''\n- name: Global.REDIS_PASSWORD\n  value: siJEULmQYQ\n- name: Global.ES_USERNAME\n  value: elastic\n- name: Global.JVM_XMX\n  value: 1g\n- name: Global.JVM_XMS\n  value: 1g\n- name: Global.ES_ENDPOINT\n  value: http://prod-dataops-elasticsearch-master.sreworks-dataops.svc.cluster.local:9200\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 6.2.6+20220823121345531713
+  packageVersion: 9.0.5+20220831110640268138
   relativePath: K8S_MICROSERVICE_job-master.zip
 - componentName: job-worker
   componentType: K8S_MICROSERVICE
@@ -82,7 +82,7 @@ componentPackages:
     metadata:
       name: microservice-job-job-worker
       annotations:
-        annotations.appmanager.oam.dev/version: "6.2.7+20220823121345971927"
+        annotations.appmanager.oam.dev/version: "9.0.6+20220831110640266855"
       labels:
         labels.appmanager.oam.dev/appId: "job"
         labels.appmanager.oam.dev/componentName: "job-worker"
@@ -112,7 +112,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "6.2.7+20220823121345971927"
+            annotations.appmanager.oam.dev/version: "9.0.6+20220831110640266855"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -128,10 +128,10 @@ componentPackages:
             ES_USERNAME: "{{ Global.ES_USERNAME }}"
           containers:
           - name: "job-worker"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/job-job-worker-job-worker:1661256825015"
-  packageMd5: 80adabf7bb48999380e17433d558efe7
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/job-job-worker-job-worker:1661944000560"
+  packageMd5: dd30b4cf947aa8915afbf846ef69c3ce
   packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"worker-Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"saas/job/api/sreworks-job","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/build"},"name":"job-worker"}],"env":["ES_PASSWORD","SREWORKS_JOB_MASTER_ENDPOINT","ES_ENDPOINT","JVM_XMX","JVM_XMS","ES_USERNAME"],"componentConfiguration":"revisionName: K8S_MICROSERVICE|job-worker|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 7001\n- name: gateway.trait.abm.io\n  runtime: post\n  spec:\n    path: /job/job-worker/**\n    authEnabled: false\n    serviceName: ''{{ Global.STAGE_ID }}-job-job-worker.{{ Global.NAMESPACE_ID }}''\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n- name: Global.ES_PASSWORD\n  value: sreworkses123.\n- name: Global.SREWORKS_JOB_MASTER_ENDPOINT\n  value: http://prod-job-job-master\n- name: Global.ES_ENDPOINT\n  value: http://prod-dataops-elasticsearch-master.sreworks-dataops.svc.cluster.local:9200\n- name: Global.JVM_XMX\n  value: 1g\n- name: Global.JVM_XMS\n  value: 1g\n- name: Global.ES_USERNAME\n  value: elastic\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 6.2.7+20220823121345971927
+  packageVersion: 9.0.6+20220831110640266855
   relativePath: K8S_MICROSERVICE_job-worker.zip
 - componentName: productopsv2
   componentType: INTERNAL_ADDON
@@ -142,7 +142,7 @@ componentPackages:
     metadata:
       name: microservice-job-productopsv2
       annotations:
-        annotations.appmanager.oam.dev/version: "9.7.5+20220823121345531684"
+        annotations.appmanager.oam.dev/version: "9.9.0+20220831110640313046"
       labels:
         labels.appmanager.oam.dev/appId: "job"
         labels.appmanager.oam.dev/componentName: "productopsv2"
@@ -172,15 +172,15 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "9.7.5+20220823121345531684"
+            annotations.appmanager.oam.dev/version: "9.9.0+20220831110640313046"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec:
           targetEndpoint: ''
-  packageMd5: 597b527f49f33c55cf535b054a509258
+  packageMd5: 75d77ae36a87ca32ae69708451c63d5d
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"componentConfiguration":"clusterId: ''''\ndataInputs: []\ndataOutputs: []\ndependencies: []\nnamespaceId: ''''\nparameterValues: []\nrevisionName: INTERNAL_ADDON|productopsv2|_\nscopes: []\nstageId: ''''\ntraits: []\n","isDevelop":true,"binderTraits":[]}'
-  packageVersion: 9.7.5+20220823121345531684
+  packageVersion: 9.9.0+20220831110640313046
   relativePath: INTERNAL_ADDON_productopsv2.zip
 - componentName: system-env@system-env
   componentType: RESOURCE_ADDON
@@ -223,9 +223,9 @@ componentPackages:
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec: {}
-  packageMd5: d991f5457bfff5dcb033bf460245be8c
+  packageMd5: f0710e5b3d1b233d95185c726abcdafa
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"componentConfiguration":"clusterId: ''''\ndataInputs: []\ndataOutputs:\n- fieldPath: ''{{ spec.env.DB_HOST }}''\n  name: Global.DB_HOST\n- fieldPath: ''{{ spec.env.DB_PASSWORD }}''\n  name: Global.DB_PASSWORD\n- fieldPath: ''{{ spec.env.DB_PORT }}''\n  name: Global.DB_PORT\n- fieldPath: ''{{ spec.env.DB_USER }}''\n  name: Global.DB_USER\n- fieldPath: ''{{ spec.env.APPMANAGER_ACCESS_ID }}''\n  name: Global.APPMANAGER_USERNAME\n- fieldPath: ''{{ spec.env.APPMANAGER_ACCESS_SECRET }}''\n  name: Global.APPMANAGER_PASSWORD\n- fieldPath: ''{{ spec.env.APPMANAGER_CLIENT_ID }}''\n  name: Global.APPMANAGER_CLIENT_ID\n- fieldPath: ''{{ spec.env.APPMANAGER_CLIENT_SECRET }}''\n  name: Global.APPMANAGER_CLIENT_SECRET\n- fieldPath: ''{{ spec.env.COOKIE_DOMAIN }}''\n  name: Global.COOKIE_DOMAIN\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ACCESS_KEY }}''\n  name: Global.APPMANAGER_PACKAGE_ACCESS_KEY\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_SECRET_KEY }}''\n  name: Global.APPMANAGER_PACKAGE_SECRET_KEY\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL }}''\n  name: Global.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT }}''\n  name: Global.APPMANAGER_PACKAGE_ENDPOINT\n- fieldPath: ''{{ spec.env.STORAGE_CLASS }}''\n  name: Global.STORAGE_CLASS\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_CLIENT_ID }}''\n  name: Global.ACCOUNT_SUPER_CLIENT_ID\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_CLIENT_SECRET }}''\n  name: Global.ACCOUNT_SUPER_CLIENT_SECRET\ndependencies: []\nnamespaceId: ''''\nparameterValues:\n- name: keys\n  toFieldPaths:\n  - spec.keys\n  value:\n  - DB_HOST\n  - DB_PASSWORD\n  - DB_PORT\n  - DB_USER\n  - APPMANAGER_ACCESS_ID\n  - APPMANAGER_ACCESS_SECRET\n  - APPMANAGER_CLIENT_ID\n  - APPMANAGER_CLIENT_SECRET\n  - COOKIE_DOMAIN\n  - APPMANAGER_PACKAGE_ACCESS_KEY\n  - APPMANAGER_PACKAGE_SECRET_KEY\n  - APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL\n  - APPMANAGER_PACKAGE_ENDPOINT\n  - STORAGE_CLASS\n  - ACCOUNT_SUPER_CLIENT_ID\n  - ACCOUNT_SUPER_CLIENT_SECRET\nrevisionName: RESOURCE_ADDON|system-env@system-env|1.0\nscopes: []\nstageId: ''''\ntraits: []\n","binderTraits":[]}'
-  packageVersion: 1.3.4+20220823121345506290
+  packageVersion: 1.4.9+20220831110640260615
   relativePath: RESOURCE_ADDON_system-env@system-env.zip
 - componentName: developmentmeta
   componentType: INTERNAL_ADDON
@@ -236,7 +236,7 @@ componentPackages:
     metadata:
       name: internal-addon-job-developmentmeta
       annotations:
-        annotations.appmanager.oam.dev/version: "8.1.1+20220823121345462243"
+        annotations.appmanager.oam.dev/version: "8.2.6+20220831110640599461"
       labels:
         labels.appmanager.oam.dev/appId: "job"
         labels.appmanager.oam.dev/componentName: "developmentmeta"
@@ -266,14 +266,14 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "8.1.1+20220823121345462243"
+            annotations.appmanager.oam.dev/version: "8.2.6+20220831110640599461"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec: {}
-  packageMd5: ae992fd5ce5e0371c5a1ea94af656e2c
+  packageMd5: e31f41a20a9ab07ce6e35d48798219d5
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
-  packageVersion: 8.1.1+20220823121345462243
+  packageVersion: 8.2.6+20220831110640599461
   relativePath: INTERNAL_ADDON_developmentmeta.zip
 - componentName: appmeta
   componentType: INTERNAL_ADDON
@@ -284,7 +284,7 @@ componentPackages:
     metadata:
       name: internal-addon-job-appmeta
       annotations:
-        annotations.appmanager.oam.dev/version: "9.6.2+20220823121345889392"
+        annotations.appmanager.oam.dev/version: "9.7.7+20220831110640708988"
       labels:
         labels.appmanager.oam.dev/appId: "job"
         labels.appmanager.oam.dev/componentName: "appmeta"
@@ -314,19 +314,19 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "9.6.2+20220823121345889392"
+            annotations.appmanager.oam.dev/version: "9.7.7+20220831110640708988"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec:
           overwriteIsDevelopment: false
           overwriteBuiltIn: false
-  packageMd5: 1cfe724c6931e9a0efc0c9974aa6d764
+  packageMd5: 59e8ee17ae85a287526a9791b837333b
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
-  packageVersion: 9.6.2+20220823121345889392
+  packageVersion: 9.7.7+20220831110640708988
   relativePath: INTERNAL_ADDON_appmeta.zip
 packageCreator: '999999999'
-packageVersion: 1.0.2+20220823123330724005
+packageVersion: 1.0.4+20220831114930882876
 tags:
 - release=sreworks/x86_64
 - on-sale

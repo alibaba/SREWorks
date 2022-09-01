@@ -95,5 +95,5 @@ export default {
         "dataMock": {},
         "supportToolbar":true,
     },
-    "catgory": "base"
+    "category": "base"
 };

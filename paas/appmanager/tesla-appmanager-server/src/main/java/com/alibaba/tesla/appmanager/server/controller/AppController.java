@@ -18,6 +18,8 @@ import com.alibaba.tesla.appmanager.domain.res.appmeta.AppGetVersionRes;
 import com.alibaba.tesla.appmanager.domain.res.apppackage.ApplicationConfigurationGenerateRes;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigGenerateRes;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
  *
  * @author qianmo.zm@alibaba-inc.com
  */
+@Tag(name = "应用 API")
 @RequestMapping("/apps")
 @RestController
 @Slf4j
@@ -40,26 +43,14 @@ public class AppController extends AppManagerBaseController {
     @Autowired
     private DeployConfigProvider deployConfigProvider;
 
-    /**
-     * @api {get} /apps 获取应用列表
-     * @apiName GetAppList
-     * @apiGroup 应用 API
-     * @apiParam (GET Parameters) {Number} page 当前页
-     * @apiParam (GET Parameters) {Number} pageSize 每页大小
-     */
+    @Operation(summary = "查询应用列表")
     @GetMapping
     public TeslaBaseResult list(AppMetaQueryReq request, OAuth2Authentication auth) {
         Pagination<AppMetaDTO> pagination = appMetaProvider.list(request, getOperator(auth), false);
         return buildSucceedResult(pagination);
     }
 
-    /**
-     * @api {post} /apps 新增应用
-     * @apiName PostApp
-     * @apiGroup 应用 API
-     * @apiParam (JSON Body) {String} appId 应用 ID
-     * @apiParam (JSON Body) {Object} options 应用扩展信息
-     */
+    @Operation(summary = "创建应用")
     @PostMapping
     public TeslaBaseResult create(
             @RequestBody AppMetaUpdateReq request,
@@ -70,12 +61,7 @@ public class AppController extends AppManagerBaseController {
         return buildSucceedResult(result);
     }
 
-    /**
-     * @api {get} /apps/:appId 获取指定应用信息
-     * @apiName GetApp
-     * @apiGroup 应用 API
-     * @apiParam (Path Parameters) {String} appId 应用 ID
-     */
+    @Operation(summary = "查询应用详情")
     @GetMapping(value = "/{appId}")
     public TeslaBaseResult get(@PathVariable String appId, OAuth2Authentication auth) {
         AppMetaDTO result = appMetaProvider.get(appId, getOperator(auth));
@@ -86,25 +72,14 @@ public class AppController extends AppManagerBaseController {
         return buildSucceedResult(result);
     }
 
-    /**
-     * @api {get} /apps/:appId/version 获取指定应用的所属版本 v1 or v2
-     * @apiName GetApp
-     * @apiGroup 应用 API
-     * @apiParam (Path Parameters) {String} appId 应用 ID
-     */
+    @Operation(summary = "查询应用版本 (Frontend)")
     @GetMapping(value = "/{appId}/version")
     public TeslaBaseResult getFrontendVersion(@PathVariable String appId, OAuth2Authentication auth) {
         String version = appMetaProvider.getFrontendVersion(appId, getOperator(auth));
         return buildSucceedResult(AppGetVersionRes.builder().version(version).build());
     }
 
-    /**
-     * @api {put} /apps/:appId 更新指定应用信息
-     * @apiName PutApp
-     * @apiGroup 应用 API
-     * @apiParam (Path Parameters) {String} appId 应用 ID
-     * @apiParam (JSON Body) {Object} options 应用扩展信息
-     */
+    @Operation(summary = "更新应用详情")
     @PutMapping(value = "/{appId}")
     public TeslaBaseResult update(
             @PathVariable String appId,
@@ -117,25 +92,14 @@ public class AppController extends AppManagerBaseController {
         return buildSucceedResult(result);
     }
 
-    /**
-     * @api {put} /apps 更新指定应用信息
-     * @apiName PutApp
-     * @apiGroup 应用 API
-     * @apiParam (Path Parameters) {String} appId 应用 ID
-     * @apiParam (JSON Body) {Object} options 应用扩展信息
-     */
+    @Operation(summary = "更新应用详情 (兼容API)")
     @PutMapping
     public TeslaBaseResult updateCompatible(@RequestBody AppMetaUpdateReq request, OAuth2Authentication auth) {
         AppMetaDTO result = appMetaProvider.save(request, getOperator(auth));
         return buildSucceedResult(result);
     }
 
-    /**
-     * @api {delete} /apps/:appId 删除指定应用信息
-     * @apiName DeleteApp
-     * @apiGroup 应用 API
-     * @apiParam (Path Parameters) {String} appId 应用 ID
-     */
+    @Operation(summary = "删除应用")
     @DeleteMapping(value = "/{appId}")
     public TeslaBaseResult delete(
             @PathVariable String appId, @ModelAttribute AppMetaDeleteReq request, OAuth2Authentication auth) {
@@ -152,12 +116,7 @@ public class AppController extends AppManagerBaseController {
         return buildSucceedResult(result);
     }
 
-    /**
-     * @api {put} /apps/:appId/application-configurations 更新指定应用的部署信息
-     * @apiName PutAppApplicationConfigurations
-     * @apiGroup 应用 API
-     * @apiParam (Path Parameters) {String} appId 应用 ID
-     */
+    @Operation(summary = "更新应用部署信息")
     @PutMapping(value = "/{appId}/application-configurations")
     public TeslaBaseResult updateApplicationConfigurations(
             @PathVariable String appId,
@@ -172,12 +131,7 @@ public class AppController extends AppManagerBaseController {
         return buildSucceedResult(deployConfigProvider.applyTemplate(request));
     }
 
-    /**
-     * @api {get} /apps/:appId/application-configurations 获取指定应用的部署信息
-     * @apiName GetAppApplicationConfigurations
-     * @apiGroup 应用 API
-     * @apiParam (Path Parameters) {String} appId 应用 ID
-     */
+    @Operation(summary = "查询应用部署信息")
     @GetMapping(value = "/{appId}/application-configurations")
     public TeslaBaseResult getApplicationConfigurations(
             @PathVariable String appId,
@@ -199,12 +153,7 @@ public class AppController extends AppManagerBaseController {
                 .build());
     }
 
-
-    /**
-     * @api {delete} /apps/:appId/application-configurations 删除指定应用的部署信息
-     * @apiName DeleteApplicationConfigurations
-     * @apiGroup Application Configuration API
-     */
+    @Operation(summary = "删除应用部署信息")
     @DeleteMapping(value = "/{appId}/application-configurations")
     public TeslaBaseResult deleteApplicationConfigurations(
             @PathVariable String appId,

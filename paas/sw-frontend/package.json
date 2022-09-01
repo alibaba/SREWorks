@@ -23,6 +23,7 @@
     "copy-to-clipboard": "3.3.1",
     "copy-webpack-plugin": "4.6.0",
     "create-react-ref": "0.1.0",
+    "element-ui": "^2.15.9",
     "eventemitter3": "4.0.7",
     "events": "^3.3.0",
     "history": "4.7.2",
@@ -69,7 +70,9 @@
     "shortid": "2.2.16",
     "sortablejs": "1.13.0",
     "systemjs": "^6.10.2",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "vue": "2.7.9",
+    "vuera": "^0.2.7"
   },
   "devDependencies": {
     "antd-theme-generator": "1.1.6",

@@ -13,21 +13,9 @@ public interface PluginFrontendDOMapper {
 
     int deleteByExample(PluginFrontendDOExample example);
 
-    int deleteByPrimaryKey(Long id);
-
-    int insert(PluginFrontendDO record);
-
     int insertSelective(PluginFrontendDO record);
 
     List<PluginFrontendDO> selectByExample(PluginFrontendDOExample example);
 
-    PluginFrontendDO selectByPrimaryKey(Long id);
-
     int updateByExampleSelective(@Param("record") PluginFrontendDO record, @Param("example") PluginFrontendDOExample example);
-
-    int updateByExample(@Param("record") PluginFrontendDO record, @Param("example") PluginFrontendDOExample example);
-
-    int updateByPrimaryKeySelective(PluginFrontendDO record);
-
-    int updateByPrimaryKey(PluginFrontendDO record);
 }

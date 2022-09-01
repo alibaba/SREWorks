@@ -8,6 +8,8 @@ import com.alibaba.tesla.appmanager.domain.dto.AddonMetaDTO;
 import com.alibaba.tesla.appmanager.domain.req.AddonMetaQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.appaddon.AppAddonSyncReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
  * @author qiuqiang.qq@alibaba-inc.com
  */
 @RequestMapping("/addon")
+@Tag(name = "Addon API")
 @RestController
 @Slf4j
 public class AddonController extends AppManagerBaseController {
@@ -35,24 +38,25 @@ public class AddonController extends AppManagerBaseController {
      * @apiParam (GET Parameters) {Number} page 当前页
      * @apiParam (GET Parameters) {Number} pageSize 每页大小
      */
+    @Operation(summary = "查询 Addon 列表")
     @GetMapping
     public TeslaBaseResult list(@ModelAttribute AddonMetaQueryReq request) {
         return buildSucceedResult(addonMetaProvider.list(request));
     }
 
-    // 新增 Addon
+    @Operation(summary = "创建 Addon")
     @PostMapping
     public TeslaBaseResult save(@RequestBody AddonMetaDTO metaDTO) {
         return buildSucceedResult(addonMetaProvider.create(metaDTO));
     }
 
-    // 获取指定 Addon
+    @Operation(summary = "查询 Addon 详情")
     @GetMapping("/{id}")
     public TeslaBaseResult getById(@PathVariable("id") Long id) {
         return buildSucceedResult(addonMetaProvider.get(id));
     }
 
-    // 同步全量 addon 绑定关系
+    @Operation(summary = "同步全量 Addon 绑定关系")
     @PutMapping("/sync")
     public TeslaBaseResult sync(@RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
@@ -66,7 +70,7 @@ public class AddonController extends AppManagerBaseController {
         return buildSucceedResult(DefaultConstant.EMPTY_OBJ);
     }
 
-    // 更新指定 Addon
+    @Operation(summary = "更新 Addon")
     @PutMapping("/{id}")
     public TeslaBaseResult update(@PathVariable("id") Long id, @RequestBody AddonMetaDTO metaDTO) {
         metaDTO.setId(id);
@@ -74,7 +78,7 @@ public class AddonController extends AppManagerBaseController {
         return buildSucceedResult(DefaultConstant.EMPTY_OBJ);
     }
 
-    // 删除指定 Addon
+    @Operation(summary = "删除 Addon")
     @DeleteMapping("/{id}")
     public TeslaBaseResult update(@PathVariable("id") Long id) {
         addonMetaProvider.delete(id);

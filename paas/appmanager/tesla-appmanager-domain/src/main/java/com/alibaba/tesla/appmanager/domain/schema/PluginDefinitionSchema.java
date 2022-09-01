@@ -35,7 +35,7 @@ public class PluginDefinitionSchema implements Schema {
     private Spec spec;
 
     public PluginKindEnum getPluginKind() {
-        return PluginKindEnum.valueOf(kind);
+        return PluginKindEnum.fromString(kind);
     }
 
     public String getPluginName() {

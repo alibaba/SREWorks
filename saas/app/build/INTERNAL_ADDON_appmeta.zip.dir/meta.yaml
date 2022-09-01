@@ -2,27 +2,27 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 9.9.0+20220831110640313046
+    annotations.appmanager.oam.dev/version: 12.1.1+20220826035804669367
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
-    appId: job
+    appId: app
     labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
-    componentName: productopsv2
-    labels.appmanager.oam.dev/appId: job
-    labels.appmanager.oam.dev/componentName: productopsv2
+    componentName: appmeta
+    labels.appmanager.oam.dev/appId: app
+    labels.appmanager.oam.dev/componentName: appmeta
     stageId: PLACEHOLDER_STAGE_ID
-  name: microservice-job-productopsv2
+  name: internal-addon-app-appmeta
 spec:
   images: []
   workload:
     apiVersion: apps.abm.io/v1
     dataOutputs: []
-    kind: Microservice
+    kind: AppmetaConfig
     metadata:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 9.9.0+20220831110640313046
+        annotations.appmanager.oam.dev/version: 12.1.1+20220826035804669367
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -30,14 +30,15 @@ spec:
         labels.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
         labels.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
-        appId: job
+        appId: app
         labels.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
         labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
-        componentName: productopsv2
-        labels.appmanager.oam.dev/appId: job
-        labels.appmanager.oam.dev/componentName: productopsv2
+        componentName: appmeta
+        labels.appmanager.oam.dev/appId: app
+        labels.appmanager.oam.dev/componentName: appmeta
         stageId: PLACEHOLDER_STAGE_ID
       name: PLACEHOLDER_NAME
       namespace: PLACEHOLDER_NAMESPACE_ID
     spec:
-      targetEndpoint: ''
+      overwriteBuiltIn: false
+      overwriteIsDevelopment: false

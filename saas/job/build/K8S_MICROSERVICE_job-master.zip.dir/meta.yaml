@@ -2,7 +2,7 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 6.2.6+20220823121345531713
+    annotations.appmanager.oam.dev/version: 9.0.5+20220831110640268138
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
     appId: job
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 6.2.6+20220823121345531713
+        annotations.appmanager.oam.dev/version: 9.0.5+20220831110640268138
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -43,7 +43,7 @@ spec:
       kind: Deployment
       replicas: 1
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/job-job-master-job-master:1661256825012
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/job-job-master-job-master:1661944000560
         name: job-master
       env:
         ES_ENDPOINT: '{{ Global.ES_ENDPOINT }}'
@@ -61,7 +61,7 @@ spec:
         REDIS_PASSWORD: '{{ Global.REDIS_PASSWORD }}'
         DB_PASSWORD: '{{ Global.DB_PASSWORD }}'
       initContainers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/job-job-master-db-migration:1661256825012
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/job-job-master-db-migration:1661944000560
         name: db-migration
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/job-job-master-init:1661256825012
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/job-job-master-init:1661944000560
         name: init

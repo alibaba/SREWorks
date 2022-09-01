@@ -25,6 +25,9 @@ var reactPath = getDependencyVesion(packagejson, 'react');
 var react_dom_path = getDependencyVesion(packagejson, 'react-dom');
 var systemjsPath = getDependencyVesion(packagejson, 'systemjs');
 var bizchartsPath = getDependencyVesion(packagejson, 'bizcharts');
+var vuePath = getDependencyVesion(packagejson, 'vue');
+var elementUIPath = getDependencyVesion(packagejson, 'element-ui');
+var vueraPath = getDependencyVesion(packagejson, 'vuera');
 
 const dependency_arr = [{
     from: paths.appNodeModules + '/antd/dist/antd.min.js',
@@ -45,7 +48,24 @@ const dependency_arr = [{
 {
     from: paths.appNodeModules + '/systemjs/dist/system.min.js',
     to: paths.appBuild + '/common_vendor/systemjs/' + systemjsPath + '/system.min.js'
-}]
+},
+{
+    from: paths.appNodeModules + '/vue/dist/vue.min.js',
+    to: paths.appBuild + '/common_vendor/vue/' + vuePath + '/vue.min.js'
+},
+{
+    from: paths.appNodeModules + '/vuera/dist/vuera.iife.js',
+    to: paths.appBuild + '/common_vendor/vuera/' + vueraPath + '/vuera.iife.js'
+},
+{
+    from: paths.appNodeModules + '/element-ui/lib/index.js',
+    to: paths.appBuild + '/common_vendor/element-ui/' + elementUIPath + '/index.js'
+},
+{
+    from: paths.appNodeModules + '/element-ui/lib/theme-chalk/index.css',
+    to: paths.appBuild + '/common_vendor/element-ui/' + elementUIPath + '/index.css'
+}
+]
 // {
 //     from: paths.appNodeModules + '/bizcharts/umd/BizCharts.min.js',
 //     to: paths.appBuild + '/common_vendor/bizcharts/' + bizchartsPath + '/BizCharts.min.js'
@@ -69,7 +89,24 @@ const dependency_arr_pre = [{
 {
     from: paths.appNodeModules + '/systemjs/dist/system.min.js',
     to: paths.appPublic + '/common_vendor/systemjs/' + systemjsPath + '/system.min.js'
-}]
+},
+{
+    from: paths.appNodeModules + '/vue/dist/vue.min.js',
+    to: paths.appPublic + '/common_vendor/vue/' + vuePath + '/vue.min.js'
+},
+{
+    from: paths.appNodeModules + '/vuera/dist/vuera.iife.js',
+    to: paths.appPublic + '/common_vendor/vuera/' + vueraPath + '/vuera.iife.js'
+},
+{
+    from: paths.appNodeModules + '/element-ui/lib/index.js',
+    to: paths.appPublic + '/common_vendor/element-ui/' + elementUIPath + '/index.js'
+},
+{
+    from: paths.appNodeModules + '/element-ui/lib/theme-chalk/index.css',
+    to: paths.appPublic + '/common_vendor/element-ui/' + elementUIPath + '/index.css'
+}
+]
 console.log("init runtime paths successfull")
 // 替换本地依赖版本
 let indexHtml = fs.readFileSync(paths.appPublic + '/index.html', 'utf8')
@@ -82,6 +119,9 @@ module.exports = {
     react_dom_path,
     systemjsPath,
     bizchartsPath,
+    vuePath,
+    vueraPath,
+    elementUIPath,
     dependency_arr,
     dependency_arr_pre
 }

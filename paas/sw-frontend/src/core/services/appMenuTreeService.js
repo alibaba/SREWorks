@@ -4,7 +4,7 @@
 
 import  httpClient from '../../utils/httpClient';
 import * as util from '../../utils/utils'
-import {getBuiltInWidgetCatgory} from '../framework/components/WidgetRepository';
+import {getBuiltInWidgetCategory} from '../framework/components/WidgetRepository';
 import properties from 'appRoot/properties';
 import cacheRepository from '../../utils/cacheRepository'
 
@@ -226,7 +226,7 @@ class Service {
     }
 
     getWidgetRepository(){
-        return Promise.resolve(getBuiltInWidgetCatgory());
+        return Promise.resolve(getBuiltInWidgetCategory());
     }
 
     getNodeParams (nodeId,parameters={}) {

@@ -17,6 +17,7 @@ import com.alibaba.tesla.appmanager.domain.req.AppAddonQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.AppAddonUpdateReq;
 import com.alibaba.tesla.appmanager.domain.schema.ComponentSchema;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ import java.util.Objects;
  *
  * @author qianmo.zm@alibaba-inc.com
  */
+@Tag(name = "应用关联 Addon API")
 @RequestMapping("/apps/{appId}/addon")
 @RestController
 @Slf4j

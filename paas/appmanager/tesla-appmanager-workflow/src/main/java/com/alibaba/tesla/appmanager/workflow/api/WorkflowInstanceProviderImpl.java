@@ -76,7 +76,7 @@ public class WorkflowInstanceProviderImpl implements WorkflowInstanceProvider {
     }
 
     /**
-     * 恢复处于 SUSPEND 状态的 Workflow 实例
+     * 唤醒处于 SUSPEND 状态的 Workflow 实例
      *
      * @param workflowInstanceId Workflow 实例 ID
      * @return 执行结果

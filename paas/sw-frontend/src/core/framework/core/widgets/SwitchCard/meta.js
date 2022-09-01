@@ -81,5 +81,5 @@ export default {
     },
     "dataMock": {},
   },
-  "catgory": "staticComp",
+  "category": "staticComp",
 };

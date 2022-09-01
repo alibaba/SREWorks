@@ -84,5 +84,5 @@ export default {
       "supportItemToolbar":false,
       "dataMock": {},
     },
-    "catgory": "layout",
+    "category": "layout",
   };

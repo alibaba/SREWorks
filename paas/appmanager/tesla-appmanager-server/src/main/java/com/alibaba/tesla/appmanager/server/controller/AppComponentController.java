@@ -5,6 +5,7 @@ import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentQueryReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
  * @author yaoxing.gyx@alibaba-inc.com
  */
 @Slf4j
+@Tag(name = "应用关联组件 API")
 @RequestMapping("/apps/{appId}/components")
 @RestController
 public class AppComponentController extends AppManagerBaseController {

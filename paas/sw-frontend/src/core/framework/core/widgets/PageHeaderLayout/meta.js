@@ -131,5 +131,5 @@ export default  {
         "supportToolbar":true,
         "dataMock": {}
     },
-    "catgory": "layout"
+    "category": "layout"
 };

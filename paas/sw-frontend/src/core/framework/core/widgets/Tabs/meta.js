@@ -169,5 +169,5 @@ export default {
     "dataMock": {},
     "supportToolbar":true,
   },
-  "catgory": "layout",
+  "category": "layout",
 };

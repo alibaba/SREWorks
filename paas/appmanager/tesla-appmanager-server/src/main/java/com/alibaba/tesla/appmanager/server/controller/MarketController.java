@@ -18,6 +18,7 @@ import com.alibaba.tesla.appmanager.domain.req.market.*;
 import com.alibaba.tesla.appmanager.domain.schema.AppPackageSchema;
 import com.alibaba.tesla.appmanager.server.storage.impl.OssStorage;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +46,7 @@ import java.util.stream.Collectors;
  * @author yaoxing.gyx@alibaba-inc.com
  */
 @Slf4j
+@Tag(name = "应用市场 API")
 @RequestMapping("/market")
 @RestController
 public class MarketController extends AppManagerBaseController {

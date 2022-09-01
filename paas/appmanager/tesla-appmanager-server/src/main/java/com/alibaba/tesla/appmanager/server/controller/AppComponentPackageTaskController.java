@@ -13,6 +13,7 @@ import com.alibaba.tesla.appmanager.domain.res.componentpackage.ComponentPackage
 import com.alibaba.tesla.appmanager.server.event.componentpackage.ComponentPackageTaskStartEvent;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.google.common.collect.ImmutableMap;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author yaoxing.gyx@alibaba-inc.com
  */
 @Slf4j
+@Tag(name = "组件包任务 API")
 @RequestMapping("/apps/{appId}/component-package-tasks")
 @RestController
 public class AppComponentPackageTaskController extends AppManagerBaseController {

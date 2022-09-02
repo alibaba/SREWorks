@@ -347,7 +347,7 @@ data:
     packagePath = tempfile.mkdtemp()
     targetPath = packagePath + "/target"
 
-    shutil.copytree(tags.src, targetPath)
+    shutil.copytree(args.src, targetPath)
 
     for path in os.listdir(targetPath):
         if path.endswith(".zip.dir"):

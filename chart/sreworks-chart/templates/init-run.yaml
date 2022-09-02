@@ -332,6 +332,30 @@ data:
 
     res = reduce(merge, [yaml.safe_load(raw) for raw in sys.stdin.read().strip().split("---")])
     print(yaml.dump(res))
+
+  pack.py: |
+    import shutil
+    import tempfile
+    import os
+
+    parser = argparse.ArgumentParser(description='package tool')
+    parser.add_argument("-s",'--src', type=str, dest="src", required=True)
+    parser.add_argument("-d",'--dest', type=str, dest="dest", required=True)
+    args = parser.parse_args()
+
+    packagePath = tempfile.mkdtemp()
+    targetPath = packagePath + "/target"
+
+    shutil.copytree(tags.src, targetPath)
+
+    for path in os.listdir(targetPath):
+        if path.endswith(".zip.dir"):
+            shutil.make_archive(targetPath + "/" + path.split(".zip")[0], 'zip', targetPath + "/" + path)
+            shutil.rmtree(targetPath + "/" + path)
+
+
+    shutil.make_archive(args.dest.split(".zip")[0], 'zip', targetPath + "/")
+ 
  
   saas-dataops.sh: |
     set -e
@@ -564,7 +588,7 @@ data:
     envsubst < /root/saas/job/api/launch.yaml.tpl > /root/saas/job/api/launch.yaml
     envsubst < /root/saas/job/ui/launch-v2.yaml.tpl > /root/saas/job/ui/launch.yaml
     envsubst < /root/saas/job/ui/launch-v2-dev.yaml.tpl > /root/saas/job/ui/launch-dev.yaml
- 
+    python /app/pack.py /root/saas/job/build /root/saas/job/build.zip
 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
     
@@ -574,7 +598,7 @@ data:
         if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
             
 
-            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id job --filepath /root/saas/job/ui/job-auto.zip --print-only-app-package-id=true --reset-version=true)
+            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id job --filepath /root/saas/job/build.zip --print-only-app-package-id=true --reset-version=true)
 
             /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id job --path /root/saas/job/ui/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
             /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id job --path /root/saas/job/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
@@ -592,8 +616,9 @@ data:
       echo "---" >> merge-launch.yaml
       cat /root/saas/job/ui/launch.yaml >> merge-launch.yaml
       cat merge-launch.yaml | python /app/reduce.py > launch.yaml
-      
-      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id job --filepath /root/saas/job/job.zip --print-only-app-package-id=true --reset-version=true)
+    
+      # 本地目录构成  
+      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id job --filepath /root/saas/job/build.zip --print-only-app-package-id=true --reset-version=true)
 
       /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id job --path /root/saas/job/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
       /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id job --path /root/saas/job/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master

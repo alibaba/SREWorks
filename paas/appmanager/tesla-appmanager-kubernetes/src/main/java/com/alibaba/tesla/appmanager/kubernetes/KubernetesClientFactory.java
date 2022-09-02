@@ -92,8 +92,7 @@ public class KubernetesClientFactory {
         // 针对专有云场景，直接使用当前的 service account token
         String cloudType = System.getenv("CLOUD_TYPE");
         if ("ApsaraStack".equals(cloudType)
-                || "ApsaraStackAgility".equals(cloudType)
-                || (EnvUtil.isSreworks() && "master".equals(clusterId))) {
+                || "ApsaraStackAgility".equals(cloudType)) {
             DefaultKubernetesClient client = clientMap.get(clusterId);
             if (client != null) {
                 return client;
@@ -105,6 +104,24 @@ public class KubernetesClientFactory {
                     return client;
                 }
                 DefaultKubernetesClient newClient = new DefaultKubernetesClient();
+                clientMap.put(clusterId, newClient);
+                log.info("kubernetes client for cluster {} has put into client map", clusterId);
+                return newClient;
+            }
+        } else if (EnvUtil.isSreworks() && "master".equals(clusterId)) {
+            DefaultKubernetesClient client = clientMap.get(clusterId);
+            if (client != null) {
+                return client;
+            }
+            synchronized (clientMap) {
+                // double check
+                client = clientMap.get(clusterId);
+                if (client != null) {
+                    return client;
+                }
+
+                Config config = new ConfigBuilder().withNamespace(null).build();
+                DefaultKubernetesClient newClient = new DefaultKubernetesClient(config);
                 clientMap.put(clusterId, newClient);
                 log.info("kubernetes client for cluster {} has put into client map", clusterId);
                 return newClient;

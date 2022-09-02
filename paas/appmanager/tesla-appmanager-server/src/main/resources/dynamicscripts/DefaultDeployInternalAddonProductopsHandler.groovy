@@ -54,7 +54,7 @@ class DefaultDeployInternalAddonProductopsHandler implements DeployComponentHand
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 11
+    public static final Integer REVISION = 12
 
     private static final String IMPORT_TMP_FILE = "productops_tmp_import.zip"
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
@@ -188,7 +188,12 @@ class DefaultDeployInternalAddonProductopsHandler implements DeployComponentHand
         def httpClient = HttpClientFactory.getHttpClient()
         def times = 2
         while (true) {
-            def urlPrefix = String.format("%s/jobs/report_app_tree_structures/%s/start", endpoint, appTreeId)
+            def urlPrefix
+            if ("Internal".equals(System.getenv("CLOUD_TYPE"))) {
+                urlPrefix = String.format("%s/jobs/async_report_app_tree_structures/%s/start", endpoint, appTreeId)
+            } else {
+                urlPrefix = String.format("%s/jobs/report_app_tree_structures/%s/start", endpoint, appTreeId)
+            }
             def urlBuilder = Objects.requireNonNull(HttpUrl.parse(urlPrefix)).newBuilder()
             def reqBuilder = new Request.Builder()
                     .url(urlBuilder.build())

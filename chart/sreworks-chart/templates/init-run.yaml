@@ -586,7 +586,7 @@ data:
     # build&launch cluster api
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
     envsubst < /root/saas/job/api/build.yaml.tpl > /root/saas/job/api/build.yaml
-    envsubst < /root/saas/job/api/launch.yaml.tpl > /root/saas/job/api/launch.yaml
+    envsubst < /root/saas/job/build/launch.yaml.tpl > /root/saas/job/api/launch.yaml
     envsubst < /root/saas/job/ui/launch-v2.yaml.tpl > /root/saas/job/ui/launch.yaml
     envsubst < /root/saas/job/ui/launch-v2-dev.yaml.tpl > /root/saas/job/ui/launch-dev.yaml
     python /app/pack.py --src /root/saas/job/build --dest /root/saas/job/build.zip
@@ -612,16 +612,16 @@ data:
 
       sh /app/core-action-service-check.sh
       
-      echo "" > merge-launch.yaml
-      cat /root/saas/job/api/launch.yaml >> merge-launch.yaml
-      echo "---" >> merge-launch.yaml
-      cat /root/saas/job/ui/launch.yaml >> merge-launch.yaml
-      cat merge-launch.yaml | python /app/reduce.py > launch.yaml
+      #echo "" > merge-launch.yaml
+      #cat /root/saas/job/api/launch.yaml >> merge-launch.yaml
+      #echo "---" >> merge-launch.yaml
+      #cat /root/saas/job/ui/launch.yaml >> merge-launch.yaml
+      #cat merge-launch.yaml | python /app/reduce.py > launch.yaml
     
       # 本地目录构成  
       result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id job --filepath /root/saas/job/build.zip --print-only-app-package-id=true --reset-version=true)
 
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id job --path /root/saas/job/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id job --path /root/saas/job/api/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
       /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id job --path /root/saas/job/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
 
 

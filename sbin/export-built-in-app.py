@@ -127,12 +127,12 @@ for buildIn in builtInList:
             launchYAML["spec"]["components"].append(yaml.safe_load(packageOptions["componentConfiguration"]))
     
     f = open(loalPath + '/launch-example.yaml', 'w')
-    f.write(yaml.dump(launchYAML))
+    f.write(yaml.safe_dump(launchYAML, width=float("inf")))
     f.close()
 
     values_tpl_replace(launchYAML)
     f = open(loalPath + '/launch.yaml.tpl', 'w')
-    f.write(yaml.dump(launchYAML))
+    f.write(yaml.safe_dump(launchYAML, width=float("inf")))
     f.close()
 
     for name in os.listdir(loalPath):

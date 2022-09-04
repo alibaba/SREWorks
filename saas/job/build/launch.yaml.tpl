@@ -16,26 +16,14 @@ spec:
       toFieldPaths:
       - spec.replicas
       value: 1
-    - name: Global.ES_PASSWORD
-      value: ${DATA_ES_PASSWORD}
     - name: Global.DB_NAME
       value: sreworks_saas_job
-    - name: Global.REDIS_HOST
-      value: '{{ env.APPMANAGER_REDIS_HOST }}'
-    - name: Global.REDIS_PORT
-      value: '{{ env.APPMANAGER_REDIS_PORT }}'
     - name: Global.REDIS_DATABASE
       value: '0'
-    - name: Global.REDIS_PASSWORD
-      value: '{{ env.APPMANAGER_REDIS_PASSWORD }}'
-    - name: Global.ES_USERNAME
-      value: ${DATA_ES_USER}
     - name: Global.JVM_XMX
       value: 1g
     - name: Global.JVM_XMS
       value: 1g
-    - name: Global.ES_ENDPOINT
-      value: http://${DATA_ES_HOST}:${DATA_ES_PORT}
     revisionName: K8S_MICROSERVICE|job-master|_
     scopes:
     - scopeRef:
@@ -65,18 +53,12 @@ spec:
       toFieldPaths:
       - spec.replicas
       value: 1
-    - name: Global.ES_PASSWORD
-      value: ${DATA_ES_PASSWORD}
     - name: Global.SREWORKS_JOB_MASTER_ENDPOINT
       value: http://prod-job-job-master
-    - name: Global.ES_ENDPOINT
-      value: http://${DATA_ES_HOST}:${DATA_ES_PORT}
     - name: Global.JVM_XMX
       value: 1g
     - name: Global.JVM_XMS
       value: 1g
-    - name: Global.ES_USERNAME
-      value: ${DATA_ES_USER}
     revisionName: K8S_MICROSERVICE|job-worker|_
     scopes:
     - scopeRef:
@@ -171,7 +153,25 @@ spec:
     scopes: []
     stageId: ''
     traits: []
-  parameterValues: []
+  parameterValues:
+  - name: ES_PASSWORD
+    value: ${DATA_ES_PASSWORD}
+  - name: REDIS_HOST
+    value: '{{ env.APPMANAGER_REDIS_HOST }}'
+  - name: REDIS_PORT
+    value: '{{ env.APPMANAGER_REDIS_PORT }}'
+  - name: REDIS_PASSWORD
+    value: '{{ env.APPMANAGER_REDIS_PASSWORD }}'
+  - name: ES_USERNAME
+    value: ${DATA_ES_USER}
+  - name: ES_ENDPOINT
+    value: http://${DATA_ES_HOST}:${DATA_ES_PORT}
+  - name: ES_PASSWORD
+    value: ${DATA_ES_PASSWORD}
+  - name: ES_ENDPOINT
+    value: http://${DATA_ES_HOST}:${DATA_ES_PORT}
+  - name: ES_USERNAME
+    value: ${DATA_ES_USER}
   policies: []
   workflow:
     steps: []

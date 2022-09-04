@@ -18,13 +18,17 @@ except ImportError:
 self_path = os.path.split(os.path.realpath(__file__))[0]
 
 VALUES_MAP = {
-    "REDIS_HOST": '{{ env.APPMANAGER_REDIS_HOST }}',
-    "REDIS_PORT": '{{ env.APPMANAGER_REDIS_PORT }}',
-    "REDIS_PASSWORD": '{{ env.APPMANAGER_REDIS_PASSWORD }}',
-    "NAMESPACE_ID": '${NAMESPACE_ID}',
-    "ES_ENDPOINT": 'http://${DATA_ES_HOST}:${DATA_ES_PORT}',
-    "ES_USERNAME": '${DATA_ES_USER}',
-    "ES_PASSWORD": '${DATA_ES_PASSWORD}', 
+    "appParameterValues":{
+        "REDIS_HOST": '{{ env.APPMANAGER_REDIS_HOST }}',
+        "REDIS_PORT": '{{ env.APPMANAGER_REDIS_PORT }}',
+        "REDIS_PASSWORD": '{{ env.APPMANAGER_REDIS_PASSWORD }}',
+        "ES_ENDPOINT": 'http://${DATA_ES_HOST}:${DATA_ES_PORT}',
+        "ES_USERNAME": '${DATA_ES_USER}',
+        "ES_PASSWORD": '${DATA_ES_PASSWORD}',
+        "NAMESPACE_ID": '${NAMESPACE_ID}',
+    },
+    "componentParameterValues":{
+    }
 }
 
 
@@ -32,12 +36,18 @@ def values_tpl_replace(launchYAML):
     launchYAML['metadata']['annotations']['namespaceId'] = '${NAMESPACE_ID}'
     launchYAML['metadata']['annotations']['clusterId'] = 'master'
     launchYAML['metadata']['annotations']['stageId'] = 'prod'
+   
     for component in launchYAML["spec"]["components"]:
+        newParameterValues = []
         for value in component["parameterValues"]:
-            if value["name"] in VALUES_MAP:
-                value["value"] = VALUES_MAP[value["name"]]
-            elif value["name"].replace("Global.",'') in VALUES_MAP:
-                value["value"] = VALUES_MAP[value["name"].replace("Global.",'')]
+            # 如果该变量在app级别存在，则使用app级别的，且component级别不展示变量
+            valueName = value["name"].replace("Global.",'')
+            if valueName in VALUES_MAP["appParameterValues"]:
+                launchYAML["spec"]["parameterValues"].append({"name": valueName, "value": VALUES_MAP["appParameterValues"][valueName]})
+            else:
+                newParameterValues.append(value)
+        component["parameterValues"] = newParameterValues
+
 
 def download(url):
     if hasattr(urllib, "urlretrieve"):
@@ -100,6 +110,7 @@ for buildIn in builtInList:
             "name": buildIn["appId"],
         },
         "spec":{
+            "parameterValues": [],
             "components": [],
             "parameterValues": [],
             "policies": [],

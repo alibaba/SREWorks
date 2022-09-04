@@ -1,5 +1,4 @@
 const TerserPlugin = require('terser-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const { getEntries } = require('./utils')
 
@@ -26,7 +25,7 @@ module.exports = {
         test: /\.css$/i,
         // 从右往左执行，不能改变顺序style-loader是 CSS 插入到 DOM 中，css- loader是对 @import 和 url() 进行处理，就像 js 解析 import /require() 一样
         use: [
-          MiniCssExtractPlugin.loader,
+          'style-loader',
           'css-loader',
           {
             loader: 'postcss-loader',
@@ -36,7 +35,7 @@ module.exports = {
       {
         test: /\.less$/i,
         use: [
-          MiniCssExtractPlugin.loader,
+          'style-loader',
           {
             loader: 'css-loader',
             options: {
@@ -65,7 +64,7 @@ module.exports = {
         test: /\.s[ac]ss$/i,
         use: [
           // 将 JS 字符串生成为 style 节点
-          MiniCssExtractPlugin.loader,
+          'style-loader',
           // 将 CSS 转化成 CommonJS 模块
           'css-loader',
           {
@@ -85,7 +84,7 @@ module.exports = {
       {
         test: /\.styl/i,
         use: [
-          MiniCssExtractPlugin.loader,
+          'style-loader',
           'css-loader',
           {
             loader: 'postcss-loader',
@@ -113,7 +112,6 @@ module.exports = {
       },
     ],
   },
-  plugins: [new MiniCssExtractPlugin()],
   optimization: {
     minimize: true,
     minimizer: [

@@ -51,7 +51,7 @@ class DefaultInternalAddonProductopsHandler implements BuildComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 15
+    public static final Integer REVISION = 22
 
     /**
      * 弹内导出应用需要排除的应用 ID
@@ -91,6 +91,7 @@ class DefaultInternalAddonProductopsHandler implements BuildComponentHandler {
         def stageId = request.getStageId()
         def version = request.getVersion()
         def options = request.getOptions()
+        def logString = new StringBuffer()
 
         // 创建当前组件包的临时组装目录，用于存储 meta 信息及构建后的镜像
         def packageDir
@@ -118,7 +119,11 @@ class DefaultInternalAddonProductopsHandler implements BuildComponentHandler {
             for (Map.Entry<String, String> entry : params.entrySet()) {
                 urlBuilder.addQueryParameter(entry.getKey(), entry.getValue())
             }
-            FileUtils.copyURLToFile(new URL(urlBuilder.build().toString()), exportPath.toFile(), 10 * 1000, 60 * 1000)
+            def actualUrl = urlBuilder.build().toString()
+            def message = String.format("prepare to download from productops|url=%s\n", actualUrl)
+            logString.append(message)
+            log.info(message)
+            FileUtils.copyURLToFile(new URL(actualUrl), exportPath.toFile(), 10 * 1000, 60 * 1000)
         }
 
         // 解压当前导出文件并清理
@@ -141,8 +146,11 @@ class DefaultInternalAddonProductopsHandler implements BuildComponentHandler {
         def metaYamlContent = jinjava.render(template, options)
         def metaYamlFile = Paths.get(packageDir.toString(), "meta.yaml").toFile()
         FileUtils.writeStringToFile(metaYamlFile, metaYamlContent, StandardCharsets.UTF_8)
-        log.info("meta yaml config has rendered|appId={}|namespaceId={}|stageId={}|componentType={}|componentName={}|" +
-                "packageVersion={}", appId, namespaceId, stageId, componentType, componentName, version)
+        def message = String.format("meta yaml config has rendered|appId=%s|namespaceId=%s|stageId=%s|" +
+                "componentType=%s|componentName=%s|packageVersion=%s\n", appId, namespaceId, stageId,
+                componentType, componentName, version)
+        logString.append(message)
+        log.info(message)
 
         // 将 packageDir 打包为 zip 文件
         String zipPath = packageDir.resolve("app_package.zip").toString()
@@ -154,17 +162,22 @@ class DefaultInternalAddonProductopsHandler implements BuildComponentHandler {
             }
         })
         def targetFileMd5 = StringUtil.getMd5Checksum(zipPath)
-        log.info("zip file has generated|appId={}|namespaceId={}|stageId={}|componentType={}|componentName={}|" +
-                "packageVersion={}|zipPath={}|md5={}", appId, namespaceId, stageId, componentType, componentName,
-                version, zipPath, targetFileMd5)
+        message = String.format("zip file has generated|appId=%s|namespaceId=%s|stageId=%s|componentType=%s|" +
+                "componentName=%s|packageVersion=%s|zipPath=%s|md5=%s\n", appId, namespaceId, stageId, componentType,
+                componentName, version, zipPath, targetFileMd5)
+        logString.append(message)
+        log.info(message)
 
         // 上传导出包到 Storage 中
         String bucketName = packageProperties.getBucketName()
         String remotePath = PackageUtil
                 .buildComponentPackageRemotePath(appId, componentType, componentName, version)
         storage.putObject(bucketName, remotePath, zipPath)
-        log.info("component package has uploaded to storage|appId={}|namespaceId={}|stageId={}|bucketName={}|" +
-                "remotePath={}|localPath={}", appId, namespaceId, stageId, bucketName, remotePath, zipPath)
+        message = String.format("component package has uploaded to storage|appId=%s|namespaceId=%s|" +
+                "stageId=%s|bucketName=%s|remotePath=%s|localPath=%s\n", appId, namespaceId, stageId,
+                bucketName, remotePath, zipPath)
+        logString.append(message)
+        log.info(message)
 
         // 删除临时数据 (正常流程下)
         try {
@@ -173,7 +186,7 @@ class DefaultInternalAddonProductopsHandler implements BuildComponentHandler {
             log.warn("cannot delete component package build directory|directory={}", packageDir.toString())
         }
         LaunchBuildComponentHandlerRes res = LaunchBuildComponentHandlerRes.builder()
-                .logContent("get zip file from productops succeed")
+                .logContent(logString.toString())
                 .storageFile(new StorageFile(bucketName, remotePath))
                 .packageMetaYaml(metaYamlContent)
                 .packageMd5(targetFileMd5)

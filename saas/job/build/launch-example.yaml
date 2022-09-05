@@ -1,0 +1,178 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: ApplicationConfiguration
+metadata:
+  annotations:
+    appId: job
+  name: job
+spec:
+  components:
+  - dependencies:
+    - component: RESOURCE_ADDON|system-env@system-env
+    parameterValues:
+    - name: REPLICAS
+      toFieldPaths:
+      - spec.replicas
+      value: 1
+    - name: Global.ES_PASSWORD
+      value: sreworkses123.
+    - name: Global.DB_NAME
+      value: sreworks_saas_job
+    - name: Global.REDIS_HOST
+      value: sreworks-redis-master.sreworks
+    - name: Global.REDIS_PORT
+      value: '6379'
+    - name: Global.REDIS_DATABASE
+      value: '0'
+    - name: Global.REDIS_PASSWORD
+      value: siJEULmQYQ
+    - name: Global.ES_USERNAME
+      value: elastic
+    - name: Global.JVM_XMX
+      value: 1g
+    - name: Global.JVM_XMS
+      value: 1g
+    - name: Global.ES_ENDPOINT
+      value: http://prod-dataops-elasticsearch-master.sreworks-dataops.svc.cluster.local:9200
+    revisionName: K8S_MICROSERVICE|job-master|_
+    scopes:
+    - scopeRef:
+        apiVersion: core.oam.dev/v1alpha2
+        kind: Namespace
+        spec:
+          autoCreate: true
+    traits:
+    - name: service.trait.abm.io
+      runtime: post
+      spec:
+        ports:
+        - port: 80
+          protocol: TCP
+          targetPort: 17001
+    - name: gateway.trait.abm.io
+      runtime: post
+      spec:
+        authEnabled: true
+        path: /sreworks-job/**
+        serviceName: '{{ Global.STAGE_ID }}-job-job-master.{{ Global.NAMESPACE_ID }}'
+  - dependencies:
+    - component: RESOURCE_ADDON|system-env@system-env
+    parameterValues:
+    - name: REPLICAS
+      toFieldPaths:
+      - spec.replicas
+      value: 1
+    - name: Global.ES_PASSWORD
+      value: sreworkses123.
+    - name: Global.SREWORKS_JOB_MASTER_ENDPOINT
+      value: http://prod-job-job-master
+    - name: Global.ES_ENDPOINT
+      value: http://prod-dataops-elasticsearch-master.sreworks-dataops.svc.cluster.local:9200
+    - name: Global.JVM_XMX
+      value: 1g
+    - name: Global.JVM_XMS
+      value: 1g
+    - name: Global.ES_USERNAME
+      value: elastic
+    revisionName: K8S_MICROSERVICE|job-worker|_
+    scopes:
+    - scopeRef:
+        apiVersion: core.oam.dev/v1alpha2
+        kind: Namespace
+        spec:
+          autoCreate: true
+    traits:
+    - name: service.trait.abm.io
+      runtime: post
+      spec:
+        ports:
+        - port: 80
+          protocol: TCP
+          targetPort: 7001
+    - name: gateway.trait.abm.io
+      runtime: post
+      spec:
+        authEnabled: false
+        path: /job/job-worker/**
+        serviceName: '{{ Global.STAGE_ID }}-job-job-worker.{{ Global.NAMESPACE_ID }}'
+  - clusterId: ''
+    dataInputs: []
+    dataOutputs: []
+    dependencies: []
+    namespaceId: ''
+    parameterValues: []
+    revisionName: INTERNAL_ADDON|productopsv2|_
+    scopes: []
+    stageId: ''
+    traits: []
+  - clusterId: ''
+    dataInputs: []
+    dataOutputs:
+    - fieldPath: '{{ spec.env.DB_HOST }}'
+      name: Global.DB_HOST
+    - fieldPath: '{{ spec.env.DB_PASSWORD }}'
+      name: Global.DB_PASSWORD
+    - fieldPath: '{{ spec.env.DB_PORT }}'
+      name: Global.DB_PORT
+    - fieldPath: '{{ spec.env.DB_USER }}'
+      name: Global.DB_USER
+    - fieldPath: '{{ spec.env.APPMANAGER_ACCESS_ID }}'
+      name: Global.APPMANAGER_USERNAME
+    - fieldPath: '{{ spec.env.APPMANAGER_ACCESS_SECRET }}'
+      name: Global.APPMANAGER_PASSWORD
+    - fieldPath: '{{ spec.env.APPMANAGER_CLIENT_ID }}'
+      name: Global.APPMANAGER_CLIENT_ID
+    - fieldPath: '{{ spec.env.APPMANAGER_CLIENT_SECRET }}'
+      name: Global.APPMANAGER_CLIENT_SECRET
+    - fieldPath: '{{ spec.env.COOKIE_DOMAIN }}'
+      name: Global.COOKIE_DOMAIN
+    - fieldPath: '{{ spec.env.APPMANAGER_PACKAGE_ACCESS_KEY }}'
+      name: Global.APPMANAGER_PACKAGE_ACCESS_KEY
+    - fieldPath: '{{ spec.env.APPMANAGER_PACKAGE_SECRET_KEY }}'
+      name: Global.APPMANAGER_PACKAGE_SECRET_KEY
+    - fieldPath: '{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL }}'
+      name: Global.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL
+    - fieldPath: '{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT }}'
+      name: Global.APPMANAGER_PACKAGE_ENDPOINT
+    - fieldPath: '{{ spec.env.STORAGE_CLASS }}'
+      name: Global.STORAGE_CLASS
+    - fieldPath: '{{ spec.env.ACCOUNT_SUPER_CLIENT_ID }}'
+      name: Global.ACCOUNT_SUPER_CLIENT_ID
+    - fieldPath: '{{ spec.env.ACCOUNT_SUPER_CLIENT_SECRET }}'
+      name: Global.ACCOUNT_SUPER_CLIENT_SECRET
+    dependencies: []
+    namespaceId: ''
+    parameterValues:
+    - name: keys
+      toFieldPaths:
+      - spec.keys
+      value:
+      - DB_HOST
+      - DB_PASSWORD
+      - DB_PORT
+      - DB_USER
+      - APPMANAGER_ACCESS_ID
+      - APPMANAGER_ACCESS_SECRET
+      - APPMANAGER_CLIENT_ID
+      - APPMANAGER_CLIENT_SECRET
+      - COOKIE_DOMAIN
+      - APPMANAGER_PACKAGE_ACCESS_KEY
+      - APPMANAGER_PACKAGE_SECRET_KEY
+      - APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL
+      - APPMANAGER_PACKAGE_ENDPOINT
+      - STORAGE_CLASS
+      - ACCOUNT_SUPER_CLIENT_ID
+      - ACCOUNT_SUPER_CLIENT_SECRET
+    revisionName: RESOURCE_ADDON|system-env@system-env|1.0
+    scopes: []
+    stageId: ''
+    traits: []
+  parameterValues:
+  - name: CLUSTER_ID
+    value: ''
+  - name: NAMESPACE_ID
+    value: ''
+  - name: STAGE_ID
+    value: ''
+  policies: []
+  workflow:
+    steps: []

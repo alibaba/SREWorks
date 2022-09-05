@@ -57,7 +57,8 @@ public abstract class AbstractTaskScene<T extends AbstractTaskSceneConf> {
     protected List<JSONObject> parseOutputToList(String stdout) {
         List<JSONObject> results = new ArrayList<>();
         try {
-            results = JSONObject.parseArray(stdout, JSONObject.class);
+            List<JSONObject> parseResults = JSONObject.parseArray(stdout, JSONObject.class);
+            results = parseResults == null ? results : parseResults;
         } catch (Exception ex) {
             results.add(JSONObject.parseObject(stdout));
         }

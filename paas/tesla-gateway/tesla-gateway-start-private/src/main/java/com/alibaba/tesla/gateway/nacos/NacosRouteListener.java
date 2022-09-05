@@ -16,12 +16,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.Executor;
-import java.util.stream.Collectors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * todo
@@ -52,6 +51,7 @@ public class NacosRouteListener {
 
             properties.put(PropertyKeyConst.SERVER_ADDR, teslaGatewayProperties.getStoreNacosAddr());
             properties.put(PropertyKeyConst.NAMESPACE, teslaGatewayProperties.getStoreNacosNamespace());
+            properties.put(PropertyKeyConst.MAX_RETRY, 10);
 
             configService = NacosFactory.createConfigService(properties);
 
@@ -93,8 +93,19 @@ public class NacosRouteListener {
      * @throws NacosException exception
      */
     private void firstLoadRouteConfig() throws NacosException {
+        log.info("firstLoadRouteConfig||dataId={}||group={}",
+            this.teslaGatewayProperties.getStoreNacosDataId(), this.teslaGatewayProperties.getStoreNacosGroup());
         String config = this.configService.getConfig(teslaGatewayProperties.getStoreNacosDataId(),
             teslaGatewayProperties.getStoreNacosGroup(), 10000);
+        if (StringUtils.isBlank(config)) {
+            try {
+                TimeUnit.SECONDS.sleep(5);
+                config = this.configService.getConfig(teslaGatewayProperties.getStoreNacosDataId(),
+                    teslaGatewayProperties.getStoreNacosGroup(), 10000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
         log.info("routeConfig={}", config);
         if (StringUtils.isBlank(config)) {
             config = "[]";

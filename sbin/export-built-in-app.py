@@ -45,7 +45,7 @@ def values_tpl_replace(launchYAML):
  
     for component in launchYAML["spec"]["components"]:
         newParameterValues = []
-        for value in component["parameterValues"]:
+        for value in component.get("parameterValues", []):
             # 如果该变量在app级别存在，则使用app级别的，且component级别不展示变量
             valueName = value["name"].replace("Global.",'')
             if valueName in VALUES_MAP["appParameterValues"]:
@@ -69,7 +69,56 @@ def values_tpl_replace(launchYAML):
                 "kind": "Stage",
                 "name": "{{ Global.STAGE_ID }}",
         }}]
+        if component["revisionName"].startswith("INTERNAL_ADDON"):
+            component["parameterValues"].append({
+                "name": "STAGE_ID",
+                "value": "prod",
+                "toFieldPaths": ["spec.stageId"]
+            })
+        if component["revisionName"] == "INTERNAL_ADDON|appmeta|_":
+             component["parameterValues"].append({
+                "name": "OVERWRITE_IS_DEVELOPMENT",
+                "value": "true",
+                "toFieldPaths": ["spec.overwriteIsDevelopment"]
+            })
+            
 
+def only_frontend_filter(launchYAML):
+
+    newComponents = []
+    gatewayTrait = {}
+    for component in launchYAML["spec"]["components"]:
+        if component["revisionName"].startswith("INTERNAL_ADDON"):
+            newComponents.append(component)
+
+    launchYAML["spec"]["components"] = newComponents
+
+
+def only_backend_filter(launchYAML):
+
+    newComponents = []
+    gatewayTrait = {}
+    for component in launchYAML["spec"]["components"]:
+        if not component["revisionName"].startswith("INTERNAL_ADDON"):
+            newComponents.append(component)
+
+    launchYAML["spec"]["components"] = newComponents
+
+
+def frontend_dev_replace(launchYAML, devYAML):
+    launchYAML['metadata']['annotations']['stageId'] = 'dev'
+    for appValue in launchYAML["spec"]["parameterValues"]:
+        if appValue["name"] == "STAGE_ID":
+            appValue["value"] = "dev"
+    for component in launchYAML["spec"]["components"]:
+        for compValue in component["parameterValues"]:
+            if compValue["name"] == "STAGE_ID":
+                compValue["value"] = "dev"
+        if devYAML != None:
+            for devComp in devYAML["components"]:
+                if devComp["revisionName"] == component["revisionName"]:
+                    if "traits" not in component: component["traits"] = []
+                    component["traits"] += devComp["traits"]
 
 def download(url):
     if hasattr(urllib, "urlretrieve"):
@@ -155,6 +204,10 @@ for buildIn in builtInList:
         packageOptions = json.loads(component["packageOptions"])
         if "componentConfiguration" in packageOptions:
             launchYAML["spec"]["components"].append(yaml.safe_load(packageOptions["componentConfiguration"]))
+        else:
+            launchYAML["spec"]["components"].append({
+                "revisionName": component["componentType"] + "|" + component["componentName"] + "|_"
+            })
     
     f = open(loalPath + '/launch-example.yaml', 'w')
     f.write(yaml.safe_dump(launchYAML, width=float("inf")))
@@ -164,6 +217,31 @@ for buildIn in builtInList:
     f = open(loalPath + '/launch.yaml.tpl', 'w')
     f.write(yaml.safe_dump(launchYAML, width=float("inf")))
     f.close()
+
+    backendLaunchYAML = json.loads(json.dumps(launchYAML))
+    only_backend_filter(backendLaunchYAML)
+    if len(backendLaunchYAML["spec"]["components"]) > 0:
+        f = open(loalPath + '/launch-backend.yaml.tpl', 'w')
+        f.write(yaml.safe_dump(backendLaunchYAML, width=float("inf")))
+        f.close()
+
+    only_frontend_filter(launchYAML)
+    f = open(loalPath + '/launch-frontend.yaml.tpl', 'w')
+    f.write(yaml.safe_dump(launchYAML, width=float("inf")))
+    f.close()
+
+    if buildIn.get("develop") != None:
+        f = open(self_path + "/../" + buildIn["develop"], 'r')
+        devYAML = yaml.safe_load(f.read())
+        f.close()
+    else:
+        devYAML = None
+
+    frontend_dev_replace(launchYAML, devYAML)
+    f = open(loalPath + '/launch-frontend-dev.yaml.tpl', 'w')
+    f.write(yaml.safe_dump(launchYAML, width=float("inf")))
+    f.close()
+
 
     for name in os.listdir(loalPath):
         filename = loalPath + "/" + name

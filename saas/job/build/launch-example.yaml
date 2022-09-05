@@ -166,6 +166,8 @@ spec:
     scopes: []
     stageId: ''
     traits: []
+  - revisionName: INTERNAL_ADDON|developmentmeta|_
+  - revisionName: INTERNAL_ADDON|appmeta|_
   parameterValues:
   - name: CLUSTER_ID
     value: ''

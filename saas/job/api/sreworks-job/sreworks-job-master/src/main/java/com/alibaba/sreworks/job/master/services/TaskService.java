@@ -37,6 +37,11 @@ public class TaskService {
         JSONObject taskVarConf = task.varConf();
         taskVarConf.putAll(varConf);
         SreworksJobWorkerDTO workerDTO = workerService.getByExecType(task.getExecType());
+        // TODO RETRY
+        if  (workerDTO == null) {
+            log.warn("Get job execute worker failed, taskId:{}, execType:{}", taskId, task.getExecType());
+            throw new Exception(String.format("Get job execute worker failed, taskId:%d, execType:%s", taskId, task.getExecType()));
+        }
         ElasticTaskInstanceWithBlobs taskInstance = new ElasticTaskInstanceWithBlobs();
         taskInstance.setId(UUID.randomUUID().toString().replace("-", ""));
         taskInstance.setOperator(operator);

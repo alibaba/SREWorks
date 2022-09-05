@@ -27,10 +27,17 @@ spec:
     revisionName: K8S_MICROSERVICE|job-master|_
     scopes:
     - scopeRef:
-        apiVersion: core.oam.dev/v1alpha2
+        apiVersion: apps.abm.io/v1
+        kind: Cluster
+        name: '{{ Global.CLUSTER_ID }}'
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
         kind: Namespace
-        spec:
-          autoCreate: true
+        name: '{{ Global.NAMESPACE_ID }}'
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Stage
+        name: '{{ Global.STAGE_ID }}'
     traits:
     - name: service.trait.abm.io
       runtime: post
@@ -61,10 +68,17 @@ spec:
     revisionName: K8S_MICROSERVICE|job-worker|_
     scopes:
     - scopeRef:
-        apiVersion: core.oam.dev/v1alpha2
+        apiVersion: apps.abm.io/v1
+        kind: Cluster
+        name: '{{ Global.CLUSTER_ID }}'
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
         kind: Namespace
-        spec:
-          autoCreate: true
+        name: '{{ Global.NAMESPACE_ID }}'
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Stage
+        name: '{{ Global.STAGE_ID }}'
     traits:
     - name: service.trait.abm.io
       runtime: post
@@ -86,7 +100,19 @@ spec:
     namespaceId: ''
     parameterValues: []
     revisionName: INTERNAL_ADDON|productopsv2|_
-    scopes: []
+    scopes:
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Cluster
+        name: '{{ Global.CLUSTER_ID }}'
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Namespace
+        name: '{{ Global.NAMESPACE_ID }}'
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Stage
+        name: '{{ Global.STAGE_ID }}'
     stageId: ''
     traits: []
   - clusterId: ''
@@ -148,10 +174,28 @@ spec:
       - ACCOUNT_SUPER_CLIENT_ID
       - ACCOUNT_SUPER_CLIENT_SECRET
     revisionName: RESOURCE_ADDON|system-env@system-env|1.0
-    scopes: []
+    scopes:
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Cluster
+        name: '{{ Global.CLUSTER_ID }}'
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Namespace
+        name: '{{ Global.NAMESPACE_ID }}'
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Stage
+        name: '{{ Global.STAGE_ID }}'
     stageId: ''
     traits: []
   parameterValues:
+  - name: CLUSTER_ID
+    value: master
+  - name: NAMESPACE_ID
+    value: ${NAMESPACE_ID}
+  - name: STAGE_ID
+    value: prod
   - name: ES_PASSWORD
     value: ${DATA_ES_PASSWORD}
   - name: REDIS_HOST

@@ -586,23 +586,24 @@ data:
     # build&launch cluster api
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
     envsubst < /root/saas/job/api/build.yaml.tpl > /root/saas/job/api/build.yaml
-    envsubst < /root/saas/job/build/launch.yaml.tpl > /root/saas/job/api/launch.yaml
-    envsubst < /root/saas/job/ui/launch-v2.yaml.tpl > /root/saas/job/ui/launch.yaml
-    envsubst < /root/saas/job/ui/launch-v2-dev.yaml.tpl > /root/saas/job/ui/launch-dev.yaml
+    envsubst < /root/saas/job/build/launch.yaml.tpl > /root/saas/job/launch.yaml
+    envsubst < /root/saas/job/build/launch-backend.yaml.tpl > /root/saas/job/launch-backend.yaml
+    envsubst < /root/saas/job/build/launch-frontend.yaml.tpl > /root/saas/job/launch-frontend.yaml
+    envsubst < /root/saas/job/build/launch-frontend-dev.yaml.tpl > /root/saas/job/launch-frontend-dev.yaml
     python /app/pack.py --src /root/saas/job/build --dest /root/saas/job/build.zip
 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
     
         cd /root/saas/job/api/
-        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=job --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=./launch.yaml --disable-dir-check
+        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=job --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=../launch-backend.yaml --disable-dir-check
 
         if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
             
 
             result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id job --filepath /root/saas/job/build.zip --print-only-app-package-id=true --reset-version=true)
 
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id job --path /root/saas/job/ui/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id job --path /root/saas/job/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id job --path /root/saas/job/launch-frontend.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id job --path /root/saas/job/launch-frontend-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
         fi
 
     else
@@ -612,17 +613,11 @@ data:
 
       sh /app/core-action-service-check.sh
       
-      #echo "" > merge-launch.yaml
-      #cat /root/saas/job/api/launch.yaml >> merge-launch.yaml
-      #echo "---" >> merge-launch.yaml
-      #cat /root/saas/job/ui/launch.yaml >> merge-launch.yaml
-      #cat merge-launch.yaml | python /app/reduce.py > launch.yaml
-    
       # 本地目录构成  
       result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id job --filepath /root/saas/job/build.zip --print-only-app-package-id=true --reset-version=true)
 
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id job --path /root/saas/job/api/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id job --path /root/saas/job/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id job --path /root/saas/job/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id job --path /root/saas/job/launch-frontend-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
 
 
     fi

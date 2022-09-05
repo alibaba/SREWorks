@@ -166,7 +166,13 @@ spec:
     scopes: []
     stageId: ''
     traits: []
-  parameterValues: []
+  parameterValues:
+  - name: CLUSTER_ID
+    value: ''
+  - name: NAMESPACE_ID
+    value: ''
+  - name: STAGE_ID
+    value: ''
   policies: []
   workflow:
     steps: []

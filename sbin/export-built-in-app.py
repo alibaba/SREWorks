@@ -26,6 +26,8 @@ VALUES_MAP = {
         "ES_USERNAME": '${DATA_ES_USER}',
         "ES_PASSWORD": '${DATA_ES_PASSWORD}',
         "NAMESPACE_ID": '${NAMESPACE_ID}',
+        "CLUSTER_ID": "master",
+        "STAGE_ID": "prod",
     },
     "componentParameterValues":{
     }
@@ -36,7 +38,11 @@ def values_tpl_replace(launchYAML):
     launchYAML['metadata']['annotations']['namespaceId'] = '${NAMESPACE_ID}'
     launchYAML['metadata']['annotations']['clusterId'] = 'master'
     launchYAML['metadata']['annotations']['stageId'] = 'prod'
-   
+  
+    for appValue in launchYAML["spec"]["parameterValues"]:
+        if appValue["name"] in VALUES_MAP["appParameterValues"]:
+            appValue["value"] = VALUES_MAP["appParameterValues"][appValue["name"]]
+ 
     for component in launchYAML["spec"]["components"]:
         newParameterValues = []
         for value in component["parameterValues"]:
@@ -47,6 +53,22 @@ def values_tpl_replace(launchYAML):
             else:
                 newParameterValues.append(value)
         component["parameterValues"] = newParameterValues
+        component["scopes"] = [{
+           "scopeRef": {
+                "apiVersion": "apps.abm.io/v1",
+                "kind": "Cluster",
+                "name": "{{ Global.CLUSTER_ID }}",
+        }},{
+           "scopeRef": {
+                "apiVersion": "apps.abm.io/v1",
+                "kind": "Namespace",
+                "name": "{{ Global.NAMESPACE_ID }}",
+        }},{
+           "scopeRef": {
+                "apiVersion": "apps.abm.io/v1",
+                "kind": "Stage",
+                "name": "{{ Global.STAGE_ID }}",
+        }}]
 
 
 def download(url):
@@ -110,9 +132,17 @@ for buildIn in builtInList:
             "name": buildIn["appId"],
         },
         "spec":{
-            "parameterValues": [],
+            "parameterValues": [{
+                "name": "CLUSTER_ID",
+                "value": "",
+            },{
+                "name": "NAMESPACE_ID",
+                "value": "",
+            },{
+                "name": "STAGE_ID",
+                "value": "",
+            }],
             "components": [],
-            "parameterValues": [],
             "policies": [],
             "workflow":{
                 "steps": []

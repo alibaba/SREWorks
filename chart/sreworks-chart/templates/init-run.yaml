@@ -75,11 +75,12 @@ data:
         /root/swcli --config /swcli/swcli.yaml deployment launch --app-id swadmin --path /root/saas/swadmin/launch-dev.yaml --stage dev --namespace=${NAMESPACE_ID} --app-package-id $result --arch x86 --wait=true --cluster master
 
         # import&launch saas template
-        envsubst < /root/saas/template/launch-v2.yaml.tpl > /root/saas/template/launch.yaml
-        envsubst < /root/saas/template/launch-v2-dev.yaml.tpl > /root/saas/template/launch-dev.yaml
-        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id template --filepath /root/saas/template/ui/template-auto.zip --print-only-app-package-id=true --reset-version=true)
-        /root/swcli --config /swcli/swcli.yaml deployment launch --app-id template --path /root/saas/template/launch.yaml --stage=prod --namespace=${NAMESPACE_ID} --app-package-id $result --arch x86 --wait=true --cluster master
-        /root/swcli --config /swcli/swcli.yaml deployment launch --app-id template --path /root/saas/template/launch-dev.yaml --stage dev --namespace=${NAMESPACE_ID} --app-package-id $result --arch x86 --wait=true --cluster master
+        python /app/pack.py --src /root/saas/template/build --dest /root/saas/template/build.zip
+        envsubst < /root/saas/template/build/launch-frontend.yaml.tpl > /root/saas/template/launch-frontend.yaml
+        envsubst < /root/saas/template/build/launch-frontend-dev.yaml.tpl > /root/saas/template/launch-frontend-dev.yaml
+        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id template --filepath /root/saas/template/build.zip --print-only-app-package-id=true --reset-version=true)
+        /root/swcli --config /swcli/swcli.yaml deployment launch --app-id template --path /root/saas/template/launch-frontend.yaml --stage=prod --namespace=${NAMESPACE_ID} --app-package-id $result --arch x86 --wait=true --cluster master
+        /root/swcli --config /swcli/swcli.yaml deployment launch --app-id template --path /root/saas/template/launch-frontend-dev.yaml --stage dev --namespace=${NAMESPACE_ID} --app-package-id $result --arch x86 --wait=true --cluster master
 
 
     fi

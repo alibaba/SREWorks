@@ -95,32 +95,6 @@ spec:
         serviceName: '{{ Global.STAGE_ID }}-job-job-worker.{{ Global.NAMESPACE_ID }}'
   - clusterId: ''
     dataInputs: []
-    dataOutputs: []
-    dependencies: []
-    namespaceId: ''
-    parameterValues:
-    - name: STAGE_ID
-      toFieldPaths:
-      - spec.stageId
-      value: prod
-    revisionName: INTERNAL_ADDON|productopsv2|_
-    scopes:
-    - scopeRef:
-        apiVersion: apps.abm.io/v1
-        kind: Cluster
-        name: '{{ Global.CLUSTER_ID }}'
-    - scopeRef:
-        apiVersion: apps.abm.io/v1
-        kind: Namespace
-        name: '{{ Global.NAMESPACE_ID }}'
-    - scopeRef:
-        apiVersion: apps.abm.io/v1
-        kind: Stage
-        name: '{{ Global.STAGE_ID }}'
-    stageId: ''
-    traits: []
-  - clusterId: ''
-    dataInputs: []
     dataOutputs:
     - fieldPath: '{{ spec.env.DB_HOST }}'
       name: Global.DB_HOST
@@ -193,48 +167,6 @@ spec:
         name: '{{ Global.STAGE_ID }}'
     stageId: ''
     traits: []
-  - parameterValues:
-    - name: STAGE_ID
-      toFieldPaths:
-      - spec.stageId
-      value: prod
-    revisionName: INTERNAL_ADDON|developmentmeta|_
-    scopes:
-    - scopeRef:
-        apiVersion: apps.abm.io/v1
-        kind: Cluster
-        name: '{{ Global.CLUSTER_ID }}'
-    - scopeRef:
-        apiVersion: apps.abm.io/v1
-        kind: Namespace
-        name: '{{ Global.NAMESPACE_ID }}'
-    - scopeRef:
-        apiVersion: apps.abm.io/v1
-        kind: Stage
-        name: '{{ Global.STAGE_ID }}'
-  - parameterValues:
-    - name: STAGE_ID
-      toFieldPaths:
-      - spec.stageId
-      value: prod
-    - name: OVERWRITE_IS_DEVELOPMENT
-      toFieldPaths:
-      - spec.overwriteIsDevelopment
-      value: 'true'
-    revisionName: INTERNAL_ADDON|appmeta|_
-    scopes:
-    - scopeRef:
-        apiVersion: apps.abm.io/v1
-        kind: Cluster
-        name: '{{ Global.CLUSTER_ID }}'
-    - scopeRef:
-        apiVersion: apps.abm.io/v1
-        kind: Namespace
-        name: '{{ Global.NAMESPACE_ID }}'
-    - scopeRef:
-        apiVersion: apps.abm.io/v1
-        kind: Stage
-        name: '{{ Global.STAGE_ID }}'
   parameterValues:
   - name: CLUSTER_ID
     value: master

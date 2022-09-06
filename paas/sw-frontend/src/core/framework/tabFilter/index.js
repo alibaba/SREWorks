@@ -33,6 +33,7 @@ class TabFilter extends Component {
     render() {
         let { scenes = [], defaultFilter, activeKey } = this.state;
         let { items = [], action, widgetData } = this.props;
+        console.log(items,'items-label')
         if (widgetData && Object.values(widgetData).length) {
             items = Object.values(widgetData)
         }
@@ -60,7 +61,7 @@ class TabFilter extends Component {
             </div>
             )
         }
-        return <div className={tabPosition === 'top-right' ? 'tab-filter-position' : ''}>
+        return <div className={(tabPosition === 'top-right' ? 'tab-filter-position' : '')+ ' ' + (tabPosition === 'bottom-left' ? 'tab-filter-position-tab' : '')}>
             <Tabs style={{ marginBottom: '-17px' }} tabPosition={tabPosition === 'bottom-left' ? 'left' : null} size={tabSize} defaultActiveKey={items[0].name} onChange={this.handleSceneChanged}>
                 {
                     items && items.map(pan => (<TabPane tab={pan.icon ? (<span>{pan.icon}{pan.label}</span>) : pan.label} key={pan.name}></TabPane>))

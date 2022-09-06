@@ -72,6 +72,7 @@ saas:
   stageId: prod
   onlyBase: false
   list:
+  - demoapp
   - cluster
   - app
   - team
@@ -85,7 +86,6 @@ saas:
   - ocenter
   - help
   - upload
-  - demoapp
   baseList:
   - cluster
   - app

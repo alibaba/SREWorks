@@ -186,7 +186,17 @@ class ToolbarSetting extends React.Component {
                                     },
                                     "dataIndex": "icon",
                                     "title": "图标"
-                                }
+                                },
+                                {
+                                    "editProps": {
+                                        "required": false,
+                                        "type": 1,
+                                        "inputTip":"同一个分类会生成下拉",
+                                    },
+                                    "width":140,
+                                    "dataIndex": "category",
+                                    "title": "所属类别"
+                                },
                             ],
                             "enableAdd": true
                         },

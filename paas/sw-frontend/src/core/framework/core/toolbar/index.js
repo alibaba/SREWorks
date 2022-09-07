@@ -23,7 +23,7 @@ class ToolBarAdapter extends Component {
         const { widgetModel, widgetConfig, configIndex = "toolbar", hasLeftTab = false } = props;
         const { nodeModel } = widgetModel;
         let { toolbar } = widgetConfig, toolbarData = null, docs = null, actionBar = null;
-        let { filter = '', type,label='', actionList = [], docList = [], customRender } = widgetConfig[configIndex] || {};
+        let { filter = '', type, label = '', actionList = [], docList = [], customRender } = widgetConfig[configIndex] || {};
         let vActions = [], hActions = [];
         if (docList.length > 0) {
             docs = {
@@ -34,8 +34,9 @@ class ToolBarAdapter extends Component {
                 "label": "帮助"
             }
         }
+        let categoryMapping = {};
         for (let a = 0; a < actionList.length; a++) {
-            let { icon, name, label, layout, block, type } = actionList[a];
+            let { icon, name, label, layout, block, type, category } = actionList[a];
             this.actionMapping[block] = actionList[a];
             let adata = {
                 ...actionList[a],
@@ -44,10 +45,15 @@ class ToolBarAdapter extends Component {
                 icon,
                 label
             }
-            if (layout === "vertical") {
-                vActions.push(adata);
+            if (category) {
+                categoryMapping[category] = categoryMapping[category] || [];
+                categoryMapping[category].push(adata);
             } else {
-                hActions.push(adata);
+                if (layout === "vertical") {
+                    vActions.push(adata);
+                } else {
+                    hActions.push(adata);
+                }
             }
         }
         if (vActions.length > 0 && hActions.length > 0) {
@@ -91,7 +97,27 @@ class ToolBarAdapter extends Component {
                 ]
             }
         }
+        //存在分组的操作
+        if (categoryMapping) {
+            actionBar = actionBar || {
+                "type": type,
+                "size": "default",
+                "layout": "horizontal",
+                actions: []
+            }
+            actionBar.layout = "horizontal";
+            Object.keys(categoryMapping).forEach(category => {
+                actionBar.actions.push({
+                    "btnType": "",
+                    "label": category,
+                    "children": [
+                        ...categoryMapping[category]
+                    ],
+                    "icon": "more"
+                });
+            })
 
+        }
         if (docs) {
             actionBar = actionBar || {
                 "type": type,

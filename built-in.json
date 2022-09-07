@@ -16,4 +16,7 @@
 },{
   "appId": "swadmin",
   "packagePath": "saas/swadmin/build"
+},{
+  "appId": "team",
+  "packagePath": "saas/team/build" 
 }]

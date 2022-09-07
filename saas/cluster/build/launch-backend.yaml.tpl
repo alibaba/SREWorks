@@ -2,8 +2,11 @@ apiVersion: core.oam.dev/v1alpha2
 kind: ApplicationConfiguration
 metadata:
   annotations:
-    appId: job
-  name: job
+    appId: cluster
+    clusterId: master
+    namespaceId: ${NAMESPACE_ID}
+    stageId: prod
+  name: cluster
 spec:
   components:
   - dependencies:
@@ -13,77 +16,26 @@ spec:
       toFieldPaths:
       - spec.replicas
       value: 1
-    - name: Global.ES_PASSWORD
-      value: sreworkses123.
     - name: Global.DB_NAME
-      value: sreworks_saas_job
-    - name: Global.REDIS_HOST
-      value: sreworks-redis-master.sreworks
-    - name: Global.REDIS_PORT
-      value: '6379'
-    - name: Global.REDIS_DATABASE
-      value: '0'
-    - name: Global.REDIS_PASSWORD
-      value: siJEULmQYQ
-    - name: Global.ES_USERNAME
-      value: elastic
-    - name: Global.JVM_XMX
-      value: 1g
-    - name: Global.JVM_XMS
-      value: 1g
-    - name: Global.ES_ENDPOINT
-      value: http://prod-dataops-elasticsearch-master.sreworks-dataops.svc.cluster.local:9200
-    revisionName: K8S_MICROSERVICE|job-master|_
+      value: sreworks_meta
+    - name: Global.APPMANAGER_ENDPOINT
+      value: http://sreworks-appmanager
+    - name: Global.AUTHPROXY_ENDPOINT
+      value: http://prod-flycore-paas-authproxy
+    revisionName: K8S_MICROSERVICE|clustermanage|_
     scopes:
     - scopeRef:
-        apiVersion: core.oam.dev/v1alpha2
-        kind: Namespace
-        spec:
-          autoCreate: true
-    traits:
-    - name: service.trait.abm.io
-      runtime: post
-      spec:
-        ports:
-        - port: 80
-          protocol: TCP
-          targetPort: 17001
-    - name: gateway.trait.abm.io
-      runtime: post
-      spec:
-        authEnabled: true
-        path: /sreworks-job/**
-        serviceName: '{{ Global.STAGE_ID }}-job-job-master.{{ Global.NAMESPACE_ID }}'
-    - name: timezoneSync.trait.abm.io
-      runtime: pre
-      spec:
-        timezone: Asia/Shanghai
-  - dependencies:
-    - component: RESOURCE_ADDON|system-env@system-env
-    parameterValues:
-    - name: REPLICAS
-      toFieldPaths:
-      - spec.replicas
-      value: 1
-    - name: Global.ES_PASSWORD
-      value: sreworkses123.
-    - name: Global.SREWORKS_JOB_MASTER_ENDPOINT
-      value: http://prod-job-job-master
-    - name: Global.ES_ENDPOINT
-      value: http://prod-dataops-elasticsearch-master.sreworks-dataops.svc.cluster.local:9200
-    - name: Global.JVM_XMX
-      value: 1g
-    - name: Global.JVM_XMS
-      value: 1g
-    - name: Global.ES_USERNAME
-      value: elastic
-    revisionName: K8S_MICROSERVICE|job-worker|_
-    scopes:
+        apiVersion: apps.abm.io/v1
+        kind: Cluster
+        name: '{{ Global.CLUSTER_ID }}'
     - scopeRef:
-        apiVersion: core.oam.dev/v1alpha2
+        apiVersion: apps.abm.io/v1
         kind: Namespace
-        spec:
-          autoCreate: true
+        name: '{{ Global.NAMESPACE_ID }}'
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Stage
+        name: '{{ Global.STAGE_ID }}'
     traits:
     - name: service.trait.abm.io
       runtime: post
@@ -95,19 +47,9 @@ spec:
     - name: gateway.trait.abm.io
       runtime: post
       spec:
-        authEnabled: false
-        path: /job/job-worker/**
-        serviceName: '{{ Global.STAGE_ID }}-job-job-worker.{{ Global.NAMESPACE_ID }}'
-  - clusterId: ''
-    dataInputs: []
-    dataOutputs: []
-    dependencies: []
-    namespaceId: ''
-    parameterValues: []
-    revisionName: INTERNAL_ADDON|productopsv2|_
-    scopes: []
-    stageId: ''
-    traits: []
+        authEnabled: true
+        path: /sreworks/clustermanage/**
+        serviceName: '{{ Global.STAGE_ID }}-cluster-clustermanage.{{ Global.NAMESPACE_ID }}'
   - clusterId: ''
     dataInputs: []
     dataOutputs:
@@ -167,18 +109,28 @@ spec:
       - ACCOUNT_SUPER_CLIENT_ID
       - ACCOUNT_SUPER_CLIENT_SECRET
     revisionName: RESOURCE_ADDON|system-env@system-env|1.0
-    scopes: []
+    scopes:
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Cluster
+        name: '{{ Global.CLUSTER_ID }}'
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Namespace
+        name: '{{ Global.NAMESPACE_ID }}'
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Stage
+        name: '{{ Global.STAGE_ID }}'
     stageId: ''
     traits: []
-  - revisionName: INTERNAL_ADDON|developmentmeta|_
-  - revisionName: INTERNAL_ADDON|appmeta|_
   parameterValues:
   - name: CLUSTER_ID
-    value: ''
+    value: master
   - name: NAMESPACE_ID
-    value: ''
+    value: ${NAMESPACE_ID}
   - name: STAGE_ID
-    value: ''
+    value: prod
   policies: []
   workflow:
     steps: []

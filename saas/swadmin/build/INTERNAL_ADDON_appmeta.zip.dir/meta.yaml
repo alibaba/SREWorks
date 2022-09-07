@@ -2,16 +2,16 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 9.8.4+20220906083410214980
+    annotations.appmanager.oam.dev/version: 1.0.6+20220907062655630222
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
-    appId: job
+    appId: swadmin
     labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
     componentName: appmeta
-    labels.appmanager.oam.dev/appId: job
+    labels.appmanager.oam.dev/appId: swadmin
     labels.appmanager.oam.dev/componentName: appmeta
     stageId: PLACEHOLDER_STAGE_ID
-  name: internal-addon-job-appmeta
+  name: internal-addon-swadmin-appmeta
 spec:
   images: []
   workload:
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 9.8.4+20220906083410214980
+        annotations.appmanager.oam.dev/version: 1.0.6+20220907062655630222
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -30,11 +30,11 @@ spec:
         labels.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
         labels.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
-        appId: job
+        appId: swadmin
         labels.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
         labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
         componentName: appmeta
-        labels.appmanager.oam.dev/appId: job
+        labels.appmanager.oam.dev/appId: swadmin
         labels.appmanager.oam.dev/componentName: appmeta
         stageId: PLACEHOLDER_STAGE_ID
       name: PLACEHOLDER_NAME

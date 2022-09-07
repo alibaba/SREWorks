@@ -51,13 +51,22 @@ public abstract class AbstractScriptTaskHandler extends AbstractTaskHandler {
         getTaskInstance().setOutVarConf(
             FileUtils.readFileToString(new File(getVarConfPath()))
         );
-
+        clean();
     }
 
     @Override
     public void destroy() {
         if (process != null) {
             process.destroyForcibly();
+        }
+    }
+
+    private void clean() {
+        String rootDir = System.getProperty("user.home") + "/sreworks-job-worker/task/" + getTaskInstance().getId();
+        try {
+            FileUtils.deleteDirectory(new File(rootDir));
+        } catch (IOException ex) {
+
         }
     }
 

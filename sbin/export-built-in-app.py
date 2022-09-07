@@ -45,6 +45,11 @@ def values_tpl_replace(launchYAML):
  
     for component in launchYAML["spec"]["components"]:
         newParameterValues = []
+
+        for delKey in ["clusterId","namespaceId","stageId"]:
+            if delKey in component:
+                del component[delKey]
+
         for value in component.get("parameterValues", []):
             # 如果该变量在app级别存在，则使用app级别的，且component级别不展示变量
             valueName = value["name"].replace("Global.",'')

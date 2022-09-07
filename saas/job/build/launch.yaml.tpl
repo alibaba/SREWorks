@@ -97,11 +97,9 @@ spec:
         authEnabled: false
         path: /job/job-worker/**
         serviceName: '{{ Global.STAGE_ID }}-job-job-worker.{{ Global.NAMESPACE_ID }}'
-  - clusterId: ''
-    dataInputs: []
+  - dataInputs: []
     dataOutputs: []
     dependencies: []
-    namespaceId: ''
     parameterValues:
     - name: STAGE_ID
       toFieldPaths:
@@ -121,10 +119,8 @@ spec:
         apiVersion: apps.abm.io/v1
         kind: Stage
         name: '{{ Global.STAGE_ID }}'
-    stageId: ''
     traits: []
-  - clusterId: ''
-    dataInputs: []
+  - dataInputs: []
     dataOutputs:
     - fieldPath: '{{ spec.env.DB_HOST }}'
       name: Global.DB_HOST
@@ -159,7 +155,6 @@ spec:
     - fieldPath: '{{ spec.env.ACCOUNT_SUPER_CLIENT_SECRET }}'
       name: Global.ACCOUNT_SUPER_CLIENT_SECRET
     dependencies: []
-    namespaceId: ''
     parameterValues:
     - name: keys
       toFieldPaths:
@@ -195,7 +190,6 @@ spec:
         apiVersion: apps.abm.io/v1
         kind: Stage
         name: '{{ Global.STAGE_ID }}'
-    stageId: ''
     traits: []
   - parameterValues:
     - name: STAGE_ID

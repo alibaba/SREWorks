@@ -66,7 +66,7 @@ data:
         fi
         /root/swcli --config /swcli/swcli.yaml deployment launch --app-id desktop --stage=prod --namespace=${NAMESPACE_ID} --path /root/saas/desktop/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master  
         /root/swcli --config /swcli/swcli.yaml deployment launch --app-id desktop --stage=dev --namespace=${NAMESPACE_ID} --path /root/saas/desktop/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master  
-    
+   
         # import&launch saas swadmin
         python /app/pack.py --src /root/saas/swadmin/build --dest /root/saas/swadmin/build.zip
         envsubst < /root/saas/swadmin/build/launch-frontend.yaml.tpl > /root/saas/swadmin/launch-frontend.yaml

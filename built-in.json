@@ -3,11 +3,14 @@
   "packagePath": "saas/template/build"
 },{
   "appId": "job",
-  "packagePath": "saas/job/build"
+  "packagePath": "saas/job/build",
+  "develop": "saas/job/api/dev.yaml"
 },{
   "appId": "app",
-  "packagePath": "saas/app/build"
+  "packagePath": "saas/app/build",
+  "develop": "saas/job/api/dev.yaml"
 },{
   "appId": "cluster",
-  "packagePath": "saas/cluster/build"
+  "packagePath": "saas/cluster/build",
+  "develop": "saas/job/api/dev.yaml"
 }]

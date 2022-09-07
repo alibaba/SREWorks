@@ -9,11 +9,9 @@ metadata:
   name: template
 spec:
   components:
-  - clusterId: ''
-    dataInputs: []
+  - dataInputs: []
     dataOutputs: []
     dependencies: []
-    namespaceId: ''
     parameterValues:
     - name: STAGE_ID
       toFieldPaths:
@@ -33,7 +31,6 @@ spec:
         apiVersion: apps.abm.io/v1
         kind: Stage
         name: '{{ Global.STAGE_ID }}'
-    stageId: ''
     traits: []
   - parameterValues:
     - name: STAGE_ID

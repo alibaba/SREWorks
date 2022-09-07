@@ -50,8 +50,7 @@ spec:
         authEnabled: true
         path: /sreworks/clustermanage/**
         serviceName: '{{ Global.STAGE_ID }}-cluster-clustermanage.{{ Global.NAMESPACE_ID }}'
-  - clusterId: ''
-    dataInputs: []
+  - dataInputs: []
     dataOutputs:
     - fieldPath: '{{ spec.env.DB_HOST }}'
       name: Global.DB_HOST
@@ -86,7 +85,6 @@ spec:
     - fieldPath: '{{ spec.env.ACCOUNT_SUPER_CLIENT_SECRET }}'
       name: Global.ACCOUNT_SUPER_CLIENT_SECRET
     dependencies: []
-    namespaceId: ''
     parameterValues:
     - name: keys
       toFieldPaths:
@@ -122,7 +120,6 @@ spec:
         apiVersion: apps.abm.io/v1
         kind: Stage
         name: '{{ Global.STAGE_ID }}'
-    stageId: ''
     traits: []
   parameterValues:
   - name: CLUSTER_ID

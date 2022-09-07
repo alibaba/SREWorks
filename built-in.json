@@ -13,4 +13,7 @@
   "appId": "cluster",
   "packagePath": "saas/cluster/build",
   "develop": "saas/job/api/dev.yaml"
+},{
+  "appId": "swadmin",
+  "packagePath": "saas/swadmin/build"
 }]

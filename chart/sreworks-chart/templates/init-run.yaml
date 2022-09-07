@@ -68,11 +68,12 @@ data:
         /root/swcli --config /swcli/swcli.yaml deployment launch --app-id desktop --stage=dev --namespace=${NAMESPACE_ID} --path /root/saas/desktop/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master  
     
         # import&launch saas swadmin
-        envsubst < /root/saas/swadmin/launch-v2.yaml.tpl > /root/saas/swadmin/launch.yaml
-        envsubst < /root/saas/swadmin/launch-v2-dev.yaml.tpl > /root/saas/swadmin/launch-dev.yaml
-        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id swadmin --filepath /root/saas/swadmin/ui/swadmin-auto.zip --print-only-app-package-id=true --reset-version=true)
-        /root/swcli --config /swcli/swcli.yaml deployment launch --app-id swadmin --path /root/saas/swadmin/launch.yaml --stage=prod --namespace=${NAMESPACE_ID} --app-package-id $result --arch x86 --wait=true --cluster master
-        /root/swcli --config /swcli/swcli.yaml deployment launch --app-id swadmin --path /root/saas/swadmin/launch-dev.yaml --stage dev --namespace=${NAMESPACE_ID} --app-package-id $result --arch x86 --wait=true --cluster master
+        python /app/pack.py --src /root/saas/swadmin/build --dest /root/saas/swadmin/build.zip
+        envsubst < /root/saas/swadmin/build/launch-frontend.yaml.tpl > /root/saas/swadmin/launch-frontend.yaml
+        envsubst < /root/saas/swadmin/build/launch-frontend-dev.yaml.tpl > /root/saas/swadmin/launch-frontend-dev.yaml
+        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id swadmin --filepath /root/saas/swadmin/build.zip --print-only-app-package-id=true --reset-version=true)
+        /root/swcli --config /swcli/swcli.yaml deployment launch --app-id swadmin --path /root/saas/swadmin/launch-frontend.yaml --stage=prod --namespace=${NAMESPACE_ID} --app-package-id $result --arch x86 --wait=true --cluster master
+        /root/swcli --config /swcli/swcli.yaml deployment launch --app-id swadmin --path /root/saas/swadmin/launch-frontend-dev.yaml --stage dev --namespace=${NAMESPACE_ID} --app-package-id $result --arch x86 --wait=true --cluster master
 
         # import&launch saas template
         python /app/pack.py --src /root/saas/template/build --dest /root/saas/template/build.zip

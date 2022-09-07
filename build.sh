@@ -237,7 +237,7 @@ download_packages(){
    PKG_URL="${SREWORKS_BUILTIN_PACKAGE_URL}/${tag}"
 
    mkdir -p $SW_ROOT/saas/desktop/ui/ && wget "${PKG_URL}/saas/desktop/ui/desktop-auto.zip" -O $SW_ROOT/saas/desktop/ui/desktop-auto.zip
-   mkdir -p $SW_ROOT/saas/swadmin/ui/ && wget "${PKG_URL}/saas/swadmin/ui/swadmin-auto.zip" -O $SW_ROOT/saas/swadmin/ui/swadmin-auto.zip
+   #mkdir -p $SW_ROOT/saas/swadmin/ui/ && wget "${PKG_URL}/saas/swadmin/ui/swadmin-auto.zip" -O $SW_ROOT/saas/swadmin/ui/swadmin-auto.zip
    mkdir -p $SW_ROOT/saas/system/ui/ && wget "${PKG_URL}/saas/system/ui/system-auto.zip" -O $SW_ROOT/saas/system/ui/system-auto.zip
    mkdir -p $SW_ROOT/saas/upload/ui/ && wget "${PKG_URL}/saas/upload/ui/upload-auto.zip" -O $SW_ROOT/saas/upload/ui/upload-auto.zip
    mkdir -p $SW_ROOT/saas/team/ui/ && wget "${PKG_URL}/saas/team/ui/team-auto.zip" -O $SW_ROOT/saas/team/ui/team-auto.zip

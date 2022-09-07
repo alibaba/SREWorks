@@ -52,6 +52,10 @@ spec:
         authEnabled: true
         path: /sreworks-job/**
         serviceName: '{{ Global.STAGE_ID }}-job-job-master.{{ Global.NAMESPACE_ID }}'
+    - name: timezoneSync.trait.abm.io
+      runtime: pre
+      spec:
+        timezone: Asia/Shanghai
   - dependencies:
     - component: RESOURCE_ADDON|system-env@system-env
     parameterValues:

@@ -410,6 +410,10 @@ data:
     envsubst < /root/saas/dataops/api/skywalking/launch.yaml.tpl > tmp-launch.yaml
     split
 
+    envsubst < /root/saas/dataops/api/prometheus/build.yaml.tpl > tmp-build.yaml
+    envsubst < /root/saas/dataops/api/prometheus/launch.yaml.tpl > tmp-launch.yaml
+    split
+
     #envsubst < /root/saas/dataops/api/mongodb/build.yaml.tpl > tmp-build.yaml
     #envsubst < /root/saas/dataops/api/mongodb/launch.yaml.tpl > tmp-launch.yaml
     #split

@@ -33,9 +33,11 @@ class TabFilter extends Component {
     render() {
         let { scenes = [], defaultFilter, activeKey } = this.state;
         let { items = [], action, widgetData } = this.props;
-        console.log(items,'items-label')
         if (widgetData && Object.values(widgetData).length) {
             items = Object.values(widgetData)
+            if(items[0] instanceof Array) {
+                items = items[0]
+            }
         }
         const { TabPane } = Tabs;
         let { tabType, tabSize, tabPosition } = action;

@@ -245,7 +245,7 @@ download_packages(){
    mkdir -p $SW_ROOT/saas/ocenter/ui/ && wget "${PKG_URL}/saas/ocenter/ui/ocenter-auto.zip" -O $SW_ROOT/saas/ocenter/ui/ocenter-auto.zip
    mkdir -p $SW_ROOT/saas/aiops/ui/ && wget "${PKG_URL}/saas/aiops/ui/aiops-auto.zip" -O $SW_ROOT/saas/aiops/ui/aiops-auto.zip
    #mkdir -p $SW_ROOT/saas/app/ui/ && wget "${PKG_URL}/saas/app/ui/app-auto.zip" -O $SW_ROOT/saas/app/ui/app-auto.zip
-   mkdir -p $SW_ROOT/saas/cluster/ui/ && wget "${PKG_URL}/saas/cluster/ui/cluster-auto.zip" -O $SW_ROOT/saas/cluster/ui/cluster-auto.zip
+   #mkdir -p $SW_ROOT/saas/cluster/ui/ && wget "${PKG_URL}/saas/cluster/ui/cluster-auto.zip" -O $SW_ROOT/saas/cluster/ui/cluster-auto.zip
    mkdir -p $SW_ROOT/saas/dataops/ui/data/ && wget "${PKG_URL}/saas/dataops/ui/data/data-auto.zip" -O $SW_ROOT/saas/dataops/ui/data/data-auto.zip
    mkdir -p $SW_ROOT/saas/healing/ui/ && wget "${PKG_URL}/saas/healing/ui/healing-auto.zip" -O $SW_ROOT/saas/healing/ui/healing-auto.zip
    mkdir -p $SW_ROOT/saas/health/ui/ && wget "${PKG_URL}/saas/health/ui/health-auto.zip" -O $SW_ROOT/saas/health/ui/health-auto.zip
@@ -255,7 +255,7 @@ download_packages(){
 
    wget "${PKG_URL}/saas/aiops/aiops.zip" -O $SW_ROOT/saas/aiops/aiops.zip
    #wget "${PKG_URL}/saas/app/app.zip" -O $SW_ROOT/saas/app/app.zip
-   wget "${PKG_URL}/saas/cluster/cluster.zip" -O $SW_ROOT/saas/cluster/cluster.zip
+   #wget "${PKG_URL}/saas/cluster/cluster.zip" -O $SW_ROOT/saas/cluster/cluster.zip
    wget "${PKG_URL}/saas/dataops/data.zip" -O $SW_ROOT/saas/dataops/data.zip
    wget "${PKG_URL}/saas/health/health.zip" -O $SW_ROOT/saas/health/health.zip
    #wget "${PKG_URL}/saas/job/job.zip" -O $SW_ROOT/saas/job/job.zip

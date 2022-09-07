@@ -1,0 +1,11 @@
+components:
+- revisionName: INTERNAL_ADDON|productopsv2|_
+  traits:
+  - name: gateway.trait.abm.io
+    runtime: post
+    spec:
+      path: /sreworks/clustermanage/**
+      servicePort: 80
+      serviceName: "prod-cluster-clustermanage"
+      routeId: "dev-cluster-clustermanage-master-${NAMESPACE_ID}-dev"
+

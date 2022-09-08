@@ -104,7 +104,46 @@ export default {
       },
     },
     "supportItemToolbar": false,
-    "dataMock": {},
+    "dataMock": {
+      "description": "返回数据为对象",
+      "formats":[
+        {
+          "description":"value和title字段用于卡片头部, data字段用于卡片body区域具体项",
+          "data": {
+            "value":200,
+            "title": "title",
+            "data":[
+                {
+                  "value": 28,
+                  "title": "占有率",
+                  "status": "success",
+                  "trend": "up",
+                  "suffix": "万",
+                  "icon": "",
+                  "link":"xxxxxxxx"//若要添加link事件,则在此配置相应链接即可
+                },
+                {
+                  "value": 28,
+                  "title": "占有率",
+                  "status": "success",
+                  "trend": "down",
+                  "suffix": "万",
+                  "icon": "",
+                  "link": "href"
+                },
+                {
+                  "value": 28,
+                  "title": "占有率",
+                  "status": "success",
+                  "trend": "up",
+                  "suffix": "万",
+                  "icon": ""
+                }
+              ]
+          }
+        }
+      ]
+    }
   },
   "category": "base",
 };

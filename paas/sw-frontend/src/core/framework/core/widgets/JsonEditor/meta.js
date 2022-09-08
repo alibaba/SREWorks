@@ -77,7 +77,17 @@ export default {
         },
       },
       "supportItemToolbar":false,
-      "dataMock": {},
+      "dataMock": {
+        "description": "返回的数据为json字符串或者对象、数组、yaml形式",
+        "formats":[
+          {
+            "description":"有默认值的情况可以接口返回initValue",
+            "data":{
+              initValue:{"key1":112,"key2":22},
+            }
+          }
+        ]
+      }
     },
     "category": "base",
   };

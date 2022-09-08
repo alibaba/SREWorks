@@ -13,7 +13,7 @@ export default {
         "logos": {
             "large": "",
             "small": require('./icons/grid_card.svg'),
-            "fontClass":'GRID_CARD'
+            "fontClass": 'GRID_CARD'
         },
         "build": {
             "time": "",
@@ -92,8 +92,42 @@ export default {
                 }
             },
         },
-        "dataMock": {},
-        "supportToolbar":true,
+        "dataMock": {
+            "description": "和表格使用方式一致,需要定义column",
+            "formats": [
+                {
+                    "description": "column定义格式,该组件需要切换为源码编辑格式,进行column的配置",
+                    "data": [
+                        {
+                            "dataIndex": "name",
+                            "label": "姓名"
+                        },
+                        {
+                            "dataIndex": "age",
+                            "label": "年龄"
+                        }
+                    ],
+                },
+                {
+                    "description": "data数据返回格式",
+                    "data": [
+                        {
+                            "age": "111",
+                            "icon": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png",
+                            "name": "张三",
+                            "title": "测试测试测试"
+                        },
+                        {
+                            "age": "112",
+                            "icon": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png",
+                            "name": "李四",
+                            "title": "测试测试测试"
+                        }
+                    ]
+                }
+            ]
+        },
+        "supportToolbar": true,
     },
     "category": "base"
 };

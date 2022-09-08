@@ -165,7 +165,33 @@ export default {
     },
     "supportItemToolbar":true,
     "supportToolbar":true,
-    "dataMock": {},
+    "dataMock": {
+      "description": "返回的数据为对象",
+      "formats":[
+        {
+          "description":"可根据是否进行后端分页返回数据",
+          "data":{
+            "page": 1,
+            "pageSize": 20,
+            "total": 1,
+            "items": [
+              {
+                "gmtModified": 1645428289000,
+                "appId": "swadmin",
+                "addonType": "INTERNAL_ADDON",
+                "addonVersion": "1.0.0",
+                "name": "productopsv2",
+                "id": 143,
+                "gmtCreate": 1645428289000,
+                "addonId": "productopsv2",
+                "spec": {}
+              }
+            ],
+            "empty": false
+          }
+        }
+      ]
+    }
   },
   "category": "base",
 };

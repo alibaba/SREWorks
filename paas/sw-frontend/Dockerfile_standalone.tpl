@@ -1,9 +1,9 @@
-FROM node:10-alpine AS build1
+FROM {{ NODE_IMAGE2 }} AS build1
 COPY . /app
 RUN sed -i 's/dl-cdn.alpinelinux.org/{{ APK_REPO_DOMAIN }}/g' /etc/apk/repositories \
-    && apk add --update --no-cache python2 make gcc g++ zip
-RUN export NPM_REGISTRY_URL="{{ NPM_REGISTRY_URL }}" && cd /app/docs/ && /bin/sh /app/docs/build.sh
-RUN mkdir -p /app/build && cd /app/build && mv /app/docs/pictures /app/docs/_book/pictures && mv /app/docs/_book /app/build/docs && zip -r /app/docs.zip ./
+    && apk add --update --no-cache zip
+RUN export NPM_REGISTRY_URL="{{ NPM_REGISTRY_URL }}" && cd /app/docs/ && /bin/sh /app/sbin/build-doc.sh
+RUN cd /app/docs/build && zip -r /app/docs.zip ./
 
 FROM {{ NODE_IMAGE }} AS build2
 COPY . /app

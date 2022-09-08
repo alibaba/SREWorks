@@ -17,6 +17,7 @@ data:
   JRE11_IMAGE: {{ .Values.global.artifacts.openjdk11Image }}
   MAVEN_SETTINGS_XML: {{ .Values.global.artifacts.mavenSettingsXml }}
   NODE_IMAGE: {{ .Values.global.artifacts.nodeImage }}
+  NODE_IMAGE2: {{ .Values.global.artifacts.nodeImage2 }}
   ALPINE_IMAGE: {{ .Values.global.artifacts.alpineImage }}
   MIGRATE_IMAGE: {{ template "migrate.image" . }}
   POSTRUN_IMAGE: {{ template "postrun.image" . }}

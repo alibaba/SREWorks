@@ -478,6 +478,9 @@ public class DeployConfigServiceImpl implements DeployConfigService {
             List<DeployConfigDO> appRecords, List<DeployConfigDO> rootRecords, String unitId, String clusterId,
             String namespaceId, String stageId) {
         List<String> priorities = new ArrayList<>();
+        if (StringUtils.isNotEmpty(unitId) && StringUtils.isNotEmpty(namespaceId) && StringUtils.isNotEmpty(stageId)) {
+            priorities.add(DeployConfigEnvId.unitNamespaceStageStr(unitId, namespaceId, stageId));
+        }
         if (StringUtils.isNotEmpty(stageId)) {
             priorities.add(DeployConfigEnvId.stageStr(stageId));
         }

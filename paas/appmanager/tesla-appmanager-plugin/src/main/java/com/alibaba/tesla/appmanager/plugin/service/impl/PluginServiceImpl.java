@@ -15,18 +15,19 @@ import com.alibaba.tesla.appmanager.common.util.ZipUtil;
 import com.alibaba.tesla.appmanager.domain.core.ScriptIdentifier;
 import com.alibaba.tesla.appmanager.domain.core.StorageFile;
 import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
+import com.alibaba.tesla.appmanager.domain.req.plugin.PluginDisableReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginEnableReq;
 import com.alibaba.tesla.appmanager.domain.schema.PluginDefinitionSchema;
 import com.alibaba.tesla.appmanager.dynamicscript.repository.condition.DynamicScriptQueryCondition;
 import com.alibaba.tesla.appmanager.dynamicscript.service.DynamicScriptService;
 import com.alibaba.tesla.appmanager.dynamicscript.util.GroovyUtil;
 import com.alibaba.tesla.appmanager.plugin.repository.PluginDefinitionRepository;
-import com.alibaba.tesla.appmanager.plugin.repository.PluginFrontendRepository;
 import com.alibaba.tesla.appmanager.plugin.repository.PluginTagRepository;
 import com.alibaba.tesla.appmanager.plugin.repository.condition.PluginDefinitionQueryCondition;
 import com.alibaba.tesla.appmanager.plugin.repository.condition.PluginTagQueryCondition;
 import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDO;
 import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginTagDO;
+import com.alibaba.tesla.appmanager.plugin.service.PluginFrontendService;
 import com.alibaba.tesla.appmanager.plugin.service.PluginService;
 import com.alibaba.tesla.appmanager.server.storage.Storage;
 import groovy.lang.GroovyClassLoader;
@@ -70,7 +71,7 @@ public class PluginServiceImpl implements PluginService {
     private PluginTagRepository pluginTagRepository;
 
     @Autowired
-    private PluginFrontendRepository pluginFrontendRepository;
+    private PluginFrontendService pluginFrontendService;
 
     @Autowired
     private DynamicScriptService dynamicScriptService;
@@ -134,8 +135,7 @@ public class PluginServiceImpl implements PluginService {
             FileUtils.copyURLToFile(new URL(url), pluginZip.toFile());
             ZipUtil.unzip(pluginZip.toString(), tmpDir.toString());
             FileUtils.deleteQuietly(pluginZip.toFile());
-            uploadPluginFilesToStorage(definitionSchema, tmpDir);
-            updatePluginFrontend(definitionSchema, tmpDir);
+            pluginFrontendService.updateByPluginDefinition(definitionSchema, tmpDir);
             loadGroovyScripts(definitionSchema, tmpDir);
         } catch (IOException e) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "cannot create temp directory", e);
@@ -149,6 +149,51 @@ public class PluginServiceImpl implements PluginService {
 
         // 开启插件
         definitionDO.setPluginRegistered(true);
+        int count = pluginDefinitionRepository.updateByCondition(definitionDO, definitionCondition);
+        if (count != 1) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("register plugin failed, cannot update plugin definition|condition=%s",
+                            JSONObject.toJSONString(definitionCondition)));
+        }
+        return definitionDO;
+    }
+
+    /**
+     * 关闭指定插件
+     *
+     * @param request 插件关闭请求
+     * @return 关闭后的 PluginDefinition 对象
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public PluginDefinitionDO disable(PluginDisableReq request) {
+        String pluginName = request.getPluginName();
+        String pluginVersion = request.getPluginVersion();
+
+        PluginDefinitionQueryCondition definitionCondition = PluginDefinitionQueryCondition.builder()
+                .pluginName(pluginName)
+                .pluginVersion(pluginVersion)
+                .build();
+        PluginDefinitionDO definitionDO = pluginDefinitionRepository.getByCondition(definitionCondition);
+        if (definitionDO == null) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "plugin not found");
+        }
+
+        // 删除前端资源
+        pluginFrontendService.deleteByPlugin(pluginName, pluginVersion);
+
+        // 取消 Groovy 注册
+        PluginDefinitionSchema schema = SchemaUtil.toSchema(
+                PluginDefinitionSchema.class, definitionDO.getPluginSchema());
+        for (PluginDefinitionSchema.SchematicGroovyFile file : schema.getSpec().getSchematic().getGroovy().getFiles()) {
+            dynamicScriptService.removeScript(DynamicScriptQueryCondition.builder()
+                    .kind(file.getKind())
+                    .name(file.getName())
+                    .build());
+        }
+
+        // 关闭插件
+        definitionDO.setPluginRegistered(false);
         int count = pluginDefinitionRepository.updateByCondition(definitionDO, definitionCondition);
         if (count != 1) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,
@@ -366,38 +411,5 @@ public class PluginServiceImpl implements PluginService {
                             "pluginVersion={}|fileKind={}|fileName={}|filePath={}|code={}", pluginKind, pluginName,
                     pluginVersion, fileKind, fileName, filePath, code);
         }
-    }
-
-    /**
-     * 将插件自身携带的所有 Frontend 资源更新到 DB 中
-     *
-     * @param definitionSchema Plugin Definition Schema
-     * @param pluginDir        插件 Zip 文件本地目录
-     */
-    private void updatePluginFrontend(PluginDefinitionSchema definitionSchema, Path pluginDir) {
-        PluginKindEnum pluginKind = definitionSchema.getPluginKind();
-        String pluginName = definitionSchema.getPluginName();
-        String pluginVersion = definitionSchema.getPluginVersion();
-        PluginDefinitionSchema.SchematicFrontend schematic = definitionSchema.getSpec().getSchematic().getFrontend();
-        if (schematic == null) {
-            log.info("no need to import plugin frontend in current plugin|pluginKind={}|pluginName={}|pluginVersion={}",
-                    pluginKind, pluginName, pluginVersion);
-            return;
-        }
-
-        for (PluginDefinitionSchema.SchematicFrontendFile file : schematic.getFiles()) {
-            String fileKind = file.getKind();
-            String filePath = file.getPath();
-        }
-    }
-
-    /**
-     * 上传插件自身的每个文件到 Storage 存储中
-     *
-     * @param definitionSchema Plugin Definition Schema
-     * @param pluginDir        插件 Zip 文件本地目录
-     */
-    private void uploadPluginFilesToStorage(PluginDefinitionSchema definitionSchema, Path pluginDir) {
-
     }
 }

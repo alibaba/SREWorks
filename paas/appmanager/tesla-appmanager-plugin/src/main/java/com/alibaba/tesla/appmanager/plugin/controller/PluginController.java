@@ -3,7 +3,9 @@ package com.alibaba.tesla.appmanager.plugin.controller;
 import com.alibaba.tesla.appmanager.api.provider.PluginProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
+import com.alibaba.tesla.appmanager.domain.req.plugin.PluginDisableReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginEnableReq;
+import com.alibaba.tesla.appmanager.domain.req.plugin.PluginOperateReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,19 +42,30 @@ public class PluginController extends AppManagerBaseController {
     public TeslaBaseResult upload(
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "override", defaultValue = "true") Boolean override,
+            @RequestParam(value = "enable", defaultValue = "false") Boolean enable,
             OAuth2Authentication auth) throws IOException {
-        return buildSucceedResult(pluginProvider.upload(file, override));
+        return buildSucceedResult(pluginProvider.upload(file, override, enable));
     }
 
-    @Operation(summary = "开启指定插件")
-    @PutMapping("{pluginName}/{pluginVersion}/enable")
-    public TeslaBaseResult enable(
+    @Operation(summary = "操作插件")
+    @PutMapping("{pluginName}/{pluginVersion}/operate")
+    public TeslaBaseResult operate(
             @PathVariable("pluginName") String pluginName,
             @PathVariable("pluginVersion") String pluginVersion,
+            @RequestBody PluginOperateReq request,
             OAuth2Authentication auth) throws IOException {
-        return buildSucceedResult(pluginProvider.enable(PluginEnableReq.builder()
-                .pluginName(pluginName)
-                .pluginVersion(pluginVersion)
-                .build()));
+        if ("enable".equals(request.getOperation())) {
+            return buildSucceedResult(pluginProvider.enable(PluginEnableReq.builder()
+                    .pluginName(pluginName)
+                    .pluginVersion(pluginVersion)
+                    .build()));
+        } else if ("disable".equals(request.getOperation())) {
+            return buildSucceedResult(pluginProvider.disable(PluginDisableReq.builder()
+                    .pluginName(pluginName)
+                    .pluginVersion(pluginVersion)
+                    .build()));
+        } else {
+            return buildClientErrorResult("invalid plugin operation");
+        }
     }
 }

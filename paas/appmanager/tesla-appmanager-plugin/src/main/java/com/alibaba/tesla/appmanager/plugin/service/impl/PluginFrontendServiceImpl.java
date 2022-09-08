@@ -26,6 +26,17 @@ public class PluginFrontendServiceImpl implements PluginFrontendService {
     private PluginFrontendRepository pluginFrontendRepository;
 
     /**
+     * 获取指定的 Plugin Frontend 对象
+     *
+     * @param condition 查询条件
+     * @return PluginFrontendDO
+     */
+    @Override
+    public PluginFrontendDO get(PluginFrontendQueryCondition condition) {
+        return pluginFrontendRepository.getByCondition(condition);
+    }
+
+    /**
      * 根据 Plugin Definition 更新所有 Frontend 记录
      *
      * @param definitionSchema Plugin Definition Schema

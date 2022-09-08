@@ -21,5 +21,6 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/{{ APK_REPO_DOMAIN }}/g' /etc/apk/repositor
 
 COPY --from=build2 /app/build.zip /app/build.zip
 COPY --from=build1 /app/docs.zip /app/docs.zip
+RUN cd /app && unzip build.zip && rm -rf build.zip 
 RUN mkdir /app/docs && mv /app/docs.zip /app/docs/docs.zip && cd /app/docs && unzip docs.zip && rm -rf docs.zip
 ENTRYPOINT ["/app/sbin/run.sh"]

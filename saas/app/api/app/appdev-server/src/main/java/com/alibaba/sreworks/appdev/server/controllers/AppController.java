@@ -1,11 +1,5 @@
 package com.alibaba.sreworks.appdev.server.controllers;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.transaction.Transactional;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.appdev.server.params.AppCreateParam;
@@ -16,20 +10,13 @@ import com.alibaba.sreworks.common.util.StringUtil;
 import com.alibaba.sreworks.domain.DO.Action;
 import com.alibaba.sreworks.domain.DO.App;
 import com.alibaba.sreworks.domain.DO.Team;
-import com.alibaba.sreworks.domain.repository.ActionRepository;
-import com.alibaba.sreworks.domain.repository.AppComponentRepository;
-import com.alibaba.sreworks.domain.repository.AppInstanceRepository;
-import com.alibaba.sreworks.domain.repository.AppPackageRepository;
-import com.alibaba.sreworks.domain.repository.AppRepository;
-import com.alibaba.sreworks.domain.repository.TeamRepository;
-import com.alibaba.sreworks.domain.repository.TeamUserRepository;
+import com.alibaba.sreworks.domain.repository.*;
 import com.alibaba.sreworks.domain.services.SaveActionService;
 import com.alibaba.sreworks.flyadmin.server.services.FlyadminAppmanagerAppService;
 import com.alibaba.sreworks.flyadmin.server.services.FlyadminAppmanagerService;
 import com.alibaba.sreworks.flyadmin.server.services.FlyadminAuthproxyUserService;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.alibaba.tesla.web.controller.BaseController;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.kubernetes.client.openapi.ApiException;
 import io.swagger.annotations.Api;
@@ -37,7 +24,14 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.transaction.Transactional;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author jinghua.yjh
@@ -224,7 +218,11 @@ public class AppController extends BaseController {
 
     @ApiOperation(value = "getComponents")
     @RequestMapping(value = "getComponents", method = RequestMethod.GET)
-    public TeslaBaseResult getComponents(Long appId, @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) throws IOException {
+    public TeslaBaseResult getComponents(Long appId, @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp, BindingResult validator) throws IOException {
+        if (appId == null) {
+            return buildSucceedResult(new ArrayList<>());
+        }
+
         String appmanagerAppId = "sreworks" + appId.toString();
 
         String user = getUserEmployeeId();

@@ -6,6 +6,7 @@ import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.PluginDefinitionDTO;
 import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
+import com.alibaba.tesla.appmanager.domain.req.plugin.PluginDisableReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginEnableReq;
 import com.alibaba.tesla.appmanager.plugin.assembly.PluginDefinitionDtoConvert;
 import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDO;
@@ -57,16 +58,33 @@ public class PluginProviderImpl implements PluginProvider {
     }
 
     /**
+     * 关闭指定插件
+     *
+     * @param request 插件关闭请求
+     * @return 关闭后的 PluginDefinition 对象
+     */
+    @Override
+    public PluginDefinitionDTO disable(PluginDisableReq request) {
+        PluginDefinitionDO definition = pluginService.disable(request);
+        return pluginDefinitionDtoConvert.to(definition);
+    }
+
+    /**
      * 上传插件 (默认不启用)
      *
-     * @param file  API 上传文件
-     * @param force 是否强制上传覆盖
+     * @param file   API 上传文件
+     * @param force  是否强制上传覆盖
+     * @param enable 是否默认启用
      * @return PluginDefinitionDTO
      */
     @Override
-    public PluginDefinitionDTO upload(MultipartFile file, boolean force) {
+    public PluginDefinitionDTO upload(MultipartFile file, boolean force, Boolean enable) {
         try {
             PluginDefinitionDO definition = pluginService.upload(file, force);
+            definition = pluginService.enable(PluginEnableReq.builder()
+                    .pluginName(definition.getPluginName())
+                    .pluginVersion(definition.getPluginVersion())
+                    .build());
             return pluginDefinitionDtoConvert.to(definition);
         } catch (IOException e) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "upload plugin failed", e);

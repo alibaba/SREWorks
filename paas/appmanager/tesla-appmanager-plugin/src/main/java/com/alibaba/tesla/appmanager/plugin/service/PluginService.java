@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.plugin.service;
 
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
+import com.alibaba.tesla.appmanager.domain.req.plugin.PluginDisableReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginEnableReq;
 import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDO;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +31,14 @@ public interface PluginService {
      * @return 开启后的 PluginDefinition 对象
      */
     PluginDefinitionDO enable(PluginEnableReq request);
+
+    /**
+     * 关闭指定插件
+     *
+     * @param request 插件关闭请求
+     * @return 关闭后的 PluginDefinition 对象
+     */
+    PluginDefinitionDO disable(PluginDisableReq request);
 
     /**
      * 上传插件 (默认不启用)

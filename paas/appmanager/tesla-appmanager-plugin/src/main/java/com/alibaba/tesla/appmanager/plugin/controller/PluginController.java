@@ -3,9 +3,7 @@ package com.alibaba.tesla.appmanager.plugin.controller;
 import com.alibaba.tesla.appmanager.api.provider.PluginProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
-import com.alibaba.tesla.appmanager.domain.req.plugin.PluginDisableReq;
-import com.alibaba.tesla.appmanager.domain.req.plugin.PluginEnableReq;
-import com.alibaba.tesla.appmanager.domain.req.plugin.PluginOperateReq;
+import com.alibaba.tesla.appmanager.domain.req.plugin.*;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -44,7 +42,10 @@ public class PluginController extends AppManagerBaseController {
             @RequestParam(value = "override", defaultValue = "true") Boolean override,
             @RequestParam(value = "enable", defaultValue = "false") Boolean enable,
             OAuth2Authentication auth) throws IOException {
-        return buildSucceedResult(pluginProvider.upload(file, override, enable));
+        return buildSucceedResult(pluginProvider.upload(file, PluginUploadReq.builder()
+                .enable(enable)
+                .overwrite(override)
+                .build()));
     }
 
     @Operation(summary = "操作插件")
@@ -67,5 +68,20 @@ public class PluginController extends AppManagerBaseController {
         } else {
             return buildClientErrorResult("invalid plugin operation");
         }
+    }
+
+    @Operation(summary = "获取插件前端资源")
+    @PutMapping("{pluginName}/{pluginVersion}/frontend/{name}")
+    public TeslaBaseResult getPluginFrontend(
+            @PathVariable("pluginName") String pluginName,
+            @PathVariable("pluginVersion") String pluginVersion,
+            @PathVariable("name") String name,
+            @RequestBody PluginOperateReq request,
+            OAuth2Authentication auth) throws IOException {
+        return buildSucceedResult(pluginProvider.getFrontend(PluginFrontendGetReq.builder()
+                .pluginName(pluginName)
+                .pluginVersion(pluginVersion)
+                .name(name)
+                .build()));
     }
 }

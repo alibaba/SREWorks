@@ -1,6 +1,8 @@
 package com.alibaba.tesla.appmanager.plugin.service;
 
 import com.alibaba.tesla.appmanager.domain.schema.PluginDefinitionSchema;
+import com.alibaba.tesla.appmanager.plugin.repository.condition.PluginFrontendQueryCondition;
+import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginFrontendDO;
 
 import java.nio.file.Path;
 
@@ -10,6 +12,14 @@ import java.nio.file.Path;
  * @author yaoxing.gyx@alibaba-inc.com
  */
 public interface PluginFrontendService {
+
+    /**
+     * 获取指定的 Plugin Frontend 对象
+     *
+     * @param condition 查询条件
+     * @return PluginFrontendDO
+     */
+    PluginFrontendDO get(PluginFrontendQueryCondition condition);
 
     /**
      * 根据 Plugin Definition 更新所有 Frontend 记录

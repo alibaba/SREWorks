@@ -2,9 +2,12 @@ package com.alibaba.tesla.appmanager.api.provider;
 
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.PluginDefinitionDTO;
+import com.alibaba.tesla.appmanager.domain.dto.PluginFrontendDTO;
 import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginDisableReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginEnableReq;
+import com.alibaba.tesla.appmanager.domain.req.plugin.PluginFrontendGetReq;
+import com.alibaba.tesla.appmanager.domain.req.plugin.PluginUploadReq;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -41,10 +44,17 @@ public interface PluginProvider {
     /**
      * 上传插件 (默认不启用)
      *
-     * @param file   API 上传文件
-     * @param force  是否强制上传覆盖
-     * @param enable 是否默认启用
+     * @param file    API 上传文件
+     * @param request 上传插件请求
      * @return PluginDefinitionDTO
      */
-    PluginDefinitionDTO upload(MultipartFile file, boolean force, Boolean enable);
+    PluginDefinitionDTO upload(MultipartFile file, PluginUploadReq request);
+
+    /**
+     * 获取 Plugin Frontend 资源
+     *
+     * @param request 获取请求
+     * @return PluginFrontend DTO 对象
+     */
+    PluginFrontendDTO getFrontend(PluginFrontendGetReq request);
 }

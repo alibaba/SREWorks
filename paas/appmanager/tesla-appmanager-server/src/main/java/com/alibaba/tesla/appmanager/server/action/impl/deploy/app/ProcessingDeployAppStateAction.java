@@ -304,6 +304,13 @@ public class ProcessingDeployAppStateAction implements DeployAppStateAction, App
         String appInstanceName = configuration.getMetadata().getAnnotations().getAppInstanceName();
         for (DeployAppSchema.SpecComponent specComponent : configuration.getSpec().getComponents()) {
             Jinjava jinjava = JinjaFactory.getJinjava();
+            if (specComponent.getClusterId() == null
+                    || specComponent.getNamespaceId() == null
+                    || specComponent.getStageId() == null) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                        String.format("null name field in component scopes|revisionName=%s",
+                                specComponent.getRevisionName()));
+            }
             String componentClusterId = jinjava.render(specComponent.getClusterId(), globalParameters);
             String componentNamespaceId = jinjava.render(specComponent.getNamespaceId(), globalParameters);
             String componentStageId = jinjava.render(specComponent.getStageId(), globalParameters);

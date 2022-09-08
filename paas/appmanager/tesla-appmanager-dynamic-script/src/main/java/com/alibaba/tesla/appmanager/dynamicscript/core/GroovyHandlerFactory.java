@@ -370,6 +370,25 @@ public class GroovyHandlerFactory {
     }
 
     /**
+     * 删除 Handler
+     *
+     * @param kind 动态脚本类型
+     * @param name 动态脚本唯一标识
+     */
+    public void uninstall(String kind, String name) {
+        String key = keyGenerator(kind, name);
+        if (!VERSION_MAP.containsKey(key)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("the plugin has not been loaded|kind=%s|name=%s", kind, name));
+        }
+        synchronized (GroovyHandlerFactory.class) {
+            VERSION_MAP.remove(key);
+            HANDLER_INSTANCES.remove(key);
+            log.info("groovy handler has unloaded|kind={}|name={}", kind, name);
+        }
+    }
+
+    /**
      * 依赖注入
      *
      * @param handler handler

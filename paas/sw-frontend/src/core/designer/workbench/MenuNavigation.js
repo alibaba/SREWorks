@@ -15,6 +15,7 @@ import {
 import Bus from '../../../utils/eventBus'
 
 import { Form, Icon as LegacyIcon } from '@ant-design/compatible';
+import IconSelector from "../../../components/FormBuilder/FormItem/IconSelector"
 import '@ant-design/compatible/assets/index.css';
 import {
   Tree,
@@ -555,16 +556,15 @@ class MenuNavigation extends React.Component {
                   )}
                 </FormItem>
                 <FormItem label={<span>菜单Icon <Tooltip
-                  title={<span>填写<a href='https://ant.design/components/icon-cn/' target='_blank'>antd icon</a>的type</span>}><QuestionCircleOutlined style={{ verticalAlign: "middle" }} /></Tooltip></span>} {...formItemLayout}>
-                  {getFieldDecorator("routeNodeConfigIcon", {
-                    initialValue: this.isAdd ? "" : this.node.config.icon,
-                  })(
-                    <Input placeholder="请输入菜单Icon" style={{ width: "100%" }} onChange={e => this.setState({
-                      nodeConfigIcon: e.target.value,
-                    })} />,
-                  )}
-                  <LegacyIcon type={this.state.nodeConfigIcon} style={{ marginLeft: 5, position: "absolute", top: 3 }} />
-                </FormItem>
+                    title={<span>填写<a href='https://ant.design/components/icon-cn/'
+                                      target='_blank'>antd icon</a>的type</span>}><QuestionCircleOutlined
+                    style={{verticalAlign: "middle"}}/></Tooltip></span>} {...formItemLayout}>
+                    {getFieldDecorator("routeNodeConfigIcon", {
+                      initialValue: this.isAdd ? "" : this.node.config.icon,
+                    })(
+                      <IconSelector/>,
+                    )}
+                  </FormItem>
                 <FormItem
                   label={"菜单类型"}
                   {...formItemLayout}

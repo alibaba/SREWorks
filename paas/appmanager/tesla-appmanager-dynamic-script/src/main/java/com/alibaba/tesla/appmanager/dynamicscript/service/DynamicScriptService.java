@@ -29,6 +29,13 @@ public interface DynamicScriptService {
     List<DynamicScriptDO> list(DynamicScriptQueryCondition condition);
 
     /**
+     * 删除指定的动态脚本 (所有 node 感知后会自动卸载)
+     *
+     * @param condition 查询条件
+     */
+    void removeScript(DynamicScriptQueryCondition condition);
+
+    /**
      * 初始化脚本
      * <p>
      * * 如果当前记录不存在，则新增

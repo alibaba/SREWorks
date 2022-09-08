@@ -304,6 +304,7 @@ options:
         dockerfileTemplateArgs:
           ALPINE_IMAGE: ${ALPINE_IMAGE}
           NODE_IMAGE: ${NODE_IMAGE}
+          NODE_IMAGE2: ${NODE_IMAGE2}
           APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
           NPM_REGISTRY_URL: ${NPM_REGISTRY_URL}
         dockerfileTemplate: Dockerfile_standalone.tpl

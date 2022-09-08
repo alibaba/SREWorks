@@ -1,0 +1,130 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.sidebars.category.1 快速开始": {
+    "message": "1 快速开始",
+    "description": "The label for category 1 快速开始 in sidebar sidebars"
+  },
+  "sidebar.sidebars.category.2 安装SREWorks": {
+    "message": "2 安装SREWorks",
+    "description": "The label for category 2 安装SREWorks in sidebar sidebars"
+  },
+  "sidebar.sidebars.category.3 架构思想": {
+    "message": "3 架构思想",
+    "description": "The label for category 3 架构思想 in sidebar sidebars"
+  },
+  "sidebar.sidebars.category.4 使用SREWorks": {
+    "message": "4 使用SREWorks",
+    "description": "The label for category 4 使用SREWorks in sidebar sidebars"
+  },
+  "sidebar.sidebars.category.4.1 企业应用": {
+    "message": "4.1 企业应用",
+    "description": "The label for category 4.1 企业应用 in sidebar sidebars"
+  },
+  "sidebar.sidebars.category.4.2 运维开发": {
+    "message": "4.2 运维开发",
+    "description": "The label for category 4.2 运维开发 in sidebar sidebars"
+  },
+  "sidebar.sidebars.category.5. 扩展SREWorks": {
+    "message": "5. 扩展SREWorks",
+    "description": "The label for category 5. 扩展SREWorks in sidebar sidebars"
+  },
+  "sidebar.sidebars.category.5.1 运维开发扩展": {
+    "message": "5.1 运维开发扩展",
+    "description": "The label for category 5.1 运维开发扩展 in sidebar sidebars"
+  },
+  "sidebar.sidebars.category.6. 最佳场景实践": {
+    "message": "6. 最佳场景实践",
+    "description": "The label for category 6. 最佳场景实践 in sidebar sidebars"
+  },
+  "sidebar.sidebars.category.7.社区": {
+    "message": "7.社区",
+    "description": "The label for category 7.社区 in sidebar sidebars"
+  },
+  "sidebar.sidebars.doc.1.1 简介": {
+    "message": "1.1 简介",
+    "description": "The label for the doc item 1.1 简介 in sidebar sidebars, linking to the doc fx909t"
+  },
+  "sidebar.sidebars.doc.1.2 核心对象": {
+    "message": "1.2 核心对象",
+    "description": "The label for the doc item 1.2 核心对象 in sidebar sidebars, linking to the doc lz3fpq"
+  },
+  "sidebar.sidebars.doc.1.3 名词解释": {
+    "message": "1.3 名词解释",
+    "description": "The label for the doc item 1.3 名词解释 in sidebar sidebars, linking to the doc xq9sk7"
+  },
+  "sidebar.sidebars.doc.1.4 功能列表": {
+    "message": "1.4 功能列表",
+    "description": "The label for the doc item 1.4 功能列表 in sidebar sidebars, linking to the doc tcpxav"
+  },
+  "sidebar.sidebars.doc.1.5 版本记录": {
+    "message": "1.5 版本记录",
+    "description": "The label for the doc item 1.5 版本记录 in sidebar sidebars, linking to the doc ogxnmx"
+  },
+  "sidebar.sidebars.doc.2.1 快速安装": {
+    "message": "2.1 快速安装",
+    "description": "The label for the doc item 2.1 快速安装 in sidebar sidebars, linking to the doc rr5g10"
+  },
+  "sidebar.sidebars.doc.2.2 源码构建安装": {
+    "message": "2.2 源码构建安装",
+    "description": "The label for the doc item 2.2 源码构建安装 in sidebar sidebars, linking to the doc mzz07m"
+  },
+  "sidebar.sidebars.doc.3.1 核心思想": {
+    "message": "3.1 核心思想",
+    "description": "The label for the doc item 3.1 核心思想 in sidebar sidebars, linking to the doc eg91va"
+  },
+  "sidebar.sidebars.doc.3.2 技术架构": {
+    "message": "3.2 技术架构",
+    "description": "The label for the doc item 3.2 技术架构 in sidebar sidebars, linking to the doc grtf3q"
+  },
+  "sidebar.sidebars.doc.3.3 数智运维": {
+    "message": "3.3 数智运维",
+    "description": "The label for the doc item 3.3 数智运维 in sidebar sidebars, linking to the doc cirgod"
+  },
+  "sidebar.sidebars.doc.4.1.1 什么是企业应用": {
+    "message": "4.1.1 什么是企业应用",
+    "description": "The label for the doc item 4.1.1 什么是企业应用 in sidebar sidebars, linking to the doc ynueoi"
+  },
+  "sidebar.sidebars.doc.4.1.2 企业组织管理": {
+    "message": "4.1.2 企业组织管理",
+    "description": "The label for the doc item 4.1.2 企业组织管理 in sidebar sidebars, linking to the doc pdqddr"
+  },
+  "sidebar.sidebars.doc.4.1.3 企业资源管理": {
+    "message": "4.1.3 企业资源管理",
+    "description": "The label for the doc item 4.1.3 企业资源管理 in sidebar sidebars, linking to the doc moptgx"
+  },
+  "sidebar.sidebars.doc.4.1.4 企业应用管理": {
+    "message": "4.1.4 企业应用管理",
+    "description": "The label for the doc item 4.1.4 企业应用管理 in sidebar sidebars, linking to the doc ii05yo"
+  },
+  "sidebar.sidebars.doc.4.2.3 运维前端开发": {
+    "message": "4.2.3 运维前端开发",
+    "description": "The label for the doc item 4.2.3 运维前端开发 in sidebar sidebars, linking to the doc ou9k9g"
+  },
+  "sidebar.sidebars.doc.4.2.1 什么是运维应用": {
+    "message": "4.2.1 什么是运维应用",
+    "description": "The label for the doc item 4.2.1 什么是运维应用 in sidebar sidebars, linking to the doc uopmre"
+  },
+  "sidebar.sidebars.doc.4.2.2 运维应用管理": {
+    "message": "4.2.2 运维应用管理",
+    "description": "The label for the doc item 4.2.2 运维应用管理 in sidebar sidebars, linking to the doc ap1wm6"
+  },
+  "sidebar.sidebars.doc.5.1.1 运维前端组件开发": {
+    "message": "5.1.1 运维前端组件开发",
+    "description": "The label for the doc item 5.1.1 运维前端组件开发 in sidebar sidebars, linking to the doc ngx61f"
+  },
+  "sidebar.sidebars.doc.6.1 部署Flink云原生开源版": {
+    "message": "6.1 部署Flink云原生开源版",
+    "description": "The label for the doc item 6.1 部署Flink云原生开源版 in sidebar sidebars, linking to the doc cgczgu"
+  },
+  "sidebar.sidebars.doc.7.1 常见问题": {
+    "message": "7.1 常见问题",
+    "description": "The label for the doc item 7.1 常见问题 in sidebar sidebars, linking to the doc iwa896"
+  },
+  "sidebar.sidebars.doc.7.2 参与SREWorks开源": {
+    "message": "7.2 参与SREWorks开源",
+    "description": "The label for the doc item 7.2 参与SREWorks开源 in sidebar sidebars, linking to the doc yc64sk"
+  }
+}

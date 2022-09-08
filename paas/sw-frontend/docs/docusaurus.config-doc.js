@@ -12,7 +12,7 @@ const config = {
   title: 'SREWorks',
   tagline: 'SREWorks 专注于以应用为中心的一站式“云原生”、“数智化”运维SaaS管理套件。提供企业的应用&资源管理及运维开发两大核心能力，帮助企业实现云原生应用&资源的交付运维',
   url: "https://sreworks.opensource.alibaba.com/",
-  baseUrl: '/',
+  baseUrl: '/docs/',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   onBrokenLinks: "ignore",

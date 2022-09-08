@@ -5,11 +5,18 @@ import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.PluginDefinitionDTO;
+import com.alibaba.tesla.appmanager.domain.dto.PluginFrontendDTO;
 import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginDisableReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginEnableReq;
+import com.alibaba.tesla.appmanager.domain.req.plugin.PluginFrontendGetReq;
+import com.alibaba.tesla.appmanager.domain.req.plugin.PluginUploadReq;
 import com.alibaba.tesla.appmanager.plugin.assembly.PluginDefinitionDtoConvert;
+import com.alibaba.tesla.appmanager.plugin.assembly.PluginFrontendDtoConvert;
+import com.alibaba.tesla.appmanager.plugin.repository.condition.PluginFrontendQueryCondition;
 import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDO;
+import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginFrontendDO;
+import com.alibaba.tesla.appmanager.plugin.service.PluginFrontendService;
 import com.alibaba.tesla.appmanager.plugin.service.PluginService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +38,13 @@ public class PluginProviderImpl implements PluginProvider {
     private PluginService pluginService;
 
     @Autowired
+    private PluginFrontendService pluginFrontendService;
+
+    @Autowired
     private PluginDefinitionDtoConvert pluginDefinitionDtoConvert;
+
+    @Autowired
+    private PluginFrontendDtoConvert pluginFrontendDtoConvert;
 
     /**
      * 获取插件列表
@@ -72,22 +85,39 @@ public class PluginProviderImpl implements PluginProvider {
     /**
      * 上传插件 (默认不启用)
      *
-     * @param file   API 上传文件
-     * @param force  是否强制上传覆盖
-     * @param enable 是否默认启用
+     * @param file    API 上传文件
+     * @param request 上传插件请求
      * @return PluginDefinitionDTO
      */
     @Override
-    public PluginDefinitionDTO upload(MultipartFile file, boolean force, Boolean enable) {
+    public PluginDefinitionDTO upload(MultipartFile file, PluginUploadReq request) {
         try {
-            PluginDefinitionDO definition = pluginService.upload(file, force);
-            definition = pluginService.enable(PluginEnableReq.builder()
-                    .pluginName(definition.getPluginName())
-                    .pluginVersion(definition.getPluginVersion())
-                    .build());
+            PluginDefinitionDO definition = pluginService.upload(file, request.isOverwrite());
+            if (request.isEnable()) {
+                definition = pluginService.enable(PluginEnableReq.builder()
+                        .pluginName(definition.getPluginName())
+                        .pluginVersion(definition.getPluginVersion())
+                        .build());
+            }
             return pluginDefinitionDtoConvert.to(definition);
         } catch (IOException e) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "upload plugin failed", e);
         }
+    }
+
+    /**
+     * 获取 Plugin Frontend 资源
+     *
+     * @param request 获取请求
+     * @return PluginFrontend DTO 对象
+     */
+    @Override
+    public PluginFrontendDTO getFrontend(PluginFrontendGetReq request) {
+        PluginFrontendDO frontend = pluginFrontendService.get(PluginFrontendQueryCondition.builder()
+                .pluginName(request.getPluginName())
+                .pluginVersion(request.getPluginVersion())
+                .name(request.getName())
+                .build());
+        return pluginFrontendDtoConvert.to(frontend);
     }
 }

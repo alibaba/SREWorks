@@ -43,6 +43,10 @@ echo "---" >> ${SELF}/tmp-merge-build.yaml
 #cat ${SELF}/tmp-build.yaml >> ${SELF}/tmp-merge-build.yaml
 #echo "---" >> ${SELF}/tmp-merge-build.yaml
 
+envsubst < ${SELF}/api/prometheus/build.yaml.tpl > ${SELF}/tmp-build.yaml
+cat ${SELF}/tmp-build.yaml >> ${SELF}/tmp-merge-build.yaml
+echo "---" >> ${SELF}/tmp-merge-build.yaml
+
 envsubst < ${SELF}/api/ververica-platform/build.yaml.tpl > ${SELF}/tmp-build.yaml
 cat ${SELF}/tmp-build.yaml >> ${SELF}/tmp-merge-build.yaml
 echo "---" >> ${SELF}/tmp-merge-build.yaml

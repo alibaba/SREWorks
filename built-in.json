@@ -19,4 +19,7 @@
 },{
   "appId": "team",
   "packagePath": "saas/team/build" 
+},{
+  "appId": "help",
+  "packagePath": "saas/help/build"
 }]

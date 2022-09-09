@@ -735,13 +735,14 @@ data:
 
     if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
         
+        python /app/pack.py --src /root/saas/help/build --dest /root/saas/help/build.zip
+        envsubst < /root/saas/job/build/launch-frontend.yaml.tpl > /root/saas/help/launch.yaml
+        envsubst < /root/saas/job/build/launch-frontend-dev..yaml.tpl > /root/saas/help/launch-dev.yaml
+        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id help --filepath /root/saas/help/build.zip --print-only-app-package-id=true --reset-version=true)
 
-        envsubst < /root/saas/help/ui/launch-v2.yaml.tpl > /root/saas/help/ui/launch.yaml
-        envsubst < /root/saas/help/ui/launch-v2-dev.yaml.tpl > /root/saas/help/ui/launch-dev.yaml
-        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id help --filepath /root/saas/help/ui/help-auto.zip --print-only-app-package-id=true --reset-version=true)
+        /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id help --path /root/saas/help/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+        /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id help --path /root/saas/help/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
 
-        /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id help --path /root/saas/help/ui/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-        /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id help --path /root/saas/help/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
     fi
 
 

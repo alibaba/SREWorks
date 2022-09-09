@@ -218,7 +218,7 @@ public class AppController extends BaseController {
 
     @ApiOperation(value = "getComponents")
     @RequestMapping(value = "getComponents", method = RequestMethod.GET)
-    public TeslaBaseResult getComponents(Long appId, @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp, BindingResult validator) throws IOException {
+    public TeslaBaseResult getComponents(Long appId, @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) throws IOException {
         if (appId == null) {
             return buildSucceedResult(new ArrayList<>());
         }

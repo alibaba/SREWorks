@@ -23,5 +23,11 @@
   },
   "installConfig": {
     "hoistingLimits": "workspaces"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "mustache": "^4.2.0",
+    "qs": "^6.11.0",
+    "shortid": "^2.2.16"
   }
 }

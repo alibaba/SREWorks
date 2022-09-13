@@ -18,7 +18,8 @@
   "packagePath": "saas/swadmin/build"
 },{
   "appId": "team",
-  "packagePath": "saas/team/build" 
+  "packagePath": "saas/team/build",
+  "develop": "saas/team/api/dev.yaml"
 },{
   "appId": "help",
   "packagePath": "saas/help/build"

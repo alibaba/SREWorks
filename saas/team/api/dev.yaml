@@ -1,0 +1,11 @@
+components:
+- revisionName: INTERNAL_ADDON|productopsv2|_
+  traits:
+  - name: gateway.trait.abm.io
+    runtime: post
+    spec:
+      path: "/sreworks/teammanage/**"
+      servicePort: 80
+      serviceName: "prod-team-team"
+      routeId: "dev-team-team-master-${NAMESPACE_ID}-dev"
+

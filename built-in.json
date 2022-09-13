@@ -23,4 +23,8 @@
 },{
   "appId": "help",
   "packagePath": "saas/help/build"
+},{
+  "appId": "health",
+  "packagePath": "saas/health/build",
+  "develop": "saas/health/api/dev.yaml"
 }]

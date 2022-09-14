@@ -1,6 +1,7 @@
 FROM registry.cn-hangzhou.aliyuncs.com/alisre/sw-maven:latest AS build
 
 COPY . /app
+RUN mkdir /root/.m2/ && curl https://sreworks.oss-cn-beijing.aliyuncs.com/resource/settings.xml -o /root/.m2/settings.xml
 RUN cd /app && mvn -Dmaven.test.skip=true clean package -U
 
 FROM registry.cn-hangzhou.aliyuncs.com/alisre/sw-openjdk8-jre:latest AS release

@@ -248,7 +248,7 @@ download_packages(){
    #mkdir -p $SW_ROOT/saas/cluster/ui/ && wget "${PKG_URL}/saas/cluster/ui/cluster-auto.zip" -O $SW_ROOT/saas/cluster/ui/cluster-auto.zip
    mkdir -p $SW_ROOT/saas/dataops/ui/data/ && wget "${PKG_URL}/saas/dataops/ui/data/data-auto.zip" -O $SW_ROOT/saas/dataops/ui/data/data-auto.zip
    mkdir -p $SW_ROOT/saas/healing/ui/ && wget "${PKG_URL}/saas/healing/ui/healing-auto.zip" -O $SW_ROOT/saas/healing/ui/healing-auto.zip
-   mkdir -p $SW_ROOT/saas/health/ui/ && wget "${PKG_URL}/saas/health/ui/health-auto.zip" -O $SW_ROOT/saas/health/ui/health-auto.zip
+   #mkdir -p $SW_ROOT/saas/health/ui/ && wget "${PKG_URL}/saas/health/ui/health-auto.zip" -O $SW_ROOT/saas/health/ui/health-auto.zip
    #mkdir -p $SW_ROOT/saas/help/ui/ && wget "${PKG_URL}/saas/help/ui/help-auto.zip" -O $SW_ROOT/saas/help/ui/help-auto.zip
    #mkdir -p $SW_ROOT/saas/job/ui/ && wget "${PKG_URL}/saas/job/ui/job-auto.zip" -O $SW_ROOT/saas/job/ui/job-auto.zip
    #mkdir -p $SW_ROOT/saas/template/ui/ && wget "${PKG_URL}/saas/template/ui/template-auto.zip" -O $SW_ROOT/saas/template/ui/template-auto.zip
@@ -257,7 +257,7 @@ download_packages(){
    #wget "${PKG_URL}/saas/app/app.zip" -O $SW_ROOT/saas/app/app.zip
    #wget "${PKG_URL}/saas/cluster/cluster.zip" -O $SW_ROOT/saas/cluster/cluster.zip
    wget "${PKG_URL}/saas/dataops/data.zip" -O $SW_ROOT/saas/dataops/data.zip
-   wget "${PKG_URL}/saas/health/health.zip" -O $SW_ROOT/saas/health/health.zip
+   #wget "${PKG_URL}/saas/health/health.zip" -O $SW_ROOT/saas/health/health.zip
    #wget "${PKG_URL}/saas/job/job.zip" -O $SW_ROOT/saas/job/job.zip
    wget "${PKG_URL}/saas/search/search.zip" -O $SW_ROOT/saas/search/search.zip
    wget "${PKG_URL}/saas/swcore/flycore.zip" -O $SW_ROOT/saas/swcore/flycore.zip

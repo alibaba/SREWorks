@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { safeEval, ChartTool } from '@sreworks/shared-utils'
-import { StackedBarChart } from 'bizcharts'
+import { DonutChart } from 'bizcharts'
 import _ from 'lodash'
 
-export default class BizStackedBarChart extends Component {
+class SliderChart extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -40,14 +40,15 @@ export default class BizStackedBarChart extends Component {
     let {
       theme,
       appendPadding,
-      height,
+      height = '',
       width,
       chartTitle,
-      xField,
-      yField,
-      stackField,
       isLegend,
       legendPosition,
+      angleFeild,
+      colorFeild,
+      outRadius,
+      innerRadius,
       advancedConfig = {},
     } = widgetConfig
     if (appendPadding && appendPadding.indexOf(',') > -1) {
@@ -55,64 +56,28 @@ export default class BizStackedBarChart extends Component {
     }
     const data = [
       {
-        地区: '华东',
-        细分: '公司',
-        销售额: 1454715.807999998,
+        type: '分类一',
+        value: 27,
       },
       {
-        地区: '华东',
-        细分: '消费者',
-        销售额: 2287358.261999998,
+        type: '分类二',
+        value: 25,
       },
       {
-        地区: '中南',
-        细分: '公司',
-        销售额: 1335665.3239999984,
+        type: '分类三',
+        value: 18,
       },
       {
-        地区: '中南',
-        细分: '消费者',
-        销售额: 2057936.7620000008,
+        type: '分类四',
+        value: 15,
       },
       {
-        地区: '东北',
-        细分: '公司',
-        销售额: 834842.827,
+        type: '分类五',
+        value: 10,
       },
       {
-        地区: '东北',
-        细分: '消费者',
-        销售额: 1323985.6069999991,
-      },
-      {
-        地区: '华北',
-        细分: '公司',
-        销售额: 804769.4689999995,
-      },
-      {
-        地区: '华北',
-        细分: '消费者',
-        销售额: 1220430.5610000012,
-      },
-      {
-        地区: '西南',
-        细分: '公司',
-        销售额: 469341.684,
-      },
-      {
-        地区: '西南',
-        细分: '消费者',
-        销售额: 677302.8919999995,
-      },
-      {
-        地区: '西北',
-        细分: '公司',
-        销售额: 253458.1840000001,
-      },
-      {
-        地区: '西北',
-        细分: '消费者',
-        销售额: 458058.1039999998,
+        type: '其它',
+        value: 5,
       },
     ]
     let finalData = chartData || widgetData || data
@@ -121,36 +86,37 @@ export default class BizStackedBarChart extends Component {
       advConf = safeEval('(' + advancedConfig + ')(widgetData)', { widgetData: finalData })
     }
     return (
-      <StackedBarChart
-        theme={theme || 'light'}
-        appendPadding={appendPadding || [10, 0, 0, 10]}
-        data={finalData}
+      <DonutChart
         width={width && Number(width)}
         height={height && Number(height)}
-        autoFit
+        theme={theme || 'light'}
+        padding={appendPadding || 'auto'}
+        data={finalData}
+        autoFit={true}
         title={{
-          visible: chartTitle ? true : false,
+          visible: !!chartTitle,
           text: chartTitle || '',
           style: {
             fontSize: 14,
             color: 'var(--PrimaryColor)',
           },
         }}
-        xField={xField || '销售额'}
-        yField={yField || '地区'}
-        isStack
-        stackField={stackField || '细分'}
-        xAxis={{
-          // type: 'dateTime',
-          tickCount: 5,
-        }}
         legend={{
           visible: isLegend,
           position: legendPosition,
-          flipPage: true,
+        }}
+        angleField={angleFeild || 'value'}
+        colorField={colorFeild || 'type'}
+        radius={outRadius || 0.8}
+        innerRadius={innerRadius || 0.8}
+        statistic={{
+          title: false,
+          content: false,
         }}
         {...advConf}
       />
     )
   }
 }
+
+export default SliderChart

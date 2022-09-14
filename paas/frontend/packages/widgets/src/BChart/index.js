@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { LineChart, ColumnChart, BarChart, ScatterChart } from 'bizcharts'
-import { safeEval, loadChartData } from '@sreworks/shared-utils'
+import { safeEval, ChartTool } from '@sreworks/shared-utils'
 import _ from 'lodash'
 
 class BChart extends Component {
@@ -25,7 +25,7 @@ class BChart extends Component {
   async intervalLoad() {
     let { widgetConfig = {} } = this.props
     let allProps = { ...this.props }
-    let data = await loadChartData(allProps, widgetConfig)
+    let data = await ChartTool.loadChartData(allProps, widgetConfig)
     this.setState({
       chartData: data,
     })

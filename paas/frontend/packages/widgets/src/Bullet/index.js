@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { safeEval, loadChartData } from '@sreworks/shared-utils'
+import { safeEval, ChartTool } from '@sreworks/shared-utils'
 import { BulletChart } from 'bizcharts'
 import _ from 'lodash'
 
@@ -24,7 +24,7 @@ export default class Bullet extends Component {
   async intervalLoad() {
     let { widgetConfig = {} } = this.props
     let allProps = { ...this.props }
-    let data = await loadChartData(allProps, widgetConfig)
+    let data = await ChartTool.loadChartData(allProps, widgetConfig)
     this.setState({
       chartData: data,
     })

@@ -1,19 +1,19 @@
 export default {
-  id: 'BChart',
-  type: 'BChart',
-  name: 'BChart',
-  title: '基础条带图',
+  id: 'BizRadarChart',
+  type: 'BizRadarChart',
+  name: 'BizRadarChart',
+  title: '雷达图',
   info: {
     author: {
       name: '',
       url: '',
     },
-    description: 'bizCharts图表库折线图',
+    description: 'bizCharts图表库雷达图',
     links: [],
     logos: {
       large: '',
       small: require('./icon.svg'),
-      fontClass: 'BChart',
+      fontClass: 'BizRadarChart',
     },
     build: {
       time: '',
@@ -24,13 +24,13 @@ export default {
     screenshots: [],
     updated: '',
     version: '',
-    docs: "<a target='_blank' href='#/help/book/documents/ho617k.html#85-基础条带图'>组件文档地址</a>",
+    docs: "<a target='_blank' href='https://bizcharts.taobao.com/product/BizCharts4/category/77/page/135'>组件文档地址</a>",
   },
   state: '',
   latestVersion: '1.0',
   configSchema: {
     defaults: {
-      type: 'BChart',
+      type: 'BizRadarChart',
       config: {
         size: 'small',
         header: '',
@@ -49,30 +49,13 @@ export default {
     schema: {
       type: 'object',
       properties: {
-        chartType: {
-          description: '基础条带类图表：折线图，条形图，柱状图',
-          title: '基础图表类别',
-          required: false,
-          type: 'string',
-          'x-component': 'Select',
-          initValue: 'Line',
-          'x-component-props': {
-            options: [
-              { value: 'Line', label: '折线图' },
-              { value: 'Interval', label: '柱状图' },
-              { value: 'transposeInterval', label: '条形图' },
-              { value: 'Point', label: '点图' },
-            ],
-            defaultValue: 'Line',
-          },
-        },
         theme: {
           description: '主题',
           title: '主题',
           required: false,
           type: 'string',
-          initValue: 'light',
           'x-component': 'Radio',
+          initValue: 'light',
           'x-component-props': {
             options: [
               { value: 'light', label: '本白' },
@@ -92,6 +75,7 @@ export default {
           description: '宽度',
           title: '宽度',
           required: false,
+          initValue: 400,
           type: 'string',
           'x-component': 'INPUT_NUMBER',
         },
@@ -106,39 +90,53 @@ export default {
           description: '设置图表的上右下做四个方位的边距间隔，如10,0,0,10以逗号分隔',
           title: ' 边距',
           required: false,
-          initValue: '',
+          initValue: '10,0,0,10',
           type: 'string',
           'x-component': 'Input',
         },
         chartTitle: {
-          description: '设置图表的标题',
+          description: '设置雷达图的标题',
           title: '标题',
           required: false,
           type: 'string',
           'x-component': 'Input',
+          'x-component-props': {
+            placeholder: '请输入标题',
+          },
         },
-        xField: {
-          description: '设置图表横坐标key，为数据返回data字段',
-          title: 'x坐标轴字段',
-          required: true,
-          type: 'string',
-          initValue: 'year',
-          'x-component': 'Input',
-        },
-        yField: {
-          description: '设置图表纵坐标key，为数据返回data字段',
-          title: 'y坐标轴字段',
-          required: true,
-          type: 'string',
-          initValue: 'value',
-          'x-component': 'Input',
-        },
-        seriesField: {
-          description: '设置图表分组字段',
-          title: '分组字段',
+        angleField: {
+          description: '雷达图映射到圆周角度所对应的字段，一般为一个分类字段',
+          title: 'angleField',
           required: false,
           type: 'string',
           'x-component': 'Input',
+          initValue: '',
+          'x-component-props': {
+            placeholder: '请输入x轴字段',
+          },
+        },
+        radiusField: {
+          description: '雷达图映射到半径所对应的字段，一般为一个连续字段',
+          title: 'radiusField',
+          required: false,
+          type: 'string',
+          'x-component': 'Input',
+          initValue: '',
+          'x-component-props': {
+            placeholder: '请输入y轴字段',
+          },
+        },
+        seriesField: {
+          description:
+            '对雷达图进行分组的字段，一般对应一个分类字段。通过该字段的值，雷达图将会被分为多个组，通过颜色进行区分，并上下重叠。',
+          title: 'seriesField',
+          required: false,
+          type: 'string',
+          'x-component': 'Input',
+          initValue: '',
+          'x-component-props': {
+            placeholder: '请输入y轴字段',
+          },
         },
         isLegend: {
           description: '默认展示图例，选择否则隐藏',
@@ -155,7 +153,7 @@ export default {
           },
         },
         legendPosition: {
-          description: '基础条带类图表的图例位置',
+          description: '图表的图例位置',
           title: '图例位置',
           required: false,
           type: 'string',
@@ -177,27 +175,6 @@ export default {
             ],
           },
         },
-        isSlider: {
-          description: '是否展示缩放条',
-          title: '缩放条',
-          required: false,
-          type: 'string',
-          initValue: false,
-          'x-component': 'Radio',
-          'x-component-props': {
-            options: [
-              { value: false, label: '否' },
-              { value: true, label: '是' },
-            ],
-          },
-        },
-        colorType: {
-          description: '图表颜色，在制定颜色情况下默认自适应给色',
-          title: '图表颜色',
-          required: false,
-          type: 'string',
-          'x-component': 'COLOR_PICKER',
-        },
         advancedConfig: {
           description: '图表高级自定义配置，参考bizcharts官方配置',
           title: '自定义配置',
@@ -209,52 +186,7 @@ export default {
       },
     },
     supportItemToolbar: true,
-    dataMock: {
-      description: '返回的数据为数组',
-      formats: [
-        {
-          description: '数据结构类型跟bizCharts保持一致',
-          data: [
-            {
-              year: '1991',
-              value: 3,
-            },
-            {
-              year: '1992',
-              value: 4,
-            },
-            {
-              year: '1993',
-              value: 3.5,
-            },
-            {
-              year: '1994',
-              value: 5,
-            },
-            {
-              year: '1995',
-              value: 4.9,
-            },
-            {
-              year: '1996',
-              value: 6,
-            },
-            {
-              year: '1997',
-              value: 7,
-            },
-            {
-              year: '1998',
-              value: 9,
-            },
-            {
-              year: '1999',
-              value: 13,
-            },
-          ],
-        },
-      ],
-    },
+    dataMock: {},
   },
   category: 'charts',
 }

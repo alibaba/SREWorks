@@ -27,4 +27,12 @@
   "appId": "health",
   "packagePath": "saas/health/build",
   "develop": "saas/health/api/dev.yaml"
+},{
+  "appId": "search",
+  "packagePath": "saas/search/build",
+  "develop": "saas/search/api/dev.yaml"
+},{
+  "appId": "upload",
+  "packagePath": "saas/upload/build",
+  "develop": "saas/upload/api/dev.yaml"
 }]

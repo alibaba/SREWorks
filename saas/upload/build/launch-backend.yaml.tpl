@@ -20,6 +20,8 @@ spec:
       value: sreworks_meta
     - name: Global.SREWORKS_FILE_PREFIX
       value: /gateway/minio/
+    - name: Global.UPLOAD_SUB_PATH
+      value: v1.0
     revisionName: K8S_MICROSERVICE|filemanage|_
     scopes:
     - scopeRef:

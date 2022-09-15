@@ -71,17 +71,15 @@ data:
         python /app/pack.py --src /root/saas/swadmin/build --dest /root/saas/swadmin/build.zip
         envsubst < /root/saas/swadmin/build/launch-frontend.yaml.tpl > /root/saas/swadmin/launch-frontend.yaml
         envsubst < /root/saas/swadmin/build/launch-frontend-dev.yaml.tpl > /root/saas/swadmin/launch-frontend-dev.yaml
-        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id swadmin --filepath /root/saas/swadmin/build.zip --print-only-app-package-id=true --reset-version=true)
-        /root/swcli --config /swcli/swcli.yaml deployment launch --app-id swadmin --path /root/saas/swadmin/launch-frontend.yaml --stage=prod --namespace=${NAMESPACE_ID} --app-package-id $result --arch x86 --wait=true --cluster master
-        /root/swcli --config /swcli/swcli.yaml deployment launch --app-id swadmin --path /root/saas/swadmin/launch-frontend-dev.yaml --stage dev --namespace=${NAMESPACE_ID} --app-package-id $result --arch x86 --wait=true --cluster master
-
+        
+        sh /app/import.sh swadmin /root/saas/swadmin/build.zip /root/saas/swadmin/launch-frontend.yaml /root/saas/swadmin/launch-frontend-dev.yaml
+ 
         # import&launch saas template
         python /app/pack.py --src /root/saas/template/build --dest /root/saas/template/build.zip
         envsubst < /root/saas/template/build/launch-frontend.yaml.tpl > /root/saas/template/launch-frontend.yaml
         envsubst < /root/saas/template/build/launch-frontend-dev.yaml.tpl > /root/saas/template/launch-frontend-dev.yaml
-        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id template --filepath /root/saas/template/build.zip --print-only-app-package-id=true --reset-version=true)
-        /root/swcli --config /swcli/swcli.yaml deployment launch --app-id template --path /root/saas/template/launch-frontend.yaml --stage=prod --namespace=${NAMESPACE_ID} --app-package-id $result --arch x86 --wait=true --cluster master
-        /root/swcli --config /swcli/swcli.yaml deployment launch --app-id template --path /root/saas/template/launch-frontend-dev.yaml --stage dev --namespace=${NAMESPACE_ID} --app-package-id $result --arch x86 --wait=true --cluster master
+        
+        sh /app/import.sh template /root/saas/template/build.zip /root/saas/template/launch-frontend.yaml /root/saas/template/launch-frontend-dev.yaml
 
 
     fi
@@ -140,23 +138,13 @@ data:
       # wait flycore
       if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
       
-          # import&launch cluster ui
-          result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id cluster --filepath /root/saas/cluster/build.zip --print-only-app-package-id=true --reset-version=true)
-
-          /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id cluster --path /root/saas/cluster/launch-frontend.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-          /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id cluster --path /root/saas/cluster/launch-frontend-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+          sh /app/import.sh cluster /root/saas/cluster/build.zip /root/saas/cluster/launch-frontend.yaml /root/saas/cluster/launch-frontend-dev.yaml
+      
       fi
 
     else
       
-      cd /root/saas/cluster/
-
-      sh /app/core-action-service-check.sh
-      
-      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id cluster --filepath /root/saas/cluster/build.zip --print-only-app-package-id=true --reset-version=true)
-
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id cluster --path /root/saas/cluster/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id cluster --path /root/saas/cluster/launch-frontend-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+      sh /app/import.sh cluster /root/saas/cluster/build.zip /root/saas/cluster/launch.yaml /root/saas/cluster/launch-frontend-dev.yaml
 
     fi
 
@@ -184,23 +172,14 @@ data:
         /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=app --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=../launch-backend.yaml --disable-dir-check
 
         if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
+            
+            sh /app/import.sh app /root/saas/app/build.zip /root/saas/app/launch-frontend.yaml /root/saas/app/launch-frontend-dev.yaml
 
-            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id app --filepath /root/saas/app/build.zip --print-only-app-package-id=true --reset-version=true)
-
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id app --path /root/saas/app/launch-frontend.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id app --path /root/saas/app/launch-frontend-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
         fi
 
     else
-
-      cd /root/saas/app/
-
-      sh /app/core-action-service-check.sh
       
-      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id app --filepath /root/saas/app/build.zip --print-only-app-package-id=true --reset-version=true)
-
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id app --path /root/saas/app/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id app --path /root/saas/app/launch-frontend-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+      sh /app/import.sh app /root/saas/app/build.zip /root/saas/app/launch.yaml /root/saas/app/launch-frontend-dev.yaml
 
     fi
 
@@ -279,11 +258,8 @@ data:
 
         if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
             
+            sh /app/import.sh upload /root/saas/upload/build.zip /root/saas/upload/launch-frontend.yaml /root/saas/upload/launch-frontend-dev.yaml
 
-            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id upload --filepath /root/saas/upload/build.zip --print-only-app-package-id=true --reset-version=true)
-
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id upload --path /root/saas/upload/launch-frontend.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id upload --path /root/saas/upload/launch-frontend-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
         fi
 
     else
@@ -489,10 +465,8 @@ data:
 
         if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
             
-            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id team --filepath /root/saas/team/build.zip --print-only-app-package-id=true --reset-version=true)
-
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id team --path /root/saas/team/launch-frontend.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id team --path /root/saas/team/launch-frontend-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+            sh /app/import.sh team /root/saas/team/build.zip /root/saas/team/launch-frontend.yaml /root/saas/team/launch-frontend-dev.yaml
+            
         fi
     else
 
@@ -583,25 +557,13 @@ data:
 
         if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
             
+            sh /app/import.sh job /root/saas/job/build.zip /root/saas/job/launch-frontend.yaml /root/saas/job/launch-frontend-dev.yaml
 
-            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id job --filepath /root/saas/job/build.zip --print-only-app-package-id=true --reset-version=true)
-
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id job --path /root/saas/job/launch-frontend.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id job --path /root/saas/job/launch-frontend-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
         fi
 
     else
 
-
-      cd /root/saas/job/
-
-      sh /app/core-action-service-check.sh
-      
-      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id job --filepath /root/saas/job/build.zip --print-only-app-package-id=true --reset-version=true)
-
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id job --path /root/saas/job/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id job --path /root/saas/job/launch-frontend-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-
+      sh /app/import.sh job /root/saas/job/build.zip /root/saas/job/launch.yaml /root/saas/job/launch-frontend-dev.yaml
 
     fi
 
@@ -660,23 +622,13 @@ data:
 
         if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
             
+            sh /app/import.sh health /root/saas/health/build.zip /root/saas/health/launch-frontend.yaml /root/saas/health/launch-frontend-dev.yaml
 
-            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id health --filepath /root/saas/health/build.zip --print-only-app-package-id=true --reset-version=true)
-
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id health --path /root/saas/health/launch-frontend.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id health --path /root/saas/health/launch-frontend-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
         fi
 
     else
-
-      cd /root/saas/health/
-
-      sh /app/core-action-service-check.sh
-       
-      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id health --filepath /root/saas/health/build.zip --print-only-app-package-id=true --reset-version=true)
-
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id health --path /root/saas/health/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id health --path /root/saas/health/launch-frontend-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+      
+      sh /app/import.sh health /root/saas/health/build.zip /root/saas/health/launch.yaml /root/saas/health/launch-frontend-dev.yaml
 
     fi
 
@@ -718,12 +670,10 @@ data:
     if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
         
         python /app/pack.py --src /root/saas/help/build --dest /root/saas/help/build.zip
-        envsubst < /root/saas/job/build/launch-frontend.yaml.tpl > /root/saas/help/launch.yaml
-        envsubst < /root/saas/job/build/launch-frontend-dev.yaml.tpl > /root/saas/help/launch-dev.yaml
-        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id help --filepath /root/saas/help/build.zip --print-only-app-package-id=true --reset-version=true)
+        envsubst < /root/saas/job/build/launch-frontend.yaml.tpl > /root/saas/help/launch-frontend.yaml
+        envsubst < /root/saas/job/build/launch-frontend-dev.yaml.tpl > /root/saas/help/launch-frontend-dev.yaml
 
-        /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id help --path /root/saas/help/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-        /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id help --path /root/saas/help/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+        sh /app/import.sh help /root/saas/help/build.zip /root/saas/help/launch-frontend.yaml /root/saas/help/launch-frontend-dev.yaml
 
     fi
 
@@ -740,24 +690,22 @@ data:
     # build&launch search api
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
     envsubst < /root/saas/search/api/build.yaml.tpl > /root/saas/search/api/build.yaml
-    envsubst < /root/saas/search/api/launch.yaml.tpl > /root/saas/search/api/launch.yaml
-    envsubst < /root/saas/search/ui/launch-v2.yaml.tpl > /root/saas/search/ui/launch.yaml
-    envsubst < /root/saas/search/ui/launch-v2-dev.yaml.tpl > /root/saas/search/ui/launch-dev.yaml
+    envsubst < /root/saas/search/build/launch.yaml.tpl > /root/saas/search/launch.yaml
+    envsubst < /root/saas/search/build/launch-backend.yaml.tpl > /root/saas/search/launch-backend.yaml
+    envsubst < /root/saas/search/build/launch-frontend.yaml.tpl > /root/saas/search/launch-frontend.yaml
+    envsubst < /root/saas/search/build/launch-frontend-dev.yaml.tpl > /root/saas/search/launch-frontend-dev.yaml
+    python /app/pack.py --src /root/saas/search/build --dest /root/saas/search/build.zip
  
 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
   
         cd /root/saas/search/api/
-        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=search --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=./launch.yaml --disable-dir-check
+        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=search --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=../launch-backend.yaml --disable-dir-check
 
         if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
+      
+            sh /app/import.sh search /root/saas/search/build.zip /root/saas/search/launch-frontend.yaml /root/saas/search/launch-frontend-dev.yaml
             
-            envsubst < /root/saas/search/ui/launch-v2.yaml.tpl > /root/saas/search/ui/launch.yaml
-            envsubst < /root/saas/search/ui/launch-v2-dev.yaml.tpl > /root/saas/search/ui/launch-dev.yaml
-            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id search --filepath /root/saas/search/ui/search-auto.zip --print-only-app-package-id=true --reset-version=true)
-
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id search --path /root/saas/search/ui/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id search --path /root/saas/search/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
         fi
 
     else

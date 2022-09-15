@@ -48,4 +48,7 @@
   "appId": "aiops",
   "packagePath": "saas/aiops/build",
   "patch": "saas/aiops/api/patch.yaml"
+},{
+  "appId": "system",
+  "packagePath": "saas/system/build" 
 }]

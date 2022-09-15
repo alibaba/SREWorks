@@ -47,7 +47,7 @@ VALUES_MAP = {
 }
 
 
-def values_tpl_replace(launchYAML):
+def values_tpl_replace(launchYAML, patchYAML):
     launchYAML['metadata']['annotations']['namespaceId'] = '${NAMESPACE_ID}'
     launchYAML['metadata']['annotations']['clusterId'] = 'master'
     launchYAML['metadata']['annotations']['stageId'] = 'prod'
@@ -55,6 +55,14 @@ def values_tpl_replace(launchYAML):
     for appValue in launchYAML["spec"]["parameterValues"]:
         if appValue["name"] in VALUES_MAP["appParameterValues"]:
             appValue["value"] = VALUES_MAP["appParameterValues"][appValue["name"]]
+    
+    patchComponents = {}
+    if patchYAML != None:
+        for component in patchYAML.get("components", []):
+            component["parameterValueMaps"] = {}
+            for v in component["parameterValues"]:
+                component["parameterValueMaps"][v["name"]] = v["value"]
+            patchComponents[component["revisionName"]] = component
  
     for component in launchYAML["spec"]["components"]:
         newParameterValues = []
@@ -94,12 +102,18 @@ def values_tpl_replace(launchYAML):
                 "toFieldPaths": ["spec.stageId"]
             })
         if component["revisionName"] == "INTERNAL_ADDON|appmeta|_":
-             component["parameterValues"].append({
+            component["parameterValues"].append({
                 "name": "OVERWRITE_IS_DEVELOPMENT",
                 "value": "true",
                 "toFieldPaths": ["spec.overwriteIsDevelopment"]
             })
-            
+
+        if patchComponents.get(component["revisionName"]) != None:
+            patchValues = patchComponents[component["revisionName"]]["parameterValueMaps"]
+            for v in component["parameterValues"]:
+                if patchValues.get(v["name"]) != None:
+                    v["value"] = patchValues[v["name"]]
+               
 
 def only_frontend_filter(launchYAML):
 
@@ -165,6 +179,14 @@ for marketPack in markets["packages"]:
 
 for buildIn in builtInList:
     print(buildIn)
+    
+    if buildIn.get("patch") != None:
+        f = open(self_path + "/../" + buildIn["patch"], 'r')
+        patchYAML = yaml.safe_load(f.read())
+        f.close()
+    else:
+        patchYAML = {}
+ 
     marketPack = marketPacks[buildIn["appId"]]
     lastVersion = marketPack["packageVersions"][-1]
     if marketPack["urls"][lastVersion].startswith("http"):
@@ -231,7 +253,7 @@ for buildIn in builtInList:
     f.write(yaml.safe_dump(launchYAML, width=float("inf")))
     f.close()
 
-    values_tpl_replace(launchYAML)
+    values_tpl_replace(launchYAML, patchYAML.get("launch.yaml.tpl"))
     f = open(loalPath + '/launch.yaml.tpl', 'w')
     f.write(yaml.safe_dump(launchYAML, width=float("inf")))
     f.close()
@@ -248,18 +270,10 @@ for buildIn in builtInList:
     f.write(yaml.safe_dump(launchYAML, width=float("inf")))
     f.close()
 
-    if buildIn.get("develop") != None:
-        f = open(self_path + "/../" + buildIn["develop"], 'r')
-        devYAML = yaml.safe_load(f.read())
-        f.close()
-    else:
-        devYAML = None
-
-    frontend_dev_replace(launchYAML, devYAML)
+    frontend_dev_replace(launchYAML, patchYAML.get("launch-frontend-dev.yaml.tpl"))
     f = open(loalPath + '/launch-frontend-dev.yaml.tpl', 'w')
     f.write(yaml.safe_dump(launchYAML, width=float("inf")))
     f.close()
-
 
     for name in os.listdir(loalPath):
         filename = loalPath + "/" + name

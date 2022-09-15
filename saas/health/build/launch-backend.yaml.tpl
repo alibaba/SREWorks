@@ -9,7 +9,9 @@ metadata:
   name: health
 spec:
   components:
-  - parameterValues:
+  - dependencies:
+    - component: RESOURCE_ADDON|system-env@system-env
+    parameterValues:
     - name: REPLICAS
       toFieldPaths:
       - spec.replicas

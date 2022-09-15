@@ -109,20 +109,21 @@ spec:
             port: 7002
             targetPort: 7002
       parameterValues:
-    - revisionName: K8S_JOB|resource-upload|_
-      scopes:
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Cluster
-            name: "{{ Global.CLUSTER_ID }}"
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Namespace
-            name: "{{ Global.NAMESPACE_ID }}"
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Stage
-            name: "{{ Global.STAGE_ID }}"
-      parameterValues: []
- 
+
+#    - revisionName: K8S_JOB|resource-upload|_
+#      scopes:
+#        - scopeRef:
+#            apiVersion: apps.abm.io/v1
+#            kind: Cluster
+#            name: "{{ Global.CLUSTER_ID }}"
+#        - scopeRef:
+#            apiVersion: apps.abm.io/v1
+#            kind: Namespace
+#            name: "{{ Global.NAMESPACE_ID }}"
+#        - scopeRef:
+#            apiVersion: apps.abm.io/v1
+#            kind: Stage
+#            name: "{{ Global.STAGE_ID }}"
+#      parameterValues: []
+# 
 

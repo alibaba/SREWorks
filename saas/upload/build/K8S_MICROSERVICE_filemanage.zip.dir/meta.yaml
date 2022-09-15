@@ -2,7 +2,7 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 3.9.0+20220914091920103932
+    annotations.appmanager.oam.dev/version: 4.0.0+20220915024835406821
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
     appId: upload
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 3.9.0+20220914091920103932
+        annotations.appmanager.oam.dev/version: 4.0.0+20220915024835406821
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -43,7 +43,7 @@ spec:
       kind: Deployment
       replicas: 1
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/upload-filemanage-filemanage:1663147160341
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/upload-filemanage-filemanage:1663210115238
         name: filemanage
       env:
         COOKIE_DOMAIN: '{{ Global.COOKIE_DOMAIN }}'
@@ -57,6 +57,7 @@ spec:
         APPMANAGER_PACKAGE_ENDPOINT: '{{ Global.APPMANAGER_PACKAGE_ENDPOINT }}'
         DB_PASSWORD: '{{ Global.DB_PASSWORD }}'
         APPMANAGER_PACKAGE_SECRET_KEY: '{{ Global.APPMANAGER_PACKAGE_SECRET_KEY }}'
+        UPLOAD_SUB_PATH: '{{ Global.UPLOAD_SUB_PATH }}'
       initContainers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/upload-filemanage-db-migration:1663147160341
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/upload-filemanage-db-migration:1663210115238
         name: db-migration

@@ -264,47 +264,45 @@ data:
     sh /app/core-deploy-check.sh
 
     cd /root
-    export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
-    
-    export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+    export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)   
     envsubst < /root/saas/upload/api/build.yaml.tpl > /root/saas/upload/api/build.yaml
-    envsubst < /root/saas/upload/api/launch.yaml.tpl > /root/saas/upload/api/launch.yaml
-    envsubst < /root/saas/upload/ui/launch-v2.yaml.tpl > /root/saas/upload/ui/launch.yaml
-    envsubst < /root/saas/upload/ui/launch-v2-dev.yaml.tpl > /root/saas/upload/ui/launch-dev.yaml
+    envsubst < /root/saas/upload/build/launch.yaml.tpl > /root/saas/upload/launch.yaml
+    envsubst < /root/saas/upload/build/launch-backend.yaml.tpl > /root/saas/upload/launch-backend.yaml
+    envsubst < /root/saas/upload/build/launch-frontend.yaml.tpl > /root/saas/upload/launch-frontend.yaml
+    envsubst < /root/saas/upload/build/launch-frontend-dev.yaml.tpl > /root/saas/upload/launch-frontend-dev.yaml
+    python /app/pack.py --src /root/saas/upload/build --dest /root/saas/upload/build.zip
  
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
 
         cd /root/saas/upload/api/
-        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=upload --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=./launch.yaml --disable-dir-check
+        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=upload --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=../launch-backend.yaml --disable-dir-check
 
         if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
             
 
-            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id upload --filepath /root/saas/upload/ui/upload-auto.zip --print-only-app-package-id=true --reset-version=true)
+            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id upload --filepath /root/saas/upload/build.zip --print-only-app-package-id=true --reset-version=true)
 
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id upload --path /root/saas/upload/ui/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id upload --path /root/saas/upload/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id upload --path /root/saas/upload/launch-frontend.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id upload --path /root/saas/upload/launch-frontend-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
         fi
 
     else
-      cd /root/saas/upload/
 
-      sh /app/core-action-service-check.sh
-      
-      echo "" > merge-launch.yaml
-      cat /root/saas/upload/api/launch.yaml >> merge-launch.yaml
-      echo "---" >> merge-launch.yaml
-      cat /root/saas/upload/ui/launch.yaml >> merge-launch.yaml
-      cat merge-launch.yaml | python /app/reduce.py > launch.yaml
-      
-      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id upload --filepath /root/saas/upload/upload.zip --print-only-app-package-id=true --reset-version=true)
-
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id upload --path /root/saas/upload/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id upload --path /root/saas/upload/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+      sh /app/import.sh upload /root/saas/upload/build.zip /root/saas/upload/launch.yaml /root/saas/upload/launch-frontend-dev.yaml
 
     fi
 
+  
+  import.sh: |
+
+    sh /app/core-action-service-check.sh
+      
+    result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id $1 --filepath $2 --print-only-app-package-id=true --reset-version=true)
+
+    /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id $1 --path $3 --app-package-id $result --arch x86 --wait=true --cluster master
+    /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id $1 --path $4 --app-package-id $result --arch x86 --wait=true --cluster master
     
+
   reduce.py: |
     import sys
     import yaml
@@ -498,17 +496,9 @@ data:
         fi
     else
 
-      cd /root/saas/team/
-
-      sh /app/core-action-service-check.sh
+      sh /app/import.sh team /root/saas/team/build.zip /root/saas/team/launch.yaml /root/saas/team/launch-frontend-dev.yaml
       
-      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id team --filepath /root/saas/team/build.zip --print-only-app-package-id=true --reset-version=true)
-
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id team --path /root/saas/team/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id team --path /root/saas/team/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-
     fi
-
 
 
   saas-aiops.sh: |
@@ -656,23 +646,25 @@ data:
     fi
 
     envsubst < /root/saas/health/api/build.yaml.tpl > /root/saas/health/api/build.yaml
-    envsubst < /root/saas/health/api/launch.yaml.tpl > /root/saas/health/api/launch.yaml
-    envsubst < /root/saas/health/ui/launch-v2.yaml.tpl > /root/saas/health/ui/launch.yaml
-    envsubst < /root/saas/health/ui/launch-v2-dev.yaml.tpl > /root/saas/health/ui/launch-dev.yaml
-    
+    envsubst < /root/saas/health/build/launch.yaml.tpl > /root/saas/health/launch.yaml
+    envsubst < /root/saas/health/build/launch-backend.yaml.tpl > /root/saas/health/launch-backend.yaml
+    envsubst < /root/saas/health/build/launch-frontend.yaml.tpl > /root/saas/health/launch-frontend.yaml
+    envsubst < /root/saas/health/build/launch-frontend-dev.yaml.tpl > /root/saas/health/launch-frontend-dev.yaml
+    python /app/pack.py --src /root/saas/health/build --dest /root/saas/health/build.zip
+
+ 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
     
         cd /root/saas/health/api/
-        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=health --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=./launch.yaml --disable-dir-check
-
+        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=health --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=../launch.yaml --disable-dir-check
 
         if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
             
 
-            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id health --filepath /root/saas/health/ui/health-auto.zip --print-only-app-package-id=true --reset-version=true)
+            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id health --filepath /root/saas/health/build.zip --print-only-app-package-id=true --reset-version=true)
 
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id health --path /root/saas/health/ui/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id health --path /root/saas/health/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id health --path /root/saas/health/launch-frontend.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id health --path /root/saas/health/launch-frontend-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
         fi
 
     else
@@ -680,17 +672,11 @@ data:
       cd /root/saas/health/
 
       sh /app/core-action-service-check.sh
-      
-      echo "" > merge-launch.yaml
-      cat /root/saas/health/api/launch.yaml >> merge-launch.yaml
-      echo "---" >> merge-launch.yaml
-      cat /root/saas/health/ui/launch.yaml >> merge-launch.yaml
-      cat merge-launch.yaml | python /app/reduce.py > launch.yaml
-      
-      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id health --filepath /root/saas/health/health.zip --print-only-app-package-id=true --reset-version=true)
+       
+      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id health --filepath /root/saas/health/build.zip --print-only-app-package-id=true --reset-version=true)
 
       /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id health --path /root/saas/health/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id health --path /root/saas/health/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id health --path /root/saas/health/launch-frontend-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
 
     fi
 
@@ -776,21 +762,8 @@ data:
 
     else
 
-      cd /root/saas/search/
-
-      sh /app/core-action-service-check.sh
+      sh /app/import.sh search /root/saas/search/build.zip /root/saas/search/launch.yaml /root/saas/search/launch-frontend-dev.yaml
       
-      echo "" > merge-launch.yaml
-      cat /root/saas/search/api/launch.yaml >> merge-launch.yaml
-      echo "---" >> merge-launch.yaml
-      cat /root/saas/search/ui/launch.yaml >> merge-launch.yaml
-      cat merge-launch.yaml | python /app/reduce.py > launch.yaml
-      
-      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id search --filepath /root/saas/search/search.zip --print-only-app-package-id=true --reset-version=true)
-
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id search --path /root/saas/search/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id search --path /root/saas/search/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-
     fi
 
 

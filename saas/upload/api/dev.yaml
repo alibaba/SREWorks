@@ -1,0 +1,12 @@
+components:
+- revisionName: INTERNAL_ADDON|productopsv2|_
+  traits:
+  - name: gateway.trait.abm.io
+    runtime: post
+    spec:
+      path: /sreworks/other/**
+      servicePort: 80
+      serviceName: "prod-upload-filemanage"
+      routeId: "dev-upload-filemanage-master-${NAMESPACE_ID}-dev"
+
+

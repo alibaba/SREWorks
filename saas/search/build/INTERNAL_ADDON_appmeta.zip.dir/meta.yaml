@@ -1,0 +1,44 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: Component
+metadata:
+  annotations:
+    annotations.appmanager.oam.dev/version: 1.0.8+20220914093109738202
+  labels:
+    labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+    appId: search
+    labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+    componentName: appmeta
+    labels.appmanager.oam.dev/appId: search
+    labels.appmanager.oam.dev/componentName: appmeta
+    stageId: PLACEHOLDER_STAGE_ID
+  name: internal-addon-search-appmeta
+spec:
+  images: []
+  workload:
+    apiVersion: apps.abm.io/v1
+    dataOutputs: []
+    kind: AppmetaConfig
+    metadata:
+      annotations:
+        annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
+        annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
+        annotations.appmanager.oam.dev/version: 1.0.8+20220914093109738202
+        annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+      labels:
+        labels.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+        labels.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        appId: search
+        labels.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+        labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+        componentName: appmeta
+        labels.appmanager.oam.dev/appId: search
+        labels.appmanager.oam.dev/componentName: appmeta
+        stageId: PLACEHOLDER_STAGE_ID
+      name: PLACEHOLDER_NAME
+      namespace: PLACEHOLDER_NAMESPACE_ID
+    spec:
+      overwriteBuiltIn: false
+      overwriteIsDevelopment: false

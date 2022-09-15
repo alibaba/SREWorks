@@ -239,9 +239,9 @@ download_packages(){
    mkdir -p $SW_ROOT/saas/desktop/ui/ && wget "${PKG_URL}/saas/desktop/ui/desktop-auto.zip" -O $SW_ROOT/saas/desktop/ui/desktop-auto.zip
    #mkdir -p $SW_ROOT/saas/swadmin/ui/ && wget "${PKG_URL}/saas/swadmin/ui/swadmin-auto.zip" -O $SW_ROOT/saas/swadmin/ui/swadmin-auto.zip
    mkdir -p $SW_ROOT/saas/system/ui/ && wget "${PKG_URL}/saas/system/ui/system-auto.zip" -O $SW_ROOT/saas/system/ui/system-auto.zip
-   mkdir -p $SW_ROOT/saas/upload/ui/ && wget "${PKG_URL}/saas/upload/ui/upload-auto.zip" -O $SW_ROOT/saas/upload/ui/upload-auto.zip
+   #mkdir -p $SW_ROOT/saas/upload/ui/ && wget "${PKG_URL}/saas/upload/ui/upload-auto.zip" -O $SW_ROOT/saas/upload/ui/upload-auto.zip
    #mkdir -p $SW_ROOT/saas/team/ui/ && wget "${PKG_URL}/saas/team/ui/team-auto.zip" -O $SW_ROOT/saas/team/ui/team-auto.zip
-   mkdir -p $SW_ROOT/saas/search/ui/ && wget "${PKG_URL}/saas/search/ui/search-auto.zip" -O $SW_ROOT/saas/search/ui/search-auto.zip
+   #mkdir -p $SW_ROOT/saas/search/ui/ && wget "${PKG_URL}/saas/search/ui/search-auto.zip" -O $SW_ROOT/saas/search/ui/search-auto.zip
    mkdir -p $SW_ROOT/saas/ocenter/ui/ && wget "${PKG_URL}/saas/ocenter/ui/ocenter-auto.zip" -O $SW_ROOT/saas/ocenter/ui/ocenter-auto.zip
    mkdir -p $SW_ROOT/saas/aiops/ui/ && wget "${PKG_URL}/saas/aiops/ui/aiops-auto.zip" -O $SW_ROOT/saas/aiops/ui/aiops-auto.zip
    #mkdir -p $SW_ROOT/saas/app/ui/ && wget "${PKG_URL}/saas/app/ui/app-auto.zip" -O $SW_ROOT/saas/app/ui/app-auto.zip
@@ -259,11 +259,11 @@ download_packages(){
    wget "${PKG_URL}/saas/dataops/data.zip" -O $SW_ROOT/saas/dataops/data.zip
    #wget "${PKG_URL}/saas/health/health.zip" -O $SW_ROOT/saas/health/health.zip
    #wget "${PKG_URL}/saas/job/job.zip" -O $SW_ROOT/saas/job/job.zip
-   wget "${PKG_URL}/saas/search/search.zip" -O $SW_ROOT/saas/search/search.zip
+   #wget "${PKG_URL}/saas/search/search.zip" -O $SW_ROOT/saas/search/search.zip
    wget "${PKG_URL}/saas/swcore/flycore.zip" -O $SW_ROOT/saas/swcore/flycore.zip
    wget "${PKG_URL}/saas/system/system.zip" -O $SW_ROOT/saas/system/system.zip
    #wget "${PKG_URL}/saas/team/team.zip" -O $SW_ROOT/saas/team/team.zip
-   wget "${PKG_URL}/saas/upload/upload.zip" -O $SW_ROOT/saas/upload/upload.zip
+   #wget "${PKG_URL}/saas/upload/upload.zip" -O $SW_ROOT/saas/upload/upload.zip
 
 }
 

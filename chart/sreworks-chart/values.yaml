@@ -51,7 +51,7 @@ platformLogo: /static/publicMedia/sreworks.png
 
 installMode: default
 
-progressCheck: false
+progressCheck: true
 debug: false
 adminInitPassword: "12345678"
 

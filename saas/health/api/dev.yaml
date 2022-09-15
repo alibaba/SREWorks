@@ -1,0 +1,10 @@
+components:
+- revisionName: INTERNAL_ADDON|productopsv2|_
+  traits:
+  - name: gateway.trait.abm.io
+    runtime: post
+    spec:
+      path: "/health/**"
+      servicePort: 80
+      serviceName: 'prod-health-health'
+      routeId: "dev-health-health-master-${NAMESPACE_ID}-dev" 

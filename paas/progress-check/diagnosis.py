@@ -7,14 +7,18 @@ from datetime import datetime
 
 CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
 ENDPOINT = 'http://sreworks-appmanager'
-# CLIENT_ID = os.getenv('APPMANAGER_CLIENT_ID')
-CLIENT_ID = "superclient"
-# CLIENT_SECRET = os.getenv('APPMANAGER_CLIENT_SECRET')
-CLIENT_SECRET = "stLCjCPKbWmki65DsAj2jPoeBLPimpJa"
-# USERNAME = os.getenv('APPMANAGER_ACCESS_ID')
-USERNAME = "superuser"
-# PASSWORD = os.getenv('APPMANAGER_ACCESS_SECRET')
-PASSWORD = "yJfIYmjAiCL0ondV3kY7e5x6kVTpvC3h"
+
+CLIENT_ID = os.getenv('APPMANAGER_CLIENT_ID')
+CLIENT_SECRET = os.getenv('APPMANAGER_CLIENT_SECRET')
+USERNAME = os.getenv('APPMANAGER_USERNAME')
+PASSWORD = os.getenv('APPMANAGER_PASSWORD')
+
+# CLIENT_ID = "superclient"
+# CLIENT_SECRET = "stLCjCPKbWmki65DsAj2jPoeBLPimpJa"
+# USERNAME = "superuser"
+# PASSWORD = "yJfIYmjAiCL0ondV3kY7e5x6kVTpvC3h"
+
+
 
 appSet = {'health','search','ocenter','aiops','app','upload','help','dataops','job','cluster','team','system','healing'}
 jobSet = {'health','search','ocenter','aiops','app','upload','help','dataops','job','cluster','team','system','healing','core'}
@@ -92,12 +96,21 @@ class Diagnosis(object):
         self.pass_list = set()
 
     def execute(self):
+        message = ''
         if "check_pvc" not in self.pass_list:
-            message = self.check_pvc()
-            if message is None:
+            message1 = self.check_pvc()
+            if message1 is None:
                 self.pass_list.add("check_pvc")
             else:
-                return message
+                message += message1
+        if "check_base" not in self.pass_list:
+            message2 = self.check_base()
+            if message2 is None:
+                self.pass_list.add("check_base")
+            else:
+                message += message2
+        if message:
+            return message
 
     def check_pvc(self):
 
@@ -135,10 +148,28 @@ class Diagnosis(object):
                 return "PersistentVolumeClaim %s status:%s Event not found" % (error_pvc["name"], error_pvc['status'])
 
     def check_base(self):
-
+        message = ''
         # 场景3. 检查底座软件运行是否正常 MySQL/MinIO
-
-        return "123"
+        pods = ktools.core.list_namespaced_pod('sreworks')
+        names = {'mysql', 'minio', 'redis', 'kafka', 'zookeeper'}
+        phases = {'Pending', 'Failed', 'Unknown'}
+        for pod in pods.items:
+            if pod.metadata.name.split('-')[1] not in names:
+                continue
+            if pod.status.phase in phases:
+                # for condition in pod.status.conditions:
+                #     if condition.status == 'False':
+                #         flag = 1
+                #         print(condition.message)
+                events = self.ktools.get_event("sreworks", kind="Pod", metaname=pod.metadata.name)
+                if len(events) > 0:
+                    message += "\nBase application %s status:%s  Event:%s" % (
+                        pod.metadata.name.split('-')[1], pod.status.phase, events[0].message)
+                else:
+                    message += "\nBase application %s status:%s  Event not found" % (
+                        pod.metadata.name.split('-')[1], pod.status.phase)
+        if message:
+            return message
 
     # 场景3. 检查appmanager运行是否正常,初始化是否完成
     def check_appmanager(self):
@@ -205,6 +236,15 @@ def process_check(ktools: KubernetesTools, appmanagerClient: AppManagerClient, l
 
     return True
 
+def anomaly_check(last_info):
+    message = last_info["diagnosis"].execute()
+    stdout = ''
+    if message is not None:
+        stdout += 'Message: %s \n' % message
+    if last_info["stdout"] != stdout:
+        print("%sUseTime: %s\n" % (stdout, str(datetime.now() - last_info["start_time"]).split(".")[0]))
+        last_info["stdout"] = stdout
+
 
 if __name__ == '__main__':
     # config.load_kube_config()  # 在服务器上使用该方法
@@ -212,15 +252,16 @@ if __name__ == '__main__':
     ktools = KubernetesTools()
     diagnosis = Diagnosis(ktools)  # 诊断类
     appmanagerClient = diagnosis.check_appmanager()
+    t = ktools.get_init_time()
+    last_info = {"stdout": "", "start_time": t, "diagnosis": diagnosis}
     if not appmanagerClient:
         print('Waiting for appmanager initialization.')
     # 检测appmanager是否初始化结束
     while not appmanagerClient:
         time.sleep(20)
         appmanagerClient = diagnosis.check_appmanager()
+        anomaly_check(last_info)
 
-    t=ktools.get_init_time()
-    last_info = {"stdout": "", "start_time": t, "diagnosis": diagnosis}
     while process_check(ktools,appmanagerClient, last_info):
         time.sleep(10)
     print("SREWorks installation is complete!")

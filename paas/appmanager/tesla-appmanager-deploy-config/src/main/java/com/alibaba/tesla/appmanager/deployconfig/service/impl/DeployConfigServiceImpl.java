@@ -20,7 +20,7 @@ import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigApplyTemplateReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigGenerateReq;
-import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpdateReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpsertReq;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigApplyTemplateRes;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigGenerateRes;
 import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
@@ -165,7 +165,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
      * @return 更新后的对象
      */
     @Override
-    public DeployConfigDO update(DeployConfigUpdateReq req) {
+    public DeployConfigDO update(DeployConfigUpsertReq req) {
         String apiVersion = req.getApiVersion();
         String appId = req.getAppId();
         String isolateNamespaceId = req.getIsolateNamespaceId();
@@ -290,52 +290,97 @@ public class DeployConfigServiceImpl implements DeployConfigService {
         List<String> typeIds = CollectionUtils.isEmpty(req.getTypeIds())
                 ? distinctTypeIds(appRecords)
                 : req.getTypeIds();
-        for (String typeId : typeIds) {
-            List<DeployConfigDO> filterAppRecords = appRecords.stream()
-                    .filter(item -> item.getTypeId().equals(typeId))
-                    .collect(Collectors.toList());
-            List<DeployConfigDO> filterRootRecords = rootRecords.stream()
-                    .filter(item -> item.getTypeId().equals(typeId))
-                    .collect(Collectors.toList());
-            DeployConfigDO best = findBestConfigInRecordsBySpecifiedName(
-                    filterAppRecords, filterRootRecords, unitId, clusterId, namespaceId, stageId);
-            if (best == null) {
-                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                        String.format("cannot find best config in database|appId=%s|typeId=%s|clusterId=%s|" +
-                                        "namespaceId=%s|stageId=%s", appId, typeId,
-                                clusterId, namespaceId, stageId));
-            }
-            String config = best.getConfig();
-            if (StringUtils.isEmpty(config)) {
-                if (StringUtils.isNotEmpty(best.getProductId()) && StringUtils.isNotEmpty(best.getReleaseId())) {
-                    config = fetchConfigInGit(best.getProductId(), best.getReleaseId(), appId, typeId);
-                    log.info("fetch config in git succeed|productId={}|releaseId={}|appId={}|typeId={}|config={}",
-                            best.getProductId(), best.getReleaseId(), appId, typeId, config);
-                } else {
-                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                            String.format("invalid inherit config, cannot get config by typeId %s|appRecords=%s|" +
-                                            "rootRecords=%s", typeId, JSONArray.toJSONString(filterAppRecords),
-                                    JSONArray.toJSONString(filterRootRecords)));
+        // step==0 非 traits 类型组装, step==1 traits 类型组装 (step==1 依赖 step==0 完成)
+        for (int step = 0; step < 2; step++) {
+            for (String typeId : typeIds) {
+                DeployConfigTypeId typeIdObj = DeployConfigTypeId.valueOf(typeId);
+                if (step == 0 && DeployConfigTypeId.TYPE_TRAITS.equals(typeIdObj.getType())) {
+                    continue;
+                } else if (step == 1 && !DeployConfigTypeId.TYPE_TRAITS.equals(typeIdObj.getType())) {
+                    continue;
                 }
-            }
-            switch (DeployConfigTypeId.valueOf(typeId).getType()) {
-                case DeployConfigTypeId.TYPE_PARAMETER_VALUES:
-                    schema.getSpec().setParameterValues(
-                            SchemaUtil.toSchemaList(DeployAppSchema.ParameterValue.class, config));
-                    break;
-                case DeployConfigTypeId.TYPE_COMPONENTS:
-                    DeployAppSchema.SpecComponent component = enrichComponentScopes(
-                            req, SchemaUtil.toSchema(DeployAppSchema.SpecComponent.class, config));
-                    schema.getSpec().getComponents().add(component);
-                    break;
-                case DeployConfigTypeId.TYPE_POLICIES:
-                    schema.getSpec().setPolicies(SchemaUtil.toSchemaList(DeployAppSchema.Policy.class, config));
-                    break;
-                case DeployConfigTypeId.TYPE_WORKFLOW:
-                    schema.getSpec().setWorkflow(SchemaUtil.toSchema(DeployAppSchema.Workflow.class, config));
-                    break;
-                default:
-                    break;
+
+                List<DeployConfigDO> filterAppRecords = appRecords.stream()
+                        .filter(item -> item.getTypeId().equals(typeId))
+                        .collect(Collectors.toList());
+                List<DeployConfigDO> filterRootRecords = rootRecords.stream()
+                        .filter(item -> item.getTypeId().equals(typeId))
+                        .collect(Collectors.toList());
+                DeployConfigDO best = findBestConfigInRecordsBySpecifiedName(
+                        filterAppRecords, filterRootRecords, unitId, clusterId, namespaceId, stageId);
+                if (best == null) {
+                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                            String.format("cannot find best config in database|appId=%s|typeId=%s|clusterId=%s|" +
+                                            "namespaceId=%s|stageId=%s", appId, typeId,
+                                    clusterId, namespaceId, stageId));
+                }
+                String config = best.getConfig();
+                if (StringUtils.isEmpty(config)) {
+                    if (StringUtils.isNotEmpty(best.getProductId()) && StringUtils.isNotEmpty(best.getReleaseId())) {
+                        config = fetchConfigInGit(best.getProductId(), best.getReleaseId(), appId, typeId);
+                        log.info("fetch config in git succeed|productId={}|releaseId={}|appId={}|typeId={}|config={}",
+                                best.getProductId(), best.getReleaseId(), appId, typeId, config);
+                    } else {
+                        throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                String.format("invalid inherit config, cannot get config by typeId %s|appRecords=%s|" +
+                                                "rootRecords=%s", typeId, JSONArray.toJSONString(filterAppRecords),
+                                        JSONArray.toJSONString(filterRootRecords)));
+                    }
+                }
+                switch (typeIdObj.getType()) {
+                    case DeployConfigTypeId.TYPE_PARAMETER_VALUES:
+                        schema.getSpec().setParameterValues(
+                                SchemaUtil.toSchemaList(DeployAppSchema.ParameterValue.class, config));
+                        break;
+                    case DeployConfigTypeId.TYPE_COMPONENTS:
+                        DeployAppSchema.SpecComponent component = enrichComponentScopes(
+                                req, SchemaUtil.toSchema(DeployAppSchema.SpecComponent.class, config));
+                        schema.getSpec().getComponents().add(component);
+                        break;
+                    case DeployConfigTypeId.TYPE_TRAITS:
+                        String componentType = typeIdObj.getAttr(DeployConfigTypeId.ATTR_COMPONENT_TYPE);
+                        String componentName = typeIdObj.getAttr(DeployConfigTypeId.ATTR_COMPONENT_NAME);
+                        String traitName = typeIdObj.getAttr(DeployConfigTypeId.ATTR_TRAIT);
+                        if (StringUtils.isAnyEmpty(componentType, componentName, traitName)) {
+                            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                    String.format("invalid trait typeId found, ComponentType/ComponentName/Trait " +
+                                            "are required|typeId=%s", typeId));
+                        }
+                        DeployAppSchema.SpecComponentTrait trait = SchemaUtil
+                                .toSchema(DeployAppSchema.SpecComponentTrait.class, config);
+                        boolean componentFound = false;
+                        for (DeployAppSchema.SpecComponent specComponent : schema.getSpec().getComponents()) {
+                            DeployAppRevisionName revisionName = DeployAppRevisionName
+                                    .valueOf(specComponent.getRevisionName());
+                            if (componentType.equalsIgnoreCase(revisionName.getComponentType().toString())
+                                    && componentName.equals(revisionName.getComponentName())) {
+                                componentFound = true;
+                                for (DeployAppSchema.SpecComponentTrait specComponentTrait
+                                        : specComponent.getTraits()) {
+                                    if (traitName.equals(specComponentTrait.getName())) {
+                                        throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                                String.format("conflict trait deploy config, which already " +
+                                                        "exists at the component level|typeId=%s", typeId));
+                                    }
+                                }
+                                specComponent.getTraits().add(trait);
+                            }
+                        }
+                        if (!componentFound) {
+                            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                    String.format("cannot find related component when processing trait " +
+                                            "deploy config|typeId=%s", typeId));
+                        }
+                        break;
+                    case DeployConfigTypeId.TYPE_POLICIES:
+                        schema.getSpec().setPolicies(SchemaUtil.toSchemaList(DeployAppSchema.Policy.class, config));
+                        break;
+                    case DeployConfigTypeId.TYPE_WORKFLOW:
+                        schema.getSpec().setWorkflow(SchemaUtil.toSchema(DeployAppSchema.Workflow.class, config));
+                        break;
+                    default:
+                        break;
+                }
             }
         }
         return schema;

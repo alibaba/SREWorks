@@ -14,7 +14,7 @@ import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigD
 import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
-import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpdateReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpsertReq;
 import com.alibaba.tesla.appmanager.meta.helm.repository.HelmMetaRepository;
 import com.alibaba.tesla.appmanager.meta.helm.repository.condition.HelmMetaQueryCondition;
 import com.alibaba.tesla.appmanager.meta.helm.repository.domain.HelmMetaDO;
@@ -190,7 +190,7 @@ public class HelmMetaServiceImpl implements HelmMetaService {
 
         Yaml yaml = SchemaUtil.createYaml(JSONObject.class);
         String typeId = new DeployConfigTypeId(ComponentTypeEnum.HELM, record.getHelmPackageId()).toString();
-        deployConfigService.update(DeployConfigUpdateReq.builder()
+        deployConfigService.update(DeployConfigUpsertReq.builder()
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(record.getAppId())
                 .typeId(typeId)

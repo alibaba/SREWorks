@@ -2,16 +2,11 @@ package dynamicscripts
 
 import com.alibaba.fastjson.JSONObject
 import com.alibaba.tesla.appmanager.autoconfig.PackageProperties
-import com.alibaba.tesla.appmanager.common.constants.DefaultConstant
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode
 import com.alibaba.tesla.appmanager.common.exception.AppException
 import com.alibaba.tesla.appmanager.common.service.GitService
-import com.alibaba.tesla.appmanager.common.util.CommandUtil
-import com.alibaba.tesla.appmanager.common.util.NetworkUtil
-import com.alibaba.tesla.appmanager.common.util.PackageUtil
-import com.alibaba.tesla.appmanager.common.util.StringUtil
-import com.alibaba.tesla.appmanager.common.util.ZipUtil
+import com.alibaba.tesla.appmanager.common.util.*
 import com.alibaba.tesla.appmanager.domain.core.StorageFile
 import com.alibaba.tesla.appmanager.domain.req.componentpackage.BuildComponentHandlerReq
 import com.alibaba.tesla.appmanager.domain.req.git.GitCloneReq
@@ -35,28 +30,28 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 /**
- * 默认构建 Microservice Groovy Handler
+ * 默认构建 Helm Groovy Handler
  *
  * @author yaoxing.gyx@alibaba-inc.com
  */
-class HelmBuildMicroserviceHandler implements BuildComponentHandler {
+class HelmComponentBuildHandler implements BuildComponentHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(HelmBuildMicroserviceHandler.class)
-
-    /**
-     * 当前内置 Handler 类型
-     */
-    public static final String KIND = DynamicScriptKindEnum.BUILD_HELM_COMPONENT.toString()
+    private static final Logger log = LoggerFactory.getLogger(HelmComponentBuildHandler.class)
 
     /**
-     * 当前内置 Handler 名称
+     * 当前脚本类型 (ComponentKindEnum)
      */
-    public static final String NAME = DefaultConstant.DEFAULT_GROOVY_HANDLER
+    public static final String KIND = DynamicScriptKindEnum.COMPONENT_BUILD.toString()
+
+    /**
+     * 当前脚本名称 (指定 SCRIPT_KIND 下唯一)
+     */
+    public static final String NAME = "HelmDefault"
 
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 38
+    public static final Integer REVISION = 40
 
     private static final String KEY_HELM_CHART = "helm_chart"
 

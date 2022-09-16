@@ -16,7 +16,10 @@ spec:
       - image: {{ template "images.progressCheck" . }}
         name: job
         imagePullPolicy: Always
-
+        envFrom:
+          - configMapRef:
+              name: init-configmap
+ 
 {{ end }}
 
 

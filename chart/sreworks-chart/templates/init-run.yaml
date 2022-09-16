@@ -787,8 +787,8 @@ data:
 
     appmanagerClient = AppManagerClient(ENDPOINT, CLIENT_ID, CLIENT_SECRET, USERNAME, PASSWORD)
     res = appmanagerClient.client.get(ENDPOINT + "/realtime/app-instances?appId=" + appId + "&stageId=prod")
-    items = res.json()["data"].get("items")
-    if items ==  None:
+    items = res.json()["data"].get("items", [])
+    if len(items) == 0:
         print("NEED UPDATE")
         sys.exit(0)        
 

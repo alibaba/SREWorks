@@ -1,16 +1,20 @@
-package com.alibaba.tesla.appmanager.deployconfig.repository.condition;
+package com.alibaba.tesla.appmanager.domain.req.deployconfig;
 
-import com.alibaba.tesla.appmanager.common.BaseCondition;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
+/**
+ * 部署配置查询请求
+ *
+ * @author yaoxing.gyx@alibaba-inc.com
+ */
 @Data
-@SuperBuilder
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeployConfigQueryCondition extends BaseCondition {
+public class DeployConfigListReq {
 
     /**
      * ID

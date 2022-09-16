@@ -2,7 +2,6 @@ package dynamicscripts
 
 import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
-import com.alibaba.tesla.appmanager.common.constants.DefaultConstant
 import com.alibaba.tesla.appmanager.common.enums.ComponentInstanceStatusEnum
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentAttrTypeEnum
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentStateEnum
@@ -30,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired
 
 import java.time.LocalDateTime
 import java.time.ZoneId
-
 /**
  * 默认部署 ABM Status Component Groovy Handler
  *
@@ -41,19 +39,19 @@ class ScriptComponentDeployHandler implements DeployComponentHandler {
     private static final Logger log = LoggerFactory.getLogger(ScriptComponentDeployHandler.class)
 
     /**
-     * 当前内置 Handler 类型
+     * 当前脚本类型 (ComponentKindEnum)
      */
-    public static final String KIND = DynamicScriptKindEnum.DEPLOY_SCRIPT_COMPONENT.toString()
+    public static final String KIND = DynamicScriptKindEnum.COMPONENT_DEPLOY.toString()
 
     /**
-     * 当前内置 Handler 名称
+     * 当前脚本名称 (指定 SCRIPT_KIND 下唯一)
      */
-    public static final String NAME = DefaultConstant.DEFAULT_GROOVY_HANDLER
+    public static final String NAME = "ScriptComponentDefault"
 
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 1
+    public static final Integer REVISION = 3
 
     /**
      * 上报状态常量
@@ -188,6 +186,7 @@ class ScriptComponentDeployHandler implements DeployComponentHandler {
 
         // 根据状态判定当前是否应该结束
         switch (componentInstanceStatus) {
+            case ComponentInstanceStatusEnum.COMPLETED:
             case ComponentInstanceStatusEnum.RUNNING:
                 break
             case ComponentInstanceStatusEnum.PENDING:
@@ -221,7 +220,7 @@ class ScriptComponentDeployHandler implements DeployComponentHandler {
                     .build()
         }
         def conditionsArray = JSONArray.parseArray(conditions)
-        def message = String.format("the status of %s is RUNNING now", componentName)
+        def message = String.format("the status of %s is %s now", componentName, componentInstanceStatus.toString())
         for (JSONObject condition : conditionsArray.toJavaList(JSONObject.class)) {
             if (ConditionUtil.TYPE_DATA_OUTPUTS != condition.getString("type")) {
                 continue

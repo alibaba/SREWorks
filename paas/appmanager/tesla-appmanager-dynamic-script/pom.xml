@@ -32,6 +32,10 @@
             <artifactId>tesla-appmanager-spring</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.alibaba.tesla</groupId>
+            <artifactId>tesla-appmanager-kubernetes</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.sreworks</groupId>
             <artifactId>tesla-webmvc-spring-boot-starter</artifactId>
         </dependency>

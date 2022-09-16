@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeployConfigUpdateReq {
+public class DeployConfigUpsertReq {
 
     /**
      * API 版本

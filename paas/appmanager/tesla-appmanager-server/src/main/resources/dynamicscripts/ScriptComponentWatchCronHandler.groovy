@@ -39,7 +39,7 @@ class ScriptComponentWatchCronHandler implements ComponentWatchCronHandler {
      */
     public static final String KIND = DynamicScriptKindEnum.COMPONENT_WATCH_CRON.toString()
     public static final String NAME = "ScriptComponentCron"
-    public static final Integer REVISION = 4
+    public static final Integer REVISION = 5
 
     @Autowired
     private DeployAppService deployAppService
@@ -80,6 +80,17 @@ class ScriptComponentWatchCronHandler implements ComponentWatchCronHandler {
                 .deployStatusList(Arrays.asList(DeployComponentStateEnum.RUNNING,
                         DeployComponentStateEnum.PROCESSING, DeployComponentStateEnum.SUCCESS))
                 .build(), true)
+        // 针对于第一次部署场景，还没有成功记录，那么允许获取失败的记录
+        if (deployComponents.size() == 0) {
+            deployComponents = deployComponentService.list(DeployComponentQueryCondition.builder()
+                    .appId(request.getAppId())
+                    .clusterId(request.getClusterId())
+                    .namespaceId(request.getNamespaceId())
+                    .stageId(request.getStageId())
+                    .identifierStartsWith(identifierPrefix)
+                    .pageSize(1)
+                    .build(), true)
+        }
         if (deployComponents.size() == 0) {
             log.warn("current component is not existed|{}", logSuffix)
             return RtComponentInstanceGetStatusRes.builder()

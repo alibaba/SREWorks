@@ -9,6 +9,7 @@ import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.dynamicscript.repository.condition.DynamicScriptQueryCondition;
 import com.alibaba.tesla.appmanager.dynamicscript.repository.domain.DynamicScriptDO;
 import com.alibaba.tesla.appmanager.dynamicscript.service.DynamicScriptService;
+import com.alibaba.tesla.appmanager.server.dynamicscript.handler.ComponentHandler;
 import com.alibaba.tesla.appmanager.spring.util.SpringBeanUtil;
 import groovy.lang.GroovyClassLoader;
 import lombok.Builder;
@@ -152,183 +153,87 @@ public class GroovyHandlerFactory {
             Class<T> scriptClass, String appId, ComponentTypeEnum componentType, String componentName,
             ComponentActionEnum action) {
         assert ComponentActionEnum.BUILD.equals(action) || ComponentActionEnum.DEPLOY.equals(action);
-        switch (componentType) {
-            case K8S_MICROSERVICE:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_MICROSERVICE_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_MICROSERVICE_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case K8S_JOB:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_JOB_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_JOB_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case ABM_OPERATOR_TVD:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_ABM_OPERATOR_TVD_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_ABM_OPERATOR_TVD_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case HELM:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_HELM_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_HELM_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case ABM_CHART:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_ABM_CHART_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_ABM_CHART_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case ASI_COMPONENT:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_ASI_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_ASI_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case ABM_KUSTOMIZE:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_ABM_KUSTOMIZE_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_ABM_KUSTOMIZE_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case ABM_HELM:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_ABM_HELM_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_ABM_HELM_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case SCRIPT:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_SCRIPT_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_SCRIPT_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case ABM_STATUS:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_ABM_STATUS_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_ABM_STATUS_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case ABM_ES_STATUS:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_ABM_ES_STATUS_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_ABM_ES_STATUS_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case INTERNAL_ADDON:
-                if ("tianji_productops".equals(componentName)) {
+        try {
+            ComponentHandler componentHandler = get(ComponentHandler.class, "COMPONENT", componentType.toString());
+            if (ComponentActionEnum.BUILD.equals(action)) {
+                return get(scriptClass, DynamicScriptKindEnum.COMPONENT_BUILD.toString(),
+                        componentHandler.buildScriptName());
+            } else {
+                return get(scriptClass, DynamicScriptKindEnum.COMPONENT_DEPLOY.toString(),
+                        componentHandler.deployScriptName());
+            }
+        } catch (Exception e) {
+            log.error("failed to get executor via generic method, fallback|appId={}|componentType={}|" +
+                            "componentName={}|action={}|exception={}", appId, componentType.toString(),
+                    componentName, action, e.getMessage());
+            switch (componentType) {
+                case INTERNAL_ADDON:
+                    if ("tianji_productops".equals(componentName)) {
+                        if (ComponentActionEnum.BUILD.equals(action)) {
+                            return get(scriptClass,
+                                    DynamicScriptKindEnum.BUILD_IA_TIANJI_PRODUCTOPS_COMPONENT.toString(),
+                                    DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                        } else {
+                            return get(scriptClass,
+                                    DynamicScriptKindEnum.DEPLOY_IA_TIANJI_PRODUCTOPS_COMPONENT.toString(),
+                                    DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                        }
+                    } else if ("productops".equals(componentName)) {
+                        if (ComponentActionEnum.BUILD.equals(action)) {
+                            return get(scriptClass,
+                                    DynamicScriptKindEnum.BUILD_IA_PRODUCTOPS_COMPONENT.toString(),
+                                    DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                        } else {
+                            return get(scriptClass,
+                                    DynamicScriptKindEnum.DEPLOY_IA_PRODUCTOPS_COMPONENT.toString(),
+                                    DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                        }
+                    } else if ("productopsv2".equals(componentName)) {
+                        if (ComponentActionEnum.BUILD.equals(action)) {
+                            return get(scriptClass,
+                                    DynamicScriptKindEnum.BUILD_IA_V2_PRODUCTOPS_COMPONENT.toString(),
+                                    DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                        } else {
+                            return get(scriptClass,
+                                    DynamicScriptKindEnum.DEPLOY_IA_V2_PRODUCTOPS_COMPONENT.toString(),
+                                    DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                        }
+                    } else if ("appmeta".equals(componentName)) {
+                        if (ComponentActionEnum.BUILD.equals(action)) {
+                            return get(scriptClass,
+                                    DynamicScriptKindEnum.BUILD_IA_APP_META_COMPONENT.toString(),
+                                    DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                        } else {
+                            return get(scriptClass,
+                                    DynamicScriptKindEnum.DEPLOY_IA_APP_META_COMPONENT.toString(),
+                                    DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                        }
+                    } else if (INTERNAL_ADDON_DEVELOPMENT_META.equals(componentName)) {
+                        if (ComponentActionEnum.BUILD.equals(action)) {
+                            return get(scriptClass,
+                                    DynamicScriptKindEnum.BUILD_IA_DEVELOPMENT_META_COMPONENT.toString(),
+                                    DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                        } else {
+                            return get(scriptClass,
+                                    DynamicScriptKindEnum.DEPLOY_IA_DEVELOPMENT_META_COMPONENT.toString(),
+                                    DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                        }
+                    } else {
+                        return null;
+                    }
+                case RESOURCE_ADDON:
                     if (ComponentActionEnum.BUILD.equals(action)) {
                         return get(scriptClass,
-                                DynamicScriptKindEnum.BUILD_IA_TIANJI_PRODUCTOPS_COMPONENT.toString(),
+                                DynamicScriptKindEnum.BUILD_RESOURCE_ADDON_COMPONENT.toString(),
                                 DefaultConstant.DEFAULT_GROOVY_HANDLER);
                     } else {
                         return get(scriptClass,
-                                DynamicScriptKindEnum.DEPLOY_IA_TIANJI_PRODUCTOPS_COMPONENT.toString(),
+                                DynamicScriptKindEnum.DEPLOY_RESOURCE_ADDON_COMPONENT.toString(),
                                 DefaultConstant.DEFAULT_GROOVY_HANDLER);
                     }
-                } else if ("productops".equals(componentName)) {
-                    if (ComponentActionEnum.BUILD.equals(action)) {
-                        return get(scriptClass,
-                                DynamicScriptKindEnum.BUILD_IA_PRODUCTOPS_COMPONENT.toString(),
-                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                    } else {
-                        return get(scriptClass,
-                                DynamicScriptKindEnum.DEPLOY_IA_PRODUCTOPS_COMPONENT.toString(),
-                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                    }
-                } else if ("productopsv2".equals(componentName)) {
-                    if (ComponentActionEnum.BUILD.equals(action)) {
-                        return get(scriptClass,
-                                DynamicScriptKindEnum.BUILD_IA_V2_PRODUCTOPS_COMPONENT.toString(),
-                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                    } else {
-                        return get(scriptClass,
-                                DynamicScriptKindEnum.DEPLOY_IA_V2_PRODUCTOPS_COMPONENT.toString(),
-                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                    }
-                } else if ("appmeta".equals(componentName)) {
-                    if (ComponentActionEnum.BUILD.equals(action)) {
-                        return get(scriptClass,
-                                DynamicScriptKindEnum.BUILD_IA_APP_META_COMPONENT.toString(),
-                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                    } else {
-                        return get(scriptClass,
-                                DynamicScriptKindEnum.DEPLOY_IA_APP_META_COMPONENT.toString(),
-                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                    }
-                } else if (INTERNAL_ADDON_DEVELOPMENT_META.equals(componentName)) {
-                    if (ComponentActionEnum.BUILD.equals(action)) {
-                        return get(scriptClass,
-                                DynamicScriptKindEnum.BUILD_IA_DEVELOPMENT_META_COMPONENT.toString(),
-                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                    } else {
-                        return get(scriptClass,
-                                DynamicScriptKindEnum.DEPLOY_IA_DEVELOPMENT_META_COMPONENT.toString(),
-                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                    }
-                } else {
+                default:
                     return null;
-                }
-            case RESOURCE_ADDON:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_RESOURCE_ADDON_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_RESOURCE_ADDON_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            default:
-                return null;
+            }
         }
     }
 

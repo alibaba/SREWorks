@@ -20,9 +20,12 @@ public class DeployConfigTypeId {
     public static final String TYPE_COMPONENTS = "components";
     public static final String TYPE_POLICIES = "policies";
     public static final String TYPE_WORKFLOW = "workflow";
+    // 注意，TYPE_COMPONENT_TRAITS 仅附属于 components，无法独立存在
+    public static final String TYPE_TRAITS = "traits";
 
     public static final String ATTR_COMPONENT_TYPE = "ComponentType";
     public static final String ATTR_COMPONENT_NAME = "ComponentName";
+    public static final String ATTR_TRAIT = "Trait";
 
     @Getter
     private final String type;

@@ -14,7 +14,7 @@ class HelmComponentHandler implements ComponentHandler {
      */
     public static final String KIND = "COMPONENT"
     public static final String NAME = "HELM"
-    public static final Integer REVISION = 1
+    public static final Integer REVISION = 2
 
     /**
      * 获取 `COMPONENT_BUILD` 类型下的映射名称
@@ -53,7 +53,7 @@ class HelmComponentHandler implements ComponentHandler {
      */
     @Override
     String watchKind() {
-        return "CRON"
+        return ""
     }
 
     /**
@@ -65,6 +65,6 @@ class HelmComponentHandler implements ComponentHandler {
      */
     @Override
     String watchScriptName() {
-        return "HelmCron"
+        return ""
     }
 }

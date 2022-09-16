@@ -2,7 +2,6 @@ package dynamicscripts
 
 import com.alibaba.fastjson.JSONObject
 import com.alibaba.tesla.appmanager.autoconfig.SystemProperties
-import com.alibaba.tesla.appmanager.common.constants.DefaultConstant
 import com.alibaba.tesla.appmanager.common.enums.ComponentInstanceStatusEnum
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentStateEnum
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum
@@ -36,30 +35,30 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 /**
- * 默认构建 Microservice Groovy Handler
+ * 默认构建 Helm Groovy Handler
  *
  * @author yaoxing.gyx@alibaba-inc.com
  */
-class HelmDeployMicroserviceHandler implements DeployComponentHandler {
+class HelmComponentDeployHandler implements DeployComponentHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(HelmDeployMicroserviceHandler.class)
+    private static final Logger log = LoggerFactory.getLogger(HelmComponentDeployHandler.class)
 
     private static final String KEY_COMPONENT_PACKAGE_URL = "appmanager_deploy_component_package"
 
     /**
-     * 当前内置 Handler 类型
+     * 当前脚本类型 (ComponentKindEnum)
      */
-    public static final String KIND = DynamicScriptKindEnum.DEPLOY_HELM_COMPONENT.toString()
+    public static final String KIND = DynamicScriptKindEnum.COMPONENT_DEPLOY.toString()
 
     /**
-     * 当前内置 Handler 名称
+     * 当前脚本名称 (指定 SCRIPT_KIND 下唯一)
      */
-    public static final String NAME = DefaultConstant.DEFAULT_GROOVY_HANDLER
+    public static final String NAME = "HelmDefault"
 
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 49
+    public static final Integer REVISION = 51
 
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
     private static final String ANNOTATIONS_COMPONENT_INSTANCE_ID = "annotations.appmanager.oam.dev/componentInstanceId"

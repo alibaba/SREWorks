@@ -71,12 +71,11 @@ public class PluginController extends AppManagerBaseController {
     }
 
     @Operation(summary = "获取插件前端资源")
-    @PutMapping("{pluginName}/{pluginVersion}/frontend/{name}")
+    @GetMapping("{pluginName}/{pluginVersion}/frontend/{name}")
     public TeslaBaseResult getPluginFrontend(
             @PathVariable("pluginName") String pluginName,
             @PathVariable("pluginVersion") String pluginVersion,
             @PathVariable("name") String name,
-            @RequestBody PluginOperateReq request,
             OAuth2Authentication auth) throws IOException {
         return buildSucceedResult(pluginProvider.getFrontend(PluginFrontendGetReq.builder()
                 .pluginName(pluginName)

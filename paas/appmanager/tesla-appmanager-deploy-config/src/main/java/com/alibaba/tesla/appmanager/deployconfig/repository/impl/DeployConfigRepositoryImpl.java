@@ -7,6 +7,7 @@ import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigD
 import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDOExample;
 import com.alibaba.tesla.appmanager.deployconfig.repository.mapper.DeployConfigDOMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -60,6 +61,8 @@ public class DeployConfigRepositoryImpl implements DeployConfigRepository {
         }
         if (StringUtils.isNotBlank(condition.getTypeId())) {
             criteria.andTypeIdEqualTo(condition.getTypeId());
+        } else if (StringUtils.isNotEmpty(condition.getTypeIdPrefix())) {
+            criteria.andTypeIdLike(StringEscapeUtils.escapeSql(condition.getTypeIdPrefix()) + "%");
         }
         if (condition.getEnvId() != null) {
             criteria.andEnvIdEqualTo(condition.getEnvId());

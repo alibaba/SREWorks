@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import com.alibaba.fastjson.TypeReference
 import com.alibaba.tesla.appmanager.autoconfig.PackageProperties
-import com.alibaba.tesla.appmanager.common.constants.DefaultConstant
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode
 import com.alibaba.tesla.appmanager.common.exception.AppException
@@ -40,24 +39,24 @@ import java.util.stream.Collectors
  *
  * @author yaoxing.gyx@alibaba-inc.com
  */
-class DefaultBuildJobHandler implements BuildComponentHandler {
+class JobComponentBuildHandler implements BuildComponentHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultBuildJobHandler.class)
-
-    /**
-     * 当前内置 Handler 类型
-     */
-    public static final String KIND = DynamicScriptKindEnum.BUILD_JOB_COMPONENT.toString()
+    private static final Logger log = LoggerFactory.getLogger(JobComponentBuildHandler.class)
 
     /**
-     * 当前内置 Handler 名称
+     * 当前脚本类型 (ComponentKindEnum)
      */
-    public static final String NAME = DefaultConstant.DEFAULT_GROOVY_HANDLER
+    public static final String KIND = DynamicScriptKindEnum.COMPONENT_BUILD.toString()
+
+    /**
+     * 当前脚本名称 (指定 SCRIPT_KIND 下唯一)
+     */
+    public static final String NAME = "JobDefault"
 
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 13
+    public static final Integer REVISION = 15
 
     private static final String TEMPLATE_JOB_FILENAME = "default_job.tpl"
 

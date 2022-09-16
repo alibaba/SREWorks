@@ -46,7 +46,7 @@ public interface DeployConfigService {
      * @param req 更新请求
      * @return 更新后的对象
      */
-    DeployConfigDO update(DeployConfigUpdateReq req);
+    DeployConfigDO update(DeployConfigUpsertReq req);
 
     /**
      * 删除指定 apiVersion + appId + typeId + envId 对应的 DeployConfig 记录

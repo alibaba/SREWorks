@@ -566,6 +566,7 @@ data:
     cd /root
     
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+    export VERSION_CHECK=$(python /app/version_check.py /root/saas/health/build)
 
     if [[ "$DATAOPS_DB_HOST" == "default-mysql" ]]
     then
@@ -592,7 +593,7 @@ data:
 
         fi
 
-    else
+    elif [[ "$VERSION_CHECK" == "NEED UPDATE" ]] ; then
       
       sh /app/import.sh health /root/saas/health/build.zip /root/saas/health/launch.yaml /root/saas/health/launch-frontend-dev.yaml
 
@@ -610,8 +611,9 @@ data:
     cd /root
     
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+    export VERSION_CHECK=$(python /app/version_check.py /root/saas/ocenter/build)
 
-    if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
+    if [[ "$IMPORT_FRONTEND" == "true" && "$VERSION_CHECK" == "NEED UPDATE" ]] ; then
         
 
         envsubst < /root/saas/ocenter/build/launch-frontend.yaml.tpl > /root/saas/ocenter/launch-frontend.yaml
@@ -632,9 +634,11 @@ data:
     cd /root
     
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+    export VERSION_CHECK=$(python /app/version_check.py /root/saas/help/build)
 
-    if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
-        
+    if [[ "$IMPORT_FRONTEND" == "true" && "$VERSION_CHECK" == "NEED UPDATE" ]] ; then
+
+    
         python /app/pack.py --src /root/saas/help/build --dest /root/saas/help/build.zip
         envsubst < /root/saas/job/build/launch-frontend.yaml.tpl > /root/saas/help/launch-frontend.yaml
         envsubst < /root/saas/job/build/launch-frontend-dev.yaml.tpl > /root/saas/help/launch-frontend-dev.yaml
@@ -655,13 +659,13 @@ data:
 
     # build&launch search api
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+    export VERSION_CHECK=$(python /app/version_check.py /root/saas/search/build)
     envsubst < /root/saas/search/api/build.yaml.tpl > /root/saas/search/api/build.yaml
     envsubst < /root/saas/search/build/launch.yaml.tpl > /root/saas/search/launch.yaml
     envsubst < /root/saas/search/build/launch-backend.yaml.tpl > /root/saas/search/launch-backend.yaml
     envsubst < /root/saas/search/build/launch-frontend.yaml.tpl > /root/saas/search/launch-frontend.yaml
     envsubst < /root/saas/search/build/launch-frontend-dev.yaml.tpl > /root/saas/search/launch-frontend-dev.yaml
     python /app/pack.py --src /root/saas/search/build --dest /root/saas/search/build.zip
- 
 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
   
@@ -674,7 +678,7 @@ data:
             
         fi
 
-    else
+    elif [[ "$VERSION_CHECK" == "NEED UPDATE" ]] ; then
 
       sh /app/import.sh search /root/saas/search/build.zip /root/saas/search/launch.yaml /root/saas/search/launch-frontend-dev.yaml
       
@@ -731,6 +735,70 @@ data:
        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id sreworks1 --filepath /root/saas/app/demoApp.zip --print-only-app-package-id=true --reset-version=true)
        /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace sreworks --stage prod --app-id sreworks1 --path /root/saas/app/launch-demoApp.yaml --app-package-id $result --arch x86 --wait=true --cluster master
     fi
+
+  version_check.py: |
+
+    import sys
+    import os
+    import yaml
+    from oauthlib.oauth2 import LegacyApplicationClient
+    from requests_oauthlib import OAuth2Session
+    from distutils.version import StrictVersion
+
+    ENDPOINT = 'http://sreworks-appmanager'
+    CLIENT_ID = os.getenv('APPMANAGER_CLIENT_ID')
+    CLIENT_SECRET = os.getenv('APPMANAGER_CLIENT_SECRET')
+    USERNAME = os.getenv('APPMANAGER_USERNAME')
+    PASSWORD = os.getenv('APPMANAGER_PASSWORD')
+
+    class AppManagerClient(object):
+
+        def __init__(self, endpoint, client_id, client_secret, username, password):
+            os.environ.setdefault('OAUTHLIB_INSECURE_TRANSPORT', '1')
+            self._endpoint = endpoint
+            self._client_id = client_id
+            self._client_secret = client_secret
+            self._username = username
+            self._password = password
+            self._token = self._fetch_token()
+
+        @property
+        def client(self):
+            return OAuth2Session(self._client_id, token=self._token)
+
+        def _fetch_token(self):
+            oauth = OAuth2Session(client=LegacyApplicationClient(client_id=CLIENT_ID))
+            return oauth.fetch_token(
+                token_url=os.path.join(ENDPOINT, 'oauth/token'),
+                username=self._username,
+                password=self._password,
+                client_id=self._client_id,
+                client_secret=self._client_secret
+            )
+
+    appBuildPath = sys.argv[1]
+
+    f = open(appBuildPath + "/meta.yaml", 'r')
+    metaData = yaml.safe_load(f.read())
+    f.close()
+
+    appId = metaData["appId"]
+    baselineVersion = metaData["packageVersion"].split("+")[0]
+
+    appmanagerClient = AppManagerClient(ENDPOINT, CLIENT_ID, CLIENT_SECRET, USERNAME, PASSWORD)
+    res = appmanagerClient.client.get(ENDPOINT + "/realtime/app-instances?appId=" + appId + "&stageId=prod")
+    for item in res.json()["data"].get("items", []):
+        if StrictVersion(baselineVersion) > StrictVersion(item["simpleVersion"]):
+            print("NEED UPDATE")
+            sys.exit(0)
+
+        if  StrictVersion(baselineVersion) == StrictVersion(item["simpleVersion"]) and item["status"] not in ["RUNNING","PENDING"]:
+            print("NEED UPDATE")
+            sys.exit(0)
+
+
+    print("NO UPDATE")
+    sys.exit(0)
 
   saas-sleep.sh: |
     sleep 999999999999

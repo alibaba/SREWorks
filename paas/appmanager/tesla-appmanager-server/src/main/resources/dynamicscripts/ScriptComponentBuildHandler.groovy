@@ -2,7 +2,6 @@ package dynamicscripts
 
 import com.alibaba.fastjson.JSONObject
 import com.alibaba.tesla.appmanager.autoconfig.PackageProperties
-import com.alibaba.tesla.appmanager.common.constants.DefaultConstant
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode
 import com.alibaba.tesla.appmanager.common.exception.AppException
@@ -25,7 +24,6 @@ import org.springframework.core.io.ClassPathResource
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
-
 /**
  * 默认 Script 组件 Groovy Handler
  *
@@ -36,19 +34,19 @@ class ScriptComponentBuildHandler implements BuildComponentHandler {
     private static final Logger log = LoggerFactory.getLogger(ScriptComponentBuildHandler.class)
 
     /**
-     * 当前内置 Handler 类型
+     * 当前脚本类型 (ComponentKindEnum)
      */
-    public static final String KIND = DynamicScriptKindEnum.BUILD_SCRIPT_COMPONENT.toString()
+    public static final String KIND = DynamicScriptKindEnum.COMPONENT_BUILD.toString()
 
     /**
-     * 当前内置 Handler 名称
+     * 当前脚本名称 (指定 SCRIPT_KIND 下唯一)
      */
-    public static final String NAME = DefaultConstant.DEFAULT_GROOVY_HANDLER
+    public static final String NAME = "ScriptComponentDefault"
 
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 0
+    public static final Integer REVISION = 1
 
     private static final String TEMPLATE_SCRIPT_FILENAME = "default_script_component.tpl"
 

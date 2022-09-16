@@ -1,9 +1,8 @@
 package com.alibaba.tesla.appmanager.api.provider;
 
+import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.DeployConfigDTO;
-import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigApplyTemplateReq;
-import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
-import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigGenerateReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.*;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigApplyTemplateRes;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigGenerateRes;
 
@@ -29,6 +28,22 @@ public interface DeployConfigProvider {
      * @return 生成 Yaml 结果
      */
     DeployConfigGenerateRes generate(DeployConfigGenerateReq req);
+
+    /**
+     * 根据指定查询条件获取列表（不支持继承）
+     *
+     * @param req 查询请求
+     * @return 部署配置列表
+     */
+    Pagination<DeployConfigDTO> list(DeployConfigListReq req);
+
+    /**
+     * 更新指定 apiVersion + appId + typeId + envId 对应的 DeployConfig 记录
+     *
+     * @param req 更新请求
+     * @return 更新后的对象
+     */
+    DeployConfigDTO upsert(DeployConfigUpsertReq req);
 
     /**
      * 删除指定 apiVersion + appId + typeId + envId 对应的 DeployConfig 记录

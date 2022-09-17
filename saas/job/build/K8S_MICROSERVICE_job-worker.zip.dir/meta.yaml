@@ -1,0 +1,54 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: Component
+metadata:
+  annotations:
+    annotations.appmanager.oam.dev/version: 9.1.8+20220906083410549956
+  labels:
+    labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+    appId: job
+    labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+    componentName: job-worker
+    labels.appmanager.oam.dev/appId: job
+    labels.appmanager.oam.dev/componentName: job-worker
+    stageId: PLACEHOLDER_STAGE_ID
+  name: microservice-job-job-worker
+spec:
+  images: []
+  workload:
+    apiVersion: apps.abm.io/v1
+    dataOutputs: []
+    kind: Microservice
+    metadata:
+      annotations:
+        annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
+        annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
+        annotations.appmanager.oam.dev/version: 9.1.8+20220906083410549956
+        annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+      labels:
+        labels.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+        labels.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        appId: job
+        labels.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+        labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+        componentName: job-worker
+        labels.appmanager.oam.dev/appId: job
+        labels.appmanager.oam.dev/componentName: job-worker
+        stageId: PLACEHOLDER_STAGE_ID
+      name: PLACEHOLDER_NAME
+      namespace: PLACEHOLDER_NAMESPACE_ID
+    spec:
+      kind: Deployment
+      replicas: 1
+      containers:
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/job-job-worker-job-worker:1662453250768
+        name: job-worker
+      env:
+        ES_ENDPOINT: '{{ Global.ES_ENDPOINT }}'
+        SREWORKS_JOB_MASTER_ENDPOINT: '{{ Global.SREWORKS_JOB_MASTER_ENDPOINT }}'
+        JVM_XMX: '{{ Global.JVM_XMX }}'
+        ES_PASSWORD: '{{ Global.ES_PASSWORD }}'
+        JVM_XMS: '{{ Global.JVM_XMS }}'
+        ES_USERNAME: '{{ Global.ES_USERNAME }}'

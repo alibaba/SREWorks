@@ -37,6 +37,7 @@ import httpClient from '../../utils/httpClient';
 import FormElementType from '../../components/FormBuilder/FormElementType';
 import _ from 'lodash'
 import cacheRepository from '../../utils/cacheRepository';
+import DataSource from "./model/DataSource";
 
 const sizeMapping = {
     "small": {
@@ -184,6 +185,22 @@ class OamAction extends React.Component {
                     });
                 })
             }
+        }else if(configMeta.inStep && configMeta.dataSourceMeta){
+            //新版本分布表单的数据源需要进行单独处理,并不走card包装器
+            console.log(configMeta.dataSourceMeta, configMeta, '数据源-数据源1')
+            let dataSource = new DataSource(configMeta.dataSourceMeta);
+            dataSource.query(Object.assign({},userParams,nodeParams,actionParams)).then(preview=>{
+                this.handleBeforeOpen(preview.params || preview).then(results=>{
+                    this.setState ({
+                        remoteParams: preview.params || preview,
+                        feedbacks:preview.feedbacks,
+                        loading:false,
+                        feedbackVisible:preview.feedbacks,
+                        dynamicItems:preview.dynamicItems,
+                        ...results
+                    },()=>this.preExecute());
+                });
+            });
         } else {
             this.handleBeforeOpen().then(results => {
                 this.setState({

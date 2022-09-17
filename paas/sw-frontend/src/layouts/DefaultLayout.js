@@ -376,7 +376,7 @@ class DefaultLayout extends React.Component {
                     }
                     <div id="top_progress" style={{ height: 1, marginTop: -1, zIndex: 10 }} />
                     <TopMenus {...menuProps} />
-                    <Layout style={{ height: `calc(100vh - ${hasTop ? 90 : 60}px)`, overflowY: 'scroll', overflowX: 'hidden' }} id="__MAIN_CONTENT__">
+                    <Layout style={{ height: `calc(100vh - ${hasTop ? 90 : 48}px)`, overflowY: 'scroll', overflowX: 'hidden' }} id="__MAIN_CONTENT__">
                         <NoticeBar />
                         <Content>
                             <Layout className={themeFlag ? "mixin-background" : "mixin-background-black"} >

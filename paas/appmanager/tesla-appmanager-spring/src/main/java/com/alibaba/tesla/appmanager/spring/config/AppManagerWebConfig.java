@@ -1,7 +1,7 @@
 package com.alibaba.tesla.appmanager.spring.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
@@ -34,13 +34,13 @@ class AppManagerWebConfig extends WebMvcConfigurationSupport {
 
             @Override
             protected InputStream readInternal(Class<? extends InputStream> clazz, HttpInputMessage inputMessage) throws
-                IOException, HttpMessageNotReadableException {
+                    IOException, HttpMessageNotReadableException {
                 return inputMessage.getBody();
             }
 
             @Override
             protected void writeInternal(InputStream inputStream, HttpOutputMessage outputMessage) throws IOException,
-                HttpMessageNotWritableException {
+                    HttpMessageNotWritableException {
                 IOUtils.copy(inputStream, outputMessage.getBody());
             }
         });

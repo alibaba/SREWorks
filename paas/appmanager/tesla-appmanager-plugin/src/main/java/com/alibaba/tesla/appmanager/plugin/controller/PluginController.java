@@ -1,12 +1,15 @@
 package com.alibaba.tesla.appmanager.plugin.controller;
 
 import com.alibaba.tesla.appmanager.api.provider.PluginProvider;
-import com.alibaba.tesla.appmanager.domain.dto.PluginMetaDTO;
+import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
+import com.alibaba.tesla.appmanager.domain.req.plugin.*;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
-import com.alibaba.tesla.web.controller.BaseController;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,57 +21,66 @@ import java.io.IOException;
  * @author yaoxing.gyx@alibaba-inc.com
  */
 @Slf4j
+@Tag(name = "插件 API")
 @RequestMapping("/plugins")
 @RestController
-public class PluginController extends BaseController {
-
+public class PluginController extends AppManagerBaseController {
 
     @Autowired
     private PluginProvider pluginProvider;
 
-    /**
-     * @api {get} /plugins 获取已安装的插件列表
-     * @apiName GetPluginList
-     * @apiGroup 插件API
-     */
+    @Operation(summary = "查询插件列表")
     @GetMapping
-    public TeslaBaseResult list(@ModelAttribute PluginQueryReq request) {
-        return buildSucceedResult(null);
+    public TeslaBaseResult list(@ModelAttribute PluginQueryReq request, OAuth2Authentication auth) {
+        return buildSucceedResult(pluginProvider.list(request));
     }
 
-    /**
-     * @api {post} /plugins 新增插件
-     * @apiName CreatePlugin
-     * @apiGroup 插件API
-     */
+    @Operation(summary = "上传插件")
     @PostMapping
-    public TeslaBaseResult create(@RequestParam("file") MultipartFile file) throws IOException {
-
-        PluginMetaDTO pluginMeta = pluginProvider.create(file);
-
-        return buildSucceedResult(pluginMeta);
+    public TeslaBaseResult upload(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "override", defaultValue = "true") Boolean override,
+            @RequestParam(value = "enable", defaultValue = "false") Boolean enable,
+            OAuth2Authentication auth) throws IOException {
+        return buildSucceedResult(pluginProvider.upload(file, PluginUploadReq.builder()
+                .enable(enable)
+                .overwrite(override)
+                .build()));
     }
 
+    @Operation(summary = "操作插件")
+    @PutMapping("{pluginName}/{pluginVersion}/operate")
+    public TeslaBaseResult operate(
+            @PathVariable("pluginName") String pluginName,
+            @PathVariable("pluginVersion") String pluginVersion,
+            @RequestBody PluginOperateReq request,
+            OAuth2Authentication auth) throws IOException {
+        if ("enable".equals(request.getOperation())) {
+            return buildSucceedResult(pluginProvider.enable(PluginEnableReq.builder()
+                    .pluginName(pluginName)
+                    .pluginVersion(pluginVersion)
+                    .build()));
+        } else if ("disable".equals(request.getOperation())) {
+            return buildSucceedResult(pluginProvider.disable(PluginDisableReq.builder()
+                    .pluginName(pluginName)
+                    .pluginVersion(pluginVersion)
+                    .build()));
+        } else {
+            return buildClientErrorResult("invalid plugin operation");
+        }
+    }
 
-
-//    /**
-//     * @api {get} /plugins/:pluginName 获取插件信息
-//     * @apiName getPlugin
-//     * @apiGroup 获取插件
-//     */
-//    @GetMapping
-//    public TeslaBaseResult get(@PathVariable String pluginName) {
-//        return buildSucceedResult(null);
-//    }
-//
-//    /**
-//     * @api {get} /plugins/:pluginName/frontend/:frontendType 获取插件信息
-//     * @apiName getPlugin
-//     * @apiGroup 获取插件的前端
-//     */
-//    @GetMapping
-//    public TeslaBaseResult getFrontend(@PathVariable String pluginName, @PathVariable String frontendType) {
-//        return buildSucceedResult(null);
-//    }
-
+    @Operation(summary = "获取插件前端资源")
+    @GetMapping("{pluginName}/{pluginVersion}/frontend/{name}")
+    public TeslaBaseResult getPluginFrontend(
+            @PathVariable("pluginName") String pluginName,
+            @PathVariable("pluginVersion") String pluginVersion,
+            @PathVariable("name") String name,
+            OAuth2Authentication auth) throws IOException {
+        return buildSucceedResult(pluginProvider.getFrontend(PluginFrontendGetReq.builder()
+                .pluginName(pluginName)
+                .pluginVersion(pluginVersion)
+                .name(name)
+                .build()));
+    }
 }

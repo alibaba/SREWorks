@@ -5,8 +5,8 @@ import com.alibaba.tesla.appmanager.api.provider.UserProfileProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.domain.dto.UserProfileDTO;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
  *
  * @author qianmo.zm@alibaba-inc.com
  */
+@Tag(name = "用户 API")
 @RequestMapping("/profile")
 @RestController
 @Slf4j

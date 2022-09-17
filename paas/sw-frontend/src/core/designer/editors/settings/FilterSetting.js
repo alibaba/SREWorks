@@ -78,7 +78,7 @@ class FilterSetting extends React.Component {
                 { type: FormElementType.INPUT, name: 'outputName', initValue: outputName, required: false, label: "输出对象名称", tooltip: "过滤器表单值输出到填写的参数名对象中,为空时表单项值全部独立输出到节点参数域中" },
                 {
                     type: FormElementType.RADIO, name: 'tabPosition', initValue: tabPosition, required: false, label: "tab展示位置",
-                    optionValues: [{ value: 'top-left', label: '左上' }, { value: 'top-right', label: '右上' },{ value: 'left', label: '左' }],
+                    optionValues: [{ value: 'top-left', label: '左上' }, { value: 'top-right', label: '右上' },{ value: 'bottom-left', label: '左' }],
                     tooltip: "tab的展示位置,左上表示紧随标题,右上表示居右，左下表示竖向过滤器"
                 },
                 {

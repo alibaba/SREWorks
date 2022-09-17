@@ -24,8 +24,6 @@
         <mapper resource="mybatis/AppPackageDOMapper.xml"/>
         <mapper resource="mybatis/AppPackageTagDOMapper.xml"/>
         <mapper resource="mybatis/AppPackageComponentRelDOMapper.xml"/>
-        <mapper resource="mybatis/ComponentDOMapper.xml"/>
-        <mapper resource="mybatis/ComponentHistoryDOMapper.xml"/>
         <mapper resource="mybatis/ComponentPackageDOMapper.xml"/>
         <mapper resource="mybatis/ComponentPackageTaskDOMapper.xml"/>
         <mapper resource="mybatis/CustomAddonInstanceDOMapper.xml"/>
@@ -40,6 +38,7 @@
         <mapper resource="mybatis/AddonInstanceTaskMapper.xml"/>
         <mapper resource="mybatis/AppPackageTaskDOMapper.xml"/>
         <mapper resource="mybatis/AppAddonDOMapper.xml"/>
+        <mapper resource="mybatis/AppComponentDOMapper.xml"/>
         <mapper resource="mybatis/ClusterDOMapper.xml"/>
         <mapper resource="mybatis/TagQueryMapper.xml"/>
         <mapper resource="mybatis/DefinitionSchemaMapper.xml"/>

@@ -33,7 +33,7 @@ public class PluginResourceDO {
     /**
      * Plugin 唯一标识
      */
-    private Long pluginName;
+    private String pluginName;
 
     /**
      * Plugin 版本 (SemVer)

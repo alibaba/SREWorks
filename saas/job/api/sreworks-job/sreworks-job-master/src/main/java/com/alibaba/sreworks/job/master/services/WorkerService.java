@@ -11,6 +11,7 @@ import com.alibaba.sreworks.job.utils.Requests;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.net.http.HttpResponse;
 import java.util.Collections;
@@ -26,9 +27,9 @@ public class WorkerService {
     @Autowired
     ElasticTaskInstanceRepository taskInstanceRepository;
 
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 30000)
     public void fixedSchedule() {
-        workerRepository.deleteAllByGmtModifiedBefore(System.currentTimeMillis() - 20000);
+        workerRepository.deleteAllByGmtModifiedBefore(System.currentTimeMillis() - 310000);
     }
 
     public List<Object> listExecType() {
@@ -50,8 +51,10 @@ public class WorkerService {
             .filter(x -> x.getExecTypeList().contains(execType))
             .collect(Collectors.toList());
         Collections.shuffle(workerDTOList);
+        if (CollectionUtils.isEmpty(workerDTOList)) {
+            return null;
+        }
         return workerDTOList.get(0);
-
     }
 
     public void startInstance(String address, String taskInstanceId)

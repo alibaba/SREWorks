@@ -114,5 +114,5 @@ export default {
     "supportItemToolbar": false,
     "dataMock": {},
   },
-  "catgory": "base",
+  "category": "base",
 };

@@ -8,6 +8,7 @@ import com.alibaba.tesla.appmanager.domain.req.helm.HelmMetaCreateReq;
 import com.alibaba.tesla.appmanager.domain.req.helm.HelmMetaQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.helm.HelmMetaUpdateReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Objects;
 
 @RestController
+@Tag(name = "Helm API")
 @RequestMapping("/apps/{appId}/helm")
 @Slf4j
 public class HelmItemController extends AppManagerBaseController {

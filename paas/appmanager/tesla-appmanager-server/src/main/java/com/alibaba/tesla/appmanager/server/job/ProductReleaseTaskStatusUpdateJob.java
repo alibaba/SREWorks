@@ -38,8 +38,8 @@ public class ProductReleaseTaskStatusUpdateJob {
     @Autowired
     private AppPackageTaskService appPackageTaskService;
 
-    @Scheduled(cron = "${appmanager.cron-job.product-release-task-status-update:0/20 * * * * *}")
-    @SchedulerLock(name = "productReleaseTaskStatusUpdateJob")
+    @Scheduled(cron = "${appmanager.cron-job.product-release-task-status-update}")
+    @SchedulerLock(name = "productReleaseTaskStatusUpdateJob", lockAtLeastFor = "19s")
     public void run() {
         ListProductReleaseTaskReq request = ListProductReleaseTaskReq.builder()
                 .status(Collections.singletonList(ProductReleaseTaskStatusEnum.RUNNING.toString()))

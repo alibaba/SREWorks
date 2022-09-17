@@ -54,6 +54,9 @@ export default class WorkspaceSetting extends React.Component {
             bacgroundSettingVisible: false,
             targetDesktopIndex: -1,
             activeBackgroundImgIndex: -1,
+            widgetConfig: {
+                currentValue:'2022-09-02'
+            }
         }
     }
 
@@ -285,6 +288,13 @@ export default class WorkspaceSetting extends React.Component {
         }
         return productName;
     }
+    changeDate=()=> {
+        this.setState({
+            widgetConfig: {
+                currentValue:'2022-09-07'
+            }
+        })
+    }
     render() {
         const { visible, settingType, quickVisible, isDelete } = this.state, { home } = this.props;
         const { imgList, loading, bacgroundSettingVisible, activeBackgroundImgIndex } = this.state;
@@ -303,6 +313,7 @@ export default class WorkspaceSetting extends React.Component {
             }
             return null
         };
+        const {widgetConfig} = this.state;
         return (
             <div className="workspace-setting">
                 <div className="edit-icon">

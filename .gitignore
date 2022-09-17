@@ -6,3 +6,4 @@ paas/action/test.sh
 .idea
 mvn_deploy.sh
 mvn_install.sh
+*.swp

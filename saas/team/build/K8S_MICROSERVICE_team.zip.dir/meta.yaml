@@ -1,0 +1,64 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: Component
+metadata:
+  annotations:
+    annotations.appmanager.oam.dev/version: 3.8.3+20220907074057943438
+  labels:
+    labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+    appId: team
+    labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+    componentName: team
+    labels.appmanager.oam.dev/appId: team
+    labels.appmanager.oam.dev/componentName: team
+    stageId: PLACEHOLDER_STAGE_ID
+  name: microservice-team-team
+spec:
+  images: []
+  workload:
+    apiVersion: apps.abm.io/v1
+    dataOutputs: []
+    kind: Microservice
+    metadata:
+      annotations:
+        annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
+        annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
+        annotations.appmanager.oam.dev/version: 3.8.3+20220907074057943438
+        annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+      labels:
+        labels.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+        labels.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        appId: team
+        labels.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+        labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+        componentName: team
+        labels.appmanager.oam.dev/appId: team
+        labels.appmanager.oam.dev/componentName: team
+        stageId: PLACEHOLDER_STAGE_ID
+      name: PLACEHOLDER_NAME
+      namespace: PLACEHOLDER_NAMESPACE_ID
+    spec:
+      kind: Deployment
+      replicas: 1
+      containers:
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/team-team-team:1662536457066
+        name: team
+      env:
+        COOKIE_DOMAIN: '{{ Global.COOKIE_DOMAIN }}'
+        DB_PORT: '{{ Global.DB_PORT }}'
+        TEAM_DEFAULT_REPO: '{{ Global.TEAM_DEFAULT_REPO }}'
+        DB_USER: '{{ Global.DB_USER }}'
+        DB_NAME: '{{ Global.DB_NAME }}'
+        DB_HOST: '{{ Global.DB_HOST }}'
+        APPMANAGER_PACKAGE_ENDPOINT: '{{ Global.APPMANAGER_PACKAGE_ENDPOINT }}'
+        APPMANAGER_PACKAGE_SECRET_KEY: '{{ Global.APPMANAGER_PACKAGE_SECRET_KEY }}'
+        APPMANAGER_PACKAGE_ACCESS_KEY: '{{ Global.APPMANAGER_PACKAGE_ACCESS_KEY }}'
+        APPMANAGER_ENDPOINT: '{{ Global.APPMANAGER_ENDPOINT }}'
+        APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL: '{{ Global.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL }}'
+        AUTHPROXY_ENDPOINT: '{{ Global.AUTHPROXY_ENDPOINT }}'
+        DB_PASSWORD: '{{ Global.DB_PASSWORD }}'
+      initContainers:
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/team-team-db-migration:1662536457066
+        name: db-migration

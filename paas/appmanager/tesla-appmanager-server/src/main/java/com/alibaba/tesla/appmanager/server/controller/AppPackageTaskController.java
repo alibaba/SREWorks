@@ -21,6 +21,7 @@ import com.alibaba.tesla.appmanager.domain.req.apppackage.ComponentBinder;
 import com.alibaba.tesla.appmanager.domain.req.componentpackage.ComponentPackageLatestVersionListReq;
 import com.alibaba.tesla.appmanager.domain.res.apppackage.AppPackageTaskCreateRes;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ import static com.alibaba.tesla.appmanager.common.constants.DefaultConstant.INTE
  * @author yaoxing.gyx@alibaba-inc.com
  */
 @Slf4j
+@Tag(name = "应用包任务 API")
 @RequestMapping
 @RestController
 public class AppPackageTaskController extends AppManagerBaseController {

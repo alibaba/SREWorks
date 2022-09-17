@@ -1,18 +1,19 @@
 package com.alibaba.tesla.appmanager.deployconfig.provider.impl;
 
 import com.alibaba.tesla.appmanager.api.provider.DeployConfigProvider;
+import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.deployconfig.assembly.DeployConfigDtoConvert;
+import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConfigQueryCondition;
 import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDO;
 import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
 import com.alibaba.tesla.appmanager.domain.dto.DeployConfigDTO;
-import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigApplyTemplateReq;
-import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
-import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigGenerateReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.*;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigApplyTemplateRes;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigGenerateRes;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -58,6 +59,30 @@ public class DeployConfigProviderImpl implements DeployConfigProvider {
     @Override
     public DeployConfigGenerateRes generate(DeployConfigGenerateReq req) {
         return deployConfigService.generate(req);
+    }
+
+    /**
+     * 根据指定查询条件获取列表（不支持继承）
+     *
+     * @param req 查询请求
+     * @return 部署配置列表
+     */
+    @Override
+    public Pagination<DeployConfigDTO> list(DeployConfigListReq req) {
+        DeployConfigQueryCondition condition = new DeployConfigQueryCondition();
+        List<DeployConfigDO> results = deployConfigService.list(condition);
+        return Pagination.valueOf(results, deployConfigDtoConvert::to);
+    }
+
+    /**
+     * 更新指定 apiVersion + appId + typeId + envId 对应的 DeployConfig 记录
+     *
+     * @param req 更新请求
+     * @return 更新后的对象
+     */
+    @Override
+    public DeployConfigDTO upsert(DeployConfigUpsertReq req) {
+        return deployConfigDtoConvert.to(deployConfigService.update(req));
     }
 
     /**

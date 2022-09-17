@@ -11,6 +11,7 @@ import com.alibaba.tesla.appmanager.domain.req.rtappinstance.RtAppInstanceQueryR
 import com.alibaba.tesla.appmanager.domain.req.rtappinstance.RtComponentInstanceHistoryQueryReq;
 import com.alibaba.tesla.appmanager.server.job.OrphanComponentInstanceJob;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author yaoxing.gyx@alibaba-inc.com
  */
 @Slf4j
+@Tag(name = "应用实例 API")
 @RequestMapping("/realtime/app-instances")
 @RestController
 public class RtAppInstanceController extends AppManagerBaseController {

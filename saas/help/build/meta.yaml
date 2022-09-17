@@ -1,0 +1,154 @@
+appId: help
+componentPackages:
+- componentName: productopsv2
+  componentType: INTERNAL_ADDON
+  packageCreator: '999999999'
+  packageExt: |
+    apiVersion: core.oam.dev/v1alpha2
+    kind: Component
+    metadata:
+      name: microservice-help-productopsv2
+      annotations:
+        annotations.appmanager.oam.dev/version: "1.0.3+20220908130848391779"
+      labels:
+        labels.appmanager.oam.dev/appId: "help"
+        labels.appmanager.oam.dev/componentName: "productopsv2"
+        labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+        labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+        appId: "help"
+        componentName: "productopsv2"
+        stageId: "PLACEHOLDER_STAGE_ID"
+    spec:
+      workload:
+        apiVersion: apps.abm.io/v1
+        kind: Microservice
+        metadata:
+          namespace: "PLACEHOLDER_NAMESPACE_ID"
+          name: "PLACEHOLDER_NAME"
+          labels:
+            labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+            labels.appmanager.oam.dev/appId: "help"
+            labels.appmanager.oam.dev/componentName: "productopsv2"
+            labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+            labels.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            labels.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            labels.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+            stageId: "PLACEHOLDER_STAGE_ID"
+            appId: "help"
+            componentName: "productopsv2"
+          annotations:
+            annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
+            annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
+            annotations.appmanager.oam.dev/version: "1.0.3+20220908130848391779"
+            annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+        spec:
+          targetEndpoint: ''
+  packageMd5: e06ea2c4602d7bce597779315d4b1e91
+  packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"componentConfiguration":"clusterId: ''''\ndataInputs: []\ndataOutputs: []\ndependencies: []\nnamespaceId: ''''\nparameterValues: []\nrevisionName: INTERNAL_ADDON|productopsv2|_\nscopes: []\nstageId: ''''\ntraits: []\n","isDevelop":true,"binderTraits":[]}'
+  packageVersion: 1.0.3+20220908130848391779
+  relativePath: INTERNAL_ADDON_productopsv2.zip
+- componentName: developmentmeta
+  componentType: INTERNAL_ADDON
+  packageCreator: '999999999'
+  packageExt: |-
+    apiVersion: core.oam.dev/v1alpha2
+    kind: Component
+    metadata:
+      name: internal-addon-help-developmentmeta
+      annotations:
+        annotations.appmanager.oam.dev/version: "1.0.3+20220908130848583476"
+      labels:
+        labels.appmanager.oam.dev/appId: "help"
+        labels.appmanager.oam.dev/componentName: "developmentmeta"
+        labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+        labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+        appId: "help"
+        componentName: "developmentmeta"
+        stageId: "PLACEHOLDER_STAGE_ID"
+    spec:
+      workload:
+        apiVersion: apps.abm.io/v1
+        kind: DevelopmentmetaConfig
+        metadata:
+          namespace: "PLACEHOLDER_NAMESPACE_ID"
+          name: "PLACEHOLDER_NAME"
+          labels:
+            labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+            labels.appmanager.oam.dev/appId: "help"
+            labels.appmanager.oam.dev/componentName: "developmentmeta"
+            labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+            labels.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            labels.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            labels.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+            stageId: "PLACEHOLDER_STAGE_ID"
+            appId: "help"
+            componentName: "developmentmeta"
+          annotations:
+            annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
+            annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
+            annotations.appmanager.oam.dev/version: "1.0.3+20220908130848583476"
+            annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+        spec: {}
+  packageMd5: 6fd6ab931a24da5bf5679ca253ca055e
+  packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
+  packageVersion: 1.0.3+20220908130848583476
+  relativePath: INTERNAL_ADDON_developmentmeta.zip
+- componentName: appmeta
+  componentType: INTERNAL_ADDON
+  packageCreator: '999999999'
+  packageExt: |
+    apiVersion: core.oam.dev/v1alpha2
+    kind: Component
+    metadata:
+      name: internal-addon-help-appmeta
+      annotations:
+        annotations.appmanager.oam.dev/version: "1.0.3+20220908130848664832"
+      labels:
+        labels.appmanager.oam.dev/appId: "help"
+        labels.appmanager.oam.dev/componentName: "appmeta"
+        labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+        labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+        appId: "help"
+        componentName: "appmeta"
+        stageId: "PLACEHOLDER_STAGE_ID"
+    spec:
+      workload:
+        apiVersion: apps.abm.io/v1
+        kind: AppmetaConfig
+        metadata:
+          namespace: "PLACEHOLDER_NAMESPACE_ID"
+          name: "PLACEHOLDER_NAME"
+          labels:
+            labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+            labels.appmanager.oam.dev/appId: "help"
+            labels.appmanager.oam.dev/componentName: "appmeta"
+            labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+            labels.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            labels.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            labels.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+            stageId: "PLACEHOLDER_STAGE_ID"
+            appId: "help"
+            componentName: "appmeta"
+          annotations:
+            annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
+            annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
+            annotations.appmanager.oam.dev/version: "1.0.3+20220908130848664832"
+            annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+        spec:
+          overwriteIsDevelopment: false
+          overwriteBuiltIn: false
+  packageMd5: 2a41bd9b7c9646dbe44426c7ef7fe046
+  packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
+  packageVersion: 1.0.3+20220908130848664832
+  relativePath: INTERNAL_ADDON_appmeta.zip
+packageCreator: '999999999'
+packageVersion: 1.0.0+20220908130906850182
+tags:
+- release=sreworks/x86_64
+- on-sale

@@ -28,6 +28,7 @@
         <module>tesla-appmanager-start-standalone</module>
         <module>tesla-appmanager-workflow</module>
         <module>tesla-appmanager-market</module>
+        <module>tesla-appmanager-storage</module>
     </modules>
 
     <name>tesla-appmanager</name>
@@ -62,6 +63,8 @@
         <task-flow-service.version>1.1.0</task-flow-service.version>
 
         <!-- other -->
+        <knife4j-springdoc-ui.version>3.0.3</knife4j-springdoc-ui.version>
+        <springdoc-openapi-ui.version>1.6.11</springdoc-openapi-ui.version>
         <jackson-annotations.version>2.13.2</jackson-annotations.version>
         <pagehelper.version>5.1.10</pagehelper.version>
         <pagehelper-spring-boot-starter.version>1.4.1</pagehelper-spring-boot-starter.version>
@@ -187,6 +190,11 @@
                 <artifactId>tesla-appmanager-market</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.alibaba.tesla</groupId>
+                <artifactId>tesla-appmanager-storage</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- spring -->
             <dependency>
@@ -266,6 +274,18 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-stream-test-support</artifactId>
                 <version>${spring-cloud-stream-test-support.version}</version>
+            </dependency>
+
+            <!-- knife4j -->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-springdoc-ui</artifactId>
+                <version>${knife4j-springdoc-ui.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
+                <version>${springdoc-openapi-ui.version}</version>
             </dependency>
 
             <!-- groovy / shit mvnrepo alibaba -->

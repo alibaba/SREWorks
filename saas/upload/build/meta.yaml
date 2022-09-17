@@ -1,0 +1,268 @@
+appId: upload
+componentPackages:
+- componentName: filemanage
+  componentType: K8S_MICROSERVICE
+  packageCreator: '999999999'
+  packageExt: |
+    apiVersion: core.oam.dev/v1alpha2
+    kind: Component
+    metadata:
+      name: microservice-upload-filemanage
+      annotations:
+        annotations.appmanager.oam.dev/version: "4.0.0+20220915024835406821"
+      labels:
+        labels.appmanager.oam.dev/appId: "upload"
+        labels.appmanager.oam.dev/componentName: "filemanage"
+        labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+        labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+        appId: "upload"
+        componentName: "filemanage"
+        stageId: "PLACEHOLDER_STAGE_ID"
+    spec:
+      workload:
+        apiVersion: apps.abm.io/v1
+        kind: Microservice
+        metadata:
+          namespace: "PLACEHOLDER_NAMESPACE_ID"
+          name: "PLACEHOLDER_NAME"
+          labels:
+            labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+            labels.appmanager.oam.dev/appId: "upload"
+            labels.appmanager.oam.dev/componentName: "filemanage"
+            labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+            labels.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            labels.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            labels.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+            stageId: "PLACEHOLDER_STAGE_ID"
+            appId: "upload"
+            componentName: "filemanage"
+          annotations:
+            annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
+            annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
+            annotations.appmanager.oam.dev/version: "4.0.0+20220915024835406821"
+            annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+        spec:
+          kind: Deployment
+          replicas: 1
+          env:
+            DB_PORT: "{{ Global.DB_PORT }}"
+            DB_HOST: "{{ Global.DB_HOST }}"
+            DB_USER: "{{ Global.DB_USER }}"
+            DB_PASSWORD: "{{ Global.DB_PASSWORD }}"
+            DB_NAME: "{{ Global.DB_NAME }}"
+            COOKIE_DOMAIN: "{{ Global.COOKIE_DOMAIN }}"
+            APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL: "{{ Global.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL }}"
+            APPMANAGER_PACKAGE_ENDPOINT: "{{ Global.APPMANAGER_PACKAGE_ENDPOINT }}"
+            APPMANAGER_PACKAGE_ACCESS_KEY: "{{ Global.APPMANAGER_PACKAGE_ACCESS_KEY }}"
+            APPMANAGER_PACKAGE_SECRET_KEY: "{{ Global.APPMANAGER_PACKAGE_SECRET_KEY }}"
+            SREWORKS_FILE_PREFIX: "{{ Global.SREWORKS_FILE_PREFIX }}"
+            UPLOAD_SUB_PATH: "{{ Global.UPLOAD_SUB_PATH }}"
+          initContainers:
+          - name: "db-migration"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/upload-filemanage-db-migration:1663210115238"
+          containers:
+          - name: "filemanage"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/upload-filemanage-filemanage:1663210115238"
+  packageMd5: 6970d7b2237362b00cf178713444a172
+  packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"saas/upload/api/filemanage","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/build"},"name":"filemanage"}],"env":["DB_PORT","DB_HOST","DB_USER","DB_PASSWORD","DB_NAME","COOKIE_DOMAIN","APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL","APPMANAGER_PACKAGE_ENDPOINT","APPMANAGER_PACKAGE_ACCESS_KEY","APPMANAGER_PACKAGE_SECRET_KEY","SREWORKS_FILE_PREFIX","UPLOAD_SUB_PATH"],"initContainers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile-db-migration","ciAccount":"public","ciToken":"public","repoPath":"saas/upload/api/filemanage","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/build"},"name":"db-migration"}],"componentConfiguration":"revisionName: K8S_MICROSERVICE|filemanage|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 7001\n- name: gateway.trait.abm.io\n  runtime: post\n  spec:\n    path: /sreworks/other/**\n    authEnabled: false\n    serviceName: ''{{ Global.STAGE_ID }}-upload-filemanage.{{ Global.NAMESPACE_ID }}''\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n- name: Global.DB_NAME\n  value: sreworks_meta\n- name: Global.SREWORKS_FILE_PREFIX\n  value: /gateway/minio/\n- name: Global.UPLOAD_SUB_PATH\n  value: v1.0\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
+  packageVersion: 4.0.0+20220915024835406821
+  relativePath: K8S_MICROSERVICE_filemanage.zip
+- componentName: productopsv2
+  componentType: INTERNAL_ADDON
+  packageCreator: '999999999'
+  packageExt: |
+    apiVersion: core.oam.dev/v1alpha2
+    kind: Component
+    metadata:
+      name: microservice-upload-productopsv2
+      annotations:
+        annotations.appmanager.oam.dev/version: "1.0.4+20220915024835757039"
+      labels:
+        labels.appmanager.oam.dev/appId: "upload"
+        labels.appmanager.oam.dev/componentName: "productopsv2"
+        labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+        labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+        appId: "upload"
+        componentName: "productopsv2"
+        stageId: "PLACEHOLDER_STAGE_ID"
+    spec:
+      workload:
+        apiVersion: apps.abm.io/v1
+        kind: Microservice
+        metadata:
+          namespace: "PLACEHOLDER_NAMESPACE_ID"
+          name: "PLACEHOLDER_NAME"
+          labels:
+            labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+            labels.appmanager.oam.dev/appId: "upload"
+            labels.appmanager.oam.dev/componentName: "productopsv2"
+            labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+            labels.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            labels.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            labels.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+            stageId: "PLACEHOLDER_STAGE_ID"
+            appId: "upload"
+            componentName: "productopsv2"
+          annotations:
+            annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
+            annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
+            annotations.appmanager.oam.dev/version: "1.0.4+20220915024835757039"
+            annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+        spec:
+          targetEndpoint: ''
+  packageMd5: 8bce67611a5a651b30ec3a58a8c57023
+  packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"componentConfiguration":"clusterId: ''''\ndataInputs: []\ndataOutputs: []\ndependencies: []\nnamespaceId: ''''\nparameterValues: []\nrevisionName: INTERNAL_ADDON|productopsv2|_\nscopes: []\nstageId: ''''\ntraits: []\n","isDevelop":true,"binderTraits":[]}'
+  packageVersion: 1.0.4+20220915024835757039
+  relativePath: INTERNAL_ADDON_productopsv2.zip
+- componentName: system-env@system-env
+  componentType: RESOURCE_ADDON
+  packageCreator: '999999999'
+  packageExt: |
+    apiVersion: core.oam.dev/v1alpha2
+    kind: Component
+    metadata:
+      name: resource-addon--
+      annotations:
+        annotations.appmanager.oam.dev/version: ""
+      labels:
+        labels.appmanager.oam.dev/appId: ""
+        labels.appmanager.oam.dev/componentName: ""
+        labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+        labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+        appId: ""
+        componentName: ""
+        stageId: "PLACEHOLDER_STAGE_ID"
+    spec:
+      workload:
+        apiVersion: apps.abm.io/v1
+        kind: Config
+        metadata:
+          namespace: "PLACEHOLDER_NAMESPACE_ID"
+          name: "PLACEHOLDER_NAME"
+          labels:
+            labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+            labels.appmanager.oam.dev/appId: ""
+            labels.appmanager.oam.dev/componentName: ""
+            labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+            labels.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            labels.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            labels.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+          annotations:
+            annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
+            annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
+            annotations.appmanager.oam.dev/version: ""
+            annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+        spec: {}
+  packageMd5: 066ce69483f4b7f688346edabdbf81fd
+  packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"componentConfiguration":"clusterId: ''''\ndataInputs: []\ndataOutputs:\n- fieldPath: ''{{ spec.env.DB_HOST }}''\n  name: Global.DB_HOST\n- fieldPath: ''{{ spec.env.DB_PASSWORD }}''\n  name: Global.DB_PASSWORD\n- fieldPath: ''{{ spec.env.DB_PORT }}''\n  name: Global.DB_PORT\n- fieldPath: ''{{ spec.env.DB_USER }}''\n  name: Global.DB_USER\n- fieldPath: ''{{ spec.env.APPMANAGER_ACCESS_ID }}''\n  name: Global.APPMANAGER_USERNAME\n- fieldPath: ''{{ spec.env.APPMANAGER_ACCESS_SECRET }}''\n  name: Global.APPMANAGER_PASSWORD\n- fieldPath: ''{{ spec.env.APPMANAGER_CLIENT_ID }}''\n  name: Global.APPMANAGER_CLIENT_ID\n- fieldPath: ''{{ spec.env.APPMANAGER_CLIENT_SECRET }}''\n  name: Global.APPMANAGER_CLIENT_SECRET\n- fieldPath: ''{{ spec.env.COOKIE_DOMAIN }}''\n  name: Global.COOKIE_DOMAIN\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ACCESS_KEY }}''\n  name: Global.APPMANAGER_PACKAGE_ACCESS_KEY\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_SECRET_KEY }}''\n  name: Global.APPMANAGER_PACKAGE_SECRET_KEY\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL }}''\n  name: Global.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT }}''\n  name: Global.APPMANAGER_PACKAGE_ENDPOINT\n- fieldPath: ''{{ spec.env.STORAGE_CLASS }}''\n  name: Global.STORAGE_CLASS\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_CLIENT_ID }}''\n  name: Global.ACCOUNT_SUPER_CLIENT_ID\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_CLIENT_SECRET }}''\n  name: Global.ACCOUNT_SUPER_CLIENT_SECRET\ndependencies: []\nnamespaceId: ''''\nparameterValues:\n- name: keys\n  toFieldPaths:\n  - spec.keys\n  value:\n  - DB_HOST\n  - DB_PASSWORD\n  - DB_PORT\n  - DB_USER\n  - APPMANAGER_ACCESS_ID\n  - APPMANAGER_ACCESS_SECRET\n  - APPMANAGER_CLIENT_ID\n  - APPMANAGER_CLIENT_SECRET\n  - COOKIE_DOMAIN\n  - APPMANAGER_PACKAGE_ACCESS_KEY\n  - APPMANAGER_PACKAGE_SECRET_KEY\n  - APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL\n  - APPMANAGER_PACKAGE_ENDPOINT\n  - STORAGE_CLASS\n  - ACCOUNT_SUPER_CLIENT_ID\n  - ACCOUNT_SUPER_CLIENT_SECRET\nrevisionName: RESOURCE_ADDON|system-env@system-env|1.0\nscopes: []\nstageId: ''''\ntraits: []\n","binderTraits":[]}'
+  packageVersion: 1.0.3+20220915024835402982
+  relativePath: RESOURCE_ADDON_system-env@system-env.zip
+- componentName: developmentmeta
+  componentType: INTERNAL_ADDON
+  packageCreator: '999999999'
+  packageExt: |-
+    apiVersion: core.oam.dev/v1alpha2
+    kind: Component
+    metadata:
+      name: internal-addon-upload-developmentmeta
+      annotations:
+        annotations.appmanager.oam.dev/version: "1.0.4+20220915024835322032"
+      labels:
+        labels.appmanager.oam.dev/appId: "upload"
+        labels.appmanager.oam.dev/componentName: "developmentmeta"
+        labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+        labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+        appId: "upload"
+        componentName: "developmentmeta"
+        stageId: "PLACEHOLDER_STAGE_ID"
+    spec:
+      workload:
+        apiVersion: apps.abm.io/v1
+        kind: DevelopmentmetaConfig
+        metadata:
+          namespace: "PLACEHOLDER_NAMESPACE_ID"
+          name: "PLACEHOLDER_NAME"
+          labels:
+            labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+            labels.appmanager.oam.dev/appId: "upload"
+            labels.appmanager.oam.dev/componentName: "developmentmeta"
+            labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+            labels.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            labels.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            labels.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+            stageId: "PLACEHOLDER_STAGE_ID"
+            appId: "upload"
+            componentName: "developmentmeta"
+          annotations:
+            annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
+            annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
+            annotations.appmanager.oam.dev/version: "1.0.4+20220915024835322032"
+            annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+        spec: {}
+  packageMd5: fd8ddce516b60d1f22432a5511531f61
+  packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
+  packageVersion: 1.0.4+20220915024835322032
+  relativePath: INTERNAL_ADDON_developmentmeta.zip
+- componentName: appmeta
+  componentType: INTERNAL_ADDON
+  packageCreator: '999999999'
+  packageExt: |
+    apiVersion: core.oam.dev/v1alpha2
+    kind: Component
+    metadata:
+      name: internal-addon-upload-appmeta
+      annotations:
+        annotations.appmanager.oam.dev/version: "1.0.4+20220915024835580547"
+      labels:
+        labels.appmanager.oam.dev/appId: "upload"
+        labels.appmanager.oam.dev/componentName: "appmeta"
+        labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+        labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+        appId: "upload"
+        componentName: "appmeta"
+        stageId: "PLACEHOLDER_STAGE_ID"
+    spec:
+      workload:
+        apiVersion: apps.abm.io/v1
+        kind: AppmetaConfig
+        metadata:
+          namespace: "PLACEHOLDER_NAMESPACE_ID"
+          name: "PLACEHOLDER_NAME"
+          labels:
+            labels.appmanager.oam.dev/stageId: "PLACEHOLDER_STAGE_ID"
+            labels.appmanager.oam.dev/appId: "upload"
+            labels.appmanager.oam.dev/componentName: "appmeta"
+            labels.appmanager.oam.dev/clusterId: "PLACEHOLDER_CLUSTER_ID"
+            labels.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            labels.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            labels.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+            stageId: "PLACEHOLDER_STAGE_ID"
+            appId: "upload"
+            componentName: "appmeta"
+          annotations:
+            annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
+            annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
+            annotations.appmanager.oam.dev/version: "1.0.4+20220915024835580547"
+            annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
+            annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
+            annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
+        spec:
+          overwriteIsDevelopment: false
+          overwriteBuiltIn: false
+  packageMd5: 66c4b55eb04b002d1f45c8fe072944ca
+  packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
+  packageVersion: 1.0.4+20220915024835580547
+  relativePath: INTERNAL_ADDON_appmeta.zip
+packageCreator: '999999999'
+packageVersion: 1.0.1+20220915030216814110
+tags:
+- release=sreworks/x86_64
+- on-sale

@@ -5,6 +5,7 @@ import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.util.EnvUtil;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author qiuqiang.qq@alibaba-inc.com
  */
+@Tag(name = "系统维护 API")
 @RequestMapping("/maintainer")
 @RestController
 @Slf4j

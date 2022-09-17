@@ -20,6 +20,7 @@ global:
     mavenSettingsXml: https://sreworks.oss-cn-beijing.aliyuncs.com/resource/settings.xml  
     alpineImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/alpine:latest
     nodeImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/node:14.20.0-alpine3.15
+    nodeImage2: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/node:16.17-alpine
     npmRegistryUrl: https://registry.npmmirror.com
     migrateImage: sw-migrate 
     postrunImage: sw-postrun
@@ -50,7 +51,7 @@ platformLogo: /static/publicMedia/sreworks.png
 
 installMode: default
 
-progressCheck: false
+progressCheck: true
 debug: false
 adminInitPassword: "12345678"
 
@@ -72,6 +73,7 @@ saas:
   stageId: prod
   onlyBase: false
   list:
+  - demoapp
   - cluster
   - app
   - team
@@ -85,7 +87,6 @@ saas:
   - ocenter
   - help
   - upload
-  - demoapp
   baseList:
   - cluster
   - app

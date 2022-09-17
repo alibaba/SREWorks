@@ -13,7 +13,6 @@ import AppService from '../../core/services/appService'
 import './index.less';
 import _ from "lodash";
 import properties from '../../properties';
-import { urlToRequest } from 'loader-utils';
 import { localImglist, requiredImglist } from "./localImglist";
 
 const { Content } = Layout;

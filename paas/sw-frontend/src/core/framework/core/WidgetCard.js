@@ -17,6 +17,8 @@ import JSXRender from './JSXRender';
 
 import './index.less';
 
+const VueWrapper = window['vuera']['VueWrapper'];
+
 export default class WidgetCard extends React.Component {
 
     constructor(props) {
@@ -121,7 +123,13 @@ export default class WidgetCard extends React.Component {
         } else if (Constants.BLOCK === widgetModel.type) {
             cardContent = <Block {...otherProps} widgetConfig={runtimeConfig} actionParams={Object.assign({}, actionParams, widgetData)} widgetData={widgetData} />;
         } else if (WidgetComponent) {
-            cardContent = <WidgetComponent {...otherProps} widgetConfig={runtimeConfig} actionParams={Object.assign({}, actionParams, widgetData)} widgetData={widgetData} />
+            if(window['REMOTE_VUE_LIST'].includes(widgetModel.type)) {
+                let comp = (window[widgetModel.type] && window[widgetModel.type][widgetModel.type]) || <div>未定义组件</div>
+                console.log(runtimeConfig,'widgetProps-widgetProps-out')
+                cardContent = <VueWrapper {...otherProps} widgetConfig={runtimeConfig} component={comp} widgetData={widgetData} />
+            } else {
+                cardContent = <WidgetComponent {...otherProps} widgetConfig={runtimeConfig} actionParams={Object.assign({}, actionParams, widgetData)} widgetData={widgetData} />
+            }
         } else {
             if (this.wrapperType !== Constants.CARD_WRAPPER_NONE) {
                 let { title, ...otherConfig } = runtimeConfig;
@@ -159,7 +167,7 @@ export default class WidgetCard extends React.Component {
             hiddenHandle = <span><a style={{ color: headerColor && (this.wrapperType === Constants.CARD_WRAPPER_DEFAULT || this.wrapperType === Constants.CARD_WRAPPER_ADVANCED) ? "#fafafa" : undefined, position: 'relative', top: 7, right: 4 }} onClick={this.handleClose}><CloseOutlined /></a></span>
         }
         let toolbarLeft = null, toolbarRight = null;
-        if (filterConfig.title && filterConfig.title === "TAB过滤项" && filterConfig.tabPosition && filterConfig.tabPosition === 'left') {
+        if (filterConfig.title && filterConfig.title === "TAB过滤项" && filterConfig.tabPosition && filterConfig.tabPosition === 'top-left') {
             toolbarLeft = <ToolBar {...this.props} handleParamsChanged={this.handleParamsChanged} hasLeftTab={true} widgetConfig={runtimeConfig} />
             if (foldHandle || hiddenHandle) {
                 toolbarRight = (
@@ -251,7 +259,7 @@ export default class WidgetCard extends React.Component {
                 }}
                 title={
                     headerExist && <div className="card-title-wrapper">
-                        {!headerColor && (this.wrapperType !== Constants.CARD_WRAPPER_ADVANCED) && title && <div className="card-wrapper-title-prefix" />}
+                        { (this.wrapperType !== Constants.CARD_WRAPPER_ADVANCED) && title && <div className="card-wrapper-title-prefix" />}
                         <div style={{ display: 'flex' }}>
                             {
                                 title && <h2 style={{ margin: "auto", paddingLeft: '10px', fontSize: 14, marginRight: title ? '12px' : '0px' }}><JSXRender jsx={title || ''} /></h2>

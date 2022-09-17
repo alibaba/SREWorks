@@ -118,6 +118,8 @@ public class ServiceTrait extends BaseTrait {
         try {
             ServiceResource<Service> resource = client.services()
                     .load(new ByteArrayInputStream(cr.toJSONString().getBytes(StandardCharsets.UTF_8)));
+            log.info("prepare to apply service cr|cluster={}|namespace={}|name={}|cr={}",
+                    clusterId, namespace, name, cr.toJSONString());
             try {
                 Service current = client.services().inNamespace(namespace).withName(name).get();
                 if (current == null) {

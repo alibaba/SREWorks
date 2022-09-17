@@ -14,7 +14,7 @@ import com.alibaba.tesla.appmanager.domain.dto.AppAddonDTO;
 import com.alibaba.tesla.appmanager.domain.req.AppAddonCreateReq;
 import com.alibaba.tesla.appmanager.domain.req.appaddon.AppAddonSyncReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
-import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpdateReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpsertReq;
 import com.alibaba.tesla.appmanager.server.assembly.AppAddonDtoConvert;
 import com.alibaba.tesla.appmanager.server.repository.AppAddonRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppAddonQueryCondition;
@@ -136,7 +136,7 @@ public class AppAddonServiceImpl implements AppAddonService {
             requestNamespaceId = EnvUtil.defaultNamespaceId();
             requestStageId = EnvUtil.defaultStageId();
         }
-        deployConfigService.update(DeployConfigUpdateReq.builder()
+        deployConfigService.update(DeployConfigUpsertReq.builder()
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(request.getAppId())
                 .typeId(typeId)
@@ -203,7 +203,7 @@ public class AppAddonServiceImpl implements AppAddonService {
                 componentName = AddonUtil.combineComponentName(appAddon.getAddonId(), appAddon.getName());
             }
             String typeId = new DeployConfigTypeId(appAddon.getAddonType(), componentName).toString();
-            deployConfigService.update(DeployConfigUpdateReq.builder()
+            deployConfigService.update(DeployConfigUpsertReq.builder()
                     .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                     .appId(appAddon.getAppId())
                     .typeId(typeId)

@@ -101,7 +101,7 @@ export default class WidgetMeta {
      * 分类
      * @type {string}
      */
-    catgory = "";
+    category = "";
 
     constructor(metaData) {
         Object.assign(this, metaData);

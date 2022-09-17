@@ -35,6 +35,9 @@ class TabFilter extends Component {
         let { items = [], action, widgetData } = this.props;
         if (widgetData && Object.values(widgetData).length) {
             items = Object.values(widgetData)
+            if(items[0] instanceof Array) {
+                items = items[0]
+            }
         }
         const { TabPane } = Tabs;
         let { tabType, tabSize, tabPosition } = action;
@@ -42,7 +45,7 @@ class TabFilter extends Component {
             tabSize = 'middle'
         }
         if (tabType === 'Button') {
-            return <div className={(tabPosition === 'top-right' ? 'tab-filter-position' : '') + ' ' + (tabPosition === 'left' ? 'tab-filter-position-radio' : '')}>
+            return <div className={(tabPosition === 'top-right' ? 'tab-filter-position' : '') + ' ' + (tabPosition === 'bottom-left' ? 'tab-filter-position-radio' : '')}>
                 <Radio.Group size={tabSize} onChange={this.handleSceneChanged} defaultValue={items[0].name}>
                     {
                         items && items.map(pan => (<Radio.Button value={pan.name}>{pan.label}</Radio.Button>))
@@ -51,7 +54,7 @@ class TabFilter extends Component {
             </div>
         }
         if (tabType === 'Switch') {
-            return (<div className={tabPosition === 'left' ? 'tab-filter-position-switch' : ''}>
+            return (<div className={tabPosition === 'bottom-left' ? 'tab-filter-position-switch' : ''}>
                 <section className={`${tabSize}-model` + " " + (tabPosition === 'top-right' ? 'tab-filter-position' : '')}>
                     {
                         items && items.map(pan => (<div className={`switch-cell ${pan.name === activeKey ? 'active-model' : ''}`} onClick={() => this.handleSceneChanged(pan.name)} key={pan.name}>{pan.label}</div>))
@@ -60,8 +63,8 @@ class TabFilter extends Component {
             </div>
             )
         }
-        return <div className={tabPosition === 'top-right' ? 'tab-filter-position' : ''}>
-            <Tabs style={{ marginBottom: '-17px' }} tabPosition={tabPosition === 'left' ? tabPosition : null} size={tabSize} defaultActiveKey={items[0].name} onChange={this.handleSceneChanged}>
+        return <div className={(tabPosition === 'top-right' ? 'tab-filter-position' : '')+ ' ' + (tabPosition === 'bottom-left' ? 'tab-filter-position-tab' : '')}>
+            <Tabs style={{ marginBottom: '-17px' }} tabPosition={tabPosition === 'bottom-left' ? 'left' : null} size={tabSize} defaultActiveKey={items[0].name} onChange={this.handleSceneChanged}>
                 {
                     items && items.map(pan => (<TabPane tab={pan.icon ? (<span>{pan.icon}{pan.label}</span>) : pan.label} key={pan.name}></TabPane>))
                 }

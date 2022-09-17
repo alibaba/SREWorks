@@ -187,6 +187,25 @@ export const exportCsv = (columns, oriData, filename = "export.csv") => {
     }
 };
 
+/**
+ * 获取json对象中value包含的$()引用变量列表
+ * @param jsonObj
+ * @returns {Set<any>}
+ */
+ export const getJsonObjectVariables=(jsonObj)=>{
+    let variables=new Set();
+    JSON.stringify(jsonObj,function (name,value) {
+        if(typeof value ==='string'&&value.includes("$")){
+            let replaceVars=value.match(/\$\(([^)]*)\)/g)||[];
+            replaceVars.forEach(varStr=>{
+                let paramKey=varStr.replace("$(","").replace(")","");
+                variables.add(paramKey);
+            })
+        }
+        return value;
+    })
+    return variables;
+};
 
 export const generateId = () => {
     return shortid.generate();

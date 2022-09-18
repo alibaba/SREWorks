@@ -1,9 +1,9 @@
-FROM registry.cn-hangzhou.aliyuncs.com/alisre/sreworks-base AS build
+FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/maven:3.8.3-adoptopenjdk-11 AS build
 COPY . /app
-COPY settings.xml /root/.m2/settings.xml
+RUN mkdir /root/.m2/ && curl https://sreworks.oss-cn-beijing.aliyuncs.com/resource/settings.xml -o /root/.m2/settings.xml
 RUN cd /app && mvn -f pom.xml -Dmaven.test.skip=true clean package
 
-FROM registry.cn-hangzhou.aliyuncs.com/alisre/openjdk:11.0.10-jre AS release
+FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/openjdk:11.0.10-jre AS release
 ARG START_MODULE=aisp-process-strategy-start
 ARG JAR_NAME=aisp-process-strategy.jar
 ARG BUILD_JAR=/app/${START_MODULE}/target/aisp-process-strategy.jar

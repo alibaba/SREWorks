@@ -20,7 +20,7 @@ import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQuickUpdateReq
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaUpdateByOptionReq;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaUpdateReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
-import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpdateReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpsertReq;
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.assembly.K8sMicroServiceMetaDtoConvert;
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.condition.K8sMicroserviceMetaQueryCondition;
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.domain.K8sMicroServiceMetaDO;
@@ -305,7 +305,7 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
      */
     private void refreshDeployConfig(K8sMicroServiceMetaDTO dto) {
         if (StringUtils.isNotEmpty(dto.getProductId()) && StringUtils.isNotEmpty(dto.getReleaseId())) {
-            deployConfigService.update(DeployConfigUpdateReq.builder()
+            deployConfigService.update(DeployConfigUpsertReq.builder()
                     .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                     .appId(dto.getAppId())
                     .typeId(new DeployConfigTypeId(DeployConfigTypeId.TYPE_PARAMETER_VALUES).toString())
@@ -317,7 +317,7 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
                     .productId(dto.getProductId())
                     .releaseId(dto.getReleaseId())
                     .build());
-            deployConfigService.update(DeployConfigUpdateReq.builder()
+            deployConfigService.update(DeployConfigUpsertReq.builder()
                     .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                     .appId(dto.getAppId())
                     .typeId(new DeployConfigTypeId(dto.getComponentType(), dto.getMicroServiceId()).toString())
@@ -329,7 +329,7 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
                     .productId(dto.getProductId())
                     .releaseId(dto.getReleaseId())
                     .build());
-            deployConfigService.update(DeployConfigUpdateReq.builder()
+            deployConfigService.update(DeployConfigUpsertReq.builder()
                     .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                     .appId(dto.getAppId())
                     .typeId(new DeployConfigTypeId(DeployConfigTypeId.TYPE_POLICIES).toString())
@@ -341,7 +341,7 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
                     .productId(dto.getProductId())
                     .releaseId(dto.getReleaseId())
                     .build());
-            deployConfigService.update(DeployConfigUpdateReq.builder()
+            deployConfigService.update(DeployConfigUpsertReq.builder()
                     .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                     .appId(dto.getAppId())
                     .typeId(new DeployConfigTypeId(DeployConfigTypeId.TYPE_WORKFLOW).toString())
@@ -637,7 +637,7 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
             metaNamespaceId = EnvUtil.defaultNamespaceId();
             metaStageId = EnvUtil.defaultStageId();
         }
-        deployConfigService.update(DeployConfigUpdateReq.builder()
+        deployConfigService.update(DeployConfigUpsertReq.builder()
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(meta.getAppId())
                 .typeId(typeId)

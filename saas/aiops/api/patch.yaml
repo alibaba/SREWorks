@@ -1,0 +1,25 @@
+launch-frontend-dev.yaml.tpl:
+  components:
+  - revisionName: INTERNAL_ADDON|productopsv2|_
+    traits:
+    - name: gateway.trait.abm.io
+      runtime: post
+      spec:
+        path: /aiops/aisp/**
+        servicename: 'dev-aiops-aisp.sreworks-aiops'
+        routeid: "dev-aiops-aisp-master-sreworks-aiops-dev"
+
+launch.yaml.tpl:
+  components:
+  - revisionName: K8S_MICROSERVICE|aisp|_  
+    parameterValues:
+    - name: Global.DB_PORT
+      value: '${DATAOPS_DB_PORT}'
+    - name: Global.DB_USER
+      value: '${DATAOPS_DB_USER}'
+    - name: Global.DB_PASSWORD
+      value: "${DATAOPS_DB_PASSWORD}"
+    - name: Global.DB_HOST
+      value: '${DATAOPS_DB_HOST}'
+ 
+

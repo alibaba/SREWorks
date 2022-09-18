@@ -36,7 +36,7 @@ import java.nio.file.Paths
  */
 class DefaultInternalAddonProductopsHandler implements BuildComponentHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultBuildJobHandler.class)
+    private static final Logger log = LoggerFactory.getLogger(DefaultInternalAddonProductopsHandler.class)
 
     /**
      * 当前内置 Handler 类型
@@ -51,7 +51,7 @@ class DefaultInternalAddonProductopsHandler implements BuildComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 22
+    public static final Integer REVISION = 23
 
     /**
      * 弹内导出应用需要排除的应用 ID

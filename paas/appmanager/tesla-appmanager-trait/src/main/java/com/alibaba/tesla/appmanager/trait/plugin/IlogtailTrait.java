@@ -23,7 +23,7 @@ public class IlogtailTrait extends BaseTrait {
      */
     private static final String ILOGTAIL_CONTAINER = "{\n" +
             "    \"name\": \"logtail\",\n" +
-            "    \"image\": \"reg.docker.alibaba-inc.com/abm-aone/logtail:v1.0.27.0-7052198-aliyun\",\n" +
+            "    \"image\": \"reg.docker.alibaba-inc.com/abm-aone/logtail:v1.1.1.0-ca91de7-aliyun\",\n" +
             "    \"imagePullPolicy\": \"IfNotPresent\",\n" +
             "    \"command\": [\n" +
             "        \"sh\",\n" +
@@ -46,8 +46,8 @@ public class IlogtailTrait extends BaseTrait {
             "            \"cpu\": \"30m\"\n" +
             "        },\n" +
             "        \"limits\": {\n" +
-            "            \"memory\": \"512Mi\",\n" +
-            "            \"cpu\": \"100m\"\n" +
+            "            \"memory\": \"2048Mi\",\n" +
+            "            \"cpu\": \"500m\"\n" +
             "        }\n" +
             "    },\n" +
             "    \"env\": [\n" +

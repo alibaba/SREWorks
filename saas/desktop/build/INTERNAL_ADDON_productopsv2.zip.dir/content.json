@@ -1,0 +1,37 @@
+{
+	"app":{
+		"environments":"[\"default,dev\"]",
+		"templateName":"blank_app",
+		"appId":"desktop",
+		"config":"null",
+		"version":"0",
+		"stageId":"dev"
+	},
+	"tabList":[
+		{
+			"tabId":"2a320817-7933-45bb-8ef7-799da64ad176",
+			"isImport":1,
+			"label":"2a320817-7933-45bb-8ef7-799da64ad176",
+			"nodeTypePath":"desktop|app|T:jCek6cyDv",
+			"appId":"desktop",
+			"elements":"[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"7dd0ad61-f801-48dc-802b-35832aca37bc\",\"elements\":[{\"type\":\"OPS_DESKTOP\",\"config\":{\"outputs\":[],\"toolbar\":{\"docList\":[],\"actionList\":[],\"label\":\"操作\",\"type\":\"button\"},\"dependParams\":[],\"hasWrapper\":\"none\",\"uniqueKey\":\"372a665c-9131-450c-8467-c9df3f304ec8\",\"cardBorder\":true,\"wrapper\":\"default\",\"title\":\"New widget\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"searchConfig\":true}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}]",
+			"name":"2a320817-7933-45bb-8ef7-799da64ad176",
+			"config":"{\"functionMeta\":[]}",
+			"stageId":"dev"
+		}
+	],
+	"nodeList":[
+		{
+			"serviceType":"jCek6cyDv",
+			"isImport":1,
+			"nodeTypePath":"desktop|app|T:jCek6cyDv",
+			"appId":"desktop",
+			"parentNodeTypePath":"desktop|app|T:",
+			"config":"{\"redirect\":{},\"isTree\":false,\"pageLayoutType\":\"FLUID\",\"keywords\":\"桌面\",\"hidden\":false,\"icon\":\"\",\"label\":\"门户\",\"type\":\"custom\",\"roleList\":[\"desktop:guest\"],\"url\":\"desktop/portal\",\"isDefault\":false,\"name\":\"portal\",\"order\":0}",
+			"version":"0",
+			"stageId":"dev"
+		}
+	],
+	"elementList":[],
+	"nodeElementList":[]
+}

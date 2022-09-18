@@ -28,6 +28,11 @@ public class DeployConfigQueryCondition extends BaseCondition {
     private String typeId;
 
     /**
+     * 类型 ID 前缀
+     */
+    private String typeIdPrefix;
+
+    /**
      * 环境 ID
      */
     private String envId;

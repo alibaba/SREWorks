@@ -1,0 +1,13 @@
+launch-frontend-dev.yaml.tpl:
+  components:
+  - revisionName: INTERNAL_ADDON|productopsv2|_
+    traits:
+    - name: gateway.trait.abm.io
+      runtime: post
+      spec:
+        path: "/sreworks/**"
+        servicePort: 80
+        serviceName: "prod-app-app"
+        routeId: "dev-app-app-master-${NAMESPACE_ID}-dev"
+        order: 5000
+

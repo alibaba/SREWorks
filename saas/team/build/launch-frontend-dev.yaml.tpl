@@ -31,7 +31,14 @@ spec:
         apiVersion: apps.abm.io/v1
         kind: Stage
         name: '{{ Global.STAGE_ID }}'
-    traits: []
+    traits:
+    - name: gateway.trait.abm.io
+      runtime: post
+      spec:
+        path: /sreworks/teammanage/**
+        routeId: dev-team-team-master-${NAMESPACE_ID}-dev
+        serviceName: prod-team-team
+        servicePort: 80
   - parameterValues:
     - name: STAGE_ID
       toFieldPaths:

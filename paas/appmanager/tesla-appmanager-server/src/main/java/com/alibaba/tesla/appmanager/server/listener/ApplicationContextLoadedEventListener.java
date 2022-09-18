@@ -39,12 +39,6 @@ public class ApplicationContextLoadedEventListener implements ApplicationListene
      * 默认加载的 Groovy 文件
      */
     private final List<String> DEFAULT_GROOVY_SCRIPTS = Arrays.asList(
-            "/dynamicscripts/DefaultBuildMicroserviceHandler.groovy",
-            "/dynamicscripts/DefaultDeployMicroserviceHandler.groovy",
-            "/dynamicscripts/DefaultBuildJobHandler.groovy",
-            "/dynamicscripts/DefaultDeployJobHandler.groovy",
-            "/dynamicscripts/HelmBuildMicroserviceHandler.groovy",
-            "/dynamicscripts/HelmDeployMicroserviceHandler.groovy",
             "/dynamicscripts/DefaultBuildInternalAddonProductopsHandler.groovy",
             "/dynamicscripts/DefaultDeployInternalAddonProductopsHandler.groovy",
             "/dynamicscripts/DefaultBuildInternalAddonDevelopmentMetaHandler.groovy",
@@ -61,17 +55,24 @@ public class ApplicationContextLoadedEventListener implements ApplicationListene
             "/dynamicscripts/TraitHostNetwork.groovy",
             "/dynamicscripts/TraitSystemEnv.groovy",
             "/dynamicscripts/TraitNodeSelector.groovy",
-            "/dynamicscripts/MicroserviceComponentWatchKubernetesInformerHandler.groovy",
-            "/dynamicscripts/JobComponentWatchKubernetesInformerHandler.groovy",
+            "/dynamicscripts/TraitSecret.groovy",
+            "/dynamicscripts/MicroserviceComponentBuildHandler.groovy",
+            "/dynamicscripts/MicroserviceComponentDeployHandler.groovy",
             "/dynamicscripts/MicroserviceComponentHandler.groovy",
             "/dynamicscripts/MicroserviceComponentDestroyHandler.groovy",
+            "/dynamicscripts/MicroserviceComponentWatchKubernetesInformerHandler.groovy",
+            "/dynamicscripts/JobComponentBuildHandler.groovy",
+            "/dynamicscripts/JobComponentDeployHandler.groovy",
             "/dynamicscripts/JobComponentHandler.groovy",
             "/dynamicscripts/JobComponentDestroyHandler.groovy",
+            "/dynamicscripts/JobComponentWatchKubernetesInformerHandler.groovy",
             "/dynamicscripts/HelmComponentHandler.groovy",
+            "/dynamicscripts/HelmComponentBuildHandler.groovy",
+            "/dynamicscripts/HelmComponentDeployHandler.groovy",
             "/dynamicscripts/HelmComponentDestroyHandler.groovy",
+            "/dynamicscripts/ScriptComponentHandler.groovy",
             "/dynamicscripts/ScriptComponentBuildHandler.groovy",
             "/dynamicscripts/ScriptComponentDeployHandler.groovy",
-            "/dynamicscripts/ScriptComponentHandler.groovy",
             "/dynamicscripts/ScriptComponentWatchCronHandler.groovy",
             "/dynamicscripts/InternalAddonV2ProductopsComponentHandler.groovy",
             "/dynamicscripts/InternalAddonV2ProductopsComponentDestroyHandler.groovy",
@@ -79,7 +80,8 @@ public class ApplicationContextLoadedEventListener implements ApplicationListene
             "/dynamicscripts/WorkflowRemoteDeployHandler.groovy",
             "/dynamicscripts/WorkflowSuspendHandler.groovy",
             "/dynamicscripts/PolicyTopologyHandler.groovy",
-            "/dynamicscripts/PolicyOverrideHandler.groovy"
+            "/dynamicscripts/PolicyOverrideHandler.groovy",
+            "/dynamicscripts/CustomStatusGenericResource.groovy"
     );
 
     private final GroovyClassLoader groovyClassLoader = new GroovyClassLoader();

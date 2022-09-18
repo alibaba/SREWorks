@@ -4,22 +4,51 @@
 },{
   "appId": "job",
   "packagePath": "saas/job/build",
-  "develop": "saas/job/api/dev.yaml"
+  "patch": "saas/job/api/patch.yaml"
 },{
   "appId": "app",
   "packagePath": "saas/app/build",
-  "develop": "saas/job/api/dev.yaml"
+  "patch": "saas/job/api/patch.yaml"
 },{
   "appId": "cluster",
   "packagePath": "saas/cluster/build",
-  "develop": "saas/job/api/dev.yaml"
+  "patch": "saas/job/api/patch.yaml"
 },{
   "appId": "swadmin",
   "packagePath": "saas/swadmin/build"
 },{
   "appId": "team",
-  "packagePath": "saas/team/build" 
+  "packagePath": "saas/team/build",
+  "patch": "saas/team/api/patch.yaml"
 },{
   "appId": "help",
   "packagePath": "saas/help/build"
+},{
+  "appId": "health",
+  "packagePath": "saas/health/build",
+  "patch": "saas/health/api/patch.yaml"
+},{
+  "appId": "search",
+  "packagePath": "saas/search/build",
+  "patch": "saas/search/api/patch.yaml"
+},{
+  "appId": "upload",
+  "packagePath": "saas/upload/build",
+  "patch": "saas/upload/api/patch.yaml"
+},{
+  "appId": "ocenter",
+  "packagePath": "saas/ocenter/build"
+},{
+  "appId": "healing",
+  "packagePath": "saas/healing/build"
+},{
+  "appId": "desktop",
+  "packagePath": "saas/desktop/build"
+},{
+  "appId": "aiops",
+  "packagePath": "saas/aiops/build",
+  "patch": "saas/aiops/api/patch.yaml"
+},{
+  "appId": "system",
+  "packagePath": "saas/system/build" 
 }]

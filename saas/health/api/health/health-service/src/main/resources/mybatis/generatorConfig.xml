@@ -7,7 +7,7 @@
 	<!-- 配置mysql 驱动jar包路径.用了绝对路径 -->
 	<!-- ATTENTION:这里需要把路径改为自己的.m2仓库 无法使用~符号！！！！！ -->
 	<classPathEntry
-		location="/Users/fangzong.lyj/.m2/repository/mysql/mysql-connector-java/5.1.44/mysql-connector-java-5.1.44.jar" />
+		location="/Users/sreworks/.m2/repository/mysql/mysql-connector-java/5.1.44/mysql-connector-java-5.1.44.jar" />
 
 	<context id="bcc_job_engine_mysql_tables" targetRuntime="MyBatis3">
 		<plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin" />
@@ -25,7 +25,7 @@
 		</commentGenerator>
 
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-						connectionURL="jdbc:mysql://bridge-mysql.testaaa.ca221ae8860d9421688e59c8ab45c8b21.cn-hangzhou.alicontainer.com:13308/health?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false"
+						connectionURL="jdbc:mysql://127.0.0.1:3306/health?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false"
 						userId="root" password="root">
 		</jdbcConnection>
 

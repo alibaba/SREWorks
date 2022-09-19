@@ -3,16 +3,16 @@
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
-//const versionConfig = {
-//  latestVersion: "v1.2"
-//}
+const versionConfig = {
+  latestVersion: "v1.2"
+}
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'SREWorks',
   tagline: 'SREWorks 专注于以应用为中心的一站式“云原生”、“数智化”运维SaaS管理套件。提供企业的应用&资源管理及运维开发两大核心能力，帮助企业实现云原生应用&资源的交付运维',
   url: "https://sreworks.opensource.alibaba.com/",
-  baseUrl: '/docs/',
+  baseUrl: '/',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   onBrokenLinks: "ignore",
@@ -44,26 +44,78 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.json'),
+          includeCurrentVersion: true,
+          lastVersion: versionConfig.latestVersion,
           editUrl: function(params){
              let docName = params.permalink.split("/")[params.permalink.split("/").length - 1].split(".")[0];
              return "https://www.yuque.com/sreworks-doc/docs/" + docName;
           },
+          versions: {}
         },
+        // blog: {
+        //    postsPerPage: 3,
+        //    //showReadingTime: true,
+        // },
+        //column: {
+        //   postsPerPage: 3,
+        //},
         theme: {
-          customCss: require.resolve('./src/css/sreworks-doc.scss'),
+          customCss: require.resolve('./src/css/sreworks.scss'),
         },
       }),
     ],
   ],
   plugins: [
     'docusaurus-plugin-sass',
+     [
+            'docusaurus-plugin-includes',
+            {
+                injectedHtmlTags: {
+                    headTags: [
+                        {
+                            tagName: 'meta',
+                            attributes: {
+                                name: 'aes-config',
+                                content: 'pid=xux-opensource&user_type=101&uid=&username=&dim10=sreworks',
+                            },
+                        },
+                    ],
+                    preBodyTags: [
+                        {
+                            tagName: 'script',
+                            attributes: {
+                                src: '//g.alicdn.com/alilog/mlog/aplus_v2.js',
+                                id: 'beacon-aplus',
+                                exparams: 'clog=o&aplus&sidx=aplusSidx&ckx=aplusCkx',
+                            },
+                        },
+                        {
+                            tagName: 'script',
+                            attributes: {
+                                src: '//g.alicdn.com/aes/??tracker/1.0.34/index.js,tracker-plugin-pv/2.4.5/index.js,tracker-plugin-event/1.2.5/index.js,tracker-plugin-jserror/1.0.13/index.js,tracker-plugin-api/1.1.14/index.js,tracker-plugin-perf/1.1.8/index.js,tracker-plugin-eventTiming/1.0.4/index.js',
+                            },
+                        },
+                    ],
+                }
+            },
+      ],
+    // [
+    //     // 常见问题
+    //     '@docusaurus/plugin-content-blog',
+    //     {
+    //         id: 'column',
+    //         path: 'column',
+    //         routeBasePath: 'column',
+    //         //sidebarPath: require.resolve('./sidebars-column.json'),
+    //     },
+    // ],
   ],
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: '',
+        title: 'SREWorks',
         hideOnScroll: true,
         // logo: {
         //   alt: 'sreworks Logo',
@@ -74,6 +126,36 @@ const config = {
 
         items: [
           {
+            label: "FAQ",
+            position: 'right',
+            to: 'docs/iwa896'
+          },
+        //   {
+        //     to: 'blog',
+        //     label: 'Blog',
+        //     position: 'right',
+        //   },
+//          {
+//            label: 'Blog',
+//            type: 'doc',
+//            docId: 'index',
+//            position: 'right',
+ //           docsPluginId: 'blogs',
+  //      },
+        // {
+        //     label: 'Column',
+        //     to: 'column',
+        //     //type: 'blog',
+        //     //docId: 'index',
+        //     position: 'right',
+        //     //docsPluginId: 'column',
+        // },
+          {
+            label: "Demo",
+            position: 'right',
+            href: 'https://wj.qq.com/s2/10565748/53da/',
+          },
+          {
             label: "docs",
             position: 'right',
             to: 'docs'
@@ -81,6 +163,12 @@ const config = {
           {
             type: 'localeDropdown',
             position: 'right',
+          },
+          {
+            className: 'header-github-link',
+            // html: "<div class='navbar__item github-link-logo'><a href='https://github.com/alibaba/sreworks'></a></div>",
+            position: 'right',
+            href: 'https://github.com/alibaba/sreworks',
           },
         ],
       },

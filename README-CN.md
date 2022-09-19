@@ -38,7 +38,7 @@ SREWorks 作为阿里云大数据SRE团队对SRE理念的工程实践，专注�
 
 回归到运维领域的需求，无论上层产品和业务形态怎么变化，运维本质上解决的还是“质量、成本、效率、安全”相关需求。SREWorks 用一个运维 SaaS 应用界面来支撑上述需求，同时以“数智”思想为内核驱动 SaaS 能力，具体包括交付、监测、管理、控制、运营、服务六部分。
 
-![image.png](/paas/sw-frontend/docs/pictures/1650211475047-fdfccb84-61bd-4e1f-8451-9505847a48a7.png)
+![image.png](paas/sw-frontend/docs/docs/pictures/1650210530007-be2209bd-9179-4189-9dcc-3f9f38ff2090.jpeg.png)
 
 
 ## 入门指南

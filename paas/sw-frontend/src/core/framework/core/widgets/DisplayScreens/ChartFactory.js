@@ -12,6 +12,7 @@ import BizStackedColumnChart from '../BizStackedColumnChart'
 import BizStackedBarChart from '../BizStackedBarChart'
 import BizTreemapChart from '../BizTreemapChart'
 import BizWordCloud from '../BizWordCloud'
+import BizHeatMap from '../BizHeatMap'
  class ChartFactory{
     static chartTypeArray = [
         "Pie",
@@ -26,7 +27,8 @@ import BizWordCloud from '../BizWordCloud'
         "BizStackedColumnChart",
         "BizStackedBarChart",
         "BizTreemapChart",
-        "BizWordCloud"
+        "BizWordCloud",
+        "BizHeatMap"
     ];
     static  createScreenChart(widgetConfig) {
         let itemElement = <div>未定义的图表组件</div>,type = (widgetConfig && widgetConfig.type) || ''
@@ -56,6 +58,8 @@ import BizWordCloud from '../BizWordCloud'
             case "BizTreemapChart": itemElement = <BizTreemapChart widgetConfig={widgetConfig.config} /> 
             break;
             case "BizWordCloud": itemElement = <BizWordCloud widgetConfig={widgetConfig.config} />
+            break;
+            case "BizHeatMap": itemElement = <BizHeatMap widgetConfig={widgetConfig.config} />
             break;
             default:itemElement = <div>未定义的图表组件</div>
             break;

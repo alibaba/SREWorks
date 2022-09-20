@@ -58,6 +58,9 @@ options:
     - ES_ENDPOINT
     - ES_USERNAME
     - ES_PASSWORD
+    - JVM_XMX
+    - JVM_XMS
+
 
 ---
 

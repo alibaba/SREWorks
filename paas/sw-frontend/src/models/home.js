@@ -118,6 +118,9 @@ export default {
             let namespaceId = util.getNewBizApp().split(",")[1];
             let stageId = util.getNewBizApp().split(",")[2];
             AppService.postWorkspaces({ collectList: state.collectList, workspaces: workspaces }, namespaceId, stageId)
+            if(workspaces) {
+                localStorage.setItem("workspaces",JSON.stringify(workspaces));
+            }
             return {
                 ...state,
                 workspaces,

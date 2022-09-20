@@ -17,7 +17,7 @@ import JSXRender from './JSXRender';
 
 import './index.less';
 
-const VueWrapper = window['vuera']['VueWrapper'];
+const VueWrapper = window['vuera'] ? window['vuera']['VueWrapper'] : undefined;
 
 export default class WidgetCard extends React.Component {
 
@@ -123,9 +123,8 @@ export default class WidgetCard extends React.Component {
         } else if (Constants.BLOCK === widgetModel.type) {
             cardContent = <Block {...otherProps} widgetConfig={runtimeConfig} actionParams={Object.assign({}, actionParams, widgetData)} widgetData={widgetData} />;
         } else if (WidgetComponent) {
-            if(window['REMOTE_VUE_LIST'].includes(widgetModel.type)) {
+            if(window['REMOTE_VUE_LIST'].includes(widgetModel.type) && VueWrapper) {
                 let comp = (window[widgetModel.type] && window[widgetModel.type][widgetModel.type]) || <div>未定义组件</div>
-                console.log(runtimeConfig,'widgetProps-widgetProps-out')
                 cardContent = <VueWrapper {...otherProps} widgetConfig={runtimeConfig} component={comp} widgetData={widgetData} />
             } else {
                 cardContent = <WidgetComponent {...otherProps} widgetConfig={runtimeConfig} actionParams={Object.assign({}, actionParams, widgetData)} widgetData={widgetData} />

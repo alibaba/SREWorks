@@ -5,11 +5,12 @@ import * as util from "../utils/utils";
  * Created by caoshuaibiao on 2020/12/11.
  * 运维桌面相关dav model
  */
+const initWorkspces = localStorage.getItem('workspces')? JSON.parse(localStorage.getItem('workspces')): []
 export default {
     namespace: 'home',
     state: {
         switchDeleteState: false,
-        workspaces: [],
+        workspaces: initWorkspces,
         currentUser: {},
         appStore: [],
         checkedAppStore: {},
@@ -28,6 +29,7 @@ export default {
             if (!isEqual) {
                 AppService.postWorkspaces({ collectList, workspaces, customQuickList }, namespaceId, stageId)
             }
+            localStorage.setItem("workspaces",JSON.stringify(workspaces));
             return {
                 ...state,
                 collectList,

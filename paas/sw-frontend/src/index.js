@@ -60,9 +60,8 @@ app.router(router);
         if (isLogined && islogined['name']) {
             const res = await AppService.getAllProfile(params)
             let { collectList = [], customQuickList = [], workspaces } = res.profile;
-            app.start();
-            app._store.dispatch({ type: "home/setDesktopData", workspaces, collectList, customQuickList, isEqual: res.isEqual })
             app.start('#root');
+            app._store.dispatch({ type: "home/setDesktopData", workspaces, collectList, customQuickList, isEqual: res.isEqual })
         } else {
             return false
         }

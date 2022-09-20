@@ -99,8 +99,14 @@ class HomeLayout extends React.Component {
         backgroundImgeUrl = localImglist.includes(workspaces[desktopIndex].background) ? requiredImglist[localImglist.indexOf(workspaces[desktopIndex].background)] : (properties.baseUrl + workspaces[desktopIndex].background)
       }
     } else {
-      backgroundImgeUrl = requiredImglist[0];
+      let localWorkspaces = localStorage.getItem('workspaces')? JSON.parse(localStorage.getItem('workspaces')): []
+      if(localWorkspaces.length) {
+        backgroundImgeUrl = localImglist.includes(localWorkspaces[desktopIndex].background)? requiredImglist[localImglist.indexOf(localWorkspaces[desktopIndex].background)] : (properties.baseUrl + localWorkspaces[desktopIndex].background)
+      }
     }
+    // else {
+    //   backgroundImgeUrl = requiredImglist[0];
+    // }
     if(!backgroundImgeUrl) {
       backgroundImgeUrl = requiredImglist[0]
     }

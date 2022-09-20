@@ -147,6 +147,7 @@ export class JSONDataSource extends DataSource {
         } catch(err) {
             json = {}
             message.warning("数据格式有误!")
+            return json
         }
     }
 }

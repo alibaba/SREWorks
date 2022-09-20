@@ -127,7 +127,7 @@ for toc in toc_list:
 
 if settings["SIDEBARS_FILE"] not in ["false", False, "False"]:
     h = open(self_path + "/" + settings["SIDEBARS_FILE"], 'w')
-    h.write(json.dumps({"sidebars":["index"] + sidebars_data}))
+    h.write(json.dumps({"sidebars":["index"] + sidebars_data}, sort_keys=True, indent=4))
     h.close()
 
 for doc in yuque("/repos/" + settings["NAMESPACE"] + "/docs"):

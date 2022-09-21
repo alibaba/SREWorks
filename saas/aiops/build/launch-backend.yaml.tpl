@@ -9,8 +9,7 @@ metadata:
   name: aiops
 spec:
   components:
-  - dependencies:
-    - component: RESOURCE_ADDON|system-env@system-env
+  - dependencies: []
     parameterValues:
     - name: REPLICAS
       toFieldPaths:
@@ -44,8 +43,7 @@ spec:
         authEnabled: false
         path: /aiops/anomalydetection/**
         serviceName: '{{ Global.STAGE_ID }}-aiops-anomalydetection.{{ Global.NAMESPACE_ID }}'
-  - dependencies:
-    - component: RESOURCE_ADDON|system-env@system-env
+  - dependencies: []
     parameterValues:
     - name: REPLICAS
       toFieldPaths:
@@ -85,8 +83,7 @@ spec:
         authEnabled: false
         path: /aiops/processstrategy/**
         serviceName: '{{ Global.STAGE_ID }}-aiops-processstrategy.{{ Global.NAMESPACE_ID }}'
-  - dependencies:
-    - component: RESOURCE_ADDON|system-env@system-env
+  - dependencies: []
     parameterValues:
     - name: REPLICAS
       toFieldPaths:

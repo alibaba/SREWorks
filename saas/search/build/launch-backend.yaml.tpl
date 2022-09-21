@@ -9,8 +9,7 @@ metadata:
   name: search
 spec:
   components:
-  - dependencies:
-    - component: RESOURCE_ADDON|system-env@system-env
+  - dependencies: []
     parameterValues:
     - name: REPLICAS
       toFieldPaths:

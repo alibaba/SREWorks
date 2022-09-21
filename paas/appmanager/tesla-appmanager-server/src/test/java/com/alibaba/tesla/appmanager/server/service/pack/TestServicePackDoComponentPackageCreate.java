@@ -103,7 +103,6 @@ public class TestServicePackDoComponentPackageCreate {
                 .component(ComponentBinder.builder()
                         .componentType(COMPONENT_TYPE)
                         .componentName(COMPONENT_NAME)
-                        .componentLabel(COMPONENT_NAME)
                         .version(PACKAGE_VERSION)
                         .branch("master")
                         .useRawOptions(false)

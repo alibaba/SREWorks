@@ -7,7 +7,10 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="namespace_id" jdbcType="VARCHAR" property="namespaceId" />
+    <result column="stage_id" jdbcType="VARCHAR" property="stageId" />
     <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="category" jdbcType="VARCHAR" property="category" />
     <result column="component_type" jdbcType="VARCHAR" property="componentType" />
     <result column="component_name" jdbcType="VARCHAR" property="componentName" />
   </resultMap>
@@ -78,7 +81,8 @@
   </sql>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, gmt_create, gmt_modified, app_id, component_type, component_name
+    id, gmt_create, gmt_modified, namespace_id, stage_id, app_id, category, component_type, 
+    component_name
   </sql>
   <sql id="Blob_Column_List">
     <!--@mbg.generated-->
@@ -116,20 +120,6 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
-    <!--@mbg.generated-->
-    select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from am_app_component
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    <!--@mbg.generated-->
-    delete from am_app_component
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
   <delete id="deleteByExample" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.AppComponentDOExample">
     <!--@mbg.generated-->
     delete from am_app_component
@@ -137,15 +127,6 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.AppComponentDO" useGeneratedKeys="true">
-    <!--@mbg.generated-->
-    insert into am_app_component (gmt_create, gmt_modified, app_id, 
-      component_type, component_name, config
-      )
-    values (#{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{appId,jdbcType=VARCHAR}, 
-      #{componentType,jdbcType=VARCHAR}, #{componentName,jdbcType=VARCHAR}, #{config,jdbcType=LONGVARCHAR}
-      )
-  </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.AppComponentDO" useGeneratedKeys="true">
     <!--@mbg.generated-->
     insert into am_app_component
@@ -156,8 +137,17 @@
       <if test="gmtModified != null">
         gmt_modified,
       </if>
+      <if test="namespaceId != null">
+        namespace_id,
+      </if>
+      <if test="stageId != null">
+        stage_id,
+      </if>
       <if test="appId != null">
         app_id,
+      </if>
+      <if test="category != null">
+        category,
       </if>
       <if test="componentType != null">
         component_type,
@@ -176,8 +166,17 @@
       <if test="gmtModified != null">
         #{gmtModified,jdbcType=TIMESTAMP},
       </if>
+      <if test="namespaceId != null">
+        #{namespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="stageId != null">
+        #{stageId,jdbcType=VARCHAR},
+      </if>
       <if test="appId != null">
         #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null">
+        #{category,jdbcType=VARCHAR},
       </if>
       <if test="componentType != null">
         #{componentType,jdbcType=VARCHAR},
@@ -210,8 +209,17 @@
       <if test="record.gmtModified != null">
         gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.namespaceId != null">
+        namespace_id = #{record.namespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stageId != null">
+        stage_id = #{record.stageId,jdbcType=VARCHAR},
+      </if>
       <if test="record.appId != null">
         app_id = #{record.appId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.category != null">
+        category = #{record.category,jdbcType=VARCHAR},
       </if>
       <if test="record.componentType != null">
         component_type = #{record.componentType,jdbcType=VARCHAR},
@@ -226,78 +234,5 @@
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
-  </update>
-  <update id="updateByExampleWithBLOBs" parameterType="map">
-    <!--@mbg.generated-->
-    update am_app_component
-    set id = #{record.id,jdbcType=BIGINT},
-      gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
-      app_id = #{record.appId,jdbcType=VARCHAR},
-      component_type = #{record.componentType,jdbcType=VARCHAR},
-      component_name = #{record.componentName,jdbcType=VARCHAR},
-      config = #{record.config,jdbcType=LONGVARCHAR}
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByExample" parameterType="map">
-    <!--@mbg.generated-->
-    update am_app_component
-    set id = #{record.id,jdbcType=BIGINT},
-      gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
-      app_id = #{record.appId,jdbcType=VARCHAR},
-      component_type = #{record.componentType,jdbcType=VARCHAR},
-      component_name = #{record.componentName,jdbcType=VARCHAR}
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.AppComponentDO">
-    <!--@mbg.generated-->
-    update am_app_component
-    <set>
-      <if test="gmtCreate != null">
-        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="gmtModified != null">
-        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
-      </if>
-      <if test="appId != null">
-        app_id = #{appId,jdbcType=VARCHAR},
-      </if>
-      <if test="componentType != null">
-        component_type = #{componentType,jdbcType=VARCHAR},
-      </if>
-      <if test="componentName != null">
-        component_name = #{componentName,jdbcType=VARCHAR},
-      </if>
-      <if test="config != null">
-        config = #{config,jdbcType=LONGVARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.AppComponentDO">
-    <!--@mbg.generated-->
-    update am_app_component
-    set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
-      app_id = #{appId,jdbcType=VARCHAR},
-      component_type = #{componentType,jdbcType=VARCHAR},
-      component_name = #{componentName,jdbcType=VARCHAR},
-      config = #{config,jdbcType=LONGVARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.AppComponentDO">
-    <!--@mbg.generated-->
-    update am_app_component
-    set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
-      app_id = #{appId,jdbcType=VARCHAR},
-      component_type = #{componentType,jdbcType=VARCHAR},
-      component_name = #{componentName,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

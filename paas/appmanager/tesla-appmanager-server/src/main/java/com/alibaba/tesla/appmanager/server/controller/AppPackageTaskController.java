@@ -21,6 +21,7 @@ import com.alibaba.tesla.appmanager.domain.req.apppackage.ComponentBinder;
 import com.alibaba.tesla.appmanager.domain.req.componentpackage.ComponentPackageLatestVersionListReq;
 import com.alibaba.tesla.appmanager.domain.res.apppackage.AppPackageTaskCreateRes;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
+import com.google.common.base.Enums;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -174,20 +175,26 @@ public class AppPackageTaskController extends AppManagerBaseController {
 
             List<ComponentBinder> components = new ArrayList<>();
             for (AppComponentDTO appComponent : appComponents) {
+                ComponentTypeEnum componentType = Enums
+                        .getIfPresent(ComponentTypeEnum.class, appComponent.getComponentType()).orNull();
+                if (componentType == null) {
+                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                            String.format("invalid componentType %s", appComponent.getComponentType()));
+                }
+                // 默认填充 AUTO_VERSION 到 version 字段，在构建时触发版本号自动向前滚动
                 ComponentBinder componentBinder = ComponentBinder.builder()
-                        .componentType(appComponent.getComponentType())
+                        .componentType(componentType)
                         .componentName(appComponent.getComponentName())
-                        .componentLabel(appComponent.getComponentLabel())
-                        .version(appComponent.getComponentVersion())
+                        .version(DefaultConstant.AUTO_VERSION)
                         .isDevelop(request.isDevelop())
                         .build();
-                if (appComponent.getComponentType().isKubernetesMicroservice()) {
+                if (componentType.isKubernetesMicroservice()) {
                     componentBinder.setBranch(DefaultConstant.DEFAULT_REPO_BRANCH);
                     List<ComponentPackageVersionItemDTO> componentVersionList = componentPackageProvider
                             .latestVersions(
                                     ComponentPackageLatestVersionListReq.builder()
                                             .appId(appId)
-                                            .componentType(appComponent.getComponentType().toString())
+                                            .componentType(appComponent.getComponentType())
                                             .componentName(appComponent.getComponentName())
                                             .build(),
                                     operator);
@@ -195,13 +202,13 @@ public class AppPackageTaskController extends AppManagerBaseController {
                         return buildClientErrorResult(appComponent.getComponentName() + " 最新版本号缺失");
                     }
                     componentBinder.setVersion(componentVersionList.get(0).getName());
-                } else if (appComponent.getComponentType().isHelm()) {
+                } else if (componentType.isHelm()) {
                     componentBinder.setBranch(DefaultConstant.DEFAULT_REPO_BRANCH);
                     List<ComponentPackageVersionItemDTO> componentVersionList = componentPackageProvider
                             .latestVersions(
                                     ComponentPackageLatestVersionListReq.builder()
                                             .appId(appId)
-                                            .componentType(appComponent.getComponentType().toString())
+                                            .componentType(appComponent.getComponentType())
                                             .componentName(appComponent.getComponentName())
                                             .build(),
                                     operator);
@@ -217,7 +224,6 @@ public class AppPackageTaskController extends AppManagerBaseController {
                 ComponentBinder developmentMeta = ComponentBinder.builder()
                         .componentType(ComponentTypeEnum.INTERNAL_ADDON)
                         .componentName(INTERNAL_ADDON_DEVELOPMENT_META)
-                        .componentLabel("Development Meta")
                         .version(DefaultConstant.INIT_VERSION)
                         .build();
                 components.add(developmentMeta);
@@ -225,7 +231,6 @@ public class AppPackageTaskController extends AppManagerBaseController {
                 ComponentBinder appMeta = ComponentBinder.builder()
                         .componentType(ComponentTypeEnum.INTERNAL_ADDON)
                         .componentName(INTERNAL_ADDON_APP_META)
-                        .componentLabel("App Meta")
                         .version(DefaultConstant.INIT_VERSION)
                         .build();
                 components.add(appMeta);

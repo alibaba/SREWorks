@@ -1,36 +1,21 @@
 package com.alibaba.tesla.appmanager.domain.req.appcomponent;
 
-import com.alibaba.tesla.appmanager.common.BaseRequest;
+import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 /**
- * 应用关联组件查询请求
+ * 应用关联组件创建请求
  *
  * @author yaoxing.gyx@alibaba-inc.com
  */
 @Data
-@SuperBuilder
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppComponentQueryReq extends BaseRequest {
-
-    /**
-     * ID
-     */
-    private Long id;
-
-    /**
-     * 应用 ID
-     */
-    private String appId;
-
-    /**
-     * 分类
-     */
-    private String category;
+public class AppComponentCreateReq {
 
     /**
      * Namespace ID
@@ -43,7 +28,27 @@ public class AppComponentQueryReq extends BaseRequest {
     private String stageId;
 
     /**
-     * 架构
+     * 应用 ID
      */
-    private String arch;
+    private String appId;
+
+    /**
+     * 分类
+     */
+    private String category;
+
+    /**
+     * 组件类型
+     */
+    private String componentType;
+
+    /**
+     * 组件名称
+     */
+    private String componentName;
+
+    /**
+     * 配置内容
+     */
+    private JSONObject config;
 }

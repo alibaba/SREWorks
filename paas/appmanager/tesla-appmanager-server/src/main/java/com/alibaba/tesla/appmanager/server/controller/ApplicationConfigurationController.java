@@ -78,9 +78,9 @@ public class ApplicationConfigurationController extends AppManagerBaseController
     }
 
     @Operation(summary = "更新指定类型的部署信息")
-    @PostMapping("types/{type}")
+    @PutMapping("types/{type}")
     public TeslaBaseResult upsertByType(
-            @ModelAttribute DeployConfigUpsertReq request,
+            @RequestBody DeployConfigUpsertReq request,
             @PathVariable String type,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {

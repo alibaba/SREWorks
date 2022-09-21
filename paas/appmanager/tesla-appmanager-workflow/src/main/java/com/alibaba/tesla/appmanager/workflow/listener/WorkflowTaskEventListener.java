@@ -101,7 +101,7 @@ public class WorkflowTaskEventListener implements ApplicationListener<WorkflowTa
                 log.info(logPre + "locker version expired, skip" + logSuffix);
                 return;
             }
-            markAsException(workflowTaskId, nextStatus, e.getErrorMessage());
+            markAsException(workflowTaskId, nextStatus, ExceptionUtils.getStackTrace(e));
         } catch (Exception e) {
             markAsException(workflowTaskId, nextStatus, ExceptionUtils.getStackTrace(e));
         }

@@ -132,9 +132,13 @@ def only_backend_filter(launchYAML):
     gatewayTrait = {}
     for component in launchYAML["spec"]["components"]:
         if not component["revisionName"].startswith("INTERNAL_ADDON"):
-            newComponents.append(component)
+            newComponents.append(component)    
+        if {"component": "RESOURCE_ADDON|system-env@system-env"} in component.get("dependencies",[]):
+            component["dependencies"].remove({"component": "RESOURCE_ADDON|system-env@system-env"})
 
     launchYAML["spec"]["components"] = newComponents
+    
+
 
 
 def frontend_dev_replace(launchYAML, devYAML):

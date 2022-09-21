@@ -24,6 +24,7 @@ import com.alibaba.tesla.appmanager.workflow.service.WorkflowTaskService;
 import com.alibaba.tesla.appmanager.workflow.service.thread.ExecuteWorkflowTaskResult;
 import com.alibaba.tesla.appmanager.workflow.service.thread.ExecuteWorkflowTaskWaitingObject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -189,7 +190,11 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
             } catch (Throwable e) {
                 ExecuteWorkflowTaskWaitingObject.triggerFinished(
                         task.getId(),
-                        ExecuteWorkflowTaskResult.builder().task(task).success(false).extMessage(e.toString()).build());
+                        ExecuteWorkflowTaskResult.builder()
+                                .task(task)
+                                .success(false)
+                                .extMessage(ExceptionUtils.getMessage(e))
+                                .build());
                 return;
             }
             ExecuteWorkflowTaskWaitingObject.triggerFinished(

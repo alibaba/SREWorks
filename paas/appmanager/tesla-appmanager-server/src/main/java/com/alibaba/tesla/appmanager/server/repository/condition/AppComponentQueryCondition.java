@@ -1,13 +1,14 @@
-package com.alibaba.tesla.appmanager.domain.req.appcomponent;
+package com.alibaba.tesla.appmanager.server.repository.condition;
 
-import com.alibaba.tesla.appmanager.common.BaseRequest;
+import com.alibaba.tesla.appmanager.common.BaseCondition;
+import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 应用关联组件查询请求
+ * 应用组件查询条件
  *
  * @author yaoxing.gyx@alibaba-inc.com
  */
@@ -15,11 +16,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppComponentQueryReq extends BaseRequest {
+public class AppComponentQueryCondition extends BaseCondition {
 
-    /**
-     * ID
-     */
     private Long id;
 
     /**
@@ -33,6 +31,16 @@ public class AppComponentQueryReq extends BaseRequest {
     private String category;
 
     /**
+     * 组件类型
+     */
+    private String componentType;
+
+    /**
+     * 组件名称
+     */
+    private String componentName;
+
+    /**
      * Namespace ID
      */
     private String namespaceId;
@@ -41,9 +49,4 @@ public class AppComponentQueryReq extends BaseRequest {
      * Stage ID
      */
     private String stageId;
-
-    /**
-     * 架构
-     */
-    private String arch;
 }

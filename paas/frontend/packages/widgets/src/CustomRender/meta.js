@@ -1,19 +1,19 @@
 export default {
-  id: 'API_TEST',
-  type: 'API_TEST',
-  name: 'API_TEST',
-  title: '智能服务测试',
+  id: 'CustomRender',
+  type: 'CustomRender',
+  name: 'CustomRender',
+  title: 'JSX渲染器',
   info: {
     author: {
       name: '',
       url: '',
     },
-    description: '智能服务测试',
+    description: 'jsx渲染块',
     links: [],
     logos: {
       large: '',
       small: require('./icon.svg'),
-      fontClass: 'BuiltInBusiness',
+      fontClass: 'CustomRender',
     },
     build: {
       time: '',
@@ -24,33 +24,31 @@ export default {
     screenshots: [],
     updated: '',
     version: '',
-    docs: "<a target='_blank' href='https://3x.ant.design/components/alert-cn/'>组件文档地址</a>",
+    docs: '### 组件MarkDown文档 <br/><div><span>html区域</span><code>json</code></div>',
   },
   state: '',
   latestVersion: '1.0',
   configSchema: {
     defaults: {
-      type: 'API_TEST',
+      type: 'CustomRender',
       config: {
-        businessConfig: {
-          sceneCode: '',
-          detectorCode: '',
-        },
+        renderPlaceholder: '填写标准的JSX',
       },
     },
     schema: {
       type: 'object',
       properties: {
-        businessConfig: {
-          description: '业务字段配置',
-          title: '业务字段配置',
+        jsxDom: {
+          description: '填写标准的JSX',
+          title: 'JSX模板',
+          pattern: '[a-z]',
           required: false,
+          'x-component': 'TEXTAREA',
           type: 'string',
-          'x-component': 'JSON',
         },
       },
     },
     dataMock: {},
   },
-  category: 'biz',
+  category: 'base',
 }

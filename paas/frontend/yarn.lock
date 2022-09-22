@@ -4162,7 +4162,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@sreworks/shared-utils@^0.0.0-alpha.0, @sreworks/shared-utils@workspace:^, @sreworks/shared-utils@workspace:packages/shared-utils":
+"@sreworks/shared-utils@^0.0.0-alpha.0, @sreworks/shared-utils@workspace:packages/shared-utils":
   version: 0.0.0-use.local
   resolution: "@sreworks/shared-utils@workspace:packages/shared-utils"
   dependencies:
@@ -4204,7 +4204,6 @@ __metadata:
     "@babel/core": 7.18.13
     "@babel/preset-env": 7.18.10
     "@babel/preset-react": 7.18.6
-    "@sreworks/shared-utils": "workspace:^"
     "@svgr/webpack": 6.3.1
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 12.1.5

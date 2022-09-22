@@ -83,11 +83,11 @@ public class GitServiceImpl implements GitService {
             }
 
             // 删除 .git 临时文件
-            if (!request.isKeepGitFiles()) {
-                String rmInternalDirCommand = String.format("rm -rf %s/.git*", tmpDir);
-                logContent.append(String.format("run command: %s\n", rmInternalDirCommand));
-                logContent.append(CommandUtil.runLocalCommand(rmInternalDirCommand));
-            }
+//            if (!request.isKeepGitFiles()) {
+//                String rmInternalDirCommand = String.format("rm -rf %s/.git*", tmpDir);
+//                logContent.append(String.format("run command: %s\n", rmInternalDirCommand));
+//                logContent.append(CommandUtil.runLocalCommand(rmInternalDirCommand));
+//            }
 
             // 存在 repoPath 的时候，需要将 repoPath 对应的目录拷贝到 dir 实际对应的目录中
             if (StringUtils.isNotEmpty(request.getRepoPath())) {

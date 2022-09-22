@@ -184,6 +184,11 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                 .map(appComponentDtoConvert::to)
                 .collect(Collectors.toList());
 
+        // 非兼容模式，直接返回当前通用 components
+        if (!request.isCompatible()) {
+            return result;
+        }
+
         // 获取 K8S 微应用组件 TODO: 迁移到通用 Component
         K8sMicroServiceMetaQueryReq k8sMicroServiceMetaQueryReq = new K8sMicroServiceMetaQueryReq();
         k8sMicroServiceMetaQueryReq.setAppId(appId);
@@ -194,7 +199,6 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         k8SMicroServiceMetaProvider.list(k8sMicroServiceMetaQueryReq).getItems()
                 .forEach(k8sMicroServiceMetaDTO ->
                         result.add(AppComponentDTO.builder()
-                                .id(k8sMicroServiceMetaDTO.getId())
                                 .appId(appId)
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)
@@ -213,7 +217,6 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         helmMetaProvider.list(helmMetaQueryReq).getItems()
                 .forEach(helmMetaDO ->
                         result.add(AppComponentDTO.builder()
-                                .id(helmMetaDO.getId())
                                 .appId(appId)
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)
@@ -234,7 +237,6 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         appAddonProvider.list(internalAddonQueryReq).getItems()
                 .forEach(item ->
                         result.add(AppComponentDTO.builder()
-                                .id(item.getId())
                                 .appId(appId)
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)
@@ -254,7 +256,6 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         appAddonProvider.list(resourceAddonQueryReq).getItems()
                 .forEach(item ->
                         result.add(AppComponentDTO.builder()
-                                .id(item.getId())
                                 .appId(appId)
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)

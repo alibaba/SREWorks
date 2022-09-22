@@ -193,7 +193,7 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
                         ExecuteWorkflowTaskResult.builder()
                                 .task(task)
                                 .success(false)
-                                .extMessage(ExceptionUtils.getMessage(e))
+                                .extMessage(ExceptionUtils.getStackTrace(e))
                                 .build());
                 return;
             }
@@ -217,7 +217,8 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
                 }
             }, 5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            return markAbnormalWorkflowTask(task.getId(), WorkflowTaskStateEnum.EXCEPTION, e.toString());
+            return markAbnormalWorkflowTask(task.getId(), WorkflowTaskStateEnum.EXCEPTION,
+                    ExceptionUtils.getStackTrace(e));
         }
 
         // 如果被终止或未运行成功，保存错误信息到 workflow task 中

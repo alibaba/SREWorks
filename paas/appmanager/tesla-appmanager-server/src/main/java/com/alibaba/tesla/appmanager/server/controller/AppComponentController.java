@@ -41,12 +41,10 @@ public class AppComponentController extends AppManagerBaseController {
             @ModelAttribute AppComponentQueryReq req,
             OAuth2Authentication auth) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
-        return buildSucceedResult(appComponentProvider.list(AppComponentQueryReq.builder()
-                .appId(appId)
-                .namespaceId(container.getNamespaceId())
-                .stageId(container.getStageId())
-                .arch(req.getArch())
-                .build(), getOperator(auth)));
+        req.setAppId(appId);
+        req.setNamespaceId(container.getNamespaceId());
+        req.setStageId(container.getStageId());
+        return buildSucceedResult(appComponentProvider.list(req, getOperator(auth)));
     }
 
     @PostMapping

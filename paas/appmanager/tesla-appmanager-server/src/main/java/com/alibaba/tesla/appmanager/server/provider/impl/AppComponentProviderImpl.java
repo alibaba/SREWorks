@@ -6,17 +6,23 @@ import com.alibaba.tesla.appmanager.api.provider.AppComponentProvider;
 import com.alibaba.tesla.appmanager.api.provider.HelmMetaProvider;
 import com.alibaba.tesla.appmanager.api.provider.K8sMicroServiceMetaProvider;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
+import com.alibaba.tesla.appmanager.common.enums.PluginKindEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.ClassUtil;
 import com.alibaba.tesla.appmanager.domain.dto.AppComponentDTO;
 import com.alibaba.tesla.appmanager.domain.req.AppAddonQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQueryReq;
+import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentCreateReq;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentUpdateReq;
 import com.alibaba.tesla.appmanager.domain.req.helm.HelmMetaQueryReq;
+import com.alibaba.tesla.appmanager.plugin.repository.condition.PluginDefinitionQueryCondition;
+import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDO;
+import com.alibaba.tesla.appmanager.plugin.service.PluginService;
 import com.alibaba.tesla.appmanager.server.assembly.AppComponentDtoConvert;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppComponentQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.AppComponentDO;
@@ -27,6 +33,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -52,6 +60,9 @@ public class AppComponentProviderImpl implements AppComponentProvider {
 
     @Autowired
     private HelmMetaProvider helmMetaProvider;
+
+    @Autowired
+    private PluginService pluginService;
 
     /**
      * 获取指定应用下的指定关联 Component 对象
@@ -180,8 +191,17 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                 .namespaceId(namespaceId)
                 .stageId(stageId)
                 .build());
+        Map<String, PluginDefinitionDO> pluginMap = pluginService
+                .list(PluginDefinitionQueryCondition.builder()
+                        .pluginKind(PluginKindEnum.COMPONENT_DEFINITION.toString())
+                        .pluginRegistered(true)
+                        .build())
+                .getItems()
+                .stream()
+                .collect(Collectors.toMap(PluginDefinitionDO::getPluginName, Function.identity()));
         List<AppComponentDTO> result = appComponents.stream()
-                .map(appComponentDtoConvert::to)
+                .filter(item -> pluginMap.containsKey(item.getComponentType()))
+                .map(item -> appComponentDtoConvert.to(item, pluginMap.get(item.getComponentType())))
                 .collect(Collectors.toList());
 
         // 非兼容模式，直接返回当前通用 components

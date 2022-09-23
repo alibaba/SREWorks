@@ -219,6 +219,8 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         k8SMicroServiceMetaProvider.list(k8sMicroServiceMetaQueryReq).getItems()
                 .forEach(k8sMicroServiceMetaDTO ->
                         result.add(AppComponentDTO.builder()
+                                .id(k8sMicroServiceMetaDTO.getId())
+                                .compatible(true)
                                 .appId(appId)
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)
@@ -237,6 +239,8 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         helmMetaProvider.list(helmMetaQueryReq).getItems()
                 .forEach(helmMetaDO ->
                         result.add(AppComponentDTO.builder()
+                                .id(helmMetaDO.getId())
+                                .compatible(true)
                                 .appId(appId)
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)
@@ -257,6 +261,8 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         appAddonProvider.list(internalAddonQueryReq).getItems()
                 .forEach(item ->
                         result.add(AppComponentDTO.builder()
+                                .id(item.getId())
+                                .compatible(true)
                                 .appId(appId)
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)
@@ -276,6 +282,8 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         appAddonProvider.list(resourceAddonQueryReq).getItems()
                 .forEach(item ->
                         result.add(AppComponentDTO.builder()
+                                .id(item.getId())
+                                .compatible(true)
                                 .appId(appId)
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)

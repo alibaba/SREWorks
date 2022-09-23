@@ -27,6 +27,8 @@ public class AppComponentDtoConvert extends BaseDtoConvert<AppComponentDTO, AppC
         AppComponentDTO result = new AppComponentDTO();
         ClassUtil.copy(appComponentDO, result);
         result.setPluginVersion(pluginDefinitionDO.getPluginVersion());
+        // 通过当前方法转换的记录，均为 compatible=false
+        result.setCompatible(false);
         return result;
     }
 }

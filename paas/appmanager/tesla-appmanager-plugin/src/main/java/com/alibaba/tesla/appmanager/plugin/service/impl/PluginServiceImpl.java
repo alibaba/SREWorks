@@ -82,13 +82,11 @@ public class PluginServiceImpl implements PluginService {
     /**
      * 获取插件列表
      *
-     * @param request 查询插件列表请求
+     * @param condition 查询插件列表请求
      * @return 插件列表
      */
     @Override
-    public Pagination<PluginDefinitionDO> list(PluginQueryReq request) {
-        PluginDefinitionQueryCondition condition = new PluginDefinitionQueryCondition();
-        ClassUtil.copy(request, condition);
+    public Pagination<PluginDefinitionDO> list(PluginDefinitionQueryCondition condition) {
         List<PluginDefinitionDO> records = pluginDefinitionRepository.selectByCondition(condition);
         return Pagination.valueOf(records, Function.identity());
     }

@@ -20,4 +20,5 @@ public class PluginDefinitionQueryCondition extends BaseCondition {
     private String pluginKind;
     private String pluginName;
     private String pluginVersion;
+    private Boolean pluginRegistered;
 }

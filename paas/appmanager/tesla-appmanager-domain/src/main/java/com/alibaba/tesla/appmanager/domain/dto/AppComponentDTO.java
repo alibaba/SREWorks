@@ -60,6 +60,11 @@ public class AppComponentDTO {
     private String componentName;
 
     /**
+     * 组件对应的当前应用插件版本
+     */
+    private String pluginVersion;
+
+    /**
      * 配置内容
      */
     private JSONObject config;

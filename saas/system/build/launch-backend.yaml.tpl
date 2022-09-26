@@ -9,8 +9,7 @@ metadata:
   name: system
 spec:
   components:
-  - dependencies:
-    - component: RESOURCE_ADDON|system-env@system-env
+  - dependencies: []
     parameterValues:
     - name: REPLICAS
       toFieldPaths:
@@ -47,8 +46,7 @@ spec:
         authEnabled: false
         path: /system/plugin-aliyun-cluster/**
         serviceName: '{{ Global.STAGE_ID }}-system-plugin-aliyun-cluster.{{ Global.NAMESPACE_ID }}'
-  - dependencies:
-    - component: RESOURCE_ADDON|system-env@system-env
+  - dependencies: []
     parameterValues:
     - name: REPLICAS
       toFieldPaths:

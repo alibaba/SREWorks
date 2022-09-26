@@ -9,8 +9,8 @@ options:
         imagePush: ${IMAGE_BUILD_ENABLE}
         imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
         dockerfileTemplateArgs:
-          JRE11_IMAGE: ${JRE11_IMAGE}
           MAVEN_IMAGE: ${MAVEN_IMAGE}
+          JRE11_ALPINE_IMAGE: ${JRE11_ALPINE_IMAGE}
           MAVEN_SETTINGS_XML: ${MAVEN_SETTINGS_XML}
         dockerfileTemplate: master-Dockerfile.tpl
         repoPath: saas/job/api/sreworks-job
@@ -58,6 +58,9 @@ options:
     - ES_ENDPOINT
     - ES_USERNAME
     - ES_PASSWORD
+    - JVM_XMX
+    - JVM_XMS
+
 
 ---
 

@@ -1,33 +1,26 @@
-package com.alibaba.tesla.appmanager.server.repository.domain;
+package com.alibaba.tesla.appmanager.domain.req.appcomponent;
 
-import java.util.Date;
+import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 应用组件绑定表
+ * 应用关联组件更新请求
+ *
+ * @author yaoxing.gyx@alibaba-inc.com
  */
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class AppComponentDO {
+@AllArgsConstructor
+public class AppComponentUpdateReq {
+
     /**
-     * ID
+     * 应用组件绑定 ID
      */
     private Long id;
-
-    /**
-     * 创建时间
-     */
-    private Date gmtCreate;
-
-    /**
-     * 最后修改时间
-     */
-    private Date gmtModified;
 
     /**
      * Namespace ID
@@ -62,5 +55,5 @@ public class AppComponentDO {
     /**
      * 配置内容
      */
-    private String config;
+    private JSONObject config;
 }

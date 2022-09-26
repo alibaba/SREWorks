@@ -18,9 +18,19 @@ import lombok.experimental.SuperBuilder;
 public class AppComponentQueryReq extends BaseRequest {
 
     /**
+     * ID
+     */
+    private Long id;
+
+    /**
      * 应用 ID
      */
     private String appId;
+
+    /**
+     * 分类
+     */
+    private String category;
 
     /**
      * Namespace ID
@@ -36,4 +46,9 @@ public class AppComponentQueryReq extends BaseRequest {
      * 架构
      */
     private String arch;
+
+    /**
+     * 兼容模式
+     */
+    private boolean compatible = true;
 }

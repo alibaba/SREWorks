@@ -24,6 +24,7 @@ import com.alibaba.tesla.appmanager.workflow.service.WorkflowTaskService;
 import com.alibaba.tesla.appmanager.workflow.service.thread.ExecuteWorkflowTaskResult;
 import com.alibaba.tesla.appmanager.workflow.service.thread.ExecuteWorkflowTaskWaitingObject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -189,7 +190,11 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
             } catch (Throwable e) {
                 ExecuteWorkflowTaskWaitingObject.triggerFinished(
                         task.getId(),
-                        ExecuteWorkflowTaskResult.builder().task(task).success(false).extMessage(e.toString()).build());
+                        ExecuteWorkflowTaskResult.builder()
+                                .task(task)
+                                .success(false)
+                                .extMessage(ExceptionUtils.getStackTrace(e))
+                                .build());
                 return;
             }
             ExecuteWorkflowTaskWaitingObject.triggerFinished(
@@ -212,7 +217,8 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
                 }
             }, 5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            return markAbnormalWorkflowTask(task.getId(), WorkflowTaskStateEnum.EXCEPTION, e.toString());
+            return markAbnormalWorkflowTask(task.getId(), WorkflowTaskStateEnum.EXCEPTION,
+                    ExceptionUtils.getStackTrace(e));
         }
 
         // 如果被终止或未运行成功，保存错误信息到 workflow task 中

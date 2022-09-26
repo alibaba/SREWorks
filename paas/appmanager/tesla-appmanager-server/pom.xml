@@ -182,6 +182,12 @@
             <artifactId>aliyun-sdk-oss</artifactId>
         </dependency>
 
+        <!-- SLS -->
+        <dependency>
+            <groupId>com.aliyun.openservices</groupId>
+            <artifactId>aliyun-log</artifactId>
+        </dependency>
+
         <!-- jsonpath -->
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>

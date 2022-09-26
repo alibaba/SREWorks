@@ -4,6 +4,7 @@ import com.alibaba.tesla.appmanager.api.provider.PluginProvider;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
+import com.alibaba.tesla.appmanager.common.util.ClassUtil;
 import com.alibaba.tesla.appmanager.domain.dto.PluginDefinitionDTO;
 import com.alibaba.tesla.appmanager.domain.dto.PluginFrontendDTO;
 import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
@@ -13,6 +14,7 @@ import com.alibaba.tesla.appmanager.domain.req.plugin.PluginFrontendGetReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginUploadReq;
 import com.alibaba.tesla.appmanager.plugin.assembly.PluginDefinitionDtoConvert;
 import com.alibaba.tesla.appmanager.plugin.assembly.PluginFrontendDtoConvert;
+import com.alibaba.tesla.appmanager.plugin.repository.condition.PluginDefinitionQueryCondition;
 import com.alibaba.tesla.appmanager.plugin.repository.condition.PluginFrontendQueryCondition;
 import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDO;
 import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginFrontendDO;
@@ -54,7 +56,9 @@ public class PluginProviderImpl implements PluginProvider {
      */
     @Override
     public Pagination<PluginDefinitionDTO> list(PluginQueryReq request) {
-        Pagination<PluginDefinitionDO> records = pluginService.list(request);
+        PluginDefinitionQueryCondition condition = new PluginDefinitionQueryCondition();
+        ClassUtil.copy(request, condition);
+        Pagination<PluginDefinitionDO> records = pluginService.list(condition);
         return Pagination.transform(records, record -> pluginDefinitionDtoConvert.to(record));
     }
 

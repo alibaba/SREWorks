@@ -112,3 +112,5 @@ buildNumber.properties
 target
 .idea
 *.iml
+
+test_public.sh

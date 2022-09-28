@@ -92,6 +92,20 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         String componentType = request.getComponentType();
         String componentName = request.getComponentName();
         String config = JSONObject.toJSONString(request.getConfig());
+
+        // 提前检查是否已经存在记录
+        AppComponentDO origin = appComponentService.get(AppComponentQueryCondition.builder()
+                .namespaceId(namespaceId)
+                .stageId(stageId)
+                .appId(appId)
+                .category(category)
+                .componentType(componentType)
+                .componentName(componentName)
+                .build());
+        if (origin != null) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "the app component binding record exists");
+        }
+
         AppComponentDO record = AppComponentDO.builder()
                 .namespaceId(namespaceId)
                 .stageId(stageId)

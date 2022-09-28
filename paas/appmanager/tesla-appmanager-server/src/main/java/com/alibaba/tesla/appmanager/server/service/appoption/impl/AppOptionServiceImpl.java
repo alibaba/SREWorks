@@ -50,7 +50,7 @@ public class AppOptionServiceImpl implements AppOptionService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void init(String appId) {
-        List<AppOptionDO> currentOptions = getOptions(appId);
+        List<AppOptionDO> currentOptions = getOptionsByApp(appId);
         if (currentOptions.size() > 0) {
             log.info("action=appOptionInit|message=no need to init application options|appId={}|optionSize={}",
                     appId, currentOptions.size());
@@ -81,8 +81,20 @@ public class AppOptionServiceImpl implements AppOptionService {
      * @return List of AppOptionDO
      */
     @Override
-    public List<AppOptionDO> getOptions(String appId) {
+    public List<AppOptionDO> getOptionsByApp(String appId) {
         return appOptionRepository.selectByCondition(AppOptionQueryCondition.builder().appId(appId).build());
+    }
+
+    /**
+     * 获取指定 key+value 对应的全部 Option 内容
+     *
+     * @param key   配置 Key
+     * @param value 配置 Value
+     * @return List of AppOptionDO
+     */
+    @Override
+    public List<AppOptionDO> getOptionsByKeyValue(String key, String value) {
+        return appOptionRepository.selectByCondition(AppOptionQueryCondition.builder().key(key).value(value).build());
     }
 
     /**
@@ -104,7 +116,7 @@ public class AppOptionServiceImpl implements AppOptionService {
             }
         }
 
-        List<AppOptionDO> options = getOptions(appId);
+        List<AppOptionDO> options = getOptionsByApp(appId);
         redisTemplate.opsForValue().set(key, JSONObject.toJSONString(options), 10, TimeUnit.MINUTES);
         log.info("set cached options|appId={}|options={}", appId, JSONObject.toJSONString(options));
         return options;
@@ -119,7 +131,7 @@ public class AppOptionServiceImpl implements AppOptionService {
     @Override
     public JSONObject getOptionMap(String appId) {
         JSONObject optionMap = new JSONObject();
-        getOptions(appId).forEach(item ->
+        getOptionsByApp(appId).forEach(item ->
                 optionMap.put(item.getKey(), appOptionTypeManager.get(item.getValueType()).decode(item.getValue())));
         return optionMap;
     }
@@ -202,7 +214,7 @@ public class AppOptionServiceImpl implements AppOptionService {
             log.info("action=appOptionUpdate|message=options have updated|appId={}|deleted={}|updated={}",
                     appId, deleted, updated);
         }
-        return getOptions(appId);
+        return getOptionsByApp(appId);
     }
 
     /**

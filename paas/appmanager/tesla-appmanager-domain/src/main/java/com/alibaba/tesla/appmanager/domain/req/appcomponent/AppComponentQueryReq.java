@@ -51,4 +51,9 @@ public class AppComponentQueryReq extends BaseRequest {
      * 兼容模式
      */
     private boolean compatible = true;
+
+    /**
+     * 是否包含数据块
+     */
+    private boolean withBlobs = false;
 }

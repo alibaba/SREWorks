@@ -9,12 +9,10 @@ import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.PluginKindEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
-import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.ClassUtil;
 import com.alibaba.tesla.appmanager.domain.dto.AppComponentDTO;
 import com.alibaba.tesla.appmanager.domain.req.AppAddonQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQueryReq;
-import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentCreateReq;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentQueryReq;
@@ -184,6 +182,7 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         String namespaceId = request.getNamespaceId();
         String stageId = request.getStageId();
         String arch = request.getArch();
+        Boolean isWithBlobs = request.isWithBlobs();
 
         // 获取通用 Component
         List<AppComponentDO> appComponents = appComponentService.list(AppComponentQueryCondition.builder()
@@ -195,6 +194,7 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                 .list(PluginDefinitionQueryCondition.builder()
                         .pluginKind(PluginKindEnum.COMPONENT_DEFINITION.toString())
                         .pluginRegistered(true)
+                        .withBlobs(isWithBlobs)
                         .build())
                 .getItems()
                 .stream()

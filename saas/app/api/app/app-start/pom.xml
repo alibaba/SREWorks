@@ -19,22 +19,22 @@
         <dependency>
             <artifactId>sreworks-flyadmin-server</artifactId>
             <groupId>io.sreworks</groupId>
-            <version>1.0.7</version>
+            <version>1.0.8</version>
         </dependency>
         <dependency>
             <artifactId>sreworks-server</artifactId>
             <groupId>io.sreworks</groupId>
-            <version>1.0.7</version>
+            <version>1.0.8</version>
         </dependency>
         <dependency>
             <artifactId>sreworks-domain</artifactId>
             <groupId>io.sreworks</groupId>
-            <version>1.0.7</version>
+            <version>1.0.8</version>
         </dependency>
         <dependency>
             <artifactId>sreworks-plugin-server</artifactId>
             <groupId>io.sreworks</groupId>
-            <version>1.0.7</version>
+            <version>1.0.8</version>
         </dependency>
         <dependency>
             <artifactId>appdev-server</artifactId>

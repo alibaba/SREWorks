@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.appdev.server.params.AppCreateParam;
 import com.alibaba.sreworks.appdev.server.params.AppModifyParam;
+import com.alibaba.sreworks.appdev.server.services.AppmanagerService;
 import com.alibaba.sreworks.common.util.JsonUtil;
 import com.alibaba.sreworks.common.util.RegularUtil;
 import com.alibaba.sreworks.common.util.StringUtil;
@@ -24,9 +25,9 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.validation.BindingResult;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,6 +45,9 @@ public class AppController extends BaseController {
 
     @Autowired
     FlyadminAppmanagerAppService flyadminAppmanagerAppService;
+
+    @Autowired
+    AppmanagerService appmanagerService;
 
     @Autowired
     AppRepository appRepository;
@@ -80,8 +84,13 @@ public class AppController extends BaseController {
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public TeslaBaseResult create(@RequestBody AppCreateParam param) throws Exception {
         App app = param.toApp(getUserEmployeeId());
+
         appRepository.saveAndFlush(app);
-        flyadminAppmanagerAppService.create(app);
+        if(param.getApiVersion() != null && param.getApiVersion().equals("v2")){
+            appmanagerService.create(app);
+        }else{
+            flyadminAppmanagerAppService.create(app);
+        }
         teamUserRepository.updateGmtAccessByTeamIdAndUser(param.getTeamId(), getUserEmployeeId());
         saveActionService.save(getUserEmployeeId(), "app", app.getId(), "创建应用");
         JSONObject result = new JSONObject();
@@ -101,14 +110,19 @@ public class AppController extends BaseController {
         if (count > 0) {
             throw new Exception("appInstance count: " + count + "; can not delete app");
         }
-        flyadminAppmanagerAppService.delete(id, getUserEmployeeId());
-        appRepository.deleteById(id);
-        appComponentRepository.deleteByAppId(id);
-        appPackageRepository.deleteByAppId(id);
+        if (app.getDisplay() == 2) {
+            appmanagerService.delete(app.getName(), getUserEmployeeId());
+        }else {
+            flyadminAppmanagerAppService.delete(id, getUserEmployeeId());
+        }
         JSONObject result = new JSONObject();
         result.put("appDefId", app.getId());
         result.put("teamId", app.getTeamId());
         result.put("result", "OK");
+        result.put("appId", app.getName());
+        appRepository.deleteById(id);
+        appComponentRepository.deleteByAppId(id);
+        appPackageRepository.deleteByAppId(id);
         return buildSucceedResult(result);
     }
 
@@ -144,7 +158,7 @@ public class AppController extends BaseController {
         RegularUtil.underscoreToCamel(list);
         RegularUtil.gmt2Date(list);
         list.forEach(x -> x.put("detailDict", JSONObject.parseObject(x.getString("detail"))));
-        list.forEach(x -> x.put("appId", "sreworks" + x.getString("id")));
+//        list.forEach(x -> x.put("appId", "sreworks" + x.getString("id")));
         return buildSucceedResult(list);
     }
 
@@ -152,7 +166,7 @@ public class AppController extends BaseController {
     @RequestMapping(value = "listAll", method = RequestMethod.GET)
     public TeslaBaseResult listAll() {
         List<JSONObject> list = appRepository.findAll().stream()
-            .filter(x -> 1L == x.getDisplay())
+//            .filter(x -> 1L == x.getDisplay())
             .map(App::toJsonObject)
             .collect(Collectors.toList());
         RegularUtil.underscoreToCamel(list);
@@ -178,14 +192,14 @@ public class AppController extends BaseController {
         ret.put("appComponentCount", appComponentRepository.countByAppId(id));
         ret.put("appPackageCount", appPackageRepository.countByAppIdAndStatus(id, "SUCCESS"));
         ret.put("appInstanceCount", appInstanceRepository.countByAppId(id));
-        ret.put("appId", "sreworks" + id.toString());
+//        ret.put("appId", "sreworks" + id.toString());
         return buildSucceedResult(ret);
     }
 
     @ApiOperation(value = "idSelector")
     @RequestMapping(value = "idSelector", method = RequestMethod.GET)
     public TeslaBaseResult idSelector(Long teamId) {
-        List<App> appList = appRepository.findAllByTeamIdAndDisplay(teamId, 1L);
+        List<App> appList = appRepository.findAllByTeamId(teamId);
         return buildSucceedResult(JsonUtil.map(
             "options", appList.stream().map(app -> JsonUtil.map(
                 "label", app.getName(),

@@ -35,6 +35,8 @@ public class AppCreateParam extends AppParam {
 
     private JSONObject labelsJSONObject;
 
+    private String apiVersion;
+
     public App toApp(String operator) throws JsonProcessingException {
         String annotations = annotationsJSONObject != null ?
             JSONObject.toJSONString(annotationsJSONObject) : YamlUtil.toJson(annotationsYaml);
@@ -52,7 +54,7 @@ public class AppCreateParam extends AppParam {
             .description(description)
             .annotations(annotations)
             .labels(labels)
-            .display(1L)
+            .display(2L)
             .build();
     }
 

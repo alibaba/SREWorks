@@ -6,7 +6,7 @@
     <parent>
         <artifactId>sreworks-base</artifactId>
         <groupId>io.sreworks</groupId>
-        <version>1.0.7</version>
+        <version>1.0.8</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -19,7 +19,7 @@
         <dependency>
             <artifactId>sreworks-domain</artifactId>
             <groupId>io.sreworks</groupId>
-            <version>1.0.7</version>
+            <version>1.0.8</version>
         </dependency>
 
         <!-- alibaba dependency -->

@@ -203,12 +203,12 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                 .appId(appId)
                 .namespaceId(namespaceId)
                 .stageId(stageId)
+                .withBlobs(isWithBlobs)
                 .build());
         Map<String, PluginDefinitionDO> pluginMap = pluginService
                 .list(PluginDefinitionQueryCondition.builder()
                         .pluginKind(PluginKindEnum.COMPONENT_DEFINITION.toString())
                         .pluginRegistered(true)
-                        .withBlobs(isWithBlobs)
                         .build())
                 .getItems()
                 .stream()

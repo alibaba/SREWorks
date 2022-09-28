@@ -1,6 +1,3 @@
-/**
- * Created by xuwei on 17/12/29.
- */
 
 import httpClient from "../../../utils/httpClient";
 

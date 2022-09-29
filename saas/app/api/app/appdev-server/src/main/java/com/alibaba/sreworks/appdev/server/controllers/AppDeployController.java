@@ -9,6 +9,7 @@ import com.alibaba.sreworks.appdev.server.params.AppDeployUpdateParam;
 import com.alibaba.sreworks.appdev.server.services.AppInstallService;
 import com.alibaba.sreworks.appdev.server.services.AppUninstallService;
 import com.alibaba.sreworks.appdev.server.services.AppUpdateService;
+import com.alibaba.sreworks.appdev.server.services.AppmanagerDeployService;
 import com.alibaba.sreworks.common.util.StringUtil;
 import com.alibaba.sreworks.domain.DO.*;
 import com.alibaba.sreworks.domain.repository.AppComponentInstanceRepository;
@@ -47,6 +48,9 @@ public class AppDeployController extends BaseController {
     FlyadminAppmanagerDeployService flyadminAppmanagerDeployService;
 
     @Autowired
+    AppmanagerDeployService appmanagerDeployService;
+
+    @Autowired
     AppInstanceRepository appInstanceRepository;
 
     @Autowired
@@ -81,9 +85,9 @@ public class AppDeployController extends BaseController {
 
     @ApiOperation(value = "列表")
     @RequestMapping(value = "list", method = RequestMethod.GET)
-    public TeslaBaseResult list(Long appId, String user) throws IOException, ApiException {
+    public TeslaBaseResult list(String appId, String user) throws IOException, ApiException {
         user = StringUtil.isEmpty(user) ? getUserEmployeeId() : user;
-        List<JSONObject> ret = flyadminAppmanagerDeployService.list(appId, user);
+        List<JSONObject> ret = appmanagerDeployService.list(appId, user);
         for (JSONObject jsonObject : ret) {
             String appmanagerClusterId = jsonObject.getString("clusterId");
             jsonObject.put("appmanagerClusterId", appmanagerClusterId);
@@ -100,7 +104,7 @@ public class AppDeployController extends BaseController {
 
     @ApiOperation(value = "分页列表")
     @RequestMapping(value = "listPagination", method = RequestMethod.GET)
-    public TeslaBaseResult list(Long appId, String user, Long page, Long pageSize, String stageId) throws IOException, ApiException {
+    public TeslaBaseResult list(String appId, String user, Long page, Long pageSize, String stageId) throws IOException, ApiException {
         user = StringUtil.isEmpty(user) ? getUserEmployeeId() : user;
         if (page == null || page == 0L) {
             page = 1L;
@@ -113,9 +117,9 @@ public class AppDeployController extends BaseController {
         }
         JSONObject ret;
         if(appId != null){
-            ret = flyadminAppmanagerDeployService.listPagination(appId, user, page.toString(), pageSize.toString(), stageId, null, null);
+            ret = appmanagerDeployService.listPagination(appId, user, page.toString(), pageSize.toString(), stageId, null, null);
         }else{
-            ret = flyadminAppmanagerDeployService.listPagination(null, user, page.toString(), pageSize.toString(), stageId, "source", "app");
+            ret = appmanagerDeployService.listPagination(null, user, page.toString(), pageSize.toString(), stageId, "source", "app");
         }
         for (int i = 0; i < ret.getJSONArray("items").size(); i++) {
             JSONObject jsonObject = ret.getJSONArray("items").getJSONObject(i);
@@ -128,11 +132,11 @@ public class AppDeployController extends BaseController {
                 jsonObject.put("clusterId", cluster.getId());
                 jsonObject.put("clusterName", cluster.getName());
             }
-            if(appmanId.startsWith("sreworks")){
-                Long itemAppId = Long.valueOf(appmanId.replace("sreworks", ""));
-                App appInfo = appRepository.findFirstById(itemAppId);
-                jsonObject.put("appName", appInfo.getName());
-            }
+//            if(appmanId.startsWith("sreworks")){
+//                Long itemAppId = Long.valueOf(appmanId.replace("sreworks", ""));
+//                App appInfo = appRepository.findFirstById(itemAppId);
+//                jsonObject.put("appName", appInfo.getName());
+//            }
         }
         return buildSucceedResult(ret);
     }

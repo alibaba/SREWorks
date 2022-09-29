@@ -5,7 +5,6 @@
 
 import React from 'react'
 import PagingTable from '../../PagingTable'
-import OamWidget from '../../../core/framework/OamWidget'
 import EditableTable from '../../EditableTable'
 import SelectedTable from '../../SelectedTable'
 
@@ -92,14 +91,6 @@ export default class TableItem extends React.Component {
           dataSource={data}
           handleChange={this.handleChangeSelected}
         />
-      )
-    }
-    if (this.config && this.config.tableType === 'AG_TABLE') {
-      let { formInitParams = {} } = model.extensionProps || {}
-      return (
-        <div>
-          <OamWidget {...formInitParams} widget={this.config} data={data} />
-        </div>
       )
     }
     return (

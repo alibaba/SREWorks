@@ -26,7 +26,6 @@ import {
 
 import FileUpload from './FormItem/FileUpload'
 import ImageUpload from './FormItem/ImageUpload'
-import ParameterMappingBuilder from '../ParameterMappingBuilder'
 import GroupFormItem from './FormItem/GroupFormItem'
 import FormElementType from './FormElementType'
 import SelectInput from './FormItem/SelectInput'
@@ -461,26 +460,6 @@ export default class FormElementFactory {
         return null
       case 99:
         return null
-        break
-      case FormElementType.MAPPING_BUILDER: //参数绑定器
-        innerFormItem = false
-        itemElement = (
-          <FormItem
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-            {...formItemLayout}
-            label={label}
-            key={item.name}
-          >
-            {getFieldDecorator(item.name, {
-              rules: [
-                {
-                  required: item.required,
-                  message: localeHelper.get('common.paramSet', '请进行参数绑定设置'),
-                },
-              ],
-            })(<ParameterMappingBuilder {...item} />)}
-          </FormItem>
-        )
         break
       case FormElementType.MACHINE_TARGET: //目标选择器
         return null

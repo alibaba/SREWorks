@@ -44,7 +44,7 @@ public class AddonInstanceTaskRunnerNode extends AbstractLocalNodeBase {
         ApplyAddonInstanceReq request = JSONObject.parseObject(requestStr, ApplyAddonInstanceReq.class);
 
         // 进行 addon 申请，高耗时操作，禁止一切事务
-        Addon addon = addonManager.getAddon(ComponentTypeEnum.RESOURCE_ADDON, request.getAddonId());
+        Addon addon = addonManager.getAddon(ComponentTypeEnum.RESOURCE_ADDON.toString(), request.getAddonId());
         ApplyAddonRes res = addon.apply(request);
         ComponentSchema addonSchema = res.getComponentSchema();
         String signature = res.getSignature();

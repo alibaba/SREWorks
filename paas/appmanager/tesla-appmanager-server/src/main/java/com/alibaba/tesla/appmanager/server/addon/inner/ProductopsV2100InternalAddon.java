@@ -23,7 +23,7 @@ import javax.annotation.PostConstruct;
 public class ProductopsV2100InternalAddon extends BaseAddon {
 
     @Getter
-    private final ComponentTypeEnum addonType = ComponentTypeEnum.INTERNAL_ADDON;
+    private final String addonType = ComponentTypeEnum.INTERNAL_ADDON.toString();
 
     @Getter
     private final String addonId = "productopsv2";

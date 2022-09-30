@@ -90,11 +90,11 @@ public class ProcessingComponentDeployAppStateAction implements DeployAppStateAc
         List<Long> packageTaskIdList = new ArrayList<>();
         for (DeployAppSchema.SpecComponent specComponent : configuration.getSpec().getComponents()) {
             DeployAppRevisionName revision = DeployAppRevisionName.valueOf(specComponent.getRevisionName());
-            if (!revision.getComponentType().isNotAddon() || !revision.isEmptyVersion()) {
+            if (ComponentTypeEnum.isAddon(revision.getComponentType()) || !revision.isEmptyVersion()) {
                 continue;
             }
 
-            ComponentTypeEnum componentType = revision.getComponentType();
+            String componentType = revision.getComponentType();
             String componentName = revision.getComponentName();
 
             // 叠加 component 局部参数
@@ -112,7 +112,7 @@ public class ProcessingComponentDeployAppStateAction implements DeployAppStateAc
                             .appId(appId)
                             .namespaceId(container.getNamespaceId())
                             .stageId(container.getStageId())
-                            .componentType(componentType.toString())
+                            .componentType(componentType)
                             .componentName(componentName)
                             .version(DefaultConstant.AUTO_VERSION)
                             .options(options)

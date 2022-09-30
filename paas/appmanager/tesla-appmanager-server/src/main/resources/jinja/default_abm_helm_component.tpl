@@ -42,3 +42,4 @@ spec:
       base64Kubeconfig: ""
       values: {}
       valuesTemplateFilename: ""
+      ignoreCreateNamespace: false

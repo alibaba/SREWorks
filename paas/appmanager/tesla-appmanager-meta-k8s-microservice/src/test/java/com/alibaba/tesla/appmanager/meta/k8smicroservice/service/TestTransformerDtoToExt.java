@@ -85,7 +85,7 @@ public class TestTransformerDtoToExt {
         log.info("meta: {}", JSONObject.toJSONString(meta));
         assertThat(meta.getAppId()).isEqualTo(APP_ID);
         assertThat(meta.getArch()).isEqualTo(ARCH);
-        assertThat(meta.getComponentType()).isEqualTo(ComponentTypeEnum.K8S_MICROSERVICE);
+        assertThat(meta.getComponentType()).isEqualTo(ComponentTypeEnum.K8S_MICROSERVICE.toString());
         assertThat(meta.getDescription()).isEqualTo(MICROSERVICE_DESCRIPTION);
         assertThat(meta.getId()).isEqualTo(ID);
         assertThat(meta.getMicroServiceId()).isEqualTo(MICROSERVICE_ID);
@@ -185,7 +185,7 @@ public class TestTransformerDtoToExt {
                 .microServiceId(MICROSERVICE_ID)
                 .name(MICROSERVICE_ID)
                 .description(MICROSERVICE_DESCRIPTION)
-                .componentType(ComponentTypeEnum.K8S_MICROSERVICE)
+                .componentType(ComponentTypeEnum.K8S_MICROSERVICE.toString())
                 .arch(ARCH)
                 .kind("AdvancedStatefulSet")
                 .envList(Collections.singletonList(EnvMetaDTO.builder()

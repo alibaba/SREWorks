@@ -87,7 +87,7 @@ public class DeployAppWaitCustomAddonNode extends AbstractLocalNodeBase {
 
         // componentType 变量提取
         DeployAppRevisionName revisionName = DeployAppRevisionName.valueOf(nodeId);
-        ComponentTypeEnum componentType = revisionName.getComponentType();
+        String componentType = revisionName.getComponentType();
 
         // 查找 dataOutput 列表，并将对应的变量的值 set 到当前部署单
         Jinjava jinjava = new Jinjava();

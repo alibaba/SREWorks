@@ -164,7 +164,7 @@ public class DeployAppCreateComponentNode extends AbstractLocalNodeBase {
         // 检测当前是否已经存在组件实例，存在则获取 componentInstanceId；否则创建对应的组件实例并获取 componentInstanceId
         RtComponentInstanceQueryCondition componentInstanceCondition = RtComponentInstanceQueryCondition.builder()
                 .appId(globalVariable.getString(AppFlowVariableKey.APP_ID))
-                .componentType(revisionName.getComponentType().toString())
+                .componentType(revisionName.getComponentType())
                 .componentName(revisionName.getComponentName())
                 .clusterId(clusterId)
                 .namespaceId(namespaceId)

@@ -22,59 +22,53 @@ public class K8sMicroServiceUtil {
      * @param branch 实际分支
      * @return 修改后的 Options 对象 (build.yaml)
      */
-    public static JSONObject replaceOptionsBranch(
-            ComponentTypeEnum componentType, String options, String branch,
-            String dockerRegistry, String dockerNamespace) {
+    public static JSONObject replaceOptionsBranch(String componentType, String options, String branch,
+                                                  String dockerRegistry, String dockerNamespace) {
         Yaml yaml = SchemaUtil.createYaml(JSONObject.class);
         JSONObject root = yaml.loadAs(options, JSONObject.class);
         JSONObject optionsJson = root.getJSONObject("options");
         optionsJson.putIfAbsent("kind", DefaultConstant.DEFAULT_K8S_MICROSERVICE_KIND);
 
-        switch (componentType) {
-            case K8S_JOB:
-                JSONObject job = optionsJson.getJSONObject("job");
-                if (job != null) {
-                    JSONObject build = job.getJSONObject("build");
+        if (ComponentTypeEnum.K8S_JOB.toString().equals(componentType)) {
+            JSONObject job = optionsJson.getJSONObject("job");
+            if (job != null) {
+                JSONObject build = job.getJSONObject("build");
+                if (StringUtils.isNotEmpty(branch)) {
+                    build.put("branch", branch);
+                }
+
+                if (!build.containsKey("imagePush")) {
+                    addImagePushProperties(build, dockerRegistry, dockerNamespace);
+                }
+            }
+        } else if (ComponentTypeEnum.K8S_MICROSERVICE.toString().equals(componentType)) {
+            JSONArray containers = optionsJson.getJSONArray("containers");
+            if (CollectionUtils.isNotEmpty(containers)) {
+                for (int i = 0; i < containers.size(); i++) {
+                    JSONObject container = containers.getJSONObject(i);
+                    JSONObject build = container.getJSONObject("build");
                     if (StringUtils.isNotEmpty(branch)) {
                         build.put("branch", branch);
                     }
-
                     if (!build.containsKey("imagePush")) {
                         addImagePushProperties(build, dockerRegistry, dockerNamespace);
                     }
                 }
-                break;
-            case K8S_MICROSERVICE:
-                JSONArray containers = optionsJson.getJSONArray("containers");
-                if (CollectionUtils.isNotEmpty(containers)) {
-                    for (int i = 0; i < containers.size(); i++) {
-                        JSONObject container = containers.getJSONObject(i);
-                        JSONObject build = container.getJSONObject("build");
-                        if (StringUtils.isNotEmpty(branch)) {
-                            build.put("branch", branch);
-                        }
-                        if (!build.containsKey("imagePush")) {
-                            addImagePushProperties(build, dockerRegistry, dockerNamespace);
-                        }
-                    }
-                }
+            }
 
-                JSONArray initContainers = optionsJson.getJSONArray("initContainers");
-                if (CollectionUtils.isNotEmpty(initContainers)) {
-                    for (int i = 0; i < initContainers.size(); i++) {
-                        JSONObject initContainer = initContainers.getJSONObject(i);
-                        JSONObject build = initContainer.getJSONObject("build");
-                        if (StringUtils.isNotEmpty(branch)) {
-                            build.put("branch", branch);
-                        }
-                        if (!build.containsKey("imagePush")) {
-                            addImagePushProperties(build, dockerRegistry, dockerNamespace);
-                        }
+            JSONArray initContainers = optionsJson.getJSONArray("initContainers");
+            if (CollectionUtils.isNotEmpty(initContainers)) {
+                for (int i = 0; i < initContainers.size(); i++) {
+                    JSONObject initContainer = initContainers.getJSONObject(i);
+                    JSONObject build = initContainer.getJSONObject("build");
+                    if (StringUtils.isNotEmpty(branch)) {
+                        build.put("branch", branch);
+                    }
+                    if (!build.containsKey("imagePush")) {
+                        addImagePushProperties(build, dockerRegistry, dockerNamespace);
                     }
                 }
-                break;
-            default:
-                break;
+            }
         }
         return optionsJson;
     }
@@ -82,8 +76,8 @@ public class K8sMicroServiceUtil {
     /**
      * 增加 imagePush 配置
      *
-     * @param build 构建对象
-     * @param dockerRegistry Docker Registry
+     * @param build           构建对象
+     * @param dockerRegistry  Docker Registry
      * @param dockerNamespace Docker Namespace
      */
     private static void addImagePushProperties(JSONObject build, String dockerRegistry, String dockerNamespace) {

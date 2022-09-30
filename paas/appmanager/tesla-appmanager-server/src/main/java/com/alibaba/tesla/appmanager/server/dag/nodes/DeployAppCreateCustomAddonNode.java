@@ -80,11 +80,11 @@ public class DeployAppCreateCustomAddonNode extends AbstractLocalNodeBase {
         }
 
         DeployAppRevisionName revisionName = DeployAppRevisionName.valueOf(nodeId);
-        ComponentTypeEnum componentType = revisionName.getComponentType();
-        if (!componentType.equals(ComponentTypeEnum.CUSTOM_ADDON)) {
+        String componentType = revisionName.getComponentType();
+        if (!ComponentTypeEnum.CUSTOM_ADDON.toString().equals(componentType)) {
             throw new AppException(AppErrorCode.USER_CONFIG_ERROR,
                     String.format("actionName=%s|componentType=%s| componentType is not equals CUSTOM_ADDON!",
-                            "DeployAppCreateCustomAddonNode", componentType.name()));
+                            "DeployAppCreateCustomAddonNode", componentType));
         }
 
         // 获取当前的 component 及 addonSchema，准备填充参数数据

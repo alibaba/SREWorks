@@ -449,7 +449,7 @@ public class DeployAppProviderImpl implements DeployAppProvider {
 
     private Schema getSchema(String appId, ComponentBinder componentBinder) {
         Yaml yaml = SchemaUtil.createYaml(ComponentSchema.class);
-        if (componentBinder.getComponentType() == ComponentTypeEnum.RESOURCE_ADDON) {
+        if (Objects.equals(componentBinder.getComponentType(), ComponentTypeEnum.RESOURCE_ADDON.toString())) {
             AppAddonQueryCondition condition = AppAddonQueryCondition.builder().appId(appId).addonName(
                     componentBinder.getComponentName()).build();
             Pagination<AppAddonDO> appAddonDOPage = appAddonService.list(condition);
@@ -473,7 +473,7 @@ public class DeployAppProviderImpl implements DeployAppProvider {
             ComponentPackageQueryCondition condition = ComponentPackageQueryCondition.builder()
                     .appId(appId)
                     .componentName(componentBinder.getComponentName())
-                    .componentType(componentBinder.getComponentType().toString())
+                    .componentType(componentBinder.getComponentType())
                     .withBlobs(true)
                     .packageVersion(componentBinder.getVersion()).build();
 
@@ -512,7 +512,7 @@ public class DeployAppProviderImpl implements DeployAppProvider {
                 ParameterValue parameterValue = new ParameterValue();
                 parameterValue.setValue(paramBinderDTO.getParamDefaultValue());
 
-                if (componentBinder.getComponentType() == ComponentTypeEnum.K8S_MICROSERVICE) {
+                if (Objects.equals(componentBinder.getComponentType(), ComponentTypeEnum.K8S_MICROSERVICE.toString())) {
                     ComponentSchema componentSchema = (ComponentSchema) schema;
                     JSONObject spec = (JSONObject) componentSchema.getSpec().getWorkload().getSpec();
                     JSONArray envArray = spec.getJSONArray("env");
@@ -523,7 +523,7 @@ public class DeployAppProviderImpl implements DeployAppProvider {
                             break;
                         }
                     }
-                } else if (componentBinder.getComponentType() == ComponentTypeEnum.RESOURCE_ADDON) {
+                } else if (Objects.equals(componentBinder.getComponentType(), ComponentTypeEnum.RESOURCE_ADDON.toString())) {
                     ComponentSchema addonSchema = (ComponentSchema) schema;
                     JSONObject spec = (JSONObject) addonSchema.getSpec().getWorkload().getSpec();
                     for (String key : spec.keySet()) {
@@ -581,7 +581,7 @@ public class DeployAppProviderImpl implements DeployAppProvider {
     }
 
     private List<DataOutput> getDataOutputList(ComponentBinder componentBinder, Schema schema) {
-        if (componentBinder.getComponentType() == ComponentTypeEnum.RESOURCE_ADDON) {
+        if (Objects.equals(componentBinder.getComponentType(), ComponentTypeEnum.RESOURCE_ADDON.toString())) {
             ComponentSchema addonSchema = (ComponentSchema) schema;
             return addonSchema.getSpec().getWorkload().getDataOutputs().stream().map(addonDataOutput -> {
                 DataOutput dataOutput = new DataOutput();
@@ -618,7 +618,7 @@ public class DeployAppProviderImpl implements DeployAppProvider {
 
     private List<DataInput> getDataInputList(ComponentBinder componentBinder, Schema schema) {
         List<DataInput> dataInputList = new ArrayList<>();
-        if (componentBinder.getComponentType() == ComponentTypeEnum.K8S_MICROSERVICE) {
+        if (Objects.equals(componentBinder.getComponentType(), ComponentTypeEnum.K8S_MICROSERVICE.toString())) {
             ComponentSchema componentSchema = (ComponentSchema) schema;
             for (ParamBinderDTO paramBinderDTO : componentBinder.getParamBinderList()) {
                 if (StringUtils.startsWith(paramBinderDTO.getDataInputName(), "spec.")) {
@@ -633,7 +633,7 @@ public class DeployAppProviderImpl implements DeployAppProvider {
                     dataInput.setToFieldPaths(Collections.singletonList(paramBinderDTO.getDataInputName()));
 
                     dataInputList.add(dataInput);
-                } else if (paramBinderDTO.getComponentType() == ComponentTypeEnum.RESOURCE_ADDON) {
+                } else if (ComponentTypeEnum.RESOURCE_ADDON.toString().equals(paramBinderDTO.getComponentType())) {
                     DataInput dataInput = new DataInput();
 
                     DataInputValueFrom dataInputValueFrom = new DataInputValueFrom();

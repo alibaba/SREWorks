@@ -61,10 +61,7 @@ public class AppAddonRepositoryImpl implements AppAddonRepository {
             criteria.andAppIdEqualTo(condition.getAppId());
         }
         if (CollectionUtils.isNotEmpty(condition.getAddonTypeList())) {
-            criteria.andAddonTypeIn(
-                    condition.getAddonTypeList().stream()
-                            .map(Enum::toString)
-                            .collect(Collectors.toList()));
+            criteria.andAddonTypeIn(condition.getAddonTypeList());
         }
         if (StringUtils.isNotEmpty(condition.getAddonId())) {
             criteria.andAddonIdEqualTo(condition.getAddonId());

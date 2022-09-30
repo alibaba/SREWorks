@@ -89,7 +89,9 @@ public class AppPackageTaskProviderImpl implements AppPackageTaskProvider {
         packageVersion = checkAppPackageVersion(appId, packageVersion);
 
         if (CollectionUtils.isEmpty(request.getComponents())) {
-            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "missing package component");
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("missing package component|appId=%s|namespaceId=%s|stageId=%s|packageVersion=%s",
+                            appId, namespaceId, stageId, packageVersion));
         }
 
         // 获取当前应用的默认部署 YAML
@@ -112,11 +114,13 @@ public class AppPackageTaskProviderImpl implements AppPackageTaskProvider {
         Long appPackageTaskId = appPackageTaskDO.getId();
 
         for (ComponentBinder component : request.getComponents()) {
-            ComponentTypeEnum componentType = component.getComponentType();
+            String componentType = component.getComponentType();
             String componentName = component.getComponentName();
 
             // 计算版本，没有提供 version 的情况下 or ADDON 组件类型则变为自动版本
-            if (StringUtils.isEmpty(component.getVersion()) || componentType.isAddon()) {
+            if (StringUtils.isEmpty(component.getVersion())
+                    || ComponentTypeEnum.RESOURCE_ADDON.toString().equals(componentType)
+                    || ComponentTypeEnum.INTERNAL_ADDON.toString().equals(componentType)) {
                 component.setVersion(DefaultConstant.AUTO_VERSION);
             }
             String fullVersion = appPackageTaskService
@@ -153,7 +157,7 @@ public class AppPackageTaskProviderImpl implements AppPackageTaskProvider {
                         .appId(appId)
                         .namespaceId(namespaceId)
                         .stageId(stageId)
-                        .componentType(componentType.toString())
+                        .componentType(componentType)
                         .componentName(componentName)
                         .packageVersion(component.getVersion())
                         .packageCreator(operator)

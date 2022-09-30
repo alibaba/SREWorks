@@ -1,9 +1,5 @@
 package com.alibaba.tesla.appmanager.common.enums;
 
-import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
-import com.alibaba.tesla.appmanager.common.exception.AppException;
-import com.google.common.base.Enums;
-
 /**
  * 组件类型 Enum
  *
@@ -91,75 +87,25 @@ public enum ComponentTypeEnum {
      */
     SCRIPT;
 
-    public static ComponentTypeEnum parse(String value) {
-        ComponentTypeEnum result = Enums.getIfPresent(ComponentTypeEnum.class, value).orNull();
-        if (result == null) {
-            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                    String.format("invalid component type %s", value));
-        }
-        return result;
+    /**
+     * 返回指定的 componentType 是否为 addon
+     *
+     * @param componentType Component Type
+     * @return true or false
+     */
+    public static boolean isAddon(String componentType) {
+        return RESOURCE_ADDON.toString().equals(componentType)
+                || TRAIT_ADDON.toString().equals(componentType)
+                || CUSTOM_ADDON.toString().equals(componentType);
     }
 
     /**
-     * 返回当前 component 类型是否为非 Addon
+     * 返回指定的 componentType 是否为 K8S_MICROSERVICE || K8S_JOB
      *
+     * @param componentType Component Type
      * @return true or false
      */
-    public boolean isNotAddon() {
-        return !RESOURCE_ADDON.equals(this) && !TRAIT_ADDON.equals(this) && !CUSTOM_ADDON.equals(this);
-    }
-
-    /**
-     * 返回当前 component 类型是否为 Addon
-     *
-     * @return true or false
-     */
-    public boolean isAddon() {
-        return RESOURCE_ADDON.equals(this) || INTERNAL_ADDON.equals(this);
-    }
-
-    /**
-     * 返回当前 component 类型是否为 RESOURCE_ADDON
-     *
-     * @return true or false
-     */
-    public boolean isResourceAddon() {
-        return RESOURCE_ADDON.equals(this);
-    }
-
-    /**
-     * 返回当前 component 类型是否为 INTERNAL_ADDON
-     *
-     * @return true or false
-     */
-    public boolean isInternalAddon() {
-        return INTERNAL_ADDON.equals(this);
-    }
-
-    /**
-     * 返回当前 component 类型是否为 K8S_MICROSERVICE
-     *
-     * @return true or false
-     */
-    public boolean isKubernetesMicroservice() {
-        return K8S_MICROSERVICE.equals(this);
-    }
-
-    /**
-     * 返回当前 component 类型是否为 K8S_JOB
-     *
-     * @return true or false
-     */
-    public boolean isKubernetesJob() {
-        return K8S_JOB.equals(this);
-    }
-
-    /**
-     * 返回当前 component 类型是否为 HELM
-     *
-     * @return true or false
-     */
-    public boolean isHelm() {
-        return HELM.equals(this);
+    public static boolean isMicroserviceOrJob(String componentType) {
+        return K8S_MICROSERVICE.toString().equals(componentType) || K8S_JOB.toString().equals(componentType);
     }
 }

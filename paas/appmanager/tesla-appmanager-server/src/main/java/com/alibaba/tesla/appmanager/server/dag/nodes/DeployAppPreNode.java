@@ -47,7 +47,7 @@ public class DeployAppPreNode extends AbstractLocalNodeBase {
         List<String> componentRevisionList = new ArrayList<>();
         for (ComponentPackageDO item : componentPackages) {
             DeployAppRevisionName revisionName = DeployAppRevisionName.builder()
-                    .componentType(Enums.getIfPresent(ComponentTypeEnum.class, item.getComponentType()).orNull())
+                    .componentType(item.getComponentType())
                     .componentName(item.getComponentName())
                     .version(item.getPackageVersion())
                     .mirrorFlag(false)

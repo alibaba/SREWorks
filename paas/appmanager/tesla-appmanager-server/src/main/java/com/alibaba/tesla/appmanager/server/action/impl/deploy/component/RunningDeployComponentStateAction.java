@@ -88,15 +88,13 @@ public class RunningDeployComponentStateAction implements DeployComponentStateAc
         DeployAppRevisionName revisionName = DeployAppRevisionName.valueOf(subOrder.getIdentifier());
         ComponentPackageQueryCondition condition = ComponentPackageQueryCondition.builder()
                 .appId(subOrder.getAppId())
-                .componentType(revisionName.getComponentType().toString())
+                .componentType(revisionName.getComponentType())
                 .componentName(revisionName.getComponentName())
                 .packageVersion(revisionName.getVersion())
                 .withBlobs(false)
                 .build();
         ComponentPackageDO componentPackageDO = componentPackageService.get(condition);
-        ComponentTypeEnum componentType = Enums
-                .getIfPresent(ComponentTypeEnum.class, componentPackageDO.getComponentType()).orNull();
-        assert componentType != null;
+        String componentType = componentPackageDO.getComponentType();
         String componentName = componentPackageDO.getComponentName();
 
         // 获取 Groovy Handler，如果获取不到，那么走传统部署逻辑

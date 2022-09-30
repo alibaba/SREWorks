@@ -51,7 +51,7 @@ public class AddonMetaServiceImpl implements AddonMetaService {
      * @return AddonMetaDO
      */
     @Override
-    public AddonMetaDO get(ComponentTypeEnum addonType, String addonId) {
+    public AddonMetaDO get(String addonType, String addonId) {
         return addonMetaRepository.get(addonType, addonId);
     }
 

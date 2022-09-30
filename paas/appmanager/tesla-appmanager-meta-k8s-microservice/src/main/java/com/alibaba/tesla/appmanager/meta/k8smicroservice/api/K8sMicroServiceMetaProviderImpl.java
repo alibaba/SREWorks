@@ -111,7 +111,7 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
             return true;
         }
         K8sMicroServiceMetaDTO metaDO = this.get(id);
-        String typeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE, metaDO.getMicroServiceId()).toString();
+        String typeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE.toString(), metaDO.getMicroServiceId()).toString();
         deployConfigService.delete(DeployConfigDeleteReq.builder()
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(metaDO.getAppId())
@@ -600,7 +600,7 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
             traits.add(envTrait);
         }
 
-        String systemTypeId = new DeployConfigTypeId(ComponentTypeEnum.RESOURCE_ADDON, "system-env@system-env").toString();
+        String systemTypeId = new DeployConfigTypeId(ComponentTypeEnum.RESOURCE_ADDON.toString(), "system-env@system-env").toString();
 
         List<DeployConfigDO> configs = deployConfigService.list(
                 DeployConfigQueryCondition.builder()
@@ -629,7 +629,7 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
         configObject.put("scopes", scopes);
 
         Yaml yaml = SchemaUtil.createYaml(JSONObject.class);
-        String typeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE, meta.getMicroServiceId()).toString();
+        String typeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE.toString(), meta.getMicroServiceId()).toString();
         String metaNamespaceId = meta.getNamespaceId();
         String metaStageId = meta.getStageId();
         // TODO: FOR SREWORKS ONLY TEMPORARY

@@ -100,11 +100,11 @@ public class AppAddonServiceImpl implements AppAddonService {
     public AppAddonDO create(AppAddonCreateReq request) {
         AddonMetaDO addonMetaDO;
         if (StringUtils.isNotEmpty(request.getAddonType()) && StringUtils.isNotEmpty(request.getAddonId())) {
-            addonMetaDO = addonMetaService.get(ComponentTypeEnum.parse(request.getAddonType()), request.getAddonId());
+            addonMetaDO = addonMetaService.get(request.getAddonType(), request.getAddonId());
         } else {
             addonMetaDO = addonMetaService.get(request.getAddonMetaId());
         }
-        ComponentTypeEnum addonType = ComponentTypeEnum.parse(addonMetaDO.getAddonType());
+        String addonType = addonMetaDO.getAddonType();
         AppAddonDTO appAddonDTO = AppAddonDTO.builder()
                 .appId(request.getAppId())
                 .namespaceId(request.getNamespaceId())
@@ -123,7 +123,7 @@ public class AppAddonServiceImpl implements AppAddonService {
 
         // 更新 application configuration 绑定关系
         String componentName;
-        if (addonType.isInternalAddon()) {
+        if (ComponentTypeEnum.INTERNAL_ADDON.toString().equals(addonType)) {
             componentName = addonMetaDO.getAddonId();
         } else {
             componentName = AddonUtil.combineComponentName(addonMetaDO.getAddonId(), request.getAddonName());
@@ -165,7 +165,7 @@ public class AppAddonServiceImpl implements AppAddonService {
         }
         String appId = condition.getAppId();
         String componentName;
-        if (appAddon.getAddonType().isInternalAddon()) {
+        if (ComponentTypeEnum.INTERNAL_ADDON.toString().equals(appAddon.getAddonType())) {
             componentName = appAddon.getAddonId();
         } else {
             componentName = AddonUtil.combineComponentName(appAddon.getAddonId(), appAddon.getName());
@@ -197,7 +197,7 @@ public class AppAddonServiceImpl implements AppAddonService {
         }
         for (AppAddonDO appAddon : appAddons) {
             String componentName;
-            if (appAddon.getAddonType().isInternalAddon()) {
+            if (ComponentTypeEnum.INTERNAL_ADDON.toString().equals(appAddon.getAddonType())) {
                 componentName = appAddon.getAddonId();
             } else {
                 componentName = AddonUtil.combineComponentName(appAddon.getAddonId(), appAddon.getName());

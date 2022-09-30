@@ -52,7 +52,7 @@ class DefaultDeployInternalAddonAppBindingHandler implements DeployComponentHand
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 2
+    public static final Integer REVISION = 3
 
     private static final String EXPORT_FILE = "_jiongsi_filename_.json"
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
@@ -81,9 +81,9 @@ class DefaultDeployInternalAddonAppBindingHandler implements DeployComponentHand
 
         // 上报状态
         def annotations = (JSONObject) componentSchema.getSpec().getWorkload().getMetadata().getAnnotations()
-        def version = annotations.getOrDefault(ANNOTATIONS_VERSION, "")
-        def componentInstanceId = annotations.getOrDefault(ANNOTATIONS_COMPONENT_INSTANCE_ID, "")
-        def appInstanceName = annotations.getOrDefault(ANNOTATIONS_APP_INSTANCE_NAME, "")
+        def version = (String) annotations.getOrDefault(ANNOTATIONS_VERSION, "")
+        def componentInstanceId = (String) annotations.getOrDefault(ANNOTATIONS_COMPONENT_INSTANCE_ID, "")
+        def appInstanceName = (String) annotations.getOrDefault(ANNOTATIONS_APP_INSTANCE_NAME, "")
         componentInstanceService.report(ReportRtComponentInstanceStatusReq.builder()
                 .componentInstanceId(componentInstanceId)
                 .appInstanceName(appInstanceName)

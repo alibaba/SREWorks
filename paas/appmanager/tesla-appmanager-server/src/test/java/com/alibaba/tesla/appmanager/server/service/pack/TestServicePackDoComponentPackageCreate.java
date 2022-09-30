@@ -36,7 +36,7 @@ public class TestServicePackDoComponentPackageCreate {
     private static final String APP_ID = "testapp";
     private static final String NAMESPACE_ID = "default";
     private static final String STAGE_ID = "pre";
-    private static final ComponentTypeEnum COMPONENT_TYPE = ComponentTypeEnum.INTERNAL_ADDON;
+    private static final String COMPONENT_TYPE = ComponentTypeEnum.INTERNAL_ADDON.toString();
     private static final String COMPONENT_NAME = "productops";
     private static final String OPERATOR = "SYSTEM";
     private static final String PACKAGE_VERSION = "3.5.5+20220201234212";
@@ -101,7 +101,7 @@ public class TestServicePackDoComponentPackageCreate {
                 .stageId(STAGE_ID)
                 .operator(OPERATOR)
                 .component(ComponentBinder.builder()
-                        .componentType(COMPONENT_TYPE)
+                        .componentType(COMPONENT_TYPE.toString())
                         .componentName(COMPONENT_NAME)
                         .version(PACKAGE_VERSION)
                         .branch("master")

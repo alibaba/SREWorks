@@ -21,7 +21,10 @@ public class ParamBinderDTO {
      */
     private String componentName;
 
-    private ComponentTypeEnum componentType;
+    /**
+     * 组件类型
+     */
+    private String componentType;
 
     /**
      * 插件输出参数名

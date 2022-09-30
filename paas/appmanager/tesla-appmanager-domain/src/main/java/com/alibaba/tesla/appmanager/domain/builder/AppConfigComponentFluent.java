@@ -8,7 +8,7 @@ public interface AppConfigComponentFluent<A extends AppConfigComponentFluent<A>>
 
     String getRevisionName();
 
-    ComponentTypeEnum getComponentType();
+    String getComponentType();
 
     String getComponentName();
 
@@ -16,7 +16,7 @@ public interface AppConfigComponentFluent<A extends AppConfigComponentFluent<A>>
 
     A withRevisionName(String revisionName);
 
-    A withRevisionName(ComponentTypeEnum componentType, String componentName, String packageVersion);
+    A withRevisionName(String componentType, String componentName, String packageVersion);
 
     List<AppConfigParameterValue> getParameterValues();
 

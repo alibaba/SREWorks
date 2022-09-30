@@ -170,17 +170,14 @@ public class AppPackageTaskController extends AppManagerBaseController {
                             .build(), operator
             );
             if (CollectionUtils.isEmpty(appComponents)) {
-                throw new AppException(AppErrorCode.INVALID_USER_ARGS, "missing package component");
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                        String.format("missing package component|appId=%s|namespaceId=%s|stageId=%s",
+                                appId, namespaceId, stageId));
             }
 
             List<ComponentBinder> components = new ArrayList<>();
             for (AppComponentDTO appComponent : appComponents) {
-                ComponentTypeEnum componentType = Enums
-                        .getIfPresent(ComponentTypeEnum.class, appComponent.getComponentType()).orNull();
-                if (componentType == null) {
-                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                            String.format("invalid componentType %s", appComponent.getComponentType()));
-                }
+                String componentType = appComponent.getComponentType();
                 // 默认填充 AUTO_VERSION 到 version 字段，在构建时触发版本号自动向前滚动
                 ComponentBinder componentBinder = ComponentBinder.builder()
                         .componentType(componentType)
@@ -188,7 +185,7 @@ public class AppPackageTaskController extends AppManagerBaseController {
                         .version(DefaultConstant.AUTO_VERSION)
                         .isDevelop(request.isDevelop())
                         .build();
-                if (componentType.isKubernetesMicroservice()) {
+                if (ComponentTypeEnum.K8S_MICROSERVICE.toString().equals(componentType)) {
                     componentBinder.setBranch(DefaultConstant.DEFAULT_REPO_BRANCH);
                     List<ComponentPackageVersionItemDTO> componentVersionList = componentPackageProvider
                             .latestVersions(
@@ -202,7 +199,7 @@ public class AppPackageTaskController extends AppManagerBaseController {
                         return buildClientErrorResult(appComponent.getComponentName() + " 最新版本号缺失");
                     }
                     componentBinder.setVersion(componentVersionList.get(0).getName());
-                } else if (componentType.isHelm()) {
+                } else if (ComponentTypeEnum.HELM.toString().equals(componentType)) {
                     componentBinder.setBranch(DefaultConstant.DEFAULT_REPO_BRANCH);
                     List<ComponentPackageVersionItemDTO> componentVersionList = componentPackageProvider
                             .latestVersions(
@@ -222,14 +219,14 @@ public class AppPackageTaskController extends AppManagerBaseController {
 
             if (request.isDevelop()) {
                 ComponentBinder developmentMeta = ComponentBinder.builder()
-                        .componentType(ComponentTypeEnum.INTERNAL_ADDON)
+                        .componentType(ComponentTypeEnum.INTERNAL_ADDON.toString())
                         .componentName(INTERNAL_ADDON_DEVELOPMENT_META)
                         .version(DefaultConstant.INIT_VERSION)
                         .build();
                 components.add(developmentMeta);
 
                 ComponentBinder appMeta = ComponentBinder.builder()
-                        .componentType(ComponentTypeEnum.INTERNAL_ADDON)
+                        .componentType(ComponentTypeEnum.INTERNAL_ADDON.toString())
                         .componentName(INTERNAL_ADDON_APP_META)
                         .version(DefaultConstant.INIT_VERSION)
                         .build();

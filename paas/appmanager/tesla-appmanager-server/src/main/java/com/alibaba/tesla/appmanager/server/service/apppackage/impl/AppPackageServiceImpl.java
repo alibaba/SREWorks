@@ -311,13 +311,12 @@ public class AppPackageServiceImpl implements AppPackageService {
             List<ComponentPackageDO> componentPackages) {
         Set<String> hitRevisionSet = new HashSet<>();
         for (ComponentPackageDO componentPackage : componentPackages) {
-            ComponentTypeEnum componentType = Enums.getIfPresent(
-                    ComponentTypeEnum.class, componentPackage.getComponentType()).orNull();
+            String componentType = componentPackage.getComponentType();
             String componentName = componentPackage.getComponentName();
             String packageOptionStr = componentPackage.getPackageOptions();
-            if (componentType == null) {
+            if (StringUtils.isEmpty(componentType)) {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                        String.format("unsupported component type %s", componentPackage.getComponentType()));
+                        String.format("empty component type %s", componentPackage.getComponentType()));
             }
             if (StringUtils.isEmpty(packageOptionStr)) {
                 continue;
@@ -347,7 +346,7 @@ public class AppPackageServiceImpl implements AppPackageService {
 
             // 搜索不到的时候，包里面也没有包含配置的时候，尝试从系统中寻找类型通用配置
             if (currentComponent == null && !req.isComponentPackageConfigurationFirst()) {
-                String typeId = new DeployConfigTypeId(componentType).toString();
+                String typeId = new DeployConfigTypeId(componentType, null).toString();
                 List<DeployConfigDO> records = deployConfigService.list(DeployConfigQueryCondition.builder()
                         .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                         .appId("")
@@ -366,80 +365,75 @@ public class AppPackageServiceImpl implements AppPackageService {
             }
 
             // 针对搜索到的 SpecComponent 进行附加工作
-            switch (componentType) {
-                case K8S_MICROSERVICE:
-                case K8S_JOB:
-                    // parameterValues Binder
-                    JSONArray jsonBinderParameterValues = packageOption.getJSONArray("binderParameterValues");
-                    if (jsonBinderParameterValues != null) {
-                        List<ParamBinderDTO> parameterValues = jsonBinderParameterValues
-                                .toJavaList(ParamBinderDTO.class);
-                        for (ParamBinderDTO item : parameterValues) {
-                            String inputName = item.getDataInputName();
+            if (ComponentTypeEnum.K8S_MICROSERVICE.toString().equals(componentType)
+                    || ComponentTypeEnum.K8S_JOB.toString().equals(componentType)) {// parameterValues Binder
+                JSONArray jsonBinderParameterValues = packageOption.getJSONArray("binderParameterValues");
+                if (jsonBinderParameterValues != null) {
+                    List<ParamBinderDTO> parameterValues = jsonBinderParameterValues
+                            .toJavaList(ParamBinderDTO.class);
+                    for (ParamBinderDTO item : parameterValues) {
+                        String inputName = item.getDataInputName();
 
-                            // defaultValue 如果存在，第一优先级寻找并填入 (仅当前 ApplicationConfiguration 不存在时)
-                            // 如果存在依赖的组件变量，那么第二优先级填入，目标为 spec.env.$inputName
-                            ComponentTypeEnum dependencyComponentType = item.getComponentType();
-                            String dependencyComponentName = item.getComponentName();
-                            String dependencyOutputName = item.getDataOutputName();
-                            String defaultValue = item.getParamDefaultValue();
-                            if (StringUtils.isNotEmpty(defaultValue)) {
-                                boolean findFlag = false;
-                                for (DeployAppSchema.ParameterValue componentParameterValue
-                                        : currentComponent.getParameterValues()) {
-                                    if (componentParameterValue.getName().equals(inputName)) {
-                                        findFlag = true;
-                                        break;
-                                    }
+                        // defaultValue 如果存在，第一优先级寻找并填入 (仅当前 ApplicationConfiguration 不存在时)
+                        // 如果存在依赖的组件变量，那么第二优先级填入，目标为 spec.env.$inputName
+                        String dependencyComponentType = item.getComponentType();
+                        String dependencyComponentName = item.getComponentName();
+                        String dependencyOutputName = item.getDataOutputName();
+                        String defaultValue = item.getParamDefaultValue();
+                        if (StringUtils.isNotEmpty(defaultValue)) {
+                            boolean findFlag = false;
+                            for (DeployAppSchema.ParameterValue componentParameterValue
+                                    : currentComponent.getParameterValues()) {
+                                if (componentParameterValue.getName().equals(inputName)) {
+                                    findFlag = true;
+                                    break;
                                 }
-                                if (!findFlag) {
-                                    currentComponent.getParameterValues().add(DeployAppSchema.ParameterValue.builder()
-                                            .name(inputName)
-                                            .value(defaultValue)
-                                            .build());
+                            }
+                            if (!findFlag) {
+                                currentComponent.getParameterValues().add(DeployAppSchema.ParameterValue.builder()
+                                        .name(inputName)
+                                        .value(defaultValue)
+                                        .build());
+                            }
+                        } else if (dependencyComponentType != null
+                                && StringUtils.isNotEmpty(dependencyComponentName)
+                                && StringUtils.isNotEmpty(dependencyOutputName)) {
+                            String defaultDataOutputName = generateDataOutputName(
+                                    dependencyComponentType, dependencyComponentName, dependencyOutputName);
+                            boolean findFlag = false;
+                            for (DeployAppSchema.DataInput componentDataInput : currentComponent.getDataInputs()) {
+                                if (componentDataInput.getValueFrom().getDataOutputName()
+                                        .equals(defaultDataOutputName)) {
+                                    findFlag = true;
+                                    break;
                                 }
-                            } else if (dependencyComponentType != null
-                                    && StringUtils.isNotEmpty(dependencyComponentName)
-                                    && StringUtils.isNotEmpty(dependencyOutputName)) {
-                                String defaultDataOutputName = generateDataOutputName(
-                                        dependencyComponentType, dependencyComponentName, dependencyOutputName);
-                                boolean findFlag = false;
-                                for (DeployAppSchema.DataInput componentDataInput : currentComponent.getDataInputs()) {
-                                    if (componentDataInput.getValueFrom().getDataOutputName()
-                                            .equals(defaultDataOutputName)) {
-                                        findFlag = true;
-                                        break;
-                                    }
-                                }
-                                if (!findFlag) {
-                                    currentComponent.getDataInputs().add(DeployAppSchema.DataInput.builder()
-                                            .valueFrom(DeployAppSchema.DataInputValueFrom.builder()
-                                                    .dataOutputName(defaultDataOutputName)
-                                                    .build())
-                                            .toFieldPaths(Collections.singletonList(
-                                                    String.format("spec.env.%s", inputName)))
-                                            .build());
-                                }
+                            }
+                            if (!findFlag) {
+                                currentComponent.getDataInputs().add(DeployAppSchema.DataInput.builder()
+                                        .valueFrom(DeployAppSchema.DataInputValueFrom.builder()
+                                                .dataOutputName(defaultDataOutputName)
+                                                .build())
+                                        .toFieldPaths(Collections.singletonList(
+                                                String.format("spec.env.%s", inputName)))
+                                        .build());
                             }
                         }
                     }
+                }
 
-                    // dependencies Binder
-                    JSONArray jsonBinderDependencies = packageOption.getJSONArray("binderDependencies");
-                    if (jsonBinderDependencies != null) {
-                        List<String> dependencies = jsonBinderDependencies.toJavaList(String.class);
-                        // TODO
-                    }
+                // dependencies Binder
+                JSONArray jsonBinderDependencies = packageOption.getJSONArray("binderDependencies");
+                if (jsonBinderDependencies != null) {
+                    List<String> dependencies = jsonBinderDependencies.toJavaList(String.class);
+                    // TODO
+                }
 
-                    // traits Binder
-                    JSONArray jsonBinderTraits = packageOption.getJSONArray("binderTraits");
-                    if (jsonBinderTraits != null) {
-                        List<TraitBinderDTO> traits = jsonBinderTraits.toJavaList(TraitBinderDTO.class);
-                        // TODO
-                    }
-                    break;
-                default:
-                    break;
+                // traits Binder
+                JSONArray jsonBinderTraits = packageOption.getJSONArray("binderTraits");
+                if (jsonBinderTraits != null) {
+                    List<TraitBinderDTO> traits = jsonBinderTraits.toJavaList(TraitBinderDTO.class);
+                    // TODO
+                }
             }
         }
 
@@ -448,7 +442,7 @@ public class AppPackageServiceImpl implements AppPackageService {
         for (DeployAppSchema.SpecComponent component : schema.getSpec().getComponents()) {
             String revisionName = component.getRevisionName();
             DeployAppRevisionName revision = DeployAppRevisionName.valueOf(component.getRevisionName());
-            if (!revision.getComponentType().equals(ComponentTypeEnum.RESOURCE_ADDON)
+            if (!ComponentTypeEnum.RESOURCE_ADDON.toString().equals(revision.getComponentType())
                     && !hitRevisionSet.contains(revisionName)) {
                 removedRevisionName.add(revisionName);
             }
@@ -468,7 +462,7 @@ public class AppPackageServiceImpl implements AppPackageService {
      */
     private void enrichSpecComponent(
             ApplicationConfigurationGenerateReq req, DeployAppSchema schema, Set<String> hitRevisionSet,
-            ComponentTypeEnum componentType, String componentName, DeployAppSchema.SpecComponent currentComponent) {
+            String componentType, String componentName, DeployAppSchema.SpecComponent currentComponent) {
         String revisionName = DeployAppRevisionName.builder()
                 .componentType(componentType)
                 .componentName(componentName)
@@ -493,7 +487,7 @@ public class AppPackageServiceImpl implements AppPackageService {
      * @param name          标识
      * @return dataOutputName
      */
-    private static String generateDataOutputName(ComponentTypeEnum componentType, String componentName, String name) {
+    private static String generateDataOutputName(String componentType, String componentName, String name) {
         return String.format("%s.%s.dataOutputs.%s", componentType, componentName, name);
     }
 

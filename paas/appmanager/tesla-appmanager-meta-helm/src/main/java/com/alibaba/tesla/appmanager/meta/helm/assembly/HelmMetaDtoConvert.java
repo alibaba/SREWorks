@@ -24,7 +24,7 @@ public class HelmMetaDtoConvert extends BaseDtoConvert<HelmMetaDTO, HelmMetaDO>{
     @Override
     public HelmMetaDTO to(HelmMetaDO source) {
         HelmMetaDTO helmMetaDTO = super.to(source);
-        helmMetaDTO.setComponentType(ComponentTypeEnum.valueOf(source.getComponentType()));
+        helmMetaDTO.setComponentType(source.getComponentType());
         helmMetaDTO.setPackageType(PackageTypeEnum.valueOf(source.getPackageType()));
         helmMetaDTO.setHelmExt(JSONObject.parseObject(source.getHelmExt()));
         return helmMetaDTO;
@@ -45,7 +45,7 @@ public class HelmMetaDtoConvert extends BaseDtoConvert<HelmMetaDTO, HelmMetaDO>{
     @Override
     public HelmMetaDO from(HelmMetaDTO source) {
         HelmMetaDO helmMetaDO = super.from(source);
-        helmMetaDO.setComponentType(source.getComponentType().name());
+        helmMetaDO.setComponentType(source.getComponentType());
         helmMetaDO.setPackageType(source.getPackageType().name());
         helmMetaDO.setHelmExt(source.getHelmExt().toJSONString());
         return helmMetaDO;

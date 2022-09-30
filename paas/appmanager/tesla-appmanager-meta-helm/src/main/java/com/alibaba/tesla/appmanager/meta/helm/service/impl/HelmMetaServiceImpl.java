@@ -160,7 +160,7 @@ public class HelmMetaServiceImpl implements HelmMetaService {
             traits.add(gatewayTrait);
         }
 
-        String systemTypeId = new DeployConfigTypeId(ComponentTypeEnum.RESOURCE_ADDON, "system-env@system-env").toString();
+        String systemTypeId = new DeployConfigTypeId(ComponentTypeEnum.RESOURCE_ADDON.toString(), "system-env@system-env").toString();
 
         List<DeployConfigDO> configs = deployConfigService.list(
                 DeployConfigQueryCondition.builder()
@@ -189,7 +189,7 @@ public class HelmMetaServiceImpl implements HelmMetaService {
         configObject.put("scopes", scopes);
 
         Yaml yaml = SchemaUtil.createYaml(JSONObject.class);
-        String typeId = new DeployConfigTypeId(ComponentTypeEnum.HELM, record.getHelmPackageId()).toString();
+        String typeId = new DeployConfigTypeId(ComponentTypeEnum.HELM.toString(), record.getHelmPackageId()).toString();
         deployConfigService.update(DeployConfigUpsertReq.builder()
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(record.getAppId())
@@ -224,7 +224,7 @@ public class HelmMetaServiceImpl implements HelmMetaService {
         }
 
         HelmMetaDO record = this.get(id, namespaceId, stageId);
-        String typeId = new DeployConfigTypeId(ComponentTypeEnum.HELM, record.getHelmPackageId()).toString();
+        String typeId = new DeployConfigTypeId(ComponentTypeEnum.HELM.toString(), record.getHelmPackageId()).toString();
         deployConfigService.delete(DeployConfigDeleteReq.builder()
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(record.getAppId())

@@ -196,19 +196,19 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         String namespaceId = request.getNamespaceId();
         String stageId = request.getStageId();
         String arch = request.getArch();
-        Boolean isWithBlobs = request.isWithBlobs();
+        boolean isWithBlobs = request.isWithBlobs();
 
         // 获取通用 Component
         List<AppComponentDO> appComponents = appComponentService.list(AppComponentQueryCondition.builder()
                 .appId(appId)
                 .namespaceId(namespaceId)
                 .stageId(stageId)
+                .withBlobs(isWithBlobs)
                 .build());
         Map<String, PluginDefinitionDO> pluginMap = pluginService
                 .list(PluginDefinitionQueryCondition.builder()
                         .pluginKind(PluginKindEnum.COMPONENT_DEFINITION.toString())
                         .pluginRegistered(true)
-                        .withBlobs(isWithBlobs)
                         .build())
                 .getItems()
                 .stream()
@@ -238,7 +238,7 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                                 .appId(appId)
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)
-                                .componentType(k8sMicroServiceMetaDTO.getComponentType().toString())
+                                .componentType(k8sMicroServiceMetaDTO.getComponentType())
                                 .componentName(k8sMicroServiceMetaDTO.getMicroServiceId())
                                 .build()
                         )
@@ -259,7 +259,7 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)
                                 .componentName(helmMetaDO.getHelmPackageId())
-                                .componentType(helmMetaDO.getComponentType().toString())
+                                .componentType(helmMetaDO.getComponentType())
                                 .build()
                         )
 
@@ -280,7 +280,7 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                                 .appId(appId)
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)
-                                .componentType(item.getAddonType().toString())
+                                .componentType(item.getAddonType())
                                 .componentName(item.getAddonId())
                                 .build()
                         )
@@ -301,7 +301,7 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                                 .appId(appId)
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)
-                                .componentType(item.getAddonType().toString())
+                                .componentType(item.getAddonType())
                                 .componentName(String.format("%s@%s", item.getAddonId(), item.getName()))
                                 .build()
                         )

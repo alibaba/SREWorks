@@ -54,7 +54,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/traits**")
                     .antMatchers("/flow-manager/**")
                     .antMatchers("/traits/**")
-                    .antMatchers(HttpMethod.POST, "/apps")
                     .antMatchers("/definition-schemas**")
                     .antMatchers(HttpMethod.GET, "/realtime/**");
             if (systemProperties.isEnableOpenApiUi()) {

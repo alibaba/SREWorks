@@ -162,7 +162,7 @@ public class AppPackageProviderImpl implements AppPackageProvider {
                 .pageSize(req.getPageSize())
                 .withBlobs(req.isWithBlobs())
                 .build();
-        return Pagination.transform(appPackageService.list(condition), item -> appPackageDtoConvert.to(item));
+        return Pagination.transform(appPackageService.list(condition), appPackageDtoConvert::to);
     }
 
     /**

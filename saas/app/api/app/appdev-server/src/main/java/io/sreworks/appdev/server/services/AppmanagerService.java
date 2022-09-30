@@ -31,7 +31,7 @@ public class AppmanagerService {
     }
 
     public void delete(String appId, String user) throws Exception {
-        log.info("DELETE " + AppmanagerServiceUtil.getEndpoint() + "/apps/" + appId);git
+        log.info("DELETE " + AppmanagerServiceUtil.getEndpoint() + "/apps/" + appId);
         new Requests(AppmanagerServiceUtil.getEndpoint() + "/apps/" + appId)
                 .headers(HttpHeaderNames.X_EMPL_ID, user)
                 .delete().isSuccessful();

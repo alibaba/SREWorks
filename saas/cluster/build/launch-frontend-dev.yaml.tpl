@@ -35,9 +35,9 @@ spec:
     - name: gateway.trait.abm.io
       runtime: post
       spec:
-        path: /sreworks-job/**
-        routeId: dev-job-job-master-master-${NAMESPACE_ID}-dev
-        serviceName: prod-job-job-master
+        path: /sreworks/clustermanage/**
+        routeId: dev-cluster-clustermanage-master-${NAMESPACE_ID}-dev
+        serviceName: prod-cluster-clustermanage
         servicePort: 80
   - parameterValues:
     - name: STAGE_ID

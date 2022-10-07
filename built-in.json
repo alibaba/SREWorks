@@ -8,11 +8,11 @@
 },{
   "appId": "app",
   "packagePath": "saas/app/build",
-  "patch": "saas/job/api/patch.yaml"
+  "patch": "saas/app/api/patch.yaml"
 },{
   "appId": "cluster",
   "packagePath": "saas/cluster/build",
-  "patch": "saas/job/api/patch.yaml"
+  "patch": "saas/cluster/api/patch.yaml"
 },{
   "appId": "swadmin",
   "packagePath": "saas/swadmin/build"

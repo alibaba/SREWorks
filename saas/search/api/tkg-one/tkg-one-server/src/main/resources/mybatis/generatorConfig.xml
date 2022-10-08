@@ -25,9 +25,8 @@
 		</commentGenerator>
 
 		<!-- 数据库连接 -->
-		<!--mysql -htddl.daily2.alibaba.net -u TDDL5_APP -p123456 -P 3306 TDDL5_APP -->
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://tddl.daily.alibaba.net:3306/TESLAKNOWLEDGEGRAPH_APP?useUnicode=true&amp;characterEncoding=UTF-8"
+			connectionURL="jdbc:mysql://127.0.0.1:3306/TESLAKNOWLEDGEGRAPH_APP?useUnicode=true&amp;characterEncoding=UTF-8"
 			userId="TESLAKNOWLEDGEGRAPH_APP" password="123456">
 		</jdbcConnection>
 

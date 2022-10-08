@@ -54,7 +54,7 @@ public class K8sMicroServiceMetaQuickUpdateReq {
     /**
      * 组件类型
      */
-    private ComponentTypeEnum componentType;
+    private String componentType;
 
     /**
      * 架构

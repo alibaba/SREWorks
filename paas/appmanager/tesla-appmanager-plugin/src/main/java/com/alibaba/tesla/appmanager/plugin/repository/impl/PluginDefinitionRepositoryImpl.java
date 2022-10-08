@@ -84,6 +84,9 @@ public class PluginDefinitionRepositoryImpl implements PluginDefinitionRepositor
         if (StringUtils.isNotBlank(condition.getPluginVersion())) {
             criteria.andPluginVersionEqualTo(condition.getPluginVersion());
         }
+        if (condition.getPluginRegistered() != null) {
+            criteria.andPluginRegisteredEqualTo(condition.getPluginRegistered());
+        }
         return example;
     }
 

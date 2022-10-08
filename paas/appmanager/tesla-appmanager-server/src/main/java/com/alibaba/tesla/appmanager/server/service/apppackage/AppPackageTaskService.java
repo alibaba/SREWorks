@@ -56,5 +56,5 @@ public interface AppPackageTaskService {
      * @return next version
      */
     String getComponentNextVersion(
-            String appId, ComponentTypeEnum componentType, String componentName, String fullVersion);
+            String appId, String componentType, String componentName, String fullVersion);
 }

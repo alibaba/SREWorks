@@ -307,9 +307,9 @@ public class DeployAppSchema implements Schema, Serializable {
         @JSONField(serialize = false)
         public String getUniqueId(DeployAppRevisionName componentRevisionContainer) {
             DeployAppRevisionName container = DeployAppRevisionName.builder()
-                    .componentType(ComponentTypeEnum.TRAIT_ADDON)
+                    .componentType(ComponentTypeEnum.TRAIT_ADDON.toString())
                     .componentName(String.join("~", Arrays.asList(
-                            componentRevisionContainer.getComponentType().toString(),
+                            componentRevisionContainer.getComponentType(),
                             componentRevisionContainer.getComponentName(),
                             name
                     )))

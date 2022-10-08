@@ -352,7 +352,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                         for (DeployAppSchema.SpecComponent specComponent : schema.getSpec().getComponents()) {
                             DeployAppRevisionName revisionName = DeployAppRevisionName
                                     .valueOf(specComponent.getRevisionName());
-                            if (componentType.equalsIgnoreCase(revisionName.getComponentType().toString())
+                            if (componentType.equalsIgnoreCase(revisionName.getComponentType())
                                     && componentName.equals(revisionName.getComponentName())) {
                                 componentFound = true;
                                 for (DeployAppSchema.SpecComponentTrait specComponentTrait

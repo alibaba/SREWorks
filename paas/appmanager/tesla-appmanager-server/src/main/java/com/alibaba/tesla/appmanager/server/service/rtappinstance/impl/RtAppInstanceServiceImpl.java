@@ -23,10 +23,10 @@ import com.alibaba.tesla.appmanager.server.repository.condition.AppPackageQueryC
 import com.alibaba.tesla.appmanager.server.repository.condition.RtAppInstanceHistoryQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.condition.RtAppInstanceQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.condition.RtComponentInstanceQueryCondition;
-import com.alibaba.tesla.appmanager.server.repository.domain.AppPackageDO;
-import com.alibaba.tesla.appmanager.server.repository.domain.RtAppInstanceDO;
-import com.alibaba.tesla.appmanager.server.repository.domain.RtAppInstanceHistoryDO;
-import com.alibaba.tesla.appmanager.server.repository.domain.RtComponentInstanceDO;
+import com.alibaba.tesla.appmanager.server.repository.domain.*;
+import com.alibaba.tesla.appmanager.server.service.appmeta.AppMetaService;
+import com.alibaba.tesla.appmanager.server.service.appoption.AppOptionConstant;
+import com.alibaba.tesla.appmanager.server.service.appoption.AppOptionService;
 import com.alibaba.tesla.appmanager.server.service.apppackage.AppPackageService;
 import com.alibaba.tesla.appmanager.server.service.rtappinstance.RtAppInstanceService;
 import com.google.common.base.Enums;
@@ -44,6 +44,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 实时应用实例服务
@@ -74,6 +75,9 @@ public class RtAppInstanceServiceImpl implements RtAppInstanceService {
 
     @Autowired
     private GroovyHandlerFactory groovyHandlerFactory;
+
+    @Autowired
+    private AppOptionService appOptionService;
 
     /**
      * CRD Context
@@ -286,6 +290,15 @@ public class RtAppInstanceServiceImpl implements RtAppInstanceService {
                     || AppInstanceStatusEnum.UPDATING.toString().equals(appInstance.getStatus())) {
                 asyncTriggerStatusUpdate(appInstance.getAppInstanceId());
             }
+        }
+        if ("OXS".equals(System.getenv("CLOUD_TYPE")) && Boolean.TRUE.equals(condition.getVisit())) {
+            Set<String> navAppSet = appOptionService.getOptionsByKeyValue(AppOptionConstant.APP_IS_SHOW_IN_NAV, "1")
+                    .stream()
+                    .map(AppOptionDO::getAppId)
+                    .collect(Collectors.toSet());
+            log.info("the app set satisfied the isShowNav=true condition are {}",
+                    JSONObject.toJSONString(new ArrayList<>(navAppSet)));
+            result = result.stream().filter(item -> navAppSet.contains(item.getAppId())).collect(Collectors.toList());
         }
         return Pagination.valueOf(result, Function.identity());
     }

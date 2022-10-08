@@ -82,13 +82,11 @@ public class PluginServiceImpl implements PluginService {
     /**
      * 获取插件列表
      *
-     * @param request 查询插件列表请求
+     * @param condition 查询插件列表请求
      * @return 插件列表
      */
     @Override
-    public Pagination<PluginDefinitionDO> list(PluginQueryReq request) {
-        PluginDefinitionQueryCondition condition = new PluginDefinitionQueryCondition();
-        ClassUtil.copy(request, condition);
+    public Pagination<PluginDefinitionDO> list(PluginDefinitionQueryCondition condition) {
         List<PluginDefinitionDO> records = pluginDefinitionRepository.selectByCondition(condition);
         return Pagination.valueOf(records, Function.identity());
     }
@@ -185,11 +183,14 @@ public class PluginServiceImpl implements PluginService {
         // 取消 Groovy 注册
         PluginDefinitionSchema schema = SchemaUtil.toSchema(
                 PluginDefinitionSchema.class, definitionDO.getPluginSchema());
-        for (PluginDefinitionSchema.SchematicGroovyFile file : schema.getSpec().getSchematic().getGroovy().getFiles()) {
-            dynamicScriptService.removeScript(DynamicScriptQueryCondition.builder()
-                    .kind(file.getKind())
-                    .name(file.getName())
-                    .build());
+        PluginDefinitionSchema.Schematic schematic = schema.getSpec().getSchematic();
+        if (schematic != null) {
+            for (PluginDefinitionSchema.SchematicGroovyFile file : schematic.getGroovy().getFiles()) {
+                dynamicScriptService.removeScript(DynamicScriptQueryCondition.builder()
+                        .kind(file.getKind())
+                        .name(file.getName())
+                        .build());
+            }
         }
 
         // 关闭插件

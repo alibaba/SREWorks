@@ -67,7 +67,7 @@ public class TestServiceDeployConfigGenerateByConfiguration {
     public void testGenerateTraitNoInherit() throws Exception {
         // 准备数据
         String traitTypeId = "Type:traits::ComponentType:K8S_MICROSERVICE::ComponentName:aiops-server::Trait:test.abm.io";
-        String componentTypeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE, "aiops-server").toString();
+        String componentTypeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE.toString(), "aiops-server").toString();
         String config = getConfig();
         DeployAppSchema schema = SchemaUtil.toSchema(DeployAppSchema.class, config);
         List<DeployConfigDO> mockResults = new ArrayList<>();
@@ -123,7 +123,7 @@ public class TestServiceDeployConfigGenerateByConfiguration {
     public void testGenerateK8SMicroserviceNoInherit() throws Exception {
         // 准备数据
         String parameterValueTypeId = new DeployConfigTypeId(DeployConfigTypeId.TYPE_PARAMETER_VALUES).toString();
-        String componentTypeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE, "aiops-server").toString();
+        String componentTypeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE.toString(), "aiops-server").toString();
         String config = getConfig();
         DeployAppSchema schema = SchemaUtil.toSchema(DeployAppSchema.class, config);
         List<DeployConfigDO> mockResults = new ArrayList<>();
@@ -192,7 +192,7 @@ public class TestServiceDeployConfigGenerateByConfiguration {
     public void testGenerateK8SMicroserviceWithInherit() throws Exception {
         // 准备数据
         String parameterValueTypeId = new DeployConfigTypeId(DeployConfigTypeId.TYPE_PARAMETER_VALUES).toString();
-        String componentTypeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE, "aiops-server").toString();
+        String componentTypeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE.toString(), "aiops-server").toString();
         String config = getConfig();
         DeployAppSchema schema = SchemaUtil.toSchema(DeployAppSchema.class, config);
         Mockito.doReturn(

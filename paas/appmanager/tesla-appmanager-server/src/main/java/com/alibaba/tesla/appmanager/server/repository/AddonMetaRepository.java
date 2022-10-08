@@ -46,7 +46,7 @@ public interface AddonMetaRepository {
      * @param addonId   Addon ID
      * @return
      */
-    AddonMetaDO get(ComponentTypeEnum addonType, String addonId);
+    AddonMetaDO get(String addonType, String addonId);
 
     /**
      * 根据条件查询

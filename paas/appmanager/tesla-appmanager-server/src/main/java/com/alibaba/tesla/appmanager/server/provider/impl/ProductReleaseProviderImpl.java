@@ -126,7 +126,7 @@ public class ProductReleaseProviderImpl implements ProductReleaseProvider {
             JSONObject root = new JSONObject((Map) object);
             JSONObject options = root.getJSONObject("options");
             String componentName = root.getString("componentName");
-            ComponentTypeEnum componentType = ComponentTypeEnum.valueOf(root.getString("componentType"));
+            String componentType = root.getString("componentType");
             results.add(ComponentBinder.builder()
                     .componentType(componentType)
                     .componentName(componentName)

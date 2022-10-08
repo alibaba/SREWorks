@@ -72,7 +72,7 @@ public interface Addon {
      *
      * @return addonType
      */
-    ComponentTypeEnum getAddonType();
+    String getAddonType();
 
     /**
      * 获取当前 Addon Schema 定义

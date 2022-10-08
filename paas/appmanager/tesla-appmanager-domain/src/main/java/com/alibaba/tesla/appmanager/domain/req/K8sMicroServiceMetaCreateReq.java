@@ -49,7 +49,7 @@ public class K8sMicroServiceMetaCreateReq {
     /**
      * 组件类型
      */
-    private ComponentTypeEnum componentType;
+    private String componentType;
 
     private JSONObject service;
 }

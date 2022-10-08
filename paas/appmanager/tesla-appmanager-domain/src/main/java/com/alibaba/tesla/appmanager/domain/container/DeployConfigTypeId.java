@@ -4,6 +4,7 @@ import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -37,17 +38,13 @@ public class DeployConfigTypeId {
         this.attrs = new ArrayList<>();
     }
 
-    public DeployConfigTypeId(ComponentTypeEnum componentType) {
+    public DeployConfigTypeId(String componentType, String componentName) {
         this.type = TYPE_COMPONENTS;
         this.attrs = new ArrayList<>();
-        this.attrs.add(Pair.of(ATTR_COMPONENT_TYPE, componentType.toString()));
-    }
-
-    public DeployConfigTypeId(ComponentTypeEnum componentType, String componentName) {
-        this.type = TYPE_COMPONENTS;
-        this.attrs = new ArrayList<>();
-        this.attrs.add(Pair.of(ATTR_COMPONENT_TYPE, componentType.toString()));
-        this.attrs.add(Pair.of(ATTR_COMPONENT_NAME, componentName));
+        this.attrs.add(Pair.of(ATTR_COMPONENT_TYPE, componentType));
+        if (StringUtils.isNotEmpty(componentName)) {
+            this.attrs.add(Pair.of(ATTR_COMPONENT_NAME, componentName));
+        }
     }
 
     /**

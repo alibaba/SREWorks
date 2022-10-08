@@ -9,8 +9,7 @@ metadata:
   name: app
 spec:
   components:
-  - dependencies:
-    - component: RESOURCE_ADDON|system-env@system-env
+  - dependencies: []
     parameterValues:
     - name: REPLICAS
       toFieldPaths:
@@ -22,6 +21,14 @@ spec:
       value: http://sreworks-appmanager
     - name: Global.AUTHPROXY_ENDPOINT
       value: http://prod-flycore-paas-authproxy
+    - name: Global.APPMANAGER_USERNAME
+      value: ${APPMANAGER_USERNAME}
+    - name: Global.APPMANAGER_PASSWORD
+      value: ${APPMANAGER_PASSWORD}
+    - name: Global.APPMANAGER_CLIENT_ID
+      value: ${APPMANAGER_CLIENT_ID}
+    - name: Global.APPMANAGER_CLIENT_SECRET
+      value: ${APPMANAGER_CLIENT_SECRET}
     revisionName: K8S_MICROSERVICE|app|_
     scopes:
     - scopeRef:

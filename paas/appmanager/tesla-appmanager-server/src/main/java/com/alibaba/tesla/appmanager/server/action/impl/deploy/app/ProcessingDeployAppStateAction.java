@@ -321,7 +321,7 @@ public class ProcessingDeployAppStateAction implements DeployAppStateAction, App
             }
             // 针对 appmeta / developmentmeta 两个特殊的 INTERNAL_ADDON component, 默认不进行应用实例的创建
             DeployAppRevisionName revision = DeployAppRevisionName.valueOf(specComponent.getRevisionName());
-            if (ComponentTypeEnum.INTERNAL_ADDON.equals(revision.getComponentType())
+            if (ComponentTypeEnum.INTERNAL_ADDON.toString().equals(revision.getComponentType())
                     && ("appmeta".equals(revision.getComponentName())
                     || "developmentmeta".equals(revision.getComponentName()))) {
                 continue;

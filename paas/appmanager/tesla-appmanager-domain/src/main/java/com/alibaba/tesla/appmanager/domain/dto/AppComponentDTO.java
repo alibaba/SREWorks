@@ -20,6 +20,11 @@ public class AppComponentDTO {
     private Long id;
 
     /**
+     * 是否为兼容记录 (true: 历史上的兼容记录, false: 通用记录)
+     */
+    private boolean compatible;
+
+    /**
      * 创建时间
      */
     private Date gmtCreate;
@@ -58,6 +63,11 @@ public class AppComponentDTO {
      * 组件名称
      */
     private String componentName;
+
+    /**
+     * 组件对应的当前应用插件版本
+     */
+    private String pluginVersion;
 
     /**
      * 配置内容

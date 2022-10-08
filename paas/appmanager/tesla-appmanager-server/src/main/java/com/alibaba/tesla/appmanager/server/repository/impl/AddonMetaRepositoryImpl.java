@@ -49,7 +49,7 @@ public class AddonMetaRepositoryImpl implements AddonMetaRepository {
     }
 
     @Override
-    public AddonMetaDO get(ComponentTypeEnum addonType, String addonId) {
+    public AddonMetaDO get(String addonType, String addonId) {
         AddonMetaQueryCondition condition = AddonMetaQueryCondition.builder()
                 .addonTypeList(Collections.singletonList(addonType))
                 .addonId(addonId)
@@ -97,8 +97,7 @@ public class AddonMetaRepositoryImpl implements AddonMetaRepository {
             criteria.andAddonVersionEqualTo(condition.getAddonVersion());
         }
         if (CollectionUtils.isNotEmpty(condition.getAddonTypeList())) {
-            criteria.andAddonTypeIn(
-                    condition.getAddonTypeList().stream().map(Enum::toString).collect(Collectors.toList()));
+            criteria.andAddonTypeIn(condition.getAddonTypeList());
         }
         return example;
     }

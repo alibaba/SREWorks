@@ -6,6 +6,7 @@ import com.alibaba.tesla.appmanager.api.provider.AppComponentProvider;
 import com.alibaba.tesla.appmanager.api.provider.HelmMetaProvider;
 import com.alibaba.tesla.appmanager.api.provider.K8sMicroServiceMetaProvider;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
+import com.alibaba.tesla.appmanager.common.enums.PluginKindEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.ClassUtil;
@@ -17,6 +18,9 @@ import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentDeleteRe
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentUpdateReq;
 import com.alibaba.tesla.appmanager.domain.req.helm.HelmMetaQueryReq;
+import com.alibaba.tesla.appmanager.plugin.repository.condition.PluginDefinitionQueryCondition;
+import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDO;
+import com.alibaba.tesla.appmanager.plugin.service.PluginService;
 import com.alibaba.tesla.appmanager.server.assembly.AppComponentDtoConvert;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppComponentQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.AppComponentDO;
@@ -27,6 +31,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -52,6 +58,9 @@ public class AppComponentProviderImpl implements AppComponentProvider {
 
     @Autowired
     private HelmMetaProvider helmMetaProvider;
+
+    @Autowired
+    private PluginService pluginService;
 
     /**
      * 获取指定应用下的指定关联 Component 对象
@@ -83,6 +92,20 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         String componentType = request.getComponentType();
         String componentName = request.getComponentName();
         String config = JSONObject.toJSONString(request.getConfig());
+
+        // 提前检查是否已经存在记录
+        AppComponentDO origin = appComponentService.get(AppComponentQueryCondition.builder()
+                .namespaceId(namespaceId)
+                .stageId(stageId)
+                .appId(appId)
+                .category(category)
+                .componentType(componentType)
+                .componentName(componentName)
+                .build());
+        if (origin != null) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "the app component binding record exists");
+        }
+
         AppComponentDO record = AppComponentDO.builder()
                 .namespaceId(namespaceId)
                 .stageId(stageId)
@@ -173,16 +196,32 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         String namespaceId = request.getNamespaceId();
         String stageId = request.getStageId();
         String arch = request.getArch();
+        boolean isWithBlobs = request.isWithBlobs();
 
         // 获取通用 Component
         List<AppComponentDO> appComponents = appComponentService.list(AppComponentQueryCondition.builder()
                 .appId(appId)
                 .namespaceId(namespaceId)
                 .stageId(stageId)
+                .withBlobs(isWithBlobs)
                 .build());
+        Map<String, PluginDefinitionDO> pluginMap = pluginService
+                .list(PluginDefinitionQueryCondition.builder()
+                        .pluginKind(PluginKindEnum.COMPONENT_DEFINITION.toString())
+                        .pluginRegistered(true)
+                        .build())
+                .getItems()
+                .stream()
+                .collect(Collectors.toMap(PluginDefinitionDO::getPluginName, Function.identity()));
         List<AppComponentDTO> result = appComponents.stream()
-                .map(appComponentDtoConvert::to)
+                .filter(item -> pluginMap.containsKey(item.getComponentType()))
+                .map(item -> appComponentDtoConvert.to(item, pluginMap.get(item.getComponentType())))
                 .collect(Collectors.toList());
+
+        // 非兼容模式，直接返回当前通用 components
+        if (!request.isCompatible()) {
+            return result;
+        }
 
         // 获取 K8S 微应用组件 TODO: 迁移到通用 Component
         K8sMicroServiceMetaQueryReq k8sMicroServiceMetaQueryReq = new K8sMicroServiceMetaQueryReq();
@@ -195,10 +234,11 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                 .forEach(k8sMicroServiceMetaDTO ->
                         result.add(AppComponentDTO.builder()
                                 .id(k8sMicroServiceMetaDTO.getId())
+                                .compatible(true)
                                 .appId(appId)
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)
-                                .componentType(k8sMicroServiceMetaDTO.getComponentType().toString())
+                                .componentType(k8sMicroServiceMetaDTO.getComponentType())
                                 .componentName(k8sMicroServiceMetaDTO.getMicroServiceId())
                                 .build()
                         )
@@ -214,11 +254,12 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                 .forEach(helmMetaDO ->
                         result.add(AppComponentDTO.builder()
                                 .id(helmMetaDO.getId())
+                                .compatible(true)
                                 .appId(appId)
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)
                                 .componentName(helmMetaDO.getHelmPackageId())
-                                .componentType(helmMetaDO.getComponentType().toString())
+                                .componentType(helmMetaDO.getComponentType())
                                 .build()
                         )
 
@@ -235,10 +276,11 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                 .forEach(item ->
                         result.add(AppComponentDTO.builder()
                                 .id(item.getId())
+                                .compatible(true)
                                 .appId(appId)
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)
-                                .componentType(item.getAddonType().toString())
+                                .componentType(item.getAddonType())
                                 .componentName(item.getAddonId())
                                 .build()
                         )
@@ -255,10 +297,11 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                 .forEach(item ->
                         result.add(AppComponentDTO.builder()
                                 .id(item.getId())
+                                .compatible(true)
                                 .appId(appId)
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)
-                                .componentType(item.getAddonType().toString())
+                                .componentType(item.getAddonType())
                                 .componentName(String.format("%s@%s", item.getAddonId(), item.getName()))
                                 .build()
                         )

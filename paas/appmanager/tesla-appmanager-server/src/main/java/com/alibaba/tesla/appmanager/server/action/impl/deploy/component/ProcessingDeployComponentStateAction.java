@@ -113,7 +113,7 @@ public class ProcessingDeployComponentStateAction implements DeployComponentStat
         DeployAppRevisionName revisionName = DeployAppRevisionName.valueOf(subOrder.getIdentifier());
         ComponentPackageQueryCondition condition = ComponentPackageQueryCondition.builder()
                 .appId(subOrder.getAppId())
-                .componentType(revisionName.getComponentType().toString())
+                .componentType(revisionName.getComponentType())
                 .componentName(revisionName.getComponentName())
                 .packageVersion(revisionName.getVersion())
                 .withBlobs(false)
@@ -161,9 +161,7 @@ public class ProcessingDeployComponentStateAction implements DeployComponentStat
         String ownerReference = attrMap.get(DeployComponentAttrTypeEnum.OWNER_REFERENCES.toString());
 
         // Groovy 处理类获取，如果获取不到，则走原始 DAG 处理逻辑
-        ComponentTypeEnum componentType = Enums
-                .getIfPresent(ComponentTypeEnum.class, componentPackageDO.getComponentType()).orNull();
-        assert componentType != null;
+        String componentType = componentPackageDO.getComponentType();
         String componentName = componentPackageDO.getComponentName();
         DeployComponentHandler handler = groovyHandlerFactory.getByComponentType(DeployComponentHandler.class,
                 subOrder.getAppId(), componentType, componentName, ComponentActionEnum.DEPLOY);

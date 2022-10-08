@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.AppPackageProvider;
 import com.alibaba.tesla.appmanager.common.channel.enums.DeployAppPackageConstant;
-import com.alibaba.tesla.appmanager.common.enums.ComponentPackageTaskStateEnum;
-import com.alibaba.tesla.appmanager.common.enums.DeployAppAttrTypeEnum;
-import com.alibaba.tesla.appmanager.common.enums.DeployAppEventEnum;
-import com.alibaba.tesla.appmanager.common.enums.DeployAppStateEnum;
+import com.alibaba.tesla.appmanager.common.enums.*;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
@@ -113,7 +110,7 @@ public class WaitingComponentDeployAppStateAction implements DeployAppStateActio
         List<Long> packageTaskIdList = new ArrayList<>();
         for (DeployAppSchema.SpecComponent specComponent : configuration.getSpec().getComponents()) {
             DeployAppRevisionName revision = DeployAppRevisionName.valueOf(specComponent.getRevisionName());
-            if (!revision.getComponentType().isNotAddon() || !revision.isEmptyVersion()) {
+            if (ComponentTypeEnum.isAddon(revision.getComponentType()) || !revision.isEmptyVersion()) {
                 continue;
             }
 
@@ -135,10 +132,10 @@ public class WaitingComponentDeployAppStateAction implements DeployAppStateActio
         componentPackages.forEach(item -> {
             for (DeployAppSchema.SpecComponent specComponent : configuration.getSpec().getComponents()) {
                 DeployAppRevisionName revision = DeployAppRevisionName.valueOf(specComponent.getRevisionName());
-                if (!revision.getComponentType().isNotAddon() || !revision.isEmptyVersion()) {
+                if (ComponentTypeEnum.isAddon(revision.getComponentType()) || !revision.isEmptyVersion()) {
                     continue;
                 }
-                if (revision.getComponentType().toString().equals(item.getComponentType())
+                if (revision.getComponentType().equals(item.getComponentType())
                         && revision.getComponentName().equals(item.getComponentName())) {
                     String newRevisionName = DeployAppRevisionName.builder()
                             .componentType(revision.getComponentType())

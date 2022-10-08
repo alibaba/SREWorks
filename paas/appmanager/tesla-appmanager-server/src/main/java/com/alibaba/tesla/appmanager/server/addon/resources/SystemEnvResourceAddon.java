@@ -32,7 +32,7 @@ import java.util.Map;
 public class SystemEnvResourceAddon extends BaseAddon {
 
     @Getter
-    private final ComponentTypeEnum addonType = ComponentTypeEnum.RESOURCE_ADDON;
+    private final String addonType = ComponentTypeEnum.RESOURCE_ADDON.toString();
 
     @Getter
     private final String addonId = "system-env";

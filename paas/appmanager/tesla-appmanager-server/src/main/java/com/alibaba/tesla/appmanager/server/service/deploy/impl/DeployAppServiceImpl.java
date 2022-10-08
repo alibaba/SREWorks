@@ -1,9 +1,13 @@
 package com.alibaba.tesla.appmanager.server.service.deploy.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.common.enums.DeployAppEventEnum;
+import com.alibaba.tesla.appmanager.common.enums.DeployAppStateEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
+import com.alibaba.tesla.appmanager.common.util.DateUtil;
+import com.alibaba.tesla.appmanager.server.event.deploy.DeployAppEvent;
 import com.alibaba.tesla.appmanager.server.repository.DeployAppAttrRepository;
 import com.alibaba.tesla.appmanager.server.repository.DeployAppRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.DeployAppAttrQueryCondition;
@@ -14,6 +18,7 @@ import com.alibaba.tesla.appmanager.server.service.deploy.DeployAppService;
 import com.alibaba.tesla.appmanager.server.service.deploy.business.DeployAppBO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +44,9 @@ public class DeployAppServiceImpl implements DeployAppService {
     @Autowired
     private DeployAppAttrRepository deployAppAttrRepository;
 
+    @Autowired
+    private ApplicationEventPublisher publisher;
+
     /**
      * 根据部署工单 ID 获取对应的部署工单对象
      *
@@ -53,6 +61,7 @@ public class DeployAppServiceImpl implements DeployAppService {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                     String.format("cannot find deploy app order by id %d", deployAppId));
         }
+
         if (!withExt) {
             return DeployAppBO.builder().order(order).build();
         }

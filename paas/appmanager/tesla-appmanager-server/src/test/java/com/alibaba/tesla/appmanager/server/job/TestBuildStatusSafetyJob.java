@@ -35,7 +35,7 @@ public class TestBuildStatusSafetyJob {
     private static final int BUILD_MAX_RUNNING_SECONDS = 3600;
     private static final String BUCKET_NAME = "appmanager";
     private static final String APP_ID = "testapp";
-    private static final ComponentTypeEnum COMPONENT_TYPE = ComponentTypeEnum.K8S_MICROSERVICE;
+    private static final String COMPONENT_TYPE = ComponentTypeEnum.K8S_MICROSERVICE.toString();
     private static final String COMPONENT_NAME = "testserver";
     private static final String PACKAGE_CREATOR = "SYSTEM";
     private static final String PACKAGE_VERSION = "2.1.1+20220201234212";

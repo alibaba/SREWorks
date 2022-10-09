@@ -12,7 +12,18 @@
     "test": "jest"
   },
   "dependencies": {
-    "@sreworks/shared-utils": "^0.0.0-alpha.0"
+    "@ant-design/compatible": "^1.1.2",
+    "@ant-design/icons": "^4.7.0",
+    "@sreworks/shared-utils": "^0.0.0-alpha.0",
+    "eventemitter3": "^4.0.7",
+    "html2canvas": "^1.4.1",
+    "lodash": "^4.17.21",
+    "prop-types": "^15.8.1",
+    "react-ace": "^10.1.0",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
+    "react-markdown": "^8.0.3",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@babel/cli": "7.18.10",

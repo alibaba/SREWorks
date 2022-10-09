@@ -31,12 +31,11 @@ import FormElementType from './FormElementType'
 import SelectInput from './FormItem/SelectInput'
 import JSONEditor from './FormItem/JSONEditor'
 import TableItem from './FormItem/TableItem'
-import AceViewer from './FormItem/AceViewer'
+import AceViewer from '../AceViewer'
 import CascadeGroup from './FormItem/CascadeGroup'
 import OamWidgetItem from './FormItem/OamWidgetItem'
 import SelectItemWrapper from './FormItem/SelectItemWrapper'
 import localeHelper from '../../utils/localeHelper'
-import properties from 'appRoot/properties'
 import JSXRender from '../../components/JSXRender'
 import DatePickerWrapper from './FormItem/DatePickerWrapper'
 import JSONSchemaItem from './FormItem/JSONSchemaItem'
@@ -703,6 +702,11 @@ export default class FormElementFactory {
         )
     }
     if (innerFormItem) {
+      if (item.type === 14 || item.type === 10) {
+        if (item.initValue && item.initValue instanceof Array) {
+          item.initValue = item.initValue.join('')
+        }
+      }
       itemElement = (
         <FormItem
           {...formItemLayout}

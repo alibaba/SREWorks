@@ -46,14 +46,4 @@ public class AppComponentQueryReq extends BaseRequest {
      * 架构
      */
     private String arch;
-
-    /**
-     * 兼容模式
-     */
-    private boolean compatible = true;
-
-    /**
-     * 是否包含数据块
-     */
-    private boolean withBlobs = false;
 }

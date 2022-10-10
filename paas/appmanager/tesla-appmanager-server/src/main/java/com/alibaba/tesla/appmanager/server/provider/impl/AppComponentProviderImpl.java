@@ -217,11 +217,8 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                 .filter(item -> pluginMap.containsKey(item.getComponentType()))
                 .map(item -> appComponentDtoConvert.to(item, pluginMap.get(item.getComponentType())))
                 .collect(Collectors.toList());
-
-        // 非兼容模式，直接返回当前通用 components
-        if (!request.isCompatible()) {
-            return result;
-        }
+        log.info("fetch app component records|appId={}|namespaceId={}|stageId={}|size={}",
+                appId, namespaceId, stageId, result.size());
 
         // 获取 K8S 微应用组件 TODO: 迁移到通用 Component
         K8sMicroServiceMetaQueryReq k8sMicroServiceMetaQueryReq = new K8sMicroServiceMetaQueryReq();
@@ -243,6 +240,8 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                                 .build()
                         )
                 );
+        log.info("fetch k8s microservice records|appId={}|namespaceId={}|stageId={}|total={}",
+                appId, namespaceId, stageId, result.size());
 
         // 获取 HELM 组件 TODO: 迁移到通用 Component
         HelmMetaQueryReq helmMetaQueryReq = new HelmMetaQueryReq();
@@ -264,6 +263,8 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                         )
 
                 );
+        log.info("fetch helm microservice records|appId={}|namespaceId={}|stageId={}|total={}",
+                appId, namespaceId, stageId, result.size());
 
         // 获取 Internal Addon TODO: 迁移到通用 Component
         AppAddonQueryReq internalAddonQueryReq = new AppAddonQueryReq();
@@ -271,7 +272,7 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         internalAddonQueryReq.setNamespaceId(namespaceId);
         internalAddonQueryReq.setStageId(stageId);
         internalAddonQueryReq.setPagination(false);
-        internalAddonQueryReq.setAddonTypeList(Collections.singletonList(ComponentTypeEnum.INTERNAL_ADDON));
+        internalAddonQueryReq.setAddonTypeList(Collections.singletonList(ComponentTypeEnum.INTERNAL_ADDON.toString()));
         appAddonProvider.list(internalAddonQueryReq).getItems()
                 .forEach(item ->
                         result.add(AppComponentDTO.builder()
@@ -285,6 +286,8 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                                 .build()
                         )
                 );
+        log.info("fetch internal addon records|appId={}|namespaceId={}|stageId={}|total={}",
+                appId, namespaceId, stageId, result.size());
 
         // 获取 Resource Addon TODO: 迁移到通用 Component
         AppAddonQueryReq resourceAddonQueryReq = new AppAddonQueryReq();
@@ -292,7 +295,7 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         resourceAddonQueryReq.setNamespaceId(namespaceId);
         resourceAddonQueryReq.setStageId(stageId);
         resourceAddonQueryReq.setPagination(false);
-        resourceAddonQueryReq.setAddonTypeList(Collections.singletonList(ComponentTypeEnum.RESOURCE_ADDON));
+        resourceAddonQueryReq.setAddonTypeList(Collections.singletonList(ComponentTypeEnum.RESOURCE_ADDON.toString()));
         appAddonProvider.list(resourceAddonQueryReq).getItems()
                 .forEach(item ->
                         result.add(AppComponentDTO.builder()
@@ -306,6 +309,8 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                                 .build()
                         )
                 );
+        log.info("fetch resource addon records|appId={}|namespaceId={}|stageId={}|total={}",
+                appId, namespaceId, stageId, result.size());
         return result;
     }
 }

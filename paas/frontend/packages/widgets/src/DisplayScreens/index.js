@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import ScreenOne from './ScreenOne'
 import ScreenTwo from './ScreenTwo'
-import { BulletChart } from 'bizcharts'
 
 export default class DisplayScreens extends Component {
   render() {

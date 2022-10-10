@@ -3,7 +3,7 @@
  */
 
 import { httpClient, util, cacheRepository } from '@sreworks/shared-utils'
-import { getBuiltInWidgetCategory } from '../framework/components/WidgetRepository'
+import { getBuiltInWidgetCategory } from '../framework/WidgetRepository'
 
 let properties = window.PROPERTY
 const newPrefix = 'gateway/v2/foundation/frontend-service/frontend'

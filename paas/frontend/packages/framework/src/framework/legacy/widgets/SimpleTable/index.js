@@ -5,18 +5,15 @@
 
 import React from 'react'
 import PagingTable from '../../../../../components/PagingTable'
-import SimpleForm from '../../../../../components/FormBuilder/SimpleForm'
-import properties from 'appRoot/properties'
-import { Spin, Button, Card, Modal, Tooltip, List, Dropdown, Menu, Checkbox } from 'antd'
+import { SimpleForm } from '@sreworks/components'
+import { Spin, Checkbox } from 'antd'
 import _ from 'lodash'
 import ActionsRender from '../../../ActionsRender'
 import LinksRender from '../../../LinksRender'
-import httpClient from '../../../../../utils/httpClient'
-import localeHelper from '../../../../../utils/localeHelper'
-import * as util from '../../../../../utils/utils'
+import { httpClient, localeHelper, util } from '@sreworks/shared-utils'
 import './index.less'
-import OamWidget from '../../../../../core/framework/OamWidget'
-import DefaultItemToolbar from '../../../../../core/framework/core/DefaultItemToolbar'
+import OamWidget from '../../../OamWidget'
+import DefaultItemToolbar from '../../../core/DefaultItemToolbar'
 import PagedTable from './PagedTable'
 
 const rowClassMapping = {

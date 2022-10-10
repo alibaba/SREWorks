@@ -3,29 +3,14 @@
  * 复合Tabs组件,用于整块功能的分类展示,支持toobar配置
  */
 import React from 'react'
-import {
-  Spin,
-  Button,
-  Card,
-  Modal,
-  Icon,
-  Tooltip,
-  List,
-  Row,
-  Col,
-  Menu,
-  Divider,
-  Radio,
-  Tabs,
-} from 'antd'
+import { Icon, List, Divider, Tabs } from 'antd'
 import { Link } from 'dva/router'
 import OamWidget from '../../../OamWidget'
 import ToolBar from '../../../ToolBar'
-import * as util from '../../../../../utils/utils'
+import { util } from '@sreworks/shared-utils'
 import './index.less'
 
 const { TabPane } = Tabs
-
 const tabsPathParamKey = '__tabsPath'
 export default class CompositionTabs extends React.Component {
   constructor(props) {

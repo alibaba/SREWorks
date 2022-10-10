@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { CloseOutlined, NotificationOutlined } from '@ant-design/icons'
 import './index.less'
-import JSXRender from '../../components/JSXRender'
+import JSXRender from '../JSXRender'
 
 let instanceCount = 0
 

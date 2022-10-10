@@ -1,7 +1,6 @@
-import * as util from '../../../../../utils/utils'
-import cacheRepository from '../../../../../utils/cacheRepository'
-import httpClient from '../../../../../utils/httpClient'
-import properties from '../../../../../properties'
+import { util, httpClient } from '@sreworks/shared-utils'
+
+let properties = window.PROPERTY
 
 function getHeader() {
   return {

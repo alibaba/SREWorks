@@ -17,9 +17,8 @@ import {
 } from 'antd'
 import flyAdminService from '../service'
 import './index.scss'
-import localeHelper from '../../../../../../utils/localeHelper'
+import { localeHelper } from '@sreworks/shared-utils'
 import { connect } from 'react-redux'
-import cacheRepository from '../../../../../../utils/cacheRepository'
 
 const { Panel } = Collapse
 const formItemLayout = {

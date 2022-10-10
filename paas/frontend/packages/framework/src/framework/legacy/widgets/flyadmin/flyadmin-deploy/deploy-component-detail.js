@@ -1,6 +1,5 @@
-import { Form } from '@ant-design/compatible'
 import '@ant-design/compatible/assets/index.css'
-import { Input, Row, Col, Button, Select, Collapse, Radio, Tabs, Modal, Spin } from 'antd'
+import { Input, Select, Collapse, Radio, Tabs, Modal, Spin } from 'antd'
 import React from 'react'
 
 import 'brace/mode/python'

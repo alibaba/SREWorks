@@ -1,18 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-// import {  Search } from '@alife/next';
-
 import { Select, Badge, Input, message } from 'antd'
 import PropTypes from 'prop-types'
-
 import $ from 'jquery'
 import _ from 'lodash'
-
-// t-search 迁移来的
-
 import SearchService from './services/service'
 import FlatList from './components/FlatList'
-import appService from '../../core/services/appService'
+import appService from '../../services/appService'
 import onClickOutside from 'react-onclickoutside'
 import classNames from 'classnames'
 

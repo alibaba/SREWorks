@@ -7,7 +7,7 @@ import { PlusOutlined } from '@ant-design/icons'
 import { Tabs, Card, Row, Col, Button, Tooltip } from 'antd'
 import ParameterMappingForm from './ParameterMappingForm'
 import ParameterMappingTree from './ParameterMappingTree'
-import localeHelper from '../../utils/localeHelper'
+import { localeHelper } from '@sreworks/shared-utils'
 const TabPane = Tabs.TabPane
 let addSeq = 0
 

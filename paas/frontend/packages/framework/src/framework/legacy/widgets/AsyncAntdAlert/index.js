@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { Alert } from 'antd'
 import _ from 'lodash'
-import { renderTemplateString, stringToObject } from '../../../../../utils/utils'
-import JSXRender from '../../../../../components/JSXRender'
-import httpClient from '../../../../../utils/httpClient'
+import { util, httpClient } from '@sreworks/shared-utils'
+import { JSXRender } from '@sreworks/components'
 
 class AsyncAntdAlert extends Component {
   constructor(props) {
@@ -18,24 +17,27 @@ class AsyncAntdAlert extends Component {
     return Object.assign(
       {},
       this.props.nodeParams,
-      stringToObject(this.props.history.location.search),
+      util.stringToObject(this.props.history.location.search),
     )
   }
 
   url(props) {
-    return renderTemplateString(props.url || '', { ...props.defaultContext, ...props.nodeParams })
+    return util.renderTemplateString(props.url || '', {
+      ...props.defaultContext,
+      ...props.nodeParams,
+    })
   }
 
   componentWillMount() {
     httpClient
-      .get(renderTemplateString(_.get(this.props, 'mode.config.apiUrl', ''), this.getParams()))
+      .get(util.renderTemplateString(_.get(this.props, 'mode.config.apiUrl', ''), this.getParams()))
       .then((data) => {
         this.setState({
-          message: renderTemplateString(
+          message: util.renderTemplateString(
             _.get(this.props, 'mode.config.message', ''),
             Object.assign({}, this.getParams(), data),
           ),
-          description: renderTemplateString(
+          description: util.renderTemplateString(
             _.get(this.props, 'mode.config.description', ''),
             Object.assign({}, this.getParams(), data),
           ),
@@ -49,14 +51,16 @@ class AsyncAntdAlert extends Component {
       !_.isEqual(prevProps.nodeParams, this.props.nodeParams)
     ) {
       httpClient
-        .get(renderTemplateString(_.get(this.props, 'mode.config.apiUrl', ''), this.getParams()))
+        .get(
+          util.renderTemplateString(_.get(this.props, 'mode.config.apiUrl', ''), this.getParams()),
+        )
         .then((data) => {
           this.setState({
-            message: renderTemplateString(
+            message: util.renderTemplateString(
               _.get(this.props, 'mode.config.message', ''),
               Object.assign({}, this.getParams(), data),
             ),
-            description: renderTemplateString(
+            description: util.renderTemplateString(
               _.get(this.props, 'mode.config.description', ''),
               Object.assign({}, this.getParams(), data),
             ),

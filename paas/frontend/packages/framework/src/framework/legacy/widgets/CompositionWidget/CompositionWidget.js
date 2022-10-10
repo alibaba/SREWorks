@@ -4,7 +4,7 @@
  * 运维复合组件,有1到多个OamWidget及0到多个OamActionBar 组成
  */
 import React from 'react'
-import { Spin, Button, Card, Modal, Tooltip, List, Row, Col } from 'antd'
+import { List, Row, Col } from 'antd'
 import OamWidget from '../../../OamWidget'
 
 export default class CompositionWidget extends React.Component {

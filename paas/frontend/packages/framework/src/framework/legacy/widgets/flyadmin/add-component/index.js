@@ -3,7 +3,7 @@ import '@ant-design/compatible/assets/index.css'
 import { Radio, Input, Table, Row, Col, Button, message } from 'antd'
 import React from 'react'
 import flyAdminService from '../service'
-import FormElementFactory from '../../../../../../components/FormBuilder/FormElementFactory'
+import { FormElementFactory } from '@sreworks/components'
 import _ from 'lodash'
 
 const formItemLayout = {

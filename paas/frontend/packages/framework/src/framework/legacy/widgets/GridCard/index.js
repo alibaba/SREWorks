@@ -8,9 +8,7 @@ import { DownOutlined, QuestionCircleOutlined } from '@ant-design/icons'
 import { Spin, Card, Avatar, Popover, List, Dropdown, Menu, Pagination } from 'antd'
 import _ from 'lodash'
 import './index.less'
-import * as util from '../../../../../utils/utils'
-import httpClient from '../../../../../utils/httpClient'
-import safeEval from '../../../../../utils/SafeEval'
+import { util, httpClient, safeEval } from '@sreworks/shared-utils'
 
 const { Meta } = Card
 const colors = [

@@ -1,13 +1,10 @@
 import React from 'react'
 import { Card, Descriptions, Spin, Table } from 'antd'
 import PropTypes from 'prop-types'
-import EllipsisTip from '../../../../../components/EllipsisTip'
+import { EllipsisTip, JSXRender } from '@sreworks/components'
 import _ from 'lodash'
 import ActionsRender from '../../../ActionsRender'
-import httpClient from '../../../../../utils/httpClient'
-import * as utils from '../../../../../utils/utils'
-import JSXRender from '../../../../../components/JSXRender'
-
+import { httpClient, util } from '@sreworks/shared-utils'
 import './index.scss'
 
 class TCommonKv extends React.Component {
@@ -87,20 +84,20 @@ class CommonKvList extends React.Component {
   }
 
   componentDidMount() {
-    this.reloadKv(Object.assign({}, this.props.nodeParams, utils.getUrlParams()))
+    this.reloadKv(Object.assign({}, this.props.nodeParams, util.getUrlParams()))
   }
 
   componentDidUpdate(preProps) {
     if (!_.isEqual(preProps.nodeParams, this.props.nodeParams)) {
       //前端api方式配置
-      this.reloadKv(Object.assign({}, this.props.nodeParams, utils.getUrlParams()))
+      this.reloadKv(Object.assign({}, this.props.nodeParams, util.getUrlParams()))
     }
   }
 
   reloadKv = (params) => {
     const { mode, nodeId, openAction, renders } = this.props
-    //let params = Object.assign({} , nextProps.nodeParams , utils.getUrlParams());
-    let api = utils.renderTemplateJsonObject(mode.config.api, params)
+    //let params = Object.assign({} , nextProps.nodeParams , util.getUrlParams());
+    let api = util.renderTemplateJsonObject(mode.config.api, params)
     this.setState({ loading: true })
     return httpClient.get(api.url, { params: api.params || {} }).then((data) => {
       let { dataIndex } = mode.config
@@ -117,21 +114,19 @@ class CommonKvList extends React.Component {
           kvData[item.name] = {
             value:
               item.key.indexOf('$(') !== -1
-                ? utils.renderTemplateString(item.key, data)
+                ? util.renderTemplateString(item.key, data)
                 : displayValue,
             type: 'link',
             href: item.href,
           }
         } else if (item.type == 'render') {
           kvData[item.name] = {
-            value: <JSXRender jsx={utils.renderTemplateString(item.render, data)} />,
+            value: <JSXRender jsx={util.renderTemplateString(item.render, data)} />,
             type: 'render',
           }
         } else {
           kvData[item.name] =
-            item.key.indexOf('$(') !== -1
-              ? utils.renderTemplateString(item.key, data)
-              : displayValue
+            item.key.indexOf('$(') !== -1 ? util.renderTemplateString(item.key, data) : displayValue
         }
         let { actionBar } = item
         if (actionBar) {

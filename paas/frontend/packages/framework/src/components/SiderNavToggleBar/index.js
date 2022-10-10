@@ -8,8 +8,8 @@ import { Drawer, Menu, Avatar } from 'antd'
 import NavSelectPanel from './NavSelectPanel'
 import './index.less'
 import { connect } from 'dva'
-import { util, Bus } from '../../utils/utils'
-import AppService from '../../core/services/appService'
+import { util, Bus } from '@sreworks/shared-utils'
+import AppService from '../../services/appService'
 
 let properties = window.PROPERTY
 const colors = [

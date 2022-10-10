@@ -2,8 +2,8 @@
  * Created by caoshuaibiao on 2019/1/22.
  * 参数模型
  */
-import FormElementType from '../FormBuilder/FormElementType'
-import DataSource from '../../core/framework/model/DataSource'
+import { FormElementType } from '@sreworks/components'
+import DataSource from '../../framework/model/DataSource'
 import moment from 'moment'
 import { localeHelper, httpClient } from '@sreworks/shared-utils'
 import _ from 'lodash'

@@ -1,30 +1,10 @@
 import { Form } from '@ant-design/compatible'
 import '@ant-design/compatible/assets/index.css'
-import { Input, Row, Col, Button, Select, Collapse, Radio, Tabs, Modal, Spin, message } from 'antd'
+import { Input, Button, Select, Collapse, Radio, Tabs, Modal, Spin, message } from 'antd'
 import React from 'react'
-import SimpleForm from '../../../../../../components/FormBuilder/SimpleForm'
+import { SimpleForm } from '@sreworks/components'
 import flyAdminService from '../service'
 import { connect } from 'react-redux'
-const { confirm } = Modal
-const { TabPane } = Tabs
-const RadioGroup = Radio.Group
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 24 },
-    md: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 24 },
-    md: { span: 18 },
-  },
-}
-
-const Option = Select.Option
-const { TextArea } = Input
-const { Panel } = Collapse
-const needConfigComponent = ['K8S_JOB', 'K8S_MICROSERVICE', 'MICROSERVICE']
 @connect(({ node, global }) => ({
   userParams: Object.assign({}, { __currentUser__: global.currentUser }, node.userParams),
   userInfo: global.currentUser,
@@ -79,39 +59,6 @@ class FlyAdminDeploy extends React.Component {
   }
 
   componentDidMount() {
-    // this.setState({loading: true});
-    // flyAdminService.getStageList({pageSize: 100, pageNumber: 1})
-    //   .then(res => {
-    //     if (res && res.items) {
-    //       flyAdminService.getPackageTaskDetail({
-    //         appId: this.props.app_id,
-    //         appPackageTaskId: this.props.appPackageTaskId,
-    //       })
-    //         .then(detail => {
-    //           if (detail.packageOptions && JSON.parse(detail.packageOptions)
-    //             && JSON.parse(detail.packageOptions).components) {
-    //             let components = JSON.parse(detail.packageOptions).components;
-    //             let arr = [], typeList = [];
-    //             components.map(item => {
-    //               if (item.componentType) {
-    //                 arr.push(item.componentType);
-    //               }
-    //             });
-    //             Array.from(new Set(arr)).map(item => {
-    //               typeList.push(this.formatComponentType(item));
-    //             });
-    //             this.setState({
-    //               components,
-    //               typeList,
-    //               envList: res.items,
-    //               loading: false,
-    //             });
-    //           }
-    //         });
-    //     }
-    //   }).catch(err => {
-    //   this.setState({loading: false});
-    // });
     let { mode = {} } = this.props
     let { config = {} } = mode
     let params = {

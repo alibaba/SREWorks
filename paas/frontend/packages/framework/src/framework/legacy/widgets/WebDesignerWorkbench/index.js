@@ -6,18 +6,12 @@ import Workbench from '../../../../designer/workbench'
 import { FolderOpenOutlined } from '@ant-design/icons'
 import { Form } from '@ant-design/compatible'
 import '@ant-design/compatible/assets/index.css'
-import { Spin, Button, Popover, Select, Popconfirm } from 'antd'
-import httpClient from '../../../../../utils/httpClient'
-import * as util from '../../../../../utils/utils'
-import FormElementType from '../../../../../components/FormBuilder/FormElementType'
-import FormElementFactory from '../../../../../components/FormBuilder/FormElementFactory'
+import { Spin, Button, Popover } from 'antd'
+import { httpClient, util } from '@sreworks/shared-utils'
+import { FormElementType, FormElementFactory } from '@sreworks/components'
 import $ from 'jquery'
-import properties from '../../../../../properties'
-import cacheRepository from '../../../../../utils/cacheRepository'
-//const productopsPrefix = "gateway/v2/common/productops";
-// const productopsPrefix = (properties.envFlag===properties.ENV.Standalone?
-//     "gateway/v2/foundation/frontend-service/frontend"
-//     :"gateway/v2/common/productops");
+
+let properties = window.PROPERTY
 const productopsPrefix = 'gateway/v2/foundation/frontend-service/frontend'
 
 const formItemLayout = {

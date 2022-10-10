@@ -2,7 +2,7 @@ import { Form } from '@ant-design/compatible'
 import '@ant-design/compatible/assets/index.css'
 import { Input, Row, Col, Button, Select, Collapse, Radio, Switch } from 'antd'
 import React from 'react'
-import SimpleForm from '../../../../../../components/FormBuilder/SimpleForm'
+import { SimpleForm } from '@sreworks/components'
 
 const formItemLayout = {
   labelCol: {

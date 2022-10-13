@@ -53,7 +53,7 @@ public class HelmMetaDTO {
     /**
      * 组件类型
      */
-    private ComponentTypeEnum componentType;
+    private String componentType;
 
     /**
      * 包类型

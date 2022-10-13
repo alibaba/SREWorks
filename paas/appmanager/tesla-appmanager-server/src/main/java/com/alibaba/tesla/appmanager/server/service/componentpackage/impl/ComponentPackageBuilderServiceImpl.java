@@ -25,10 +25,10 @@ import com.alibaba.tesla.appmanager.server.service.componentpackage.ComponentPac
 import com.alibaba.tesla.appmanager.server.service.componentpackage.handler.BuildComponentHandler;
 import com.alibaba.tesla.appmanager.server.service.componentpackage.instance.ComponentPackageBase;
 import com.alibaba.tesla.appmanager.server.storage.Storage;
-import com.google.common.base.Enums;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -69,10 +69,9 @@ public class ComponentPackageBuilderServiceImpl implements ComponentPackageBuild
      */
     @Override
     public LaunchBuildComponentHandlerRes build(BuildComponentHandlerReq request) throws IOException {
-        ComponentTypeEnum componentType = Enums
-                .getIfPresent(ComponentTypeEnum.class, request.getComponentType()).orNull();
-        if (componentType == null) {
-            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "null componentType");
+        String componentType = request.getComponentType();
+        if (StringUtils.isEmpty(componentType)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "empty componentType");
         }
         String componentName = request.getComponentName();
 
@@ -161,9 +160,8 @@ public class ComponentPackageBuilderServiceImpl implements ComponentPackageBuild
      */
     @Override
     public void kanikoBuild(ComponentPackageTaskDO taskDO) throws Exception {
-        ComponentTypeEnum componentType = Enums
-                .getIfPresent(ComponentTypeEnum.class, taskDO.getComponentType()).orNull();
-        if (componentType == null) {
+        String componentType = taskDO.getComponentType();
+        if (StringUtils.isEmpty(componentType)) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "null componentType");
         }
         String componentName = taskDO.getComponentName();
@@ -177,24 +175,19 @@ public class ComponentPackageBuilderServiceImpl implements ComponentPackageBuild
                 .options(JSONObject.parseObject(taskDO.getPackageOptions()))
                 .build();
 
-        switch (componentType) {
-            case K8S_MICROSERVICE:
-            case K8S_JOB: {
-                ComponentPackageBase instance = componentPackageBuilderExecutorManager.getInstance(componentType.name());
-                instance.exportComponentPackage(taskDO);
-                break;
+        if (ComponentTypeEnum.isMicroserviceOrJob(componentType)) {
+            ComponentPackageBase instance = componentPackageBuilderExecutorManager.getInstance(componentType);
+            instance.exportComponentPackage(taskDO);
+        } else {
+            BuildComponentHandler handler = groovyHandlerFactory.getByComponentType(BuildComponentHandler.class,
+                    componentHandlerReq.getAppId(), componentType, componentName, ComponentActionEnum.BUILD);
+            LaunchBuildComponentHandlerRes res;
+            if (handler == null) {
+                res = compatibleBuild(componentHandlerReq);
+            } else {
+                res = handler.launch(componentHandlerReq);
             }
-            default:
-                BuildComponentHandler handler = groovyHandlerFactory.getByComponentType(BuildComponentHandler.class,
-                        componentHandlerReq.getAppId(), componentType, componentName, ComponentActionEnum.BUILD);
-                LaunchBuildComponentHandlerRes res;
-                if (handler == null) {
-                    res = compatibleBuild(componentHandlerReq);
-                } else {
-                    res = handler.launch(componentHandlerReq);
-                }
-                storeAndPublish(taskDO, res);
-                break;
+            storeAndPublish(taskDO, res);
         }
     }
 

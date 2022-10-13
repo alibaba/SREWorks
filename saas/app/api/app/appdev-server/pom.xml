@@ -5,7 +5,7 @@
 
     <parent>
         <artifactId>app</artifactId>
-        <groupId>com.alibaba.sreworks</groupId>
+        <groupId>io.sreworks</groupId>
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -87,6 +87,12 @@
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.sreworks</groupId>
+            <artifactId>app-common</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

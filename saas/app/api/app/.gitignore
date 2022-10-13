@@ -113,4 +113,5 @@ target
 .idea
 *.iml
 
+test.sh
 test_public.sh

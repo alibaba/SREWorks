@@ -123,14 +123,14 @@ public class PackServiceImpl implements PackService {
         String appId = message.getAppId();
         String namespaceId = message.getNamespaceId();
         String stageId = message.getStageId();
-        ComponentTypeEnum componentType = component.getComponentType();
+        String componentType = component.getComponentType();
         String componentName = component.getComponentName();
         ComponentPackageTaskCreateReq request = ComponentPackageTaskCreateReq.builder()
                 .appId(appId)
                 .namespaceId(namespaceId)
                 .stageId(stageId)
                 .appPackageTaskId(message.getAppPackageTaskId())
-                .componentType(componentType.toString())
+                .componentType(componentType)
                 .componentName(componentName)
                 .version(component.getVersion())
                 .build();
@@ -146,7 +146,7 @@ public class PackServiceImpl implements PackService {
                     .appId(appId)
                     .namespaceId(namespaceId)
                     .stageId(stageId)
-                    .componentType(componentType.toString())
+                    .componentType(componentType)
                     .componentName(componentName)
                     .packageVersion(component.getVersion())
                     .packageCreator(message.getOperator())
@@ -170,17 +170,18 @@ public class PackServiceImpl implements PackService {
         String appId = message.getAppId();
         String namespaceId = message.getNamespaceId();
         String stageId = message.getStageId();
-        ComponentTypeEnum componentType = component.getComponentType();
+        String componentType = component.getComponentType();
         String componentName = component.getComponentName();
         Boolean isDevelop = component.getIsDevelop();
 
         JSONObject options = new JSONObject();
         if (BooleanUtils.isTrue(component.getUseRawOptions())) {
             options = component.getOptions();
-        } else if (componentType.isKubernetesJob() || componentType.isKubernetesMicroservice()) {
+        } else if (ComponentTypeEnum.K8S_JOB.toString().equals(componentType)
+                || ComponentTypeEnum.K8S_MICROSERVICE.toString().equals(componentType)) {
             options = buildOptions4K8sMicroService(
                     appId, namespaceId, stageId, componentName, component.getBranch());
-        } else if (componentType.isResourceAddon()) {
+        } else if (ComponentTypeEnum.RESOURCE_ADDON.toString().equals(componentType)) {
             String[] arr = componentName.split("@", 2);
             if (arr.length != 2) {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS,
@@ -189,9 +190,9 @@ public class PackServiceImpl implements PackService {
             String addonId = arr[0];
             String addonName = arr[1];
             options = buildOptions4ResourceAddon(appId, namespaceId, stageId, addonId, addonName);
-        } else if (componentType.isInternalAddon()) {
+        } else if (ComponentTypeEnum.INTERNAL_ADDON.toString().equals(componentType)) {
             options = buildOptions4InternalAddon(appId, namespaceId, stageId, componentName, isDevelop);
-        } else if (componentType.isHelm()) {
+        } else if (ComponentTypeEnum.HELM.toString().equals(componentType)) {
             options = buildOptions4Helm(appId, componentName, component.getBranch());
         }
 

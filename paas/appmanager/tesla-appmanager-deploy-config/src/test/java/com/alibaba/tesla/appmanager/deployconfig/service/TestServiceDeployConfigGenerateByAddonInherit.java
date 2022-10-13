@@ -69,7 +69,7 @@ public class TestServiceDeployConfigGenerateByAddonInherit {
     public void testGenerateInternalAddonWithInherit() throws Exception {
         // 准备数据
         String typeId = new DeployConfigTypeId(
-                ComponentTypeEnum.INTERNAL_ADDON, "productopsv2@productopsv2").toString();
+                ComponentTypeEnum.INTERNAL_ADDON.toString(), "productopsv2@productopsv2").toString();
         Mockito.doReturn(
                         Collections.singletonList(DeployConfigDO.builder()
                                 .appId(APP_ID)

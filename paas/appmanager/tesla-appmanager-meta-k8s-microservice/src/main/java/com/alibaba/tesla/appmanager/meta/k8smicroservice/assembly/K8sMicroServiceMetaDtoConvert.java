@@ -219,7 +219,7 @@ public class K8sMicroServiceMetaDtoConvert extends BaseDtoConvert<K8sMicroServic
             current.setDescription(componentName);
             current.setProductId(productId);
             current.setReleaseId(releaseId);
-            current.setComponentType(Enums.getIfPresent(ComponentTypeEnum.class, componentType).orNull());
+            current.setComponentType(componentType);
             if (current.getComponentType() == null) {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                         String.format("invalid component type in microservice %s", componentName));
@@ -404,7 +404,7 @@ public class K8sMicroServiceMetaDtoConvert extends BaseDtoConvert<K8sMicroServic
      * @return options yaml (build.yaml)
      */
     public static String createOption(
-            ComponentTypeEnum componentType, String kind, List<EnvMetaDTO> envList,
+            String componentType, String kind, List<EnvMetaDTO> envList,
             List<ContainerObjectDTO> containerObjectDTOList, ImagePushDTO imagePushObject) {
         JSONObject options = new JSONObject();
         options.put("kind", kind);
@@ -418,7 +418,8 @@ public class K8sMicroServiceMetaDtoConvert extends BaseDtoConvert<K8sMicroServic
         }
         options.put("env", env);
 
-        if (componentType == ComponentTypeEnum.K8S_MICROSERVICE || componentType == ComponentTypeEnum.K8S_JOB) {
+        if (ComponentTypeEnum.K8S_MICROSERVICE.toString().equals(componentType)
+                || ComponentTypeEnum.K8S_JOB.toString().equals(componentType)) {
             enrichMetaInOptions(options, componentType, containerObjectDTOList, imagePushObject);
         } else {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "invalid component type");
@@ -438,7 +439,7 @@ public class K8sMicroServiceMetaDtoConvert extends BaseDtoConvert<K8sMicroServic
      * @param imagePushObject        ImagePushObject 对象
      */
     private static void enrichMetaInOptions(
-            JSONObject options, ComponentTypeEnum componentType, List<ContainerObjectDTO> containerObjectDTOList,
+            JSONObject options, String componentType, List<ContainerObjectDTO> containerObjectDTOList,
             ImagePushDTO imagePushObject) {
         JSONArray initContainers = new JSONArray();
         JSONArray containers = new JSONArray();
@@ -492,7 +493,7 @@ public class K8sMicroServiceMetaDtoConvert extends BaseDtoConvert<K8sMicroServic
                 container.put("command", containerObjectDTO.getCommand());
             }
 
-            if (componentType == ComponentTypeEnum.K8S_JOB) {
+            if (ComponentTypeEnum.K8S_JOB.toString().equals(componentType)) {
                 job.putAll(container);
                 options.put("job", job);
             } else {

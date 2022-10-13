@@ -71,8 +71,10 @@ public class DeployAppCreateResourceAddonNode extends AbstractLocalNodeBase {
         String appId = globalVariable.getString(AppFlowVariableKey.APP_ID);
         assert !StringUtils.isEmpty(nodeId) && !StringUtils.isEmpty(appId);
         DeployAppRevisionName revisionName = DeployAppRevisionName.valueOf(nodeId);
-        ComponentTypeEnum componentType = revisionName.getComponentType();
-        assert componentType == ComponentTypeEnum.RESOURCE_ADDON;
+        String componentType = revisionName.getComponentType();
+        if (!ComponentTypeEnum.RESOURCE_ADDON.toString().equals(componentType)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "only resource addon is allowed");
+        }
 
         // 获取当前的 component 及 addonSchema，准备填充参数数据
         DeployAppSchema configuration = SchemaUtil.toSchema(DeployAppSchema.class,
@@ -97,7 +99,7 @@ public class DeployAppCreateResourceAddonNode extends AbstractLocalNodeBase {
         // 获取 addon schema
         String addonId = revisionName.addonId();
         String addonName = revisionName.addonName();
-        Addon addon = addonManager.getAddon(ComponentTypeEnum.RESOURCE_ADDON, addonId);
+        Addon addon = addonManager.getAddon(ComponentTypeEnum.RESOURCE_ADDON.toString(), addonId);
         if (addon == null) {
             throw new AppException(AppErrorCode.DEPLOY_ERROR,
                     String.format("cannot find resource addon by addonId %s", addonId));

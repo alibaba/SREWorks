@@ -20,7 +20,7 @@ public class AppConfigComponentFluentImpl<A extends AppConfigComponentFluent<A>>
     }
 
     @Override
-    public ComponentTypeEnum getComponentType() {
+    public String getComponentType() {
         return DeployAppRevisionName.valueOf(this.revisionName).getComponentType();
     }
 
@@ -41,8 +41,8 @@ public class AppConfigComponentFluentImpl<A extends AppConfigComponentFluent<A>>
     }
 
     @Override
-    public A withRevisionName(ComponentTypeEnum componentType, String componentName, String packageVersion) {
-        this.revisionName = String.format("%s|%s|%s", componentType.toString(), componentName, packageVersion);
+    public A withRevisionName(String componentType, String componentName, String packageVersion) {
+        this.revisionName = String.format("%s|%s|%s", componentType, componentName, packageVersion);
         return (A) this;
     }
 

@@ -440,6 +440,11 @@ export default class FormElementFactory {
                 return <div key="_undefined_formItem">{localeHelper.get('common.undefindFromEle', '未定义表单元素')}</div>
         }
         if (innerFormItem) {
+            if(item.type === 14 || item.type === 10 ) {
+                if(item.initValue && (item.initValue instanceof Array)) {
+                    item.initValue = item.initValue.join('');
+                }
+            }
             itemElement = (
                 <FormItem
                     {...formItemLayout}

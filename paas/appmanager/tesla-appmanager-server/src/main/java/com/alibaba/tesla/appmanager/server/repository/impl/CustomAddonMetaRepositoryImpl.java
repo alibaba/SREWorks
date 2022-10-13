@@ -98,9 +98,7 @@ public class CustomAddonMetaRepositoryImpl implements CustomAddonMetaRepository 
             criteria.andAddonVersionEqualTo(condition.getAddonVersion());
         }
         if (org.apache.commons.collections.CollectionUtils.isNotEmpty(condition.getAddonTypeList())) {
-            criteria.andAddonTypeIn(
-                    condition.getAddonTypeList().stream().map(Enum::toString).collect(
-                            Collectors.toList()));
+            criteria.andAddonTypeIn(condition.getAddonTypeList());
         }
         return example;
     }

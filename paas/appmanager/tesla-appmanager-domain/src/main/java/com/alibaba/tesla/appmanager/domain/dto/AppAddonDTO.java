@@ -52,7 +52,7 @@ public class AppAddonDTO {
     /**
      * Addon 类型
      */
-    private ComponentTypeEnum addonType;
+    private String addonType;
 
     /**
      * Addon 唯一标识

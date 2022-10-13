@@ -125,7 +125,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
         request.setAppId(appId);
         request.setNamespaceId(namespaceId);
         request.setStageId(stageId);
-        request.setComponentType(ComponentTypeEnum.K8S_MICROSERVICE);
+        request.setComponentType(ComponentTypeEnum.K8S_MICROSERVICE.toString());
         request.setName(request.getMicroServiceId());
         K8sMicroServiceMetaDTO result = metaProvider.create(request);
         return buildSucceedResult(result);
@@ -146,7 +146,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
         request.setAppId(appId);
         request.setNamespaceId(namespaceId);
         request.setStageId(stageId);
-        request.setComponentType(ComponentTypeEnum.K8S_MICROSERVICE);
+        request.setComponentType(ComponentTypeEnum.K8S_MICROSERVICE.toString());
         request.setName(request.getMicroServiceId());
         K8sMicroServiceMetaDTO result = metaProvider.update(request);
         return buildSucceedResult(result);
@@ -254,7 +254,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
 
     private void repair(K8sMicroServiceMetaUpdateReq request) {
         List<ContainerObjectDTO> containerObjectList = request.getContainerObjectList();
-        if (request.getComponentType() == ComponentTypeEnum.K8S_MICROSERVICE) {
+        if (Objects.equals(request.getComponentType(), ComponentTypeEnum.K8S_MICROSERVICE.toString())) {
             ContainerObjectDTO mainContainer = containerObjectList.stream()
                     .filter(containerObject -> containerObject.getContainerType() == ContainerTypeEnum.CONTAINER)
                     .findFirst()
@@ -269,7 +269,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
                         container.setRepo(mainContainer.getRepo());
                         container.setBranch(mainContainer.getBranch());
                     });
-        } else if (request.getComponentType() == ComponentTypeEnum.K8S_JOB) {
+        } else if (Objects.equals(request.getComponentType(), ComponentTypeEnum.K8S_JOB.toString())) {
             if (CollectionUtils.size(containerObjectList) != 1) {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS, "JOB 缺失");
             }

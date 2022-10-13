@@ -183,11 +183,14 @@ public class PluginServiceImpl implements PluginService {
         // 取消 Groovy 注册
         PluginDefinitionSchema schema = SchemaUtil.toSchema(
                 PluginDefinitionSchema.class, definitionDO.getPluginSchema());
-        for (PluginDefinitionSchema.SchematicGroovyFile file : schema.getSpec().getSchematic().getGroovy().getFiles()) {
-            dynamicScriptService.removeScript(DynamicScriptQueryCondition.builder()
-                    .kind(file.getKind())
-                    .name(file.getName())
-                    .build());
+        PluginDefinitionSchema.Schematic schematic = schema.getSpec().getSchematic();
+        if (schematic != null) {
+            for (PluginDefinitionSchema.SchematicGroovyFile file : schematic.getGroovy().getFiles()) {
+                dynamicScriptService.removeScript(DynamicScriptQueryCondition.builder()
+                        .kind(file.getKind())
+                        .name(file.getName())
+                        .build());
+            }
         }
 
         // 关闭插件

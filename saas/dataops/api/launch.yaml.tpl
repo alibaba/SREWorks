@@ -83,24 +83,6 @@ spec:
           value: "true" 
         - name: Global.DATA_DB_PMDB_NAME
           value: "pmdb" 
- 
-
-    - revisionName: K8S_JOB|dataset-postrun|_
-      scopes:
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Cluster
-            name: "{{ Global.CLUSTER_ID }}"
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Namespace
-            name: "{{ Global.NAMESPACE_ID }}"
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Stage
-            name: "{{ Global.STAGE_ID }}"
-      traits: []
-      parameterValues:
         - name: Global.MINIO_ENDPOINT
           value: "${ENDPOINT_PAAS_MINIO}"
         - name: Global.MINIO_ACCESS_KEY
@@ -177,6 +159,22 @@ spec:
           value: "${DATA_ES_USER}"
         - name: Global.DATA_ES_PASSWORD
           value: "${DATA_ES_PASSWORD}"
+        - name: Global.DATA_DB_HEALTH_NAME
+          value: sw_saas_health 
+        - name: Global.HEALTH_ENDPOINT
+          value: "{{ Global.STAGE_ID }}-health-health.sreworks.svc.cluster.local:80"
+        - name: Global.MINIO_ENDPOINT
+          value: "${ENDPOINT_PAAS_MINIO}"
+        - name: Global.MINIO_ACCESS_KEY
+          value: "${MINIO_ACCESS_KEY}"
+        - name: Global.MINIO_SECRET_KEY
+          value: "${MINIO_SECRET_KEY}"
+        - name: Global.VVP_ENDPOINT
+          value: "{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-ververica-platform-ververica-platform"
+        - name: Global.KAFKA_URL
+          value: "${KAFKA_ENDPOINT}:9092" 
+        - name: Global.ES_URL
+          value: "{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-elasticsearch-master:9200"
  
 
     - revisionName: K8S_MICROSERVICE|warehouse|_
@@ -237,54 +235,4 @@ spec:
           value: "${DATA_ES_PASSWORD}"
  
 
-    - revisionName: K8S_JOB|metric-flink-init|_
-      scopes:
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Cluster
-            name: "{{ Global.CLUSTER_ID }}"
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Namespace
-            name: "{{ Global.NAMESPACE_ID }}"
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Stage
-            name: "{{ Global.STAGE_ID }}"
-      traits: []
-      parameterValues:
-        - name: Global.DATA_DB_PMDB_NAME
-          value: "pmdb"
-        - name: Global.DATA_DB_HEALTH_NAME
-          value: sw_saas_health 
-        - name: Global.HEALTH_ENDPOINT
-          value: "{{ Global.STAGE_ID }}-health-health.sreworks.svc.cluster.local:80"
-        - name: Global.DATA_DB_HOST
-          value: "${DATAOPS_DB_HOST}"
-        - name: Global.DATA_DB_PORT
-          value: "${DATAOPS_DB_PORT}"
-        - name: Global.DATA_DB_USER
-          value: "${DATAOPS_DB_USER}"
-        - name: Global.DATA_DB_PASSWORD
-          value: "${DATAOPS_DB_PASSWORD}"
-        - name: Global.MINIO_ENDPOINT
-          value: "${ENDPOINT_PAAS_MINIO}"
-        - name: Global.MINIO_ACCESS_KEY
-          value: "${MINIO_ACCESS_KEY}"
-        - name: Global.MINIO_SECRET_KEY
-          value: "${MINIO_SECRET_KEY}"
-        - name: Global.VVP_ENDPOINT
-          value: "{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-ververica-platform-ververica-platform"
-        - name: Global.KAFKA_URL
-          value: "${KAFKA_ENDPOINT}:9092" 
-        - name: Global.ES_URL
-          value: "{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-elasticsearch-master:9200"
-        - name: Global.DATA_ES_HOST
-          value: "${DATA_ES_HOST}"
-        - name: Global.DATA_ES_PORT
-          value: "${DATA_ES_PORT}"
-        - name: Global.DATA_ES_USER
-          value: "${DATA_ES_USER}"
-        - name: Global.DATA_ES_PASSWORD
-          value: "${DATA_ES_PASSWORD}"
  

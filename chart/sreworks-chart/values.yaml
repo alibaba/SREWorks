@@ -104,6 +104,9 @@ saas:
     esPort: 9200
     esUser: "elastic"
     esPassword: "sreworkses123."
+    prometheusHost: "prod-dataops-prometheus-server.sreworks-dataops"
+    prometheusPort: "80"
+
   grafana:
     password: "sreworks123456"
 

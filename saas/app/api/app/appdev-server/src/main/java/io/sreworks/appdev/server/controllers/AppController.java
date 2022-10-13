@@ -172,7 +172,7 @@ public class AppController extends BaseController {
             .collect(Collectors.toList());
         RegularUtil.underscoreToCamel(list);
         RegularUtil.gmt2Date(list);
-        list.forEach(x -> x.put("appId", "sreworks" + x.getString("id")));
+        list.forEach(x -> x.put("appId", x.getString("name")));
         list.forEach(x -> x.put("detailDict", JSONObject.parseObject(x.getString("detail"))));
         return buildSucceedResult(list);
     }

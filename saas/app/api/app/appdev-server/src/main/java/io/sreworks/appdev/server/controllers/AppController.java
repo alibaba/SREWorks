@@ -142,6 +142,20 @@ public class AppController extends BaseController {
         return buildSucceedResult(result);
     }
 
+    @ApiOperation(value = "升级")
+    @RequestMapping(value = "upgrade", method = RequestMethod.POST)
+    public TeslaBaseResult upgrade(Long id) throws JsonProcessingException {
+        App app = appRepository.findFirstById(id);
+        app.setName("sreworks" + app.getId().toString());
+        app.setDisplay(Long.valueOf(2));
+        appRepository.saveAndFlush(app);
+        JSONObject result = new JSONObject();
+        result.put("appDefId", app.getId());
+        result.put("teamId", app.getTeamId());
+        result.put("result", "OK");
+        return buildSucceedResult(result);
+    }
+
     @ApiOperation(value = "详情")
     @RequestMapping(value = "get", method = RequestMethod.GET)
     public TeslaBaseResult get(Long id) {

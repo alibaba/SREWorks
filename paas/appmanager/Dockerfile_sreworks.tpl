@@ -13,8 +13,8 @@ WORKDIR /root
 COPY --from=build /app/tesla-appmanager-start-standalone/target/tesla-appmanager.jar /app/tesla-appmanager-standalone.jar
 COPY --from=build /app/tesla-appmanager-start-standalone/target/tesla-appmanager/BOOT-INF/classes/application-docker.properties /app/config/application.properties
 # Copy Resources
-COPY --from=build /app/tesla-appmanager-start-standalone/target/classes/BOOT-INF/classes/dynamicscripts /app/dynamicscripts
-COPY --from=build /app/tesla-appmanager-start-standalone/target/classes/BOOT-INF/classes/jinja /app/jinja
+COPY --from=build /app/tesla-appmanager-start-standalone/target/classes/dynamicscripts /app/dynamicscripts
+COPY --from=build /app/tesla-appmanager-start-standalone/target/classes/jinja /app/jinja
 RUN curl -o /app/helm "${HELM_BIN_URL}" \
     && chmod +x /app/helm \
     && curl -o /app/kustomize "${KUSTOMIZE_BIN_URL}"  \

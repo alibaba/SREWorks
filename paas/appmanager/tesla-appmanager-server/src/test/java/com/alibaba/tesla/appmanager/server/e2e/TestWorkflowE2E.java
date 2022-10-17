@@ -68,14 +68,19 @@ public class TestWorkflowE2E {
 
     @Test
     public void testAbmHelm() throws Exception {
-        launchHelmWorkflow();
+        launchHelmWorkflow("application_configuration/e2e_workflow_helm.yaml");
+    }
+
+    @Test
+    public void testApplyComponents() throws Exception {
+        launchHelmWorkflow("application_configuration/e2e_workflow_apply_components.yaml");
     }
 
     /**
      * 发起服务部署
      */
-    private long launchHelmWorkflow() throws Exception {
-        String ac = FixtureUtil.getFixture("application_configuration/e2e_workflow_helm.yaml");
+    private long launchHelmWorkflow(String filename) throws Exception {
+        String ac = FixtureUtil.getFixture(filename);
         DeployAppSchema schema = SchemaUtil.toSchema(DeployAppSchema.class, ac);
         schema.getSpec().setParameterValues(new ArrayList<>());
         schema.getSpec().getParameterValues().add(DeployAppSchema.ParameterValue.builder()

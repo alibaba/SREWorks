@@ -8,10 +8,7 @@ import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.WorkflowInstanceDTO;
 import com.alibaba.tesla.appmanager.domain.dto.WorkflowTaskDTO;
 import com.alibaba.tesla.appmanager.domain.option.WorkflowInstanceOption;
-import com.alibaba.tesla.appmanager.domain.req.workflow.WorkflowInstanceListReq;
-import com.alibaba.tesla.appmanager.domain.req.workflow.WorkflowTaskListReq;
-import com.alibaba.tesla.appmanager.domain.req.workflow.WorkflowTaskSuspendReq;
-import com.alibaba.tesla.appmanager.domain.req.workflow.WorkflowTaskTerminateReq;
+import com.alibaba.tesla.appmanager.domain.req.workflow.*;
 import com.alibaba.tesla.appmanager.domain.res.workflow.WorkflowInstanceOperationRes;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,8 +42,10 @@ public class WorkflowController extends AppManagerBaseController {
     @ResponseBody
     public TeslaBaseResult launch(
             @RequestParam("appId") String appId,
+            @RequestParam("category") String category,
             @RequestBody String body, OAuth2Authentication auth) {
         WorkflowInstanceOption options = WorkflowInstanceOption.builder()
+                .category(category)
                 .creator(getOperator(auth))
                 .build();
         try {
@@ -76,6 +75,18 @@ public class WorkflowController extends AppManagerBaseController {
     ) throws Exception {
         WorkflowInstanceDTO response = workflowInstanceProvider.get(instanceId, true);
         return buildSucceedResult(response);
+    }
+
+    @Operation(summary = "设置 Workflow Instance Context", description = "用于覆写 Workflow 实例中的 Context")
+    @PutMapping("{instanceId}/context")
+    @ResponseBody
+    public TeslaBaseResult putContext(
+            @PathVariable("instanceId") Long instanceId,
+            @RequestBody WorkflowPutContextReq request,
+            OAuth2Authentication auth
+    ) throws Exception {
+        workflowInstanceProvider.putContext(instanceId, request.getContext());
+        return buildSucceedResult(DefaultConstant.EMPTY_OBJ);
     }
 
     @Operation(summary = "唤醒 Workflow Instance", description = "用于唤醒处于 SUSPEND 状态的 Workflow 实例")

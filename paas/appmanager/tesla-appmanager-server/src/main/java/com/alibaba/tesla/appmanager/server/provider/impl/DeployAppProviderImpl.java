@@ -8,6 +8,7 @@ import com.alibaba.tesla.appmanager.common.enums.*;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
+import com.alibaba.tesla.appmanager.common.util.JsonUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.dto.*;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.ApplicationConfigurationGenerateReq;
@@ -240,6 +241,10 @@ public class DeployAppProviderImpl implements DeployAppProvider {
         Map<String, String> attrMap = new HashMap<>();
         String appConfiguration = SchemaUtil.toYamlMapStr(schema);
         attrMap.put(DeployAppAttrTypeEnum.APP_CONFIGURATION.toString(), appConfiguration);
+        if (request.getOverwriteParameters() != null) {
+            attrMap.put(DeployAppAttrTypeEnum.OVERWRITE_PARAMS.toString(),
+                    request.getOverwriteParameters().toJSONString());
+        }
         DeployAppDO record = DeployAppDO.builder()
                 .appPackageId(appPackageId)
                 .packageVersion(packageVersion)
@@ -256,6 +261,10 @@ public class DeployAppProviderImpl implements DeployAppProvider {
         log.info("action=deployAppPackage.launch|deployAppId={}|appPackageId={}|creator={}|" +
                         "appId={}|clusterId={}|namespaceId={}|stageId={}|request={}", deployAppId, appPackageId, creator,
                 appId, clusterId, namespaceId, stageId, JSONObject.toJSONString(schema));
+        if (request.getOverwriteParameters() != null) {
+            log.info("action=deployAppPackage.launchOverwriteParams|deployAppId={}|overwriteParams={}",
+                    deployAppId, request.getOverwriteParameters().toJSONString());
+        }
 
         // 事件发送
         DeployAppEvent event = new DeployAppEvent(this, DeployAppEventEnum.START, deployAppId);

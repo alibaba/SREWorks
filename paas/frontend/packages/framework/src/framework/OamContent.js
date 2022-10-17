@@ -10,9 +10,9 @@ import oamTreeService from '../services/oamTreeService'
 import OamWidgets from './OamWidgets'
 import OamContentMenuBar from './OamContentMenuBar'
 import OamCustomActionBar from './OamCustomActionBar'
-import '../style.less'
+import '../style/style.less'
 import { connect } from 'dva'
-import { util, httpClient } from '../../utils/utils'
+import { util, httpClient } from '@sreworks/shared-utils'
 
 @connect(() => ({}))
 class OamContent extends React.Component {

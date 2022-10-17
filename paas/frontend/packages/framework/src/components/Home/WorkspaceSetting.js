@@ -10,21 +10,19 @@ import {
   PlusCircleOutlined,
   PlusOutlined,
 } from '@ant-design/icons'
-import { Form } from '@ant-design/compatible'
 import '@ant-design/compatible/assets/index.css'
 import './workspaceSetting.less'
-import { Modal, Divider, Upload, Tabs, Button, Spin, message, Tooltip } from 'antd'
+import { Modal, Upload, Tabs, Button, Spin, message, Tooltip } from 'antd'
 import { connect } from 'dva'
 import AppStore from './AppStore'
-import AppService from '../../core/services/appService'
-import SimpleForm from '../../components/FormBuilder/SimpleForm'
+import AppService from '../../services/appService'
+import { SimpleForm } from '@sreworks/components'
 import uuidv4 from 'uuid/v4'
-import * as util from '../../utils/utils'
-import properties from 'appRoot/properties'
+import { util, cacheRepository } from '@sreworks/shared-utils'
 import { localImglist, requiredImglist } from './localImglist'
-import cacheRepository from '../../utils/cacheRepository'
-const { TabPane } = Tabs
 
+let properties = window.PROPERTY
+const { TabPane } = Tabs
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },

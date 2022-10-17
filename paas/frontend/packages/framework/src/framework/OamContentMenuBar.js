@@ -12,7 +12,7 @@ import { FullScreenTool, JSXRender } from '@sreworks/components'
 import OamActionBar from './OamActionBar'
 import { connect } from 'dva'
 import { localeHelper, util } from '@sreworks/shared-utils'
-import '../style.less'
+import '../style/style.less'
 
 const MenuItemGroup = Menu.ItemGroup
 const SubMenu = Menu.SubMenu

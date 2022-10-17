@@ -5,16 +5,16 @@
 import React from 'react'
 import { Layout, Alert, Button, Spin } from 'antd'
 import { connect } from 'dva'
-import * as util from '../../utils/utils'
+import { util } from '@sreworks/shared-utils'
 import HomeHeader from './HomeHeader'
 import HomeWorkspace from './HomeWorkspace'
 import WorkspaceSetting from './WorkspaceSetting'
-import AppService from '../../core/services/appService'
+import AppService from '../../services/appService'
 import './index.less'
 import _ from 'lodash'
-import properties from '../../properties'
 import { localImglist, requiredImglist } from './localImglist'
 
+let properties = window.PROPERTY
 const { Content } = Layout
 
 @connect(({ home }) => ({

@@ -6,7 +6,7 @@ import uuidv4 from 'uuid/v4'
 import _ from 'lodash'
 import BaseModel from './BaseModel'
 import Constants from './Constants'
-import { safeEval, util } from '../../../utils/SafeEval'
+import { safeEval, util } from '@sreworks/shared-utils'
 
 export default class WidgetModel extends BaseModel {
   static CREATE_DEFAULT_INSTANCE() {

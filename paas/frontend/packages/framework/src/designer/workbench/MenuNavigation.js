@@ -12,10 +12,9 @@ import {
   QuestionCircleOutlined,
   SettingOutlined,
 } from '@ant-design/icons'
-import Bus from '../../../utils/eventBus'
-
+import { Bus } from '@sreworks/shared-utils'
 import { Form, Icon as LegacyIcon } from '@ant-design/compatible'
-import IconSelector from '../../../components/FormBuilder/FormItem/IconSelector'
+import { IconSelector } from '@sreworks/components'
 import '@ant-design/compatible/assets/index.css'
 import {
   Tree,
@@ -42,7 +41,7 @@ import _ from 'lodash'
 import './index.less'
 import uuid from 'uuid/v4'
 import service from '../../services/appMenuTreeService'
-import * as util from '../../../utils/utils'
+import { util } from '@sreworks/shared-utils'
 import Constants from '../../framework/model/Constants'
 
 const { SubMenu } = Menu

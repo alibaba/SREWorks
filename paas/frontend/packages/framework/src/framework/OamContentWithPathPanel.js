@@ -12,7 +12,7 @@ import OamContent from './OamContent'
 import oamTreeService from '../services/oamTreeService'
 import { JSXRender } from '@sreworks/components'
 import { util } from '@sreworks/shared-utils'
-import '../style.less'
+import '../style/style.less'
 
 const MenuItemGroup = Menu.ItemGroup
 const SubMenu = Menu.SubMenu

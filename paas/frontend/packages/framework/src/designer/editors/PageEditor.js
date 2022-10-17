@@ -11,7 +11,6 @@ import {
   SnippetsOutlined,
   QuestionCircleOutlined,
   PlusOutlined,
-  DeploymentUnitOutlined,
 } from '@ant-design/icons'
 import {
   Popconfirm,

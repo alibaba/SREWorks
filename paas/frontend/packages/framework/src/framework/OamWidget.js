@@ -3,13 +3,12 @@
  * 运维挂载组件,其中可包一个显示Widget及0到1个OamActionBar
  */
 import React from 'react'
-import { Spin, Button, Card, Modal, Tooltip, List, Drawer } from 'antd'
-import WidgetFactory from './legacy/widgets/WidgetFactory'
+import { Spin } from 'antd'
+import { WidgetFactory, ErrorBoundary } from '@sreworks/components'
 import oamTreeService from '../services/oamTreeService'
 import { util, safeEval, httpClient } from '@sreworks/shared-utils'
 import { connect } from 'dva'
 import _ from 'lodash'
-import { ErrorBoundary } from '@sreworks/components'
 import Constants from './model/Constants'
 
 @connect(({ global, node }) => ({

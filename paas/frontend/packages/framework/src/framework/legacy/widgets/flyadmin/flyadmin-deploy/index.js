@@ -1,6 +1,6 @@
 import { Form } from '@ant-design/compatible'
 import '@ant-design/compatible/assets/index.css'
-import { Input, Button, Select, Collapse, Radio, Tabs, Modal, Spin, message } from 'antd'
+import { Button, Spin, message } from 'antd'
 import React from 'react'
 import { SimpleForm } from '@sreworks/components'
 import flyAdminService from '../service'

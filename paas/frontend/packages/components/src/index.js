@@ -25,6 +25,7 @@ import RenderFactory from './RenderFactory'
 import SelectedTable from './SelectedTable'
 import SRECron from './SRECron'
 import TIcon from './TIcon'
+import IconSelector from './FormBuilder/FormItem/IconSelector'
 
 export {
   Loading,
@@ -54,4 +55,5 @@ export {
   SelectedTable,
   SRECron,
   TIcon,
+  IconSelector,
 }

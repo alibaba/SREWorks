@@ -4,14 +4,11 @@
  */
 import React from 'react'
 import { LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons'
-import { Layout, Alert, Carousel, Row, Col, Button } from 'antd'
+import { Carousel } from 'antd'
 import DesktopLayout from './DesktopLayout'
-import localeHelper from '../../utils/localeHelper'
 import { connect } from 'dva'
-import SRESearch from '../../components/SRESearch'
-import Bus from '../../utils/eventBus'
-import properties from '../../properties'
-import { debounce } from 'lodash'
+import SRESearch from '../SRESearch'
+import { Bus, localeHelper } from '@sreworks/shared-utils'
 
 // const CarouselCompSec = window.CarouselCompSec
 @connect(({ home, global }) => ({
@@ -42,7 +39,6 @@ export default class HomeWorkspace extends React.Component {
     const { dispatch, home } = this.props
     const { workspaces, desktopIndex } = home
     workspaces[desktopIndex].layout = layout
-    // dispatch({type: "home/setWorkspaces", workspaces});
   }
 
   renderWorkspace = () => {

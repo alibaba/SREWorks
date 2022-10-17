@@ -5,10 +5,10 @@ import React from 'react'
 import { Divider } from 'antd'
 import SiderNavToggleBar from '../../components/SiderNavToggleBar'
 import { connect } from 'dva'
-import localeHelper from '../../utils/localeHelper'
-import { LogoutOutlined } from '@ant-design/icons'
 import DropDownUser from '../common/DropDownUser'
 import properties from '../../properties'
+
+let properties = window.PROPERTY
 @connect(({ home, global }) => ({
   home: home,
   global: global,

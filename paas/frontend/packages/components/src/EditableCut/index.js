@@ -3,7 +3,7 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import '@ant-design/compatible/assets/index.css'
 import { Table, Input } from 'antd'
 import uuidv4 from 'uuid/v4'
-import { localeHelper } from '../../utils/localeHelper'
+import { localeHelper } from '@sreworks/shared-utils'
 import './index.less'
 import _ from 'lodash'
 

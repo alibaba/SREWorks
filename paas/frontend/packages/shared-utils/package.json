@@ -5,7 +5,7 @@
   "keywords": [],
   "license": "Apache-2.0",
   "author": "",
-  "main": "dist/index.js",
+  "main": "src/index.js",
   "module": "src/index.js",
   "scripts": {
     "build": "rimraf dist && babel src -d dist",
@@ -27,6 +27,7 @@
   "dependencies": {
     "axios": "^0.27.2",
     "intl-messageformat": "^10.1.4",
+    "jsonexport": "^3.2.0",
     "mustache": "^4.2.0",
     "qs": "^6.11.0",
     "shortid": "^2.2.16"

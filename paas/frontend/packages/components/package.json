@@ -5,7 +5,7 @@
   "keywords": [],
   "license": "Apache-2.0",
   "author": "",
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "module": "es/index.js",
   "scripts": {
     "build": "run-s build:cjs build:es",
@@ -19,6 +19,7 @@
     "ie >= 8"
   ],
   "dependencies": {
+    "@ant-design/compatible": "^1.1.2",
     "@ant-design/icons": "^4.7.0",
     "@sreworks/shared-utils": "^0.0.0-alpha.0",
     "ace-diff": "^3.0.3",

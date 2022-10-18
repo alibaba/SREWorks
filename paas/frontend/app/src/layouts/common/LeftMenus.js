@@ -7,7 +7,6 @@ import PropTypes from 'prop-types'
 import { Icon as LegacyIcon } from '@ant-design/compatible'
 import { Menu } from 'antd'
 import { Link } from 'dva/router'
-import properties from 'appRoot/properties'
 import { util } from '@sreworks/shared-utils'
 
 let properties = window.PROPERTY

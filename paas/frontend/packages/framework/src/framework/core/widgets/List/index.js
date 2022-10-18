@@ -37,7 +37,7 @@ export default class ListRender extends Component {
       splitData: widgetData,
     }
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let { widgetConfig = {} } = this.props
     let { widgetData = [] } = this.props
     if (this.props.widgetData && this.props.widgetData.items) {

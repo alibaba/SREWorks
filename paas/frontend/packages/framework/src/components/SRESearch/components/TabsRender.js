@@ -49,7 +49,7 @@ class TabsRender extends Component {
     }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.getTabList(
       this.props.userEmpId,
       this.props.sreworksSearchPath,

@@ -93,7 +93,7 @@ class GridCard extends React.Component {
     } = this.props
     return Object.assign({}, formInitParams, widgetDefaultParams, parameters, nodeParams, rowData)
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { mode } = this.props
     let { widgetConfig = {} } = this.props
     let { rowActions, api, paging = false, filters, dynamicColumnsUrl } = mode.config,

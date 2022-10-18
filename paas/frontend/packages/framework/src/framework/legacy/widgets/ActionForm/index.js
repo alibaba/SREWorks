@@ -17,7 +17,7 @@ class ActionForm extends Component {
     }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { __app_id__ } = this.props.nodeParams,
       { nodeId, actionData, mode, actions = [] } = this.props
     let action =

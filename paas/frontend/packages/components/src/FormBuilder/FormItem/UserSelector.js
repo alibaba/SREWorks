@@ -26,7 +26,7 @@ class UserSelector extends React.Component {
     }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let { empIds, value } = this.props,
       initEmpIds = []
     if (value && !Array.isArray(value) && value.length > 4) {

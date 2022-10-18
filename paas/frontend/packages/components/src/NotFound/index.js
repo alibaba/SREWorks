@@ -14,7 +14,7 @@ class NotFound extends Component {
     super(props, context)
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (
       window.__TESLA_COMPONENT_LIB_CURRENT_APP &&
       window.__TESLA_COMPONENT_LIB_CURRENT_APP.name !== window.location.hash.split('/')[1]

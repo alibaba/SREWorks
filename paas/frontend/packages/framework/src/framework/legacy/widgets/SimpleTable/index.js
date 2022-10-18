@@ -73,7 +73,7 @@ class SimpleTable extends React.Component {
     return Object.assign({}, formInitParams, widgetDefaultParams, parameters, nodeParams, rowData)
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const {
       mode,
       nodeId,

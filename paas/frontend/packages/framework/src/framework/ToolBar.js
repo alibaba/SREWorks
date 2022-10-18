@@ -44,7 +44,7 @@ export default class ToolBar extends React.Component {
     return params
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let { timeSelector = false, widgetParams } = this.props
     if (timeSelector) {
       let { type, defaultTime = {}, output } = timeSelector,

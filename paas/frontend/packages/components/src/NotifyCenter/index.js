@@ -17,7 +17,7 @@ export default class NotifyCenter extends React.Component {
     this.state = { todoCount: 0, data: [] }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { empId } = this.props
     httpClient.post(orderUrl, { currentEmpId: empId, status: QUERY_STATUS }).then((result) => {
       this.setState({

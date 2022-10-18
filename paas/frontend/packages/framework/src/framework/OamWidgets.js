@@ -101,7 +101,7 @@ export default class OamWidgets extends React.Component {
     dispatch({ type: 'node/updateParams', paramData: paramData, outputs: outputs })
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let { metaData } = this.props
     let { preCheckApi, pageDataSource } = _.get(metaData, 'config')
     if (pageDataSource) {

@@ -15,7 +15,7 @@ class MixFilterBarWidget extends Component {
     }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { __app_id__ } = this.props.nodeParams,
       { nodeId, parameters, mode, actions = [], actionData } = this.props
     let action =

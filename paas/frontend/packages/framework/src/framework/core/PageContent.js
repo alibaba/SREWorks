@@ -33,7 +33,7 @@ export default class PageContent extends React.PureComponent {
     }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let { pageModel, dispatch, nodeParams, actionParams } = this.props
     if (this.dataSource) {
       this.dataSource.query(Object.assign({}, nodeParams, actionParams)).then((pageParams) => {

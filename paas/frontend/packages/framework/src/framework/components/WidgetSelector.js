@@ -20,7 +20,7 @@ export default class WidgetSelector extends React.Component {
     }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let { exclude, include, filterType } = this.props
     service.getWidgetRepository().then((widgetCategory) => {
       let initCategory = [...widgetCategory]

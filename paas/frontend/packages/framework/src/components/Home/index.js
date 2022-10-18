@@ -29,7 +29,7 @@ class HomeLayout extends React.Component {
     const { global } = this.props
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     // this.freshNavMenu()
   }
 

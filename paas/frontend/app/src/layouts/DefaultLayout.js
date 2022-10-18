@@ -15,8 +15,9 @@ import OamContent from '../core/framework/OamContent'
 import { cacheRepository, util, httpClient, Bus } from '@sreworks/shared-utils'
 import NoticeBar from './common/NoticeBar'
 import { ErrorBoundary } from '@sreworks/components'
-import NodeContent from '../core/framework/core/NodeContent'
 import { NodeContent, SiderNavToggleBar } from '@sreworks/framework'
+import BriefLayout from './BriefLayout'
+import BriefHeader from './BriefLayout/Header'
 //其他布局引入
 let properties = window.PROPERTY
 const { Content } = Layout
@@ -56,7 +57,7 @@ class DefaultLayout extends React.Component {
     }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { global, app } = this.props,
       props = this.props
     const { accessRoutes, currentProduct } = global
@@ -215,9 +216,9 @@ class DefaultLayout extends React.Component {
 
   onRoleChange = (roleId) => {
     /*let app=this.props.global.currentProduct.productId;
-        cacheRepository.setRole(app,roleId);
-        window.location.href=window.location.href.split("#")[0]+"#/"+app;
-        window.location.reload();*/
+         cacheRepository.setRole(app,roleId);
+         window.location.href=window.location.href.split("#")[0]+"#/"+app;
+         window.location.reload();*/
     const { dispatch } = this.props
     dispatch({ type: 'global/switchRole', roleId: roleId })
   }

@@ -27,7 +27,7 @@ class NodeContent extends React.Component {
     }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let { nodeId, dispatch } = this.props
     dispatch({ type: 'node/resetParamContext' })
     this.loadContentData(nodeId)

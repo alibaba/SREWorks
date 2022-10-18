@@ -21,7 +21,7 @@ class ContentWithMenus extends React.Component {
     super(props)
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let queryString = window.location.hash.split('?')
     let hashArr = window.location.hash.split('/')
     if (queryString.length && hashArr.includes('appdev')) {

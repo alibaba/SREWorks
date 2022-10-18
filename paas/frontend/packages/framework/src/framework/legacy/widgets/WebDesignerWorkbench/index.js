@@ -84,7 +84,7 @@ class WebDesignerWorkbench extends Component {
     }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let { appId } = this.state
     let envLabel = 'dev'
     httpClient

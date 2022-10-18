@@ -14,7 +14,7 @@ class Block extends Component {
     }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { widgetModel, widgetConfig } = this.props
     const { nodeModel } = widgetModel
     let { block, ...other } = widgetConfig

@@ -32,7 +32,7 @@ class ContentWithPathPanel extends React.Component {
     routeItems = null
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let { defaultNodeId } = this.props
     oamTreeService.getTreeMeta(defaultNodeId).then((mate) => {
       //this.initData(defaultNodeId,defaultNodeId,mate);

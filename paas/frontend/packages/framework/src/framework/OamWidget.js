@@ -26,7 +26,7 @@ export default class OamWidget extends React.Component {
     this.refreshTimerId = 0
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let { widget, nodeId, parameters, nodeParams } = this.props
     if (widget.elementId) {
       oamTreeService

@@ -33,7 +33,7 @@ export default class WidgetHandleCard extends React.Component {
     this.copyWidgetJson = {}
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let { widgetModel } = this.props
     this.loadWidgetMeta(widgetModel)
   }

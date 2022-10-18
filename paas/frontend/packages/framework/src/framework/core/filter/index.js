@@ -25,7 +25,7 @@ class Filter extends Component {
     }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     //widget 生成原 Action所需的过滤器数据
     const { widgetModel, widgetConfig } = this.props
     const { nodeModel } = widgetModel

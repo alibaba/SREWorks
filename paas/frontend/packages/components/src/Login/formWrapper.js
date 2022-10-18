@@ -56,7 +56,7 @@ class CustomFormComponent extends React.Component {
       inputloading: false,
     }
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     getUserLang().then((res) => {
       if (res.status === 200) {
         res.info.langs.map((item) => {

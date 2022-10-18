@@ -15,7 +15,7 @@ class FilterBarWidget extends Component {
     }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { __app_id__ } = this.props.nodeParams,
       { nodeId, parameters, mode, actions = [] } = this.props
     let action = actions.filter((action) => {

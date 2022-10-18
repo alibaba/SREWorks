@@ -211,7 +211,7 @@ class SRESearch extends React.Component {
     this.hasSearch = false
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     // this.getHotKeywords(this.props.userEmpId, this.props.sreworksSearchPath, this.props.category, 10);
     if (this.props.isShowKeywords) {
       this.getCommonKeywords(

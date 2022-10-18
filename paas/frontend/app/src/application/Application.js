@@ -27,7 +27,7 @@ class Application extends React.Component {
       isModalVisible: false,
     }
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.loadRemoteComp()
   }
   componentDidMount() {

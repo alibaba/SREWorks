@@ -262,7 +262,7 @@ export default class WorkspaceSetting extends React.Component {
       message.error(`${info.file.name} 上传失败`)
     }
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.getImageList()
   }
   onCloseBackgroundSetting = () => {

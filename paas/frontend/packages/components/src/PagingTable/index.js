@@ -50,7 +50,7 @@ class PagingTable extends Component {
     this.loadData = debounce(this.loadData, 100)
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let { params = {} } = this.props,
       { pagination } = this.state
     this.loadData(

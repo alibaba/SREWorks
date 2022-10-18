@@ -13,7 +13,7 @@ export default class index extends Component {
       customList: [],
     }
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let { widgetData, widgetModel, widgetConfig } = this.props
     service.getCustomList().then((customList) => {
       customList &&

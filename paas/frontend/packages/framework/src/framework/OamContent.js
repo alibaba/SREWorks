@@ -37,7 +37,7 @@ class OamContent extends React.Component {
     }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let { menuRouteData, match, nodeConfig = {}, dispatch } = this.props,
       { nodeId, needCheckRoot } = this.state,
       urlParams = util.getUrlParams()

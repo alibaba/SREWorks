@@ -77,7 +77,7 @@ class MenuNavigation extends React.Component {
     appId = props.appId
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this._getDirTree()
     this.getRootRoles()
   }

@@ -45,7 +45,7 @@ class CascadeGroup extends PureComponent {
     this.reqCount = 0
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.loadSelectItemsOption(this.state.selectItems)
   }
 

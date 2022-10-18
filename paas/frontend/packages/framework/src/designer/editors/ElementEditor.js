@@ -46,7 +46,7 @@ export default class ElementEditor extends React.Component {
     this.onPreviewThrottle = throttle(this.onPreview, 1000)
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let { widgetModel } = this.props
     widgetLoader.getWidgetMeta(widgetModel).then((widgetMeta) => {
       //旧组件适配,带逐步替换

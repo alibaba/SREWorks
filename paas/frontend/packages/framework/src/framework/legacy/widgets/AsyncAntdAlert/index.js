@@ -28,7 +28,7 @@ class AsyncAntdAlert extends Component {
     })
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     httpClient
       .get(util.renderTemplateString(_.get(this.props, 'mode.config.apiUrl', ''), this.getParams()))
       .then((data) => {

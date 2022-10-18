@@ -39,7 +39,7 @@ export default class WidgetCard extends React.Component {
     this.wrapperType = widgetModel.getWrapperType()
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { widgetModel, nodeParams, actionParams } = this.props
     widgetLoader.loadWidget(widgetModel).then((WidgetComponent) => {
       this.WidgetComponent = WidgetComponent

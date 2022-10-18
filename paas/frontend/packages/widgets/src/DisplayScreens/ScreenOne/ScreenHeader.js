@@ -14,7 +14,7 @@ export default class ScreenHeader extends React.PureComponent {
   }
   intervalPromise = null
   // mountÍ
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.intervalPromise = setInterval(() => {
       this.setState({ date: moment().format('YYYY-MM-DD HH:mm:ss') })
     }, 990)

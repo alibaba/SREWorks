@@ -22,7 +22,7 @@ class TabContentListRender extends Component {
     this.handleInfiniteOnLoad = this.handleInfiniteOnLoad.bind(this)
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.handleInfiniteOnLoad(1)
   }
 

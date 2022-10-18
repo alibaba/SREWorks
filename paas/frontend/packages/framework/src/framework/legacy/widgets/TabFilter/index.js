@@ -10,7 +10,7 @@ class TabFilter extends Component {
       action: null,
     }
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { __app_id__ } = this.props.nodeParams,
       { nodeId, parameters, mode, actions = [] } = this.props
     let action = actions.filter((action) => {

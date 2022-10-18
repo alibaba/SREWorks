@@ -20,6 +20,11 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ template "name.server-init-configmap" . }}
+            {{- if .Values.server.sreworksEnvs -}}
+            - configMapRef:
+                name: init-configmap           
+            {{- end -}}
+
       containers:
         - name: server
           livenessProbe:

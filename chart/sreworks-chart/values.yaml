@@ -135,6 +135,7 @@ appmanager:
     account_super_secret_key: test-super-secret-key 
 
   server:
+    sreworksEnvs: true
     jvmXMX: "512m"
     docker:
       enableKaniko: true

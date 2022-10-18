@@ -18,6 +18,7 @@ images:
   rbacProxy: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kube-rbac-proxy:v0.8.0
 
 server:
+  sreworksEnvs: false
   rbac: admin
   database:
     #host: 

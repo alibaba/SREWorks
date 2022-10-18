@@ -5,12 +5,15 @@
   "keywords": [],
   "license": "Apache-2.0",
   "author": "",
-  "main": "dist/index.js",
   "module": "src/index.js",
   "scripts": {
     "build": "rimraf dist && babel src -d dist",
     "test": "jest"
   },
+  "main": "src/index.js",
+  "files": [
+    "src"
+  ],
   "dependencies": {
     "@ant-design/compatible": "^1.1.2",
     "@ant-design/icons": "^4.7.0",

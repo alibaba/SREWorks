@@ -25,15 +25,11 @@ import {
   Dropdown,
   Modal,
   Switch,
-  Badge,
   message,
   Spin,
   Button,
   Select,
-  Row,
-  Col,
   InputNumber,
-  Avatar,
   Tooltip,
   Radio,
 } from 'antd'
@@ -44,17 +40,13 @@ import service from '../../services/appMenuTreeService'
 import { util } from '@sreworks/shared-utils'
 import Constants from '../../framework/model/Constants'
 
-const { SubMenu } = Menu
-const { TextArea } = Input
 const { TreeNode, DirectoryTree } = Tree
-const Search = Input.Search
 const Option = Select.Option
 const { Item: MenuItem } = Menu
 const FormItem = Form.Item
 const RadioButton = Radio.Button
 const RadioGroup = Radio.Group
 
-let description = ''
 let appId = 'app-dev'
 
 class MenuNavigation extends React.Component {

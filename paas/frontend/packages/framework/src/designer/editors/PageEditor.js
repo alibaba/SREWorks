@@ -46,7 +46,6 @@ import AceViewer from '../../../components/FormBuilder/FormItem/AceViewer'
 import FluidContentLayoutDesigner from '../../framework/components/FluidContentLayoutDesigner'
 import appMenuTreeService from '../../services/appMenuTreeService'
 import { page_template_meta, template_app_id } from './TemplateConstant'
-import SearchParamsEditor from './SearchParamsEditor'
 
 const { Step } = Steps
 const { TabPane } = Tabs

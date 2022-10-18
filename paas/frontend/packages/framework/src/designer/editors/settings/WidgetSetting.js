@@ -9,8 +9,7 @@ import '@ant-design/compatible/assets/index.css'
 import './formCommon.less'
 import { Row, Col } from 'antd'
 import Constants from '../../../framework/model/Constants'
-import { FormElementType } from '@sreworks/components'
-import { FormElementFactory } from '@sreworks/components'
+import { FormElementType, FormElementFactory } from '@sreworks/components'
 
 const formItemLayout = {
   labelCol: {

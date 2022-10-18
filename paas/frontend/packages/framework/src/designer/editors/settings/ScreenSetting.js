@@ -8,8 +8,7 @@ import { Form } from '@ant-design/compatible'
 import '@ant-design/compatible/assets/index.css'
 import './formCommon.less'
 import { Row, Col } from 'antd'
-import { FormElementType } from '@sreworks/components'
-import { FormElementFactory } from '@sreworks/components'
+import { FormElementType, FormElementFactory } from '@sreworks/components'
 
 const chartTypeArray = [
   'Pie',

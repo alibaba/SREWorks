@@ -2848,6 +2848,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jest/types@npm:^29.2.0":
+  version: 29.2.0
+  resolution: "@jest/types@npm:29.2.0"
+  dependencies:
+    "@jest/schemas": ^29.0.0
+    "@types/istanbul-lib-coverage": ^2.0.0
+    "@types/istanbul-reports": ^3.0.0
+    "@types/node": "*"
+    "@types/yargs": ^17.0.8
+    chalk: ^4.0.0
+  checksum: 6b04cbb23306f16eaf4f0d158cfcb7cc905b352e2e44a0a4618c46cf3bdf7a1da64cea8fbc731a19e8a86dc5b80a75aec985cf8764b3178939b5d850ccc68b57
+  languageName: node
+  linkType: hard
+
 "@jridgewell/gen-mapping@npm:^0.1.0":
   version: 0.1.1
   resolution: "@jridgewell/gen-mapping@npm:0.1.1"
@@ -4279,6 +4293,7 @@ __metadata:
     "@sreworks/framework": ^0.0.0-alpha.0
     "@sreworks/shared-utils": ^0.0.0-alpha.0
     "@sreworks/widgets": ^0.0.0-alpha.0
+    css-minimizer-webpack-plugin: ^4.2.2
     dva: ^2.4.1
     dva-loading: ^3.0.22
     history: ^5.3.0
@@ -4290,6 +4305,9 @@ __metadata:
     react-color: ^2.19.3
     react-grid-layout: ^1.3.4
     react-resizable: ^3.0.4
+    webpack: 5.74.0
+    webpack-cli: 4.10.0
+    webpack-merge: 5.8.0
   languageName: unknown
   linkType: soft
 
@@ -4428,6 +4446,9 @@ __metadata:
     react-dom: 17.0.2
     rimraf: 3.0.2
     sort-package-json: 1.57.0
+    webpack: 5.74.0
+    webpack-cli: 4.10.0
+    webpack-merge: 5.8.0
   languageName: unknown
   linkType: soft
 
@@ -10048,6 +10069,35 @@ __metadata:
   languageName: node
   linkType: hard
 
+"css-minimizer-webpack-plugin@npm:^4.2.2":
+  version: 4.2.2
+  resolution: "css-minimizer-webpack-plugin@npm:4.2.2"
+  dependencies:
+    cssnano: ^5.1.8
+    jest-worker: ^29.1.2
+    postcss: ^8.4.17
+    schema-utils: ^4.0.0
+    serialize-javascript: ^6.0.0
+    source-map: ^0.6.1
+  peerDependencies:
+    webpack: ^5.0.0
+  peerDependenciesMeta:
+    "@parcel/css":
+      optional: true
+    "@swc/css":
+      optional: true
+    clean-css:
+      optional: true
+    csso:
+      optional: true
+    esbuild:
+      optional: true
+    lightningcss:
+      optional: true
+  checksum: 5417e76a445f35832aa96807c835b8e92834a6cd285b1b788dfe3ca0fa90fec7eb2dd6efa9d3649f9d8244b99b7da2d065951603b94918e8f6a366a5049cacdd
+  languageName: node
+  linkType: hard
+
 "css-select@npm:^4.1.3":
   version: 4.3.0
   resolution: "css-select@npm:4.3.0"
@@ -14915,6 +14965,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jest-util@npm:^29.2.0":
+  version: 29.2.0
+  resolution: "jest-util@npm:29.2.0"
+  dependencies:
+    "@jest/types": ^29.2.0
+    "@types/node": "*"
+    chalk: ^4.0.0
+    ci-info: ^3.2.0
+    graceful-fs: ^4.2.9
+    picomatch: ^2.2.3
+  checksum: c1fc26008b3199387dbd28f145f692f48b7c8e911c6a71892e579544ee62819ecc2c693f7fc5e41284119a6f742130ef5c92f485caed89eea47c5e627003ad2d
+  languageName: node
+  linkType: hard
+
 "jest-validate@npm:^29.0.1":
   version: 29.0.1
   resolution: "jest-validate@npm:29.0.1"
@@ -14975,6 +15039,18 @@ __metadata:
     merge-stream: ^2.0.0
     supports-color: ^8.0.0
   checksum: f246b3b326ea3bca0f2f7023601ea74db9e51c1ae5801a0ff9a27f0044298db1579c09dbe27ea2accd2fa0bb295958bae8c5c6af4fa512082425b69a1b8730ee
+  languageName: node
+  linkType: hard
+
+"jest-worker@npm:^29.1.2":
+  version: 29.2.0
+  resolution: "jest-worker@npm:29.2.0"
+  dependencies:
+    "@types/node": "*"
+    jest-util: ^29.2.0
+    merge-stream: ^2.0.0
+    supports-color: ^8.0.0
+  checksum: 680afa2b9efd0f6548a52210d055e1d8a5de2e8602cf5547d59075a55f7d9b6d4fd3c4a8bb34e03a3815975ae4c737b6dbc2c194e12088611a19941836960374
   languageName: node
   linkType: hard
 
@@ -18797,6 +18873,17 @@ __metadata:
     picocolors: ^0.2.1
     source-map: ^0.6.1
   checksum: 4ac793f506c23259189064bdc921260d869a115a82b5e713973c5af8e94fbb5721a5cc3e1e26840500d7e1f1fa42a209747c5b1a151918a9bc11f0d7ed9048e3
+  languageName: node
+  linkType: hard
+
+"postcss@npm:^8.4.17":
+  version: 8.4.18
+  resolution: "postcss@npm:8.4.18"
+  dependencies:
+    nanoid: ^3.3.4
+    picocolors: ^1.0.0
+    source-map-js: ^1.0.2
+  checksum: 9349fd99849b2e3d2e134ff949b7770ecb12375f352723ce2bcc06167eba3850ea7844c1b191a85cd915d6a396b4e8ee9a5267e6cc5d8d003d0cbc7a97555d39
   languageName: node
   linkType: hard
 

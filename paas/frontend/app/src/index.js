@@ -1,6 +1,6 @@
 import dva from 'dva'
 import createLoading from 'dva-loading'
-import createHistory from 'history/createHashHistory'
+import { createHashHistory } from 'history'
 import router from './router'
 import AppService from './services/appService'
 //不能去掉用于引入less.js来换肤使用
@@ -14,7 +14,7 @@ import { util } from '@sreworks/shared-utils'
 import './index.less'
 
 const app = dva({
-  history: createHistory(),
+  history: createHashHistory(),
   onError(error) {
     console.error(error.message)
   },

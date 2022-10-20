@@ -8,7 +8,7 @@ import { Form, Icon as LegacyIcon } from '@ant-design/compatible'
 import '@ant-design/compatible/assets/index.css'
 import { Row, Col, Alert } from 'antd'
 import FormElementFactory from './FormElementFactory'
-import JSXRender from '../../components/JSXRender'
+import JSXRender from '../JSXRender'
 import { safeEval } from '@sreworks/shared-utils'
 import { debounce } from 'lodash'
 

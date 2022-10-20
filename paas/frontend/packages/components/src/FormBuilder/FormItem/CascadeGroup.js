@@ -11,7 +11,7 @@ import { Select, Spin, Cascader, Input, Tooltip } from 'antd'
 import { localeHelper } from '@sreworks/shared-utils'
 import { debounce } from 'lodash'
 import api from '../api'
-import JSXRender from '../../../components/JSXRender'
+import JSXRender from '../../JSXRender'
 import _ from 'lodash'
 
 const FormItem = Form.Item

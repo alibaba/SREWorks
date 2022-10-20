@@ -4,6 +4,6 @@
  */
 
 import React from 'react'
-import JSXRender from '../../../components/JSXRender'
+import { JSXRender } from '@sreworks/components'
 
 export default JSXRender

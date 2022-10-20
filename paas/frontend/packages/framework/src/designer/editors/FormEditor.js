@@ -7,7 +7,7 @@ import DraggableTabs from './DraggableTabs'
 import './FormEditor.less'
 import { Tabs } from 'antd'
 import FormItemEditor from './FormItemEditor'
-import Parameter from '../../../components/ParameterMappingBuilder/Parameter'
+import Parameter from '../../components/ParameterMappingBuilder/Parameter'
 import { debounce } from 'lodash'
 
 const TabPane = Tabs.TabPane

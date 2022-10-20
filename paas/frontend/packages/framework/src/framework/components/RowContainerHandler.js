@@ -6,7 +6,7 @@
 import React from 'react'
 import { Row, Col, Tooltip, Button, Drawer, Modal, Space, message } from 'antd'
 import Constants from '../model/Constants'
-import PopoverConfirm from '../../../components/PopoverConfirm'
+import { PopoverConfirm } from '@sreworks/components'
 import { BarChartOutlined, DeleteOutlined, EditOutlined, SnippetsOutlined } from '@ant-design/icons'
 import WidgetHandleCard from './WidgetHandleCard'
 import WidgetSelector from './WidgetSelector'

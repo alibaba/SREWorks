@@ -9,7 +9,7 @@ import '@ant-design/compatible/assets/index.css'
 import { Row, Col, Collapse } from 'antd'
 import { FormElementFactory } from '@sreworks/components'
 import DataSourceEditor from './DataSourceEditor'
-import Parameter from '../../../components/ParameterMappingBuilder/Parameter'
+import Parameter from '../../components/ParameterMappingBuilder/Parameter'
 import _ from 'lodash'
 
 const { Panel } = Collapse

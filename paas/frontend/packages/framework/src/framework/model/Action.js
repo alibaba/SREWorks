@@ -2,7 +2,7 @@
  * Created by caoshuaibiao on 2019/1/23.
  * 动作执行实体
  */
-import ParameterDefiner from '../../../components/ParameterMappingBuilder/ParameterDefiner'
+import ParameterDefiner from '../../components/ParameterMappingBuilder/ParameterDefiner'
 import { localeHelper } from '@sreworks/shared-utils'
 import actionService from '../../services/actionService'
 

@@ -11,7 +11,7 @@ import OamWidget from './OamWidget'
 import { connect } from 'dva'
 import _ from 'lodash'
 import { util, httpClient } from '@sreworks/shared-utils'
-import '..../style/style.less'
+import '../style/style.less'
 
 @connect(({ global, node }) => ({
   nodeParams: node.nodeParams,

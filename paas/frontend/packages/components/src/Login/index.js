@@ -1,5 +1,5 @@
-import React from 'react'
-import { connect } from 'react-redux'
+import React, { Component } from 'react'
+// import { connect } from 'react-redux'
 import FormWrapper from './formWrapper'
 import { message, Row, Col } from 'antd'
 import { localeHelper } from '@sreworks/shared-utils'
@@ -12,7 +12,7 @@ function mapStateToProps(state, props) {
   return { ...props }
 }
 
-class LoginContainer extends React.Component {
+class LoginContainer extends Component {
   loginOption
   params
   constructor(props) {
@@ -64,4 +64,4 @@ class LoginContainer extends React.Component {
     }
   }
 }
-export default connect(mapStateToProps)(LoginContainer)
+export default LoginContainer

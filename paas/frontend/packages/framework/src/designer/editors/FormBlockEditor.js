@@ -7,8 +7,8 @@ import { CloseOutlined, DownOutlined } from '@ant-design/icons'
 import { Form } from '@ant-design/compatible'
 import '@ant-design/compatible/assets/index.css'
 import { Button, Card, Row, Col, Menu, Tabs, Drawer, Dropdown } from 'antd'
-import FormEditor from '../../../components/FormBuilder/FormEditor'
-import SuperForm from '../../../components/FormBuilder/SuperForm'
+import FormEditor from './FormEditor'
+import SuperForm from '../../components/SuperForm'
 import { JsonEditor, FormElementType, FormElementFactory } from '@sreworks/components'
 const { TabPane } = Tabs
 

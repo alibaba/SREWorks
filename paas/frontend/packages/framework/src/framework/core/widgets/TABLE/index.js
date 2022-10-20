@@ -4,8 +4,7 @@
  */
 
 import React from 'react'
-import PagingTable from '../../../../components/PagingTable'
-import { SimpleForm } from '@sreworks/components'
+import { SimpleForm, PagingTable } from '@sreworks/components'
 import { Spin, Checkbox } from 'antd'
 import ActionsRender from '../../../ActionsRender'
 import LinksRender from '../../../LinksRender'

@@ -33,7 +33,7 @@ import JSONEditor from './FormItem/JSONEditor'
 import TableItem from './FormItem/TableItem'
 import AceViewer from '../AceViewer'
 import CascadeGroup from './FormItem/CascadeGroup'
-import OamWidgetItem from './FormItem/OamWidgetItem'
+// import OamWidgetItem from './FormItem/OamWidgetItem'
 import SelectItemWrapper from './FormItem/SelectItemWrapper'
 import { localeHelper } from '@sreworks/shared-utils'
 import JSXRender from '../JSXRender'
@@ -48,7 +48,7 @@ import EnhancedInput from './FormItem/EnhancedInput'
 import FileUploadNoDefer from './FormItem/FileUploadNoDefer'
 import FileUploadSingle from './FormItem/FileUploadSingle'
 import EditTableCut from '../EditTableCut'
-import SRECron from '../../components/SRECron'
+import SRECron from '../SRECron'
 import DynamicForm from '../Dynamic'
 import IconSelector from './FormItem/IconSelector'
 
@@ -565,15 +565,15 @@ export default class FormElementFactory {
           />
         )
         break
-      case 82: //运维挂件OamWidget
-        itemElement = (
-          <OamWidgetItem
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-            key={item.name}
-            model={item}
-          />
-        )
-        break
+      // case 82: //运维挂件OamWidget
+      //   itemElement = (
+      //     <OamWidgetItem
+      //       style={{ visibility: hidden ? 'hidden' : 'visible' }}
+      //       key={item.name}
+      //       model={item}
+      //     />
+      //   )
+      //   break
       case 81: //上传组件
         itemElement = (
           <FileUpload

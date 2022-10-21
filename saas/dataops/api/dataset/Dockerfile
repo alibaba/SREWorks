@@ -1,7 +1,7 @@
 FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/maven:3.8.3-adoptopenjdk-11 AS build
 
 COPY . /app
-COPY settings.xml /root/.m2/settings.xml
+RUN mkdir /root/.m2/ && curl https://sreworks.oss-cn-beijing.aliyuncs.com/resource/settings.xml -o /root/.m2/settings.xml
 RUN cd /app && mvn -f pom.xml -Dmaven.test.skip=true clean package
 
 FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/openjdk8:alpine-jre AS release
@@ -17,6 +17,7 @@ COPY ./skywalking-agent/ /app/skywalking-agent/
 
 COPY ./APP-META-PRIVATE/postrun /app/postrun
 
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
 RUN apk add --update --no-cache gettext
 RUN chmod +x /app/sbin/run.sh && chmod +x /app/sbin/entrypoint.sh
 ENTRYPOINT ["/app/sbin/entrypoint.sh"]

@@ -104,6 +104,10 @@ data:
   DATAOPS_DB_PASSWORD: {{ .Values.saas.dataops.dbPassword | quote }}
   DATAOPS_DB_PORT: {{ .Values.saas.dataops.dbPort | quote }}
   DATAOPS_DB_USER: {{ .Values.saas.dataops.dbUser | quote }}
+  DATA_DB_HOST: {{ .Values.saas.dataops.dbHost | quote }}
+  DATA_DB_PASSWORD: {{ .Values.saas.dataops.dbPassword | quote }}
+  DATA_DB_PORT: {{ .Values.saas.dataops.dbPort | quote }}
+  DATA_DB_USER: {{ .Values.saas.dataops.dbUser | quote }}
   GRAFANA_ADMIN_PASSWORD: {{ .Values.saas.grafana.password | quote }} 
   DATA_ES_HOST: {{ .Values.saas.dataops.esHost | quote }}
   DATA_ES_PORT: {{ .Values.saas.dataops.esPort | quote }}

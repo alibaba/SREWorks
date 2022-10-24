@@ -34,8 +34,13 @@ spec:
           ports:
             - containerPort: 7001
           envFrom:
+            {{- if .Values.server.sreworksEnvs }}
+            - configMapRef:
+                name: init-configmap           
+            {{- end }}
             - configMapRef:
                 name: {{ template "name.server-configmap" . }}
+
           securityContext:
             privileged: true
 {{- end -}}

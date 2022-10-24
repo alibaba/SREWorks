@@ -38,8 +38,8 @@ import com.alibaba.tesla.dag.model.domain.dagnode.DagInstNodeType;
 import com.alibaba.tesla.dag.services.DagInstService;
 import com.hubspot.jinjava.Jinjava;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -338,6 +338,10 @@ public class ProcessingDeployAppStateAction implements DeployAppStateAction, App
         }
 
         // 生成 DAG 参数并启动
+        String overwriteParams = attrMap.get(DeployAppAttrTypeEnum.OVERWRITE_PARAMS.toString());
+        if (overwriteParams == null) {
+            overwriteParams = "";
+        }
         JSONObject variables = new JSONObject();
         variables.put(DefaultConstant.DAG_TYPE, DagTypeEnum.DEPLOY_APP.toString());
         variables.put(AppFlowVariableKey.DEPLOY_ID, deployAppId);
@@ -349,6 +353,7 @@ public class ProcessingDeployAppStateAction implements DeployAppStateAction, App
         variables.put(AppFlowVariableKey.NAMESPACE_ID, order.getNamespaceId());
         variables.put(AppFlowVariableKey.STAGE_ID, order.getStageId());
         variables.put(AppFlowVariableKey.CONFIGURATION, attrMap.get(DeployAppAttrTypeEnum.APP_CONFIGURATION.toString()));
+        variables.put(AppFlowVariableKey.OVERWRITE_PARAMS, overwriteParams);
         variables.put(AppFlowVariableKey.COMPONENT_PACKAGES, JSONArray.toJSONString(componentPackages));
         variables.put(AppFlowVariableKey.OWNER_REFERENCE, ownerReferenceStr);
         variables.put(AppFlowVariableKey.CREATOR, creator);
@@ -361,14 +366,14 @@ public class ProcessingDeployAppStateAction implements DeployAppStateAction, App
         // 启动
         Long dagInstId = dagInstService.start(dagName, variables, true);
         log.info("trigger deploy app dag success|deployAppId={}|appId={}|clusterId={}|namespaceId={}|stageId={}|" +
-                        "dagInstId={}|dagId={}|dagName={}|nodes={}|edges={}", deployAppId, order.getAppId(),
-                order.getClusterId(), order.getNamespaceId(), order.getStageId(), dagInstId, dagId, dagName,
-                JSONArray.toJSON(nodes.stream()
+                        "dagInstId={}|dagId={}|dagName={}|nodes={}|edges={}|overwriteParams={}", deployAppId,
+                order.getAppId(), order.getClusterId(), order.getNamespaceId(), order.getStageId(), dagInstId,
+                dagId, dagName, JSONArray.toJSON(nodes.stream()
                         .map(DagCreateNode::getNodeId)
                         .collect(Collectors.toList())),
                 JSONArray.toJSON(edges.stream()
                         .map(p -> String.format("%s->%s", p.getSourceNodeId(), p.getTargetNodeId()))
-                        .collect(Collectors.toList())));
+                        .collect(Collectors.toList())), overwriteParams);
         order.setDeployProcessId(dagInstId);
         deployAppService.update(order);
         return dagInstId;

@@ -39,6 +39,11 @@ public class WorkflowInstanceDTO {
     private String appId;
 
     /**
+     * 分类
+     */
+    private String category;
+
+    /**
      * 开始时间
      */
     private Date gmtStart;
@@ -77,6 +82,11 @@ public class WorkflowInstanceDTO {
      * 创建人
      */
     private String workflowCreator;
+
+    /**
+     * Workflow Context
+     */
+    private JSONObject workflowContext;
 
     /**
      * 乐观锁版本

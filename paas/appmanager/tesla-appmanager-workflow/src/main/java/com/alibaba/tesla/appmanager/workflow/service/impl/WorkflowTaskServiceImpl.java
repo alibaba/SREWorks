@@ -235,6 +235,8 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
         WorkflowTaskDO returnedTask = get(task.getId(), true);
         if (output.isSuspend()) {
             returnedTask.setTaskStatus(WorkflowTaskStateEnum.WAITING_SUSPEND.toString());
+        } else if (output.isTerminate()) {
+            returnedTask.setTaskStatus(WorkflowTaskStateEnum.TERMINATED.toString());
         } else {
             returnedTask.setTaskStatus(WorkflowTaskStateEnum.SUCCESS.toString());
         }

@@ -30,6 +30,11 @@ public class InitContainerDTO {
      */
     private String dockerfilePath;
 
+    /**
+     * 仓库地址，不填则默认继承container的repoPath
+     */
+    private String repoPath;
+
     public String createDockerFileTemplate() {
         return "Dockerfile-" + createContainerName() + ".tpl";
     }

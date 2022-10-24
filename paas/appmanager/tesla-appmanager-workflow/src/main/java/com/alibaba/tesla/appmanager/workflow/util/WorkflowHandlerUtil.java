@@ -64,17 +64,19 @@ public class WorkflowHandlerUtil {
     /**
      * 执行部署，并返回部署单 ID
      *
-     * @param configuration 部署配置文件
-     * @param creator       创建者
+     * @param configuration       部署配置文件
+     * @param overwriteParameters 覆盖全局参数 (可为 null)
+     * @param creator             创建者
      * @return 部署单 ID
      */
-    public static Long deploy(DeployAppSchema configuration, String creator) {
+    public static Long deploy(DeployAppSchema configuration, JSONObject overwriteParameters, String creator) {
         DeployAppProvider deployAppProvider = BeanUtil.getBean(DeployAppProvider.class);
         if (deployAppProvider == null) {
             throw new AppException(AppErrorCode.UNKNOWN_ERROR, "cannot find DeployAppProvider bean");
         }
         DeployAppLaunchReq req = DeployAppLaunchReq.builder()
                 .configuration(SchemaUtil.toYamlMapStr(configuration))
+                .overwriteParameters(overwriteParameters)
                 .build();
         DeployAppPackageLaunchRes res = deployAppProvider.launch(req, creator);
         return res.getDeployAppId();

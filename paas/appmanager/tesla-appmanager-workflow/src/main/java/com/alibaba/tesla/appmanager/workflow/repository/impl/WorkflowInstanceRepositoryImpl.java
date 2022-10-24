@@ -79,6 +79,9 @@ public class WorkflowInstanceRepositoryImpl implements WorkflowInstanceRepositor
         if (StringUtils.isNotBlank(condition.getAppId())) {
             criteria.andAppIdEqualTo(condition.getAppId());
         }
+        if (StringUtils.isNotBlank(condition.getCategory())) {
+            criteria.andCategoryEqualTo(condition.getCategory());
+        }
         if (StringUtils.isNotBlank(condition.getWorkflowStatus())) {
             criteria.andWorkflowStatusEqualTo(condition.getWorkflowStatus());
         }

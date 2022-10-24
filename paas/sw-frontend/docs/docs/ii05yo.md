@@ -1,6 +1,8 @@
 ---
 title: 4.1.4 企业应用管理
 date: 2022-03-25T03:38:51.000Z
+toc_max_heading_level: 6
+toc_min_heading_level: 2
 ---
 
 SREWorks中针对企业云原生应用管理，提供了从开发、构建、发布到交付部署的完整端到端能力，覆盖常见的CI/CD/CO流程，以应用管理的SaaS形态提供。

@@ -1,11 +1,14 @@
 ---
 title: 2.2 源码构建安装
 date: 2022-03-25T03:39:17.000Z
+toc_max_heading_level: 6
+toc_min_heading_level: 2
 ---
 
-<a name="kliWz"></a>
 
-# 1. SREWorks源码构建
+<a name="L1iH8"></a>
+
+## 1. SREWorks源码构建
 <a name="uSNSk"></a>
 
 ### 构建环境准备
@@ -60,9 +63,9 @@ docker login --username=sre****s your-registry.***.com
 
 
 
-<a name="jiRmc"></a>
+<a name="RwbbH"></a>
 
-# 2. SREWorks部署&构建运维应用容器镜像
+## 2. SREWorks部署&构建运维应用容器镜像
  步骤与快速安装大致相同，替换helm install参数， 触发运维应用来自源码的容器镜像构建，注意按照附录1和附录2替换参数
 ```shell
 helm install sreworks $SW_ROOT/chart/sreworks-chart \
@@ -75,9 +78,9 @@ helm install sreworks $SW_ROOT/chart/sreworks-chart \
 
 ```
 
-<a name="jPt3U"></a>
+<a name="sWon6"></a>
 
-# 附录1. Helm安装参数清单
+## 附录1. Helm安装参数清单
 如果需要构建完的运维应用上传到自定义容器镜像仓库，请在执行helm安装命令时候传入以下的参数
 ```shell
 # 平台名称
@@ -103,9 +106,10 @@ helm install sreworks $SW_ROOT/chart/sreworks-chart \
 --set source.repo="https://code.aliyun.com/sreworks_public/mirror.git"
 
 ```
-<a name="CdF5g"></a>
 
-# 附录2. 源码构建依赖资源清单
+<a name="fWtQz"></a>
+
+## 附录2. 源码构建依赖资源清单
 在纯内网构建或者部分资源替换场景，需要用户自行准备资源，可参考下面的清单。
 
 <a name="NQ8Vf"></a>
@@ -114,26 +118,26 @@ helm install sreworks $SW_ROOT/chart/sreworks-chart \
 在执行 `./build.sh` 命令前可传入下列的环境变量来改变资源地址，如不传入则使用默认值。
 ```bash
 # 容器镜像
-ex port SW_PYTHON3_IMAGE="python:3.9.12-alpine"
-ex port MIGRATE_IMAGE="migrate/migrate"
-ex port MAVEN_IMAGE="maven:3.8.3-adoptopenjdk-11"
-ex port GOLANG_IMAGE="golang:alpine"
-ex port GOLANG_BUILD_IMAGE="golang:1.16"
-ex port DISTROLESS_IMAGE="sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/distroless-static:nonroot"
+export SW_PYTHON3_IMAGE="python:3.9.12-alpine"
+export MIGRATE_IMAGE="migrate/migrate"
+export MAVEN_IMAGE="maven:3.8.3-adoptopenjdk-11"
+export GOLANG_IMAGE="golang:alpine"
+export GOLANG_BUILD_IMAGE="golang:1.16"
+export DISTROLESS_IMAGE="sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/distroless-static:nonroot"
 
 # 软件仓库
-ex port APK_REPO_DOMAIN="mirrors.tuna.tsinghua.edu.cn"
-ex port PYTHON_PIP="http://mirrors.aliyun.com/pypi/simple"
-ex port GOPROXY="https://goproxy.cn"
-ex port MAVEN_SETTINGS_XML="https://sreworks.oss-cn-beijing.aliyuncs.com/resource/settings.xml"
+export APK_REPO_DOMAIN="mirrors.tuna.tsinghua.edu.cn"
+export PYTHON_PIP="http://mirrors.aliyun.com/pypi/simple"
+export GOPROXY="https://goproxy.cn"
+export MAVEN_SETTINGS_XML="https://sreworks.oss-cn-beijing.aliyuncs.com/resource/settings.xml"
 
 # 二进制命令
-ex port HELM_BIN_URL="https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/helm"
-ex port KUSTOMIZE_BIN_URL="https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/kustomize"
-ex port MINIO_CLIENT_URL="https://sreworks.oss-cn-beijing.aliyuncs.com/bin/mc-linux-amd64"
+export HELM_BIN_URL="https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/helm"
+export KUSTOMIZE_BIN_URL="https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/kustomize"
+export MINIO_CLIENT_URL="https://sreworks.oss-cn-beijing.aliyuncs.com/bin/mc-linux-amd64"
 
 # SREWorks内置应用包
-ex port SREWORKS_BUILTIN_PACKAGE_URL="https://sreworks.oss-cn-beijing.aliyuncs.com/packages"
+export SREWORKS_BUILTIN_PACKAGE_URL="https://sreworks.oss-cn-beijing.aliyuncs.com/packages"
 ```
 
 <a name="V9FYX"></a>
@@ -212,7 +216,7 @@ ex port SREWORKS_BUILTIN_PACKAGE_URL="https://sreworks.oss-cn-beijing.aliyuncs.c
 --set appmanagerbase.openebs.webhook.imageTag="2.12.2" \
 --set appmanagerbase.openebs.helper.image="openebs/linux-utils" \
 --set appmanagerbase.openebs.helper.imageTag="3.1.0" \
---set appmanagerbase.openebs.policies.monitoring.image="openebs/m-ex porter" \
+--set appmanagerbase.openebs.policies.monitoring.image="openebs/m-exporter" \
 --set appmanagerbase.openebs.policies.monitoring.imageTag="2.12.2" \
 ```
 

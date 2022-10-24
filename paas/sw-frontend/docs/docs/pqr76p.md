@@ -1,6 +1,8 @@
 ---
 title: --- 备用文档1.5 组件清单
 date: 2022-03-25T03:39:07.000Z
+toc_max_heading_level: 6
+toc_min_heading_level: 2
 ---
 
 当使用快速安装后，将会安装的组件及基本信息如下：

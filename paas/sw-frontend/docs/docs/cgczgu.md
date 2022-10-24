@@ -1,6 +1,8 @@
 ---
 title: 6.1 部署Flink云原生开源版
 date: 2022-03-25T03:39:03.000Z
+toc_max_heading_level: 6
+toc_min_heading_level: 2
 ---
 
 该文档描述在SREWorks中，从0到1建立一个Flink云原生应用定义，发布Flink应用到市场，并交付部署Flink应用的完整过程。

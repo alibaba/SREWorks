@@ -18,6 +18,8 @@ COPY ./skywalking-agent/ /app/skywalking-agent/
 COPY ./APP-META-PRIVATE/postrun /app/postrun
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
-RUN apk add --update --no-cache gettext
+RUN apk add --update --no-cache gettext && apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
+RUN python3 -m ensurepip && pip3 install requests==2.28.0
+
 RUN chmod +x /app/sbin/run.sh && chmod +x /app/sbin/entrypoint.sh
 ENTRYPOINT ["/app/sbin/entrypoint.sh"]

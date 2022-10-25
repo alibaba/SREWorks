@@ -11,8 +11,7 @@ import { Loading, Login, JsonEditor } from '@sreworks/components'
 import { Home } from '@sreworks/framework'
 import { util, cacheRepository } from '@sreworks/shared-utils'
 import MenuTreeService from '../services/appMenuTreeService'
-
-let properties = window.PROPERTY
+import properties from '../properties';
 
 @connect(({ node, global }) => ({
   nodeParams: node.nodeParams,

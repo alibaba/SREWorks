@@ -12,8 +12,8 @@ import { localeHelper, cacheRepository, util } from '@sreworks/shared-utils'
 import { SiderNavToggleBar } from '@sreworks/framework'
 import DropDownUser from './common/DropDownUser'
 import SearchBar from './SearchBar'
+import properties from '../properties'
 
-let properties = window.PROPERTY
 const { Header } = Layout
 const SubMenu = Menu.SubMenu
 const Item = Menu.Item

@@ -4,7 +4,7 @@ import { Button, Spin, message } from 'antd'
 import React from 'react'
 import { SimpleForm } from '@sreworks/components'
 import flyAdminService from '../service'
-import { connect } from 'react-redux'
+import { connect } from 'dva'
 @connect(({ node, global }) => ({
   userParams: Object.assign({}, { __currentUser__: global.currentUser }, node.userParams),
   userInfo: global.currentUser,

@@ -1,6 +1,6 @@
 import { httpClient, util, cacheRepository } from '@sreworks/shared-utils'
+import properties from '../properties'
 
-let properties = window.PROPERTY
 const baseUrl = properties.baseUrl
 
 const apiEndpoint = properties.apiEndpoint

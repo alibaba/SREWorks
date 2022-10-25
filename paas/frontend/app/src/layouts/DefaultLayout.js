@@ -17,8 +17,9 @@ import { ErrorBoundary } from '@sreworks/components'
 import { NodeContent, SiderNavToggleBar, OamContent } from '@sreworks/framework'
 import BriefLayout from './BriefLayout'
 import BriefHeader from './BriefLayout/Header'
+import properties from '../properties'
+
 //其他布局引入
-let properties = window.PROPERTY
 const { Content } = Layout
 let envs = [
   { label: '日常', value: 'daily' },

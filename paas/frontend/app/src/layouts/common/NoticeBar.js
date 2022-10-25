@@ -5,9 +5,9 @@
 import React from 'react'
 import { NoticeBoardBar } from '@sreworks/components'
 import { httpClient } from '@sreworks/shared-utils'
+import properties from '../../properties'
 
 let show = true
-let properties = window.PROPERTY
 class NoticeBar extends React.Component {
   constructor(props) {
     super(props)

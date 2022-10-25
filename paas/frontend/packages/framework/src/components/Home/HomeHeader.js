@@ -5,8 +5,7 @@ import React from 'react'
 import { Divider } from 'antd'
 import SiderNavToggleBar from '../../components/SiderNavToggleBar'
 import { connect } from 'dva'
-import DropDownUser from '../common/DropDownUser'
-import properties from '../../properties'
+import DropDownUser from './DropDownUser'
 
 let properties = window.PROPERTY
 @connect(({ home, global }) => ({

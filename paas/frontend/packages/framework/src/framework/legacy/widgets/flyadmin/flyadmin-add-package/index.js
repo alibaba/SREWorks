@@ -18,7 +18,7 @@ import {
 import flyAdminService from '../service'
 import './index.scss'
 import { localeHelper } from '@sreworks/shared-utils'
-import { connect } from 'react-redux'
+import { connect } from 'dva'
 
 const { Panel } = Collapse
 const formItemLayout = {

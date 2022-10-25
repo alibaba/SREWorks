@@ -3,9 +3,8 @@
  */
 
 import { httpClient, util, cacheRepository } from '@sreworks/shared-utils'
-import { getBuiltInWidgetCategory } from '../framework/WidgetRepository'
+import properties from '../properties'
 
-let properties = window.PROPERTY
 const newPrefix = 'gateway/v2/foundation/frontend-service/frontend'
 const opsPrefix = 'gateway/v2/common/productops/frontend'
 
@@ -223,9 +222,9 @@ class Service {
       })
   }
 
-  getWidgetRepository() {
-    return Promise.resolve(getBuiltInWidgetCategory())
-  }
+  // getWidgetRepository() {
+  //   return Promise.resolve(getBuiltInWidgetCategory())
+  // }
 
   getNodeParams(nodeId, parameters = {}) {
     return Promise.resolve({})

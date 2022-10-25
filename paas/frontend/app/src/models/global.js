@@ -4,8 +4,8 @@
  **/
 import appService from '../services/appService'
 import { cacheRepository } from '@sreworks/shared-utils'
+import properties from '../properties'
 
-let properties = window.PROPERTY
 let themeType = localStorage.getItem('sreworks-theme')
   ? localStorage.getItem('sreworks-theme')
   : 'light'

@@ -3,7 +3,7 @@ import { EditOutlined } from '@ant-design/icons'
 import { Form } from '@ant-design/compatible'
 import '@ant-design/compatible/assets/index.css'
 import { Table, Input, Button, Popconfirm, Card } from 'antd'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 import './index.scss'
 const EditableContext = React.createContext()
 

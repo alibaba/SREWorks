@@ -10,7 +10,7 @@ import '@ant-design/compatible/assets/index.css'
 import { Icon as LegacyIcon } from '@ant-design/compatible'
 //antd4中icon注册
 import * as icons from '@ant-design/icons'
-antd.Icon = LegacyIcon
+antd['Icon'] = LegacyIcon
 let commonRenders = {}
 const commonRenderContext = require.context('./', true, /^\.\/common\/((?!\/)[\s\S])+\/index\.js$/)
 commonRenderContext.keys().forEach((key) => {

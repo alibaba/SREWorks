@@ -9,7 +9,7 @@ import { Button, Modal, Space } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import RowContainerHandler from './RowContainerHandler'
 import RowSetting from './RowSetting'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 
 import './index.less'
 import WidgetModel from '../model/WidgetModel'

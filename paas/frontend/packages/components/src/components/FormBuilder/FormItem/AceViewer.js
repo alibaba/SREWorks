@@ -12,7 +12,7 @@ import 'brace/mode/json'
 import 'brace/theme/monokai'
 import 'brace/theme/xcode'
 
-import { Modal, Message } from 'antd'
+import { Modal, message } from 'antd'
 import jsYaml from 'js-yaml'
 import _ from 'lodash'
 
@@ -57,7 +57,7 @@ class AceViewer extends Component {
         }
       }
     } catch (error) {
-      Message.error(error)
+      message.error(error)
     }
     this.state = {
       editorValue: this.initContent,

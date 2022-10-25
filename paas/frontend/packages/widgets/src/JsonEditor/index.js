@@ -14,7 +14,7 @@ import 'brace/mode/text'
 import 'brace/theme/monokai'
 import 'brace/theme/xcode'
 
-import { Message } from 'antd'
+import { message } from 'antd'
 import jsYaml from 'js-yaml'
 import _ from 'lodash'
 
@@ -44,7 +44,7 @@ class JsonEditor extends Component {
         }
       }
     } catch (error) {
-      Message.error(error)
+      message.error(error)
     }
     this.oldContent = this.initContent
     this.state = {

@@ -5,7 +5,7 @@ import { Menu, Avatar, Switch, Dropdown, Radio } from 'antd'
 import { connect } from 'dva'
 import { CirclePicker } from 'react-color'
 import _ from 'lodash'
-import properties from '../../properties';
+import properties from '../../properties'
 
 const Item = Menu.Item
 const MenuItemGroup = Menu.ItemGroup

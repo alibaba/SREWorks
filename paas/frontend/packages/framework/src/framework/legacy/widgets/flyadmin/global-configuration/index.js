@@ -1,7 +1,7 @@
 import React from 'react'
 import flyAdminService from '../service'
 import { message, Spin } from 'antd'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 import FlyAdminEditable from '../component/Editable'
 
 class FlyAdminGlobalConfiguration extends React.Component {

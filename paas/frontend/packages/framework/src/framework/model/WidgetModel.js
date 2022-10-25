@@ -2,7 +2,7 @@
  * Created by caoshuaibiao on 2020/12/3.
  * 页面的基础组成单元
  */
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
 import BaseModel from './BaseModel'
 import Constants from './Constants'

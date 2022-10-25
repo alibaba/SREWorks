@@ -3,7 +3,7 @@ import { Table, Pagination, Tooltip, Tag } from 'antd'
 import { JSXRender } from '@sreworks/componenst'
 import { util, httpClient, safeEval } from '@sreworks/shared-utils'
 import Highlighter from 'react-highlight-words'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
 
 class PagedTable extends Component {

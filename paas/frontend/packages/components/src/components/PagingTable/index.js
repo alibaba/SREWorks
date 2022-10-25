@@ -11,7 +11,7 @@ import Highlighter from 'react-highlight-words'
 import JSXRender from '../JSXRender'
 import _ from 'lodash'
 import { debounce } from 'lodash'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 import style from './index.less'
 
 class PagingTable extends Component {

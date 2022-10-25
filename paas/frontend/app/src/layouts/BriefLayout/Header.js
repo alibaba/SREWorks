@@ -11,7 +11,7 @@ import { localeHelper } from '@sreworks/shared-utils'
 import './index.less'
 import DropDownUser from '../common/DropDownUser'
 import SearchBar from '../SearchBar'
-import properties from '../../properties';
+import properties from '../../properties'
 
 const SubMenu = Menu.SubMenu
 const Item = Menu.Item

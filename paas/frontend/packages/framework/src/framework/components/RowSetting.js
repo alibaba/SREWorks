@@ -9,7 +9,7 @@ import { Form } from '@ant-design/compatible'
 import '@ant-design/compatible/assets/index.css'
 import { Row, Col } from 'antd'
 import { FormElementType, FormElementFactory } from '@sreworks/components'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 
 const formItemLayout = {
   labelCol: {

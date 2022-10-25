@@ -2,7 +2,7 @@ import { message, Spin } from 'antd'
 import React from 'react'
 import flyAdminService from '../service'
 import FlyAdminEditable from '../component/Editable'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 
 class FlyAdminNamespaceList extends React.Component {
   constructor(props) {

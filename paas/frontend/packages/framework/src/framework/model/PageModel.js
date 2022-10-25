@@ -4,7 +4,7 @@
  */
 import BaseModel from './BaseModel'
 import ContainerModel from './ContainerModel'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 
 export default class PageModel extends BaseModel {
   static CREATE_DEFAULT_INSTANCE() {

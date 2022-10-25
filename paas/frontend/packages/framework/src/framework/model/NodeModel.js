@@ -5,7 +5,7 @@
 import service from '../../services/appMenuTreeService'
 import PageModel from './PageModel'
 import Constants from './Constants'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
 import { template_app_id } from '../../designer/editors/TemplateConstant'
 

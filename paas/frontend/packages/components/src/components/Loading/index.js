@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import styles from './index.module.less'
 
-export class Loading extends Component {
+export default class Loading extends Component {
   render() {
     const { platformName } = this.props
     return (

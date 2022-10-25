@@ -29,7 +29,7 @@ import {
   Form,
   Input,
   Select,
-  Message,
+  message,
 } from 'antd'
 import PageModel from '../../framework/model/PageModel'
 import Constants from '../../framework/model/Constants'
@@ -306,7 +306,7 @@ export default class PageEditor extends React.Component {
   // 从模板创建
   handleCreateFromTemplate = () => {
     if (!this.state.activeTarget) {
-      Message.info('请选择要引用的模板')
+      message.info('请选择要引用的模板')
       return false
     }
     this.setState({ confirmLoading: true })

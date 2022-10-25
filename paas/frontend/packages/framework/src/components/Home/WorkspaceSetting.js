@@ -17,7 +17,7 @@ import { connect } from 'dva'
 import AppStore from './AppStore'
 import AppService from '../../services/appService'
 import { SimpleForm } from '@sreworks/components'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 import { util, cacheRepository } from '@sreworks/shared-utils'
 import { localImglist, requiredImglist } from './localImglist'
 

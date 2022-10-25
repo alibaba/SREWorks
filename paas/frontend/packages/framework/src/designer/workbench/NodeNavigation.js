@@ -14,7 +14,7 @@ import {
 } from '@ant-design/icons'
 import '@ant-design/compatible/assets/index.css'
 import { Menu, Tooltip, Button, Popover } from 'antd'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 import Constants from '../../framework/model/Constants'
 import { BlockPropsSettingForm } from '../editors/BlockEditor'
 

@@ -13,7 +13,7 @@ import WidgetSelector from './WidgetSelector'
 import RowSetting from './RowSetting'
 import WidgetModel from '../model/WidgetModel'
 import service from '../../services/appMenuTreeService'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 
 import './index.less'
 

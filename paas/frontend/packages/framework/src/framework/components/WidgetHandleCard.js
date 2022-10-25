@@ -13,7 +13,7 @@ import { PopoverConfirm, JsonEditor } from '@sreworks/components'
 import widgetLoader from '../core/WidgetLoader'
 import { getLegacyWidgetMeta } from '../WidgetRepository'
 import Constants from '../model/Constants'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 import { Bus } from '@sreworks/shared-utils'
 import './index.less'
 

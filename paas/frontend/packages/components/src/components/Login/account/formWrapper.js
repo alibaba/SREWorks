@@ -5,7 +5,7 @@ import '@ant-design/compatible/assets/index.css'
 import { Button, Input, Tooltip, message } from 'antd'
 import { localeHelper } from '@sreworks/shared-utils'
 import { accountInfoChange, getAccountCreate, upDataPassword, SmsRegister } from '../api'
-import createBrowserHistory from 'history/createBrowserHistory'
+import { createBrowserHistory } from 'history'
 
 const FormItem = Form.Item
 const InputGroup = Input.Group

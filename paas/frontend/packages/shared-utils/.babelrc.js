@@ -7,5 +7,6 @@ module.exports = {
         corejs: '3.22',
       },
     ],
+    ["@babel/preset-react"]
   ],
 }

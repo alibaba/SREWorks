@@ -4,7 +4,6 @@
  */
 import React, { Component } from 'react'
 import OamAction from '../../../OamAction'
-import OamAction from '../../../OamAction'
 import { Spin, message } from 'antd'
 
 class FilterBarWidget extends Component {

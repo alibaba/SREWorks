@@ -35,7 +35,7 @@ import {
 } from 'antd'
 import _ from 'lodash'
 import './index.less'
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 import service from '../../services/appMenuTreeService'
 import { util } from '@sreworks/shared-utils'
 import Constants from '../../framework/model/Constants'

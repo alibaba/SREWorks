@@ -48,7 +48,7 @@ spec:
             repository: "${SKYWALKING_OAP_IMAGE}"
             tag: "${SKYWALKING_OAP_IMAGE_TAG}"
           storageType: elasticsearch7
-          javaOpts: -Xmx720m -Xms720m
+          javaOpts: -Xmx1g -Xms1g
 
         ui:
           image:

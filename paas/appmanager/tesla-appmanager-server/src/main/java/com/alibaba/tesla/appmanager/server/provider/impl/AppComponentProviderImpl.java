@@ -5,11 +5,16 @@ import com.alibaba.tesla.appmanager.api.provider.AppAddonProvider;
 import com.alibaba.tesla.appmanager.api.provider.AppComponentProvider;
 import com.alibaba.tesla.appmanager.api.provider.HelmMetaProvider;
 import com.alibaba.tesla.appmanager.api.provider.K8sMicroServiceMetaProvider;
+import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.PluginKindEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.ClassUtil;
+import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
+import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
+import com.alibaba.tesla.appmanager.deployconfig.util.DeployConfigGenerator;
+import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.dto.AppComponentDTO;
 import com.alibaba.tesla.appmanager.domain.req.AppAddonQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQueryReq;
@@ -17,6 +22,7 @@ import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentCreateRe
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentUpdateReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpsertReq;
 import com.alibaba.tesla.appmanager.domain.req.helm.HelmMetaQueryReq;
 import com.alibaba.tesla.appmanager.plugin.repository.condition.PluginDefinitionQueryCondition;
 import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDO;
@@ -28,6 +34,7 @@ import com.alibaba.tesla.appmanager.server.service.appcomponent.AppComponentServ
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.Yaml;
 
 import java.util.Collections;
 import java.util.List;
@@ -61,6 +68,9 @@ public class AppComponentProviderImpl implements AppComponentProvider {
 
     @Autowired
     private PluginService pluginService;
+
+    @Autowired
+    private DeployConfigService deployConfigService;
 
     /**
      * 获取指定应用下的指定关联 Component 对象
@@ -125,6 +135,21 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                         "componentType={}|componentName={}|config={}", record.getId(), operator, namespaceId,
                 stageId, appId, category, componentType, componentName, config);
 
+        DeployConfigGenerator configObject = new DeployConfigGenerator();
+        configObject.addRevisionName(componentType, componentName);
+        configObject.addScope("Namespace", namespaceId);
+        String typeId = new DeployConfigTypeId(componentType, componentName).toString();
+        deployConfigService.update(DeployConfigUpsertReq.builder()
+                .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                .appId(appId)
+                .typeId(typeId)
+                .envId("")
+                .inherit(false)
+                .config(configObject.toString())
+                .isolateNamespaceId(namespaceId)
+                .isolateStageId(stageId)
+                .build());
+
         return appComponentDtoConvert.to(appComponentService.get(AppComponentQueryCondition.builder()
                 .id(record.getId())
                 .build()));
@@ -164,6 +189,24 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         log.info("app component has updated|operator={}|namespaceId={}|stageId={}|appId={}|category={}|" +
                         "componentType={}|componentName={}|config={}", operator, namespaceId, stageId, appId, category,
                 componentType, componentName, config);
+
+        DeployConfigGenerator configObject = new DeployConfigGenerator();
+        configObject
+                .addRevisionName(componentType, componentName)
+                .addScope("Namespace", namespaceId)
+                .addDataInputs(request.getConfig().getJSONArray("dataInputs"))
+                .addDataOutputs(request.getConfig().getJSONArray("dataOutputs"));
+        String typeId = new DeployConfigTypeId(componentType, componentName).toString();
+        deployConfigService.update(DeployConfigUpsertReq.builder()
+                .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                .appId(appId)
+                .typeId(typeId)
+                .envId("")
+                .inherit(false)
+                .config(configObject.toString())
+                .isolateNamespaceId(namespaceId)
+                .isolateStageId(stageId)
+                .build());
 
         return appComponentDtoConvert.to(appComponentService.get(condition));
     }

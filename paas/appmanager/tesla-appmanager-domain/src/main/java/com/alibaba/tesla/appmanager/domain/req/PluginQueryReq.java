@@ -36,4 +36,9 @@ public class PluginQueryReq extends BaseRequest {
      * Tag Value
      */
     private String tagValue;
+
+    /**
+     * Plugin is registered
+     */
+    private Boolean pluginRegistered;
 }

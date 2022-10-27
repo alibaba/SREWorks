@@ -79,6 +79,8 @@ public class ApplicationContextLoadedEventListener implements ApplicationListene
             "/dynamicscripts/WorkflowDeployHandler.groovy",
             "/dynamicscripts/WorkflowRemoteDeployHandler.groovy",
             "/dynamicscripts/WorkflowSuspendHandler.groovy",
+            "/dynamicscripts/WorkflowApplyComponentsHandler.groovy",
+            "/dynamicscripts/WorkflowRolloutPromotionHandler.groovy",
             "/dynamicscripts/PolicyTopologyHandler.groovy",
             "/dynamicscripts/PolicyOverrideHandler.groovy",
             "/dynamicscripts/CustomStatusGenericResource.groovy"

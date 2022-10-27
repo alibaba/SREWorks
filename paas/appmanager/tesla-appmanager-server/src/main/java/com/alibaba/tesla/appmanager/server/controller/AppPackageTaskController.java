@@ -182,6 +182,7 @@ public class AppPackageTaskController extends AppManagerBaseController {
                 ComponentBinder componentBinder = ComponentBinder.builder()
                         .componentType(componentType)
                         .componentName(appComponent.getComponentName())
+                        .category(appComponent.getCategory())
                         .version(DefaultConstant.AUTO_VERSION)
                         .isDevelop(request.isDevelop())
                         .build();

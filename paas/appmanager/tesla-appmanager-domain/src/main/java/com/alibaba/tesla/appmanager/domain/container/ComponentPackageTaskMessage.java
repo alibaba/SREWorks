@@ -28,6 +28,8 @@ public class ComponentPackageTaskMessage {
 
     private String stageId;
 
+    private String category;
+
     private String operator;
 
     private ComponentBinder component;

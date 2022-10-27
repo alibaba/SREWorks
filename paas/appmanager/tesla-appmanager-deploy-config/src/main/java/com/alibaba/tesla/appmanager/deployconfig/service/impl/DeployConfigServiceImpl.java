@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.deployconfig.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.ProductReleaseProvider;
@@ -173,6 +174,14 @@ public class DeployConfigServiceImpl implements DeployConfigService {
         String envId = req.getEnvId();
         String typeId = req.getTypeId();
         String config = req.getConfig();
+        JSONArray configJsonArray = req.getConfigJsonArray();
+        if (configJsonArray != null) {
+            config = SchemaUtil.toYamlStr(configJsonArray, JSONArray.class);
+        }
+        JSONObject configJsonObject = req.getConfigJsonObject();
+        if (configJsonObject != null) {
+            config = SchemaUtil.toYamlStr(configJsonObject, JSONObject.class);
+        }
         boolean inherit = req.isInherit();
         String productId = req.getProductId();
         String releaseId = req.getReleaseId();

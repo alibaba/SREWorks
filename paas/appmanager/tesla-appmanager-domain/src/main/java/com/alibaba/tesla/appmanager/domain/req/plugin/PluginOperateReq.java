@@ -12,4 +12,6 @@ import lombok.NoArgsConstructor;
 public class PluginOperateReq {
 
     private String operation;
+
+    private Boolean disableOthers = false;
 }

@@ -123,6 +123,9 @@ public class DeployAppSchema implements Schema, Serializable {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class DataOutput implements Serializable {
 
         private static final long serialVersionUID = 2150471143237594995L;

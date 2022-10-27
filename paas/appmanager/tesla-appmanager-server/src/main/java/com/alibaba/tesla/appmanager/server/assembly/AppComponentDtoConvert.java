@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.server.assembly;
 
 import com.alibaba.tesla.appmanager.common.assembly.BaseDtoConvert;
 import com.alibaba.tesla.appmanager.common.util.ClassUtil;
+import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.dto.AppComponentDTO;
 import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.AppComponentDO;
@@ -29,6 +30,9 @@ public class AppComponentDtoConvert extends BaseDtoConvert<AppComponentDTO, AppC
         result.setPluginVersion(pluginDefinitionDO.getPluginVersion());
         // 通过当前方法转换的记录，均为 compatible=false
         result.setCompatible(false);
+        // 自动转换当前类型映射的 typeId
+        DeployConfigTypeId typeId = new DeployConfigTypeId(result.getComponentType(), result.getComponentName());
+        result.setTypeId(typeId.toString());
         return result;
     }
 }

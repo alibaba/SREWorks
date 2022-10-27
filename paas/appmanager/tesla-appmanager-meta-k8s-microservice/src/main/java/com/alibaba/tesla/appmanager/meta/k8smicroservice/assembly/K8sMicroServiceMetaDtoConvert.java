@@ -13,7 +13,6 @@ import com.alibaba.tesla.appmanager.common.util.ClassUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.dto.*;
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.domain.K8sMicroServiceMetaDO;
-import com.google.common.base.Enums;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -369,6 +368,9 @@ public class K8sMicroServiceMetaDtoConvert extends BaseDtoConvert<K8sMicroServic
         containerObjectDTOList.add(container);
         if (CollectionUtils.isNotEmpty(initContainerList)) {
             for (InitContainerDTO initContainerDTO : initContainerList) {
+                if (initContainerDTO.getRepoPath() ==  null){
+                    initContainerDTO.setRepoPath(repoDTO.getRepoPath());
+                }
                 ContainerObjectDTO initContainer = ContainerObjectDTO.builder()
                         .containerType(ContainerTypeEnum.INIT_CONTAINER)
                         .appName(microServiceId)
@@ -380,7 +382,7 @@ public class K8sMicroServiceMetaDtoConvert extends BaseDtoConvert<K8sMicroServic
                         .repoType(repoDTO.getRepoType())
                         .ciAccount(repoDTO.getCiAccount())
                         .ciToken(repoDTO.getCiToken())
-                        .repoPath(repoDTO.getRepoPath())
+                        .repoPath(initContainerDTO.getRepoPath())
                         .build();
                 if (StringUtils.isNotEmpty(initContainerDTO.getDockerfilePath())) {
                     initContainer.setDockerfileTemplate(initContainerDTO.getDockerfilePath());

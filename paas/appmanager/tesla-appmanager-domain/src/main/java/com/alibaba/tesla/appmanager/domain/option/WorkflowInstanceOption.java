@@ -18,6 +18,11 @@ import java.util.List;
 public class WorkflowInstanceOption {
 
     /**
+     * Workflow 分类
+     */
+    private String category;
+
+    /**
      * Workflow Task 执行顺序 (不提供该参数则默认全量按需执行)
      * <p>
      * 需要指定 Workflow Task 的数组下标列表（如跳过某几个 Workflow 任务执行节点）

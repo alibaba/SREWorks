@@ -1,11 +1,10 @@
 package com.alibaba.tesla.appmanager.workflow.repository.domain;
 
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 /**
  * Workflow 实例表
@@ -34,6 +33,11 @@ public class WorkflowInstanceDO {
      * 应用 ID
      */
     private String appId;
+
+    /**
+     * Workflow 分类
+     */
+    private String category;
 
     /**
      * 开始时间

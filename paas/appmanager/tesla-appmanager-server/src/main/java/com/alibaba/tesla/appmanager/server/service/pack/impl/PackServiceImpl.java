@@ -29,13 +29,12 @@ import com.alibaba.tesla.appmanager.meta.k8smicroservice.util.K8sMicroServiceUti
 import com.alibaba.tesla.appmanager.server.repository.AppPackageTaskRepository;
 import com.alibaba.tesla.appmanager.server.repository.ComponentPackageTaskRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppAddonQueryCondition;
+import com.alibaba.tesla.appmanager.server.repository.condition.AppComponentQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppMetaQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppPackageTaskQueryCondition;
-import com.alibaba.tesla.appmanager.server.repository.domain.AppAddonDO;
-import com.alibaba.tesla.appmanager.server.repository.domain.AppMetaDO;
-import com.alibaba.tesla.appmanager.server.repository.domain.AppPackageTaskDO;
-import com.alibaba.tesla.appmanager.server.repository.domain.ComponentPackageTaskDO;
+import com.alibaba.tesla.appmanager.server.repository.domain.*;
 import com.alibaba.tesla.appmanager.server.service.appaddon.AppAddonService;
+import com.alibaba.tesla.appmanager.server.service.appcomponent.AppComponentService;
 import com.alibaba.tesla.appmanager.server.service.appmeta.AppMetaService;
 import com.alibaba.tesla.appmanager.server.service.apppackage.AppPackageTaskService;
 import com.alibaba.tesla.appmanager.server.service.pack.PackService;
@@ -72,6 +71,7 @@ public class PackServiceImpl implements PackService {
     private final AppMetaService appMetaService;
     private final HelmMetaService helmMetaService;
     private final SystemProperties systemProperties;
+    private final AppComponentService appComponentService;
 
     public PackServiceImpl(
             ComponentPackageProvider componentPackageProvider,
@@ -79,7 +79,8 @@ public class PackServiceImpl implements PackService {
             K8sMicroserviceMetaService k8sMicroserviceMetaService,
             AppPackageTaskRepository appPackageTaskRepository, AppPackageTaskService appPackageTaskService,
             AppAddonService appAddonService, AppMetaService appMetaService,
-            HelmMetaService helmMetaService, SystemProperties systemProperties) {
+            HelmMetaService helmMetaService, SystemProperties systemProperties,
+            AppComponentService appComponentService) {
         this.componentPackageProvider = componentPackageProvider;
         this.componentPackageTaskRepository = componentPackageTaskRepository;
         this.k8sMicroserviceMetaService = k8sMicroserviceMetaService;
@@ -89,6 +90,7 @@ public class PackServiceImpl implements PackService {
         this.appMetaService = appMetaService;
         this.helmMetaService = helmMetaService;
         this.systemProperties = systemProperties;
+        this.appComponentService = appComponentService;
     }
 
     @Override
@@ -170,6 +172,7 @@ public class PackServiceImpl implements PackService {
         String appId = message.getAppId();
         String namespaceId = message.getNamespaceId();
         String stageId = message.getStageId();
+        String category = component.getCategory();
         String componentType = component.getComponentType();
         String componentName = component.getComponentName();
         Boolean isDevelop = component.getIsDevelop();
@@ -194,6 +197,29 @@ public class PackServiceImpl implements PackService {
             options = buildOptions4InternalAddon(appId, namespaceId, stageId, componentName, isDevelop);
         } else if (ComponentTypeEnum.HELM.toString().equals(componentType)) {
             options = buildOptions4Helm(appId, componentName, component.getBranch());
+        } else {
+            AppComponentQueryCondition queryCondition = AppComponentQueryCondition.builder()
+                    .appId(appId)
+                    .namespaceId(namespaceId)
+                    .stageId(stageId)
+                    .category(category)
+                    .componentType(componentType)
+                    .componentName(componentName)
+                    .build();
+            AppComponentDO appComponent = appComponentService.get(queryCondition);
+            if (appComponent == null) {
+                log.warn("cannot find app component by condition when generating build options|condition={}",
+                        JSONObject.toJSONString(queryCondition));
+            } else {
+                if (StringUtils.isEmpty(appComponent.getConfig())) {
+                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                            String.format("empty app component config when generating build options|condition=%s",
+                                    JSONObject.toJSONString(queryCondition)));
+                }
+                options = JSONObject.parseObject(appComponent.getConfig());
+                log.info("load build options from app component config|condition={}|options={}",
+                        JSONObject.toJSONString(queryCondition), appComponent.getConfig());
+            }
         }
 
         // 存储组件默认部署配置 (可选)

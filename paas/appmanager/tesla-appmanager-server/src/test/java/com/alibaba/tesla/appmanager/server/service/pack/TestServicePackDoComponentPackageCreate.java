@@ -13,6 +13,7 @@ import com.alibaba.tesla.appmanager.meta.k8smicroservice.service.K8sMicroservice
 import com.alibaba.tesla.appmanager.server.repository.AppPackageTaskRepository;
 import com.alibaba.tesla.appmanager.server.repository.ComponentPackageTaskRepository;
 import com.alibaba.tesla.appmanager.server.service.appaddon.AppAddonService;
+import com.alibaba.tesla.appmanager.server.service.appcomponent.AppComponentService;
 import com.alibaba.tesla.appmanager.server.service.appmeta.AppMetaService;
 import com.alibaba.tesla.appmanager.server.service.apppackage.AppPackageTaskService;
 import com.alibaba.tesla.appmanager.server.service.pack.impl.PackServiceImpl;
@@ -69,6 +70,9 @@ public class TestServicePackDoComponentPackageCreate {
     @Mock
     private SystemProperties systemProperties;
 
+    @Mock
+    private AppComponentService appComponentService;
+
     private PackService packService;
 
     @Before
@@ -84,7 +88,8 @@ public class TestServicePackDoComponentPackageCreate {
                 appAddonService,
                 appMetaService,
                 helmMetaService,
-                systemProperties
+                systemProperties,
+                appComponentService
         ));
         Mockito.doReturn(new JSONObject())
                 .when(packService)

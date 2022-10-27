@@ -12,6 +12,8 @@ import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowSnapsh
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowSnapshotDO;
 import com.alibaba.tesla.appmanager.workflow.service.WorkflowSnapshotService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,6 +59,48 @@ public class WorkflowSnapshotServiceImpl implements WorkflowSnapshotService {
     }
 
     /**
+     * 对指定的 Workflow 实例 put context 对象，进行 Merge
+     *
+     * @param workflowInstanceId Workflow 实例 ID
+     * @param context            Context 对象 (JSONObject)
+     * @return 更新后的指定 workflow task 对应的 workflow snapshot 对象
+     */
+    @Override
+    public WorkflowSnapshotDO putContext(Long workflowInstanceId, JSONObject context) {
+        if (context == null || context.size() == 0) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "null context to be set");
+        }
+        List<WorkflowSnapshotDO> result = workflowSnapshotRepository
+                .selectByCondition(WorkflowSnapshotQueryCondition.builder()
+                        .instanceId(workflowInstanceId)
+                        .build());
+        if (result.size() == 0) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("cannot find workflow snapshot|workflowInstanceId=%d", workflowInstanceId));
+        }
+        WorkflowSnapshotDO record = result.get(0);
+        String dbContextStr = record.getSnapshotContext();
+        if (StringUtils.isEmpty(dbContextStr)) {
+            throw new AppException(AppErrorCode.UNKNOWN_ERROR,
+                    String.format("unknown error, the workflow snapshot context is empty|snapshot=%s",
+                            JSONObject.toJSONString(record)));
+        }
+        JSONObject dbContext = JSONObject.parseObject(dbContextStr);
+        dbContext.putAll(context);
+        record.setSnapshotContext(JSONObject.toJSONString(dbContext));
+        int count = workflowSnapshotRepository.updateByCondition(record, WorkflowSnapshotQueryCondition.builder()
+                .instanceId(record.getWorkflowInstanceId())
+                .taskId(record.getWorkflowTaskId())
+                .build());
+        if (count != 1) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("cannot update workflow snapshot when put user custom context|count=%d|record=%s",
+                            count, JSONObject.toJSONString(record)));
+        }
+        return record;
+    }
+
+    /**
      * 更新一个 Workflow 快照
      *
      * @param request 更新 Workflow 快照请求
@@ -87,7 +131,9 @@ public class WorkflowSnapshotServiceImpl implements WorkflowSnapshotService {
         } else {
             record = snapshots.getItems().get(0);
             record.setSnapshotContext(JSONObject.toJSONString(request.getContext()));
-            record.setSnapshotTask(SchemaUtil.toYamlMapStr(request.getConfiguration()));
+            if (request.getConfiguration() != null) {
+                record.setSnapshotTask(SchemaUtil.toYamlMapStr(request.getConfiguration()));
+            }
             record.setSnapshotWorkflow(null);
             workflowSnapshotRepository.updateByCondition(record, condition);
         }
@@ -110,5 +156,68 @@ public class WorkflowSnapshotServiceImpl implements WorkflowSnapshotService {
                 .taskId(request.getWorkflowTaskId())
                 .build();
         return workflowSnapshotRepository.deleteByCondition(condition);
+    }
+
+    /**
+     * 获取指定 Workflow Task 对应的 Context JSON Object 对象
+     *
+     * @param workflowInstanceId Workflow 实例 ID
+     * @param workflowTaskId     Workflow 任务 ID
+     * @return Context JSONObject (不存在时报错)
+     */
+    @Override
+    public JSONObject getContext(Long workflowInstanceId, Long workflowTaskId) {
+        Pagination<WorkflowSnapshotDO> snapshots = list(WorkflowSnapshotQueryCondition.builder()
+                .instanceId(workflowInstanceId)
+                .taskId(workflowTaskId)
+                .build());
+        if (snapshots.getItems().size() != 1) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("cannot find related workflow snapshot|workflowInstanceId=%d|workflowTaskId=%d|" +
+                            "size=%d", workflowInstanceId, workflowTaskId, snapshots.getItems().size()));
+        }
+        String snapshotContextStr = snapshots.getItems().get(0).getSnapshotContext();
+        if (StringUtils.isEmpty(snapshotContextStr)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("empty workflow snapshot context|workflowInstanceId=%d|workflowTaskId=%d",
+                            workflowInstanceId, workflowTaskId));
+        }
+        try {
+            return JSONObject.parseObject(snapshotContextStr);
+        } catch (Exception e) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("cannot parse workflow snapshot context to json object|workflowInstanceId=%d|" +
+                                    "workflowTaskId=%d|contextStr=%s|exception=%s", workflowInstanceId, workflowTaskId,
+                            snapshotContextStr, ExceptionUtils.getStackTrace(e)));
+        }
+    }
+
+    /**
+     * 获取指定 Workflow Instance 对应的 Context JSON Object 对象
+     *
+     * @param workflowInstanceId Workflow 实例 ID
+     * @return Context JSONObject (不存在时返回 null)
+     */
+    @Override
+    public JSONObject getContext(Long workflowInstanceId) {
+        Pagination<WorkflowSnapshotDO> snapshots = list(WorkflowSnapshotQueryCondition.builder()
+                .instanceId(workflowInstanceId)
+                .build());
+        if (snapshots.getItems().size() == 0) {
+            return null;
+        }
+        String snapshotContextStr = snapshots.getItems().get(0).getSnapshotContext();
+        if (StringUtils.isEmpty(snapshotContextStr)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("empty workflow snapshot context|workflowInstanceId=%d", workflowInstanceId));
+        }
+        try {
+            return JSONObject.parseObject(snapshotContextStr);
+        } catch (Exception e) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("cannot parse workflow snapshot context to json object|workflowInstanceId=%d|" +
+                                    "contextStr=%s|exception=%s", workflowInstanceId, snapshotContextStr,
+                            ExceptionUtils.getStackTrace(e)));
+        }
     }
 }

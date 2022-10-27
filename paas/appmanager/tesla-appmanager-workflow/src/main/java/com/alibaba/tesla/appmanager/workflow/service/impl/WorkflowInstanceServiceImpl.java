@@ -1,6 +1,7 @@
 package com.alibaba.tesla.appmanager.workflow.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.constants.WorkflowConstant;
 import com.alibaba.tesla.appmanager.common.enums.WorkflowInstanceEventEnum;
 import com.alibaba.tesla.appmanager.common.enums.WorkflowInstanceStateEnum;
@@ -10,6 +11,7 @@ import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
+import com.alibaba.tesla.appmanager.domain.dto.WorkflowInstanceDTO;
 import com.alibaba.tesla.appmanager.domain.option.WorkflowInstanceOption;
 import com.alibaba.tesla.appmanager.domain.req.UpdateWorkflowSnapshotReq;
 import com.alibaba.tesla.appmanager.domain.res.workflow.WorkflowInstanceOperationRes;
@@ -105,6 +107,17 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
     }
 
     /**
+     * 覆写 Context 到指定 Workflow 实例
+     *
+     * @param workflowInstanceId Workflow 实例 ID
+     * @param context            Context JSONObject
+     */
+    @Override
+    public void putContext(Long workflowInstanceId, JSONObject context) {
+        workflowSnapshotService.putContext(workflowInstanceId, context);
+    }
+
+    /**
      * 启动一个 Workflow 实例
      *
      * @param appId         应用 ID
@@ -118,9 +131,14 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
         String configurationSha256 = DigestUtils.sha256Hex(configuration);
         DeployAppSchema configurationSchema = SchemaUtil.toSchema(DeployAppSchema.class, configuration);
         enrichConfigurationSchema(configurationSchema);
+        String category = options.getCategory();
         String creator = options.getCreator();
+        if (StringUtils.isEmpty(category)) {
+            category = DefaultConstant.WORKFLOW_CATEGORY;
+        }
         WorkflowInstanceDO record = WorkflowInstanceDO.builder()
                 .appId(appId)
+                .category(category)
                 .workflowStatus(WorkflowInstanceStateEnum.PENDING.toString())
                 .workflowConfiguration(SchemaUtil.toYamlMapStr(configurationSchema))
                 .workflowSha256(configurationSha256)
@@ -146,8 +164,9 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
      */
     @Override
     public void update(WorkflowInstanceDO workflow) {
-        log.info("action=updateWorkflowInstance|workflowInstanceId={}|appId={}|status={}|creator={}", workflow.getId(),
-                workflow.getAppId(), workflow.getWorkflowStatus(), workflow.getWorkflowCreator());
+        log.info("action=updateWorkflowInstance|workflowInstanceId={}|appId={}|category={}|status={}|creator={}",
+                workflow.getId(), workflow.getAppId(), workflow.getCategory(), workflow.getWorkflowStatus(),
+                workflow.getWorkflowCreator());
         int count = workflowInstanceRepository.updateByPrimaryKey(workflow);
         if (count == 0) {
             throw new AppException(AppErrorCode.LOCKER_VERSION_EXPIRED);
@@ -217,7 +236,8 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
     public void triggerProcessFailed(WorkflowInstanceDO instance, String errorMessage) {
         instance.setWorkflowErrorMessage(errorMessage);
         log.info("the current workflow instance is triggered by a failure event|workflowInstanceId={}|appId={}|" +
-                "errorMessage={}", instance.getId(), instance.getAppId(), errorMessage);
+                        "category={}|errorMessage={}", instance.getId(), instance.getAppId(), instance.getCategory(),
+                errorMessage);
         publisher.publishEvent(new WorkflowInstanceEvent(this,
                 WorkflowInstanceEventEnum.PROCESS_FAILED, instance));
     }
@@ -232,7 +252,8 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
     public void triggerProcessUnknownError(WorkflowInstanceDO instance, String errorMessage) {
         instance.setWorkflowErrorMessage(errorMessage);
         log.warn("the current workflow instance is triggered by an exception event|workflowInstanceId={}|appId={}|" +
-                "errorMessage={}", instance.getId(), instance.getAppId(), errorMessage);
+                        "category={}|errorMessage={}", instance.getId(), instance.getAppId(), instance.getCategory(),
+                errorMessage);
         publisher.publishEvent(new WorkflowInstanceEvent(this,
                 WorkflowInstanceEventEnum.PROCESS_UNKNOWN_ERROR, instance));
     }
@@ -260,7 +281,8 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
     public void triggerOpTerminate(WorkflowInstanceDO instance, String errorMessage) {
         instance.setWorkflowErrorMessage(errorMessage);
         log.info("the current workflow instance is triggered by OP_TERMINATE|workflowInstanceId={}|appId={}|" +
-                "errorMessage={}", instance.getId(), instance.getAppId(), errorMessage);
+                        "category={}|errorMessage={}", instance.getId(), instance.getAppId(), instance.getCategory(),
+                errorMessage);
         publisher.publishEvent(new WorkflowInstanceEvent(this, WorkflowInstanceEventEnum.OP_TERMINATE, instance));
     }
 
@@ -271,8 +293,8 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
      */
     @Override
     public void triggerPause(WorkflowInstanceDO instance) {
-        log.info("the current workflow instance is triggered by PAUSE|workflowInstanceId={}|appId={}",
-                instance.getId(), instance.getAppId());
+        log.info("the current workflow instance is triggered by PAUSE|workflowInstanceId={}|appId={}|category={}",
+                instance.getId(), instance.getAppId(), instance.getCategory());
         publisher.publishEvent(new WorkflowInstanceEvent(this, WorkflowInstanceEventEnum.PAUSE, instance));
     }
 
@@ -453,7 +475,9 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
 
         Long workflowInstanceId = instance.getId();
         String appId = instance.getAppId();
-        log.info("prepare to resume the workflow instance|workflowInstanceId={}|appId={}", workflowInstanceId, appId);
+        String category = instance.getCategory();
+        log.info("prepare to resume the workflow instance|workflowInstanceId={}|appId={}|category={}",
+                workflowInstanceId, appId, category);
 
         // 发送 RESUME 事件到 workflow instance
         publisher.publishEvent(new WorkflowInstanceEvent(this, WorkflowInstanceEventEnum.RESUME, instance));
@@ -518,6 +542,30 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
     @Override
     public WorkflowInstanceDO localRetryFromTask(Long workflowInstanceId, Long workflowTaskId) {
         return null;
+    }
+
+    /**
+     * 获取指定应用指定 category 的最后一个 SUCCESS 状态的 Workflow 实例
+     *
+     * @param appId    应用 ID
+     * @param category 分类
+     * @return WorkflowInstanceDO
+     */
+    @Override
+    public WorkflowInstanceDO getLastSuccessInstance(String appId, String category) {
+        WorkflowInstanceQueryCondition condition = WorkflowInstanceQueryCondition.builder()
+                .appId(appId)
+                .category(category)
+                .workflowStatus(WorkflowInstanceStateEnum.SUCCESS.toString())
+                .pageSize(1)
+                .withBlobs(true)
+                .build();
+        List<WorkflowInstanceDO> results = workflowInstanceRepository.selectByCondition(condition);
+        if (results.size() == 0) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("cannot find last succeed workflow instance|appId=%s|category=%s", appId, category));
+        }
+        return results.get(0);
     }
 
     /**

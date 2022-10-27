@@ -54,4 +54,9 @@ public class ExecuteWorkflowHandlerRes implements Serializable {
      * 是否暂停
      */
     private boolean suspend;
+
+    /**
+     * 是否自行终止后续所有 workflow 任务执行
+     */
+    private boolean terminate;
 }

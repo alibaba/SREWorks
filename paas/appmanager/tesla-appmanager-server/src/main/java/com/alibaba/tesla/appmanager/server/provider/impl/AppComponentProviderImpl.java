@@ -22,6 +22,7 @@ import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentCreateRe
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentUpdateReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpsertReq;
 import com.alibaba.tesla.appmanager.domain.req.helm.HelmMetaQueryReq;
 import com.alibaba.tesla.appmanager.plugin.repository.condition.PluginDefinitionQueryCondition;
@@ -34,6 +35,8 @@ import com.alibaba.tesla.appmanager.server.service.appcomponent.AppComponentServ
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import org.springframework.transaction.annotation.Transactional;
 import org.yaml.snakeyaml.Yaml;
 
 import java.util.Collections;
@@ -218,12 +221,36 @@ public class AppComponentProviderImpl implements AppComponentProvider {
      * @param operator 操作人
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(AppComponentDeleteReq request, String operator) {
         AppComponentQueryCondition condition = AppComponentQueryCondition.builder().id(request.getId()).build();
         if (condition.getId() == null || condition.getId() == 0) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "empty app component delete request");
         }
+        AppComponentDO appComponent = appComponentService.get(condition);
+        if (appComponent == null) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "the id provided is not exist");
+        }
         appComponentService.delete(condition);
+
+        // 执行 Deploy Config 删除动作
+        String appId = appComponent.getAppId();
+        String componentType = appComponent.getComponentType();
+        String componentName = appComponent.getComponentName();
+        String namespaceId = appComponent.getNamespaceId();
+        String stageId = appComponent.getStageId();
+        String typeId = new DeployConfigTypeId(componentType, componentName).toString();
+        deployConfigService.delete(DeployConfigDeleteReq.builder()
+                .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                .appId(appId)
+                .isolateNamespaceId(namespaceId)
+                .isolateStageId(stageId)
+                .envId("")
+                .typeId(typeId)
+                .build());
+        log.info("app component record has deleted|id={}|appId={}|componentType={}|componentName={}|namespaceId={}|" +
+                        "stageId={}|typeId={}", condition.getId(), appId, componentType, componentName, namespaceId,
+                stageId, typeId);
     }
 
     /**

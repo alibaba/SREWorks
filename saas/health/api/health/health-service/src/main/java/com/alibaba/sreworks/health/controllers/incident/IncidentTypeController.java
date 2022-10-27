@@ -35,6 +35,15 @@ public class IncidentTypeController extends BaseController {
         return buildSucceedResult(incidentTypeService.getIncidentTypeById(id));
     }
 
+    @ApiOperation(value = "查询异常类型(根据Label)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "label", value = "类型标识", paramType = "query"),
+    })
+    @RequestMapping(value = "getIncidentTypeByLabel", method = RequestMethod.GET)
+    public TeslaBaseResult getIncidentTypeByLabel(@RequestParam(name = "label") String label) {
+        return buildSucceedResult(incidentTypeService.getIncidentTypeByLabel(label));
+    }
+
     @ApiOperation(value = "查询异常类型列表")
     @RequestMapping(value = "getIncidentTypes", method = RequestMethod.GET)
     public TeslaBaseResult getIncidentTypes() {

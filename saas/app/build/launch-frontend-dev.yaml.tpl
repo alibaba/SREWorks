@@ -35,9 +35,10 @@ spec:
     - name: gateway.trait.abm.io
       runtime: post
       spec:
-        path: /sreworks-job/**
-        routeId: dev-job-job-master-master-${NAMESPACE_ID}-dev
-        serviceName: prod-job-job-master
+        order: 5000
+        path: /sreworks/**
+        routeId: dev-app-app-master-${NAMESPACE_ID}-dev
+        serviceName: prod-app-app
         servicePort: 80
   - parameterValues:
     - name: STAGE_ID

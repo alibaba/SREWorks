@@ -104,6 +104,9 @@ saas:
     esPort: 9200
     esUser: "elastic"
     esPassword: "sreworkses123."
+    prometheusHost: "prod-dataops-prometheus-server.sreworks-dataops"
+    prometheusPort: "80"
+
   grafana:
     password: "sreworks123456"
 
@@ -132,6 +135,7 @@ appmanager:
     account_super_secret_key: test-super-secret-key 
 
   server:
+    sreworksEnvs: true
     jvmXMX: "512m"
     docker:
       enableKaniko: true

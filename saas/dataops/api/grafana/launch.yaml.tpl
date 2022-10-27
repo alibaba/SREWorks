@@ -57,7 +57,7 @@ spec:
             header_name: x-auth-user
             headers: "Name:x-auth-user Email:x-auth-email-addr"
           auth.anonymous:
-            enabled: true
+            enabled: false
         image: 
           repository: "${GRAFANA_IMAGE}"
           tag: "${GRAFANA_IMAGE_TAG}"

@@ -1,6 +1,8 @@
 ---
 title: 4.1.3 企业资源管理
 date: 2022-03-25T03:38:50.000Z
+toc_max_heading_level: 6
+toc_min_heading_level: 2
 ---
 
 

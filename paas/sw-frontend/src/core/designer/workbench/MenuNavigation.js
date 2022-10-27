@@ -615,7 +615,7 @@ class MenuNavigation extends React.Component {
                         <RadioButton value="left">左侧</RadioButton>
                         <RadioButton value={"top"}>顶部</RadioButton>
                         {
-                          this.node.level === 1 ? <RadioButton value="popup">弹出</RadioButton> : null
+                          this.node.level === 1 ? <RadioButton value="popup">下拉</RadioButton> : null
                         }
                         <RadioButton value="custom"><Tooltip
                           title="子菜单的生成交给页面中的自定义组件,不按照统一模式进行生成">布局组件</Tooltip></RadioButton>

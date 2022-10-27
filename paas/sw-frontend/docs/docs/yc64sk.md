@@ -1,6 +1,8 @@
 ---
 title: 7.2 参与SREWorks开源
 date: 2022-03-25T03:39:06.000Z
+toc_max_heading_level: 6
+toc_min_heading_level: 2
 ---
 
 当前SREWorks开源在Github Alibaba 组织下，欢迎大家加入到SREWorks的开源社区建设中来！

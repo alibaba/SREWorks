@@ -52,6 +52,8 @@ def mdx_body(meta, content):
     meta_content = "---\n"
     meta_content += "title: " + meta["title"] + "\n"
     meta_content += "date: " + meta["created_at"] + "\n"
+    meta_content += "toc_max_heading_level: 6\n" 
+    meta_content += "toc_min_heading_level: 2\n" 
     meta_content += "---\n\n"
 
     if '"format":"lakesheet"' in content:
@@ -62,9 +64,6 @@ def mdx_body(meta, content):
     # js相关代码需要多一个换行
     content = content.replace('```json', "```json\n")
     content = content.replace('```javascript', "```js\n")
-
-    # 代码块中的export特别敏感，还没想到好的办法，先切分开
-    content = content.replace('export', "ex port")
 
     # <a name="8plYw"></a>
     # ### 核心场景

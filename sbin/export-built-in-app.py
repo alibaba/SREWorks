@@ -41,11 +41,14 @@ VALUES_MAP = {
         "NAMESPACE_ID": '${NAMESPACE_ID}',
         "CLUSTER_ID": "master",
         "STAGE_ID": "prod",
+        "APPMANAGER_USERNAME": "${APPMANAGER_USERNAME}",
+        "APPMANAGER_PASSWORD": "${APPMANAGER_PASSWORD}",
+        "APPMANAGER_CLIENT_ID": "${APPMANAGER_CLIENT_ID}",
+        "APPMANAGER_CLIENT_SECRET": "${APPMANAGER_CLIENT_SECRET}",       
     },
     "componentParameterValues":{
     }
 }
-
 
 def values_tpl_replace(launchYAML, patchYAML):
     launchYAML['metadata']['annotations']['namespaceId'] = '${NAMESPACE_ID}'
@@ -63,7 +66,7 @@ def values_tpl_replace(launchYAML, patchYAML):
             for v in component["parameterValues"]:
                 component["parameterValueMaps"][v["name"]] = v["value"]
             patchComponents[component["revisionName"]] = component
- 
+
     for component in launchYAML["spec"]["components"]:
         newParameterValues = []
 
@@ -113,6 +116,15 @@ def values_tpl_replace(launchYAML, patchYAML):
             for v in component["parameterValues"]:
                 if patchValues.get(v["name"]) != None:
                     v["value"] = patchValues[v["name"]]
+                    del patchValues[v["name"]]
+
+            # 如果变量不存在也要append进去
+            if len(patchValues) > 0:
+                for k,v in patchValues.items():
+                    component["parameterValues"].append({
+                        "name": k,
+                        "value": v,
+                    })
                
 
 def only_frontend_filter(launchYAML):
@@ -132,9 +144,13 @@ def only_backend_filter(launchYAML):
     gatewayTrait = {}
     for component in launchYAML["spec"]["components"]:
         if not component["revisionName"].startswith("INTERNAL_ADDON"):
-            newComponents.append(component)
+            newComponents.append(component)    
+        if {"component": "RESOURCE_ADDON|system-env@system-env"} in component.get("dependencies",[]):
+            component["dependencies"].remove({"component": "RESOURCE_ADDON|system-env@system-env"})
 
     launchYAML["spec"]["components"] = newComponents
+    
+
 
 
 def frontend_dev_replace(launchYAML, devYAML):
@@ -183,6 +199,7 @@ for buildIn in builtInList:
     if buildIn.get("patch") != None:
         f = open(self_path + "/../" + buildIn["patch"], 'r')
         patchYAML = yaml.safe_load(f.read())
+        print(patchYAML)
         f.close()
     else:
         patchYAML = {}

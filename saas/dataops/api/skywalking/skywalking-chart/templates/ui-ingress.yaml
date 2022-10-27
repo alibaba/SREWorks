@@ -16,7 +16,13 @@
 {{- if .Values.ui.ingress.enabled }}
 {{- $serviceName := include "skywalking.ui.fullname" . }}
 {{- $servicePort := .Values.ui.service.externalPort }}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+apiVersion: networking.k8s.io/v1
+{{- else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1/Ingress" }}
+apiVersion: networking.k8s.io/v1beta1
+{{- else }}
 apiVersion: extensions/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
   labels:
@@ -39,8 +45,18 @@ spec:
         paths:
           - path: /{{ rest $url | join "/" }}
             backend:
+              {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: {{ $servicePort }}
+              {{- else }}
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
+              {{- end }}
+            {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+            pathType: Prefix
+            {{- end }}
     {{- end -}}
   {{- if .Values.ui.ingress.tls }}
   tls:

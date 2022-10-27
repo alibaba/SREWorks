@@ -1,6 +1,8 @@
 ---
 title: 4.2.2 运维应用管理
 date: 2022-03-25T03:39:00.000Z
+toc_max_heading_level: 6
+toc_min_heading_level: 2
 ---
 
 SREWorks中针对运维开发，集成化提供了运维应用从开发构建发布到交付部署的完整端到端能力。

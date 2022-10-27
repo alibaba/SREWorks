@@ -11,6 +11,7 @@
 <p align="center">
    <a href="https://www.yuque.com/sreworks-doc/docs" target="_blank">产品文档</a> 
    <a href="https://sreworks.opensource.alibaba.com/" target="_blank">开源官网</a> 
+   <a href="https://gitee.com/sreworks/sreworks" target="_blank">国内代码库</a> 
 </p>
 
 ---
@@ -42,8 +43,8 @@ SREWorks 作为阿里云大数据SRE团队对SRE理念的工程实践，专注�
 
 
 ## 入门指南
-- [快速安装](/paas/sw-frontend/docs/documents/rr5g10.md)
-- [源码安装](/paas/sw-frontend/docs/documents/mzz07m.md)
+- [快速安装](/paas/sw-frontend/docs/docs/rr5g10.md)
+- [源码安装](/paas/sw-frontend/docs/docs/mzz07m.md)
 - [产品文档](https://www.yuque.com/sreworks-doc/docs/)
 - [在线体验](https://wj.qq.com/s2/10565748/53da/)
 

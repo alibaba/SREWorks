@@ -106,11 +106,6 @@
                     "collapsed": true,
                     "items": [
                         {
-                            "id": "ou9k9g",
-                            "label": "4.2.3 \u8fd0\u7ef4\u524d\u7aef\u5f00\u53d1",
-                            "type": "doc"
-                        },
-                        {
                             "id": "uopmre",
                             "label": "4.2.1 \u4ec0\u4e48\u662f\u8fd0\u7ef4\u5e94\u7528",
                             "type": "doc"
@@ -118,6 +113,11 @@
                         {
                             "id": "ap1wm6",
                             "label": "4.2.2 \u8fd0\u7ef4\u5e94\u7528\u7ba1\u7406",
+                            "type": "doc"
+                        },
+                        {
+                            "id": "ou9k9g",
+                            "label": "4.2.3 \u8fd0\u7ef4\u524d\u7aef\u5f00\u53d1",
                             "type": "doc"
                         }
                     ],

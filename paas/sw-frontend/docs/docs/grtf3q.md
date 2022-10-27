@@ -1,6 +1,8 @@
 ---
 title: 3.2 技术架构
 date: 2022-03-25T03:39:08.000Z
+toc_max_heading_level: 6
+toc_min_heading_level: 2
 ---
 
 <a name="Sjth9"></a>

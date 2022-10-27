@@ -22,9 +22,9 @@ metadata:
     app: {{ template "skywalking.name" . }}
     release: {{ .Release.Name }}
     component: {{ .Values.oap.name }}
-data:
+binaryData:
   {{ range $path, $bytes := .Files.Glob "files/conf.d/oap/**" }}
   {{- $path | replace "files/conf.d/oap/" "" | b64enc | replace "=" "-" | indent 2 }}: |
-  {{ $.Files.Get $path | indent 4 }}
+  {{ $.Files.Get $path | b64enc | indent 4 }}
   {{ end }}
   {{ end }}

@@ -49,6 +49,13 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Create a oap full labels value.
+*/}}
+{{- define "skywalking.oap.labels" -}}
+app={{ template "skywalking.name" . }},release={{ .Release.Name }},component={{ .Values.oap.name }}
+{{- end -}}
+
+{{/*
 Create a default fully qualified ui name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
@@ -57,10 +64,25 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Create a default fully qualified satellite name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "skywalking.satellite.fullname" -}}
+{{ template "skywalking.fullname" . }}-{{ .Values.satellite.name }}
+{{- end -}}
+
+{{/*
 Create the name of the service account to use for the oap cluster
 */}}
 {{- define "skywalking.serviceAccountName.oap" -}}
 {{ default (include "skywalking.oap.fullname" .) .Values.serviceAccounts.oap }}
+{{- end -}}
+
+{{/*
+Create the name of the service account to use for the satellite cluster
+*/}}
+{{- define "skywalking.serviceAccountName.satellite" -}}
+{{ default (include "skywalking.satellite.fullname" .) .Values.serviceAccounts.satellite }}
 {{- end -}}
 
 {{- define "skywalking.containers.wait-for-es" -}}

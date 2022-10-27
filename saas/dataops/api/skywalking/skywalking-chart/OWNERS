@@ -13,24 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Default values for skywalking.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-oap:
-  image:
-    tag: 9.2.0
-  storageType: elasticsearch
-
-ui:
-  image:
-    tag: 9.2.0
-
-elasticsearch:
-  enabled: false
-  config:               # For users of an existing elasticsearch cluster,takes effect when `elasticsearch.enabled` is false
-    host: elasticsearch-es-http
-    port:
-      http: 9200
-    user: "xxx"         # [optional]
-    password: "xxx"     # [optional]
+approvers:
+- hanahmily
+- wu-sheng
+- innerpeacez
+reviewers:
+- hanahmily
+- wu-sheng
+- innerpeacez

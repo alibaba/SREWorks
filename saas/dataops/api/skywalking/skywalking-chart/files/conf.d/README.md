@@ -14,3 +14,10 @@ Files under `oap/*` will override the counterparts under the Docker image's `/sk
 | `files/config.d/oap/oal/browser.oal`                 | `/skywalking/config/oal/browser.oal`                  |
 | `files/config.d/oap/oc-rules/oap.yaml`               | `/skywalking/config/oc-rules/oap.yaml`                |
 | `...`                                                | `...`                                                 |
+
+Files under `satellite/*` will override the counterparts under the Docker image's `/skywalking/configs/*`, with the directory structure retained, here are some examples:
+
+| File under `files/config.d/satellite` directory | Overrides the file under Docker image's `/skywalking/configs/` |
+| ---- | -------- |
+| `files/config.d/satellite/satellite_config.yaml` | `/skywalking/configs/satellite_config.yaml`  |
+| `...`                                            | `...`                                        |

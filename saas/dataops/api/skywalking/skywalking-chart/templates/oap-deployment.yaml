@@ -76,6 +76,10 @@ spec:
       tolerations:
 {{ toYaml .Values.oap.tolerations | indent 8 }}
 {{- end }}
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+{{- end }}
       initContainers:
         {{- if hasPrefix "elasticsearch" .Values.oap.storageType }}
         {{- include "skywalking.containers.wait-for-es" . | nindent 6 }}
@@ -95,10 +99,10 @@ spec:
           initialDelaySeconds: 15
           periodSeconds: 20
         ports:
-        - containerPort: 11800
-          name: grpc
-        - containerPort: 12800
-          name: rest
+        {{- range $key, $value :=  .Values.oap.ports }}
+        - containerPort: {{ $value }}
+          name: {{ $key }}
+        {{- end }}
 {{- if .Values.oap.resources }}
         resources:
 {{ toYaml .Values.oap.resources | indent 10 }}
@@ -117,7 +121,7 @@ spec:
           value: "60"
 {{- end }}
         - name: SW_CLUSTER_K8S_LABEL
-          value: "app={{ template "skywalking.name" . }},release={{ .Release.Name }},component={{ .Values.oap.name }}"
+          value: "{{ template "skywalking.oap.labels" . }}"
         - name: SKYWALKING_COLLECTOR_UID
           valueFrom:
             fieldRef:

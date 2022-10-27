@@ -9,14 +9,20 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.sreworks.domain.DO.App;
+import com.alibaba.sreworks.domain.DO.AppMarketEndpoint;
 import io.sreworks.appmarket.server.params.AppMarketSyncRemote2LocalParam;
+import io.sreworks.appmarket.server.params.AppMarketEndpointUpsertParam;
 import io.sreworks.appmarket.server.services.AppMarketService;
 import com.alibaba.sreworks.common.util.RegularUtil;
 import com.alibaba.sreworks.domain.DO.AppPackage;
 import com.alibaba.sreworks.domain.DO.Team;
 import com.alibaba.sreworks.domain.repository.AppPackageRepository;
 import com.alibaba.sreworks.domain.repository.TeamRepository;
+import com.alibaba.sreworks.domain.repository.AppMarketEndpointRepository;
 import com.alibaba.sreworks.flyadmin.server.services.FlyadminAppmanagerMarketService;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.alibaba.tesla.web.controller.BaseController;
@@ -31,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.spring.web.json.Json;
 
 /**
  * @author jinghua.yjh
@@ -52,6 +59,46 @@ public class AppMarketController extends BaseController {
 
     @Autowired
     TeamRepository teamRepository;
+
+    @Autowired
+    AppMarketEndpointRepository appMarketEndpointRepository;
+
+    @ApiOperation(value = "listRemoteEndpoints")
+    @RequestMapping(value = "listRemoteEndpoints", method = RequestMethod.GET)
+    public TeslaBaseResult listRemoteEndpoints() {
+        List<AppMarketEndpoint> appMarketEndpoints = appMarketEndpointRepository.findAll();
+        List<JSONObject> endpoints = JSONArray.parseArray(JSON.toJSONString(appMarketEndpoints)).toJavaList(JSONObject.class);
+        for (JSONObject endpoint : endpoints){
+            endpoint.put("config", JSONObject.parseObject(endpoint.getString("config")));
+        }
+        return buildSucceedResult(endpoints);
+    }
+
+    @ApiOperation(value = "upsertRemoteEndpoint")
+    @RequestMapping(value = "upsertRemoteEndpoint", method = RequestMethod.POST)
+    public TeslaBaseResult upsertRemoteEndpoint(@RequestBody AppMarketEndpointUpsertParam param) {
+        AppMarketEndpoint appMarketEndpoint = appMarketEndpointRepository.findFirstByName(param.getName());
+        if(appMarketEndpoint == null) {
+            appMarketEndpoint = AppMarketEndpoint.builder()
+                    .gmtCreate(System.currentTimeMillis() / 1000)
+                    .gmtModified(System.currentTimeMillis() / 1000)
+                    .creator(getUserEmployeeId())
+                    .lastModifier(getUserEmployeeId())
+                    .name(param.getName())
+                    .config(param.getConfig().toJSONString()).build();
+            appMarketEndpointRepository.saveAndFlush(appMarketEndpoint);
+        }else{
+            appMarketEndpoint.setConfig(param.getConfig().toJSONString());
+        }
+        return buildSucceedResult(appMarketEndpoint);
+    }
+
+    @ApiOperation(value = "deleteRemoteEndpoint")
+    @RequestMapping(value = "deleteRemoteEndpoint", method = RequestMethod.DELETE)
+    public TeslaBaseResult upsertRemoteEndpoint(Long id) {
+        appMarketEndpointRepository.deleteById(id);
+        return buildSucceedResult("OK");
+    }
 
     @ApiOperation(value = "list")
     @RequestMapping(value = "list", method = RequestMethod.GET)

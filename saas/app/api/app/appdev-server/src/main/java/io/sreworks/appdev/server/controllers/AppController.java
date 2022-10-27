@@ -148,6 +148,7 @@ public class AppController extends BaseController {
         App app = appRepository.findFirstById(id);
         app.setName("sreworks" + app.getId().toString());
         app.setDisplay(Long.valueOf(2));
+
         appRepository.saveAndFlush(app);
         JSONObject result = new JSONObject();
         result.put("appDefId", app.getId());

@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Deploy Config DTO Converter
  *
@@ -32,8 +34,14 @@ public class DeployConfigDtoConvert extends BaseDtoConvert<DeployConfigDTO, Depl
         DeployConfigDTO result = new DeployConfigDTO();
         ClassUtil.copy(DeployConfigDO, result);
         if (StringUtils.isNotEmpty(result.getConfig())) {
-            if (result.getConfig().trim().startsWith("-")) {
-                result.setConfigJson(SchemaUtil.toSchema(JSONArray.class, result.getConfig()));
+            String restStr = result.getConfig();
+            if (restStr.startsWith("!!map")) {
+                restStr = restStr.substring("!!map".length());
+            }
+            restStr = restStr.trim();
+            if (restStr.startsWith("-")) {
+                List<JSONObject> list = SchemaUtil.toSchemaList(JSONObject.class, result.getConfig());
+                result.setConfigJson(JSONArray.parseArray(JSONArray.toJSONString(list)));
             } else {
                 result.setConfigJson(SchemaUtil.toSchema(JSONObject.class, result.getConfig()));
             }

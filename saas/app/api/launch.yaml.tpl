@@ -17,8 +17,7 @@ spec:
       value: "prod"
   components:
     - revisionName: K8S_MICROSERVICE|app|_
-      dependencies:
-        - component: RESOURCE_ADDON|system-env@system-env
+      dependencies: []
       scopes:
         - scopeRef:
             apiVersion: apps.abm.io/v1
@@ -70,38 +69,4 @@ spec:
           value: "${APPMANAGER_CLIENT_ID}"
         - name: Global.APPMANAGER_CLIENT_SECRET
           value: "${APPMANAGER_CLIENT_SECRET}"
-    - dataInputs: []
-      dataOutputs:
-        - fieldPath: '{{ spec.env.DB_HOST }}'
-          name: Global.DB_HOST
-        - fieldPath: '{{ spec.env.DB_PASSWORD }}'
-          name: Global.DB_PASSWORD
-        - fieldPath: '{{ spec.env.DB_PORT }}'
-          name: Global.DB_PORT
-        - fieldPath: '{{ spec.env.DB_USER }}'
-          name: Global.DB_USER
-      dependencies: []
-      parameterValues:
-        - name: keys
-          toFieldPaths:
-            - spec.keys
-          value:
-            - DB_HOST
-            - DB_PASSWORD
-            - DB_PORT
-            - DB_USER
-      revisionName: RESOURCE_ADDON|system-env@system-env|1.0
-      scopes:
-        - scopeRef:
-            apiVersion: core.oam.dev/v1alpha2
-            kind: Stage
-            name: "{{ Global.STAGE_ID }}"
-        - scopeRef:
-            apiVersion: core.oam.dev/v1alpha2
-            kind: Cluster
-            name: "{{ Global.CLUSTER_ID }}" 
-        - scopeRef:
-            apiVersion: core.oam.dev/v1alpha2
-            kind: Namespace
-            name: "{{ Global.NAMESPACE_ID }}"
-
+          

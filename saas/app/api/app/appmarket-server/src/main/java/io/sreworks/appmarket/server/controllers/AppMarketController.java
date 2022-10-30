@@ -86,10 +86,10 @@ public class AppMarketController extends BaseController {
                     .lastModifier(getUserEmployeeId())
                     .name(param.getName())
                     .config(param.getConfig().toJSONString()).build();
-            appMarketEndpointRepository.saveAndFlush(appMarketEndpoint);
         }else{
             appMarketEndpoint.setConfig(param.getConfig().toJSONString());
         }
+        appMarketEndpointRepository.saveAndFlush(appMarketEndpoint);
         return buildSucceedResult(appMarketEndpoint);
     }
 

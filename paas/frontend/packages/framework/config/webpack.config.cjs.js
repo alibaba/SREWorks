@@ -9,5 +9,6 @@ module.exports = merge(baseConfig, {
     library: {
       type: 'commonjs',
     },
+    clean: true,
   },
 })

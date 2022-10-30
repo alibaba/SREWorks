@@ -20,8 +20,8 @@ import { SimpleForm } from '@sreworks/components'
 import { v4 as uuidv4 } from 'uuid'
 import { util, cacheRepository } from '@sreworks/shared-utils'
 import { localImglist, requiredImglist } from './localImglist'
-
-let properties = window.PROPERTY
+import properties from '../../properties'
+// let properties = window.PROPERTY
 const { TabPane } = Tabs
 const formItemLayout = {
   labelCol: {

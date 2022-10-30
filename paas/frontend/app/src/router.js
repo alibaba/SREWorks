@@ -12,7 +12,7 @@ import zhCN from 'antd/lib/locale-provider/zh_CN'
 import enUS from 'antd/lib/locale-provider/en_US'
 import zhTW from 'antd/lib/locale-provider/zh_TW'
 import Application from './application/Application'
-import { NotFound } from '@sreworks/components'
+import { NotFound } from '@sreworks/framework'
 
 dynamic.setDefaultLoadingComponent(() => {
   return <Spin size="large" className="globalSpin" />

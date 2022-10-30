@@ -8,8 +8,8 @@ import { Avatar } from 'antd'
 import GridLayout from 'react-grid-layout'
 import { connect } from 'dva'
 import './index.less'
-
-let properties = window.PROPERTY
+import properties from '../../properties'
+// let properties = window.PROPERTY
 const colors = [
   '#90ee90',
   '#2191ee',

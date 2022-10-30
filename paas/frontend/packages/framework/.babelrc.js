@@ -1,12 +1,4 @@
 module.exports = {
-  plugins:[
-    [
-      "@babel/plugin-proposal-decorators",
-      {
-        "legacy": true
-      }
-    ]
-  ],
   presets: [
     [
       '@babel/preset-env',
@@ -15,6 +7,14 @@ module.exports = {
         corejs: '3.22',
       },
     ],
-    '@babel/preset-react'
+    ["@babel/preset-react"]
   ],
+  plugins:[
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ]
+  ]
 }

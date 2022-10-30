@@ -1,9 +1,9 @@
-'use strict';
+'use strict'
 
-const path = require('path');
-const fs = require('fs');
-const appDirectory = fs.realpathSync(process.cwd());
-const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
+const path = require('path')
+const fs = require('fs')
+const appDirectory = fs.realpathSync(process.cwd())
+const resolveApp = (relativePath) => path.resolve(appDirectory, relativePath)
 
 module.exports = {
   dotenv: resolveApp('.env'),
@@ -19,5 +19,5 @@ module.exports = {
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
   packConfig: resolveApp('config'),
-  appRoot: path.resolve('src')
-};
+  appRoot: path.resolve('src'),
+}

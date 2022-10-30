@@ -4,8 +4,8 @@
  */
 
 import { httpClient, util, cacheRepository } from '@sreworks/shared-utils'
-
-let properties = window.PROPERTY
+import properties from '../properties'
+// let properties = window.PROPERTY
 const baseUrl = properties.baseUrl
 const apiEndpoint = properties.apiEndpoint
 const authPrefix = 'gateway/v2/common/authProxy/'

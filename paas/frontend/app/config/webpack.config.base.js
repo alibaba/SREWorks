@@ -1,9 +1,14 @@
 const TerserPlugin = require('terser-webpack-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { getEntries } = require('./utils')
 
 module.exports = {
   entry: getEntries(),
+  output: {
+    path: path.join(__dirname, '/dist'),
+    filename: 'bundle.js',
+  },
   mode: 'production',
   resolve: {
     extensions: ['.js', '.jsx'],

@@ -10,8 +10,8 @@ import { Spin, Button, Popover } from 'antd'
 import { httpClient, util } from '@sreworks/shared-utils'
 import { FormElementType, FormElementFactory } from '@sreworks/components'
 import $ from 'jquery'
-
-let properties = window.PROPERTY
+import properties from '../../../../properties'
+// let properties = window.PROPERTY
 const productopsPrefix = 'gateway/v2/foundation/frontend-service/frontend'
 
 const formItemLayout = {

@@ -2,8 +2,8 @@ import { LoadingOutlined, PlusOutlined } from '@ant-design/icons'
 import { Upload, Button, message } from 'antd'
 import React, { Component } from 'react'
 import { cacheRepository } from '@sreworks/shared-utils'
-
-let properties = window.PROPERTY
+import properties from '../../../properties'
+// let properties = window.PROPERTY
 export default class ImageUpload extends Component {
   constructor(props) {
     super(props)

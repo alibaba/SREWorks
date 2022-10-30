@@ -5,8 +5,8 @@ import { connect } from 'dva'
 import { Menu, Avatar, Switch, Dropdown, Radio } from 'antd'
 import { CirclePicker } from 'react-color'
 import _ from 'lodash'
-
-let properties = window.PROPERTY
+import properties from '../../properties'
+// let properties = window.PROPERTY
 const SubMenu = Menu.SubMenu
 const Item = Menu.Item
 const MenuItemGroup = Menu.ItemGroup

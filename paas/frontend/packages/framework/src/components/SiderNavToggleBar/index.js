@@ -10,8 +10,8 @@ import './index.less'
 import { connect } from 'dva'
 import { util, Bus } from '@sreworks/shared-utils'
 import AppService from '../../services/appService'
-
-let properties = window.PROPERTY
+import properties from '../../properties'
+// let properties = window.PROPERTY
 const colors = [
   '#90ee90',
   '#2191ee',

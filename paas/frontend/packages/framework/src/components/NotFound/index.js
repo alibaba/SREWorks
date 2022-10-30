@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
 import { Button } from 'antd'
-import { connect } from 'react-redux'
+import { connect } from 'dva'
 import { cacheRepository, localeHelper } from '@sreworks/shared-utils'
+import properties from '../../properties'
+// let properties = window.PROPERTY
 
-let properties = window.PROPERTY
-
-function mapStateToProps(state, props) {
-  return { ...props }
-}
-
+@connect(({ global}) => ({
+  currentUser: global.currentUser,
+}))
 class NotFound extends Component {
   constructor(props, context) {
     super(props, context)
@@ -75,4 +74,4 @@ class NotFound extends Component {
   }
 }
 
-export default connect(mapStateToProps)(NotFound)
+export default NotFound

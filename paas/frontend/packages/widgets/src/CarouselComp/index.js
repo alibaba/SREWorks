@@ -2,7 +2,7 @@ import React from 'react'
 import { Carousel } from 'antd'
 import './index.less'
 
-let properties = window.PROPERTY
+// let properties = window.PROPERTY
 
 function CarouselComp(props) {
   let { widgetConfig = {} } = props

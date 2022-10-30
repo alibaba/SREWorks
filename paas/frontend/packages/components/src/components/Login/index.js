@@ -3,14 +3,10 @@ import React, { Component } from 'react'
 import FormWrapper from './formWrapper'
 import { message, Row, Col } from 'antd'
 import { localeHelper } from '@sreworks/shared-utils'
-
-let properties = window.PROPERTY
+import properties from '../../properties'
+// let properties = window.PROPERTY
 
 import './index.less'
-
-function mapStateToProps(state, props) {
-  return { ...props }
-}
 
 class LoginContainer extends Component {
   loginOption

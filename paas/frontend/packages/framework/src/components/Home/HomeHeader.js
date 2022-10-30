@@ -6,8 +6,8 @@ import { Divider } from 'antd'
 import SiderNavToggleBar from '../../components/SiderNavToggleBar'
 import { connect } from 'dva'
 import DropDownUser from './DropDownUser'
-
-let properties = window.PROPERTY
+import properties from '../../properties'
+// let properties = window.PROPERTY
 @connect(({ home, global }) => ({
   home: home,
   global: global,

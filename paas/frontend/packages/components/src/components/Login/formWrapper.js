@@ -13,9 +13,10 @@ import {
 } from './api'
 import { localeHelper } from '@sreworks/shared-utils'
 import './index.less'
+import properties from '../../properties'
 
 const FormItem = Form.Item
-let properties = window.PROPERTY
+// let properties = window.PROPERTY
 
 class FormWrapper extends React.Component {
   render() {

@@ -7,7 +7,7 @@
 import React from 'react'
 import { Icon as LegacyIcon } from '@ant-design/compatible'
 import { Cascader, Menu, Layout } from 'antd'
-import { Route, withRouter, Switch, Redirect, Link } from 'react-router-dom'
+import { Route, withRouter, Switch, Redirect, Link } from 'dva/router'
 import OamContent from './OamContent'
 import oamTreeService from '../services/oamTreeService'
 import { JSXRender } from '@sreworks/components'

@@ -1,12 +1,11 @@
 module.exports = {
-  presets: [
+  presets: ['react-app'],
+  plugins: [
     [
-      '@babel/preset-env',
+      '@babel/plugin-proposal-decorators',
       {
-        useBuiltIns: 'entry',
-        corejs: '3.22',
+        legacy: true,
       },
     ],
-    '@babel/preset-react'
   ],
 }

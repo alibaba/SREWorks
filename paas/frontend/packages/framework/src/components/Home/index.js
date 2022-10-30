@@ -13,8 +13,8 @@ import AppService from '../../services/appService'
 import './index.less'
 import _ from 'lodash'
 import { localImglist, requiredImglist } from './localImglist'
-
-let properties = window.PROPERTY
+import properties from '../../properties'
+// let properties = window.PROPERTY
 const { Content } = Layout
 
 @connect(({ home }) => ({

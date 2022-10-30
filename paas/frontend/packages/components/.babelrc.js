@@ -7,6 +7,15 @@ module.exports = {
         corejs: '3.22',
       },
     ],
-    '@babel/preset-react'
+    ["@babel/preset-react"]
   ],
+  plugins:[
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ],
+    '@babel/plugin-transform-runtime'
+  ]
 }

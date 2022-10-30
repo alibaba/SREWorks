@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { JSXRender } from '@sreworks/components'
 import './index.less'
 
-let properties = window.PROPERTY
+// let properties = window.PROPERTY
 
 export default class SwitchCard extends Component {
   render() {

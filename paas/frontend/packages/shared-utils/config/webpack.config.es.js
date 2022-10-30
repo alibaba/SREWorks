@@ -9,6 +9,7 @@ module.exports = merge(baseConfig, {
     library: {
       type: 'module',
     },
+    clean: true,
   },
   experiments: {
     outputModule: true,

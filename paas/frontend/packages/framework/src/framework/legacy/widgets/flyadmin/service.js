@@ -1,6 +1,6 @@
 import { util, httpClient } from '@sreworks/shared-utils'
-
-let properties = window.PROPERTY
+import properties from '../../../../properties'
+// let properties = window.PROPERTY
 
 function getHeader() {
   return {

@@ -1,8 +1,8 @@
 import { UploadOutlined } from '@ant-design/icons'
 import { Upload, message } from 'antd'
 import React, { PureComponent } from 'react'
-
-let properties = window.PROPERTY
+import properties from '../../../properties'
+// let properties = window.PROPERTY
 
 export default class FileUpload extends PureComponent {
   constructor(props) {

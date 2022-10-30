@@ -218,6 +218,9 @@ export default {
     },
     logout(state) {
       appService.logout()
+      return {
+        ...state,
+      }
     },
     routesAuth(state, { payload }) {
       let moduleGroups = [],

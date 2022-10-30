@@ -1,11 +1,13 @@
 const TerserPlugin = require('terser-webpack-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+const webpack = require('webpack')
 const { getEntries } = require('./utils')
 const paths = require('./paths')
 
 module.exports = {
   entry: getEntries(),
   mode: 'production',
+  devtool: 'source-map',
   resolve: {
     alias: paths.namespace,
     extensions: ['.js', '.jsx'],
@@ -23,7 +25,6 @@ module.exports = {
         },
       },
       {
-        // 匹配.css结尾的文件，i是不区别大小写
         test: /\.css$/i,
         // 从右往左执行，不能改变顺序style-loader是 CSS 插入到 DOM 中，css- loader是对 @import 和 url() 进行处理，就像 js 解析 import /require() 一样
         use: [
@@ -115,7 +116,7 @@ module.exports = {
     ],
   },
   optimization: {
-    minimize: true,
+    minimize: false,
     minimizer: [
       new TerserPlugin({
         terserOptions: {
@@ -128,4 +129,9 @@ module.exports = {
       new CssMinimizerPlugin(),
     ],
   },
+  plugins: [
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
+  ].filter(Boolean),
 }

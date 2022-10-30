@@ -3,6 +3,7 @@
  * 组件的存储库,扫描内置组件定义生成组件及组件分类
  */
 import { getBuiltInWidgetMetaMapping } from '../core/BuiltInWidgets'
+//todo----暂时未将@sreworks/widgets 纳入
 const widgetMetasContext = require.context('./', true, /^\.\/meta\/[\s\S]*\.js$/)
 let builtInWidgetList = [...Object.values(getBuiltInWidgetMetaMapping())]
 const builtInWidgetCategory = [

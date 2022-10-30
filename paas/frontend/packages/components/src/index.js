@@ -16,7 +16,6 @@ import GridCheckBox from './components/GridCheckBox'
 import JsonEditor from './components/JsonEditor'
 import JSXRender from './components/JSXRender'
 import Login from './components/Login'
-import NotFound from './components/NotFound'
 import NoticeBoardBar from './components/NoticeBoardBar'
 import NotifyCenter from './components/NotifyCenter'
 import PagingTable from './components/PagingTable'
@@ -46,7 +45,6 @@ export {
   JsonEditor,
   JSXRender,
   Login,
-  NotFound,
   NoticeBoardBar,
   NotifyCenter,
   PagingTable,

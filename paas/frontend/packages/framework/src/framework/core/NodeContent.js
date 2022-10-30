@@ -4,7 +4,7 @@
  */
 import React from 'react'
 import { Spin } from 'antd'
-import { withRouter } from 'react-router-dom'
+import { withRouter } from 'dva/router'
 import service from '../../services/appMenuTreeService'
 import PageContent from './PageContent'
 import { util } from '@sreworks/shared-utils'

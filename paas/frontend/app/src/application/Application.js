@@ -8,7 +8,7 @@ import { withRouter } from 'dva/router'
 import { Spin, Alert, Popover, Button, Space } from 'antd'
 import DefaultLayout from '../layouts/DefaultLayout'
 import { Loading, Login, JsonEditor } from '@sreworks/components'
-import { Home } from '@sreworks/framework'
+// import { Home } from '@sreworks/framework'
 import { util, cacheRepository } from '@sreworks/shared-utils'
 import MenuTreeService from '../services/appMenuTreeService'
 import properties from '../properties'
@@ -27,7 +27,7 @@ class Application extends React.Component {
     }
   }
   UNSAFE_componentWillMount() {
-    this.loadRemoteComp()
+    // this.loadRemoteComp()
   }
   componentDidMount() {
     const { dispatch, routes, app, global } = this.props
@@ -109,7 +109,8 @@ class Application extends React.Component {
       (path.endsWith('#/') || path.endsWith('#')) &&
       !properties.defaultProduct
     ) {
-      return <Home />
+      // return <Home />
+      return <div></div>
     }
     let content = (
       <Space>

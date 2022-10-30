@@ -3,8 +3,8 @@ import { Col, Row, Form, Input, Button, message, Modal } from 'antd'
 import { httpClient } from '@sreworks/shared-utils'
 import { JSONEditor } from '@sreworks/components'
 import { CardWrapper } from '@sreworks/components'
-
-let properties = window.PROPERTY
+import properties from '../../../'
+// let properties = window.PROPERTY
 import _ from 'lodash'
 let timer = null // 计时器
 const { TextArea } = Input

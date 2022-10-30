@@ -6291,7 +6291,7 @@
                     "type": "object"
                   },
                   "cloneSet": {
-                    "description": "CloneSet 映射",
+                    "description": "CloneSet Map",
                     "properties": {
                       "lifecycle": {
                         "description": "Lifecycle defines the lifecycle hooks for Pods pre-delete, in-place update.",

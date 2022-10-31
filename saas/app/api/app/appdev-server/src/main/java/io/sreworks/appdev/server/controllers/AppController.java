@@ -174,7 +174,7 @@ public class AppController extends BaseController {
         RegularUtil.underscoreToCamel(list);
         RegularUtil.gmt2Date(list);
         list.forEach(x -> x.put("detailDict", JSONObject.parseObject(x.getString("detail"))));
-//        list.forEach(x -> x.put("appId", "sreworks" + x.getString("id")));
+        list.forEach(x -> x.put("appId", x.getString("name")));
         return buildSucceedResult(list);
     }
 
@@ -195,10 +195,7 @@ public class AppController extends BaseController {
     @ApiOperation(value = "detail")
     @RequestMapping(value = "detail", method = RequestMethod.GET)
     public TeslaBaseResult detail(Long id, String appId) throws IOException, ApiException {
-        if(StringUtils.isNotBlank(appId)){
-            id = Long.valueOf(appId.replace("sreworks",""));
-        }
-        App app = appRepository.findFirstById(id);
+        App app = appRepository.findFirstByName(appId);
         JSONObject ret = app.toJsonObject();
         Team team = teamRepository.findFirstById(app.getTeamId());
         ret.put("teamName", team.getName());
@@ -208,7 +205,6 @@ public class AppController extends BaseController {
         ret.put("appComponentCount", appComponentRepository.countByAppId(id));
         ret.put("appPackageCount", appPackageRepository.countByAppIdAndStatus(id, "SUCCESS"));
         ret.put("appInstanceCount", appInstanceRepository.countByAppId(id));
-//        ret.put("appId", "sreworks" + id.toString());
         return buildSucceedResult(ret);
     }
 
@@ -246,28 +242,28 @@ public class AppController extends BaseController {
         return buildSucceedResult(ret);
     }
 
-    @ApiOperation(value = "getComponents")
-    @RequestMapping(value = "getComponents", method = RequestMethod.GET)
-    public TeslaBaseResult getComponents(Long appId, @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) throws IOException {
-        if (appId == null) {
-            return buildSucceedResult(new ArrayList<>());
-        }
-
-        String appmanagerAppId = "sreworks" + appId.toString();
-
-        String user = getUserEmployeeId();
-
-        JSONObject res = flyadminAppmanagerService.k8sMicroservice(headerBizApp, user, appmanagerAppId, "MICROSERVICE,K8S_MICROSERVICE");
-        JSONArray k8sMicroserviceList = res.getJSONArray("items");
-
-        log.info("{}", k8sMicroserviceList.toJSONString());
-
-        JSONObject resHelm = flyadminAppmanagerService.helm(headerBizApp, user, appmanagerAppId);
-        JSONArray helmList = resHelm.getJSONArray("items");
-
-        k8sMicroserviceList.addAll(helmList);
-
-        return buildSucceedResult(k8sMicroserviceList);
-    }
+//    @ApiOperation(value = "getComponents")
+//    @RequestMapping(value = "getComponents", method = RequestMethod.GET)
+//    public TeslaBaseResult getComponents(Long appId, @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) throws IOException {
+//        if (appId == null) {
+//            return buildSucceedResult(new ArrayList<>());
+//        }
+//
+//        String appmanagerAppId = "sreworks" + appId.toString();
+//
+//        String user = getUserEmployeeId();
+//
+//        JSONObject res = flyadminAppmanagerService.k8sMicroservice(headerBizApp, user, appmanagerAppId, "MICROSERVICE,K8S_MICROSERVICE");
+//        JSONArray k8sMicroserviceList = res.getJSONArray("items");
+//
+//        log.info("{}", k8sMicroserviceList.toJSONString());
+//
+//        JSONObject resHelm = flyadminAppmanagerService.helm(headerBizApp, user, appmanagerAppId);
+//        JSONArray helmList = resHelm.getJSONArray("items");
+//
+//        k8sMicroserviceList.addAll(helmList);
+//
+//        return buildSucceedResult(k8sMicroserviceList);
+//    }
 
 }

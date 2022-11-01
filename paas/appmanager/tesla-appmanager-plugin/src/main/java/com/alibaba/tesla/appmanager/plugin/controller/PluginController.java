@@ -81,6 +81,7 @@ public class PluginController extends AppManagerBaseController {
                     pluginProvider.disable(PluginDisableReq.builder()
                             .pluginName(plugin.getPluginName())
                             .pluginVersion(plugin.getPluginVersion())
+                            .ignoreGroovyFiles(true)
                             .build());
                 }
             }

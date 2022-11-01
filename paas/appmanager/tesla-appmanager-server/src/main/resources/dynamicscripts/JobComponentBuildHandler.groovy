@@ -56,7 +56,7 @@ class JobComponentBuildHandler implements BuildComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 15
+    public static final Integer REVISION = 16
 
     private static final String TEMPLATE_JOB_FILENAME = "default_job.tpl"
 
@@ -213,6 +213,7 @@ class JobComponentBuildHandler implements BuildComponentHandler {
                 .imagePush(build.getBooleanValue("imagePush"))
                 .imagePushRegistry(build.getString("imagePushRegistry"))
                 .imagePushUseBranchAsTag(build.getBoolean("imagePushUseBranchAsTag"))
+                .keepGitFiles(true)
                 .imageName(build.getString("imageName"))
                 .repo(build.getString("repo"))
                 .branch(build.getString("branch"))

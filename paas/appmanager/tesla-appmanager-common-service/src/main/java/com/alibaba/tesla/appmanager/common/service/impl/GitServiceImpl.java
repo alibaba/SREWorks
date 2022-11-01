@@ -100,11 +100,11 @@ public class GitServiceImpl implements GitService {
                 }
                 if(StringUtils.isNotEmpty(request.getRewriteRepoPath())){
                     todir = dir.resolve(request.getRewriteRepoPath());
+                    FileUtils.moveDirectory(fromdir.toFile(), todir.toFile());
                 }else{
                     todir = dir.resolve(request.getRepoPath()).getParent();
+                    FileUtils.moveDirectoryToDirectory(fromdir.toFile(), todir.toFile(), true);
                 }
-
-                FileUtils.moveDirectoryToDirectory(fromdir.toFile(), todir.toFile(), true);
             }
         } catch (IOException e) {
             throw new AppException(AppErrorCode.UNKNOWN_ERROR, "cannot create temp directory", e);

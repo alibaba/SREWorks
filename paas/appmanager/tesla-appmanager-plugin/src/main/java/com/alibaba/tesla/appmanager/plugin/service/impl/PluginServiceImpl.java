@@ -186,6 +186,9 @@ public class PluginServiceImpl implements PluginService {
         PluginDefinitionSchema.Schematic schematic = schema.getSpec().getSchematic();
         if (schematic != null) {
             for (PluginDefinitionSchema.SchematicGroovyFile file : schematic.getGroovy().getFiles()) {
+                if (request.isIgnoreGroovyFiles()) {
+                    continue;
+                }
                 dynamicScriptService.removeScript(DynamicScriptQueryCondition.builder()
                         .kind(file.getKind())
                         .name(file.getName())

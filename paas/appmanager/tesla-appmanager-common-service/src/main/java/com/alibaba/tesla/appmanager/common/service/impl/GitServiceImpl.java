@@ -91,8 +91,19 @@ public class GitServiceImpl implements GitService {
 
             // 存在 repoPath 的时候，需要将 repoPath 对应的目录拷贝到 dir 实际对应的目录中
             if (StringUtils.isNotEmpty(request.getRepoPath())) {
-                Path fromdir = tmpDir.resolve(request.getRepoPath());
-                Path todir = dir.resolve(request.getRepoPath()).getParent();
+                Path fromdir;
+                Path todir;
+                if(request.getRepoPath().startsWith("/")){
+                    fromdir = tmpDir.resolve(request.getRepoPath().substring(1));
+                }else{
+                    fromdir = tmpDir.resolve(request.getRepoPath());
+                }
+                if(StringUtils.isNotEmpty(request.getRewriteRepoPath())){
+                    todir = dir.resolve(request.getRewriteRepoPath());
+                }else{
+                    todir = dir.resolve(request.getRepoPath()).getParent();
+                }
+
                 FileUtils.moveDirectoryToDirectory(fromdir.toFile(), todir.toFile(), true);
             }
         } catch (IOException e) {

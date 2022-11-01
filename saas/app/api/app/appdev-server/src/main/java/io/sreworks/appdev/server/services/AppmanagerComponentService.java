@@ -40,4 +40,17 @@ public class AppmanagerComponentService {
         return JSONArray.parseArray(JSON.toJSONString(components));
     }
 
+    public Long count(String appId, String user)  throws Exception {
+        Long componentCnt = Long.valueOf(0);
+        log.info("GET " + AppmanagerServiceUtil.getEndpoint() + "/apps/" + appId + "/components");
+        List<JSONObject> components = new Requests(AppmanagerServiceUtil.getEndpoint() + "/apps/" + appId + "/components?withBlobs=true")
+                .get()
+                .headers(HttpHeaderNames.X_EMPL_ID, user)
+                .isSuccessful().getJSONObject().getJSONArray("data").toJavaList(JSONObject.class);
+        for(JSONObject component: components){
+            componentCnt += 1;
+        }
+        return componentCnt;
+    }
+
 }

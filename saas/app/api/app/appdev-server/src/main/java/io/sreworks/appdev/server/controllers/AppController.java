@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.sreworks.appdev.server.params.AppCreateParam;
 import io.sreworks.appdev.server.params.AppModifyParam;
+import io.sreworks.appdev.server.services.AppmanagerComponentService;
+import io.sreworks.appdev.server.services.AppmanagerPackageService;
 import io.sreworks.appdev.server.services.AppmanagerService;
 import com.alibaba.sreworks.common.util.JsonUtil;
 import com.alibaba.sreworks.common.util.RegularUtil;
@@ -77,6 +79,12 @@ public class AppController extends BaseController {
 
     @Autowired
     FlyadminAppmanagerService flyadminAppmanagerService;
+
+    @Autowired
+    AppmanagerComponentService appmanagerComponentService;
+
+    @Autowired
+    AppmanagerPackageService appmanagerPackageService;
 
     @Transactional(rollbackOn = Exception.class)
     @ApiOperation(value = "创建")
@@ -194,7 +202,7 @@ public class AppController extends BaseController {
 
     @ApiOperation(value = "detail")
     @RequestMapping(value = "detail", method = RequestMethod.GET)
-    public TeslaBaseResult detail(Long id, String appId) throws IOException, ApiException {
+    public TeslaBaseResult detail(Long id, String appId) throws Exception {
         App app = appRepository.findFirstByName(appId);
         JSONObject ret = app.toJsonObject();
         Team team = teamRepository.findFirstById(app.getTeamId());
@@ -202,9 +210,12 @@ public class AppController extends BaseController {
         flyadminAuthproxyUserService.patchNickName(ret, getUserEmployeeId(), "creator");
         RegularUtil.gmt2Date(ret);
         ret.put("detailDict", JSONObject.parseObject(ret.getString("detail")));
-        ret.put("appComponentCount", appComponentRepository.countByAppId(id));
-        ret.put("appPackageCount", appPackageRepository.countByAppIdAndStatus(id, "SUCCESS"));
-        ret.put("appInstanceCount", appInstanceRepository.countByAppId(id));
+//        ret.put("appPackageCount", appPackageRepository.countByAppIdAndStatus(id, "SUCCESS"));
+//        ret.put("appInstanceCount", appInstanceRepository.countByAppId(id));
+
+        ret.put("appComponentCount", appmanagerComponentService.count(appId, getUserEmployeeId()));
+        ret.put("appPackageCount", appmanagerPackageService.count(appId, getUserEmployeeId()));
+        ret.put("appInstanceCount", 0);
         return buildSucceedResult(ret);
     }
 

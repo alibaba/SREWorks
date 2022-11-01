@@ -83,11 +83,11 @@ public class GitServiceImpl implements GitService {
             }
 
             // 删除 .git 临时文件
-//            if (!request.isKeepGitFiles()) {
-//                String rmInternalDirCommand = String.format("rm -rf %s/.git*", tmpDir);
-//                logContent.append(String.format("run command: %s\n", rmInternalDirCommand));
-//                logContent.append(CommandUtil.runLocalCommand(rmInternalDirCommand));
-//            }
+            if (!request.isKeepGitFiles()) {
+                String rmInternalDirCommand = String.format("rm -rf %s/.git*", tmpDir);
+                logContent.append(String.format("run command: %s\n", rmInternalDirCommand));
+                logContent.append(CommandUtil.runLocalCommand(rmInternalDirCommand));
+            }
 
             // 存在 repoPath 的时候，需要将 repoPath 对应的目录拷贝到 dir 实际对应的目录中
             if (StringUtils.isNotEmpty(request.getRepoPath())) {
@@ -180,7 +180,7 @@ public class GitServiceImpl implements GitService {
             String rest = StringUtil.trimStringByString(repo, HTTPS_PREFIX);
             return String.format("%s%s:%s@%s", HTTPS_PREFIX, ciAccount, ciToken, rest);
         } else {
-            return String.format("http://%s:%s@gitlab-sc.alibaba-inc.com/%s", ciAccount, ciToken, repo);
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "not supported");
         }
     }
 

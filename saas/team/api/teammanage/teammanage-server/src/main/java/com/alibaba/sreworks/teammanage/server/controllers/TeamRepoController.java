@@ -111,4 +111,21 @@ public class TeamRepoController extends BaseController {
             )).collect(Collectors.toList())
         ));
     }
+
+    @ApiOperation(value = "valueSelector")
+    @RequestMapping(value = "valueSelector", method = RequestMethod.GET)
+    public TeslaBaseResult valueSelector(Long teamId) {
+        List<TeamRepo> teamRepoList = teamRepoRepository.findAllByTeamId(teamId);
+        return buildSucceedResult(JsonUtil.map(
+                "options", teamRepoList.stream().map(teamRepo -> JsonUtil.map(
+                        "label", teamRepo.getName(),
+                        "value", JsonUtil.map(
+                            "id", teamRepo.getId(),
+                            "ciAccount", teamRepo.getCiAccount(),
+                            "url", teamRepo.getUrl(),
+                            "ciToken", teamRepo.getCiToken()
+                        ).toJSONString()
+                )).collect(Collectors.toList())
+        ));
+    }
 }

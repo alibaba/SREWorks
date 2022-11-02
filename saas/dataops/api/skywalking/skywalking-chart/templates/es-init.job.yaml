@@ -15,7 +15,7 @@
 
 # https://docs.sentry.io/server/installation/docker/#running-migrations
 
-{{- if hasPrefix "elasticsearch" .Values.oap.storageType }}
+{{- if and .Values.oap.initEs (contains "elasticsearch" .Values.oap.storageType) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -35,6 +35,26 @@ spec:
         component: "{{ template "skywalking.fullname" . }}-job"
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "skywalking.serviceAccountName.oap" . }}
+      {{- if .Values.esInit.nodeAffinity }}
+      affinity:
+      {{- end }}
+      {{- with .Values.esInit.nodeAffinity }}
+        nodeAffinity:
+{{ toYaml . | indent 10 }}
+      {{- end }}
+{{- if .Values.esInit.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.esInit.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.esInit.tolerations }}
+      tolerations:
+{{ toYaml .Values.esInit.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+{{- end }}
       restartPolicy: Never
       initContainers:
         {{- include "skywalking.containers.wait-for-es" . | nindent 6 }}
@@ -70,5 +90,19 @@ spec:
         {{- range $key, $value :=  .Values.oap.env }}
         - name: {{ $key }}
           value: {{ $value | quote }}
+        {{- end }}
+        volumeMounts:
+          {{- if (.Files.Glob "files/conf.d/oap/**") }}
+            {{ range $path, $bytes := .Files.Glob "files/conf.d/oap/**" }}
+            - name: skywalking-oap-override
+              mountPath: {{ print "/skywalking/config/" ($path | replace "files/conf.d/oap/" "") }}
+              subPath: {{ $path | replace "files/conf.d/oap/" "" | b64enc | replace "=" "-" }}
+            {{- end }}
+            {{- end }}
+      volumes:
+        {{- if (.Files.Glob "files/conf.d/oap/**") }}
+        - name: skywalking-oap-override
+          configMap:
+            name: {{ template "skywalking.fullname" . }}-oap-cm-override
         {{- end }}
 {{- end}}

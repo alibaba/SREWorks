@@ -4,7 +4,7 @@
     <parent>
         <artifactId>sreworks-base</artifactId>
         <groupId>io.sreworks</groupId>
-        <version>1.1.3</version>
+        <version>1.1.5</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 

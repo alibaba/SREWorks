@@ -1,6 +1,8 @@
 ---
 title: 1.5 版本记录
 date: 2022-03-25T03:39:05.000Z
+toc_max_heading_level: 6
+toc_min_heading_level: 2
 ---
 
 <a name="nl85e"></a>

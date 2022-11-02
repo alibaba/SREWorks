@@ -87,7 +87,6 @@
             <groupId>com.alibaba.tesla</groupId>
             <artifactId>tesla-appmanager-storage</artifactId>
         </dependency>
-
         <!-- spring -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

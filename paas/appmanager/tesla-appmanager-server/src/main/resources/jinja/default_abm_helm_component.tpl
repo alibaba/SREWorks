@@ -43,3 +43,4 @@ spec:
       values: {}
       valuesTemplateFilename: ""
       ignoreCreateNamespace: false
+      rollout: {}

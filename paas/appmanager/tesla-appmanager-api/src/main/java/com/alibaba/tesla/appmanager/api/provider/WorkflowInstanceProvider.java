@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.api.provider;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.WorkflowInstanceDTO;
 import com.alibaba.tesla.appmanager.domain.option.WorkflowInstanceOption;
@@ -29,6 +30,23 @@ public interface WorkflowInstanceProvider {
      * @return List
      */
     Pagination<WorkflowInstanceDTO> list(WorkflowInstanceListReq request);
+
+    /**
+     * 覆写 Context 到指定 Workflow 实例
+     *
+     * @param workflowInstanceId Workflow 实例 ID
+     * @param context            Context JSONObject
+     */
+    void putContext(Long workflowInstanceId, JSONObject context);
+
+    /**
+     * 获取指定应用指定 category 的最后一个 SUCCESS 状态的 Workflow 实例
+     *
+     * @param appId    应用 ID
+     * @param category 分类
+     * @return WorkflowInstanceDTO
+     */
+    WorkflowInstanceDTO getLastSuccessInstance(String appId, String category);
 
     /**
      * 启动一个 Workflow 实例

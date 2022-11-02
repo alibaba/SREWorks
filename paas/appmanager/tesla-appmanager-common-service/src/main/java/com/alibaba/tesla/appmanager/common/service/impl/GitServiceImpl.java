@@ -83,17 +83,28 @@ public class GitServiceImpl implements GitService {
             }
 
             // 删除 .git 临时文件
-//            if (!request.isKeepGitFiles()) {
-//                String rmInternalDirCommand = String.format("rm -rf %s/.git*", tmpDir);
-//                logContent.append(String.format("run command: %s\n", rmInternalDirCommand));
-//                logContent.append(CommandUtil.runLocalCommand(rmInternalDirCommand));
-//            }
+            if (!request.isKeepGitFiles()) {
+                String rmInternalDirCommand = String.format("rm -rf %s/.git*", tmpDir);
+                logContent.append(String.format("run command: %s\n", rmInternalDirCommand));
+                logContent.append(CommandUtil.runLocalCommand(rmInternalDirCommand));
+            }
 
             // 存在 repoPath 的时候，需要将 repoPath 对应的目录拷贝到 dir 实际对应的目录中
             if (StringUtils.isNotEmpty(request.getRepoPath())) {
-                Path fromdir = tmpDir.resolve(request.getRepoPath());
-                Path todir = dir.resolve(request.getRepoPath()).getParent();
-                FileUtils.moveDirectoryToDirectory(fromdir.toFile(), todir.toFile(), true);
+                Path fromdir;
+                Path todir;
+                if(request.getRepoPath().startsWith("/")){
+                    fromdir = tmpDir.resolve(request.getRepoPath().substring(1));
+                }else{
+                    fromdir = tmpDir.resolve(request.getRepoPath());
+                }
+                if(StringUtils.isNotEmpty(request.getRewriteRepoPath())){
+                    todir = dir.resolve(request.getRewriteRepoPath());
+                    FileUtils.moveDirectory(fromdir.toFile(), todir.toFile());
+                }else{
+                    todir = dir.resolve(request.getRepoPath()).getParent();
+                    FileUtils.moveDirectoryToDirectory(fromdir.toFile(), todir.toFile(), true);
+                }
             }
         } catch (IOException e) {
             throw new AppException(AppErrorCode.UNKNOWN_ERROR, "cannot create temp directory", e);
@@ -180,7 +191,7 @@ public class GitServiceImpl implements GitService {
             String rest = StringUtil.trimStringByString(repo, HTTPS_PREFIX);
             return String.format("%s%s:%s@%s", HTTPS_PREFIX, ciAccount, ciToken, rest);
         } else {
-            return String.format("http://%s:%s@gitlab-sc.alibaba-inc.com/%s", ciAccount, ciToken, repo);
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "not supported");
         }
     }
 

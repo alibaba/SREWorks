@@ -1,7 +1,9 @@
 package com.alibaba.tesla.appmanager.deployconfig.provider.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.DeployConfigProvider;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
+import com.alibaba.tesla.appmanager.common.util.ClassUtil;
 import com.alibaba.tesla.appmanager.deployconfig.assembly.DeployConfigDtoConvert;
 import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConfigQueryCondition;
 import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDO;
@@ -70,7 +72,10 @@ public class DeployConfigProviderImpl implements DeployConfigProvider {
     @Override
     public Pagination<DeployConfigDTO> list(DeployConfigListReq req) {
         DeployConfigQueryCondition condition = new DeployConfigQueryCondition();
+        ClassUtil.copy(req, condition);
         List<DeployConfigDO> results = deployConfigService.list(condition);
+        log.info("list deploy config from database|condition={}|resultSize={}",
+                JSONObject.toJSONString(condition), results.size());
         return Pagination.valueOf(results, deployConfigDtoConvert::to);
     }
 

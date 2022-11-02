@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.server.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.tesla.appmanager.common.util.DeploymentUtil;
+import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 

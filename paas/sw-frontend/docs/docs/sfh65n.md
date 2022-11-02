@@ -1,6 +1,8 @@
 ---
 title: 7.4 widget 开发规范
 date: 2022-08-26T09:46:04.000Z
+toc_max_heading_level: 6
+toc_min_heading_level: 2
 ---
 
 <a name="zwGUy"></a>
@@ -13,7 +15,7 @@ date: 2022-08-26T09:46:04.000Z
    - 组件必须包含一份主文件和一份meta.js, 如图TemplateComponents内index.js为组件主文件，meta.js是对该组件的名称、类型、自定义编辑属性、属性编辑表单类型、属性默认初始化值等的描述定义，index.svg是组件icon，目前组件icon的配置形式有两种：1 直接配置svg文件 ； 2 通过以iconfont的形式([https://www.iconfont.cn/manage/index?spm=a313x.7781069.1998910419.23&manage_type=myprojects&projectId=3290880](https://www.iconfont.cn/manage/index?spm=a313x.7781069.1998910419.23&manage_type=myprojects&projectId=3290880)),可申请加入项目，iconfont方便图标联动切换主题色
 ```js
 
-ex port default {
+export default {
   "id": "CarouselCompFive", 
   "type": "CarouselCompFive",//与导出打包组件一致
   "name": "CarouselCompFive",// 与导出打包组件一致
@@ -154,7 +156,7 @@ meta.js集成到基座的实际效果<br />![image.png](./pictures/1661507299624
    - 应用基座注入组件的可用数据
 ```js
 
-ex port default {
+export default {
   widgetData: {}, // 组件已配备数据源，通过统一的数据源采集器获得的数据，可以是object，array,number,string等类型
   widgetConfig: {}, // 对应各组件定义的meta可配置属性字段，编辑后得到的属性value，供组件个性化渲染使用
   pageModel: {

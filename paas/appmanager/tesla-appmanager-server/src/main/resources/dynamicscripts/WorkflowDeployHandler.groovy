@@ -34,7 +34,7 @@ class WorkflowDeployHandler implements WorkflowHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 3
+    public static final Integer REVISION = 4
 
     /**
      * 执行逻辑
@@ -74,7 +74,7 @@ class WorkflowDeployHandler implements WorkflowHandler {
                         JSONObject.toJSONString(context), JSONObject.toJSONString(configuration))
             }
         }
-        def deployAppId = WorkflowHandlerUtil.deploy(configuration, request.getCreator())
+        def deployAppId = WorkflowHandlerUtil.deploy(configuration, null, request.getCreator())
         log.info("deploy request has applied|workflowInstanceId={}|workflowTaskId={}|appId={}|context={}|" +
                 "configuration={}", request.getInstanceId(), request.getTaskId(), request.getAppId(),
                 JSONObject.toJSONString(context), JSONObject.toJSONString(configuration))

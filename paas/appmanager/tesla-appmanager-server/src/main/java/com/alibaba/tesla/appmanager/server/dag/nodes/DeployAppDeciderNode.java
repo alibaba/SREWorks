@@ -63,6 +63,13 @@ public class DeployAppDeciderNode extends AbstractLocalNodeBase {
             DeployAppHelper.recursiveSetParameters(parameters, null, Arrays.asList(name.split("\\.")), value,
                     ParameterValueSetPolicy.OVERWRITE_ON_CONFILICT);
         }
+        String overwriteParams = globalVariable.getString(AppFlowVariableKey.OVERWRITE_PARAMS);
+        if (StringUtils.isNotEmpty(overwriteParams)) {
+            parameters.putAll(JSONObject.parseObject(overwriteParams));
+            log.info("overwrite global params in dag|deployAppId={}|componentType={}|nodeId={}|dagInstId={}|" +
+                            "overwriteParams={}|parameters={}", deployAppId, componentType, nodeId, dagInstId,
+                    overwriteParams, parameters.toJSONString());
+        }
         log.info("decider node has finished running|deployAppId={}|componentType={}|nodeId={}|dagInstId={}",
                 deployAppId, componentType, nodeId, dagInstId);
         return DagInstNodeRunRet.builder()

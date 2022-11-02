@@ -2,6 +2,8 @@ package com.alibaba.tesla.appmanager.plugin.controller;
 
 import com.alibaba.tesla.appmanager.api.provider.PluginProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
+import com.alibaba.tesla.appmanager.common.pagination.Pagination;
+import com.alibaba.tesla.appmanager.domain.dto.PluginDefinitionDTO;
 import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.*;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
@@ -56,10 +58,35 @@ public class PluginController extends AppManagerBaseController {
             @RequestBody PluginOperateReq request,
             OAuth2Authentication auth) throws IOException {
         if ("enable".equals(request.getOperation())) {
-            return buildSucceedResult(pluginProvider.enable(PluginEnableReq.builder()
+            PluginDefinitionDTO enablePlugin = pluginProvider.enable(PluginEnableReq.builder()
                     .pluginName(pluginName)
                     .pluginVersion(pluginVersion)
-                    .build()));
+                    .build());
+
+            /**
+             * disable all enable plugins with the same pluginName
+             */
+            if (request.getDisableOthers()) {
+                Pagination<PluginDefinitionDTO> pluginList = pluginProvider.list(
+                        PluginQueryReq.builder()
+                                .pluginName(pluginName)
+                                .pluginRegistered(true)
+                                .build()
+                );
+
+                for (PluginDefinitionDTO plugin : pluginList.getItems()) {
+                    if (plugin.getPluginName().equals(pluginName) && plugin.getPluginVersion().equals(pluginVersion)) {
+                        continue;
+                    }
+                    pluginProvider.disable(PluginDisableReq.builder()
+                            .pluginName(plugin.getPluginName())
+                            .pluginVersion(plugin.getPluginVersion())
+                            .ignoreGroovyFiles(true)
+                            .build());
+                }
+            }
+
+            return buildSucceedResult(enablePlugin);
         } else if ("disable".equals(request.getOperation())) {
             return buildSucceedResult(pluginProvider.disable(PluginDisableReq.builder()
                     .pluginName(pluginName)

@@ -114,4 +114,9 @@ public class DefaultConstant {
     public static final String UNIT = "Unit";
 
     public static final String PRIVATE_ABM_CATEGORY = "专有云";
+
+    /**
+     * 默认 Workflow 分类
+     */
+    public static final String WORKFLOW_CATEGORY = "DEFAULT";
 }

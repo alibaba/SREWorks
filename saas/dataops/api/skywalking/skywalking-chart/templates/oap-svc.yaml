@@ -26,10 +26,10 @@ metadata:
 spec:
   type: {{ .Values.oap.service.type }}
   ports:
-  - port: {{ .Values.oap.ports.rest }}
-    name: rest
-  - port: {{ .Values.oap.ports.grpc }}
-    name: grpc
+  {{- range $key, $value :=  .Values.oap.ports }}
+  - port: {{ $value }}
+    name: {{ $key }}
+  {{- end }}
   selector:
     app: {{ template "skywalking.name" . }}
     component: "{{ .Values.oap.name }}"

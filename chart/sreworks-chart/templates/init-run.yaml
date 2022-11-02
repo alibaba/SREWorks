@@ -685,42 +685,6 @@ data:
     fi
 
 
-
-  saas-dataops-grafana-import.sh: |
-    
-    set -e
-    set -x 
-
-    cd /root
-
-    until $(curl --silent --fail --show-error --output /dev/null http://admin:${GRAFANA_ADMIN_PASSWORD}@${SAAS_STAGE_ID}-dataops-grafana.${NAMESPACE_DATAOPS}/api/datasources); do
-      printf '.' ; sleep 1 ;
-    done ;
-
-
-      for file in /root/saas/dataops/ui/grafana/datasource/*.json ; do
-        if [ -e "$file" ] ; then
-          echo "importing $file" &&
-          curl --silent --fail --show-error \
-            --request POST http://admin:${GRAFANA_ADMIN_PASSWORD}@${SAAS_STAGE_ID}-dataops-grafana.${NAMESPACE_DATAOPS}/api/datasources \
-            --header "Content-Type: application/json" \
-            --data-binary "@$file" ;
-          echo "" ;
-        fi
-      done ;
-
-      for file in /root/saas/dataops/ui/grafana/dashboard/*.json ; do
-        if [ -e "$file" ] ; then
-          echo "importing $file" &&
-          curl --silent --fail --show-error \
-            --request POST http://admin:${GRAFANA_ADMIN_PASSWORD}@${SAAS_STAGE_ID}-dataops-grafana.${NAMESPACE_DATAOPS}/api/dashboards/import \
-            --header "Content-Type: application/json" \
-            --data-binary "@$file" ;
-          echo "" ;
-        fi
-      done
-
-
   saas-demoapp.sh: |
 
     set -e

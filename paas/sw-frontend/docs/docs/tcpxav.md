@@ -1,6 +1,8 @@
 ---
 title: 1.4 功能列表
 date: 2022-03-25T03:38:46.000Z
+toc_max_heading_level: 6
+toc_min_heading_level: 2
 ---
 
 本文档列举 SREWorks 开源版具备的重点基础功能。

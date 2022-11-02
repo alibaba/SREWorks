@@ -31,6 +31,11 @@ public class ComponentBinder {
     private String componentName;
 
     /**
+     * 分类
+     */
+    private String category;
+
+    /**
      * 组件版本
      */
     private String version;

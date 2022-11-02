@@ -42,9 +42,8 @@ Get the UI URL by running these commands:
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "skywalking.ui.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP:{{ .Values.ui.service.externalPort }}
 {{- else if contains "ClusterIP" .Values.ui.service.type }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "skywalking.name" . }},release={{ .Release.Name }},component={{ .Values.ui.name }}" -o jsonpath="{.items[0].metadata.name}")
   echo "Visit http://127.0.0.1:8080 to use your application"
-  kubectl port-forward $POD_NAME 8080:{{ .Values.ui.service.internalPort }} --namespace {{ .Release.Namespace }}
+  kubectl port-forward svc/{{ include "skywalking.ui.fullname" . }} 8080:{{ .Values.ui.service.externalPort }} --namespace {{ .Release.Namespace }}
 {{- end }}
 
 {{- if.Values.elasticsearch.enabled }}

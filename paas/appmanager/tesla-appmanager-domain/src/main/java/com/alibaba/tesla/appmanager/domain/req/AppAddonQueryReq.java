@@ -37,5 +37,5 @@ public class AppAddonQueryReq extends BaseRequest {
     /**
      * 类型
      */
-    private List<ComponentTypeEnum> addonTypeList;
+    private List<String> addonTypeList;
 }

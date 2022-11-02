@@ -8,13 +8,11 @@ import com.alibaba.tesla.appmanager.common.enums.PluginKindEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
-import com.alibaba.tesla.appmanager.common.util.ClassUtil;
 import com.alibaba.tesla.appmanager.common.util.PackageUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.common.util.ZipUtil;
 import com.alibaba.tesla.appmanager.domain.core.ScriptIdentifier;
 import com.alibaba.tesla.appmanager.domain.core.StorageFile;
-import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginDisableReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginEnableReq;
 import com.alibaba.tesla.appmanager.domain.schema.PluginDefinitionSchema;
@@ -89,6 +87,10 @@ public class PluginServiceImpl implements PluginService {
     public Pagination<PluginDefinitionDO> list(PluginDefinitionQueryCondition condition) {
         List<PluginDefinitionDO> records = pluginDefinitionRepository.selectByCondition(condition);
         return Pagination.valueOf(records, Function.identity());
+    }
+
+    public PluginDefinitionDO get(PluginDefinitionQueryCondition condition) {
+        return pluginDefinitionRepository.getByCondition(condition);
     }
 
     /**

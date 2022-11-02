@@ -7,5 +7,5 @@ REPLACE INTO `app_market_endpoint` (
     id, config, creator, gmt_create, gmt_modified, last_modifier, name
 )
 VALUES(
-    1, '{"endpoint":"oss-cn-beijing.aliyuncs.com","endpointType":"oss","remoteBucket":"sreworks","alias":"企业公共应用市场","remoteStorePath":"/enterprise-app-markets","isUpload":true}', '999999999', 1667168168, 1667168168, '999999999', 'default'
+    1, '{"endpoint":"oss-cn-beijing.aliyuncs.com","endpointType":"oss","remoteBucket":"sreworks","alias":"企业公共应用市场","remoteStorePath":"/enterprise-app-markets","isUpload":false}', '999999999', 1667168168, 1667168168, '999999999', 'default'
 );

@@ -4,10 +4,7 @@ import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.PluginDefinitionDTO;
 import com.alibaba.tesla.appmanager.domain.dto.PluginFrontendDTO;
 import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
-import com.alibaba.tesla.appmanager.domain.req.plugin.PluginDisableReq;
-import com.alibaba.tesla.appmanager.domain.req.plugin.PluginEnableReq;
-import com.alibaba.tesla.appmanager.domain.req.plugin.PluginFrontendGetReq;
-import com.alibaba.tesla.appmanager.domain.req.plugin.PluginUploadReq;
+import com.alibaba.tesla.appmanager.domain.req.plugin.*;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -24,6 +21,13 @@ public interface PluginProvider {
      * @return 插件列表
      */
     Pagination<PluginDefinitionDTO> list(PluginQueryReq request);
+
+    /**
+     * 查询单个插件
+     *
+     * @return 插件列表
+     */
+    PluginDefinitionDTO get(PluginElementReq request);
 
     /**
      * 启用指定插件

@@ -39,7 +39,6 @@ import CascadeGroup from './FormItem/CascadeGroup';
 import OamWidgetItem from './FormItem/OamWidgetItem';
 import SelectItemWrapper from './FormItem/SelectItemWrapper';
 import localeHelper from '../../utils/localeHelper';
-import properties from 'appRoot/properties';
 import JSXRender from "../../components/JSXRender";
 import DatePickerWrapper from './FormItem/DatePickerWrapper';
 import JSONSchemaItem from './FormItem/JSONSchemaItem';

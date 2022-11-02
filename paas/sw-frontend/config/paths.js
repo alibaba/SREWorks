@@ -43,7 +43,6 @@ const namespace={
   'appRoot': path.resolve('src'),
   'appAssets': path.resolve('src/assets')
 };
-
 // config after eject: we're in ./config/
 module.exports = {
   dotenv: resolveApp('.env'),

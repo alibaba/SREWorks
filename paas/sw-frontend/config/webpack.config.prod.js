@@ -136,6 +136,7 @@ module.exports = {
                     },
                 ],
                 include: paths.appSrc,
+                // include: path.resolve(__dirname,'src'),
             },
             {
                 oneOf: [
@@ -152,6 +153,7 @@ module.exports = {
                     {
                         test: /\.(js|jsx|mjs)$/,
                         include: paths.appSrc,
+                        // include: path.resolve(__dirname,'src'),
                         use: [
                             'thread-loader',
                             {

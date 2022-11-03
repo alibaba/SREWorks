@@ -37,6 +37,18 @@ public class PluginController extends AppManagerBaseController {
         return buildSucceedResult(pluginProvider.list(request));
     }
 
+    @Operation(summary = "查询单个插件")
+    @GetMapping("{pluginName}/{pluginVersion}")
+    public TeslaBaseResult getPluginInfo(
+            @PathVariable("pluginName") String pluginName,
+            @PathVariable("pluginVersion") String pluginVersion,
+            OAuth2Authentication auth) throws IOException {
+        return buildSucceedResult(pluginProvider.get(PluginElementReq.builder()
+                .pluginName(pluginName)
+                .pluginVersion(pluginVersion)
+                .build()));
+    }
+
     @Operation(summary = "上传插件")
     @PostMapping
     public TeslaBaseResult upload(

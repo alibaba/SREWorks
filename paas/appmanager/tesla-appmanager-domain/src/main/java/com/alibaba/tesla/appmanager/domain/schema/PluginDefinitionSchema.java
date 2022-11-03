@@ -142,6 +142,7 @@ public class PluginDefinitionSchema implements Schema {
         private String kind;
         private String name;
         private String path;
+        private JSONObject properties;
     }
 
     @Data

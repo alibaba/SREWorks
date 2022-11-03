@@ -44,6 +44,14 @@
         </dependency>
         <dependency>
             <groupId>com.alibaba.tesla</groupId>
+            <artifactId>tesla-appmanager-definition</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.tesla</groupId>
+            <artifactId>tesla-appmanager-trait</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.tesla</groupId>
             <artifactId>tesla-appmanager-spring</artifactId>
         </dependency>
         <dependency>

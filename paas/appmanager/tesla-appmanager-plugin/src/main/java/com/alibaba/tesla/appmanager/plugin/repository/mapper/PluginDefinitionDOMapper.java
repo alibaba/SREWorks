@@ -19,5 +19,7 @@ public interface PluginDefinitionDOMapper {
 
     List<PluginDefinitionDO> selectByExample(PluginDefinitionDOExample example);
 
+    List<PluginDefinitionDO> selectGroupByKindNameVersion(PluginDefinitionDOExample example);
+
     int updateByExampleSelective(@Param("record") PluginDefinitionDO record, @Param("example") PluginDefinitionDOExample example);
 }

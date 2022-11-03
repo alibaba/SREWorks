@@ -8,10 +8,7 @@ import com.alibaba.tesla.appmanager.common.util.ClassUtil;
 import com.alibaba.tesla.appmanager.domain.dto.PluginDefinitionDTO;
 import com.alibaba.tesla.appmanager.domain.dto.PluginFrontendDTO;
 import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
-import com.alibaba.tesla.appmanager.domain.req.plugin.PluginDisableReq;
-import com.alibaba.tesla.appmanager.domain.req.plugin.PluginEnableReq;
-import com.alibaba.tesla.appmanager.domain.req.plugin.PluginFrontendGetReq;
-import com.alibaba.tesla.appmanager.domain.req.plugin.PluginUploadReq;
+import com.alibaba.tesla.appmanager.domain.req.plugin.*;
 import com.alibaba.tesla.appmanager.plugin.assembly.PluginDefinitionDtoConvert;
 import com.alibaba.tesla.appmanager.plugin.assembly.PluginFrontendDtoConvert;
 import com.alibaba.tesla.appmanager.plugin.repository.condition.PluginDefinitionQueryCondition;
@@ -60,6 +57,13 @@ public class PluginProviderImpl implements PluginProvider {
         ClassUtil.copy(request, condition);
         Pagination<PluginDefinitionDO> records = pluginService.list(condition);
         return Pagination.transform(records, record -> pluginDefinitionDtoConvert.to(record));
+    }
+
+    @Override
+    public PluginDefinitionDTO get(PluginElementReq request) {
+        PluginDefinitionQueryCondition condition = new PluginDefinitionQueryCondition();
+        ClassUtil.copy(request, condition);
+        return pluginDefinitionDtoConvert.to(pluginService.get(condition));
     }
 
     /**

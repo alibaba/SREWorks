@@ -1,7 +1,6 @@
 package com.alibaba.tesla.appmanager.plugin.service;
 
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
-import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginDisableReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginEnableReq;
 import com.alibaba.tesla.appmanager.plugin.repository.condition.PluginDefinitionQueryCondition;
@@ -24,6 +23,9 @@ public interface PluginService {
      * @return 插件列表
      */
     Pagination<PluginDefinitionDO> list(PluginDefinitionQueryCondition condition);
+
+
+    PluginDefinitionDO get(PluginDefinitionQueryCondition condition);
 
     /**
      * 启用指定插件

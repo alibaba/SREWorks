@@ -8,7 +8,7 @@ toc_min_heading_level: 2
 
 SREWorks产品解决方案的核心思想：以“数智”能力为驱动**内核**，抽象运维业务的“交、监、管、控、营、服”场景**界面**，支撑运维领域**需求**—— 质量，成本，效率，安全。
 
-![](./pictures/1650210530007-be2209bd-9179-4189-9dcc-3f9f38ff2090.jpeg.png)
+![](./pictures/1666944785433-f3417e59-35be-420c-9f11-fae88b4f7e30.jpeg.png)
 
 ![](./pictures/1663627633334-32214451-31cf-4e1a-b0a3-3cc3047ab842.jpeg.png)
 <a name="xBgYj"></a>

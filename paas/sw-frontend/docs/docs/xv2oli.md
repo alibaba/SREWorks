@@ -9,7 +9,7 @@ toc_min_heading_level: 2
 
 ### 1、开发约定
 >    1.  组件必须在  src/modules/common/FrontEndDesigner/core/widgets/   目录下
->    1. 组件的命名建议以驼峰式命名,第一个字母大写。
+>    2. 组件的命名建议以驼峰式命名,第一个字母大写。
 >       1. 里面必须包含 ：
 > 
 **index.js  --**--组件入口
@@ -20,12 +20,12 @@ icon.svg**    --**--组件图标
 > svg文件来源推荐 [https://www.iconfont.cn/home/index](https://www.iconfont.cn/home/index) 站点，选取合适的图标后下载 64*64大小，颜色为#4185F4的文件作为图例。
 >    3. 组件内能获取的重要属性、方法
 >       1. widgetData      ----组件数据源返回的数据。
->       1. widgetConfig   ----组件的定义配置，其中的变量占位已经被替换。
->       1. openAction(action，actionParams，callBack)     ----打开操作的函数
+>       2. widgetConfig   ----组件的定义配置，其中的变量占位已经被替换。
+>       3. openAction(action，actionParams，callBack)     ----打开操作的函数
 >          1. 参数列表
 >             1. action             ---打开的区块唯一标识
->             1. actionParams   ---传递到区块的变量集合,区块中的变量可以通过变量名引用
->             1. callBack	      ----执行后的回调，可为空
+>             2. actionParams   ---传递到区块的变量集合,区块中的变量可以通过变量名引用
+>             3. callBack	      ----执行后的回调，可为空
 > 
 其他的属性包括：应用信息、用户信息、路由信息等，可按需获取
 
@@ -144,7 +144,7 @@ Input  --普通输入<br />Text   --文本输入<br />Select -- 下拉选择<br 
 
          2. JSON Schema   
             1. 标准定义格式参考:[https://yuque.antfin-inc.com/docs/share/f1555cbe-63dd-4250-ae77-e2745391f803?spm=ata.13261165.0.0.7ffc6aa5hR1ngc](https://yuque.antfin-inc.com/docs/share/f1555cbe-63dd-4250-ae77-e2745391f803?spm=ata.13261165.0.0.7ffc6aa5hR1ngc)
-            1. 选择类型组件扩展属性定义(Select,MultiSelect,CheckBox,Radio) 示例
+            2. 选择类型组件扩展属性定义(Select,MultiSelect,CheckBox,Radio) 示例
 ```json
 
 "x-component-props":{

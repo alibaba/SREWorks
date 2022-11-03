@@ -57,22 +57,33 @@ public class TraitProviderImpl implements TraitProvider {
     @Override
     public TraitDTO get(TraitQueryReq request, String operator) {
         TraitQueryCondition condition = TraitQueryCondition.builder()
-            .name(request.getName())
-            .withBlobs(true)
-            .build();
+                .name(request.getName())
+                .withBlobs(true)
+                .build();
         TraitDO result = traitService.get(condition, operator);
         return traitDtoConvert.to(result);
     }
 
     /**
      * 向系统中新增或更新一个 Trait
-     *  @param request  记录的值
+     *
+     * @param request  记录的值
      * @param operator 操作人
      */
     @Override
     public void apply(String request, String operator) {
         TraitDefinition traitDefinition = SchemaUtil.toSchema(TraitDefinition.class, request);
+        apply(traitDefinition, operator);
+    }
 
+    /**
+     * 向系统中新增或更新一个 Trait
+     *
+     * @param traitDefinition TraitDefinition
+     * @param operator        操作人
+     */
+    @Override
+    public void apply(TraitDefinition traitDefinition, String operator) {
         // className 仅在 plugins 模型下可用，新 groovy 形式 trait 不需要该内容
         String className = traitDefinition.getSpec().getClassName();
         if (StringUtils.isEmpty(className)) {
@@ -80,11 +91,11 @@ public class TraitProviderImpl implements TraitProvider {
         }
 
         TraitDO traitDO = TraitDO.builder()
-            .name(traitDefinition.getMetadata().getName())
-            .className(className)
-            .definitionRef(traitDefinition.getSpec().getDefinitionRef().getName())
-            .traitDefinition(request)
-            .build();
+                .name(traitDefinition.getMetadata().getName())
+                .className(className)
+                .definitionRef(traitDefinition.getSpec().getDefinitionRef().getName())
+                .traitDefinition(SchemaUtil.toYamlMapStr(traitDefinition))
+                .build();
         traitService.apply(traitDO, operator);
     }
 
@@ -98,8 +109,8 @@ public class TraitProviderImpl implements TraitProvider {
     @Override
     public int delete(TraitQueryReq request, String operator) {
         TraitQueryCondition condition = TraitQueryCondition.builder()
-            .name(request.getName())
-            .build();
+                .name(request.getName())
+                .build();
         return traitService.delete(condition, operator);
     }
 
@@ -117,8 +128,8 @@ public class TraitProviderImpl implements TraitProvider {
     /**
      * 调用指定 Trait 的 reconcile 过程
      *
-     * @param name   Trait 唯一名称
-     * @param object Reconcile Object
+     * @param name       Trait 唯一名称
+     * @param object     Reconcile Object
      * @param properties Reconcile Properties
      */
     @Override

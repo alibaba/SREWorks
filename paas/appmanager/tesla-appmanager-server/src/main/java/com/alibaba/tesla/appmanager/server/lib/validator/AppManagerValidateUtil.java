@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.server.lib.validator;
 
 import com.alibaba.tesla.appmanager.common.util.ObjectConvertUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +26,12 @@ public class AppManagerValidateUtil {
             ConstraintViolationException constraintViolationException = new ConstraintViolationException(validateRes);
             log.warn("invalid params, msg={}||params={}", constraintViolationException.getMessage(), ObjectConvertUtil.toJsonString(object));
             throw constraintViolationException;
+        }
+    }
+
+    public void notBlank(String name, String value) {
+        if (StringUtils.isBlank(value)) {
+            throw new IllegalArgumentException(String.format("%s should not be blank.", name));
         }
     }
 }

@@ -2,6 +2,8 @@ package com.alibaba.tesla.appmanager.plugin.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.api.provider.DefinitionSchemaProvider;
+import com.alibaba.tesla.appmanager.api.provider.TraitProvider;
 import com.alibaba.tesla.appmanager.autoconfig.PackageProperties;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.PluginKindEnum;
@@ -11,11 +13,14 @@ import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.PackageUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.common.util.ZipUtil;
+import com.alibaba.tesla.appmanager.definition.service.DefinitionSchemaService;
 import com.alibaba.tesla.appmanager.domain.core.ScriptIdentifier;
 import com.alibaba.tesla.appmanager.domain.core.StorageFile;
+import com.alibaba.tesla.appmanager.domain.dto.DefinitionSchemaDTO;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginDisableReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginEnableReq;
 import com.alibaba.tesla.appmanager.domain.schema.PluginDefinitionSchema;
+import com.alibaba.tesla.appmanager.domain.schema.TraitDefinition;
 import com.alibaba.tesla.appmanager.dynamicscript.repository.condition.DynamicScriptQueryCondition;
 import com.alibaba.tesla.appmanager.dynamicscript.service.DynamicScriptService;
 import com.alibaba.tesla.appmanager.dynamicscript.util.GroovyUtil;
@@ -28,6 +33,7 @@ import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginTagDO;
 import com.alibaba.tesla.appmanager.plugin.service.PluginFrontendService;
 import com.alibaba.tesla.appmanager.plugin.service.PluginService;
 import com.alibaba.tesla.appmanager.server.storage.Storage;
+import com.alibaba.tesla.appmanager.trait.service.TraitService;
 import groovy.lang.GroovyClassLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -42,6 +48,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -76,6 +83,12 @@ public class PluginServiceImpl implements PluginService {
 
     @Autowired
     private Storage storage;
+
+    @Autowired
+    private DefinitionSchemaProvider definitionSchemaProvider;
+
+    @Autowired
+    private TraitProvider traitProvider;
 
     /**
      * 获取插件列表
@@ -361,14 +374,14 @@ public class PluginServiceImpl implements PluginService {
     /**
      * 加载全部 Groovy Scripts
      *
-     * @param definitionSchema Plugin Definition Schema
-     * @param pluginDir        插件 Zip 文件本地目录
+     * @param schema    Plugin Definition Schema
+     * @param pluginDir 插件 Zip 文件本地目录
      */
-    private void loadGroovyScripts(PluginDefinitionSchema definitionSchema, Path pluginDir) {
-        PluginKindEnum pluginKind = definitionSchema.getPluginKind();
-        String pluginName = definitionSchema.getPluginName();
-        String pluginVersion = definitionSchema.getPluginVersion();
-        PluginDefinitionSchema.SchematicGroovy schematic = definitionSchema.getSpec().getSchematic().getGroovy();
+    private void loadGroovyScripts(PluginDefinitionSchema schema, Path pluginDir) {
+        PluginKindEnum pluginKind = schema.getPluginKind();
+        String pluginName = schema.getPluginName();
+        String pluginVersion = schema.getPluginVersion();
+        PluginDefinitionSchema.SchematicGroovy schematic = schema.getSpec().getSchematic().getGroovy();
         if (schematic == null) {
             log.info("no need to load groovy scripts in current plugin|pluginKind={}|pluginName={}|pluginVersion={}",
                     pluginKind, pluginName, pluginVersion);
@@ -416,6 +429,45 @@ public class PluginServiceImpl implements PluginService {
             log.info("groovy scripts has updated in dynamic script table|pluginKind={}|pluginName={}|" +
                             "pluginVersion={}|fileKind={}|fileName={}|filePath={}|code={}", pluginKind, pluginName,
                     pluginVersion, fileKind, fileName, filePath, code);
+
+            // 针对 Trait 类型，需要进行 Trait 注册
+            if (!"TRAIT".equals(fileKind)) {
+                continue;
+            }
+            JSONObject properties = file.getProperties();
+            if (properties == null) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                        "trait properties in definition cannot be empty");
+            }
+            String runtime = properties.getString("runtime");
+            JSONObject definitionSchema = properties.getJSONObject("definitionSchema");
+            if (definitionSchema == null) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                        "definitionSchema in properties cannot be empty");
+            }
+            String definitionSchemaName = definitionSchema.getString("name");
+            JSONObject definitionSchemaJson = definitionSchema.getJSONObject("jsonSchema");
+            if (definitionSchemaJson == null) {
+                definitionSchemaJson = new JSONObject();
+            }
+            definitionSchemaProvider.apply(DefinitionSchemaDTO.builder()
+                    .name(definitionSchemaName)
+                    .jsonSchema(definitionSchemaJson.toJSONString())
+                    .build(), DefaultConstant.SYSTEM_OPERATOR);
+            traitProvider.apply(TraitDefinition.builder()
+                    .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                    .kind(PluginKindEnum.TRAIT_DEFINITION.toString())
+                    .metadata(TraitDefinition.MetaData.builder()
+                            .name(fileName)
+                            .build())
+                    .spec(TraitDefinition.Spec.builder()
+                            .runtime(runtime)
+                            .appliesToWorkloads(List.of("*"))
+                            .definitionRef(TraitDefinition.SpecDefinitionRef.builder()
+                                    .name(definitionSchemaName)
+                                    .build())
+                            .build())
+                    .build(), DefaultConstant.SYSTEM_OPERATOR);
         }
     }
 }

@@ -308,9 +308,51 @@ data:
 
 
     shutil.make_archive(args.dest.split(".zip")[0], 'zip', targetPath + "/")
- 
- 
+
+
   saas-dataops.sh: |
+
+    set -e
+    set -x
+
+    cd /root
+
+    sh /app/core-deploy-check.sh
+    
+    # build&launch dataops api
+    export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+    envsubst < /root/saas/dataops/api/build.yaml.tpl > /root/saas/dataops/api/build.yaml
+    envsubst < /root/saas/dataops/build/launch.yaml.tpl > /root/saas/dataops/launch.yaml
+    envsubst < /root/saas/dataops/build/launch-backend.yaml.tpl > /root/saas/dataops/launch-backend.yaml
+    envsubst < /root/saas/dataops/build/launch-frontend.yaml.tpl > /root/saas/dataops/launch-frontend.yaml
+    envsubst < /root/saas/dataops/build/launch-frontend-dev.yaml.tpl > /root/saas/dataops/launch-frontend-dev.yaml
+    python /app/pack.py --src /root/saas/dataops/build --dest /root/saas/dataops/build.zip
+
+
+    if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
+
+      cd /root/saas/dataops/api/
+      /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=dataops --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=../launch-backend.yaml --disable-dir-check
+
+      # wait flycore
+      if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
+      
+          sh /app/import.sh dataops /root/saas/dataops/build.zip /root/saas/dataops/launch-frontend.yaml /root/saas/dataops/launch-frontend-dev.yaml
+      
+      fi
+
+    else
+      
+      sh /app/import.sh dataops /root/saas/dataops/build.zip /root/saas/dataops/launch.yaml /root/saas/dataops/launch-frontend-dev.yaml
+
+    fi
+
+
+
+
+ 
+ 
+  saas-dataops1.sh: |
     set -e
     set -x 
     

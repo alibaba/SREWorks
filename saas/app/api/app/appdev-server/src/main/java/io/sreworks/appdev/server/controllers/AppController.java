@@ -174,6 +174,7 @@ public class AppController extends BaseController {
         JSONObject ret = appRepository.findFirstById(id).toJsonObject();
         RegularUtil.gmt2Date(ret);
         ret.put("detailDict", JSONObject.parseObject(ret.getString("detail")));
+        ret.put("options", JSONObject.parseObject(ret.getString("detail")).getJSONObject("options"));
         return buildSucceedResult(ret);
     }
 
@@ -214,11 +215,9 @@ public class AppController extends BaseController {
         flyadminAuthproxyUserService.patchNickName(ret, getUserEmployeeId(), "creator");
         RegularUtil.gmt2Date(ret);
         ret.put("detailDict", JSONObject.parseObject(ret.getString("detail")));
-//        ret.put("appPackageCount", appPackageRepository.countByAppIdAndStatus(id, "SUCCESS"));
-//        ret.put("appInstanceCount", appInstanceRepository.countByAppId(id));
-
         ret.put("appComponentCount", appmanagerComponentService.count(appId, getUserEmployeeId()));
         ret.put("appPackageCount", appmanagerPackageService.count(appId, getUserEmployeeId()));
+        ret.put("options", JSONObject.parseObject(ret.getString("detail")).getJSONObject("options"));
         ret.put("appInstanceCount", 0);
         return buildSucceedResult(ret);
     }

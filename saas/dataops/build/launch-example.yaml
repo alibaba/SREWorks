@@ -619,9 +619,11 @@ spec:
             repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-oap-server-utc-8
             tag: 9.2.0
           javaOpts: -Xmx1g -Xms1g
-          storageType: elasticsearch7
+          replicas: 1
+          storageType: elasticsearch
         ui:
           image:
+            repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-ui:9.2.0
             tag: 9.2.0
     - name: name
       toFieldPaths:

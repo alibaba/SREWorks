@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PluginElementReq {
+public class PluginGetReq {
 
     private String pluginName;
 

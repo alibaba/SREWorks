@@ -60,7 +60,7 @@ public class PluginProviderImpl implements PluginProvider {
     }
 
     @Override
-    public PluginDefinitionDTO get(PluginElementReq request) {
+    public PluginDefinitionDTO get(PluginGetReq request) {
         PluginDefinitionQueryCondition condition = new PluginDefinitionQueryCondition();
         ClassUtil.copy(request, condition);
         return pluginDefinitionDtoConvert.to(pluginService.get(condition));

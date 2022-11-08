@@ -30,7 +30,6 @@ import FlyAdminDeployComDetail from './flyadmin/flyadmin-deploy/deploy-component
 //运维桌面
 import CompositionWidget from './CompositionWidget/CompositionWidget'
 import AsyncAntdAlert from './AsyncAntdAlert'
-import APITest from '../../core/widgets/APITest'
 import Desktop from '../../core/widgets/Desktop'
 
 export default class WidgetFactory {
@@ -77,8 +76,6 @@ export default class WidgetFactory {
         return <CommonKvList {...widgetProps} mode={mode} />
       case 'FILTER_TAB':
         return <TabFilter {...widgetProps} mode={mode} />
-      case 'API_TEST':
-        return <APITest {...widgetProps} mode={mode} />
       default:
         return <span>{type} 未定义</span>
     }

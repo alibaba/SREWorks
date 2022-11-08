@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Form, Button, Input, Row, Col, Modal } from 'antd'
 import { localeHelper, httpClient } from '@sreworks/shared-utils'
 import moment from 'moment'
-import Cron from './Cron'
+import Cron from './Cron/TCron.js'
 class SRECron extends Component {
   constructor(props) {
     super(props)

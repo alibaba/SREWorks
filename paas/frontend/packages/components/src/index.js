@@ -14,6 +14,7 @@ import SimpleForm from './components/FormBuilder/SimpleForm'
 import FullScreenTool from './components/FullScreenTool'
 import GridCheckBox from './components/GridCheckBox'
 import JsonEditor from './components/JsonEditor'
+import NewJsonEditor from './components/NewJsonEditor'
 import JSXRender from './components/JSXRender'
 import Login from './components/Login'
 import NoticeBoardBar from './components/NoticeBoardBar'
@@ -24,7 +25,7 @@ import RenderFactory from './components/RenderFactory'
 import SelectedTable from './components/SelectedTable'
 import SRECron from './components/SRECron'
 import TIcon from './components/TIcon'
-import IconSelector from './components/FormBuilder/FormItem/IconSelector'
+import IconSelector from './components/IconSelector'
 
 export {
   Loading,
@@ -53,5 +54,6 @@ export {
   SelectedTable,
   SRECron,
   TIcon,
+  NewJsonEditor,
   IconSelector,
 }

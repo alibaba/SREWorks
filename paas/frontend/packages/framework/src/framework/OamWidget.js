@@ -4,7 +4,8 @@
  */
 import React from 'react'
 import { Spin } from 'antd'
-import { WidgetFactory, ErrorBoundary } from '@sreworks/components'
+import { ErrorBoundary } from '@sreworks/components'
+import WidgetFactory from '../framework/legacy/widgets/WidgetFactory'
 import oamTreeService from '../services/oamTreeService'
 import { util, safeEval, httpClient } from '@sreworks/shared-utils'
 import { connect } from 'dva'

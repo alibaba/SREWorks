@@ -10,7 +10,7 @@ import { safeEval } from '@sreworks/shared-utils'
 
 const { Panel } = Collapse
 
-export default class TabsRender extends Component {
+export default class collapseRender extends Component {
   render() {
     const { widgetConfig } = this.props
     let { accordion, bordered, expandIconPosition } = widgetConfig

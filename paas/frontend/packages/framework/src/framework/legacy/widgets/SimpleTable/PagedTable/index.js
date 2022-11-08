@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Table, Pagination, Tooltip, Tag } from 'antd'
-import { JSXRender } from '@sreworks/componenst'
+import { JSXRender } from '@sreworks/components'
 import { util, httpClient, safeEval } from '@sreworks/shared-utils'
 import Highlighter from 'react-highlight-words'
 import { v4 as uuidv4 } from 'uuid'

@@ -3,8 +3,9 @@
  * 内置组件集合
  */
 import service from '../../services/appMenuTreeService'
-const builtInWidgets = {}
-const builtInWidgetMetaMapping = {}
+import { SRE_builtInWidgets, SRE_builtInWidgetMetaMapping } from '@sreworks/widgets'
+let builtInWidgets = {}
+let builtInWidgetMetaMapping = {}
 //扫描内置挂件包,生成内置挂件映射 todo----暂时未将@sreworks/widgets 纳入
 const widgetsContext = require.context('./', true, /^\.\/widgets\/((?!\/)[\s\S])+\/index\.js$/)
 widgetsContext.keys().forEach((key) => {
@@ -24,6 +25,8 @@ widgetMetasContext.keys().forEach((key) => {
   //TODO 后续对内置组件展示有顺序需求可在此进行排序
   builtInWidgetMetaMapping[meta.type] = meta
 })
+builtInWidgetMetaMapping = Object.assign({}, builtInWidgetMetaMapping, SRE_builtInWidgetMetaMapping)
+builtInWidgets = Object.assign({}, builtInWidgets, SRE_builtInWidgets)
 function getCustomCompList() {
   return service.getCustomList()
 }

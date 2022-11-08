@@ -5,6 +5,7 @@
 
 import IntlMessageFormat from 'intl-messageformat'
 import cookie from './cookie'
+import * as path from 'path'
 
 window.APPLICATION_LANGUAGE = (function () {
   let territory = cookie.read('aliyun_territory')
@@ -27,7 +28,7 @@ if (window.APPLICATION_LANGUAGE === 'en_US') {
 let localeMapping = {}
 //扫描模块语言包,并根据当前设置的语言来初始化语言配置
 const localesContext = require.context(
-  'appRoot',
+  '../',
   true,
   /^\.\/modules\/((?!\/)[\s\S])+\/locales+\/[\s\S]*\.js$/,
 )

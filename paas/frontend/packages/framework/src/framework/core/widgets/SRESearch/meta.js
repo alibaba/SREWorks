@@ -1,3 +1,4 @@
+import icon from './icon.svg'
 export default {
   id: 'SRESearch',
   type: 'SRESearch',
@@ -12,7 +13,7 @@ export default {
     links: [],
     logos: {
       large: '',
-      small: require('./icon.svg'),
+      small: icon,
       fontClass: 'SRESearch',
     },
     build: {

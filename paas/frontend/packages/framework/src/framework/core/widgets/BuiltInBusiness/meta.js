@@ -3,6 +3,7 @@
  * @date 2021/8/23 20:02
  * @Description:组件属性定义
  */
+import icon from './icon.svg'
 export default {
   id: 'BuiltInBusiness',
   type: 'BuiltInBusiness',
@@ -17,7 +18,7 @@ export default {
     links: [],
     logos: {
       large: '',
-      small: require('./icon.svg'),
+      small: icon,
       fontClass: 'BuiltInBusiness',
     },
     build: {

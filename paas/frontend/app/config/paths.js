@@ -4,7 +4,10 @@ const path = require('path')
 const fs = require('fs')
 const appDirectory = fs.realpathSync(process.cwd())
 const resolveApp = (relativePath) => path.resolve(appDirectory, relativePath)
-
+const namespace = {
+  appRoot: path.resolve('src'),
+  appAssets: path.resolve('src/assets'),
+}
 module.exports = {
   dotenv: resolveApp('.env'),
   appBuild: resolveApp('build'),
@@ -16,8 +19,7 @@ module.exports = {
   yarnLockFile: resolveApp('yarn.lock'),
   testsSetup: resolveApp('src/setupTests.js'),
   appNodeModules: resolveApp('node_modules'),
-  publicUrl: getPublicUrl(resolveApp('package.json')),
-  servedPath: getServedPath(resolveApp('package.json')),
   packConfig: resolveApp('config'),
   appRoot: path.resolve('src'),
+  namespace: namespace,
 }

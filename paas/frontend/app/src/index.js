@@ -10,7 +10,9 @@ import 'antd/dist/antd.css'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
 import { util } from '@sreworks/shared-utils'
-
+import global from './models/global'
+import node from './models/node'
+import home from './models/home'
 import './index.less'
 
 const app = dva({
@@ -21,11 +23,13 @@ const app = dva({
 })
 
 app.use(createLoading())
+app.model(global)
+app.model(home)
+app.model(node)
+// const modelsContext = require.context('./', true, /^\.\/models+\/[\s\S]*\.js$/)
+// const models = modelsContext.keys().map((key) => modelsContext(key), [])
 
-const modelsContext = require.context('./', true, /^\.\/models+\/[\s\S]*\.js$/)
-const models = modelsContext.keys().map((key) => modelsContext(key), [])
-
-models.forEach((m) => app.model(m))
+// models.forEach((m) => app.model(m))
 
 //读取样式,根据不同的应用场景需要动态的适配
 let themeType = localStorage.getItem('sreworks-theme')

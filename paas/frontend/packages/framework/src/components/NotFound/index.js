@@ -5,7 +5,7 @@ import { cacheRepository, localeHelper } from '@sreworks/shared-utils'
 import properties from '../../properties'
 // let properties = window.PROPERTY
 
-@connect(({ global}) => ({
+@connect(({ global }) => ({
   currentUser: global.currentUser,
 }))
 class NotFound extends Component {

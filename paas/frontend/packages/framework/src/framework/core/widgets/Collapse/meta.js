@@ -2,6 +2,7 @@
  * Created by wangkaihua on 2021/06/28.
  * 组件的元数据信息定义,包括类型、logo、配置Schema等，是组件的描述信息定义
  */
+import icon from './icon.svg'
 export default {
   id: 'Collapse',
   type: 'Collapse',
@@ -16,7 +17,7 @@ export default {
     links: [],
     logos: {
       large: '',
-      small: require('./icon.svg'),
+      small: icon,
       fontClass: 'Collapse',
     },
     build: {

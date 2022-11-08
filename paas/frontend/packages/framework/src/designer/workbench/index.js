@@ -18,7 +18,7 @@ import { v4 as uuidv4 } from 'uuid'
 import PageModel from '../../framework/model/PageModel'
 import { Bus } from '@sreworks/shared-utils'
 import './index.less'
-const noDataImg = require('../../assets/img/no-data.png')
+import noDataImg from '../../assets/img/no-data.png'
 const { Content, Sider } = Layout
 
 export default class Workbench extends React.Component {

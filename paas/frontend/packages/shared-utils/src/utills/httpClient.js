@@ -396,15 +396,16 @@ class HttpClient {
 const httpClient = new HttpClient()
 
 //初始化一些通用方法
-
-;['delete', 'get', 'head', 'options', 'originalGet'].forEach(function (method) {
+let sourceArray = ['delete', 'get', 'head', 'options', 'originalGet']
+sourceArray.forEach(function (method) {
   httpClient[method] = function (url, config) {
     return request[method === 'originalGet' ? 'get' : method](url, config).then((resp) => {
       return resp
     })
   }
 })
-;['post', 'put', 'patch'].forEach(function (method) {
+let methodArray = ['post', 'put', 'patch']
+methodArray.forEach(function (method) {
   httpClient[method] = function (url, data, config) {
     return request[method](url, data, config).then((resp) => {
       return resp

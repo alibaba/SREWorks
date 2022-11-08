@@ -4,16 +4,17 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const webpack = require('webpack')
+const paths = require('./paths')
 
 const { NODE_ENV } = process.env
 const DEV = NODE_ENV === 'development'
-console.log(process.env, DEV, 'process.env')
 module.exports = {
-  entry: './src/index.js',
+  entry: [require.resolve('./polyfills'), paths.appIndexJs],
+  // entry: './src/index.js',
   output: {
-    path: path.join(__dirname, '../dist'),
-    filename: '[name].js',
-    chunkFilename: '[name].chunk.js',
+    path: path.join(__dirname, '../build'),
+    filename: 'static/js/[name].[chunkhash:8].js',
+    chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
     clean: true,
   },
   devServer: {
@@ -30,7 +31,7 @@ module.exports = {
     },
   },
   mode: DEV ? 'development' : 'production',
-  devtool: DEV ? 'inline-source-map' : 'source-map',
+  devtool: DEV ? 'source-map' : 'source-map',
   module: {
     rules: [
       {
@@ -80,7 +81,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.png/,
+        test: /\.(jpg|png|svg)$/i,
         type: 'asset/resource',
       },
       {
@@ -94,6 +95,14 @@ module.exports = {
       {
         test: /\.xml$/i,
         use: ['xml-loader'],
+      },
+      {
+        test: /\.mjs$/,
+        resolve: {
+          fullySpecified: false,
+        },
+        include: /node_modules/,
+        type: 'javascript/auto',
       },
     ],
   },
@@ -112,21 +121,22 @@ module.exports = {
     splitChunks: {
       minSize: 500000,
       chunks: 'all',
-      cacheGroups: {
-        react: {
-          test: /[\\/]node_modules[\\/]react(.*)?[\\/]/,
-          name: 'chunk-react',
-          priority: 50,
-        },
-        antd: {
-          test: /[\\/]node_modules[\\/]antd(.*)?[\\/]/,
-          name: 'chunk-antd',
-          priority: 40,
-        },
-      },
+      // cacheGroups: {
+      //   react: {
+      //     test: /[\\/]node_modules[\\/]react(.*)?[\\/]/,
+      //     name: 'chunk-react',
+      //     priority: 50,
+      //   },
+      //   antd: {
+      //     test: /[\\/]node_modules[\\/]antd(.*)?[\\/]/,
+      //     name: 'chunk-antd',
+      //     priority: 40,
+      //   },
+      // },
     },
   },
   resolve: {
+    alias: paths.namespace,
     modules: ['node_modules'],
     extensions: ['.json', '.js', '.jsx', '.less', 'scss'],
   },

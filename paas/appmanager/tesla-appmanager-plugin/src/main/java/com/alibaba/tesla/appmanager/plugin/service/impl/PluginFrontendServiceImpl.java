@@ -1,11 +1,15 @@
 package com.alibaba.tesla.appmanager.plugin.service.impl;
 
+import com.alibaba.tesla.appmanager.common.constants.PluginConstant;
 import com.alibaba.tesla.appmanager.common.enums.PluginKindEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.domain.schema.PluginDefinitionSchema;
+import com.alibaba.tesla.appmanager.plugin.repository.PluginDefinitionRepository;
 import com.alibaba.tesla.appmanager.plugin.repository.PluginFrontendRepository;
+import com.alibaba.tesla.appmanager.plugin.repository.condition.PluginDefinitionQueryCondition;
 import com.alibaba.tesla.appmanager.plugin.repository.condition.PluginFrontendQueryCondition;
+import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDO;
 import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginFrontendDO;
 import com.alibaba.tesla.appmanager.plugin.service.PluginFrontendService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +29,9 @@ public class PluginFrontendServiceImpl implements PluginFrontendService {
     @Autowired
     private PluginFrontendRepository pluginFrontendRepository;
 
+    @Autowired
+    private PluginDefinitionRepository pluginDefinitionRepository;
+
     /**
      * 获取指定的 Plugin Frontend 对象
      *
@@ -33,6 +40,18 @@ public class PluginFrontendServiceImpl implements PluginFrontendService {
      */
     @Override
     public PluginFrontendDO get(PluginFrontendQueryCondition condition) {
+        if (PluginConstant.PLUGIN_CURRENT_VERSION.equals(condition.getPluginVersion())) {
+            PluginDefinitionDO currentPlugin = pluginDefinitionRepository.getByCondition(
+                    PluginDefinitionQueryCondition.builder()
+                            .pluginRegistered(true)
+                            .pluginName(condition.getPluginName())
+                            .build()
+            );
+            if (currentPlugin == null) {
+                return null;
+            }
+            condition.setPluginVersion(currentPlugin.getPluginVersion());
+        }
         return pluginFrontendRepository.getByCondition(condition);
     }
 

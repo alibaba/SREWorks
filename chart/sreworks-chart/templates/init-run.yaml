@@ -320,7 +320,7 @@ data:
     sh /app/core-deploy-check.sh
     
     # build&launch dataops api
-    export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+    export NAMESPACE_ID=${NAMESPACE_DATAOPS}
     envsubst < /root/saas/dataops/api/build.yaml.tpl > /root/saas/dataops/api/build.yaml
     envsubst < /root/saas/dataops/build/launch.yaml.tpl > /root/saas/dataops/launch.yaml
     envsubst < /root/saas/dataops/build/launch-backend.yaml.tpl > /root/saas/dataops/launch-backend.yaml

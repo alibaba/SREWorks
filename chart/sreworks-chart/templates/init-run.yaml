@@ -348,13 +348,13 @@ data:
 
 
     # mysql地址如果从外部传入就不拉起mysql
-    if [[ "$DATAOPS_DB_HOST" == "prod-dataops-mysql.sreworks-dataops" ]]
+    if [[ "$DATAOPS_DB_HOST" != "prod-dataops-mysql.sreworks-dataops" ]]
     then
       python /app/remove-components.py -s /root/saas/dataops/launch.yaml -c "HELM|mysql|_"
       python /app/remove-components.py -s /root/saas/dataops/launch-frontend.yaml -c "HELM|mysql|_"
     fi
 
-    if [[ "$DATA_ES_HOST" == "prod-dataops-elasticsearch-master.sreworks-dataops" ]]
+    if [[ "$DATA_ES_HOST" != "prod-dataops-elasticsearch-master.sreworks-dataops" ]]
     then
       python /app/remove-components.py -s /root/saas/dataops/launch.yaml -c "HELM|elasticsearch|_"
       python /app/remove-components.py -s /root/saas/dataops/launch-frontend.yaml -c "HELM|elasticsearch|_"

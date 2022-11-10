@@ -4,7 +4,7 @@ metadata:
   name: service-gateway.trait.sreworks.io/v1beta1
   annotations:
     definition.oam.dev/description: "The service for Kubernetes + SREWorks gateway"
-    definition.oam.dev/version: "1.0.6"
+    definition.oam.dev/version: "1.0.7"
     definition.oam.dev/tags: "a=b"
 spec:
   appliesToWorkloads:

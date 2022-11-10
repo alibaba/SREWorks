@@ -306,9 +306,27 @@ data:
             shutil.make_archive(targetPath + "/" + path.split(".zip")[0], 'zip', targetPath + "/" + path)
             shutil.rmtree(targetPath + "/" + path)
 
-
     shutil.make_archive(args.dest.split(".zip")[0], 'zip', targetPath + "/")
 
+  remove-components.py: |
+
+    import yaml
+    import argparse
+
+    parser = argparse.ArgumentParser(description='remove components tool')
+    parser.add_argument("-s",'--src', type=str, dest="src", required=True)
+    parser.add_argument("-c",'--components', type=str, nargs="+", dest="components", required=True)
+    args = parser.parse_args()
+
+    f = open(args.src, 'r')
+    srcData = yaml.safe_load(f.read())
+    f.close()
+
+    srcData["spec"]["components"] = list(filter(lambda c: c.get("revisionName") not in args.components, srcData["spec"]["components"]))
+
+    f = open(args.src, 'w')
+    f.write(yaml.safe_dump(srcData, width=float("inf")))
+    f.close()
 
   saas-dataops.sh: |
 
@@ -329,6 +347,20 @@ data:
     python /app/pack.py --src /root/saas/dataops/build --dest /root/saas/dataops/build.zip
 
 
+    # mysql地址如果从外部传入就不拉起mysql
+    if [[ "$DATAOPS_DB_HOST" == "prod-dataops-mysql.sreworks-dataops" ]]
+    then
+      python /app/remove-components.py -s /root/saas/dataops/launch.yaml -c "HELM|mysql|_"
+      python /app/remove-components.py -s /root/saas/dataops/launch-frontend.yaml -c "HELM|mysql|_"
+    fi
+
+    if [[ "$DATA_ES_HOST" == "prod-dataops-elasticsearch-master.sreworks-dataops" ]]
+    then
+      python /app/remove-components.py -s /root/saas/dataops/launch.yaml -c "HELM|elasticsearch|_"
+      python /app/remove-components.py -s /root/saas/dataops/launch-frontend.yaml -c "HELM|elasticsearch|_"
+    fi
+
+
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
 
       cd /root/saas/dataops/api/
@@ -346,9 +378,6 @@ data:
       sh /app/import.sh dataops /root/saas/dataops/build.zip /root/saas/dataops/launch.yaml /root/saas/dataops/launch-frontend-dev.yaml
 
     fi
-
-
-
 
  
  

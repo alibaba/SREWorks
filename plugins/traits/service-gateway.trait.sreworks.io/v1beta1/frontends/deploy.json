@@ -3,18 +3,22 @@
         "type": 1,
         "name": "port",
         "label": "容器内监听端口",
-        "initValue": "7001"
+        "initValue": "7001",
+        "toFieldPath": "spec.port"
     },{
         "type": 1,
         "name": "routePath",
-        "label": "接口网关路由" 
+        "label": "接口网关路由",
+        "toFieldPath": "spec.routePath"
     },{
         "type": 16,
         "name": "authEnabled",
-        "label": "接口鉴权"
+        "label": "接口鉴权",
+        "toFieldPath": "spec.authEnabled"
     },{
         "type": 1,
         "name": "routeOrder",
-        "label": "接口权重" 
+        "label": "接口权重",
+        "toFieldPath": "spec.routeOrder"
     }]
 }

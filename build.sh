@@ -278,6 +278,7 @@ target_swcli_builtin_package(){
         download_packages
         cp -r $SW_ROOT/saas $SW_ROOT/paas/swcli/builtin_package/saas
         cp -r $SW_ROOT/chart $SW_ROOT/paas/swcli/builtin_package/chart
+        cp -r $SW_ROOT/plugins $SW_ROOT/paas/swcli/builtin_package/plugins
         TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
         envsubst < $SW_ROOT/paas/swcli/Dockerfile_builtin_package.tpl > ${TMP_DOCKERFILE}
         docker build -t swcli-builtin-package:$tag -f ${TMP_DOCKERFILE} $SW_ROOT/paas/swcli

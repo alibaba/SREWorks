@@ -134,6 +134,8 @@ def only_frontend_filter(launchYAML):
     for component in launchYAML["spec"]["components"]:
         if component["revisionName"].startswith("INTERNAL_ADDON"):
             newComponents.append(component)
+        elif component["revisionName"].startswith("RESOURCE_ADDON"):
+            newComponents.append(component)
         elif component["revisionName"].startswith("HELM"):
             newComponents.append(component)
 

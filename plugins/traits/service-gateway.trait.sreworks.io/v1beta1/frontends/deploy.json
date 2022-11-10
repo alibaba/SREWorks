@@ -1,0 +1,20 @@
+{
+    "parameters": [{
+        "type": 1,
+        "name": "port",
+        "label": "容器内监听端口",
+        "initValue": "7001"
+    },{
+        "type": 1,
+        "name": "routePath",
+        "label": "接口网关路由" 
+    },{
+        "type": 16,
+        "name": "authEnabled",
+        "label": "接口鉴权"
+    },{
+        "type": 1,
+        "name": "routeOrder",
+        "label": "接口权重" 
+    }]
+}

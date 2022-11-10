@@ -1,0 +1,8 @@
+{
+
+    "builds":[{
+        "type": "default"
+    },{
+        "type": "jenkins"
+    }]
+}

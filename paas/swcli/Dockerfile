@@ -1,3 +1,4 @@
+# syntax = docker/dockerfile:1.3
 FROM reg.docker.alibaba-inc.com/abm-aone/golang AS build
 WORKDIR /app
 COPY . ./
@@ -23,5 +24,6 @@ RUN chmod +x /app/sbin/*.sh && \
 FROM reg.docker.alibaba-inc.com/abm-aone/golang-mini
 WORKDIR /
 COPY --from=build /swcli-linux-amd64 /swcli-linux-amd64
+COPY --from=upload /app/sbin/upload.sh /app/sbin/upload.sh
 USER nonroot:nonroot
 ENTRYPOINT ["/swcli-linux-amd64"]

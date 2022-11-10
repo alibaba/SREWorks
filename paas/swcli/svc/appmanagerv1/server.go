@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 	"os"
@@ -78,6 +79,65 @@ func (s *AppManagerServer) Build(appId, filepath string, tags []string, branch s
 		return data, nil
 	}
 	return s.QueryBuildTask(appId, appPackageTaskId, wait)
+}
+
+// UploadPlugin 将本地的 zip 应用包导入远端 appmanager
+func (s *AppManagerServer) UploadPlugin(filepath string, override, enable bool) (*jsonvalue.V, error) {
+	params := map[string]string{
+		"enable":   strconv.FormatBool(enable),
+		"override": strconv.FormatBool(override),
+	}
+	file, err := os.Open(filepath)
+	if err != nil {
+		return nil, errors2.Wrapf(err, "cannot open file %s", filepath)
+	}
+	fileContents, err := ioutil.ReadAll(file)
+	if err != nil {
+		return nil, errors2.Wrapf(err, "cannot read zip file %s", filepath)
+	}
+	fi, err := file.Stat()
+	if err != nil {
+		return nil, errors2.Wrapf(err, "cannot stat file %s", filepath)
+	}
+	file.Close()
+	body := new(bytes.Buffer)
+	writer := multipart.NewWriter(body)
+	part, err := writer.CreateFormFile("file", fi.Name())
+	if err != nil {
+		return nil, errors2.Wrapf(err, "cannot create form file")
+	}
+	part.Write(fileContents)
+	err = writer.Close()
+	if err != nil {
+		return nil, errors2.Wrapf(err, "cannot close form writer")
+	}
+
+	response, err := s.sendRequest("POST", "plugins", params, body.Bytes(), writer.FormDataContentType())
+	if err != nil {
+		return nil, errors2.Wrapf(err, "upload plugin to appmanager failed")
+	}
+	data, err := response.Get("data")
+	if err != nil {
+		return nil, errors2.Errorf("cannot parse appmanager response: %s", response.MustMarshalString())
+	}
+	return data, nil
+}
+
+// OperatePlugin 操作插件
+func (s *AppManagerServer) OperatePlugin(pluginName, pluginVersion, operation string) (*jsonvalue.V, error) {
+	putData, err := json.Marshal(map[string]interface{}{
+		"operation": operation,
+	})
+	response, err := s.sendRequest("PUT",
+		fmt.Sprintf("plugins/%s/%s/operate", pluginName, pluginVersion), nil, putData, "")
+	if err != nil {
+		return nil, err
+	}
+	data, err := response.Get("data")
+	if err != nil {
+		return nil, errors2.Wrapf(err, "cannot parse appmanager server response: %s", response.MustMarshalString())
+	}
+	return data, nil
 }
 
 // ImportPackage 将本地的 zip 应用包导入到远端 appmanager
@@ -576,14 +636,17 @@ func (s *AppManagerServer) readLaunchYaml(filepath, arch, cluster string) (strin
 	optionalCluster := ""
 	clusterSuffix := ""
 	clusterPrefix := ""
+	clusterSuffixNew := ""
 	if cluster != "master" {
 		optionalCluster = "slave"
 		clusterSuffix = "-slave"
 		clusterPrefix = "slave-"
+		clusterSuffixNew = "-b"
 	}
 	fileStr = strings.ReplaceAll(fileStr, "${CLUSTER}", cluster)
 	fileStr = strings.ReplaceAll(fileStr, "${OPTIONAL_CLUSTER}", optionalCluster)
 	fileStr = strings.ReplaceAll(fileStr, "${CLUSTER_SUFFIX}", clusterSuffix)
+	fileStr = strings.ReplaceAll(fileStr, "${CLUSTER_SUFFIX_NEW}", clusterSuffixNew)
 	fileStr = strings.ReplaceAll(fileStr, "${CLUSTER_PREFIX}", clusterPrefix)
 	fileStr = strings.ReplaceAll(fileStr, "${ARCH}", arch)
 	return fileStr, nil

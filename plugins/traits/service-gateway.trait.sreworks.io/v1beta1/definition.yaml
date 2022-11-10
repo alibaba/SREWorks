@@ -1,0 +1,25 @@
+apiVersion: core.oam.dev/v1beta1
+kind: TraitDefinition
+metadata:
+  name: service-gateway.trait.sreworks.io/v1beta1
+  annotations:
+    definition.oam.dev/description: "The service for Kubernetes + SREWorks gateway"
+    definition.oam.dev/version: "1.0.6"
+    definition.oam.dev/tags: "a=b"
+spec:
+  appliesToWorkloads:
+    - helm.component.sreworks.io/v1beta1
+  schematic:
+    groovy:
+      files:
+        - kind: TRAIT
+          path: dynamicscripts/TraitServiceGateway.groovy
+          properties:
+            runtime: post
+            definitionSchema:
+              name: "service-gateway.trait.schema.sreworks.io"
+              jsonSchema: {}
+    frontend:
+      files:
+        - kind: DEPLOY
+          path: frontends/deploy.json

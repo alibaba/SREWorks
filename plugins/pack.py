@@ -12,6 +12,7 @@ self_path = os.path.split(os.path.realpath(__file__))[0]
 
 parser = argparse.ArgumentParser(description='plugin package tool')
 parser.add_argument("-f",'--file', type=str, dest="filePath", required=True, help="specify plugin's path")
+parser.add_argument("-t",'--target', type=str, dest="targetPath", required=False, help="plugin's package output path")
 args = parser.parse_args()
 
 h  = open(args.filePath + "/definition.yaml", 'r')
@@ -20,9 +21,12 @@ h.close()
 
 pluginInfo = yaml.safe_load(defYamlRaw)
 
-pluginFile = "plugin-" + pluginInfo["metadata"]["name"].replace("/","-") + "-" + pluginInfo["metadata"]["annotations"]["definition.oam.dev/version"]
+if (args.targetPath):
+    pluginFile = args.targetPath
+else:
+    pluginFile = "plugin-" + pluginInfo["metadata"]["name"].replace("/","-") + "-" + pluginInfo["metadata"]["annotations"]["definition.oam.dev/version"]
 
-shutil.make_archive(pluginFile, 'zip', os.path.dirname(args.filePath+"/"))
+shutil.make_archive(pluginFile, 'zip', os.path.dirname(args.filePath + "/"))
+print(pluginFile + ".zip")
 
-print(pluginFile + ".zip") 
 

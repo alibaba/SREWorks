@@ -840,6 +840,23 @@ data:
     print("NO UPDATE")
     sys.exit(0)
 
+  upload-plugins.sh: |
+    set -x
+
+    cat /root/plugins/auto-install.list | while read line
+    do
+        python3 /root/plugins/pack.py -f /root/plugins/$line -t /tmp/plugin
+
+        /root/swcli plugin upload --config /swcli/swcli.yaml --filepath="/tmp/plugin.zip" --overwrite=true
+        #rm /tmp/plugin.zip
+
+        version=$(cat /root/plugins/${line}/definition.yaml |grep 'definition.oam.dev/version'|awk '{print $NF}'|awk -F '"' '{print $2}')
+        name=$(echo $line| awk -F '/' '{print $2"/"$3}')
+        echo $version
+        echo $name
+        /root/swcli plugin operate --config /swcli/swcli.yaml --name=$name --version=$version --operation=enable
+    done
+
   saas-sleep.sh: |
     sleep 999999999999
 

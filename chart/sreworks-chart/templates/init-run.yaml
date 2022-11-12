@@ -689,14 +689,15 @@ data:
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
     export VERSION_CHECK=$(python /app/version_check.py /root/saas/ocenter/build)
 
+    envsubst < /root/saas/ocenter/build/launch.yaml.tpl > /root/saas/ocenter/launch.yaml
+    envsubst < /root/saas/ocenter/build/launch-backend.yaml.tpl > /root/saas/ocenter/launch-backend.yaml
+    envsubst < /root/saas/ocenter/build/launch-frontend.yaml.tpl > /root/saas/ocenter/launch-frontend.yaml
+    envsubst < /root/saas/ocenter/build/launch-frontend-dev.yaml.tpl > /root/saas/ocenter/launch-frontend-dev.yaml
+    python /app/pack.py --src /root/saas/ocenter/build --dest /root/saas/ocenter/build.zip
+
     if [[ "$IMPORT_FRONTEND" == "true" && "$VERSION_CHECK" == "NEED UPDATE" ]] ; then
         
-
-        envsubst < /root/saas/ocenter/build/launch-frontend.yaml.tpl > /root/saas/ocenter/launch-frontend.yaml
-        envsubst < /root/saas/ocenter/build/launch-frontend-dev.yaml.tpl > /root/saas/ocenter/launch-frontend-dev.yaml
-        python /app/pack.py --src /root/saas/ocenter/build --dest /root/saas/ocenter/build.zip
-      
-        sh /app/import.sh ocenter /root/saas/ocenter/build.zip /root/saas/health/launch.yaml /root/saas/ocenter/launch-frontend-dev.yaml
+        sh /app/import.sh ocenter /root/saas/ocenter/build.zip /root/saas/ocenter/launch.yaml /root/saas/ocenter/launch-frontend-dev.yaml
 
     fi
 
@@ -712,12 +713,14 @@ data:
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
     export VERSION_CHECK=$(python /app/version_check.py /root/saas/help/build)
 
-    if [[ "$IMPORT_FRONTEND" == "true" && "$VERSION_CHECK" == "NEED UPDATE" ]] ; then
+    envsubst < /root/saas/help/build/launch.yaml.tpl > /root/saas/help/launch.yaml
+    envsubst < /root/saas/help/build/launch-backend.yaml.tpl > /root/saas/help/launch-backend.yaml
+    envsubst < /root/saas/help/build/launch-frontend.yaml.tpl > /root/saas/help/launch-frontend.yaml
+    envsubst < /root/saas/help/build/launch-frontend-dev.yaml.tpl > /root/saas/help/launch-frontend-dev.yaml
+    python /app/pack.py --src /root/saas/help/build --dest /root/saas/help/build.zip
 
-    
-        python /app/pack.py --src /root/saas/help/build --dest /root/saas/help/build.zip
-        envsubst < /root/saas/job/build/launch-frontend.yaml.tpl > /root/saas/help/launch-frontend.yaml
-        envsubst < /root/saas/job/build/launch-frontend-dev.yaml.tpl > /root/saas/help/launch-frontend-dev.yaml
+
+    if [[ "$IMPORT_FRONTEND" == "true" && "$VERSION_CHECK" == "NEED UPDATE" ]] ; then
 
         sh /app/import.sh help /root/saas/help/build.zip /root/saas/help/launch-frontend.yaml /root/saas/help/launch-frontend-dev.yaml
 

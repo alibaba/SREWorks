@@ -16,6 +16,8 @@ data:
     #fi
     #cd sreworks-flycore
 
+    sh /app/upload-plugins.sh
+
     cd /root/saas/swcore/api/core/
 
 
@@ -255,6 +257,9 @@ data:
   
   import.sh: |
 
+    set -e
+    set -x
+ 
     sh /app/core-action-service-check.sh
       
     result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id $1 --filepath $2 --print-only-app-package-id=true --reset-version=true)

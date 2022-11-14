@@ -27,7 +27,7 @@ public interface PluginProvider {
      *
      * @return 插件列表
      */
-    PluginDefinitionDTO get(PluginElementReq request);
+    PluginDefinitionDTO get(PluginGetReq request);
 
     /**
      * 启用指定插件

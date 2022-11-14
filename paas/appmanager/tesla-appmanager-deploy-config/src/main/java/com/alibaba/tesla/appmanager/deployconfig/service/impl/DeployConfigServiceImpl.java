@@ -357,6 +357,11 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                         }
                         DeployAppSchema.SpecComponentTrait trait = SchemaUtil
                                 .toSchema(DeployAppSchema.SpecComponentTrait.class, config);
+                        trait.setName(traitName);
+                        if (StringUtils.isEmpty(trait.getRuntime())) {
+                            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                    "the field 'runtime' is required in trait deploy config");
+                        }
                         boolean componentFound = false;
                         for (DeployAppSchema.SpecComponent specComponent : schema.getSpec().getComponents()) {
                             DeployAppRevisionName revisionName = DeployAppRevisionName

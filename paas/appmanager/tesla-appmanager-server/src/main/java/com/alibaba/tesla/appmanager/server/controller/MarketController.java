@@ -262,24 +262,19 @@ public class MarketController extends AppManagerBaseController {
         File localPackageFile = Files.createTempFile("market", ".zip").toFile();
         NetworkUtil.download(downloadUrl, localPackageFile.getAbsolutePath());
 
-        MarketPackageDTO marketPackage = marketProvider.rebuildAppPackage(
-                localPackageFile, getOperator(auth), request.getAppId(), request.getLocalAppId(), null);
-
-        File marketPackageFile = new File(marketPackage.getPackageLocalPath());
-        InputStream marketPackageStream = new FileInputStream(marketPackageFile);
+        InputStream marketPackageStream = new FileInputStream(localPackageFile);
 
         AppPackageImportReq appPackageImportReq = AppPackageImportReq.builder()
-                .appId(marketPackage.getAppId())
+                .appId(request.getAppId())
                 .packageCreator(getOperator(auth))
-                .packageVersion(marketPackage.getPackageVersion())
-                .force(true)
-                .resetVersion(false)
+                .force(false)
+                .resetVersion(true)
                 .build();
         AppPackageDTO appPackageInfo = appPackageProvider
                 .importPackage(appPackageImportReq, marketPackageStream, getOperator(auth));
 
         AppMetaUpdateReq appMetaUpdateReq = new AppMetaUpdateReq();
-        appMetaUpdateReq.setAppId(marketPackage.getAppId());
+        appMetaUpdateReq.setAppId(request.getAppId());
         if (request.getAppOptions() != null) {
             appMetaUpdateReq.setOptions(request.getAppOptions());
         }

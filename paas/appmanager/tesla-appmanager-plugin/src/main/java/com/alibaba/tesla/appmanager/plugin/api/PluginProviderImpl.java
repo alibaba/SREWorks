@@ -18,6 +18,7 @@ import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginFrontendDO;
 import com.alibaba.tesla.appmanager.plugin.service.PluginFrontendService;
 import com.alibaba.tesla.appmanager.plugin.service.PluginService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,7 +61,7 @@ public class PluginProviderImpl implements PluginProvider {
     }
 
     @Override
-    public PluginDefinitionDTO get(PluginElementReq request) {
+    public PluginDefinitionDTO get(PluginGetReq request) {
         PluginDefinitionQueryCondition condition = new PluginDefinitionQueryCondition();
         ClassUtil.copy(request, condition);
         return pluginDefinitionDtoConvert.to(pluginService.get(condition));

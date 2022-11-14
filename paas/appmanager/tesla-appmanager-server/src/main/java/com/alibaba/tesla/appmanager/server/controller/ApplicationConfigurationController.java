@@ -1,6 +1,5 @@
 package com.alibaba.tesla.appmanager.server.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.DeployConfigProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
@@ -154,5 +153,24 @@ public class ApplicationConfigurationController extends AppManagerBaseController
         request.setIsolateStageId(stageId);
         deployConfigProvider.delete(request);
         return buildSucceedResult(DefaultConstant.EMPTY_OBJ);
+    }
+
+    @Operation(summary = "查询多种类型的部署信息列表")
+    @GetMapping("types")
+    public TeslaBaseResult listByType(
+            @ModelAttribute DeployConfigListReq request,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
+            OAuth2Authentication auth) {
+        if (StringUtils.isEmpty(request.getApiVersion())) {
+            request.setApiVersion(DefaultConstant.API_VERSION_V1_ALPHA2);
+        }
+        if (StringUtils.isEmpty(request.getAppId())) {
+            request.setAppId("");
+        }
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        request.setIsolateNamespaceId(container.getNamespaceId());
+        request.setIsolateStageId(container.getStageId());
+        Pagination<DeployConfigDTO> result = deployConfigProvider.list(request);
+        return buildSucceedResult(result);
     }
 }

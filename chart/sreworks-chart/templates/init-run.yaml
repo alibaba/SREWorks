@@ -690,8 +690,6 @@ data:
     export VERSION_CHECK=$(python /app/version_check.py /root/saas/ocenter/build)
 
     envsubst < /root/saas/ocenter/build/launch.yaml.tpl > /root/saas/ocenter/launch.yaml
-    envsubst < /root/saas/ocenter/build/launch-backend.yaml.tpl > /root/saas/ocenter/launch-backend.yaml
-    envsubst < /root/saas/ocenter/build/launch-frontend.yaml.tpl > /root/saas/ocenter/launch-frontend.yaml
     envsubst < /root/saas/ocenter/build/launch-frontend-dev.yaml.tpl > /root/saas/ocenter/launch-frontend-dev.yaml
     python /app/pack.py --src /root/saas/ocenter/build --dest /root/saas/ocenter/build.zip
 
@@ -714,8 +712,6 @@ data:
     export VERSION_CHECK=$(python /app/version_check.py /root/saas/help/build)
 
     envsubst < /root/saas/help/build/launch.yaml.tpl > /root/saas/help/launch.yaml
-    envsubst < /root/saas/help/build/launch-backend.yaml.tpl > /root/saas/help/launch-backend.yaml
-    envsubst < /root/saas/help/build/launch-frontend.yaml.tpl > /root/saas/help/launch-frontend.yaml
     envsubst < /root/saas/help/build/launch-frontend-dev.yaml.tpl > /root/saas/help/launch-frontend-dev.yaml
     python /app/pack.py --src /root/saas/help/build --dest /root/saas/help/build.zip
 

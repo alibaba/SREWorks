@@ -718,7 +718,7 @@ data:
 
     if [[ "$IMPORT_FRONTEND" == "true" && "$VERSION_CHECK" == "NEED UPDATE" ]] ; then
 
-        sh /app/import.sh help /root/saas/help/build.zip /root/saas/help/launch-frontend.yaml /root/saas/help/launch-frontend-dev.yaml
+        sh /app/import.sh help /root/saas/help/build.zip /root/saas/help/launch.yaml /root/saas/help/launch-frontend-dev.yaml
 
     fi
 

@@ -852,7 +852,7 @@ data:
         python3 /root/plugins/pack.py -f /root/plugins/$line -t /tmp/plugin
 
         /root/swcli plugin upload --config /swcli/swcli.yaml --filepath="/tmp/plugin.zip" --overwrite=true
-        #rm /tmp/plugin.zip
+        rm /tmp/plugin.zip
 
         version=$(cat /root/plugins/${line}/definition.yaml |grep 'definition.oam.dev/version'|awk '{print $NF}'|awk -F '"' '{print $2}')
         name=$(echo $line| awk -F '/' '{print $2"/"$3}')

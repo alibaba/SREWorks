@@ -158,8 +158,11 @@ public class PluginServiceImpl implements PluginService {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "cannot create temp directory", e);
         } finally {
             if (tmpDir != null) {
-                if (!tmpDir.toFile().delete()) {
-                    log.error("delete temp directory failed|dir={}", tmpDir);
+                try {
+                    FileUtils.forceDelete(tmpDir.toFile());
+                } catch (Exception e) {
+                    log.error("delete temp directory failed|dir={}|exception={}",
+                            tmpDir, ExceptionUtils.getStackTrace(e));
                 }
             }
         }

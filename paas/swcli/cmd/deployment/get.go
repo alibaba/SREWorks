@@ -11,13 +11,16 @@ import (
 func initGetCommand() {
 	getCommand.Flags().Int64("deploy-app-id", 0, "deploy app id")
 	getCommand.Flags().BoolP("wait", "w", true, "wait until finished")
+	getCommand.Flags().IntP("wait-max-seconds", "", 900, "max wait seconds until finished")
 	getCommand.MarkFlagRequired("deploy-app-id")
+	getCommand.MarkFlagRequired("wait-max-seconds")
 	viper.BindPFlag("deployment.get.deploy-app-id", getCommand.Flags().Lookup("deploy-app-id"))
 	viper.BindPFlag("deployment.get.wait", getCommand.Flags().Lookup("wait"))
+	viper.BindPFlag("deployment.get.wait-max-seconds", getCommand.Flags().Lookup("wait-max-seconds"))
 }
 
 var getCommand = &cobra.Command{
-	Use: "get",
+	Use:   "get",
 	Short: "get specified deployment",
 	Run: func(cmd *cobra.Command, args []string) {
 		endpoint := viper.GetString("endpoint")
@@ -32,7 +35,8 @@ var getCommand = &cobra.Command{
 
 		deployAppId := viper.GetInt64("deployment.get.deploy-app-id")
 		wait := viper.GetBool("deployment.get.wait")
-		response, err := server.GetDeployment(deployAppId, wait)
+		waitMaxSeconds := viper.GetInt("deployment.get.wait-max-seconds")
+		response, err := server.GetDeployment(deployAppId, wait, waitMaxSeconds)
 		if response != nil {
 			lib.SwPrint(response.MustMarshal())
 			if wait {

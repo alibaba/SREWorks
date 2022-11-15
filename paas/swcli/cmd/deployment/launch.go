@@ -18,12 +18,14 @@ func initLaunchCommand() {
 	launchCommand.Flags().String("stage", "", "stage")
 	launchCommand.Flags().String("app-instance-name", "", "app instance name")
 	launchCommand.Flags().BoolP("wait", "w", true, "wait until finished")
+	launchCommand.Flags().IntP("wait-max-seconds", "", 900, "max wait seconds until finished")
 	launchCommand.MarkFlagRequired("app-id")
 	launchCommand.MarkFlagRequired("app-package-id")
 	launchCommand.MarkFlagRequired("path")
 	launchCommand.MarkFlagRequired("arch")
 	launchCommand.MarkFlagRequired("cluster")
 	launchCommand.MarkFlagRequired("wait")
+	launchCommand.MarkFlagRequired("wait-max-seconds")
 	viper.BindPFlag("deployment.launch.app-id", launchCommand.Flags().Lookup("app-id"))
 	viper.BindPFlag("deployment.launch.app-package-id", launchCommand.Flags().Lookup("app-package-id"))
 	viper.BindPFlag("deployment.launch.path", launchCommand.Flags().Lookup("path"))
@@ -33,6 +35,7 @@ func initLaunchCommand() {
 	viper.BindPFlag("deployment.launch.stage", launchCommand.Flags().Lookup("stage"))
 	viper.BindPFlag("deployment.launch.app-instance-name", launchCommand.Flags().Lookup("app-instance-name"))
 	viper.BindPFlag("deployment.launch.wait", launchCommand.Flags().Lookup("wait"))
+	viper.BindPFlag("deployment.launch.wait-max-seconds", launchCommand.Flags().Lookup("wait-max-seconds"))
 }
 
 var launchCommand = &cobra.Command{
@@ -58,7 +61,8 @@ var launchCommand = &cobra.Command{
 		stage := viper.GetString("deployment.launch.stage")
 		appInstanceName := viper.GetString("deployment.launch.app-instance-name")
 		wait := viper.GetBool("deployment.launch.wait")
-		response, err := server.Launch(appId, appPackageId, path, arch, cluster, namespace, stage, appInstanceName, wait)
+		waitMaxSeconds := viper.GetInt("deployment.launch.wait-max-seconds")
+		response, err := server.Launch(appId, appPackageId, path, arch, cluster, namespace, stage, appInstanceName, wait, waitMaxSeconds)
 		if response != nil {
 			lib.SwPrint(response.MustMarshal())
 			if wait {

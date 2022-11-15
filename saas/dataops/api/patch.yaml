@@ -1,0 +1,30 @@
+launch-frontend-dev.yaml.tpl:
+  components:
+  - revisionName: INTERNAL_ADDON|productopsv2|_
+    traits:
+    - name: gateway.trait.abm.io
+      runtime: post
+      spec:
+        path: /dataset/**
+        servicePort: 80
+        serviceName: "prod-dataops-dataset.sreworks-dataops"
+        routeId: "dev-dataops-dataset-master-sreworks-dataops-dev"
+  - revisionName: INTERNAL_ADDON|appmeta|_
+    traits:
+    - name: gateway.trait.abm.io
+      runtime: post
+      spec:
+        path: /warehouse/**
+        servicePort: 80
+        serviceName: "prod-dataops-warehouse.sreworks-dataops"
+        routeId: "dev-dataops-warehouse-master-sreworks-dataops-dev" 
+  - revisionName: INTERNAL_ADDON|developmentmeta|_
+    traits:
+    - name: gateway.trait.abm.io
+      runtime: post
+      spec:
+        path: /pmdb/**
+        servicePort: 80
+        serviceName: "prod-dataops-pmdb.sreworks-dataops"
+        routeId: "dev-dataops-pmdb-master-sreworks-dataops-dev"
+ 

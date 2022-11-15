@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.TraitDTO;
 import com.alibaba.tesla.appmanager.domain.req.trait.TraitQueryReq;
+import com.alibaba.tesla.appmanager.domain.schema.TraitDefinition;
 
 /**
  * Trait 服务
@@ -37,6 +38,14 @@ public interface TraitProvider {
      * @param operator 操作人
      */
     void apply(String request, String operator);
+
+    /**
+     * 向系统中新增或更新一个 Trait
+     *
+     * @param traitDefinition TraitDefinition
+     * @param operator        操作人
+     */
+    void apply(TraitDefinition traitDefinition, String operator);
 
     /**
      * 删除指定条件的 Trait

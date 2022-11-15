@@ -203,7 +203,6 @@ class DefaultLayout extends React.Component {
         dispatch({ type: 'global/switchLanguage', language: lng });
         //window.location.reload();
     };
-
     onLogout = () => {
         const { dispatch } = this.props;
         dispatch({ type: 'global/logout' });

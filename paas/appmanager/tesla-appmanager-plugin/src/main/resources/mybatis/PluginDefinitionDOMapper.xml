@@ -117,6 +117,19 @@
     </if>
     order by id desc
   </select>
+  <select id="selectGroupByKindNameVersion" parameterType="com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDOExample" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from am_plugin_definition
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    group by plugin_kind, plugin_name, plugin_version
+  </select>
   <delete id="deleteByExample" parameterType="com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDOExample">
     <!--@mbg.generated-->
     delete from am_plugin_definition

@@ -73,4 +73,9 @@ public class AppComponentDTO {
      * 配置内容
      */
     private JSONObject config;
+
+    /**
+     * 自动生成: 当前组件对应的类型 ID
+     */
+    private String typeId;
 }

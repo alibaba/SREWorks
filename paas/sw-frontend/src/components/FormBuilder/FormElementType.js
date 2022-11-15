@@ -247,7 +247,7 @@ export default class FormElementType {
         // { value: 87, label: '分组输入' },
         { value: 86, label: 'JSONEditor' },
         { value: 85, label: 'Table' },
-        // { value: 84, label: '关联分组' },
+        { value: 84, label: '关联分组' },
         { value: 83, label: 'AceView' },
         { value: 82, label: 'OamWidget' },
         { value: 81, label: '文件上传' },

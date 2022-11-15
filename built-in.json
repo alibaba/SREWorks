@@ -51,4 +51,8 @@
 },{
   "appId": "system",
   "packagePath": "saas/system/build" 
+},{
+  "appId": "dataops",
+  "packagePath": "saas/dataops/build", 
+  "patch": "saas/dataops/api/patch.yaml"
 }]

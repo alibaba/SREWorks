@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.sreworks.appdev.server.params.AppComponentCreateByAppPackageParam;
 import io.sreworks.appdev.server.params.AppComponentCreateByHelmParam;
 import io.sreworks.appdev.server.params.AppComponentCreateParam;
 import io.sreworks.appdev.server.params.AppComponentModifyParam;
+import io.sreworks.appdev.server.services.AppmanagerComponentService;
 import com.alibaba.sreworks.common.util.RegularUtil;
 import com.alibaba.sreworks.domain.DO.AppComponent;
 import com.alibaba.sreworks.domain.repository.AppComponentRepository;
@@ -45,6 +47,9 @@ public class AppComponentController extends BaseController {
 
     @Autowired
     SaveActionService saveActionService;
+
+    @Autowired
+    AppmanagerComponentService appmanagerComponentService;
 
     @ApiOperation(value = "创建")
     @RequestMapping(value = "create", method = RequestMethod.POST)
@@ -115,10 +120,8 @@ public class AppComponentController extends BaseController {
 
     @ApiOperation(value = "列表")
     @RequestMapping(value = "list", method = RequestMethod.GET)
-    public TeslaBaseResult list(Long appId) {
-        List<JSONObject> ret = appComponentRepository.findAllByAppId(appId).stream()
-            .map(AppComponent::toJsonObject).collect(Collectors.toList());
-        RegularUtil.gmt2Date(ret);
+    public TeslaBaseResult list(String appId) throws Exception {
+        JSONArray ret = appmanagerComponentService.list(appId, getUserEmployeeId());
         return buildSucceedResult(ret);
     }
 

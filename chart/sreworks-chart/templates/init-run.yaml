@@ -16,6 +16,8 @@ data:
     #fi
     #cd sreworks-flycore
 
+    sh /app/upload-plugins.sh
+
     cd /root/saas/swcore/api/core/
 
 
@@ -46,7 +48,7 @@ data:
         fi
 
         result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id=${CORE_APP_ID} --filepath /root/saas/swcore/flycore.zip --print-only-app-package-id=true --reset-version=true)
-        /root/swcli --config /swcli/swcli.yaml deployment launch --app-id=${CORE_APP_ID} --stage=prod --namespace=${NAMESPACE_ID} --path /root/saas/swcore/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+        /root/swcli --config /swcli/swcli.yaml deployment launch --wait-max-seconds 300 --app-id=${CORE_APP_ID} --stage=prod --namespace=${NAMESPACE_ID} --path /root/saas/swcore/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
 
     fi
 
@@ -255,6 +257,9 @@ data:
   
   import.sh: |
 
+    set -e
+    set -x
+ 
     sh /app/core-action-service-check.sh
       
     result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id $1 --filepath $2 --print-only-app-package-id=true --reset-version=true)
@@ -306,11 +311,94 @@ data:
             shutil.make_archive(targetPath + "/" + path.split(".zip")[0], 'zip', targetPath + "/" + path)
             shutil.rmtree(targetPath + "/" + path)
 
-
     shutil.make_archive(args.dest.split(".zip")[0], 'zip', targetPath + "/")
- 
- 
+
+  remove-components.py: |
+
+    import yaml
+    import argparse
+
+    parser = argparse.ArgumentParser(description='remove components tool')
+    parser.add_argument("-s",'--src', type=str, dest="src", required=True)
+    parser.add_argument("-c",'--components', type=str, nargs="+", dest="components", required=True)
+    args = parser.parse_args()
+
+    f = open(args.src, 'r')
+    srcData = yaml.safe_load(f.read())
+    f.close()
+
+    srcData["spec"]["components"] = list(filter(lambda c: c.get("revisionName") not in args.components, srcData["spec"]["components"]))
+
+    f = open(args.src, 'w')
+    f.write(yaml.safe_dump(srcData, width=float("inf")))
+    f.close()
+
   saas-dataops.sh: |
+
+    set -e
+    set -x
+
+    cd /root
+
+    sh /app/core-deploy-check.sh
+    
+    # build&launch dataops api
+    export NAMESPACE_ID=${NAMESPACE_DATAOPS}
+    envsubst < /root/saas/dataops/api/build.yaml.tpl > /root/saas/dataops/api/build.yaml
+    envsubst < /root/saas/dataops/build/launch.yaml.tpl > /root/saas/dataops/launch.yaml
+    envsubst < /root/saas/dataops/build/launch-backend.yaml.tpl > /root/saas/dataops/launch-backend.yaml
+    envsubst < /root/saas/dataops/build/launch-frontend.yaml.tpl > /root/saas/dataops/launch-frontend.yaml
+    envsubst < /root/saas/dataops/build/launch-frontend-dev.yaml.tpl > /root/saas/dataops/launch-frontend-dev.yaml
+    python /app/pack.py --src /root/saas/dataops/build --dest /root/saas/dataops/build.zip
+
+
+    # mysql地址如果从外部传入就不拉起mysql
+    if [[ "$DATAOPS_DB_HOST" != "prod-dataops-mysql.sreworks-dataops" ]]
+    then
+      python /app/remove-components.py -s /root/saas/dataops/launch.yaml -c "HELM|mysql|_"
+      python /app/remove-components.py -s /root/saas/dataops/launch-frontend.yaml -c "HELM|mysql|_"
+    fi
+
+    if [[ "$DATA_ES_HOST" != "prod-dataops-elasticsearch-master.sreworks-dataops" ]]
+    then
+      python /app/remove-components.py -s /root/saas/dataops/launch.yaml -c "HELM|elasticsearch|_"
+      python /app/remove-components.py -s /root/saas/dataops/launch-frontend.yaml -c "HELM|elasticsearch|_"
+    fi
+
+    if [[ "$DATAOPS_FILEBEAT_ENABLE" == "false" ]]
+    then
+      python /app/remove-components.py -s /root/saas/dataops/launch.yaml -c "HELM|filebeat|_"
+      python /app/remove-components.py -s /root/saas/dataops/launch-frontend.yaml -c "HELM|filebeat|_"
+    fi
+
+    if [[ "$DATAOPS_METRICBEAT_ENABLE" == "false" ]]
+    then
+      python /app/remove-components.py -s /root/saas/dataops/launch.yaml -c "HELM|metricbeat|_"
+      python /app/remove-components.py -s /root/saas/dataops/launch-frontend.yaml -c "HELM|metricbeat|_"
+    fi
+
+
+    if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
+
+      cd /root/saas/dataops/api/
+      /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=dataops --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=../launch-backend.yaml --disable-dir-check
+
+      # wait flycore
+      if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
+      
+          sh /app/import.sh dataops /root/saas/dataops/build.zip /root/saas/dataops/launch-frontend.yaml /root/saas/dataops/launch-frontend-dev.yaml
+      
+      fi
+
+    else
+      
+      sh /app/import.sh dataops /root/saas/dataops/build.zip /root/saas/dataops/launch.yaml /root/saas/dataops/launch-frontend-dev.yaml
+
+    fi
+
+ 
+ 
+  saas-dataops1.sh: |
     set -e
     set -x 
     
@@ -613,14 +701,13 @@ data:
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
     export VERSION_CHECK=$(python /app/version_check.py /root/saas/ocenter/build)
 
+    envsubst < /root/saas/ocenter/build/launch.yaml.tpl > /root/saas/ocenter/launch.yaml
+    envsubst < /root/saas/ocenter/build/launch-frontend-dev.yaml.tpl > /root/saas/ocenter/launch-frontend-dev.yaml
+    python /app/pack.py --src /root/saas/ocenter/build --dest /root/saas/ocenter/build.zip
+
     if [[ "$IMPORT_FRONTEND" == "true" && "$VERSION_CHECK" == "NEED UPDATE" ]] ; then
         
-
-        envsubst < /root/saas/ocenter/build/launch-frontend.yaml.tpl > /root/saas/ocenter/launch-frontend.yaml
-        envsubst < /root/saas/ocenter/build/launch-frontend-dev.yaml.tpl > /root/saas/ocenter/launch-frontend-dev.yaml
-        python /app/pack.py --src /root/saas/ocenter/build --dest /root/saas/ocenter/build.zip
-      
-        sh /app/import.sh ocenter /root/saas/ocenter/build.zip /root/saas/health/launch.yaml /root/saas/ocenter/launch-frontend-dev.yaml
+        sh /app/import.sh ocenter /root/saas/ocenter/build.zip /root/saas/ocenter/launch.yaml /root/saas/ocenter/launch-frontend-dev.yaml
 
     fi
 
@@ -636,14 +723,14 @@ data:
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
     export VERSION_CHECK=$(python /app/version_check.py /root/saas/help/build)
 
+    envsubst < /root/saas/help/build/launch.yaml.tpl > /root/saas/help/launch.yaml
+    envsubst < /root/saas/help/build/launch-frontend-dev.yaml.tpl > /root/saas/help/launch-frontend-dev.yaml
+    python /app/pack.py --src /root/saas/help/build --dest /root/saas/help/build.zip
+
+
     if [[ "$IMPORT_FRONTEND" == "true" && "$VERSION_CHECK" == "NEED UPDATE" ]] ; then
 
-    
-        python /app/pack.py --src /root/saas/help/build --dest /root/saas/help/build.zip
-        envsubst < /root/saas/job/build/launch-frontend.yaml.tpl > /root/saas/help/launch-frontend.yaml
-        envsubst < /root/saas/job/build/launch-frontend-dev.yaml.tpl > /root/saas/help/launch-frontend-dev.yaml
-
-        sh /app/import.sh help /root/saas/help/build.zip /root/saas/help/launch-frontend.yaml /root/saas/help/launch-frontend-dev.yaml
+        sh /app/import.sh help /root/saas/help/build.zip /root/saas/help/launch.yaml /root/saas/help/launch-frontend-dev.yaml
 
     fi
 
@@ -683,42 +770,6 @@ data:
       sh /app/import.sh search /root/saas/search/build.zip /root/saas/search/launch.yaml /root/saas/search/launch-frontend-dev.yaml
       
     fi
-
-
-
-  saas-dataops-grafana-import.sh: |
-    
-    set -e
-    set -x 
-
-    cd /root
-
-    until $(curl --silent --fail --show-error --output /dev/null http://admin:${GRAFANA_ADMIN_PASSWORD}@${SAAS_STAGE_ID}-dataops-grafana.${NAMESPACE_DATAOPS}/api/datasources); do
-      printf '.' ; sleep 1 ;
-    done ;
-
-
-      for file in /root/saas/dataops/ui/grafana/datasource/*.json ; do
-        if [ -e "$file" ] ; then
-          echo "importing $file" &&
-          curl --silent --fail --show-error \
-            --request POST http://admin:${GRAFANA_ADMIN_PASSWORD}@${SAAS_STAGE_ID}-dataops-grafana.${NAMESPACE_DATAOPS}/api/datasources \
-            --header "Content-Type: application/json" \
-            --data-binary "@$file" ;
-          echo "" ;
-        fi
-      done ;
-
-      for file in /root/saas/dataops/ui/grafana/dashboard/*.json ; do
-        if [ -e "$file" ] ; then
-          echo "importing $file" &&
-          curl --silent --fail --show-error \
-            --request POST http://admin:${GRAFANA_ADMIN_PASSWORD}@${SAAS_STAGE_ID}-dataops-grafana.${NAMESPACE_DATAOPS}/api/dashboards/import \
-            --header "Content-Type: application/json" \
-            --data-binary "@$file" ;
-          echo "" ;
-        fi
-      done
 
 
   saas-demoapp.sh: |
@@ -804,6 +855,25 @@ data:
 
     print("NO UPDATE")
     sys.exit(0)
+
+  upload-plugins.sh: |
+    set -x
+
+    cat /root/plugins/auto-install.list | while read line
+    do
+        python3 /root/plugins/pack.py -f /root/plugins/$line -t /tmp/plugin
+
+        /root/swcli plugin upload --config /swcli/swcli.yaml --filepath="/tmp/plugin.zip" --overwrite=true
+        rm /tmp/plugin.zip
+
+        version=$(cat /root/plugins/${line}/definition.yaml |grep 'definition.oam.dev/version'|awk '{print $NF}'|awk -F '"' '{print $2}')
+        name=$(echo $line| awk -F '/' '{print $2"/"$3}')
+        echo $version
+        echo $name
+        /root/swcli plugin operate --config /swcli/swcli.yaml --name=$name --version=$version --operation=enable
+    done
+
+    echo "all the plugins upload to the appmanager"
 
   saas-sleep.sh: |
     sleep 999999999999

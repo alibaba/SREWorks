@@ -1,6 +1,9 @@
 package com.alibaba.tesla.appmanager.domain.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Definition Schema DTO
@@ -8,6 +11,9 @@ import lombok.Data;
  * @author yaoxing.gyx@alibaba-inc.com
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class DefinitionSchemaDTO {
 
     /**

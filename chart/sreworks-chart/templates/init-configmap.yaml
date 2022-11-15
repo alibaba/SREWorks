@@ -113,6 +113,8 @@ data:
   DATA_ES_PORT: {{ .Values.saas.dataops.esPort | quote }}
   DATA_ES_USER: {{ .Values.saas.dataops.esUser | quote }}
   DATA_ES_PASSWORD: {{ .Values.saas.dataops.esPassword | quote }}
+  DATAOPS_FILEBEAT_ENABLE: {{ .Values.saas.dataops.filebeatEnable | quote}}
+  DATAOPS_METRICBEAT_ENABLE: {{ .Values.saas.dataops.metricbeatEnable | quote}}
 
   DATA_PROM_HOST: {{ .Values.saas.dataops.prometheusHost | quote }}
   DATA_PROM_PORT: {{ .Values.saas.dataops.prometheusPort | quote }}

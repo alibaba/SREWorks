@@ -2,22 +2,26 @@ package com.alibaba.tesla.appmanager.plugin.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.api.provider.DefinitionSchemaProvider;
+import com.alibaba.tesla.appmanager.api.provider.TraitProvider;
 import com.alibaba.tesla.appmanager.autoconfig.PackageProperties;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
+import com.alibaba.tesla.appmanager.common.constants.PatternConstant;
 import com.alibaba.tesla.appmanager.common.enums.PluginKindEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
-import com.alibaba.tesla.appmanager.common.util.ClassUtil;
 import com.alibaba.tesla.appmanager.common.util.PackageUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.common.util.ZipUtil;
+import com.alibaba.tesla.appmanager.definition.service.DefinitionSchemaService;
 import com.alibaba.tesla.appmanager.domain.core.ScriptIdentifier;
 import com.alibaba.tesla.appmanager.domain.core.StorageFile;
-import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
+import com.alibaba.tesla.appmanager.domain.dto.DefinitionSchemaDTO;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginDisableReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.PluginEnableReq;
 import com.alibaba.tesla.appmanager.domain.schema.PluginDefinitionSchema;
+import com.alibaba.tesla.appmanager.domain.schema.TraitDefinition;
 import com.alibaba.tesla.appmanager.dynamicscript.repository.condition.DynamicScriptQueryCondition;
 import com.alibaba.tesla.appmanager.dynamicscript.service.DynamicScriptService;
 import com.alibaba.tesla.appmanager.dynamicscript.util.GroovyUtil;
@@ -29,10 +33,14 @@ import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDO;
 import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginTagDO;
 import com.alibaba.tesla.appmanager.plugin.service.PluginFrontendService;
 import com.alibaba.tesla.appmanager.plugin.service.PluginService;
+import com.alibaba.tesla.appmanager.plugin.util.PluginValidator;
 import com.alibaba.tesla.appmanager.server.storage.Storage;
+import com.alibaba.tesla.appmanager.trait.service.TraitService;
 import groovy.lang.GroovyClassLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +52,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -79,6 +88,12 @@ public class PluginServiceImpl implements PluginService {
     @Autowired
     private Storage storage;
 
+    @Autowired
+    private DefinitionSchemaProvider definitionSchemaProvider;
+
+    @Autowired
+    private TraitProvider traitProvider;
+
     /**
      * 获取插件列表
      *
@@ -89,6 +104,10 @@ public class PluginServiceImpl implements PluginService {
     public Pagination<PluginDefinitionDO> list(PluginDefinitionQueryCondition condition) {
         List<PluginDefinitionDO> records = pluginDefinitionRepository.selectByCondition(condition);
         return Pagination.valueOf(records, Function.identity());
+    }
+
+    public PluginDefinitionDO get(PluginDefinitionQueryCondition condition) {
+        return pluginDefinitionRepository.getByCondition(condition);
     }
 
     /**
@@ -139,8 +158,11 @@ public class PluginServiceImpl implements PluginService {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "cannot create temp directory", e);
         } finally {
             if (tmpDir != null) {
-                if (!tmpDir.toFile().delete()) {
-                    log.error("delete temp directory failed|dir={}", tmpDir);
+                try {
+                    FileUtils.forceDelete(tmpDir.toFile());
+                } catch (Exception e) {
+                    log.error("delete temp directory failed|dir={}|exception={}",
+                            tmpDir, ExceptionUtils.getStackTrace(e));
                 }
             }
         }
@@ -186,6 +208,9 @@ public class PluginServiceImpl implements PluginService {
         PluginDefinitionSchema.Schematic schematic = schema.getSpec().getSchematic();
         if (schematic != null) {
             for (PluginDefinitionSchema.SchematicGroovyFile file : schematic.getGroovy().getFiles()) {
+                if (request.isIgnoreGroovyFiles()) {
+                    continue;
+                }
                 dynamicScriptService.removeScript(DynamicScriptQueryCondition.builder()
                         .kind(file.getKind())
                         .name(file.getName())
@@ -230,6 +255,11 @@ public class PluginServiceImpl implements PluginService {
         String pluginDescription = definitionSchema.getPluginDescription();
         List<String> pluginTags = definitionSchema.getPluginTags();
 
+        // 校验 definition 名称信息
+        if (!PluginValidator.validateName(pluginName)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "invalid plugin name");
+        }
+
         // 上传当前 plugin 到远端存储
         StorageFile storageFile = uploadPluginHistoryToStorage(pluginKind, pluginName,
                 pluginVersion, pluginZipFile, force);
@@ -239,8 +269,11 @@ public class PluginServiceImpl implements PluginService {
                 pluginDescription, pluginTags, storageFile);
 
         // 清理现场
-        if (!pluginZipFile.toFile().delete()) {
-            log.error("delete temp plugin zip file failed|pluginZipFile={}", pluginZipFile);
+        try {
+            FileUtils.forceDelete(pluginZipFile.toFile());
+        } catch (Exception e) {
+            log.error("delete temp plugin zip file failed|pluginZipFile={}|exception={}",
+                    pluginZipFile, ExceptionUtils.getStackTrace(e));
         }
         return record;
     }
@@ -356,18 +389,22 @@ public class PluginServiceImpl implements PluginService {
     /**
      * 加载全部 Groovy Scripts
      *
-     * @param definitionSchema Plugin Definition Schema
-     * @param pluginDir        插件 Zip 文件本地目录
+     * @param schema    Plugin Definition Schema
+     * @param pluginDir 插件 Zip 文件本地目录
      */
-    private void loadGroovyScripts(PluginDefinitionSchema definitionSchema, Path pluginDir) {
-        PluginKindEnum pluginKind = definitionSchema.getPluginKind();
-        String pluginName = definitionSchema.getPluginName();
-        String pluginVersion = definitionSchema.getPluginVersion();
-        PluginDefinitionSchema.SchematicGroovy schematic = definitionSchema.getSpec().getSchematic().getGroovy();
+    private void loadGroovyScripts(PluginDefinitionSchema schema, Path pluginDir) {
+        PluginKindEnum pluginKind = schema.getPluginKind();
+        String pluginName = schema.getPluginName();
+        String pluginVersion = schema.getPluginVersion();
+        PluginDefinitionSchema.SchematicGroovy schematic = schema.getSpec().getSchematic().getGroovy();
         if (schematic == null) {
             log.info("no need to load groovy scripts in current plugin|pluginKind={}|pluginName={}|pluginVersion={}",
                     pluginKind, pluginName, pluginVersion);
             return;
+        }
+        if (PluginKindEnum.TRAIT_DEFINITION.equals(pluginKind) && schematic.getFiles().size() != 1) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    "only 1 trait groovy is accepted in TraitDefinition");
         }
 
         GroovyClassLoader groovyClassLoader = new GroovyClassLoader();
@@ -375,6 +412,17 @@ public class PluginServiceImpl implements PluginService {
             String fileKind = file.getKind();
             String fileName = file.getName();
             String filePath = file.getPath();
+
+            if (StringUtils.isAnyEmpty(fileKind, filePath)) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS, "kind/path are required in groovy files");
+            }
+            // trait name 为空时使用插件名称 (仅 1 个)
+            if (StringUtils.isEmpty(fileName) && PluginKindEnum.TRAIT_DEFINITION.equals(pluginKind)) {
+                fileName = pluginName;
+            } else if (StringUtils.isEmpty(fileName)) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS, "name is required in groovy files");
+            }
+
             String code;
             try {
                 code = new String(Files.readAllBytes(Paths.get(pluginDir.toFile().toString(), filePath)));
@@ -411,6 +459,45 @@ public class PluginServiceImpl implements PluginService {
             log.info("groovy scripts has updated in dynamic script table|pluginKind={}|pluginName={}|" +
                             "pluginVersion={}|fileKind={}|fileName={}|filePath={}|code={}", pluginKind, pluginName,
                     pluginVersion, fileKind, fileName, filePath, code);
+
+            // 针对 Trait 类型，需要进行 Trait 注册
+            if (!"TRAIT".equals(fileKind)) {
+                continue;
+            }
+            JSONObject properties = file.getProperties();
+            if (properties == null) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                        "trait properties in definition cannot be empty");
+            }
+            String runtime = properties.getString("runtime");
+            JSONObject definitionSchema = properties.getJSONObject("definitionSchema");
+            if (definitionSchema == null) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                        "definitionSchema in properties cannot be empty");
+            }
+            String definitionSchemaName = definitionSchema.getString("name");
+            JSONObject definitionSchemaJson = definitionSchema.getJSONObject("jsonSchema");
+            if (definitionSchemaJson == null) {
+                definitionSchemaJson = new JSONObject();
+            }
+            definitionSchemaProvider.apply(DefinitionSchemaDTO.builder()
+                    .name(definitionSchemaName)
+                    .jsonSchema(definitionSchemaJson.toJSONString())
+                    .build(), DefaultConstant.SYSTEM_OPERATOR);
+            traitProvider.apply(TraitDefinition.builder()
+                    .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                    .kind(PluginKindEnum.TRAIT_DEFINITION.toString())
+                    .metadata(TraitDefinition.MetaData.builder()
+                            .name(fileName)
+                            .build())
+                    .spec(TraitDefinition.Spec.builder()
+                            .runtime(runtime)
+                            .appliesToWorkloads(List.of("*"))
+                            .definitionRef(TraitDefinition.SpecDefinitionRef.builder()
+                                    .name(definitionSchemaName)
+                                    .build())
+                            .build())
+                    .build(), DefaultConstant.SYSTEM_OPERATOR);
         }
     }
 }

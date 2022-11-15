@@ -100,7 +100,7 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
                 .repoPath(request.getRepoPath())
                 .ciAccount(request.getCiAccount())
                 .ciToken(request.getCiToken())
-                .keepGitFiles(false)
+                .keepGitFiles(request.isKeepGitFiles())
                 .build(), cloneDir);
 
         // 渲染 Dockerfile

@@ -25,4 +25,9 @@ public class PluginDisableReq {
      * 插件版本
      */
     private String pluginVersion;
+
+    /**
+     * 是否忽略 Groovy 脚本
+     */
+    private boolean ignoreGroovyFiles;
 }

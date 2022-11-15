@@ -332,7 +332,14 @@ public class MarketProviderImpl implements MarketProvider {
             /**
             * 将组件包进行重新压缩，并删除组件目录
             */
-            ZipUtil.zipFiles(component.getAbsolutePath(), Files.walk(componentPath).map(p -> p.toFile()).collect(Collectors.toList()));
+            Files.list(componentPath).forEach(f -> {
+                if(f.toFile().isDirectory()){
+                    ZipUtil.zipDirectory(component.getAbsolutePath(), f.toFile());
+                } else {
+                    ZipUtil.zipFile(component.getAbsolutePath(), f.toFile());
+                }
+            });
+            
             FileUtils.deleteDirectory(componentPath.toFile());
 
         }

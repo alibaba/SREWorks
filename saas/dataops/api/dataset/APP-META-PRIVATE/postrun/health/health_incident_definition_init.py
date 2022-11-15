@@ -84,11 +84,11 @@ def get_incident_type():
     url = host["health"] + "/incident_type/getIncidentTypeByLabel?label=" + incident_type['label']
     r = requests.get(url, headers=headers)
     if r.status_code == 200:
-        datas = r.json().get("data", None)
-        if len(datas) == 1:
-            return datas[0]["id"]
-
-    # default 1
+        data = r.json().get("data", None)
+        if data:
+            return data["id"]
+    else:
+        print(r)
     return 1
 
 

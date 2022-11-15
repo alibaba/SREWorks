@@ -8,10 +8,7 @@ import com.alibaba.tesla.appmanager.common.util.ClassUtil;
 import com.alibaba.tesla.appmanager.domain.dto.PluginDefinitionDTO;
 import com.alibaba.tesla.appmanager.domain.dto.PluginFrontendDTO;
 import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
-import com.alibaba.tesla.appmanager.domain.req.plugin.PluginDisableReq;
-import com.alibaba.tesla.appmanager.domain.req.plugin.PluginEnableReq;
-import com.alibaba.tesla.appmanager.domain.req.plugin.PluginFrontendGetReq;
-import com.alibaba.tesla.appmanager.domain.req.plugin.PluginUploadReq;
+import com.alibaba.tesla.appmanager.domain.req.plugin.*;
 import com.alibaba.tesla.appmanager.plugin.assembly.PluginDefinitionDtoConvert;
 import com.alibaba.tesla.appmanager.plugin.assembly.PluginFrontendDtoConvert;
 import com.alibaba.tesla.appmanager.plugin.repository.condition.PluginDefinitionQueryCondition;
@@ -21,6 +18,7 @@ import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginFrontendDO;
 import com.alibaba.tesla.appmanager.plugin.service.PluginFrontendService;
 import com.alibaba.tesla.appmanager.plugin.service.PluginService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,6 +58,13 @@ public class PluginProviderImpl implements PluginProvider {
         ClassUtil.copy(request, condition);
         Pagination<PluginDefinitionDO> records = pluginService.list(condition);
         return Pagination.transform(records, record -> pluginDefinitionDtoConvert.to(record));
+    }
+
+    @Override
+    public PluginDefinitionDTO get(PluginGetReq request) {
+        PluginDefinitionQueryCondition condition = new PluginDefinitionQueryCondition();
+        ClassUtil.copy(request, condition);
+        return pluginDefinitionDtoConvert.to(pluginService.get(condition));
     }
 
     /**

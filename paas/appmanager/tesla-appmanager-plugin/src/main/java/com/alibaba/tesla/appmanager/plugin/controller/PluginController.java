@@ -2,8 +2,11 @@ package com.alibaba.tesla.appmanager.plugin.controller;
 
 import com.alibaba.tesla.appmanager.api.provider.PluginProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
+import com.alibaba.tesla.appmanager.common.pagination.Pagination;
+import com.alibaba.tesla.appmanager.domain.dto.PluginDefinitionDTO;
 import com.alibaba.tesla.appmanager.domain.req.PluginQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.plugin.*;
+import com.alibaba.tesla.appmanager.plugin.util.PluginNameGenerator;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,6 +38,20 @@ public class PluginController extends AppManagerBaseController {
         return buildSucceedResult(pluginProvider.list(request));
     }
 
+    @Operation(summary = "查询单个插件")
+    @GetMapping("{pluginNamePrefix}/{pluginNameSuffix}/{pluginVersion}")
+    public TeslaBaseResult getPluginInfo(
+            @PathVariable("pluginNamePrefix") String pluginNamePrefix,
+            @PathVariable("pluginNameSuffix") String pluginNameSuffix,
+            @PathVariable("pluginVersion") String pluginVersion,
+            OAuth2Authentication auth) throws IOException {
+        String pluginName = PluginNameGenerator.generate(pluginNamePrefix, pluginNameSuffix);
+        return buildSucceedResult(pluginProvider.get(PluginGetReq.builder()
+                .pluginName(pluginName)
+                .pluginVersion(pluginVersion)
+                .build()));
+    }
+
     @Operation(summary = "上传插件")
     @PostMapping
     public TeslaBaseResult upload(
@@ -49,17 +66,44 @@ public class PluginController extends AppManagerBaseController {
     }
 
     @Operation(summary = "操作插件")
-    @PutMapping("{pluginName}/{pluginVersion}/operate")
+    @PutMapping("{pluginNamePrefix}/{pluginNameSuffix}/{pluginVersion}/operate")
     public TeslaBaseResult operate(
-            @PathVariable("pluginName") String pluginName,
+            @PathVariable("pluginNamePrefix") String pluginNamePrefix,
+            @PathVariable("pluginNameSuffix") String pluginNameSuffix,
             @PathVariable("pluginVersion") String pluginVersion,
             @RequestBody PluginOperateReq request,
             OAuth2Authentication auth) throws IOException {
+        String pluginName = PluginNameGenerator.generate(pluginNamePrefix, pluginNameSuffix);
         if ("enable".equals(request.getOperation())) {
-            return buildSucceedResult(pluginProvider.enable(PluginEnableReq.builder()
+            PluginDefinitionDTO enablePlugin = pluginProvider.enable(PluginEnableReq.builder()
                     .pluginName(pluginName)
                     .pluginVersion(pluginVersion)
-                    .build()));
+                    .build());
+
+            /**
+             * disable all enable plugins with the same pluginName
+             */
+            if (request.getDisableOthers()) {
+                Pagination<PluginDefinitionDTO> pluginList = pluginProvider.list(
+                        PluginQueryReq.builder()
+                                .pluginName(pluginName)
+                                .pluginRegistered(true)
+                                .build()
+                );
+
+                for (PluginDefinitionDTO plugin : pluginList.getItems()) {
+                    if (plugin.getPluginName().equals(pluginName) && plugin.getPluginVersion().equals(pluginVersion)) {
+                        continue;
+                    }
+                    pluginProvider.disable(PluginDisableReq.builder()
+                            .pluginName(plugin.getPluginName())
+                            .pluginVersion(plugin.getPluginVersion())
+                            .ignoreGroovyFiles(true)
+                            .build());
+                }
+            }
+
+            return buildSucceedResult(enablePlugin);
         } else if ("disable".equals(request.getOperation())) {
             return buildSucceedResult(pluginProvider.disable(PluginDisableReq.builder()
                     .pluginName(pluginName)
@@ -71,12 +115,14 @@ public class PluginController extends AppManagerBaseController {
     }
 
     @Operation(summary = "获取插件前端资源")
-    @GetMapping("{pluginName}/{pluginVersion}/frontend/{name}")
+    @GetMapping("{pluginNamePrefix}/{pluginNameSuffix}/{pluginVersion}/frontend/{name}")
     public TeslaBaseResult getPluginFrontend(
-            @PathVariable("pluginName") String pluginName,
+            @PathVariable("pluginNamePrefix") String pluginNamePrefix,
+            @PathVariable("pluginNameSuffix") String pluginNameSuffix,
             @PathVariable("pluginVersion") String pluginVersion,
             @PathVariable("name") String name,
             OAuth2Authentication auth) throws IOException {
+        String pluginName = PluginNameGenerator.generate(pluginNamePrefix, pluginNameSuffix);
         return buildSucceedResult(pluginProvider.getFrontend(PluginFrontendGetReq.builder()
                 .pluginName(pluginName)
                 .pluginVersion(pluginVersion)

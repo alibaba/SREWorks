@@ -111,8 +111,8 @@ public class PackAppPackageToStorageNode extends AbstractLocalNodeBase {
             String bucketName = storageFile.getBucketName();
             String objectName = storageFile.getObjectName();
             String componentUrl = storage.getObjectUrl(bucketName, objectName, DefaultConstant.DEFAULT_FILE_EXPIRATION);
-            String basename = String.format("%s_%s.zip",
-                    componentPackageDO.getComponentType(), componentPackageDO.getComponentName());
+            String basename = PackageUtil.buildComponentPackageZipBasename(componentPackageDO.getComponentType(),
+                    componentPackageDO.getComponentName());
             String filename = folder.resolve(basename).toString();
 
             // Component Package 包下载到本地目录中

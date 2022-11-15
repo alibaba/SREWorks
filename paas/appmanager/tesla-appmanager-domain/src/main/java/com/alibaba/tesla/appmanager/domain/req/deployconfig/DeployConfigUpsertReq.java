@@ -1,5 +1,8 @@
 package com.alibaba.tesla.appmanager.domain.req.deployconfig;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,9 +35,19 @@ public class DeployConfigUpsertReq {
     private String envId;
 
     /**
-     * 配置信息
+     * 配置信息 (Yaml)
      */
     private String config;
+
+    /**
+     * 配置信息 (JSONArray), 如果传递了当前值，则 config 无效
+     */
+    private JSONArray configJsonArray;
+
+    /**
+     * 配置信息 (JSONObject), 如果传递了当前值，则 config 无效
+     */
+    private JSONObject configJsonObject;
 
     /**
      * 是否继承

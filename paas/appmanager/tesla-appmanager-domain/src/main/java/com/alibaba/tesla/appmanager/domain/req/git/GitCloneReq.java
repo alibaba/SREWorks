@@ -52,4 +52,10 @@ public class GitCloneReq implements Serializable {
      * 保留 .git 文件
      */
     private boolean keepGitFiles = false;
+
+    /**
+     * 是否重置目录路径
+     */
+    private String rewriteRepoPath = "";
+
 }

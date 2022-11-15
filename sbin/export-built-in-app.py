@@ -134,6 +134,19 @@ def only_frontend_filter(launchYAML):
     for component in launchYAML["spec"]["components"]:
         if component["revisionName"].startswith("INTERNAL_ADDON"):
             newComponents.append(component)
+        elif component["revisionName"].startswith("HELM"):
+            newComponents.append(component)
+
+    launchYAML["spec"]["components"] = newComponents
+
+
+def only_frontend_dev_filter(launchYAML):
+
+    newComponents = []
+    gatewayTrait = {}
+    for component in launchYAML["spec"]["components"]:
+        if component["revisionName"].startswith("INTERNAL_ADDON"):
+            newComponents.append(component)
 
     launchYAML["spec"]["components"] = newComponents
 
@@ -143,7 +156,7 @@ def only_backend_filter(launchYAML):
     newComponents = []
     gatewayTrait = {}
     for component in launchYAML["spec"]["components"]:
-        if not component["revisionName"].startswith("INTERNAL_ADDON"):
+        if not component["revisionName"].startswith("INTERNAL_ADDON") and not component["revisionName"].startswith("HELM"):
             newComponents.append(component)    
         if {"component": "RESOURCE_ADDON|system-env@system-env"} in component.get("dependencies",[]):
             component["dependencies"].remove({"component": "RESOURCE_ADDON|system-env@system-env"})
@@ -287,6 +300,7 @@ for buildIn in builtInList:
     f.write(yaml.safe_dump(launchYAML, width=float("inf")))
     f.close()
 
+    only_frontend_dev_filter(launchYAML)
     frontend_dev_replace(launchYAML, patchYAML.get("launch-frontend-dev.yaml.tpl"))
     f = open(loalPath + '/launch-frontend-dev.yaml.tpl', 'w')
     f.write(yaml.safe_dump(launchYAML, width=float("inf")))

@@ -3,6 +3,7 @@ package com.alibaba.sreworks.health.services.oem;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.health.api.definition.DefinitionService;
+import com.alibaba.sreworks.health.api.incident.IncidentTypeService;
 import com.alibaba.sreworks.health.common.constant.Constant;
 import com.alibaba.sreworks.health.common.exception.CommonDefinitionExistException;
 import com.alibaba.sreworks.health.common.exception.ParamException;
@@ -47,6 +48,9 @@ public class OemService {
 
     @Autowired
     DefinitionService definitionService;
+
+    @Autowired
+    IncidentTypeService incidentTypeService;
 
     @Autowired
     JobMasterOperator jobMasterOperator;
@@ -260,8 +264,15 @@ public class OemService {
             Jinjava jinjava = new Jinjava();
             Map<String, Object> params = new HashMap<>();
             params.put("appName", appName);
-            String req = jinjava.render(JSONObject.toJSONString(definitionCreateReq), params);
-            return JSONObject.parseObject(req, DefinitionCreateReq.class);
+            String renderReq = jinjava.render(JSONObject.toJSONString(definitionCreateReq), params);
+            DefinitionCreateReq req = JSONObject.parseObject(renderReq, DefinitionCreateReq.class);
+
+            JSONObject incidentType = incidentTypeService.getIncidentTypeByLabel("SERVICE_UNAVAILABLE");
+            if (!CollectionUtils.isEmpty(incidentType)) {
+                req.getExConfig().setTypeId(incidentType.getInteger("id"));
+            }
+
+            return req;
         } catch (Exception ex) {
             log.error(ex.getMessage());
             return null;

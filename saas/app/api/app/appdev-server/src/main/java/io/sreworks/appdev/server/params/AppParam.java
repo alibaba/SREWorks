@@ -17,6 +17,10 @@ public class AppParam {
 
     private String memory;
 
+    private JSONObject options = new JSONObject();
+
+    public String description;
+
     private String cpu() {
         switch (getCpu()) {
             case "0":
@@ -68,6 +72,9 @@ public class AppParam {
     }
 
     String toDetail() {
+        if(description != null) {
+            options.put("description", description);
+        }
         return JSONObject.toJSONString(JsonUtil.map(
             "resource", Resource.builder()
                 .limits(CpuMemResource.builder()
@@ -80,7 +87,8 @@ public class AppParam {
                     .build())
                 .build(),
             "cpu", cpu,
-            "memory", memory
+            "memory", memory,
+            "options", options
         ));
     }
 }

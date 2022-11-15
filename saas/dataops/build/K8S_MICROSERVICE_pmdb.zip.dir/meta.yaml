@@ -1,0 +1,79 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: Component
+metadata:
+  annotations:
+    annotations.appmanager.oam.dev/version: 5.1.4+20221106092340403587
+  labels:
+    labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+    appId: dataops
+    labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+    componentName: pmdb
+    labels.appmanager.oam.dev/appId: dataops
+    labels.appmanager.oam.dev/componentName: pmdb
+    stageId: PLACEHOLDER_STAGE_ID
+  name: microservice-dataops-pmdb
+spec:
+  images: []
+  workload:
+    apiVersion: apps.abm.io/v1
+    dataOutputs: []
+    kind: Microservice
+    metadata:
+      annotations:
+        annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
+        annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
+        annotations.appmanager.oam.dev/version: 5.1.4+20221106092340403587
+        annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+      labels:
+        labels.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+        labels.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        appId: dataops
+        labels.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+        labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+        componentName: pmdb
+        labels.appmanager.oam.dev/appId: dataops
+        labels.appmanager.oam.dev/componentName: pmdb
+        stageId: PLACEHOLDER_STAGE_ID
+      name: PLACEHOLDER_NAME
+      namespace: PLACEHOLDER_NAMESPACE_ID
+    spec:
+      kind: Deployment
+      replicas: 1
+      containers:
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/dataops-pmdb-pmdb:1667726620563
+        name: pmdb
+      env:
+        DATA_DB_PMDB_NAME: '{{ Global.DATA_DB_PMDB_NAME }}'
+        ES_URL: '{{ Global.ES_URL }}'
+        DATA_ES_PASSWORD: '{{ Global.DATA_ES_PASSWORD }}'
+        DB_PORT: '{{ Global.DB_PORT }}'
+        DB_USER: '{{ Global.DB_USER }}'
+        DATA_SKYW_PORT: '{{ Global.DATA_SKYW_PORT }}'
+        DATA_ES_PORT: '{{ Global.DATA_ES_PORT }}'
+        DATA_DB_PASSWORD: '{{ Global.DATA_DB_PASSWORD }}'
+        DB_NAME: '{{ Global.DB_NAME }}'
+        DATA_ES_HOST: '{{ Global.DATA_ES_HOST }}'
+        MINIO_ACCESS_KEY: '{{ Global.MINIO_ACCESS_KEY }}'
+        DATA_DB_HOST: '{{ Global.DATA_DB_HOST }}'
+        HEALTH_ENDPOINT: '{{ Global.HEALTH_ENDPOINT }}'
+        DATA_DB_USER: '{{ Global.DATA_DB_USER }}'
+        VVP_ENDPOINT: '{{ Global.VVP_ENDPOINT }}'
+        KAFKA_ENDPOINT: '{{ Global.KAFKA_ENDPOINT }}'
+        DATA_SKYW_ENABLE: '{{ Global.DATA_SKYW_ENABLE }}'
+        DB_HOST: '{{ Global.DB_HOST }}'
+        DATA_SKYW_HOST: '{{ Global.DATA_SKYW_HOST }}'
+        DATA_DB_HEALTH_NAME: '{{ Global.DATA_DB_HEALTH_NAME }}'
+        DATA_ES_USER: '{{ Global.DATA_ES_USER }}'
+        MINIO_ENDPOINT: '{{ Global.MINIO_ENDPOINT }}'
+        MINIO_SECRET_KEY: '{{ Global.MINIO_SECRET_KEY }}'
+        DB_PASSWORD: '{{ Global.DB_PASSWORD }}'
+        DATA_DB_PORT: '{{ Global.DATA_DB_PORT }}'
+        KAFKA_URL: '{{ Global.KAFKA_URL }}'
+      initContainers:
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/dataops-pmdb-db-migration:1667726620563
+        name: db-migration
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/dataops-pmdb-metric-flink:1667726620563
+        name: metric-flink

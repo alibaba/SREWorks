@@ -63,6 +63,9 @@ public class DeployConfigTypeId {
     }
 
     public static DeployConfigTypeId valueOf(String typeId) {
+        if (StringUtils.isEmpty(typeId)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "empty typeId parameter");
+        }
         String[] arr = typeId.split("::");
         if (arr.length == 0) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "typeId must have :: spliter");

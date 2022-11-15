@@ -117,4 +117,15 @@ public class PackageUtil {
             }
         }
     }
+
+    /**
+     * 构造组件包 ZIP 的 basename (componentType 中 / 替换为 _)
+     *
+     * @param componentType 组件类型
+     * @param componentName 组件名称
+     * @return 构造后的一层文件名 basename
+     */
+    public static String buildComponentPackageZipBasename(String componentType, String componentName) {
+        return String.format("%s_%s.zip", componentType.replaceAll("/", "_"), componentName);
+    }
 }

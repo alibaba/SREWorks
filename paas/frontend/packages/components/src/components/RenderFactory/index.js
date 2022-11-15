@@ -4,13 +4,13 @@
  * @Description:render 注册
  */
 
-// import * as antd from 'antd'
+import * as antd from 'antd'
 import '@ant-design/compatible/assets/index.css'
 //antd3 icon 注册兼容
 import { Icon as LegacyIcon } from '@ant-design/compatible'
 //antd4中icon注册
 import * as icons from '@ant-design/icons'
-// antd['Icon'] = LegacyIcon
+antd['Icon'] = LegacyIcon
 let commonRenders = {}
 const commonRenderContext = require.context('./', true, /^\.\/common\/((?!\/)[\s\S])+\/[\s\S]\.js$/)
 commonRenderContext.keys().forEach((key) => {
@@ -20,7 +20,7 @@ commonRenderContext.keys().forEach((key) => {
 })
 
 let renders = {
-  // antd: antd,
+  antd: antd,
   common: commonRenders,
   icon: icons,
 }

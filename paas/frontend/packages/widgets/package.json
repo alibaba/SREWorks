@@ -8,16 +8,12 @@
   "main": "/dist/index-cjs.js",
   "module": "/dist/index-es.js",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "style": "lib/index.css",
   "scripts": {
-    "build": "npm-run-all -p build:cjs build:es",
-    "build:cjs": "rimraf lib && webpack -c config/webpack.config.cjs.js",
-    "build:es": "rimraf es && webpack -c config/webpack.config.es.js",
+    "build": "npm run clean && rollup -c ",
     "test": "jest",
-    "build:rollup": "npm run clean && rollup -c ",
     "clean": "rimraf ./dist && rimraf ./lib"
   },
   "resolutions": {
@@ -25,6 +21,7 @@
     "react-dom": "16.14.0"
   },
   "dependencies": {
+    "@ant-design/compatible": "1.0.8",
     "@ant-design/pro-card": "^2.0.10",
     "@sreworks/components": "^0.0.0-alpha.0",
     "@sreworks/shared-utils": "^0.0.0-alpha.0",

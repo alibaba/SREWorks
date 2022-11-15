@@ -27,6 +27,7 @@ widgetMetasContext.keys().forEach((key) => {
 })
 builtInWidgetMetaMapping = Object.assign({}, builtInWidgetMetaMapping, SRE_builtInWidgetMetaMapping)
 builtInWidgets = Object.assign({}, builtInWidgets, SRE_builtInWidgets)
+
 function getCustomCompList() {
   return service.getCustomList()
 }

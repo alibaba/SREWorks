@@ -12,7 +12,7 @@ import JSXRender from '../JSXRender'
 import _ from 'lodash'
 import { debounce } from 'lodash'
 import { v4 as uuidv4 } from 'uuid'
-import style from './index.less'
+import './index.less'
 
 class PagingTable extends Component {
   constructor(props) {

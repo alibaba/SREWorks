@@ -2,7 +2,7 @@ import React from 'react'
 import moment from 'moment'
 import { Icon, Button } from 'antd'
 import { ExpandOutlined, CompressOutlined } from '@ant-design/icons'
-import styles from './screenHeader.less'
+import './screenHeader.less'
 
 export default class ScreenHeader extends React.PureComponent {
   // init
@@ -14,7 +14,7 @@ export default class ScreenHeader extends React.PureComponent {
   }
   intervalPromise = null
   // mountÍ
-  UNSAFE_componentWillMount() {
+  componentWillMount() {
     this.intervalPromise = setInterval(() => {
       this.setState({ date: moment().format('YYYY-MM-DD HH:mm:ss') })
     }, 990)
@@ -31,7 +31,7 @@ export default class ScreenHeader extends React.PureComponent {
         >
           {document.fullscreenElement ? <CompressOutlined /> : <ExpandOutlined />}
         </Button>
-        <div className={styles.screenTitle}>
+        <div className="screen-title">
           <h1 style={{ fontSize: '2em' }}>{title}</h1>
           <p>
             <Icon type="clock-circle-o" style={{ marginRight: 5 }} />

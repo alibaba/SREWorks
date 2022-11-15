@@ -11,11 +11,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "rimraf es && babel src -d es --copy-files",
-    "build:cjs": "rimraf lib && webpack -c config/webpack.config.cjs.js",
-    "build:es": "rimraf lib && webpack -c config/webpack.config.es.js",
+    "build": "npm run clean && rollup -c ",
     "test": "jest",
-    "build:rollup": "npm run clean && rollup -c ",
     "clean": "rimraf ./dist && rimraf ./lib"
   },
   "dependencies": {

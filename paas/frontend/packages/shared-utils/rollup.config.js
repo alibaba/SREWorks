@@ -41,7 +41,7 @@ const umdConfig = {
     {
       file: './dist/index-umd.js',
       format: 'umd',
-      name: 'shared-utils',
+      name: 'myLib',
     },
     {
       file: './dist/index-es.js',
@@ -52,6 +52,7 @@ const umdConfig = {
       format: 'cjs',
     },
   ],
+  sourcemap: false,
   ...configFn('index'),
 }
 umdConfig.plugins.unshift(del({ targets: ['lib/*', 'dist/*'] }))

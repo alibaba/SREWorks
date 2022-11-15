@@ -20,7 +20,13 @@ import PageContent from '../../framework/core/PageContent'
 import '../workbench/index.less'
 import './index.less'
 import ContentLayout from '../../framework/components/ContentLayout'
-import { PopoverConfirm, FormElementType, AceViewer, JsonEditor } from '@sreworks/components'
+import {
+  PopoverConfirm,
+  FormElementType,
+  AceViewer,
+  JsonEditor,
+  FormElementFactory,
+} from '@sreworks/components'
 import FluidContentLayoutDesigner from '../../framework/components/FluidContentLayoutDesigner'
 
 const { TabPane } = Tabs

@@ -14,6 +14,7 @@ import global from './models/global'
 import node from './models/node'
 import home from './models/home'
 import './index.less'
+import '@sreworks/framework/dist/theme/index.css'
 
 const app = dva({
   history: createHashHistory(),

@@ -8,14 +8,10 @@
   "main": "/dist/index-cjs.js",
   "module": "/dist/index-es.js",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
-    "build": "rimraf es && babel src -d es --copy-files",
-    "build:cjs": "rimraf lib && webpack -c config/webpack.config.cjs.js",
-    "build:es": "rimraf es && babel src -d es --copy-files",
-    "build:rollup": "npm run clean && rollup -c ",
+    "build": "npm run clean && rollup -c ",
     "clean": "rimraf ./dist && rimraf ./lib",
     "test": "jest"
   },
@@ -56,8 +52,8 @@
     "uuid": "^9.0.0"
   },
   "peerDependencies": {
-    "react": "16.14.0",
-    "react-dom": "16.14.0"
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",

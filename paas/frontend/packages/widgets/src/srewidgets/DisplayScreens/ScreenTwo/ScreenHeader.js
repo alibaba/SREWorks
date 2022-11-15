@@ -2,7 +2,7 @@ import React from 'react'
 import moment from 'moment'
 import { Button } from 'antd'
 import { ExpandOutlined, CompressOutlined } from '@ant-design/icons'
-import styles from './screenHeader.less'
+import './screenHeader.less'
 
 export default class ScreenHeader extends React.PureComponent {
   // init

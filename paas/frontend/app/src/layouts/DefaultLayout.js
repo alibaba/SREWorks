@@ -18,7 +18,7 @@ import { NodeContent, SiderNavToggleBar, OamContent } from '@sreworks/framework'
 import BriefLayout from './BriefLayout'
 import BriefHeader from './BriefLayout/Header'
 import properties from '../properties'
-
+import '@sreworks/framework/dist/theme/index.css'
 //其他布局引入
 const { Content } = Layout
 let envs = [

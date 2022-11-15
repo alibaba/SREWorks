@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from 'antd'
 import { RedoOutlined, FullscreenOutlined } from '@ant-design/icons'
-import style from './index.less'
+import './index.less'
 
 export default class Granfana extends React.Component {
   constructor(props) {
@@ -52,8 +52,8 @@ export default class Granfana extends React.Component {
     let { url } = widgetConfig
     let { disableRefresh } = this.state
     return (
-      <div className={style.abmGrafana} id="datav-content">
-        <div className={style.operationBtn}>
+      <div className={'abm-Grafana'} id="datav-content">
+        <div className={'operation-Btn'}>
           <Button disabled={disableRefresh} onClick={this.refresh}>
             <RedoOutlined />
           </Button>
@@ -61,7 +61,7 @@ export default class Granfana extends React.Component {
             <FullscreenOutlined />
           </Button>
         </div>
-        <div className={style.garafanaContent}>
+        <div className={'garafana-content'}>
           <iframe width="100%" height="100%" src={url} id="grafanaIframe" name="grafanaIframe" />
         </div>
       </div>

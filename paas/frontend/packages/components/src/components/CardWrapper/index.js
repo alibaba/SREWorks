@@ -1,7 +1,7 @@
 import { RollbackOutlined } from '@ant-design/icons'
 import { Divider, Card } from 'antd'
 import * as React from 'react'
-import style from './index.less'
+import './index.less'
 
 class CardWrapper extends React.Component {
   constructor(props) {
@@ -33,7 +33,7 @@ class CardWrapper extends React.Component {
               <div style={{ display: 'flex' }}>
                 <div style={{ alignItems: 'center', display: 'flex' }}>
                   <div
-                    className={style.cardItemTitleIconColor}
+                    className="card-item-title-icon-color"
                     style={{ width: 4, height: 20 }}
                   ></div>
                   <div>

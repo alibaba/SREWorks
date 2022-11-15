@@ -87,6 +87,7 @@ const umdConfig = {
       format: 'cjs',
     },
   ],
+  sourcemap: false,
   ...configFn('index'),
 }
 umdConfig.plugins.unshift(del({ targets: ['lib/*', 'dist/*'] }))

@@ -1,18 +1,22 @@
 let SRE_builtInWidgets = {}
 let SRE_builtInWidgetMetaMapping = {}
-const widgetsContext = require.context('./', true, /^\.\/srewidgets\/((?!\/)[\s\S])+\/index\.js$/)
-widgetsContext.keys().forEach((key) => {
+const SRE_widgetsContext = require.context(
+  './',
+  true,
+  /^\.\/srewidgets\/((?!\/)[\s\S])+\/index\.js$/,
+)
+SRE_widgetsContext.keys().forEach((key) => {
   let widgetName = key.split('/')[2]
-  SRE_builtInWidgets[widgetName] = widgetsContext(key)
+  SRE_builtInWidgets[widgetName] = SRE_widgetsContext(key)
 })
-const widgetMetasContext = require.context(
+const SRE_widgetMetasContext = require.context(
   './',
   true,
   /^\.\/srewidgets\/((?!\/)[\s\S])+\/meta\.js$/,
 )
-widgetMetasContext.keys().forEach((key) => {
+SRE_widgetMetasContext.keys().forEach((key) => {
   let widgetName = key.split('/')[2]
-  const meta = widgetMetasContext(key)
+  const meta = SRE_widgetMetasContext(key)
   if (!meta.type) {
     meta.type = widgetName
   }

@@ -15,6 +15,12 @@ module.exports = {
       {
         "legacy": true
       }
-    ]
+    ],
+    [
+      '@babel/plugin-transform-runtime',
+      {
+        helpers: true,
+      },
+    ],
   ]
 }

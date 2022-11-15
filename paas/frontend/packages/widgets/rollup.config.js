@@ -52,10 +52,10 @@ const configFn = (name) => ({
       plugins: [autoprefixer(), cssnano()],
       extract: `theme/${name}.css`,
     }),
-    terser(),
     replace({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     }),
+    terser(),
   ],
   external: ['react', 'react-dom'],
 })

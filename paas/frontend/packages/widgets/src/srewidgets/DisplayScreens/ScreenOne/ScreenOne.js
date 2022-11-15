@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import ScreenHeader from './ScreenHeader'
 import ChartFactory from '../ChartFactory'
-import styles from './index.less'
+import './index.less'
 
 export default class ScreenOne extends Component {
   render() {
-    const { widgetConfig = {} } = this.props
-    let { backgroundImg, screenTitle } = widgetConfig
+    const { widgetConfig = {}, widgetData, nodeParams = {} } = this.props
+    let { backgroundImg, screenTitle, chartDisplayConfig } = widgetConfig
     let { screenDisplayConfig } = this.props
 
     return (
@@ -22,118 +22,118 @@ export default class ScreenOne extends Component {
         }}
       >
         <ScreenHeader title={screenTitle || 'SREWorks大屏'} />
-        <section className={styles.screenOneBody}>
-          <div className={styles.screenOneBodyLeft}>
-            <section className={styles.leftBorderImg}>
+        <section class="screen-one-body">
+          <div class="screen-one-body-left">
+            <section class="left-border-img">
               {screenDisplayConfig['chart_one'] ? (
                 screenDisplayConfig['chart_one'].map((item) => {
                   return ChartFactory.createScreenChart(item)
                 })
               ) : (
-                <div className={styles.noChartData}>图表1</div>
+                <div class="no-chart-data">图表1</div>
               )}
             </section>
-            <section className={styles.leftBorderImg}>
+            <section class="left-border-img">
               {screenDisplayConfig['chart_two'] ? (
                 screenDisplayConfig['chart_two'].map((item) => {
                   return ChartFactory.createScreenChart(item)
                 })
               ) : (
-                <div className={styles.noChartData}>图表2</div>
+                <div class="no-chart-data">图表2</div>
               )}
             </section>
-            <section className={styles.leftBorderImg}>
+            <section class="left-border-img">
               {screenDisplayConfig['chart_three'] ? (
                 screenDisplayConfig['chart_three'].map((item) => {
                   return ChartFactory.createScreenChart(item)
                 })
               ) : (
-                <div className={styles.noChartData}>图表3</div>
+                <div class="no-chart-data">图表3</div>
               )}
             </section>
-            <section className={styles.leftBorderImg}>
+            <section class="left-border-img">
               {screenDisplayConfig['chart_four'] ? (
                 screenDisplayConfig['chart_four'].map((item) => {
                   return ChartFactory.createScreenChart(item)
                 })
               ) : (
-                <div className={styles.noChartData}>图表4</div>
+                <div class="no-chart-data">图表4</div>
               )}
             </section>
-            <section className={styles.leftBorderImg}>
+            <section class="left-border-img">
               {screenDisplayConfig['chart_five'] ? (
                 screenDisplayConfig['chart_five'].map((item) => {
                   return ChartFactory.createScreenChart(item)
                 })
               ) : (
-                <div className={styles.noChartData}>图表5</div>
+                <div class="no-chart-data">图表5</div>
               )}
             </section>
           </div>
-          <div className={styles.screenOneBodyMiddle}>
-            <section className={styles.middleBorderImgOne}>
+          <div class="screen-one-body-middle">
+            <section class="middle-border-img-one">
               {screenDisplayConfig['chart_ten'] ? (
                 screenDisplayConfig['chart_ten'].map((item) => {
                   return ChartFactory.createScreenChart(item)
                 })
               ) : (
-                <div className={styles.noChartData}>图表10</div>
+                <div class="no-chart-data">图表10</div>
               )}
             </section>
-            <section className={styles.middleBorderImgTwo}>
+            <section class="middle-border-img-two">
               {screenDisplayConfig['chart_eleven'] ? (
                 screenDisplayConfig['chart_eleven'].map((item) => {
                   return ChartFactory.createScreenChart(item)
                 })
               ) : (
-                <div className={styles.noChartData}>图表11</div>
+                <div class="no-chart-data">图表11</div>
               )}
             </section>
-            <section className={styles.middleBorderImgThree}>
+            <section class="middle-border-img-three">
               {screenDisplayConfig['chart_twelve'] ? (
                 screenDisplayConfig['chart_twelve'].map((item) => {
                   return ChartFactory.createScreenChart(item)
                 })
               ) : (
-                <div className={styles.noChartData}>图表12</div>
+                <div class="no-chart-data">图表12</div>
               )}
             </section>
           </div>
-          <div className={styles.screenOneBodyRight}>
-            <section className="right-border-img">
+          <div class="screen-one-body-right">
+            <section class="right-border-img">
               {screenDisplayConfig['chart_six'] ? (
                 screenDisplayConfig['chart_six'].map((item) => {
                   return ChartFactory.createScreenChart(item)
                 })
               ) : (
-                <div className={styles.noChartData}>图表6</div>
+                <div class="no-chart-data">图表6</div>
               )}
             </section>
-            <section className={styles.rightBorderImg}>
+            <section class="right-border-img">
               {screenDisplayConfig['chart_seven'] ? (
                 screenDisplayConfig['chart_seven'].map((item) => {
                   return ChartFactory.createScreenChart(item)
                 })
               ) : (
-                <div className={styles.noChartData}>图表7</div>
+                <div class="no-chart-data">图表7</div>
               )}
             </section>
-            <section className={styles.rightBorderImg}>
+            <section class="right-border-img">
               {screenDisplayConfig['chart_eight'] ? (
                 screenDisplayConfig['chart_eight'].map((item) => {
                   return ChartFactory.createScreenChart(item)
                 })
               ) : (
-                <div className={styles.noChartData}>图表8</div>
+                <div class="no-chart-data">图表8</div>
               )}
             </section>
-            <section className={styles.rightBorderImg}>
+            <section class="right-border-img">
               {screenDisplayConfig['chart_nine'] ? (
                 screenDisplayConfig['chart_nine'].map((item) => {
                   return ChartFactory.createScreenChart(item)
                 })
               ) : (
-                <div className={styles.noChartData}>图表9</div>
+                <div class="no-chart-data">图表9</div>
               )}
             </section>
           </div>

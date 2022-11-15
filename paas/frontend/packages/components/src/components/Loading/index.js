@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import styles from './index.module.less'
-
+import properties from '../../properties'
 export default class Loading extends Component {
   render() {
-    const { platformName } = this.props
+    const { platformName } = properties
     return (
       <div className={styles.loading}>
         <div className={styles.loadingCenter}>

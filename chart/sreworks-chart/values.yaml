@@ -106,6 +106,8 @@ saas:
     esPassword: "sreworkses123."
     prometheusHost: "prod-dataops-prometheus-server.sreworks-dataops"
     prometheusPort: "80"
+    filebeatEnable: true
+    metricbeatEnable: true
 
   grafana:
     password: "sreworks123456"

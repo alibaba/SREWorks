@@ -365,6 +365,18 @@ data:
       python /app/remove-components.py -s /root/saas/dataops/launch-frontend.yaml -c "HELM|elasticsearch|_"
     fi
 
+    if [[ "$DATAOPS_FILEBEAT_ENABLE" == "false" ]]
+    then
+      python /app/remove-components.py -s /root/saas/dataops/launch.yaml -c "HELM|filebeat|_"
+      python /app/remove-components.py -s /root/saas/dataops/launch-frontend.yaml -c "HELM|filebeat|_"
+    fi
+
+    if [[ "$DATAOPS_METRICBEAT_ENABLE" == "false" ]]
+    then
+      python /app/remove-components.py -s /root/saas/dataops/launch.yaml -c "HELM|metricbeat|_"
+      python /app/remove-components.py -s /root/saas/dataops/launch-frontend.yaml -c "HELM|metricbeat|_"
+    fi
+
 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
 

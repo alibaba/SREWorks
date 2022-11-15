@@ -11,5 +11,5 @@ host = {
 }
 
 demo_app_id = "sreworks1"
-demo_app_name = "demoApp"
+demo_app_name = "sreworks1"
 demo_app_component_name = "mall"

@@ -25,7 +25,6 @@ func initLaunchCommand() {
 	launchCommand.MarkFlagRequired("arch")
 	launchCommand.MarkFlagRequired("cluster")
 	launchCommand.MarkFlagRequired("wait")
-	launchCommand.MarkFlagRequired("wait-max-seconds")
 	viper.BindPFlag("deployment.launch.app-id", launchCommand.Flags().Lookup("app-id"))
 	viper.BindPFlag("deployment.launch.app-package-id", launchCommand.Flags().Lookup("app-package-id"))
 	viper.BindPFlag("deployment.launch.path", launchCommand.Flags().Lookup("path"))

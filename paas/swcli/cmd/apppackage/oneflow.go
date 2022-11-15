@@ -28,7 +28,6 @@ func initOneflowCommand() {
 	oneflowCommand.MarkFlagRequired("path")
 	oneflowCommand.MarkFlagRequired("arch")
 	oneflowCommand.MarkFlagRequired("cluster")
-	oneflowCommand.MarkFlagRequired("wait-max-seconds")
 	viper.BindPFlag("app-package.oneflow.app-id", oneflowCommand.Flags().Lookup("app-id"))
 	viper.BindPFlag("app-package.oneflow.tags", oneflowCommand.Flags().Lookup("tags"))
 	viper.BindPFlag("app-package.oneflow.path", oneflowCommand.Flags().Lookup("path"))

@@ -13,7 +13,6 @@ func initGetCommand() {
 	getCommand.Flags().BoolP("wait", "w", true, "wait until finished")
 	getCommand.Flags().IntP("wait-max-seconds", "", 900, "max wait seconds until finished")
 	getCommand.MarkFlagRequired("deploy-app-id")
-	getCommand.MarkFlagRequired("wait-max-seconds")
 	viper.BindPFlag("deployment.get.deploy-app-id", getCommand.Flags().Lookup("deploy-app-id"))
 	viper.BindPFlag("deployment.get.wait", getCommand.Flags().Lookup("wait"))
 	viper.BindPFlag("deployment.get.wait-max-seconds", getCommand.Flags().Lookup("wait-max-seconds"))

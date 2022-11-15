@@ -873,6 +873,8 @@ data:
         /root/swcli plugin operate --config /swcli/swcli.yaml --name=$name --version=$version --operation=enable
     done
 
+    echo "all the plugins upload to the appmanager"
+
   saas-sleep.sh: |
     sleep 999999999999
 

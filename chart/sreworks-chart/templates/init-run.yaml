@@ -48,7 +48,7 @@ data:
         fi
 
         result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id=${CORE_APP_ID} --filepath /root/saas/swcore/flycore.zip --print-only-app-package-id=true --reset-version=true)
-        /root/swcli --config /swcli/swcli.yaml deployment launch --app-id=${CORE_APP_ID} --stage=prod --namespace=${NAMESPACE_ID} --path /root/saas/swcore/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+        /root/swcli --config /swcli/swcli.yaml deployment launch --wait-max-seconds 300 --app-id=${CORE_APP_ID} --stage=prod --namespace=${NAMESPACE_ID} --path /root/saas/swcore/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
 
     fi
 
@@ -872,6 +872,8 @@ data:
         echo $name
         /root/swcli plugin operate --config /swcli/swcli.yaml --name=$name --version=$version --operation=enable
     done
+
+    echo "all the plugins upload to the appmanager"
 
   saas-sleep.sh: |
     sleep 999999999999

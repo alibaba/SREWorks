@@ -183,6 +183,15 @@
 		{
 			"isImport":1,
 			"interfaces":"{}",
+			"componentId":"followEdition",
+			"name":"后续版本支持提醒",
+			"alias":"后续版本支持提醒",
+			"config":"{\"componentType\":\"JSX\",\"icon\":\"https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg\",\"description\":\"\",\"jsxDom\":\"<antd.Empty\\n    image=\\\"https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg\\\"\\n    imageStyle={{\\n      height: 60,\\n    }}\\n    description={\\n      <span>\\n      后续开源，敬请关注发布计划\\n      </span>\\n    }\\n  >\\n  </antd.Empty>\"}",
+			"stageId":"prod"
+		},
+		{
+			"isImport":1,
+			"interfaces":"{}",
 			"componentId":"list",
 			"name":"简易列表",
 			"alias":"简易列表",

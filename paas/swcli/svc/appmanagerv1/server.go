@@ -26,6 +26,9 @@ import (
 // 最大构建任务等待查询时间
 const maxBuildTaskQueryWaitTimes = 3600
 
+// 等待时长
+const deploymentWaitInterval = 5
+
 // 最大部署单等待时间
 const maxDeploymentWaitTimes = 600
 
@@ -280,7 +283,7 @@ func (s *AppManagerServer) RemoteLaunch(unitId, appId string, params map[string]
 // Launch 本地启动部署
 func (s *AppManagerServer) Launch(appId string, appPackageId int64,
 	filepath string, arch string, cluster, namespaceId, stageId string,
-	appInstanceName string, wait bool) (*jsonvalue.V, error) {
+	appInstanceName string, wait bool, waitMaxSeconds int) (*jsonvalue.V, error) {
 	fileStr, err := s.readLaunchYaml(filepath, arch, cluster)
 	if err != nil {
 		return nil, errors2.Wrapf(err, "cannot read launch yaml %s", filepath)
@@ -330,7 +333,7 @@ func (s *AppManagerServer) Launch(appId string, appPackageId int64,
 	if !wait {
 		return data, nil
 	}
-	return s.GetDeployment(deployAppId, wait)
+	return s.GetDeployment(deployAppId, wait, waitMaxSeconds)
 }
 
 // QueryUnitDeployment 查询
@@ -367,9 +370,9 @@ func (s *AppManagerServer) QueryUnitDeployment(unitId string, deployAppId int64,
 }
 
 // QueryDeployment 查询
-func (s *AppManagerServer) GetDeployment(deployAppId int64, wait bool) (*jsonvalue.V, error) {
+func (s *AppManagerServer) GetDeployment(deployAppId int64, wait bool, waitMaxSeconds int) (*jsonvalue.V, error) {
 	waitCount := 0
-	for waitCount < maxDeploymentWaitTimes {
+	for waitCount < waitMaxSeconds/deploymentWaitInterval {
 		response, err := s.sendRequest("GET", fmt.Sprintf("deployments/%d", deployAppId), nil, nil, "")
 		if err != nil {
 			return nil, errors2.Wrapf(err, "query deployment failed, deployAppId=%d", deployAppId)
@@ -389,7 +392,7 @@ func (s *AppManagerServer) GetDeployment(deployAppId int64, wait bool) (*jsonval
 		} else {
 			if wait {
 				log.Info().Msgf("not finished yet...")
-				time.Sleep(5 * time.Second)
+				time.Sleep(deploymentWaitInterval * time.Second)
 				waitCount++
 			} else {
 				return data, errors2.Errorf("running deployment")

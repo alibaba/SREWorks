@@ -2,7 +2,7 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 3.6.8+20220915152913620776
+    annotations.appmanager.oam.dev/version: 4.0.6+20221116024020799950
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
     appId: system
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 3.6.8+20220915152913620776
+        annotations.appmanager.oam.dev/version: 4.0.6+20221116024020799950
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -43,5 +43,5 @@ spec:
       kind: Deployment
       replicas: 1
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/system-plugin-account-aliyun-plugin-account-aliyun:1663255753895
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/system-plugin-account-aliyun-plugin-account-aliyun:1668566420764
         name: plugin-account-aliyun

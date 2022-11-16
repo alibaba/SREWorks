@@ -155,6 +155,294 @@ spec:
       toFieldPaths:
       - spec.values
       value:
+        clusterController:
+          enabled: false
+          image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kubecost1/cluster-controller
+          imagePullPolicy: Always
+          tag: v0.0.2
+        global:
+          additionalLabels: {}
+          assetReports:
+            enabled: false
+            reports:
+            - accumulate: false
+              aggregateBy: type
+              filters:
+              - property: cluster
+                value: cluster-one
+              title: Example Asset Report 0
+              window: today
+          grafana:
+            domainName: prod-dataops-grafana.sreworks-dataops
+            enabled: false
+            proxy: false
+          notifications:
+            alertmanager:
+              enabled: false
+          podAnnotations: {}
+          prometheus:
+            enabled: true
+          savedReports:
+            enabled: false
+            reports:
+            - accumulate: false
+              aggregateBy: namespace
+              filters:
+              - property: cluster
+                value: cluster-one,cluster*
+              - property: namespace
+                value: kubecost
+              idle: separate
+              title: Example Saved Report 0
+              window: today
+            - accumulate: false
+              aggregateBy: controllerKind
+              filters:
+              - property: label
+                value: app:cost*,environment:kube*
+              - property: namespace
+                value: kubecost
+              idle: share
+              title: Example Saved Report 1
+              window: month
+            - accumulate: true
+              aggregateBy: service
+              filters: []
+              idle: hide
+              title: Example Saved Report 2
+              window: 2020-11-11T00:00:00Z,2020-12-09T23:59:59Z
+          thanos:
+            enabled: false
+        grafana:
+          grafana.ini:
+            server:
+              root_url: '%(protocol)s://%(domain)s:%(http_port)s/grafana'
+          sidecar:
+            dashboards:
+              enabled: true
+              label: kubecost_grafana_dashboard
+            datasources:
+              enabled: false
+        ingress:
+          annotations: null
+          className: nginx
+          enabled: false
+          hosts:
+          - kubecost-cost-analyzer.c38cca9c474484bdc9873f44f733d8bcd.cn-beijing.alicontainer.com
+          pathType: ImplementationSpecific
+          paths:
+          - /
+          tls: []
+        initChownData:
+          resources: {}
+        initChownDataImage: busybox
+        kubecost:
+          disableServer: false
+          image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kubecost1/server
+          resources:
+            requests:
+              cpu: 100m
+              memory: 55Mi
+        kubecostDeployment:
+          replicas: 1
+        kubecostFrontend:
+          image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kubecost1/frontend
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 10m
+              memory: 55Mi
+        kubecostModel:
+          etl: true
+          etlDailyStoreDurationDays: 91
+          etlHourlyStoreDurationHours: 49
+          image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kubecost1/cost-model
+          imagePullPolicy: Always
+          maxQueryConcurrency: 5
+          outOfClusterPromMetricsEnabled: false
+          resources:
+            requests:
+              cpu: 200m
+              memory: 55Mi
+          warmCache: false
+          warmSavingsCache: true
+        kubecostToken: MzEyMTg5Mzk3QHFxLmNvbQ==xm343yadf98
+        networkCosts:
+          additionalLabels: {}
+          affinity: {}
+          annotations: {}
+          config:
+            destinations:
+              cross-region: []
+              direct-classification: []
+              in-region: []
+              in-zone:
+              - 127.0.0.1
+              - 169.254.0.0/16
+              - 10.0.0.0/8
+              - 172.16.0.0/12
+              - 192.168.0.0/16
+          enabled: false
+          image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kubecost1/kubecost-network-costs
+          imagePullPolicy: Always
+          nodeSelector: {}
+          podMonitor:
+            additionalLabels: {}
+            enabled: false
+          podSecurityPolicy:
+            enabled: false
+          port: 3001
+          priorityClassName: []
+          prometheusScrape: false
+          resources: {}
+          tag: v15.7
+          tolerations: []
+          trafficLogging: true
+        networkPolicy:
+          costAnalyzer:
+            additionalLabels: {}
+            annotations: {}
+            enabled: false
+          denyEgress: true
+          enabled: false
+          sameNamespace: true
+        persistentVolume:
+          accessModes:
+          - ReadWriteOnce
+          dbSize: 100.0Gi
+          enabled: true
+          size: 100Gi
+          storageClass: '{{ Global.STORAGE_CLASS }}'
+        prometheus:
+          alertmanager:
+            enabled: false
+            persistentVolume:
+              enabled: true
+          extraScrapeConfigs: "- job_name: kubecost\n  honor_labels: true\n  scrape_interval: 1m\n  scrape_timeout: 10s\n  metrics_path: /metrics\n  scheme: http\n  dns_sd_configs:\n  - names:\n    - {{ template \"cost-analyzer.serviceName\" . }}\n    type: 'A'\n    port: 9003\n- job_name: kubecost-networking\n  kubernetes_sd_configs:\n    - role: pod\n  relabel_configs:\n  # Scrape only the the targets matching the following metadata\n    - source_labels: [__meta_kubernetes_pod_label_app]\n      action: keep\n      regex:  {{ template \"cost-analyzer.networkCostsName\" . }}\n"
+          kube-state-metrics:
+            disabled: false
+            image:
+              pullPolicy: Always
+              repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kube-state-metrics
+              tag: v1.9.8
+          nodeExporter:
+            enabled: true
+            service:
+              annotations:
+                prometheus.io/scrape: 'true'
+              clusterIP: None
+              hostPort: 9010
+              servicePort: 9010
+              type: ClusterIP
+          pushgateway:
+            enabled: false
+            persistentVolume:
+              enabled: true
+          server:
+            extraArgs:
+              query.max-concurrency: 1
+              query.max-samples: 100000000
+            global:
+              evaluation_interval: 1m
+              external_labels:
+                cluster_id: cluster123
+              scrape_interval: 1m
+              scrape_timeout: 10s
+            persistentVolume:
+              accessModes:
+              - ReadWriteOnce
+              enabled: true
+              size: 100Gi
+              storageClass: '{{ Global.STORAGE_CLASS }}'
+            resources: {}
+            tolerations: []
+          serverFiles:
+            rules:
+              groups:
+              - name: CPU
+                rules:
+                - expr: sum(rate(container_cpu_usage_seconds_total{container_name!=""}[5m]))
+                  record: cluster:cpu_usage:rate5m
+                - expr: rate(container_cpu_usage_seconds_total{container_name!=""}[5m])
+                  record: cluster:cpu_usage_nosum:rate5m
+                - expr: avg(irate(container_cpu_usage_seconds_total{container_name!="POD", container_name!=""}[5m])) by (container_name,pod_name,namespace)
+                  record: kubecost_container_cpu_usage_irate
+                - expr: sum(container_memory_working_set_bytes{container_name!="POD",container_name!=""}) by (container_name,pod_name,namespace)
+                  record: kubecost_container_memory_working_set_bytes
+                - expr: sum(container_memory_working_set_bytes{container_name!="POD",container_name!=""})
+                  record: kubecost_cluster_memory_working_set_bytes
+              - name: Savings
+                rules:
+                - expr: sum(avg(kube_pod_owner{owner_kind!="DaemonSet"}) by (pod) * sum(container_cpu_allocation) by (pod))
+                  labels:
+                    daemonset: 'false'
+                  record: kubecost_savings_cpu_allocation
+                - expr: sum(avg(kube_pod_owner{owner_kind="DaemonSet"}) by (pod) * sum(container_cpu_allocation) by (pod)) / sum(kube_node_info)
+                  labels:
+                    daemonset: 'true'
+                  record: kubecost_savings_cpu_allocation
+                - expr: sum(avg(kube_pod_owner{owner_kind!="DaemonSet"}) by (pod) * sum(container_memory_allocation_bytes) by (pod))
+                  labels:
+                    daemonset: 'false'
+                  record: kubecost_savings_memory_allocation_bytes
+                - expr: sum(avg(kube_pod_owner{owner_kind="DaemonSet"}) by (pod) * sum(container_memory_allocation_bytes) by (pod)) / sum(kube_node_info)
+                  labels:
+                    daemonset: 'true'
+                  record: kubecost_savings_memory_allocation_bytes
+                - expr: label_replace(sum(kube_pod_status_phase{phase="Running",namespace!="kube-system"} > 0) by (pod, namespace), "pod_name", "$1", "pod", "(.+)")
+                  record: kubecost_savings_running_pods
+                - expr: sum(rate(container_cpu_usage_seconds_total{container_name!="",container_name!="POD",instance!=""}[5m])) by (namespace, pod_name, container_name, instance)
+                  record: kubecost_savings_container_cpu_usage_seconds
+                - expr: sum(container_memory_working_set_bytes{container_name!="",container_name!="POD",instance!=""}) by (namespace, pod_name, container_name, instance)
+                  record: kubecost_savings_container_memory_usage_bytes
+                - expr: avg(sum(kube_pod_container_resource_requests{resource="cpu", unit="core", namespace!="kube-system"}) by (pod, namespace, instance)) by (pod, namespace)
+                  record: kubecost_savings_pod_requests_cpu_cores
+                - expr: avg(sum(kube_pod_container_resource_requests{resource="memory", unit="byte", namespace!="kube-system"}) by (pod, namespace, instance)) by (pod, namespace)
+                  record: kubecost_savings_pod_requests_memory_bytes
+        prometheusRule:
+          additionalLabels: {}
+          enabled: false
+        reporting:
+          errorReporting: true
+          logCollection: true
+          productAnalytics: true
+          valuesReporting: true
+        service:
+          annotations: {}
+          labels: {}
+          port: 9090
+          targetPort: 9090
+          type: ClusterIP
+        serviceMonitor:
+          additionalLabels: {}
+          enabled: false
+        supportNFS: false
+    - name: name
+      toFieldPaths:
+      - spec.name
+      value: '{{ Global.STAGE_ID }}-dataops-kubecost'
+    revisionName: HELM|kubecost|_
+    scopes:
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Cluster
+        name: '{{ Global.CLUSTER_ID }}'
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Namespace
+        name: '{{ Global.NAMESPACE_ID }}'
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Stage
+        name: '{{ Global.STAGE_ID }}'
+    traits: []
+  - dependencies:
+    - component: RESOURCE_ADDON|system-env@system-env
+    parameterValues:
+    - name: values
+      toFieldPaths:
+      - spec.values
+      value:
         alertmanager:
           enabled: false
         configmapReload:
@@ -423,6 +711,11 @@ spec:
             - access: proxy
               httpMethod: POST
               name: dataops-prometheus
+              type: prometheus
+              url: http://{{ Global.DATA_PROM_HOST}}:{{ Global.DATA_PROM_PORT }}
+            - access: proxy
+              httpMethod: POST
+              name: prometheus-cluster-default
               type: prometheus
               url: http://{{ Global.DATA_PROM_HOST}}:{{ Global.DATA_PROM_PORT }}
             - access: proxy

@@ -167,6 +167,8 @@ spec:
     value: ${NAMESPACE_ID}
   - name: STAGE_ID
     value: prod
+  - name: APP_ID
+    value: health
   - name: DATA_DB_PORT
     value: ${DATAOPS_DB_PORT}
   - name: DATA_DB_USER

@@ -696,6 +696,8 @@ spec:
     value: ${NAMESPACE_ID}
   - name: STAGE_ID
     value: prod
+  - name: APP_ID
+    value: dataops
   - name: KAFKA_ENDPOINT
     value: ${KAFKA_ENDPOINT}:9092
   - name: DATA_ES_HOST

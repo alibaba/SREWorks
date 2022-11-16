@@ -193,6 +193,8 @@ spec:
     value: ${NAMESPACE_ID}
   - name: STAGE_ID
     value: prod
+  - name: APP_ID
+    value: cluster
   policies: []
   workflow:
     steps: []

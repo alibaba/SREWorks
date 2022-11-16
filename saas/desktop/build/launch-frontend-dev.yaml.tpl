@@ -81,6 +81,8 @@ spec:
     value: ${NAMESPACE_ID}
   - name: STAGE_ID
     value: dev
+  - name: APP_ID
+    value: desktop
   policies: []
   workflow:
     steps: []

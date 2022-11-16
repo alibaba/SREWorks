@@ -805,6 +805,8 @@ spec:
     value: ''
   - name: STAGE_ID
     value: ''
+  - name: APP_ID
+    value: dataops
   policies: []
   workflow:
     steps: []

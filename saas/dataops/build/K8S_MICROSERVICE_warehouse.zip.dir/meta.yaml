@@ -2,7 +2,7 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 8.4.1+20221116153657343228
+    annotations.appmanager.oam.dev/version: 8.4.2+20221117035135134557
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
     appId: dataops
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 8.4.1+20221116153657343228
+        annotations.appmanager.oam.dev/version: 8.4.2+20221117035135134557
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -43,7 +43,7 @@ spec:
       kind: Deployment
       replicas: 1
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/dataops-warehouse-warehouse:1668613017635
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/dataops-warehouse-warehouse:1668657095330
         name: warehouse
       env:
         DATA_ES_HOST: '{{ Global.DATA_ES_HOST }}'
@@ -56,5 +56,5 @@ spec:
         DATA_DB_WAREHOUSE_NAME: '{{ Global.DATA_DB_WAREHOUSE_NAME }}'
         DATA_DB_PORT: '{{ Global.DATA_DB_PORT }}'
       initContainers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/dataops-warehouse-db-migration:1668613017635
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/dataops-warehouse-db-migration:1668657095330
         name: db-migration

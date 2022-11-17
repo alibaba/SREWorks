@@ -300,7 +300,6 @@ spec:
             enabled: false
             persistentVolume:
               enabled: true
-          extraScrapeConfigs: "- job_name: kubecost\n  honor_labels: true\n  scrape_interval: 1m\n  scrape_timeout: 10s\n  metrics_path: /metrics\n  scheme: http\n  dns_sd_configs:\n  - names:\n    - {{ template \"cost-analyzer.serviceName\" . }}\n    type: 'A'\n    port: 9003\n- job_name: kubecost-networking\n  kubernetes_sd_configs:\n    - role: pod\n  relabel_configs:\n  # Scrape only the the targets matching the following metadata\n    - source_labels: [__meta_kubernetes_pod_label_app]\n      action: keep\n      regex:  {{ template \"cost-analyzer.networkCostsName\" . }}\n"
           kube-state-metrics:
             disabled: false
             image:

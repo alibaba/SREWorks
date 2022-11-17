@@ -81,7 +81,7 @@ import org.springframework.util.StringUtils;
 @Slf4j
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
-    private static final ComponentTypeEnum COMPONENT_TYPE = ComponentTypeEnum.K8S_MICROSERVICE;
+    private static final String COMPONENT_TYPE = ComponentTypeEnum.K8S_MICROSERVICE.toString();
     private static final String HTTP_PREFIX = "http://";
     private static final String HTTPS_PREFIX = "https://";
     private static final String VOLUME_PATH = "/app/kaniko/";
@@ -117,7 +117,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
     public void init() {
         this.api = kanikoInformerFactory.getDefaultApi();
         publisher.publishEvent(new ComponentPackageLoadEvent(
-            this, COMPONENT_TYPE.name(), this.getClass().getSimpleName()));
+            this, COMPONENT_TYPE, this.getClass().getSimpleName()));
     }
 
     /**

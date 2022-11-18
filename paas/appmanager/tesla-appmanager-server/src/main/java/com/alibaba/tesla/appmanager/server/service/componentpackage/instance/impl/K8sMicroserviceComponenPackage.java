@@ -183,7 +183,8 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
             }
         }
 
-        //5. insert check status task
+        //5. insert check status task, after 60s check status!
+        Thread.sleep(60000);
         waitTaskMap.put(taskDO.getId(), waitPod);
     }
 
@@ -286,7 +287,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
                         } catch (ApiException e) {
                             log.warn("action=checkTaskStatus|| can not read pod:{} status!", runningPod, e);
                             waitePod.addAccessError();
-                            if (waitePod.getAccessError()>=5) {
+                            if (waitePod.getAccessError()>=10) {
                                 String message = String.format("\nCan not read pod:%s status! \nException:%s", runningPod, ExceptionUtil.getStackTrace(e));
                                 waitePod.appendLog(BuildUtil.genLogContent(runningPod, message));
                                 setTaskFailed(taskId);

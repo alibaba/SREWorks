@@ -195,6 +195,8 @@ spec:
     value: ${NAMESPACE_ID}
   - name: STAGE_ID
     value: prod
+  - name: APP_ID
+    value: search
   - name: ELASTICSEARCH_HOST
     value: ${DATA_ES_HOST}
   - name: ELASTICSEARCH_PORT

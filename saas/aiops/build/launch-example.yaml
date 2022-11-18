@@ -189,6 +189,8 @@ spec:
     value: ''
   - name: STAGE_ID
     value: ''
+  - name: APP_ID
+    value: aiops
   policies: []
   workflow:
     steps: []

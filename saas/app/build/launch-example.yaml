@@ -164,6 +164,8 @@ spec:
     value: ''
   - name: STAGE_ID
     value: ''
+  - name: APP_ID
+    value: app
   policies: []
   workflow:
     steps: []

@@ -61,8 +61,8 @@ spec:
         image: 
           repository: "${GRAFANA_IMAGE}"
           tag: "${GRAFANA_IMAGE_TAG}"
-        #plugins:
-        #  - marcusolsson-json-datasource
+        plugins:
+          - marcusolsson-json-datasource
         datasources:
           datasources.yaml:
             apiVersion: 1
@@ -100,11 +100,16 @@ spec:
               access: proxy
               httpMethod: POST
               url: http://${DATA_PROM_HOST}:${DATA_PROM_PORT}
-            # - name: dataset
-            #  type: marcusolsson-json-datasource
-            #  url: http://{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-dataset.{{ Global.NAMESPACE_ID }}
-            #  access: proxy
-            #  isDefault: false
+            - name: prometheus-cluster-default
+              type: prometheus
+              access: proxy
+              httpMethod: POST
+              url: http://${DATA_PROM_HOST}:${DATA_PROM_PORT}
+            - name: dataset
+              type: marcusolsson-json-datasource
+              url: http://${Global.STAGE_ID}-${Global.APP_ID}-dataset.${Global.NAMESPACE_ID}
+              access: proxy
+              isDefault: false
         dashboards:
           flink:
             flink-dashboard:

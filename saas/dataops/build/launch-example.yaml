@@ -772,7 +772,7 @@ spec:
           storageType: elasticsearch
         ui:
           image:
-            repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-ui:9.2.0
+            repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-ui
             tag: 9.2.0
     - name: name
       toFieldPaths:

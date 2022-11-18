@@ -62,7 +62,7 @@ data:
         envsubst < /root/saas/desktop/build/launch-frontend-dev.yaml.tpl > /root/saas/desktop/launch-frontend-dev.yaml 
 
         if [[ "$ONLY_BASE" == "true" ]] ; then
-           sed -i 's/searchConfig\\":true/searchConfig\\":false/g' saas/desktop/build/INTERNAL_ADDON_productopsv2.zip.dir/content.json
+           sed -i 's/searchConfig\\":true/searchConfig\\":false/g' /root/saas/desktop/build/INTERNAL_ADDON_productopsv2.zip.dir/content.json
         fi
 
         python /app/pack.py --src /root/saas/desktop/build --dest /root/saas/desktop/build.zip

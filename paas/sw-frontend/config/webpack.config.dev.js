@@ -16,7 +16,6 @@ const paths = require('./paths');
 //const cdnPath = require('./cdnPath');
 const GlobalTheme = require('./globalTheme');
 const threadLoader = require('thread-loader');
-// const CopyWebpackPlugin = require('copy-webpack-plugin');
 const publicPath = "/";
 // `publicUrl` is just like `publicPath`, but we will provide it to our app
 // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
@@ -165,7 +164,6 @@ module.exports = {
                         use: [
                             'thread-loader',
                             {
-                                // loader: require.resolve('babel-loader'),
                                 loader: 'babel-loader',
                                 options: {
                                     // plugins: [

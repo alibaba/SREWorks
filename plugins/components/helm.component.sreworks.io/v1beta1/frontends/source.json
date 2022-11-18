@@ -20,9 +20,5 @@
         "type": "git"
     },{
         "type": "team-git"
-    },{
-        "type": "empty"
-    },{
-        "type": "test"
     }]
 }

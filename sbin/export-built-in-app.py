@@ -44,7 +44,7 @@ VALUES_MAP = {
         "APPMANAGER_USERNAME": "${APPMANAGER_USERNAME}",
         "APPMANAGER_PASSWORD": "${APPMANAGER_PASSWORD}",
         "APPMANAGER_CLIENT_ID": "${APPMANAGER_CLIENT_ID}",
-        "APPMANAGER_CLIENT_SECRET": "${APPMANAGER_CLIENT_SECRET}",       
+        "APPMANAGER_CLIENT_SECRET": "${APPMANAGER_CLIENT_SECRET}", 
     },
     "componentParameterValues":{
     }
@@ -260,6 +260,9 @@ for buildIn in builtInList:
             },{
                 "name": "STAGE_ID",
                 "value": "",
+            },{
+                "name": "APP_ID",
+                "value": buildIn["appId"],
             }],
             "components": [],
             "policies": [],

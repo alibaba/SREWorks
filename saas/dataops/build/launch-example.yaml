@@ -137,6 +137,150 @@ spec:
       toFieldPaths:
       - spec.values
       value:
+        clusterController:
+          enabled: false
+          image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kubecost1/cluster-controller
+          imagePullPolicy: Always
+          tag: v0.0.2
+        global:
+          grafana:
+            domainName: prod-dataops-grafana.sreworks-dataops
+            enabled: false
+            proxy: false
+          prometheus:
+            enabled: false
+            fqdn: http://{{ Global.DATA_PROM_HOST}}:{{ Global.DATA_PROM_PORT }}
+          thanos:
+            enabled: false
+        grafana:
+          grafana.ini:
+            server:
+              root_url: '%(protocol)s://%(domain)s:%(http_port)s/grafana'
+          sidecar:
+            dashboards:
+              enabled: true
+              label: kubecost_grafana_dashboard
+            datasources:
+              enabled: false
+        ingress:
+          annotations: null
+          className: nginx
+          enabled: false
+          hosts:
+          - kubecost-cost-analyzer.c38cca9c474484bdc9873f44f733d8bcd.cn-beijing.alicontainer.com
+          pathType: ImplementationSpecific
+          paths:
+          - /
+          tls: []
+        kubecost:
+          disableServer: false
+          image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kubecost1/server
+          resources:
+            requests:
+              cpu: 100m
+              memory: 55Mi
+        kubecostDeployment:
+          replicas: 1
+        kubecostFrontend:
+          image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kubecost1/frontend
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 10m
+              memory: 55Mi
+        kubecostModel:
+          image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kubecost1/cost-model
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 200m
+              memory: 55Mi
+        kubecostToken: MzEyMTg5Mzk3QHFxLmNvbQ==xm343yadf98
+        networkCosts:
+          enabled: false
+          image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kubecost1/kubecost-network-costs
+          imagePullPolicy: Always
+          podSecurityPolicy:
+            enabled: false
+          port: 3001
+          prometheusScrape: false
+          resources: {}
+          tag: v15.7
+          trafficLogging: true
+        persistentVolume:
+          accessModes:
+          - ReadWriteOnce
+          dbSize: 100.0Gi
+          enabled: true
+          size: 100Gi
+          storageClass: '{{ Global.STORAGE_CLASS }}'
+        prometheus:
+          alertmanager:
+            enabled: false
+            persistentVolume:
+              enabled: true
+          kube-state-metrics:
+            disabled: false
+            image:
+              pullPolicy: Always
+              repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kube-state-metrics
+              tag: v1.9.8
+          nodeExporter:
+            enabled: true
+            service:
+              annotations:
+                prometheus.io/scrape: 'true'
+              clusterIP: None
+              hostPort: 9010
+              servicePort: 9010
+              type: ClusterIP
+          pushgateway:
+            enabled: false
+            persistentVolume:
+              enabled: true
+          server:
+            extraArgs:
+              query.max-concurrency: 1
+              query.max-samples: 100000000
+            global:
+              evaluation_interval: 1m
+              external_labels:
+                cluster_id: cluster123
+              scrape_interval: 1m
+              scrape_timeout: 10s
+            persistentVolume:
+              accessModes:
+              - ReadWriteOnce
+              enabled: true
+              size: 100Gi
+              storageClass: '{{ Global.STORAGE_CLASS }}'
+            resources: {}
+            tolerations: []
+        service:
+          annotations: {}
+          labels: {}
+          port: 9090
+          targetPort: 9090
+          type: ClusterIP
+    - name: name
+      toFieldPaths:
+      - spec.name
+      value: '{{ Global.STAGE_ID }}-dataops-kubecost'
+    revisionName: HELM|kubecost|_
+    scopes:
+    - scopeRef:
+        apiVersion: core.oam.dev/v1alpha2
+        kind: Namespace
+        spec:
+          autoCreate: true
+    traits: []
+  - dependencies:
+    - component: RESOURCE_ADDON|system-env@system-env
+    parameterValues:
+    - name: values
+      toFieldPaths:
+      - spec.values
+      value:
         alertmanager:
           enabled: false
         configmapReload:
@@ -384,6 +528,11 @@ spec:
             - access: proxy
               httpMethod: POST
               name: dataops-prometheus
+              type: prometheus
+              url: http://{{ Global.DATA_PROM_HOST}}:{{ Global.DATA_PROM_PORT }}
+            - access: proxy
+              httpMethod: POST
+              name: prometheus-cluster-default
               type: prometheus
               url: http://{{ Global.DATA_PROM_HOST}}:{{ Global.DATA_PROM_PORT }}
             - access: proxy
@@ -805,6 +954,8 @@ spec:
     value: ''
   - name: STAGE_ID
     value: ''
+  - name: APP_ID
+    value: dataops
   policies: []
   workflow:
     steps: []

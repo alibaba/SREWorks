@@ -45,13 +45,13 @@ const configFn = (name) => ({
   external: ['react', 'react-dom'],
 })
 
-const umdConfig = {
+const mainConfig = {
   input: './src/index.js',
   output: [
     {
       file: './dist/index-umd.js',
       format: 'umd',
-      name: 'myLib',
+      name: 'sre_framework',
     },
     {
       file: './dist/index-es.js',
@@ -65,6 +65,6 @@ const umdConfig = {
   sourcemap: false,
   ...configFn('index'),
 }
-umdConfig.plugins.unshift(del({ targets: ['lib/*', 'dist/*'] }))
+mainConfig.plugins.unshift(del({ targets: ['lib/*', 'dist/*'] }))
 
-export default [umdConfig]
+export default [mainConfig]

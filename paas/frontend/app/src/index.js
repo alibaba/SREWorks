@@ -5,7 +5,7 @@ import router from './router'
 import AppService from './services/appService'
 //不能去掉用于引入less.js来换肤使用
 import less from 'less'
-import 'antd/dist/antd.less'
+// import 'antd/dist/antd.less'
 import 'antd/dist/antd.css'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'

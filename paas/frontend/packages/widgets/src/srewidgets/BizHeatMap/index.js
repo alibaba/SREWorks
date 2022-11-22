@@ -1,3 +1,10 @@
+/*
+ * @version: 2.0.0
+ * @Author: deeham.ww
+ * @Date: 2022-09-21 15:37:54
+ * @LastEditors: deeham.ww
+ * @LastEditTime: 2022-11-22 14:04:38
+ */
 import React, { Component } from 'react'
 import { safeEval, ChartTool } from '@sreworks/shared-utils'
 import { HeatmapChart } from 'bizcharts'

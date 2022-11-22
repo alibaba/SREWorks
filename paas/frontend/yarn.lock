@@ -31,28 +31,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ant-design/compatible@npm:1.0.8":
-  version: 1.0.8
-  resolution: "@ant-design/compatible@npm:1.0.8"
-  dependencies:
-    "@ant-design/icons": ^4.0.0
-    classnames: ^2.2.6
-    lodash.camelcase: ^4.3.0
-    lodash.upperfirst: ^4.3.1
-    omit.js: ^1.0.2
-    rc-animate: ^2.10.2
-    rc-editor-mention: ^1.1.13
-    rc-form: ^2.4.10
-    rc-util: ^4.10.0
-  peerDependencies:
-    antd: ">=3.0.0"
-    react: ">=16.0.0"
-    react-dom: ">=16.0.0"
-  checksum: 81616db075231eacc523aabe77a5e6f05f419794941185e8022da1f4df050afa90e3e0b14ef727282b7c6c701dbc4e3d3af10008188d61dd5fc9537f59cf970f
-  languageName: node
-  linkType: hard
-
-"@ant-design/compatible@npm:^1.1.2":
+"@ant-design/compatible@npm:1.1.2, @ant-design/compatible@npm:^1.1.2":
   version: 1.1.2
   resolution: "@ant-design/compatible@npm:1.1.2"
   dependencies:
@@ -5573,6 +5552,8 @@ __metadata:
   resolution: "@sreworks/app@workspace:app"
   dependencies:
     "@ant-design/compatible": ^1.1.2
+    "@ant-design/icons": ^4.7.0
+    "@ant-design/pro-card": ^2.0.10
     "@babel/cli": 7.18.10
     "@babel/core": 7.18.13
     "@babel/plugin-transform-runtime": 7.19.6
@@ -5581,12 +5562,13 @@ __metadata:
     "@sreworks/components": ^0.0.0-alpha.0
     "@sreworks/framework": ^0.0.0-alpha.0
     "@sreworks/shared-utils": ^0.0.0-alpha.0
-    "@sreworks/widgets": ^0.0.0-alpha.0
     antd: 4.17.4
     antd-theme-generator: 1.1.6
     babel-loader: 8.2.5
     babel-preset-react-app: 9.1.2
     bizcharts: 4.1.15
+    brace: ^0.11.1
+    compression-webpack-plugin: ^8.0.1
     copy-webpack-plugin: ^11.0.0
     cross-env: ^7.0.3
     css-loader: ^6.7.1
@@ -5600,6 +5582,9 @@ __metadata:
     fs-extra: 7.0.0
     history: ^5.3.0
     html-webpack-plugin: ^5.5.0
+    html2canvas: ^1.4.1
+    jquery: ^3.6.1
+    js-yaml: ^4.1.0
     less: ^4.1.3
     less-loader: ^11.1.0
     less-vars-to-js: 1.3.0
@@ -5741,7 +5726,6 @@ __metadata:
     "@babel/preset-react": 7.9.4
     "@rollup/plugin-image": ^3.0.0
     "@rollup/plugin-json": ^4.0.3
-    "@rollup/plugin-node-resolve": ^11.2.1
     "@rollup/plugin-replace": ^5.0.1
     "@rollup/plugin-url": ^8.0.0
     "@sreworks/components": ^0.0.0-alpha.0
@@ -5800,12 +5784,15 @@ __metadata:
     rollup-plugin-peer-deps-external: ^2.2.4
     rollup-plugin-postcss: ^4.0.2
     rollup-plugin-require-context: ^1.0.1
-    rollup-plugin-sourcemaps: ^0.6.3
     rollup-plugin-terser: ^6.1.0
     sass: 1.54.5
     sortablejs: 1.13.0
     uuid: ^9.0.0
   peerDependencies:
+    "@ant-design/compatible": ^1.1.2
+    "@ant-design/icons": ^4.7.0
+    "@ant-design/pro-card": ^2.0.10
+    antd: 4.17.4
     react: ^16.14.0
     react-dom: ^16.14.0
   languageName: unknown
@@ -5939,7 +5926,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@sreworks/widgets@workspace:packages/widgets"
   dependencies:
-    "@ant-design/compatible": 1.0.8
+    "@ant-design/compatible": 1.1.2
     "@ant-design/pro-card": ^2.0.10
     "@babel/cli": ^7.8.4
     "@babel/core": ^7.9.0
@@ -5993,6 +5980,9 @@ __metadata:
     rollup-plugin-terser: ^7.0.2
     sass: 1.54.5
   peerDependencies:
+    "@ant-design/compatible": 1.1.2
+    "@ant-design/pro-card": ^2.0.10
+    antd: 4.17.4
     react: ^16.14.0
     react-dom: ^16.14.0
   languageName: unknown
@@ -12230,6 +12220,18 @@ __metadata:
   dependencies:
     mime-db: ">= 1.43.0 < 2"
   checksum: 58321a85b375d39230405654721353f709d0c1442129e9a17081771b816302a012471a9b8f4864c7dbe02eef7f2aaac3c614795197092262e94b409c9be108f0
+  languageName: node
+  linkType: hard
+
+"compression-webpack-plugin@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "compression-webpack-plugin@npm:8.0.1"
+  dependencies:
+    schema-utils: ^3.0.0
+    serialize-javascript: ^6.0.0
+  peerDependencies:
+    webpack: ^5.1.0
+  checksum: 6290b8be8a01d6f118fcfae98b01e35c1f3505a198dafc08daa6a239fd8c0f8344ae1c964fa6fce8805b43be56954d54241f386a99f7d5450fb683a13cf56fb6
   languageName: node
   linkType: hard
 

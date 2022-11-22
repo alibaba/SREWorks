@@ -21,7 +21,7 @@
     "react-dom": "16.14.0"
   },
   "dependencies": {
-    "@ant-design/compatible": "1.0.8",
+    "@ant-design/compatible": "1.1.2",
     "@ant-design/pro-card": "^2.0.10",
     "@sreworks/components": "^0.0.0-alpha.0",
     "@sreworks/shared-utils": "^0.0.0-alpha.0",

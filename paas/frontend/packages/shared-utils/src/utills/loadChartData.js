@@ -1,3 +1,11 @@
+/*
+ * @version: 2.0.0
+ * @Author: deeham.ww
+ * @Date: 2022-09-21 15:37:54
+ * @LastEditors: deeham.ww
+ * @LastEditTime: 2022-11-22 14:02:25
+ */
+
 import httpClient from './httpClient'
 import safeEval from './SafeEval'
 import * as util from './utils'

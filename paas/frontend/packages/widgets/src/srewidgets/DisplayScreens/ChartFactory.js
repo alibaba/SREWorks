@@ -1,3 +1,10 @@
+/*
+ * @version: 2.0.0
+ * @Author: deeham.ww
+ * @Date: 2022-03-23 12:00:04
+ * @LastEditors: deeham.ww
+ * @LastEditTime: 2022-11-22 14:03:44
+ */
 import React, { Component } from 'react'
 import BChart from '../BChart'
 import Bullet from '../Bullet'

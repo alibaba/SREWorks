@@ -1,3 +1,10 @@
+/*
+ * @version: 2.0.0
+ * @Author: deeham.ww
+ * @Date: 2022-11-01 17:21:54
+ * @LastEditors: deeham.ww
+ * @LastEditTime: 2022-11-22 14:08:10
+ */
 import babel from 'rollup-plugin-babel'
 import commonjs from 'rollup-plugin-commonjs'
 import postcss from 'rollup-plugin-postcss'
@@ -60,7 +67,7 @@ const configFn = (name) => ({
   external: ['react', 'react-dom'],
 })
 
-const comConfigs = Object.keys(componentsObject).map((name) => {
+const libConfigs = Object.keys(componentsObject).map((name) => {
   const config = configFn(name)
   config.input = [componentsObject[name]]
   config.output = {
@@ -70,13 +77,13 @@ const comConfigs = Object.keys(componentsObject).map((name) => {
   return config
 })
 
-const umdConfig = {
+const mainConfig = {
   input: './src/index.js',
   output: [
     {
       file: './dist/index-umd.js',
       format: 'umd',
-      name: 'myLib',
+      name: 'sre_comp',
     },
     {
       file: './dist/index-es.js',
@@ -90,6 +97,6 @@ const umdConfig = {
   sourcemap: false,
   ...configFn('index'),
 }
-umdConfig.plugins.unshift(del({ targets: ['lib/*', 'dist/*'] }))
+mainConfig.plugins.unshift(del({ targets: ['lib/*', 'dist/*'] }))
 
-export default [umdConfig, ...comConfigs]
+export default [mainConfig, ...libConfigs]

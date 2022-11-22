@@ -1,5 +1,3 @@
-// import resolve from '@rollup/plugin-node-resolve'
-// import commonjs from '@rollup/plugin-commonjs'
 import babel from 'rollup-plugin-babel'
 import commonjs from 'rollup-plugin-commonjs'
 import postcss from 'rollup-plugin-postcss'
@@ -35,13 +33,13 @@ const configFn = (name) => ({
   external: ['react', 'react-dom'],
 })
 
-const umdConfig = {
+const mainConfig = {
   input: './src/index.js',
   output: [
     {
       file: './dist/index-umd.js',
       format: 'umd',
-      name: 'myLib',
+      name: 'sre_utils',
     },
     {
       file: './dist/index-es.js',
@@ -55,6 +53,6 @@ const umdConfig = {
   sourcemap: false,
   ...configFn('index'),
 }
-umdConfig.plugins.unshift(del({ targets: ['lib/*', 'dist/*'] }))
+mainConfig.plugins.unshift(del({ targets: ['lib/*', 'dist/*'] }))
 
-export default [umdConfig]
+export default [mainConfig]

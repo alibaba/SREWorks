@@ -1,3 +1,10 @@
+/*
+ * @version: 2.0.0
+ * @Author: deeham.ww
+ * @Date: 2022-11-16 11:32:36
+ * @LastEditors: deeham.ww
+ * @LastEditTime: 2022-11-22 14:50:54
+ */
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
@@ -7,14 +14,20 @@ const polyfillPlugin = require('node-polyfill-webpack-plugin')
 const webpack = require('webpack')
 const paths = require('./paths')
 const GlobalTheme = require('./globalTheme');
-const copyWebpackPlugin = require('copy-webpack-plugin');
+const copyWebpackPlugin = require('copy-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 const { NODE_ENV } = process.env
 const DEV = NODE_ENV === 'development'
 module.exports = {
-  entry: [paths.appIndexJs],
+  mode: DEV ? 'development' : 'production',
+  devtool: DEV ? 'source-map' : false,
+  entry: {
+    index: paths.appIndexJs,
+    ven_ant: ['@ant-design/compatible','@ant-design/icons'],
+  },
   output: {
     path: path.join(__dirname, '../build'),
     filename: 'static/js/[name].[chunkhash:8].js',
@@ -35,8 +48,14 @@ module.exports = {
       },
     },
   },
-  mode: DEV ? 'development' : 'production',
-  devtool: DEV ? 'source-map' : false,
+  // cache: {
+  //   type: 'filesystem', // 使用文件缓存
+  // },
+  resolve: {
+    alias: paths.namespace,
+    modules: ['node_modules'],
+    extensions: ['.json', '.js', '.jsx', '.less', 'scss'],
+  },
   externals: {
     'react': 'React',
     'react-dom': 'ReactDOM',
@@ -46,7 +65,11 @@ module.exports = {
     "systemjs": 'systemjs',
     "element-ui": "ELEMENT",
     "vue": "Vue",
-    "vuera": "vuera"
+    "vuera": "vuera",
+    "bizcharts": "BizCharts",
+    "lodash": "_",
+    "html2canvas": "html2canvas",
+    "jquery": "jQuery"
   },
   module: {
     rules: [
@@ -131,7 +154,7 @@ module.exports = {
             ],
           },
           {
-            test: /\.(jpg|png|svg)$/i,
+            test: /\.(jpg|png|svg|jpeg|gif)$/i,
             type: 'asset/resource',
           },
           {
@@ -171,15 +194,19 @@ module.exports = {
           },
         },
       }),
+      new CssMinimizerPlugin()
     ],
     splitChunks: {
       chunks: 'all',
-    },
-  },
-  resolve: {
-    alias: paths.namespace,
-    modules: ['node_modules'],
-    extensions: ['.json', '.js', '.jsx', '.less', 'scss'],
+      minSize: 3000,
+      cacheGroups:{
+        vendors:{ // node_modules里的代码
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10, // 优先级
+          enforce: true 
+        },
+      }
+    }
   },
   plugins: [
     new polyfillPlugin(),
@@ -209,17 +236,26 @@ module.exports = {
     }
     ],
   }),
-   !DEV && new CompressionPlugin({
-    filename: "[path][base].gz",
-    exclude: [        
-      path.resolve(__dirname, 'common_vendor'),             
-    ],
-    algorithm: "gzip",
-    test: /\.(js|css|png|svg|jpg)$/,
-    threshold: 10240,// 大于10kb的才被压缩
-    minRatio: 0.8,//压缩比例
-    deleteOriginalAssets: true,
+  new webpack.ProgressPlugin({
+    activeModules: true,         
+    entries: true,  			   
+    modules: false,              
+    modulesCount: 5000,          
+    profile: false,         	   
+    dependencies: false,         
+    dependenciesCount: 10000,    
   }),
+  //  !DEV && new CompressionPlugin({
+  //   filename: "[path][base].gz",
+  //   exclude: [        
+  //     path.resolve(__dirname, 'common_vendor'),             
+  //   ],
+  //   algorithm: "gzip",
+  //   test: /\.(js|css|png|svg|jpg)$/,
+  //   threshold: 10240,// 大于10kb的才被压缩
+  //   minRatio: 0.8,//压缩比例
+  //   deleteOriginalAssets: true,
+  // }),
   new BundleAnalyzerPlugin(),
   ].filter(Boolean),
 }

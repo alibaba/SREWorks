@@ -1,3 +1,10 @@
+/*
+ * @version: 2.0.0
+ * @Author: deeham.ww
+ * @Date: 2022-11-03 00:13:28
+ * @LastEditors: deeham.ww
+ * @LastEditTime: 2022-11-22 14:10:37
+ */
 import babel from 'rollup-plugin-babel'
 import commonjs from 'rollup-plugin-commonjs'
 import postcss from 'rollup-plugin-postcss'
@@ -57,10 +64,10 @@ const configFn = (name) => ({
     }),
     terser(),
   ],
-  external: ['react', 'react-dom'],
+  external: ['react', 'react-dom', 'bizcharts'],
 })
 
-const comConfigs = Object.keys(componentsObject).map((name) => {
+const libConfigs = Object.keys(componentsObject).map((name) => {
   const config = configFn(name)
   config.input = [componentsObject[name]]
   config.output = {
@@ -70,13 +77,13 @@ const comConfigs = Object.keys(componentsObject).map((name) => {
   return config
 })
 
-const umdConfig = {
+const mainConfig = {
   input: './src/index.js',
   output: [
     {
       file: './dist/index-umd.js',
       format: 'umd',
-      name: 'myLib',
+      name: 'sre_widgets',
     },
     {
       file: './dist/index-es.js',
@@ -89,6 +96,6 @@ const umdConfig = {
   ],
   ...configFn('index'),
 }
-umdConfig.plugins.unshift(del({ targets: ['lib/*', 'dist/*'] }))
+mainConfig.plugins.unshift(del({ targets: ['lib/*', 'dist/*'] }))
 
-export default [umdConfig, ...comConfigs]
+export default [mainConfig, ...libConfigs]

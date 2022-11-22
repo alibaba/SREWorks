@@ -94,7 +94,7 @@ redis:
   
 
 zookeeper:
-  enabled: true
+  enabled: false
 
   image:
     registry: sreworks-registry.cn-beijing.cr.aliyuncs.com
@@ -111,7 +111,7 @@ kruise:
   enabled: true
 
 kafka:
-  enabled: true
+  enabled: false
 
   persistence:
     size: 20Gi

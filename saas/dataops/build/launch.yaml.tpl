@@ -29,7 +29,7 @@ spec:
     - name: Global.MINIO_ENDPOINT
       value: sreworks-minio.sreworks:9000
     - name: Global.KAFKA_URL
-      value: sreworks-kafka.sreworks:9092
+      value: prod-dataops-kafka.sreworks-dataops:9092
     - name: Global.HEALTH_ENDPOINT
       value: '{{Global.STAGE_ID}}-health-health.sreworks.svc.cluster.local:80'
     - name: Global.VVP_ENDPOINT
@@ -155,6 +155,45 @@ spec:
       toFieldPaths:
       - spec.values
       value:
+        global:
+          storageClass: '{{ Global.STORAGE_CLASS }}'
+        image:
+          registry: sreworks-registry.cn-beijing.cr.aliyuncs.com
+          repository: hub/kafka
+        persistence:
+          size: 20Gi
+        zookeeper:
+          image:
+            registry: sreworks-registry.cn-beijing.cr.aliyuncs.com
+            repository: hub/zookeeper
+          persistence:
+            size: 20Gi
+    - name: name
+      toFieldPaths:
+      - spec.name
+      value: '{{ Global.STAGE_ID }}-dataops-kafka'
+    revisionName: HELM|kafka|_
+    scopes:
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Cluster
+        name: '{{ Global.CLUSTER_ID }}'
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Namespace
+        name: '{{ Global.NAMESPACE_ID }}'
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Stage
+        name: '{{ Global.STAGE_ID }}'
+    traits: []
+  - dependencies:
+    - component: RESOURCE_ADDON|system-env@system-env
+    parameterValues:
+    - name: values
+      toFieldPaths:
+      - spec.values
+      value:
         clusterController:
           enabled: false
           image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kubecost1/cluster-controller
@@ -165,6 +204,10 @@ spec:
             domainName: prod-dataops-grafana.sreworks-dataops
             enabled: false
             proxy: false
+          notifications:
+            alertmanager:
+              enabled: false
+              fqdn: http://{{ Global.DATA_PROM_HOST}}:{{ Global.DATA_PROM_PORT }}
           prometheus:
             enabled: false
             fqdn: http://{{ Global.DATA_PROM_HOST}}:{{ Global.DATA_PROM_PORT }}
@@ -213,6 +256,9 @@ spec:
             requests:
               cpu: 200m
               memory: 55Mi
+        kubecostProductConfigs:
+          clusterName: cluster123
+          currencyCode: CNY
         kubecostToken: MzEyMTg5Mzk3QHFxLmNvbQ==xm343yadf98
         networkCosts:
           enabled: false
@@ -373,6 +419,222 @@ spec:
                 source_labels:
                 - __meta_kubernetes_pod_name
                 target_label: kubernetes_pod_name
+            - bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+              job_name: kubernetes-nodes-cadvisor
+              kubernetes_sd_configs:
+              - role: node
+              metric_relabel_configs:
+              - action: keep
+                regex: (container_cpu_usage_seconds_total|container_memory_working_set_bytes|container_network_receive_errors_total|container_network_transmit_errors_total|container_network_receive_packets_dropped_total|container_network_transmit_packets_dropped_total|container_memory_usage_bytes|container_cpu_cfs_throttled_periods_total|container_cpu_cfs_periods_total|container_fs_usage_bytes|container_fs_limit_bytes|container_cpu_cfs_periods_total|container_fs_inodes_free|container_fs_inodes_total|container_fs_usage_bytes|container_fs_limit_bytes|container_cpu_cfs_throttled_periods_total|container_cpu_cfs_periods_total|container_network_receive_bytes_total|container_network_transmit_bytes_total|container_fs_inodes_free|container_fs_inodes_total|container_fs_usage_bytes|container_fs_limit_bytes|container_spec_cpu_shares|container_spec_memory_limit_bytes|container_network_receive_bytes_total|container_network_transmit_bytes_total|container_fs_reads_bytes_total|container_network_receive_bytes_total|container_fs_writes_bytes_total|container_fs_reads_bytes_total|cadvisor_version_info)
+                source_labels:
+                - __name__
+              - action: replace
+                regex: (.+)
+                source_labels:
+                - container
+                target_label: container_name
+              - action: replace
+                regex: (.+)
+                source_labels:
+                - pod
+                target_label: pod_name
+              relabel_configs:
+              - action: labelmap
+                regex: __meta_kubernetes_node_label_(.+)
+              - replacement: kubernetes.default.svc:443
+                target_label: __address__
+              - regex: (.+)
+                replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor
+                source_labels:
+                - __meta_kubernetes_node_name
+                target_label: __metrics_path__
+              scheme: https
+              tls_config:
+                ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+                insecure_skip_verify: true
+            - job_name: kubernetes-service-endpoints
+              kubernetes_sd_configs:
+              - role: endpoints
+              metric_relabel_configs:
+              - action: keep
+                regex: (container_gpu_allocation|container_cpu_allocation|container_cpu_usage_seconds_total|container_fs_limit_bytes|container_memory_allocation_bytes|container_memory_usage_bytes|container_memory_working_set_bytes|container_network_receive_bytes_total|container_network_transmit_bytes_total|deployment_match_labels|kube_deployment_spec_replicas|kube_deployment_status_replicas_available|kube_job_status_failed|kube_namespace_annotations|kube_namespace_labels|kube_node_info|kube_node_labels|kube_node_status_capacity|kube_node_status_capacity_cpu_cores|kube_node_status_capacity_memory_bytes|kube_node_status_condition|kube_persistentvolume_capacity_bytes|kube_persistentvolume_status_phase|kube_persistentvolumeclaim_info|kube_persistentvolumeclaim_resource_requests_storage_bytes|kube_persistentvolumeclaim_resource_requests_storage_bytes|container_memory_allocation_bytes|kube_pod_container_resource_limits|kube_pod_container_resource_limits_cpu_cores|kube_pod_container_resource_limits_memory_bytes|kube_pod_container_resource_requests_cpu_cores|kube_pod_container_resource_requests_cpu_cores|container_cpu_usage_seconds_total|kube_pod_container_resource_requests_memory_bytes|kube_pod_container_resource_requests_memory_bytes|kube_pod_container_resource_requests|kube_pod_container_status_restarts_total|kube_pod_container_status_running|kube_pod_container_status_terminated_reason|kube_pod_labels|kube_pod_owner|kube_pod_status_phase|kubecost_cluster_memory_working_set_bytes|kubecost_pod_network_egress_bytes_total|node_cpu_hourly_cost|node_cpu_seconds_total|node_disk_reads_completed|node_disk_reads_completed_total|node_disk_writes_completed|node_disk_writes_completed_total|node_filesystem_device_error|node_gpu_hourly_cost|node_memory_Buffers_bytes|node_memory_Cached_bytes|node_memory_MemAvailable_bytes|node_memory_MemFree_bytes|node_memory_MemTotal_bytes|node_network_transmit_bytes_total|node_ram_hourly_cost|pod_pvc_allocation|pv_hourly_cost|service_selector_labels|statefulSet_match_labels|up|kube_node_status_allocatable|kube_node_status_allocatable_cpu_cores|kube_node_status_allocatable_memory_bytes|container_fs_writes_bytes_total|kube_deployment_status_replicas|kube_statefulset_replicas|kube_daemonset_status_desired_number_scheduled|kube_deployment_status_replicas_available|kube_statefulset_status_replicas|kube_daemonset_status_number_ready|kube_deployment_status_replicas|kube_statefulset_replicas|kube_daemonset_status_desired_number_scheduled|kube_replicaset_owner|kube_pod_container_info|DCGM_FI_DEV_GPU_UTIL)
+                source_labels:
+                - __name__
+              relabel_configs:
+              - action: keep
+                regex: true
+                source_labels:
+                - __meta_kubernetes_service_annotation_prometheus_io_scrape
+              - action: replace
+                regex: (https?)
+                source_labels:
+                - __meta_kubernetes_service_annotation_prometheus_io_scheme
+                target_label: __scheme__
+              - action: replace
+                regex: (.+)
+                source_labels:
+                - __meta_kubernetes_service_annotation_prometheus_io_path
+                target_label: __metrics_path__
+              - action: replace
+                regex: ([^:]+)(?::\d+)?;(\d+)
+                replacement: $1:$2
+                source_labels:
+                - __address__
+                - __meta_kubernetes_service_annotation_prometheus_io_port
+                target_label: __address__
+              - action: labelmap
+                regex: __meta_kubernetes_service_label_(.+)
+              - action: replace
+                source_labels:
+                - __meta_kubernetes_namespace
+                target_label: kubernetes_namespace
+              - action: replace
+                source_labels:
+                - __meta_kubernetes_service_name
+                target_label: kubernetes_name
+              - action: replace
+                source_labels:
+                - __meta_kubernetes_pod_node_name
+                target_label: kubernetes_node
+            - job_name: kubernetes-service-endpoints-slow
+              kubernetes_sd_configs:
+              - role: endpoints
+              relabel_configs:
+              - action: keep
+                regex: true
+                source_labels:
+                - __meta_kubernetes_service_annotation_prometheus_io_scrape_slow
+              - action: replace
+                regex: (https?)
+                source_labels:
+                - __meta_kubernetes_service_annotation_prometheus_io_scheme
+                target_label: __scheme__
+              - action: replace
+                regex: (.+)
+                source_labels:
+                - __meta_kubernetes_service_annotation_prometheus_io_path
+                target_label: __metrics_path__
+              - action: replace
+                regex: ([^:]+)(?::\d+)?;(\d+)
+                replacement: $1:$2
+                source_labels:
+                - __address__
+                - __meta_kubernetes_service_annotation_prometheus_io_port
+                target_label: __address__
+              - action: labelmap
+                regex: __meta_kubernetes_service_label_(.+)
+              - action: replace
+                source_labels:
+                - __meta_kubernetes_namespace
+                target_label: kubernetes_namespace
+              - action: replace
+                source_labels:
+                - __meta_kubernetes_service_name
+                target_label: kubernetes_name
+              - action: replace
+                source_labels:
+                - __meta_kubernetes_pod_node_name
+                target_label: kubernetes_node
+              scrape_interval: 5m
+              scrape_timeout: 30s
+            - honor_labels: true
+              job_name: prometheus-pushgateway
+              kubernetes_sd_configs:
+              - role: service
+              relabel_configs:
+              - action: keep
+                regex: pushgateway
+                source_labels:
+                - __meta_kubernetes_service_annotation_prometheus_io_probe
+            - job_name: kubernetes-services
+              kubernetes_sd_configs:
+              - role: service
+              metrics_path: /probe
+              params:
+                module:
+                - http_2xx
+              relabel_configs:
+              - action: keep
+                regex: true
+                source_labels:
+                - __meta_kubernetes_service_annotation_prometheus_io_probe
+              - source_labels:
+                - __address__
+                target_label: __param_target
+              - replacement: blackbox
+                target_label: __address__
+              - source_labels:
+                - __param_target
+                target_label: instance
+              - action: labelmap
+                regex: __meta_kubernetes_service_label_(.+)
+              - source_labels:
+                - __meta_kubernetes_namespace
+                target_label: kubernetes_namespace
+              - source_labels:
+                - __meta_kubernetes_service_name
+                target_label: kubernetes_name
+            - dns_sd_configs:
+              - names:
+                - prod-dataops-kubecost-cost-analyzer
+                port: 9003
+                type: A
+              honor_labels: true
+              job_name: kubecost
+              metrics_path: /metrics
+              scheme: http
+              scrape_interval: 1m
+              scrape_timeout: 10s
+            - job_name: kubecost-networking
+              kubernetes_sd_configs:
+              - role: pod
+              relabel_configs:
+              - action: keep
+                regex: prod-dataops-kubecost-network-costs
+                source_labels:
+                - __meta_kubernetes_pod_label_app
+          recording_rules.yml:
+            groups:
+            - name: CPU
+              rules:
+              - expr: sum(rate(container_cpu_usage_seconds_total{container_name!=""}[5m]))
+                record: cluster:cpu_usage:rate5m
+              - expr: rate(container_cpu_usage_seconds_total{container_name!=""}[5m])
+                record: cluster:cpu_usage_nosum:rate5m
+              - expr: avg(irate(container_cpu_usage_seconds_total{container_name!="POD", container_name!=""}[5m])) by (container_name,pod_name,namespace)
+                record: kubecost_container_cpu_usage_irate
+              - expr: sum(container_memory_working_set_bytes{container_name!="POD",container_name!=""}) by (container_name,pod_name,namespace)
+                record: kubecost_container_memory_working_set_bytes
+              - expr: sum(container_memory_working_set_bytes{container_name!="POD",container_name!=""})
+                record: kubecost_cluster_memory_working_set_bytes
+            - name: Savings
+              rules:
+              - expr: sum(avg(kube_pod_owner{owner_kind!="DaemonSet"}) by (pod) * sum(container_cpu_allocation) by (pod))
+                labels:
+                  daemonset: 'false'
+                record: kubecost_savings_cpu_allocation
+              - expr: sum(avg(kube_pod_owner{owner_kind="DaemonSet"}) by (pod) * sum(container_cpu_allocation) by (pod)) / sum(kube_node_info)
+                labels:
+                  daemonset: 'true'
+                record: kubecost_savings_cpu_allocation
+              - expr: sum(avg(kube_pod_owner{owner_kind!="DaemonSet"}) by (pod) * sum(container_memory_allocation_bytes) by (pod))
+                labels:
+                  daemonset: 'false'
+                record: kubecost_savings_memory_allocation_bytes
+              - expr: sum(avg(kube_pod_owner{owner_kind="DaemonSet"}) by (pod) * sum(container_memory_allocation_bytes) by (pod)) / sum(kube_node_info)
+                labels:
+                  daemonset: 'true'
+                record: kubecost_savings_memory_allocation_bytes
+              - expr: label_replace(sum(kube_pod_status_phase{phase="Running",namespace!="kube-system"} > 0) by (pod, namespace), "pod_name", "$1", "pod", "(.+)")
+                record: kubecost_savings_running_pods
+              - expr: sum(rate(container_cpu_usage_seconds_total{container_name!="",container_name!="POD",instance!=""}[5m])) by (namespace, pod_name, container_name, instance)
+                record: kubecost_savings_container_cpu_usage_seconds
+              - expr: sum(container_memory_working_set_bytes{container_name!="",container_name!="POD",instance!=""}) by (namespace, pod_name, container_name, instance)
+                record: kubecost_savings_container_memory_usage_bytes
+              - expr: avg(sum(kube_pod_container_resource_requests{resource="cpu", unit="core", namespace!="kube-system"}) by (pod, namespace, instance)) by (pod, namespace)
+                record: kubecost_savings_pod_requests_cpu_cores
+              - expr: avg(sum(kube_pod_container_resource_requests{resource="memory", unit="byte", namespace!="kube-system"}) by (pod, namespace, instance)) by (pod, namespace)
+                record: kubecost_savings_pod_requests_memory_bytes
         serviceAccounts:
           alertmanager:
             annotations: {}
@@ -747,7 +1009,7 @@ spec:
           labels:
             k8s-app: metricbeat
           metricbeatConfig:
-            metricbeat.yml: "metricbeat.modules:\n- module: kubernetes\n  metricsets:\n    - container\n    - node\n    - pod\n    - system\n    - volume\n  period: 1m\n  host: \"${NODE_NAME}\"\n  hosts: [\"https://${NODE_IP}:10250\"]\n  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n  ssl.verification_mode: \"none\"\n  # If using Red Hat OpenShift remove ssl.verification_mode entry and\n  # uncomment these settings:\n  ssl.certificate_authorities:\n    - /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n  processors:\n  - add_kubernetes_metadata: ~\n- module: kubernetes\n  enabled: true\n  metricsets:\n    - event\n- module: kubernetes\n  metricsets:\n    - proxy\n  period: 1m\n  host: ${NODE_NAME}\n  hosts: [\"localhost:10249\"]\n- module: system\n  period: 1m\n  metricsets:\n    - cpu\n    - load\n    - memory\n    - network\n    - process\n    - process_summary\n  cpu.metrics: [percentages, normalized_percentages]\n  processes: ['.*']\n  process.include_top_n:\n    by_cpu: 5\n    by_memory: 5\n- module: system\n  period: 1m\n  metricsets:\n    - filesystem\n    - fsstat\n  processors:\n  - drop_event.when.regexp:\n      system.filesystem.mount_point: '^/(sys|cgroup|proc|dev|etc|host|lib)($|/)'\n\nmetricbeat.autodiscover:\n  providers:\n    - type: kubernetes\n      scope: cluster\n      node: ${NODE_NAME}\n      resource: service\n      templates:\n        - condition:\n            equals:\n              kubernetes.labels.sreworks-telemetry-metric: enable\n          config:\n            - module: http\n              metricsets:\n                - json\n              period: 1m\n              hosts: [\"http://${data.host}:10080\"]\n              namespace: \"${data.kubernetes.namespace}#${data.kubernetes.service.name}\"\n              path: \"/\"\n              method: \"GET\"\n\n    - type: kubernetes\n      scope: cluster\n      node: ${NODE_NAME}\n      unique: true\n      templates:\n        - config:\n            - module: kubernetes\n              hosts: [\"kubecost-kube-state-metrics.sreworks-client.svc.cluster.local:8080\"]\n              period: 1m\n              add_metadata: true\n              metricsets:\n                - state_node\n                - state_deployment\n                - state_daemonset\n                - state_replicaset\n                - state_pod\n                - state_container\n                - state_cronjob\n                - state_resourcequota\n                - state_statefulset\n                - state_service\n\nprocessors:\n  - add_cloud_metadata:\n\nsetup.ilm.enabled: auto\nsetup.ilm.rollover_alias: \"metricbeat\"\nsetup.ilm.pattern: \"{now/d}-000001\"\nsetup.template.name: \"metricbeat\"\nsetup.template.pattern: \"metricbeat-*\"\n\noutput.elasticsearch:\n  hosts: '${ELASTICSEARCH_HOSTS:{{ Global.STAGE_ID }}-dataops-elasticsearch-master:9200}'\n  index: \"metricbeat-%{+yyyy.MM.dd}\"\n"
+            metricbeat.yml: "metricbeat.modules:\n- module: prometheus\n  period: 1m\n  hosts: [\"{{ Global.DATA_PROM_HOST}}:{{ Global.DATA_PROM_PORT }}\"]\n  metricsets: [\"query\"]\n  queries:\n  - name: \"pod_ram_gb_hours_allocation\"\n    path: \"/api/v1/query\"\n    params:\n      query: 'avg(avg_over_time(container_memory_allocation_bytes{container!=\"\", container!=\"POD\", node!=\"\"}[1h])) by (pod, namespace, node) / 1024 / 1024 / 1024 + on(pod, namespace) group_left(label_labels_appmanager_oam_dev_appInstanceId, label_labels_appmanager_oam_dev_appId, label_labels_appmanager_oam_dev_appInstanceName, label_labels_appmanager_oam_dev_clusterId, label_labels_appmanager_oam_dev_componentName, label_labels_appmanager_oam_dev_stageId)(0 * kube_pod_labels{uid!=\"\",label_labels_appmanager_oam_dev_appInstanceId!=\"\"})'\n  - name: \"pod_ram_gb_hours_usage_avg\"\n    path: \"/api/v1/query\"\n    params:\n      query: 'avg(avg_over_time(container_memory_working_set_bytes{container!=\"\", container_name!=\"POD\", container!=\"POD\"}[1h])) by (pod, namespace) / 1024 / 1024 / 1024 + on(pod, namespace) group_left(label_labels_appmanager_oam_dev_appInstanceId, label_labels_appmanager_oam_dev_appId, label_labels_appmanager_oam_dev_appInstanceName, label_labels_appmanager_oam_dev_clusterId, label_labels_appmanager_oam_dev_componentName, label_labels_appmanager_oam_dev_stageId)(0 * kube_pod_labels{uid!=\"\",label_labels_appmanager_oam_dev_appInstanceId!=\"\"})'\n  - name: \"pod_cpu_core_hours_allocation\"\n    path: \"/api/v1/query\"\n    params:\n      query: 'avg(avg_over_time(container_cpu_allocation{container!=\"\", container!=\"POD\", node!=\"\"}[1h])) by (pod, namespace, node) + on(pod, namespace) group_left(label_labels_appmanager_oam_dev_appInstanceId, label_labels_appmanager_oam_dev_appId, label_labels_appmanager_oam_dev_appInstanceName, label_labels_appmanager_oam_dev_clusterId, label_labels_appmanager_oam_dev_componentName, label_labels_appmanager_oam_dev_stageId)(0 * kube_pod_labels{uid!=\"\",label_labels_appmanager_oam_dev_appInstanceId!=\"\"})'\n  - name: \"pod_cpu_core_hours_usage_avg\"\n    path: \"/api/v1/query\"\n    params:\n      query: 'avg(rate(container_cpu_usage_seconds_total{container!=\"\", container_name!=\"POD\", container!=\"POD\"}[1h])) by (pod, namespace) + on(pod, namespace) group_left(label_labels_appmanager_oam_dev_appInstanceId, label_labels_appmanager_oam_dev_appId, label_labels_appmanager_oam_dev_appInstanceName, label_labels_appmanager_oam_dev_clusterId, label_labels_appmanager_oam_dev_componentName, label_labels_appmanager_oam_dev_stageId)(0 * kube_pod_labels{uid!=\"\",label_labels_appmanager_oam_dev_appInstanceId!=\"\"})'\n  - name: \"pod_pvc_gb_hours_allocation\"\n    path: \"/api/v1/query\"\n    params:\n      query: 'avg(avg_over_time(pod_pvc_allocation[1h])) by (pod, namespace) / 1024 / 1024 / 1024 + on(pod, namespace) group_left(label_labels_appmanager_oam_dev_appInstanceId, label_labels_appmanager_oam_dev_appId, label_labels_appmanager_oam_dev_appInstanceName, label_labels_appmanager_oam_dev_clusterId, label_labels_appmanager_oam_dev_componentName, label_labels_appmanager_oam_dev_stageId)(0 * kube_pod_labels{uid!=\"\",label_labels_appmanager_oam_dev_appInstanceId!=\"\"})'\n- module: kubernetes\n  metricsets:\n    - container\n    - node\n    - pod\n    - system\n    - volume\n  period: 1m\n  host: \"${NODE_NAME}\"\n  hosts: [\"https://${NODE_IP}:10250\"]\n  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n  ssl.verification_mode: \"none\"\n  # If using Red Hat OpenShift remove ssl.verification_mode entry and\n  # uncomment these settings:\n  ssl.certificate_authorities:\n    - /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n  processors:\n  - add_kubernetes_metadata: ~\n- module: kubernetes\n  enabled: true\n  metricsets:\n    - event\n- module: kubernetes\n  metricsets:\n    - proxy\n  period: 1m\n  host: ${NODE_NAME}\n  hosts: [\"localhost:10249\"]\n- module: system\n  period: 1m\n  metricsets:\n    - cpu\n    - load\n    - memory\n    - network\n    - process\n    - process_summary\n  cpu.metrics: [percentages, normalized_percentages]\n  processes: ['.*']\n  process.include_top_n:\n    by_cpu: 5\n    by_memory: 5\n- module: system\n  period: 1m\n  metricsets:\n    - filesystem\n    - fsstat\n  processors:\n  - drop_event.when.regexp:\n      system.filesystem.mount_point: '^/(sys|cgroup|proc|dev|etc|host|lib)($|/)'\n\nmetricbeat.autodiscover:\n  providers:\n    - type: kubernetes\n      scope: node\n      node: ${NODE_NAME}\n      include_labels: [\"sreworks-telemetry-metric\"]\n      resource: pod\n      templates:\n        - condition:\n            equals:\n              kubernetes.labels.sreworks-telemetry-metric: enable\n          config:\n            - module: http\n              metricsets:\n                - json\n              period: 1m\n              hosts: [\"http://${data.host}:10080\"]\n              namespace: \"${data.kubernetes.namespace}#${data.kubernetes.service.name}\"\n              path: \"/\"\n              method: \"GET\"\n\n    - type: kubernetes\n      scope: cluster\n      node: ${NODE_NAME}\n      unique: true\n      include_labels: [\"sreworks-prometheus-scrape-metric\"]\n      templates:\n        - condition:\n            equals:\n              kubernetes.labels.sreworks-prometheus-scrape-metric: enable\n          config:\n            - module: prometheus\n              period: 1m\n              hosts: [\"${data.host}:${data.port}\"]\n              metrics_path: /metrics\n\n    - type: kubernetes\n      scope: cluster\n      node: ${NODE_NAME}\n      unique: true\n      templates:\n        - config:\n            - module: kubernetes\n              hosts: [\"prod-dataops-kubecost-kube-state-metrics.sreworks-dataops.svc.cluster.local:8080\"]\n              period: 1m\n              add_metadata: true\n              metricsets:\n                - state_node\n                - state_deployment\n                - state_daemonset\n                - state_replicaset\n                - state_pod\n                - state_container\n                - state_cronjob\n                - state_resourcequota\n                - state_statefulset\n                - state_service\n\nprocessors:\n  - add_cloud_metadata:\n\nsetup.ilm.enabled: auto\nsetup.ilm.rollover_alias: \"metricbeat\"\nsetup.ilm.pattern: \"{now/d}-000001\"\nsetup.template.name: \"metricbeat\"\nsetup.template.pattern: \"metricbeat-*\"\n\noutput.elasticsearch:\n  hosts: '{{ Global.DATA_ES_HOST }}:{{ Global.DATA_ES_PORT }}'\n  index: \"metricbeat-%{+yyyy.MM.dd}\"\n  username: \"{{ Global.DATA_ES_USER }}\"\n  password: \"{{ Global.DATA_ES_PASSWORD }}\"\n"
           resources:
             limits:
               cpu: 1000m

@@ -7,7 +7,7 @@ import { LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons'
 import { Carousel } from 'antd'
 import DesktopLayout from './DesktopLayout'
 import { connect } from 'dva'
-import SRESearch from '../SRESearch'
+import { SRESearch } from '@sreworks/framework'
 import { Bus, localeHelper } from '@sreworks/shared-utils'
 
 // const CarouselCompSec = window.CarouselCompSec

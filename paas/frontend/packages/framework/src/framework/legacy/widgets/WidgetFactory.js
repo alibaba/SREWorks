@@ -1,3 +1,10 @@
+/*
+ * @version: 2.0.0
+ * @Author: deeham.ww
+ * @Date: 2022-10-10 14:16:07
+ * @LastEditors: deeham.ww
+ * @LastEditTime: 2022-11-22 15:44:18
+ */
 /**
  * Created by caoshuaibiao on 2018/12/8.
  * 信息挂件工厂
@@ -30,7 +37,6 @@ import FlyAdminDeployComDetail from './flyadmin/flyadmin-deploy/deploy-component
 //运维桌面
 import CompositionWidget from './CompositionWidget/CompositionWidget'
 import AsyncAntdAlert from './AsyncAntdAlert'
-import Desktop from '../../core/widgets/Desktop'
 
 export default class WidgetFactory {
   static createWidget(mode, widgetProps) {
@@ -64,8 +70,6 @@ export default class WidgetFactory {
         return <FlyAdminGlobalConfiguration {...widgetProps} mode={mode} />
       case 'FLYADMIN_DEPLOY_COM_DETAIL':
         return <FlyAdminDeployComDetail {...widgetProps} mode={mode} />
-      case 'OPS_DESKTOP':
-        return <Desktop {...widgetProps} mode={mode} />
       // case "FLYAMIN_ROLE_SETTING":
       //     return <FlyAdminRoleSetting {...widgetProps} mode={mode} />;
       case 'ASYNC_ANTD_ALERT':

@@ -3,7 +3,7 @@
  * @Author: deeham.ww
  * @Date: 2022-11-16 11:32:36
  * @LastEditors: deeham.ww
- * @LastEditTime: 2022-11-22 14:50:54
+ * @LastEditTime: 2022-11-22 16:25:14
  */
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -26,7 +26,7 @@ module.exports = {
   devtool: DEV ? 'source-map' : false,
   entry: {
     index: paths.appIndexJs,
-    ven_ant: ['@ant-design/compatible','@ant-design/icons'],
+    ven_ant: ['@ant-design/compatible','@ant-design/icons','brace','less','ace-builds'],
   },
   output: {
     path: path.join(__dirname, '../build'),
@@ -256,6 +256,6 @@ module.exports = {
   //   minRatio: 0.8,//压缩比例
   //   deleteOriginalAssets: true,
   // }),
-  new BundleAnalyzerPlugin(),
+  // new BundleAnalyzerPlugin(),
   ].filter(Boolean),
 }

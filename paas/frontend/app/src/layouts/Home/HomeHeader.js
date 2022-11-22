@@ -3,7 +3,7 @@
  */
 import React from 'react'
 import { Divider } from 'antd'
-import SiderNavToggleBar from '../../components/SiderNavToggleBar'
+import { SiderNavToggleBar } from '@sreworks/framework'
 import { connect } from 'dva'
 import DropDownUser from './DropDownUser'
 import properties from '../../properties'

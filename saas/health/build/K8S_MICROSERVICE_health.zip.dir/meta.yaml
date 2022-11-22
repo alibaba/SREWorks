@@ -2,7 +2,7 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 22.2.9+20221116020739101759
+    annotations.appmanager.oam.dev/version: 22.3.0+20221122091751346221
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
     appId: health
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 22.2.9+20221116020739101759
+        annotations.appmanager.oam.dev/version: 22.3.0+20221122091751346221
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -43,7 +43,7 @@ spec:
       kind: Deployment
       replicas: 1
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/health-health-health:1668564459313
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/health-health-health:1669108671802
         name: health
       env:
         DATA_DB_USER: '{{ Global.DATA_DB_USER }}'
@@ -54,5 +54,5 @@ spec:
         DATA_DB_HOST: '{{ Global.DATA_DB_HOST }}'
         DATA_DB_PORT: '{{ Global.DATA_DB_PORT }}'
       initContainers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/health-health-db-migration:1668564459313
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/health-health-db-migration:1669108671802
         name: db-migration

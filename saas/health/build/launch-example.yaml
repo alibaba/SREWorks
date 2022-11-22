@@ -22,7 +22,7 @@ spec:
     - name: Global.DATA_DB_PASSWORD
       value: cb56b5is5e21_c359b42223
     - name: Global.KAFKA_ENDPOINT
-      value: sreworks-kafka.sreworks:9092
+      value: prod-dataops-kafka.sreworks-dataops:9092
     - name: Global.DATA_DB_NAME
       value: sw_saas_health
     - name: Global.DATA_DB_HOST

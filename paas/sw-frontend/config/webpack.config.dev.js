@@ -43,7 +43,8 @@ module.exports = {
         "systemjs": 'systemjs',
         "element-ui": "ELEMENT",
         "vue": "Vue",
-        "vuera": "vuera"
+        "vuera": "vuera",
+        "bizcharts": "BizCharts"
     },
     entry: {
         index: [

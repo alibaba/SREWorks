@@ -28,7 +28,7 @@ spec:
     - name: Global.MINIO_ENDPOINT
       value: sreworks-minio.sreworks:9000
     - name: Global.KAFKA_URL
-      value: sreworks-kafka.sreworks:9092
+      value: prod-dataops-kafka.sreworks-dataops:9092
     - name: Global.HEALTH_ENDPOINT
       value: '{{Global.STAGE_ID}}-health-health.sreworks.svc.cluster.local:80'
     - name: Global.VVP_ENDPOINT

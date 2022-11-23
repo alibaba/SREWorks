@@ -94,7 +94,7 @@ redis:
   
 
 zookeeper:
-  enabled: false
+  enabled: true
 
   image:
     registry: sreworks-registry.cn-beijing.cr.aliyuncs.com

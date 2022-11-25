@@ -3,7 +3,7 @@
  * @Author: deeham.ww
  * @Date: 2022-11-16 11:32:36
  * @LastEditors: deeham.ww
- * @LastEditTime: 2022-11-22 16:25:14
+ * @LastEditTime: 2022-11-24 16:54:17
  */
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -26,7 +26,7 @@ module.exports = {
   devtool: DEV ? 'source-map' : false,
   entry: {
     index: paths.appIndexJs,
-    ven_ant: ['@ant-design/compatible','@ant-design/icons','brace','less','ace-builds'],
+    ven_ant: ['@ant-design/compatible','@ant-design/icons','brace','ace-builds'],
   },
   output: {
     path: path.join(__dirname, '../build'),

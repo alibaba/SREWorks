@@ -1,10 +1,4 @@
-/*
- * @version: 2.0.0
- * @Author: deeham.ww
- * @Date: 2022-10-10 14:16:07
- * @LastEditors: deeham.ww
- * @LastEditTime: 2022-11-22 15:44:18
- */
+
 /**
  * Created by caoshuaibiao on 2018/12/8.
  * 信息挂件工厂

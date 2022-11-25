@@ -17,6 +17,7 @@ import { ErrorBoundary } from '@sreworks/components'
 import { NodeContent, SiderNavToggleBar, OamContent } from '@sreworks/framework'
 import BriefLayout from './BriefLayout'
 import BriefHeader from './BriefLayout/Header'
+import Home from '../layouts/Home'
 import properties from '../properties'
 import '@sreworks/framework/dist/theme/index.css'
 //其他布局引入
@@ -66,6 +67,12 @@ class DefaultLayout extends React.Component {
       let { path, exact, component, type, children, layout, label, config, ...dynamics } = routeData
       // analysis.registerPath(path,label);
       recursionDepth++
+      if (path === '/desktop/portal') {
+        routeItem.push(
+          <Route path={'/desktop/portal'} key={'_' + path} component={() => <Home />} />,
+        )
+        return
+      }
       if (layout === 'top' && children && children.length > 0) {
         routeItem.push(
           <Route
@@ -352,7 +359,6 @@ class DefaultLayout extends React.Component {
       }
       return <Redirect to={`/${productId}/portal/`} />
     }
-
     const menuProps = {
       location,
       menuMode,

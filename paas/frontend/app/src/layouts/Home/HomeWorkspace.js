@@ -55,7 +55,7 @@ export default class HomeWorkspace extends React.Component {
     return workspaces.map((workspace) => {
       return (
         <div key={workspace.type} style={{ width: '100%', height: 'calc(95vh)' }}>
-          {workspace.hasSearch && searchConfig && (
+          {workspace.hasSearch && (
             <div className="search-content">
               <SRESearch
                 sreworksSearchPath={'gateway/v2/foundation/kg'}

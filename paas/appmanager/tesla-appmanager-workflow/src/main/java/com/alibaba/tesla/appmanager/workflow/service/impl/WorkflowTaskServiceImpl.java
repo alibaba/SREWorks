@@ -1,7 +1,10 @@
 package com.alibaba.tesla.appmanager.workflow.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.autoconfig.ThreadPoolProperties;
+import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
+import com.alibaba.tesla.appmanager.common.constants.WorkflowContextKeyConstant;
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum;
 import com.alibaba.tesla.appmanager.common.enums.WorkflowTaskStateEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
@@ -23,12 +26,16 @@ import com.alibaba.tesla.appmanager.workflow.service.WorkflowSnapshotService;
 import com.alibaba.tesla.appmanager.workflow.service.WorkflowTaskService;
 import com.alibaba.tesla.appmanager.workflow.service.thread.ExecuteWorkflowTaskResult;
 import com.alibaba.tesla.appmanager.workflow.service.thread.ExecuteWorkflowTaskWaitingObject;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -155,7 +162,6 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
                 throw new AppException(AppErrorCode.NOT_READY, "system not ready");
             }
         }
-
         DeployAppSchema configuration = SchemaUtil.toSchema(DeployAppSchema.class, instance.getWorkflowConfiguration());
         ExecuteWorkflowTaskWaitingObject waitingObject = ExecuteWorkflowTaskWaitingObject.create(task.getId());
         threadPoolExecutor.submit(() -> {
@@ -177,9 +183,10 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
                     .taskId(task.getId())
                     .taskType(task.getTaskType())
                     .taskStage(task.getTaskStage())
-                    .taskProperties(JSONObject.parseObject(task.getTaskProperties()))
+                    .taskProperties(plugTaskProperties(task, context))
                     .context(context)
                     .configuration(configuration)
+                    .creator(instance.getWorkflowCreator())
                     .build();
             ExecuteWorkflowHandlerRes res;
             try {
@@ -233,19 +240,25 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
         // 创建返回结果；如果 workflow task 节点主动触发 suspend，那么直接触发进入 WAITING_SUSPEND
         ExecuteWorkflowHandlerRes output = result.getOutput();
         WorkflowTaskDO returnedTask = get(task.getId(), true);
+        returnedTask.setTaskErrorMessage("");
         if (output.isSuspend()) {
             returnedTask.setTaskStatus(WorkflowTaskStateEnum.WAITING_SUSPEND.toString());
         } else if (output.isTerminate()) {
             returnedTask.setTaskStatus(WorkflowTaskStateEnum.TERMINATED.toString());
+            if (StringUtils.isNotEmpty(output.getTerminateReason())) {
+                returnedTask.setTaskErrorMessage(output.getTerminateReason());
+            }
         } else {
             returnedTask.setTaskStatus(WorkflowTaskStateEnum.SUCCESS.toString());
         }
-        returnedTask.setTaskErrorMessage("");
         if (output.getDeployAppId() != null && output.getDeployAppId() > 0) {
             returnedTask.setDeployAppId(output.getDeployAppId());
             returnedTask.setDeployAppUnitId(output.getDeployAppUnitId());
             returnedTask.setDeployAppNamespaceId(output.getDeployAppNamespaceId());
             returnedTask.setDeployAppStageId(output.getDeployAppStageId());
+        }
+        if (output.getDeployWorkflowInstanceId() != null && output.getDeployWorkflowInstanceId() > 0) {
+            returnedTask.setDeployWorkflowInstanceId(output.getDeployWorkflowInstanceId());
         }
 
         // 保存 Workflow 快照
@@ -296,5 +309,52 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
         task.setTaskStatus(status.toString());
         task.setTaskErrorMessage(errorMessage);
         return task;
+    }
+
+
+    /**
+     * 提取inputs参数，补充taskProperties
+     *
+     * @param task    Workflow 任务
+     * @param context 上下文
+     */
+    private JSONObject plugTaskProperties(WorkflowTaskDO task, JSONObject context) {
+        JSONObject taskProperties = JSONObject.parseObject(task.getTaskProperties());
+        String taskInputs = task.getTaskInputs();
+        if (StringUtils.isEmpty(taskInputs)) {
+            return taskProperties;
+        }
+        JSONArray inputs = JSONObject.parseArray(taskInputs);
+        if (inputs.size() == 0) {
+            return taskProperties;
+        }
+        JSONObject deliverData = context.getJSONObject(WorkflowContextKeyConstant.DEPLOY_DELIVER_PARAMETERS);
+        if (deliverData == null) {
+            return taskProperties;
+        }
+
+        DocumentContext propertiesContext = JsonPath.parse(task.getTaskProperties());
+        for (int i = 0; i < inputs.size(); i++) {
+            JSONObject input = inputs.getJSONObject(i);
+            String parameterKey = input.getString("parameterKey");
+            int splitIndex = parameterKey.lastIndexOf(".");
+            if (splitIndex == -1) {
+                propertiesContext.set(DefaultConstant.JSONPATH_PREFIX + parameterKey,
+                        deliverData.get(input.getString("from")));
+                continue;
+            }
+            String inputPrefix = parameterKey.substring(0, splitIndex);
+            String inputSuffix = parameterKey.substring(splitIndex + 1);
+            HashMap<String, Object> prevJsonObject = propertiesContext
+                    .read(DefaultConstant.JSONPATH_PREFIX + inputPrefix);
+            prevJsonObject.put(inputSuffix, deliverData.get(input.getString("from")));
+            String currentValue = JSONObject.toJSONString(prevJsonObject);
+            propertiesContext.set(DefaultConstant.JSONPATH_PREFIX + inputPrefix, currentValue);
+        }
+        taskProperties = JSONObject.parseObject(propertiesContext.jsonString());
+        log.info("plug task properties succeed|workflowTaskId={}|workflowInstanceId={}|deliverData={}|" +
+                        "taskProperties={}", task.getId(), task.getWorkflowInstanceId(), deliverData.toJSONString(),
+                taskProperties.toJSONString());
+        return taskProperties;
     }
 }

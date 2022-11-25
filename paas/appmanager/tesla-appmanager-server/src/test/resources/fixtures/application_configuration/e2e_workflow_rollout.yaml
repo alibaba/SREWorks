@@ -7,7 +7,7 @@ metadata:
   name: deploy-workflow
 spec:
   components:
-    - revisionName: ABM_HELM|helm-demo-chart@0.0.1@test|_
+    - revisionName: ABM_HELM|helm-demo-chart@0.0.3@test|_
   policies:
     - name: topology-e2e-env
       type: topology
@@ -17,7 +17,7 @@ spec:
       name: override-e2e-env
       properties:
         components:
-          - revisionName: ABM_HELM|helm-demo-chart@0.0.1@test|_
+          - revisionName: ABM_HELM|helm-demo-chart@0.0.3@test|_
             dataInputs:
               - valueFrom:
                   dataOutputName: "Global.KUBECONFIG"
@@ -25,7 +25,7 @@ spec:
                   - spec.base64Kubeconfig
             parameterValues:
               - name: name
-                value: "appmanager-helm-e2e"
+                value: "appmanager-helm-e2e-rollout"
                 toFieldPaths:
                   - spec.name
               - name: ignoreCreateNamespace
@@ -44,30 +44,36 @@ spec:
                       value: sigma_public
                   resources:
                     limits:
-                      cpu: "1"
-                      memory: "2Gi"
+                      cpu: "0.5"
+                      memory: "1Gi"
                   image:
                     repository: "reg.docker.alibaba-inc.com/abm-aone/nginx"
                     tag: "latest"
+                  replicaCount: 3
                 toFieldPaths:
                   - spec.values
   workflow:
     steps:
       - type: apply-components
-        name: deploy-env-e2e-1
         properties:
+          policies:
+            - topology-e2e-env
+            - override-e2e-env
           components:
             - type: ABM_HELM
-              name: helm-demo-chart@0.0.1@test
-          policies:
-            - "topology-e2e-env"
-            - "override-e2e-env"
-      - type: apply-components
-        name: deploy-env-e2e-2
+              name: helm-demo-chart@0.0.3@test
+          rollout:
+            type: partition
+            properties:
+              partition: "1"
+              name: "abmRolloutPartition"
+      - type: suspend  # 此处将整个 workflow 置为暂停状态，这个时候需要外部通过 PUT /workflow/{instanceId}/context 来进一步设置变量，参考下面的说明
+      - type: rollout-promotion  # 此处根据外界设置的 context 中的 continueRollout / rollback 决定是怎么走 (三种类型)
+      - type: apply-components  # 如果上一步决定了继续向下执行的话，那么会继续正常部署
         properties:
+          policies:
+            - topology-e2e-env
+            - override-e2e-env
           components:
             - type: ABM_HELM
-              name: helm-demo-chart@0.0.1@test
-          policies:
-            - "topology-e2e-env"
-            - "override-e2e-env"
+              name: helm-demo-chart@0.0.3@test

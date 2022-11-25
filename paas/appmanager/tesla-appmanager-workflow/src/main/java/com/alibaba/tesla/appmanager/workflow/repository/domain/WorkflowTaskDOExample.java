@@ -1074,6 +1074,66 @@ public class WorkflowTaskDOExample {
             addCriterion("deploy_app_stage_id not between", value1, value2, "deployAppStageId");
             return (Criteria) this;
         }
+
+        public Criteria andDeployWorkflowInstanceIdIsNull() {
+            addCriterion("deploy_workflow_instance_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployWorkflowInstanceIdIsNotNull() {
+            addCriterion("deploy_workflow_instance_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployWorkflowInstanceIdEqualTo(Long value) {
+            addCriterion("deploy_workflow_instance_id =", value, "deployWorkflowInstanceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployWorkflowInstanceIdNotEqualTo(Long value) {
+            addCriterion("deploy_workflow_instance_id <>", value, "deployWorkflowInstanceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployWorkflowInstanceIdGreaterThan(Long value) {
+            addCriterion("deploy_workflow_instance_id >", value, "deployWorkflowInstanceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployWorkflowInstanceIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("deploy_workflow_instance_id >=", value, "deployWorkflowInstanceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployWorkflowInstanceIdLessThan(Long value) {
+            addCriterion("deploy_workflow_instance_id <", value, "deployWorkflowInstanceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployWorkflowInstanceIdLessThanOrEqualTo(Long value) {
+            addCriterion("deploy_workflow_instance_id <=", value, "deployWorkflowInstanceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployWorkflowInstanceIdIn(List<Long> values) {
+            addCriterion("deploy_workflow_instance_id in", values, "deployWorkflowInstanceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployWorkflowInstanceIdNotIn(List<Long> values) {
+            addCriterion("deploy_workflow_instance_id not in", values, "deployWorkflowInstanceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployWorkflowInstanceIdBetween(Long value1, Long value2) {
+            addCriterion("deploy_workflow_instance_id between", value1, value2, "deployWorkflowInstanceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployWorkflowInstanceIdNotBetween(Long value1, Long value2) {
+            addCriterion("deploy_workflow_instance_id not between", value1, value2, "deployWorkflowInstanceId");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

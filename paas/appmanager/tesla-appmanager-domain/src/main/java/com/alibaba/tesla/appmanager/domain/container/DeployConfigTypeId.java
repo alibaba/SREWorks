@@ -17,6 +17,7 @@ import java.util.List;
  */
 public class DeployConfigTypeId {
 
+    public static final String TYPE_ENV_BINDING = "envBinding";
     public static final String TYPE_PARAMETER_VALUES = "parameterValues";
     public static final String TYPE_COMPONENTS = "components";
     public static final String TYPE_POLICIES = "policies";

@@ -79,6 +79,10 @@ public class WorkflowTaskEventListener implements ApplicationListener<WorkflowTa
                     event.getTask().getDeployAppNamespaceId(),
                     event.getTask().getDeployAppStageId());
         }
+        if (event.getTask().getDeployWorkflowInstanceId() != null && event.getTask().getDeployWorkflowInstanceId() > 0) {
+            task.setDeployWorkflowInstanceId(event.getTask().getDeployWorkflowInstanceId());
+            logSuffix += String.format("|deployWorkflowInstanceId=%d", event.getTask().getDeployWorkflowInstanceId());
+        }
         try {
             workflowTaskService.update(task);
         } catch (AppException e) {

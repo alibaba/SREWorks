@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.domain.option;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
@@ -35,6 +36,11 @@ public class WorkflowInstanceOption {
      * 创建者
      */
     private String creator;
+
+    /**
+     * 初始化上下文
+     */
+    private JSONObject initContext;
 
     /**
      * 计算并获取当前实际的 workflow instance 中的 workflow tasks 的执行顺序

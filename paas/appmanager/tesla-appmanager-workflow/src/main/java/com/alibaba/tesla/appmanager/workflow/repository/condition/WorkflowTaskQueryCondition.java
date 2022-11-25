@@ -61,4 +61,9 @@ public class WorkflowTaskQueryCondition extends BaseCondition {
      * 部署单归属 Stage
      */
     private String deployAppStageId;
+
+    /**
+     * 当前任务发起的新 Workflow Instance Id
+     */
+    private Long deployWorkflowInstanceId;
 }

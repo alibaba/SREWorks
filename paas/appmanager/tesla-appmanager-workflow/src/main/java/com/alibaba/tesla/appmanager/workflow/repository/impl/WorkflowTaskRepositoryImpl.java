@@ -124,6 +124,9 @@ public class WorkflowTaskRepositoryImpl implements WorkflowTaskRepository {
         if (StringUtils.isNotEmpty(condition.getDeployAppStageId())) {
             criteria.andDeployAppStageIdEqualTo(condition.getDeployAppStageId());
         }
+        if (condition.getDeployWorkflowInstanceId() != null && condition.getDeployWorkflowInstanceId() > 0) {
+            criteria.andDeployWorkflowInstanceIdEqualTo(condition.getDeployWorkflowInstanceId());
+        }
         return example;
     }
 

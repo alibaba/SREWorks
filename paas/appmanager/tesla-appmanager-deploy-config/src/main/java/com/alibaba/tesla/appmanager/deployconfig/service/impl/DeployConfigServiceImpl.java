@@ -1,6 +1,5 @@
 package com.alibaba.tesla.appmanager.deployconfig.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.ProductReleaseProvider;
@@ -18,10 +17,7 @@ import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
 import com.alibaba.tesla.appmanager.domain.container.DeployAppRevisionName;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigEnvId;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
-import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigApplyTemplateReq;
-import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
-import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigGenerateReq;
-import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpsertReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.*;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigApplyTemplateRes;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigGenerateRes;
 import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
@@ -242,6 +238,30 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                 .build();
     }
 
+    /**
+     * 将指定应用加入到指定环境中
+     *
+     * @param req 加入环境请求
+     */
+    public void bindEnvironment(DeployConfigBindEnvironmentReq req) {
+        String appId = req.getAppId();
+        String isolateNamespaceId = req.getIsolateNamespaceId();
+        String isolateStageId = req.getIsolateStageId();
+        String envId = req.getEnvId();
+        String productId = req.getProductId();
+        String releaseId = req.getReleaseId();
+        String baselineBranch = req.getBaselineBranch();
+
+        // 写入 Type:envBinding 的类型记录
+        String apiVersion = DefaultConstant.API_VERSION_V1_ALPHA2;
+        DeployConfigTypeId typeId = new DeployConfigTypeId(DeployConfigTypeId.TYPE_ENV_BINDING);
+        applySingleConfig(apiVersion, appId, typeId.toString(), envId, "", true, false,
+                isolateNamespaceId, isolateStageId, productId, releaseId);
+    }
+
+    public void getGlobalTemplate(String isolateNamespaceId, String isolateStageId) {
+
+    }
 
     /**
      * 根据 deploy config 配置生成 application configuration

@@ -73,6 +73,7 @@ class Action extends Component {
                             actionType: b === blocks.length - 1 ? "API" : "READ",
                             parameterDefiner: parameterDefiner,
                             isDrawer: true,
+                            inStep:true
                         },
                         id: 99999,
                         elementId: otherConfig.uniqueKey
@@ -102,6 +103,7 @@ class Action extends Component {
                         name: widgetConfig.name || widgetConfig.label || uniqueKey,
                         actionType: widgetModel.type === 'STEP_FORM' ? "READ" : "API",
                         parameterDefiner: parameterDefiner,
+                        instep: true
                     },
                     id: 99999,
                     name: widgetConfig.name || widgetConfig.label || uniqueKey,

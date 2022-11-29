@@ -111,7 +111,7 @@ kruise:
   enabled: true
 
 kafka:
-  enabled: true
+  enabled: false
 
   persistence:
     size: 20Gi

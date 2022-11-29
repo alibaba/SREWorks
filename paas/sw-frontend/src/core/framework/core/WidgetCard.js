@@ -17,7 +17,7 @@ import JSXRender from './JSXRender';
 
 import './index.less';
 
-const VueWrapper = window['vuera']['VueWrapper'];
+const VueWrapper = window['vuera'] ? window['vuera']['VueWrapper'] : undefined;
 
 export default class WidgetCard extends React.Component {
 
@@ -123,9 +123,9 @@ export default class WidgetCard extends React.Component {
         } else if (Constants.BLOCK === widgetModel.type) {
             cardContent = <Block {...otherProps} widgetConfig={runtimeConfig} actionParams={Object.assign({}, actionParams, widgetData)} widgetData={widgetData} />;
         } else if (WidgetComponent) {
-            if(window['REMOTE_VUE_LIST'].includes(widgetModel.type)) {
+            if(window['REMOTE_VUE_LIST'].includes(widgetModel.type) && VueWrapper) {
                 let comp = (window[widgetModel.type] && window[widgetModel.type][widgetModel.type]) || <div>未定义组件</div>
-                cardContent = <VueWrapper widgetConfig={runtimeConfig} component={comp}/>
+                cardContent = <VueWrapper {...otherProps} widgetConfig={runtimeConfig} component={comp} widgetData={widgetData} />
             } else {
                 cardContent = <WidgetComponent {...otherProps} widgetConfig={runtimeConfig} actionParams={Object.assign({}, actionParams, widgetData)} widgetData={widgetData} />
             }
@@ -258,7 +258,7 @@ export default class WidgetCard extends React.Component {
                 }}
                 title={
                     headerExist && <div className="card-title-wrapper">
-                        {!headerColor && (this.wrapperType !== Constants.CARD_WRAPPER_ADVANCED) && title && <div className="card-wrapper-title-prefix" />}
+                        { (this.wrapperType !== Constants.CARD_WRAPPER_ADVANCED) && title && <div className="card-wrapper-title-prefix" />}
                         <div style={{ display: 'flex' }}>
                             {
                                 title && <h2 style={{ margin: "auto", paddingLeft: '10px', fontSize: 14, marginRight: title ? '12px' : '0px' }}><JSXRender jsx={title || ''} /></h2>

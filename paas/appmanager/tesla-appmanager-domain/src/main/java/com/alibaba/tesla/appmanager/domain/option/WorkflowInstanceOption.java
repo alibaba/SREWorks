@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.domain.option;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
@@ -18,6 +19,11 @@ import java.util.List;
 public class WorkflowInstanceOption {
 
     /**
+     * Workflow 分类
+     */
+    private String category;
+
+    /**
      * Workflow Task 执行顺序 (不提供该参数则默认全量按需执行)
      * <p>
      * 需要指定 Workflow Task 的数组下标列表（如跳过某几个 Workflow 任务执行节点）
@@ -30,6 +36,11 @@ public class WorkflowInstanceOption {
      * 创建者
      */
     private String creator;
+
+    /**
+     * 初始化上下文
+     */
+    private JSONObject initContext;
 
     /**
      * 计算并获取当前实际的 workflow instance 中的 workflow tasks 的执行顺序

@@ -69,7 +69,7 @@ public class DeployAppWaitAddonNode extends AbstractLocalNodeBase {
 
         // componentType 变量提取
         DeployAppRevisionName revisionName = DeployAppRevisionName.valueOf(nodeId);
-        ComponentTypeEnum componentType = revisionName.getComponentType();
+        String componentType = revisionName.getComponentType();
 
         // 寻找 dataOutput 列表，并将对应的变量的值 set 到当前的部署单中
         Jinjava jinjava = new Jinjava();
@@ -112,46 +112,42 @@ public class DeployAppWaitAddonNode extends AbstractLocalNodeBase {
      * @param componentType 组件类型
      * @return DataOutput 列表
      */
-    private List<DeployAppSchema.DataOutput> getAddonDataOutputs(ComponentTypeEnum componentType) {
+    private List<DeployAppSchema.DataOutput> getAddonDataOutputs(String componentType) {
         DeployAppSchema configuration = SchemaUtil.toSchema(DeployAppSchema.class,
                 globalVariable.get(AppFlowVariableKey.CONFIGURATION).toString());
         String nodeId = fatherNodeId;
         assert !StringUtils.isEmpty(nodeId);
 
         // 根据 componentType 类型在部署单中寻找对应的 DataOutputs 配置
-        switch (componentType) {
-            case INTERNAL_ADDON:
-            case RESOURCE_ADDON:
-            case CUSTOM_ADDON:
-            case K8S_MICROSERVICE:
-            case K8S_JOB: {
-                for (DeployAppSchema.SpecComponent component : configuration.getSpec().getComponents()) {
-                    String componentId = component.getUniqueId();
-                    if (nodeId.equals(componentId)) {
-                        return component.getDataOutputs();
+        if (ComponentTypeEnum.INTERNAL_ADDON.toString().equals(componentType)
+                || ComponentTypeEnum.RESOURCE_ADDON.toString().equals(componentType)
+                || ComponentTypeEnum.CUSTOM_ADDON.toString().equals(componentType)
+                || ComponentTypeEnum.K8S_MICROSERVICE.toString().equals(componentType)
+                || ComponentTypeEnum.K8S_JOB.toString().equals(componentType)) {
+            for (DeployAppSchema.SpecComponent component : configuration.getSpec().getComponents()) {
+                String componentId = component.getUniqueId();
+                if (nodeId.equals(componentId)) {
+                    return component.getDataOutputs();
+                }
+            }
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("cannot find specified nodeId %s in components/addons", nodeId));
+        } else if (ComponentTypeEnum.TRAIT_ADDON.toString().equals(componentType)) {
+            for (DeployAppSchema.SpecComponent component : configuration.getSpec().getComponents()) {
+                String componentId = component.getUniqueId();
+                DeployAppRevisionName componentRevision = DeployAppRevisionName.valueOf(componentId);
+                for (DeployAppSchema.SpecComponentTrait trait : component.getTraits()) {
+                    String traitId = trait.getUniqueId(componentRevision);
+                    if (traitId.equals(nodeId)) {
+                        return trait.getDataOutputs();
                     }
                 }
-                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                        String.format("cannot find specified nodeId %s in components/addons", nodeId));
             }
-            case TRAIT_ADDON: {
-                for (DeployAppSchema.SpecComponent component : configuration.getSpec().getComponents()) {
-                    String componentId = component.getUniqueId();
-                    DeployAppRevisionName componentRevision = DeployAppRevisionName.valueOf(componentId);
-                    for (DeployAppSchema.SpecComponentTrait trait : component.getTraits()) {
-                        String traitId = trait.getUniqueId(componentRevision);
-                        if (traitId.equals(nodeId)) {
-                            return trait.getDataOutputs();
-                        }
-                    }
-                }
-                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                        String.format("cannot find specified nodeId %s in traits", nodeId));
-            }
-            default:
-                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                        String.format("invalid componentType %s", componentType.toString()));
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("cannot find specified nodeId %s in traits", nodeId));
         }
+        throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                String.format("invalid componentType %s", componentType.toString()));
     }
 
     /**

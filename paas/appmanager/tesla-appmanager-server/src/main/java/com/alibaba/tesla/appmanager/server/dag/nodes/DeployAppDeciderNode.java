@@ -51,7 +51,7 @@ public class DeployAppDeciderNode extends AbstractLocalNodeBase {
                     .output(ImmutableMap.of(AppFlowParamKey.COMPONENT_TYPE, ""))
                     .build();
         }
-        ComponentTypeEnum componentType = revisionContainer.getComponentType();
+        String componentType = revisionContainer.getComponentType();
 
         // 获取全局变量，并将其置入到 OVERWRITE_PARAMETER_VALUES (每个 component/addon 节点运行的时候都会还原这份变量数据)
         JSONObject parameters = globalParams.getJSONObject(AppFlowParamKey.OVERWRITE_PARAMETER_VALUES);
@@ -63,10 +63,17 @@ public class DeployAppDeciderNode extends AbstractLocalNodeBase {
             DeployAppHelper.recursiveSetParameters(parameters, null, Arrays.asList(name.split("\\.")), value,
                     ParameterValueSetPolicy.OVERWRITE_ON_CONFILICT);
         }
+        String overwriteParams = globalVariable.getString(AppFlowVariableKey.OVERWRITE_PARAMS);
+        if (StringUtils.isNotEmpty(overwriteParams)) {
+            parameters.putAll(JSONObject.parseObject(overwriteParams));
+            log.info("overwrite global params in dag|deployAppId={}|componentType={}|nodeId={}|dagInstId={}|" +
+                            "overwriteParams={}|parameters={}", deployAppId, componentType, nodeId, dagInstId,
+                    overwriteParams, parameters.toJSONString());
+        }
         log.info("decider node has finished running|deployAppId={}|componentType={}|nodeId={}|dagInstId={}",
-                deployAppId, componentType.toString(), nodeId, dagInstId);
+                deployAppId, componentType, nodeId, dagInstId);
         return DagInstNodeRunRet.builder()
-                .output(ImmutableMap.of(AppFlowParamKey.COMPONENT_TYPE, componentType.toString()))
+                .output(ImmutableMap.of(AppFlowParamKey.COMPONENT_TYPE, componentType))
                 .build();
     }
 }

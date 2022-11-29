@@ -148,7 +148,21 @@ export default {
         },
       },
       "supportItemToolbar":true,
-      "dataMock": {},
+      "dataMock": {
+        "description": "返回的数据为数组",
+        "formats":[
+          {
+            "description":"数据结构类型跟bizCharts保持一致, item 和 percent为key关键字",
+            "data":[
+              { "item": "事例一", "percent": 0.4 },
+              { "item": "事例二", "percent": 0.21 },
+              { "item": "事例三", "percent": 0.17 },
+              { "item": "事例四", "percent": 0.13 },
+              { "item": "事例五", "percent": 0.09 }
+            ]
+          }
+        ]
+      }
     },
-    "catgory": "charts",
+    "category": "charts",
   };

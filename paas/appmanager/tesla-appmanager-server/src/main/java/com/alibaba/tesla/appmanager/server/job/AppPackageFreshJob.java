@@ -229,7 +229,7 @@ public class AppPackageFreshJob {
     private static boolean isSame(ComponentPackageTaskDO componentPackageTaskDO,
                                   ComponentBinder component) {
         return StringUtils.equals(componentPackageTaskDO.getComponentName(), component.getComponentName())
-                && StringUtils.equals(componentPackageTaskDO.getComponentType(), component.getComponentType().toString());
+                && StringUtils.equals(componentPackageTaskDO.getComponentType(), component.getComponentType());
     }
 
     private static boolean isRunning(String taskStatus) {

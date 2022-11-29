@@ -13,21 +13,9 @@ public interface PluginTagDOMapper {
 
     int deleteByExample(PluginTagDOExample example);
 
-    int deleteByPrimaryKey(Long id);
-
-    int insert(PluginTagDO record);
-
     int insertSelective(PluginTagDO record);
 
     List<PluginTagDO> selectByExample(PluginTagDOExample example);
 
-    PluginTagDO selectByPrimaryKey(Long id);
-
     int updateByExampleSelective(@Param("record") PluginTagDO record, @Param("example") PluginTagDOExample example);
-
-    int updateByExample(@Param("record") PluginTagDO record, @Param("example") PluginTagDOExample example);
-
-    int updateByPrimaryKeySelective(PluginTagDO record);
-
-    int updateByPrimaryKey(PluginTagDO record);
 }

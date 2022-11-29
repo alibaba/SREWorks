@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import { EditOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Form } from '@ant-design/compatible';
 import '@ant-design/compatible/assets/index.css';
-import { Tabs, Select, Button, Row, Col, Collapse, Input } from "antd";
+import { Tabs, Select, Button, Row, Col, Collapse, Input,Card } from "antd";
 import "./index.less";
 import FormElementFactory from '../../../components/FormBuilder/FormElementFactory';
 import Constants from '../../framework/model/Constants';
 import AceEditor from "react-ace";
 import service from "../../services/appMenuTreeService";
+import AceViewer from "../../../components/FormBuilder/FormItem/AceViewer";
 import _ from "lodash";
 import uuid from "uuid/v4";
 import brace from 'brace';
@@ -351,30 +352,82 @@ class DataSource extends Component {
 
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form;
+    const {dataFormatter={}} = this.props;
     let { typeList, value } = this.state;
     let options = {
       modes: ["code", "tree"],
     };
-    return <div className="card-tab-panel">
-      <Form>
-        <Form.Item {...formItemLayout} label="数据源类型">
-          {getFieldDecorator("type", {
-            rules: [{ required: false, message: "请选择数据源类型" }],
-            initialValue: value.type,
-          })(<Select placeholder="请选择数据源类型" allowClear>
-            {typeList.map(item => (
-              <Option key={item.value}>{item.label}</Option>
-            ))}
-          </Select>)}
-        </Form.Item>
-        {this.renderFormItem(getFieldValue("type"))}
-      </Form>
-      {!this.props.onValuesChange && <div style={{ textAlign: "center" }}>
-        <Button type="primary" onClick={this.handleSubmit}>
-          保存
-        </Button>
-      </div>}
-    </div>;
+    let {description,formats}=dataFormatter;
+    let dataComponent = (<div></div>)
+    if(description && formats){
+      dataComponent=(
+          <Card title="数据源返回数据结构" size={"small"}>
+            <span>{description}</span>
+            {
+              formats.map(format=>{
+                return (
+                    <Card
+                        style={{ marginTop: 6 }}
+                        size={"small"}
+                        type="inner"
+                        title={format.description}
+                    >
+                      <AceViewer model={{
+                        showDiff:false,
+                        defModel:{height:170,disableShowDiff:true,mode:"json"},
+                      }} mode="json" value={format.data} readOnly={true}/>
+                    </Card>
+                )
+              })
+            }
+          </Card>
+      )
+    }
+    // return <div className="card-tab-panel">
+    //   <Form>
+    //     <Form.Item {...formItemLayout} label="数据源类型">
+    //       {getFieldDecorator("type", {
+    //         rules: [{ required: false, message: "请选择数据源类型" }],
+    //         initialValue: value.type,
+    //       })(<Select placeholder="请选择数据源类型" allowClear>
+    //         {typeList.map(item => (
+    //           <Option key={item.value}>{item.label}</Option>
+    //         ))}
+    //       </Select>)}
+    //     </Form.Item>
+    //     {this.renderFormItem(getFieldValue("type"))}
+    //   </Form>
+    //   {!this.props.onValuesChange && <div style={{ textAlign: "center" }}>
+    //     <Button type="primary" onClick={this.handleSubmit}>
+    //       保存
+    //     </Button>
+    //   </div>}
+    // </div>;
+    return <Row>
+      <Col span={Object.keys(dataFormatter).length > 0 ? 16 : 24}>
+        <Form>
+          <Form.Item {...formItemLayout} label="数据源类型">
+            {getFieldDecorator("type", {
+              rules: [{ required: false, message: "请选择数据源类型" }],
+              initialValue: value.type,
+            })(<Select placeholder="请选择数据源类型" allowClear>
+              {typeList.map(item => (
+                <Option key={item.value}>{item.label}</Option>
+              ))}
+            </Select>)}
+          </Form.Item>
+          {this.renderFormItem(getFieldValue("type"))}
+        </Form>
+        {!this.props.onValuesChange && <div style={{ textAlign: "center" }}>
+          <Button type="primary" onClick={this.handleSubmit}>
+            保存
+          </Button>
+        </div>}
+      </Col>
+      <Col span={Object.keys(dataFormatter).length > 0 ? 8 : 0}>
+        {dataComponent}
+      </Col>
+    </Row>
   }
 }
 

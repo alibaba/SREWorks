@@ -171,6 +171,6 @@ CREATE TABLE IF NOT EXISTS `event_instance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='事件实例表'
 ;
 
-REPLACE INTO risk_type(id, label, name, creator, last_modifier, description) VALUES (1, 'SERVICE_UNAVAILABLE', '服务不可用异常',  'sreworks', 'sreworks', '服务不可用异常类型(该类型异常参与计算服务可用率)
-');
+-- REPLACE INTO risk_type(id, label, name, creator, last_modifier, description) VALUES (1, 'SERVICE_UNAVAILABLE', '服务不可用异常',  'sreworks', 'sreworks', '服务不可用异常类型(该类型异常参与计算服务可用率)
+-- ');
 

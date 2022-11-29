@@ -145,7 +145,7 @@ public class AppPackageTaskServiceImpl implements AppPackageTaskService {
      */
     @Override
     public String getComponentNextVersion(
-            String appId, ComponentTypeEnum componentType, String componentName, String fullVersion) {
+            String appId, String componentType, String componentName, String fullVersion) {
         if (!StringUtils.equals(fullVersion, DefaultConstant.AUTO_VERSION)) {
             return fullVersion;
         }
@@ -154,13 +154,13 @@ public class AppPackageTaskServiceImpl implements AppPackageTaskService {
         ComponentPackageNextVersionRes packageNextVersion = componentPackageService.nextVersion(
                 ComponentPackageNextVersionReq.builder()
                         .appId(appId)
-                        .componentType(componentType.toString())
+                        .componentType(componentType)
                         .componentName(componentName)
                         .build());
         ComponentPackageTaskNextVersionRes taskNextVersion = componentPackageTaskService.nextVersion(
                 ComponentPackageTaskNextVersionReq.builder()
                         .appId(appId)
-                        .componentType(componentType.toString())
+                        .componentType(componentType)
                         .componentName(componentName)
                         .build());
         fullVersion = packageNextVersion.getNextVersion();

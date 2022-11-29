@@ -2,11 +2,9 @@
  * Created by caoshuaibiao on 2020/12/9.
  */
 import React from "react";
-import { Layout, Divider, Dropdown, Menu, Switch, Avatar } from "antd";
+import { Divider } from "antd";
 import SiderNavToggleBar from '../../components/SiderNavToggleBar';
 import { connect } from 'dva';
-import localeHelper from "../../utils/localeHelper";
-import { LogoutOutlined } from "@ant-design/icons";
 import DropDownUser from "../common/DropDownUser";
 import properties from "../../properties";
 @connect(({ home, global }) => ({
@@ -28,7 +26,7 @@ export default class HomeHeader extends React.Component {
       <div className="header">
         <div className="left-logo">
           <div>
-            <SiderNavToggleBar theme="dark" />
+            <SiderNavToggleBar top={50} theme="dark" />
           </div>
           <div>
             <span className="logo-link" onClick={() => { window.open("/#", "_blank") }} style={{ position: "relative" }}><img style={{

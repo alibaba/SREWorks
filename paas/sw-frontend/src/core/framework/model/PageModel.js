@@ -30,7 +30,7 @@ export default class PageModel extends BaseModel {
             let { dataSourceMeta } = modelJson.config;
             this.setDataSourceMeta(dataSourceMeta);
         }
-        if(modelJson.config && modelJson.config.esSearch) {
+        if (modelJson.config && modelJson.config.esSearch) {
             let { esSearch } = modelJson.config;
             this.setEsSearch(esSearch);
         }
@@ -144,11 +144,21 @@ export default class PageModel extends BaseModel {
     getNodeModel() {
         return this.nodeModel;
     }
-    setEsSearch(params){
+    setEsSearch(params) {
         this.esSearch = params
     }
     getEsSearch() {
         return this.esSearch
+    }
+    /**
+ * 设置开发态时候的调试参数
+ */
+    setDebugParams(params) {
+        this.debugParams = params;
+    }
+
+    getDebugPrams() {
+        return this.debugParams || {}
     }
 
 

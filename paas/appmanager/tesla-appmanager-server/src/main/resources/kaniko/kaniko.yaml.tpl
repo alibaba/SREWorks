@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: {{ POD_NAME }}
+  labels:
+    appType: build-image
 spec:
   tolerations:
     - effect: NoSchedule
@@ -10,6 +12,18 @@ spec:
     - effect: NoSchedule
       key: sigma.ali/resource-pool
       operator: Exists
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchExpressions:
+            - key: appType
+              operator: In
+              values:
+              - build-image
   containers:
   - name: kaniko
     image: {{ KANIKO_IMAGE }}

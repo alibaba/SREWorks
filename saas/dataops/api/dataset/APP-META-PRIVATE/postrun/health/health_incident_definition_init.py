@@ -8,7 +8,9 @@ headers = {}
 incident_type = {
     "name": "服务不可用异常",
     "description": "服务不可用异常类型(该类型异常参与计算服务可用率)",
-    "label": "SERVICE_UNAVAILABLE"
+    "label": "SERVICE_UNAVAILABLE",
+    "creator": "sreworks",
+    "lastModifier": "sreworks"
 }
 
 incident_definition_metas = [
@@ -78,11 +80,25 @@ def add_incident_type():
         print(r.json())
 
 
+def get_incident_type():
+    url = host["health"] + "/incident_type/getIncidentTypeByLabel?label=" + incident_type['label']
+    r = requests.get(url, headers=headers)
+    if r.status_code == 200:
+        data = r.json().get("data", None)
+        if data:
+            return data["id"]
+    else:
+        print(r)
+    return 1
+
+
 def add_incident_definitions():
     apps = get_apps()
+    type_id = get_incident_type()
     url = host["health"] + "/definition/createDefinition"
     for app in apps:
         for incident_definition_meta in incident_definition_metas:
+            incident_definition_meta["exConfig"]['typeId'] = type_id
             app_incident_definition = {
                 "description": incident_definition_meta["description"],
                 "exConfig": incident_definition_meta["exConfig"],

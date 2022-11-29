@@ -332,7 +332,10 @@ export default class ElementEditor extends React.Component {
                         !isJsonEdit &&
                         <TabPane tab="组件数据源" key="datasource">
                             <div style={tabContentStyle}>
-                                <DataSourceEditor value={this.commonConfig.dataSourceMeta || {}} onValuesChange={(changedValues, allValues) => {
+                                <DataSourceEditor 
+                                value={this.commonConfig.dataSourceMeta || {}} 
+                                dataFormatter={widgetMeta&&widgetMeta.configSchema?widgetMeta.configSchema.dataMock:false}
+                                onValuesChange={(changedValues, allValues) => {
                                     this.setCommonConfig({ dataSourceMeta: allValues });
                                     widgetModel.setDataSourceMeta(allValues);
                                 }} />

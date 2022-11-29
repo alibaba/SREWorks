@@ -104,26 +104,6 @@ public class DeployAppCreateComponentNode extends AbstractLocalNodeBase {
         WorkloadResource workload = componentSchema.getSpec().getWorkload();
         DeployAppHelper.setWorkloadMetaData(workload, componentOptions, appId, revisionName.getComponentName());
         DocumentContext workloadContext = JsonPath.parse(JSONObject.toJSONString(workload));
-        for (DeployAppSchema.DataInput dataInput : componentOptions.getDataInputs()) {
-            String key = dataInput.getValueFrom().getDataOutputName();
-            Object value = DeployAppHelper.recursiveGetParameter(parameters, Arrays.asList(key.split("\\.")));
-            for (String toFieldPath : dataInput.getToFieldPaths()) {
-                try {
-                    workloadContext.set(DefaultConstant.JSONPATH_PREFIX + toFieldPath, value);
-                    log.info("set dataInput value success|key={}|value={}|toFieldPath={}|nodeId={}|" +
-                            "deployAppId={}", key, value, toFieldPath, nodeId, deployAppId);
-                } catch (PathNotFoundException e) {
-                    log.warn("set dataInput value failed because of path not found|key={}|value={}|toFieldPath={}|" +
-                                    "nodeId={}|deployAppId={}|parameters={}", key, value, toFieldPath,
-                            nodeId, deployAppId, parameters.toJSONString());
-                } catch (Exception e) {
-                    log.warn("set dataInput value failed|key={}|value={}|toFieldPath={}|nodeId={}|" +
-                                    "deployAppId={}|parameters={}|exception={}", key, value, toFieldPath,
-                            nodeId, deployAppId, parameters.toJSONString(), ExceptionUtils.getStackTrace(e));
-                    throw new AppException(AppErrorCode.INVALID_USER_ARGS, "set dataInput value failed", e);
-                }
-            }
-        }
 
         // 将 parameterValues 中声明的变量获取过来，并赋值到 component schema 中对应的字段
         for (DeployAppSchema.ParameterValue parameterValue : componentOptions.getParameterValues()) {
@@ -150,6 +130,28 @@ public class DeployAppCreateComponentNode extends AbstractLocalNodeBase {
             }
         }
 
+        // 进行 dataInputs 的变量渲染
+        for (DeployAppSchema.DataInput dataInput : componentOptions.getDataInputs()) {
+            String key = dataInput.getValueFrom().getDataOutputName();
+            Object value = DeployAppHelper.recursiveGetParameter(parameters, Arrays.asList(key.split("\\.")));
+            for (String toFieldPath : dataInput.getToFieldPaths()) {
+                try {
+                    workloadContext.set(DefaultConstant.JSONPATH_PREFIX + toFieldPath, value);
+                    log.info("set dataInput value success|key={}|value={}|toFieldPath={}|nodeId={}|" +
+                            "deployAppId={}", key, value, toFieldPath, nodeId, deployAppId);
+                } catch (PathNotFoundException e) {
+                    log.warn("set dataInput value failed because of path not found|key={}|value={}|toFieldPath={}|" +
+                                    "nodeId={}|deployAppId={}|parameters={}", key, value, toFieldPath,
+                            nodeId, deployAppId, parameters.toJSONString());
+                } catch (Exception e) {
+                    log.warn("set dataInput value failed|key={}|value={}|toFieldPath={}|nodeId={}|" +
+                                    "deployAppId={}|parameters={}|exception={}", key, value, toFieldPath,
+                            nodeId, deployAppId, parameters.toJSONString(), ExceptionUtils.getStackTrace(e));
+                    throw new AppException(AppErrorCode.INVALID_USER_ARGS, "set dataInput value failed", e);
+                }
+            }
+        }
+
         // 获取基本部署目标定位信息
         String namespaceId = componentOptions.getNamespaceId();
         if (StringUtils.isEmpty(namespaceId)) {
@@ -162,7 +164,7 @@ public class DeployAppCreateComponentNode extends AbstractLocalNodeBase {
         // 检测当前是否已经存在组件实例，存在则获取 componentInstanceId；否则创建对应的组件实例并获取 componentInstanceId
         RtComponentInstanceQueryCondition componentInstanceCondition = RtComponentInstanceQueryCondition.builder()
                 .appId(globalVariable.getString(AppFlowVariableKey.APP_ID))
-                .componentType(revisionName.getComponentType().toString())
+                .componentType(revisionName.getComponentType())
                 .componentName(revisionName.getComponentName())
                 .clusterId(clusterId)
                 .namespaceId(namespaceId)

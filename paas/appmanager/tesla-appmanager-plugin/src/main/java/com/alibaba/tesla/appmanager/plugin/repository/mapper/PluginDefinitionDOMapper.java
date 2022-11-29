@@ -13,27 +13,13 @@ public interface PluginDefinitionDOMapper {
 
     int deleteByExample(PluginDefinitionDOExample example);
 
-    int deleteByPrimaryKey(Long id);
-
-    int insert(PluginDefinitionDO record);
-
     int insertSelective(PluginDefinitionDO record);
 
     List<PluginDefinitionDO> selectByExampleWithBLOBs(PluginDefinitionDOExample example);
 
     List<PluginDefinitionDO> selectByExample(PluginDefinitionDOExample example);
 
-    PluginDefinitionDO selectByPrimaryKey(Long id);
+    List<PluginDefinitionDO> selectGroupByKindNameVersion(PluginDefinitionDOExample example);
 
     int updateByExampleSelective(@Param("record") PluginDefinitionDO record, @Param("example") PluginDefinitionDOExample example);
-
-    int updateByExampleWithBLOBs(@Param("record") PluginDefinitionDO record, @Param("example") PluginDefinitionDOExample example);
-
-    int updateByExample(@Param("record") PluginDefinitionDO record, @Param("example") PluginDefinitionDOExample example);
-
-    int updateByPrimaryKeySelective(PluginDefinitionDO record);
-
-    int updateByPrimaryKeyWithBLOBs(PluginDefinitionDO record);
-
-    int updateByPrimaryKey(PluginDefinitionDO record);
 }

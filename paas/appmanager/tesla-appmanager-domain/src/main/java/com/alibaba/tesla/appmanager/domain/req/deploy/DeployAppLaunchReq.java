@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.domain.req.deploy;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,4 +40,9 @@ public class DeployAppLaunchReq implements Serializable {
      * 是否移除应用 ID 后缀
      */
     private Boolean removeSuffix = false;
+
+    /**
+     * 覆盖参数对象 (内部使用)
+     */
+    private JSONObject overwriteParameters;
 }

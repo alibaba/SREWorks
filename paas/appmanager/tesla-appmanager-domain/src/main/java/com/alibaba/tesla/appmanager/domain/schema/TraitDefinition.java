@@ -1,7 +1,10 @@
 package com.alibaba.tesla.appmanager.domain.schema;
 
 import com.alibaba.fastjson.JSONObject;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
@@ -15,6 +18,9 @@ import java.util.List;
  */
 @Slf4j
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TraitDefinition implements Serializable {
 
     private static final long serialVersionUID = 7095150105558418313L;
@@ -43,6 +49,9 @@ public class TraitDefinition implements Serializable {
      * 元信息
      */
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class MetaData implements Serializable {
 
         private static final long serialVersionUID = -3040036214175436386L;
@@ -57,6 +66,9 @@ public class TraitDefinition implements Serializable {
      * Spec
      */
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Spec implements Serializable {
 
         private static final long serialVersionUID = -1592974598970779373L;
@@ -80,6 +92,9 @@ public class TraitDefinition implements Serializable {
      * defintionRef
      */
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class SpecDefinitionRef implements Serializable {
 
         private static final long serialVersionUID = -6624030971546732668L;
@@ -88,6 +103,9 @@ public class TraitDefinition implements Serializable {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class DataOutput implements Serializable {
 
         private static final long serialVersionUID = 2150471143237594995L;

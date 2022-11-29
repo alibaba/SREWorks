@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.domain.schema;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
@@ -123,6 +124,9 @@ public class DeployAppSchema implements Schema, Serializable {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class DataOutput implements Serializable {
 
         private static final long serialVersionUID = 2150471143237594995L;
@@ -307,9 +311,9 @@ public class DeployAppSchema implements Schema, Serializable {
         @JSONField(serialize = false)
         public String getUniqueId(DeployAppRevisionName componentRevisionContainer) {
             DeployAppRevisionName container = DeployAppRevisionName.builder()
-                    .componentType(ComponentTypeEnum.TRAIT_ADDON)
+                    .componentType(ComponentTypeEnum.TRAIT_ADDON.toString())
                     .componentName(String.join("~", Arrays.asList(
-                            componentRevisionContainer.getComponentType().toString(),
+                            componentRevisionContainer.getComponentType(),
                             componentRevisionContainer.getComponentName(),
                             name
                     )))
@@ -334,6 +338,16 @@ public class DeployAppSchema implements Schema, Serializable {
          * Workflow 任务类型
          */
         private String type;
+
+        /**
+         * Workflow 传递参数输出
+         */
+        private JSONArray outputs = new JSONArray();
+
+        /**
+         * Workflow 传递参数输入
+         */
+        private JSONArray inputs = new JSONArray();
 
         /**
          * Workflow 任务运行时机 (pre-render/post-render/post-deploy)

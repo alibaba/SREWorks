@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.workflow.api;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.WorkflowInstanceProvider;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.WorkflowInstanceDTO;
@@ -10,6 +11,7 @@ import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowInstan
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
 import com.alibaba.tesla.appmanager.workflow.service.WorkflowInstanceService;
 import com.alibaba.tesla.appmanager.domain.res.workflow.WorkflowInstanceOperationRes;
+import com.alibaba.tesla.appmanager.workflow.service.WorkflowSnapshotService;
 import com.alibaba.tesla.appmanager.workflow.service.pubsub.WorkflowInstanceOperationCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ public class WorkflowInstanceProviderImpl implements WorkflowInstanceProvider {
     private WorkflowInstanceService workflowInstanceService;
 
     @Autowired
+    private WorkflowSnapshotService workflowSnapshotService;
+
+    @Autowired
     private WorkflowInstanceDtoConvert convert;
 
     /**
@@ -40,7 +45,9 @@ public class WorkflowInstanceProviderImpl implements WorkflowInstanceProvider {
     @Override
     public WorkflowInstanceDTO get(Long workflowInstanceId, boolean withExt) {
         WorkflowInstanceDO instance = workflowInstanceService.get(workflowInstanceId, withExt);
-        return convert.to(instance);
+        WorkflowInstanceDTO result = convert.to(instance);
+        result.setWorkflowContext(workflowSnapshotService.getContext(workflowInstanceId));
+        return result;
     }
 
     /**
@@ -62,6 +69,30 @@ public class WorkflowInstanceProviderImpl implements WorkflowInstanceProvider {
     }
 
     /**
+     * 覆写 Context 到指定 Workflow 实例
+     *
+     * @param workflowInstanceId Workflow 实例 ID
+     * @param context            Context JSONObject
+     */
+    @Override
+    public void putContext(Long workflowInstanceId, JSONObject context) {
+        workflowInstanceService.putContext(workflowInstanceId, context);
+    }
+
+    /**
+     * 获取指定应用指定 category 的最后一个 SUCCESS 状态的 Workflow 实例
+     *
+     * @param appId    应用 ID
+     * @param category 分类
+     * @return WorkflowInstanceDTO
+     */
+    @Override
+    public WorkflowInstanceDTO getLastSuccessInstance(String appId, String category) {
+        WorkflowInstanceDO instance = workflowInstanceService.getLastSuccessInstance(appId, category);
+        return convert.to(instance);
+    }
+
+    /**
      * 启动一个 Workflow 实例
      *
      * @param appId         应用 ID
@@ -76,7 +107,7 @@ public class WorkflowInstanceProviderImpl implements WorkflowInstanceProvider {
     }
 
     /**
-     * 恢复处于 SUSPEND 状态的 Workflow 实例
+     * 唤醒处于 SUSPEND 状态的 Workflow 实例
      *
      * @param workflowInstanceId Workflow 实例 ID
      * @return 执行结果

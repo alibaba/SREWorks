@@ -18,6 +18,7 @@ import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaUpdateByOption
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaUpdateReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.google.common.collect.ImmutableMap;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +36,7 @@ import java.util.Objects;
  *
  * @author qianmo.zm@alibaba-inc.com
  */
+@Tag(name = "K8S 微服务 API")
 @RequestMapping("/apps/{appId}/k8s-microservices")
 @RestController
 @Slf4j
@@ -123,7 +125,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
         request.setAppId(appId);
         request.setNamespaceId(namespaceId);
         request.setStageId(stageId);
-        request.setComponentType(ComponentTypeEnum.K8S_MICROSERVICE);
+        request.setComponentType(ComponentTypeEnum.K8S_MICROSERVICE.toString());
         request.setName(request.getMicroServiceId());
         K8sMicroServiceMetaDTO result = metaProvider.create(request);
         return buildSucceedResult(result);
@@ -144,7 +146,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
         request.setAppId(appId);
         request.setNamespaceId(namespaceId);
         request.setStageId(stageId);
-        request.setComponentType(ComponentTypeEnum.K8S_MICROSERVICE);
+        request.setComponentType(ComponentTypeEnum.K8S_MICROSERVICE.toString());
         request.setName(request.getMicroServiceId());
         K8sMicroServiceMetaDTO result = metaProvider.update(request);
         return buildSucceedResult(result);
@@ -252,7 +254,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
 
     private void repair(K8sMicroServiceMetaUpdateReq request) {
         List<ContainerObjectDTO> containerObjectList = request.getContainerObjectList();
-        if (request.getComponentType() == ComponentTypeEnum.K8S_MICROSERVICE) {
+        if (Objects.equals(request.getComponentType(), ComponentTypeEnum.K8S_MICROSERVICE.toString())) {
             ContainerObjectDTO mainContainer = containerObjectList.stream()
                     .filter(containerObject -> containerObject.getContainerType() == ContainerTypeEnum.CONTAINER)
                     .findFirst()
@@ -267,7 +269,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
                         container.setRepo(mainContainer.getRepo());
                         container.setBranch(mainContainer.getBranch());
                     });
-        } else if (request.getComponentType() == ComponentTypeEnum.K8S_JOB) {
+        } else if (Objects.equals(request.getComponentType(), ComponentTypeEnum.K8S_JOB.toString())) {
             if (CollectionUtils.size(containerObjectList) != 1) {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS, "JOB 缺失");
             }

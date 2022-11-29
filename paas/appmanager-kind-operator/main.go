@@ -76,7 +76,7 @@ func main() {
 	if globalListener {
 		options = ctrl.Options{
 			Scheme:             scheme,
-			MetricsBindAddress: metricsAddr,
+			MetricsBindAddress: "0",
 			Port:               9443,
 			LeaderElection:     enableLeaderElection,
 			LeaderElectionID:   namespace + ".leader.abm.io",
@@ -84,7 +84,7 @@ func main() {
 	} else {
 		options = ctrl.Options{
 			Scheme:             scheme,
-			MetricsBindAddress: metricsAddr,
+			MetricsBindAddress: "0",
 			Port:               9443,
 			LeaderElection:     enableLeaderElection,
 			LeaderElectionID:   namespace + ".leader.abm.io",

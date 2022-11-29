@@ -295,52 +295,62 @@ public class PluginResourceDOExample {
             return (Criteria) this;
         }
 
-        public Criteria andPluginNameEqualTo(Long value) {
+        public Criteria andPluginNameEqualTo(String value) {
             addCriterion("plugin_name =", value, "pluginName");
             return (Criteria) this;
         }
 
-        public Criteria andPluginNameNotEqualTo(Long value) {
+        public Criteria andPluginNameNotEqualTo(String value) {
             addCriterion("plugin_name <>", value, "pluginName");
             return (Criteria) this;
         }
 
-        public Criteria andPluginNameGreaterThan(Long value) {
+        public Criteria andPluginNameGreaterThan(String value) {
             addCriterion("plugin_name >", value, "pluginName");
             return (Criteria) this;
         }
 
-        public Criteria andPluginNameGreaterThanOrEqualTo(Long value) {
+        public Criteria andPluginNameGreaterThanOrEqualTo(String value) {
             addCriterion("plugin_name >=", value, "pluginName");
             return (Criteria) this;
         }
 
-        public Criteria andPluginNameLessThan(Long value) {
+        public Criteria andPluginNameLessThan(String value) {
             addCriterion("plugin_name <", value, "pluginName");
             return (Criteria) this;
         }
 
-        public Criteria andPluginNameLessThanOrEqualTo(Long value) {
+        public Criteria andPluginNameLessThanOrEqualTo(String value) {
             addCriterion("plugin_name <=", value, "pluginName");
             return (Criteria) this;
         }
 
-        public Criteria andPluginNameIn(List<Long> values) {
+        public Criteria andPluginNameLike(String value) {
+            addCriterion("plugin_name like", value, "pluginName");
+            return (Criteria) this;
+        }
+
+        public Criteria andPluginNameNotLike(String value) {
+            addCriterion("plugin_name not like", value, "pluginName");
+            return (Criteria) this;
+        }
+
+        public Criteria andPluginNameIn(List<String> values) {
             addCriterion("plugin_name in", values, "pluginName");
             return (Criteria) this;
         }
 
-        public Criteria andPluginNameNotIn(List<Long> values) {
+        public Criteria andPluginNameNotIn(List<String> values) {
             addCriterion("plugin_name not in", values, "pluginName");
             return (Criteria) this;
         }
 
-        public Criteria andPluginNameBetween(Long value1, Long value2) {
+        public Criteria andPluginNameBetween(String value1, String value2) {
             addCriterion("plugin_name between", value1, value2, "pluginName");
             return (Criteria) this;
         }
 
-        public Criteria andPluginNameNotBetween(Long value1, Long value2) {
+        public Criteria andPluginNameNotBetween(String value1, String value2) {
             addCriterion("plugin_name not between", value1, value2, "pluginName");
             return (Criteria) this;
         }

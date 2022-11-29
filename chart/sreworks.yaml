@@ -75,6 +75,17 @@ metadata:
 secrets:
   - name: sreworks-mysql
 ---
+# Source: sreworks/charts/appmanagerbase/charts/openebs/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sreworks-openebs
+  labels:
+    app: openebs
+    chart: openebs-3.1.0
+    release: sreworks
+    heritage: Helm
+---
 # Source: sreworks/charts/appmanager/templates/server-docker-secret.yaml
 apiVersion: v1
 kind: Secret
@@ -121,7 +132,7 @@ metadata:
 type: Opaque
 data:
   mysql-root-password: "Ykd1d3NBV1FNNks="
-  mysql-password: "bWxDRm9GS25Faw=="
+  mysql-password: "ZHQ0b0JOeUVrNQ=="
 ---
 # Source: sreworks/charts/appmanagerbase/charts/redis/templates/secret.yaml
 apiVersion: v1
@@ -274,6 +285,51 @@ data:
     port=3306
     socket=/opt/bitnami/mysql/tmp/mysql.sock
     pid-file=/opt/bitnami/mysql/tmp/mysqld.pid
+---
+# Source: sreworks/charts/appmanagerbase/charts/openebs/templates/ndm/cm-node-disk-manager.yaml
+# This is the node-disk-manager related config.
+# It can be used to customize the disks probes and filters
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sreworks-openebs-ndm-config
+  labels:
+    app: openebs
+    chart: openebs-3.1.0
+    release: sreworks
+    heritage: Helm
+    component: ndm-config
+    openebs.io/component-name: ndm-config
+data:
+  # udev-probe is default or primary probe which should be enabled to run ndm
+  # filterconfigs contains configs of filters - in the form of include
+  # and exclude comma separated strings
+  node-disk-manager.config: |
+    probeconfigs:
+      - key: udev-probe
+        name: udev probe
+        state: true
+      - key: seachest-probe
+        name: seachest probe
+        state: false
+      - key: smart-probe
+        name: smart probe
+        state: true
+    filterconfigs:
+      - key: os-disk-exclude-filter
+        name: os disk exclude filter
+        state: true
+        exclude: "/,/etc/hosts,/boot"
+      - key: vendor-filter
+        name: vendor filter
+        state: true
+        include: ""
+        exclude: "CLOUDBYT,OpenEBS"
+      - key: path-filter
+        name: path filter
+        state: true
+        include: ""
+        exclude: "/dev/loop,/dev/fd0,/dev/sr0,/dev/ram,/dev/dm-,/dev/md,/dev/rbd,/dev/zd"
 ---
 # Source: sreworks/charts/appmanagerbase/charts/redis/templates/configmap-scripts.yaml
 apiVersion: v1
@@ -441,7 +497,7 @@ data:
     res=$(/root/swcli --config /swcli/swcli.yaml app-package build --app-id=cluster --tags="release=sreworks/x86_64" -j -d)
  
     package_name=$(echo $res | python -c 'import sys;import json;print(json.loads(sys.stdin.read())["packageVersion"])')
-    /root/mc alias set sw http://${ENDPOINT_PAAS_MINIO}:9000 ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}
+    /root/mc alias set sw http://${ENDPOINT_PAAS_MINIO} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}
 
     /root/mc share download sw/abm-oxs-appmanager-daily/apps/cluster/${package_name}.zip|grep 'Share'|awk '{print $2}'
 
@@ -565,19 +621,64 @@ data:
 
   IMAGE_PUSH_REGISTRY: registry.cn-zhangjiakou.aliyuncs.com/builds
   
-  MAVEN_IMAGE: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-maven:v0.5
-  PYTHON2_IMAGE: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-python27:v0.5
-  MIGRATE_IMAGE: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-migrate:v0.5
-  JRE8_IMAGE: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-openjdk8-jre:v0.5
-  POSTRUN_IMAGE: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-postrun:v0.5
 
-  SOURCE_BRANCH: "master"
+  APK_REPO_DOMAIN: mirrors.tuna.tsinghua.edu.cn 
+  MAVEN_IMAGE: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/maven:3.8.3-adoptopenjdk-11
+  JRE8_IMAGE: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/openjdk8:alpine-jre
+  JRE11_IMAGE: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/openjdk:11.0.10-jre
+  MAVEN_SETTINGS_XML: https://sreworks.oss-cn-beijing.aliyuncs.com/resource/settings.xml
+  NODE_IMAGE: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/node:14.20.0-alpine3.15
+  NODE_IMAGE2: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/node:16.17-alpine
+  ALPINE_IMAGE: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/alpine:latest
+  MIGRATE_IMAGE: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-migrate:v1.2
+  POSTRUN_IMAGE: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-postrun:v1.2
+  NPM_REGISTRY_URL: https://registry.npmmirror.com
+  JRE11_ALPINE_IMAGE: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/openjdk11:alpine-jre
+  PYTHON_PIP: http://mirrors.aliyun.com/pypi/simple
+  PYTHON_PIP_DOMAIN: "mirrors.aliyun.com"
+  MINIO_CLIENT_URL: https://sreworks.oss-cn-beijing.aliyuncs.com/bin/mc-linux-amd64
+  PYTHON3_IMAGE: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/python:3.9.12-alpine
+  BENTOML_IMAGE: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/bentoml-model-server:0.13.1-py37
+
+  LOGSTASH_IMAGE: "sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/logstash"
+  LOGSTASH_IMAGE_TAG: "7.10.2"
+  GRAFANA_IMAGE: "sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/grafana"
+  GRAFANA_IMAGE_TAG: "7.5.3"
+  KIBANA_IMAGE: "sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kibana"
+  KIBANA_IMAGE_TAG: "7.10.2"
+  ELASTICSEARCH_IMAGE: "sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/elasticsearch"
+  ELASTICSEARCH_IMAGE_TAG: "7.10.2-with-plugins"
+  ELASTICSEARCH_IMAGE: "sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/elasticsearch"
+  ELASTICSEARCH_IMAGE_TAG: "7.10.2-with-plugins"
+  SKYWALKING_OAP_IMAGE: "sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-oap-server-utc-8"
+  SKYWALKING_OAP_IMAGE_TAG: "8.5.0-es7"
+  SKYWALKING_UI_IMAGE: "sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-ui"
+  SKYWALKING_UI_IMAGE_TAG: "8.5.0"
+  BUSYBOX_IMAGE: "sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/busybox"
+  BUSYBOX_IMAGE_TAG: "1.30"
+  
+  VVP_REPO:  "sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror"
+  VVP_APPMANAGER_REPO:  "vvp-appmanager"
+  VVP_APPMANAGER_IMAGE_TAG:  "2.6.1"
+  VVP_UI_REPO:  "vvp-ui"
+  VVP_UI_IMAGE_TAG:  "2.6.1"
+  VVP_GATEWAY_REPO:  "vvp-gateway"
+  VVP_GATEWAY_IMAGE_TAG:  "2.6.1"
+  METRICBEAT_IMAGE: "sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/metricbeat"
+  METRICBEAT_IMAGE_TAG: "7.10.2"
+  FILEBEAT_IMAGE: "sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/filebeat"
+  FILEBEAT_IMAGE_TAG: "7.10.2"
+  MYSQL_REGISTRY: "sreworks-registry.cn-beijing.cr.aliyuncs.com"
+  MYSQL_REPO: "mirror/mysql"
+  MYSQL_IMAGE_TAG: "8.0.22-debian-10-r44"
+
+  SOURCE_BRANCH: "v1.2"
   SOURCE_REPO: https://code.aliyun.com/sreworks_public/mirror.git
   SOURCE_CI_ACCOUNT: ""
   SOURCE_CI_TOKEN: ""
 
   ZOOKEEPER_ENDPOINT: sreworks-zookeeper
-  ENDPOINT_PAAS_MINIO: sreworks-minio.sreworks
+  ENDPOINT_PAAS_MINIO: "sreworks-minio.sreworks:9000"
   APPMANAGER_ENDPOINT: sreworks-appmanager
   KAFKA_ENDPOINT: sreworks-kafka.sreworks
   AUTHPROXY_ENDPOINT: prod-flycore-paas-authproxy
@@ -601,9 +702,6 @@ data:
 
   SAAS_STAGE_ID: prod
   
-  DOMAIN_BASE_INGRESS: 
-  DOMAIN_NETWORK_PROTOCOL: "__HOME_URL__"
-
   PLATFORM_NAME: SREWorks
   PLATFORM_LOGO: /static/publicMedia/sreworks.png
 
@@ -613,8 +711,18 @@ data:
   IMPORT_FRONTEND: "true"
   IMAGE_BUILD_ENABLE: "false"
 
-  DATAOPS_DB_PASSWORD: cb56b5is5e21_c359b42223
-  GRAFANA_ADMIN_PASSWORD: sreworks123456 
+  DATAOPS_DB_HOST: "prod-dataops-mysql.sreworks-dataops"
+  DATAOPS_DB_PASSWORD: "cb56b5is5e21_c359b42223"
+  DATAOPS_DB_PORT: "3306"
+  DATAOPS_DB_USER: "root"
+  GRAFANA_ADMIN_PASSWORD: "sreworks123456" 
+  DATA_ES_HOST: "prod-dataops-elasticsearch-master.sreworks-dataops"
+  DATA_ES_PORT: "9200"
+  DATA_ES_USER: "elastic"
+  DATA_ES_PASSWORD: "sreworkses123."
+
+  DATA_PROM_HOST: "localhost"
+  DATA_PROM_PORT: "80"
 
   ACCOUNT_SUPER_CLIENT_ID: common
   ACCOUNT_SUPER_CLIENT_SECRET: common-9efab2399c7c560b34de477b9aa0a465
@@ -622,7 +730,9 @@ data:
   ACCOUNT_SUPER_SECRET_KEY: test-super-secret-key
 
   HOME_BUILD: "false"
+  ONLY_BASE: "false"
 
+  ADMIN_INIT_PASSWORD: "12345678"
 
 kind: ConfigMap
 metadata:
@@ -685,17 +795,31 @@ data:
         sh /app/core-action-service-check.sh
         
         # import&launch saas desktop
-        envsubst < /root/saas/desktop/launch-v2.yaml.tpl > /root/saas/desktop/launch.yaml
+        envsubst < /root/saas/desktop/build/launch-frontend.yaml.tpl > /root/saas/desktop/launch-frontend.yaml
+        envsubst < /root/saas/desktop/build/launch-frontend-dev.yaml.tpl > /root/saas/desktop/launch-frontend-dev.yaml 
 
-        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id desktop --filepath /root/saas/desktop/ui/desktop-auto.zip --print-only-app-package-id=true --reset-version=true)
-        /root/swcli --config /swcli/swcli.yaml deployment launch --app-id desktop --stage=prod --namespace=${NAMESPACE_ID} --path /root/saas/desktop/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master  
-    
+        if [[ "$ONLY_BASE" == "true" ]] ; then
+           sed -i 's/searchConfig\\":true/searchConfig\\":false/g' saas/desktop/build/INTERNAL_ADDON_productopsv2.zip.dir/content.json
+        fi
+
+        python /app/pack.py --src /root/saas/desktop/build --dest /root/saas/desktop/build.zip
+   
+        sh /app/import.sh desktop /root/saas/desktop/build.zip /root/saas/desktop/launch-frontend.yaml /root/saas/desktop/launch-frontend-dev.yaml
+        
         # import&launch saas swadmin
-        envsubst < /root/saas/swadmin/launch-v2.yaml.tpl > /root/saas/swadmin/launch.yaml
-        envsubst < /root/saas/swadmin/launch-v2-dev.yaml.tpl > /root/saas/swadmin/launch-dev.yaml
-        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id swadmin --filepath /root/saas/swadmin/ui/swadmin-auto.zip --print-only-app-package-id=true --reset-version=true)
-        /root/swcli --config /swcli/swcli.yaml deployment launch --app-id swadmin --path /root/saas/swadmin/launch.yaml --stage=prod --namespace=${NAMESPACE_ID} --app-package-id $result --arch x86 --wait=true --cluster master
-        /root/swcli --config /swcli/swcli.yaml deployment launch --app-id swadmin --path /root/saas/swadmin/launch-dev.yaml --stage dev --namespace=${NAMESPACE_ID} --app-package-id $result --arch x86 --wait=true --cluster master
+        python /app/pack.py --src /root/saas/swadmin/build --dest /root/saas/swadmin/build.zip
+        envsubst < /root/saas/swadmin/build/launch-frontend.yaml.tpl > /root/saas/swadmin/launch-frontend.yaml
+        envsubst < /root/saas/swadmin/build/launch-frontend-dev.yaml.tpl > /root/saas/swadmin/launch-frontend-dev.yaml
+        
+        sh /app/import.sh swadmin /root/saas/swadmin/build.zip /root/saas/swadmin/launch-frontend.yaml /root/saas/swadmin/launch-frontend-dev.yaml
+ 
+        # import&launch saas template
+        python /app/pack.py --src /root/saas/template/build --dest /root/saas/template/build.zip
+        envsubst < /root/saas/template/build/launch-frontend.yaml.tpl > /root/saas/template/launch-frontend.yaml
+        envsubst < /root/saas/template/build/launch-frontend-dev.yaml.tpl > /root/saas/template/launch-frontend-dev.yaml
+        
+        sh /app/import.sh template /root/saas/template/build.zip /root/saas/template/launch-frontend.yaml /root/saas/template/launch-frontend-dev.yaml
+
 
     fi
      
@@ -738,42 +862,28 @@ data:
     # build&launch cluster api
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
     envsubst < /root/saas/cluster/api/build.yaml.tpl > /root/saas/cluster/api/build.yaml
-    envsubst < /root/saas/cluster/api/launch.yaml.tpl > /root/saas/cluster/api/launch.yaml
-    envsubst < /root/saas/cluster/ui/launch-v2.yaml.tpl > /root/saas/cluster/ui/launch.yaml
-    envsubst < /root/saas/cluster/ui/launch-v2-dev.yaml.tpl > /root/saas/cluster/ui/launch-dev.yaml
+    envsubst < /root/saas/cluster/build/launch.yaml.tpl > /root/saas/cluster/launch.yaml
+    envsubst < /root/saas/cluster/build/launch-backend.yaml.tpl > /root/saas/cluster/launch-backend.yaml
+    envsubst < /root/saas/cluster/build/launch-frontend.yaml.tpl > /root/saas/cluster/launch-frontend.yaml
+    envsubst < /root/saas/cluster/build/launch-frontend-dev.yaml.tpl > /root/saas/cluster/launch-frontend-dev.yaml
+    python /app/pack.py --src /root/saas/cluster/build --dest /root/saas/cluster/build.zip
 
 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
 
       cd /root/saas/cluster/api/
-      /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=cluster --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=./launch.yaml --disable-dir-check
+      /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=cluster --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=../launch-backend.yaml --disable-dir-check
 
       # wait flycore
       if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
       
-          # import&launch cluster ui
-          result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id cluster --filepath /root/saas/cluster/ui/cluster-auto.zip --print-only-app-package-id=true --reset-version=true)
-
-          /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id cluster --path /root/saas/cluster/ui/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-          /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id cluster --path /root/saas/cluster/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+          sh /app/import.sh cluster /root/saas/cluster/build.zip /root/saas/cluster/launch-frontend.yaml /root/saas/cluster/launch-frontend-dev.yaml
+      
       fi
 
     else
       
-      cd /root/saas/cluster/
-
-      sh /app/core-action-service-check.sh
-      
-      echo "" > merge-launch.yaml
-      cat /root/saas/cluster/api/launch.yaml >> merge-launch.yaml
-      echo "---" >> merge-launch.yaml
-      cat /root/saas/cluster/ui/launch.yaml >> merge-launch.yaml
-      cat merge-launch.yaml | python /app/reduce.py > launch.yaml
-      
-      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id cluster --filepath /root/saas/cluster/cluster.zip --print-only-app-package-id=true --reset-version=true)
-
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id cluster --path /root/saas/cluster/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id cluster --path /root/saas/cluster/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+      sh /app/import.sh cluster /root/saas/cluster/build.zip /root/saas/cluster/launch.yaml /root/saas/cluster/launch-frontend-dev.yaml
 
     fi
 
@@ -788,40 +898,27 @@ data:
 
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
     envsubst < /root/saas/app/api/build.yaml.tpl > /root/saas/app/api/build.yaml
-    envsubst < /root/saas/app/api/launch.yaml.tpl > /root/saas/app/api/launch.yaml
-    envsubst < /root/saas/app/ui/launch-v2.yaml.tpl > /root/saas/app/ui/launch.yaml
-    envsubst < /root/saas/app/ui/launch-v2-dev.yaml.tpl > /root/saas/app/ui/launch-dev.yaml
+    envsubst < /root/saas/app/build/launch.yaml.tpl > /root/saas/app/launch.yaml
+    envsubst < /root/saas/app/build/launch-backend.yaml.tpl > /root/saas/app/launch-backend.yaml
+    envsubst < /root/saas/app/build/launch-frontend.yaml.tpl > /root/saas/app/launch-frontend.yaml
+    envsubst < /root/saas/app/build/launch-frontend-dev.yaml.tpl > /root/saas/app/launch-frontend-dev.yaml
+    python /app/pack.py --src /root/saas/app/build --dest /root/saas/app/build.zip
  
     
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
 
         cd /root/saas/app/api/
-        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=app --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=./launch.yaml --disable-dir-check
+        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=app --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=../launch-backend.yaml --disable-dir-check
 
         if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
+            
+            sh /app/import.sh app /root/saas/app/build.zip /root/saas/app/launch-frontend.yaml /root/saas/app/launch-frontend-dev.yaml
 
-            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id app --filepath /root/saas/app/ui/app-auto.zip --print-only-app-package-id=true --reset-version=true)
-
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id app --path /root/saas/app/ui/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id app --path /root/saas/app/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
         fi
 
     else
-
-      cd /root/saas/app/
-
-      sh /app/core-action-service-check.sh
       
-      echo "" > merge-launch.yaml
-      cat /root/saas/app/api/launch.yaml >> merge-launch.yaml
-      echo "---" >> merge-launch.yaml
-      cat /root/saas/app/ui/launch.yaml >> merge-launch.yaml
-      cat merge-launch.yaml | python /app/reduce.py > launch.yaml
-      
-      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id app --filepath /root/saas/app/app.zip --print-only-app-package-id=true --reset-version=true)
-
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id app --path /root/saas/app/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id app --path /root/saas/app/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+      sh /app/import.sh app /root/saas/app/build.zip /root/saas/app/launch.yaml /root/saas/app/launch-frontend-dev.yaml
 
     fi
 
@@ -837,42 +934,26 @@ data:
     
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
     envsubst < /root/saas/system/api/build.yaml.tpl > /root/saas/system/api/build.yaml
-    envsubst < /root/saas/system/api/launch.yaml.tpl > /root/saas/system/api/launch.yaml
-    envsubst < /root/saas/system/ui/launch-v2.yaml.tpl > /root/saas/system/ui/launch.yaml
-    envsubst < /root/saas/system/ui/launch-v2-dev.yaml.tpl > /root/saas/system/ui/launch-dev.yaml
-     
-
+    envsubst < /root/saas/system/build/launch.yaml.tpl > /root/saas/system/launch.yaml
+    envsubst < /root/saas/system/build/launch-backend.yaml.tpl > /root/saas/system/launch-backend.yaml
+    envsubst < /root/saas/system/build/launch-frontend.yaml.tpl > /root/saas/system/launch-frontend.yaml
+    envsubst < /root/saas/system/build/launch-frontend-dev.yaml.tpl > /root/saas/system/launch-frontend-dev.yaml
+    python /app/pack.py --src /root/saas/system/build --dest /root/saas/system/build.zip
+ 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
 
         cd /root/saas/system/api/
-        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=system --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=./launch.yaml --disable-dir-check
+        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=system --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=../launch-backend.yaml --disable-dir-check
 
         if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
             
-
-            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id system --filepath /root/saas/system/ui/system-auto.zip --print-only-app-package-id=true --reset-version=true)
-
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id system --path /root/saas/system/ui/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id system --path /root/saas/system/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+            sh /app/import.sh system /root/saas/system/build.zip /root/saas/system/launch-frontend.yaml /root/saas/system/launch-frontend-dev.yaml
 
         fi
 
     else
-
-      cd /root/saas/system/
-
-      sh /app/core-action-service-check.sh
       
-      echo "" > merge-launch.yaml
-      cat /root/saas/system/api/launch.yaml >> merge-launch.yaml
-      echo "---" >> merge-launch.yaml
-      cat /root/saas/system/ui/launch.yaml >> merge-launch.yaml
-      cat merge-launch.yaml | python /app/reduce.py > launch.yaml
-      
-      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id system --filepath /root/saas/system/system.zip --print-only-app-package-id=true --reset-version=true)
-
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id system --path /root/saas/system/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id system --path /root/saas/system/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+      sh /app/import.sh system /root/saas/system/build.zip /root/saas/system/launch.yaml /root/saas/system/launch-frontend-dev.yaml
 
     fi
 
@@ -885,51 +966,47 @@ data:
     sh /app/core-deploy-check.sh
 
     cd /root
-    export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
-    
-    export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+    export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)   
     envsubst < /root/saas/upload/api/build.yaml.tpl > /root/saas/upload/api/build.yaml
-    envsubst < /root/saas/upload/api/launch.yaml.tpl > /root/saas/upload/api/launch.yaml
-    envsubst < /root/saas/upload/ui/launch-v2.yaml.tpl > /root/saas/upload/ui/launch.yaml
-    envsubst < /root/saas/upload/ui/launch-v2-dev.yaml.tpl > /root/saas/upload/ui/launch-dev.yaml
+    envsubst < /root/saas/upload/build/launch.yaml.tpl > /root/saas/upload/launch.yaml
+    envsubst < /root/saas/upload/build/launch-backend.yaml.tpl > /root/saas/upload/launch-backend.yaml
+    envsubst < /root/saas/upload/build/launch-frontend.yaml.tpl > /root/saas/upload/launch-frontend.yaml
+    envsubst < /root/saas/upload/build/launch-frontend-dev.yaml.tpl > /root/saas/upload/launch-frontend-dev.yaml
+    python /app/pack.py --src /root/saas/upload/build --dest /root/saas/upload/build.zip
  
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
 
         cd /root/saas/upload/api/
-        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=upload --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=./launch.yaml --disable-dir-check
+        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=upload --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=../launch-backend.yaml --disable-dir-check
 
         if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
             
+            sh /app/import.sh upload /root/saas/upload/build.zip /root/saas/upload/launch-frontend.yaml /root/saas/upload/launch-frontend-dev.yaml
 
-            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id upload --filepath /root/saas/upload/ui/upload-auto.zip --print-only-app-package-id=true --reset-version=true)
-
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id upload --path /root/saas/upload/ui/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id upload --path /root/saas/upload/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
         fi
 
     else
-      cd /root/saas/upload/
 
-      sh /app/core-action-service-check.sh
-      
-      echo "" > merge-launch.yaml
-      cat /root/saas/upload/api/launch.yaml >> merge-launch.yaml
-      echo "---" >> merge-launch.yaml
-      cat /root/saas/upload/ui/launch.yaml >> merge-launch.yaml
-      cat merge-launch.yaml | python /app/reduce.py > launch.yaml
-      
-      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id upload --filepath /root/saas/upload/upload.zip --print-only-app-package-id=true --reset-version=true)
-
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id upload --path /root/saas/upload/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id upload --path /root/saas/upload/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+      sh /app/import.sh upload /root/saas/upload/build.zip /root/saas/upload/launch.yaml /root/saas/upload/launch-frontend-dev.yaml
 
     fi
 
+  
+  import.sh: |
+
+    sh /app/core-action-service-check.sh
+      
+    result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id $1 --filepath $2 --print-only-app-package-id=true --reset-version=true)
+
+    /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id $1 --path $3 --app-package-id $result --arch x86 --wait=true --cluster master
+    /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id $1 --path $4 --app-package-id $result --arch x86 --wait=true --cluster master
     
+
   reduce.py: |
     import sys
     import yaml
     import json
+    from functools import reduce
 
     def merge(a, b):
         if b is None:
@@ -946,6 +1023,31 @@ data:
 
     res = reduce(merge, [yaml.safe_load(raw) for raw in sys.stdin.read().strip().split("---")])
     print(yaml.dump(res))
+
+  pack.py: |
+    import shutil
+    import tempfile
+    import os
+    import argparse
+
+    parser = argparse.ArgumentParser(description='package tool')
+    parser.add_argument("-s",'--src', type=str, dest="src", required=True)
+    parser.add_argument("-d",'--dest', type=str, dest="dest", required=True)
+    args = parser.parse_args()
+
+    packagePath = tempfile.mkdtemp()
+    targetPath = packagePath + "/target"
+
+    shutil.copytree(args.src, targetPath)
+
+    for path in os.listdir(targetPath):
+        if path.endswith(".zip.dir"):
+            shutil.make_archive(targetPath + "/" + path.split(".zip")[0], 'zip', targetPath + "/" + path)
+            shutil.rmtree(targetPath + "/" + path)
+
+
+    shutil.make_archive(args.dest.split(".zip")[0], 'zip', targetPath + "/")
+ 
  
   saas-dataops.sh: |
     set -e
@@ -968,13 +1070,22 @@ data:
         echo "---" >> tmp-merge-launch.yaml
     }
 
-    envsubst < /root/saas/dataops/api/mysql/build.yaml.tpl > tmp-build.yaml
-    envsubst < /root/saas/dataops/api/mysql/launch.yaml.tpl > tmp-launch.yaml
-    split
 
-    envsubst < /root/saas/dataops/api/elasticsearch/build.yaml.tpl > tmp-build.yaml
-    envsubst < /root/saas/dataops/api/elasticsearch/launch.yaml.tpl > tmp-launch.yaml
-    split
+    # mysql地址如果从外部传入就不拉起mysql
+    if [[ "$DATAOPS_DB_HOST" == "prod-dataops-mysql.sreworks-dataops" ]]
+    then
+      envsubst < /root/saas/dataops/api/mysql/build.yaml.tpl > tmp-build.yaml
+      envsubst < /root/saas/dataops/api/mysql/launch.yaml.tpl > tmp-launch.yaml
+      split
+    fi
+
+    if [[ "$DATA_ES_HOST" == "prod-dataops-elasticsearch-master.sreworks-dataops" ]]
+    then
+       envsubst < /root/saas/dataops/api/elasticsearch/build.yaml.tpl > tmp-build.yaml
+       envsubst < /root/saas/dataops/api/elasticsearch/launch.yaml.tpl > tmp-launch.yaml
+       split
+    fi
+
 
     envsubst < /root/saas/dataops/api/grafana/build.yaml.tpl > tmp-build.yaml
     envsubst < /root/saas/dataops/api/grafana/launch.yaml.tpl > tmp-launch.yaml
@@ -996,6 +1107,10 @@ data:
     envsubst < /root/saas/dataops/api/skywalking/launch.yaml.tpl > tmp-launch.yaml
     split
 
+    envsubst < /root/saas/dataops/api/prometheus/build.yaml.tpl > tmp-build.yaml
+    envsubst < /root/saas/dataops/api/prometheus/launch.yaml.tpl > tmp-launch.yaml
+    split
+
     #envsubst < /root/saas/dataops/api/mongodb/build.yaml.tpl > tmp-build.yaml
     #envsubst < /root/saas/dataops/api/mongodb/launch.yaml.tpl > tmp-launch.yaml
     #split
@@ -1004,9 +1119,9 @@ data:
     envsubst < /root/saas/dataops/api/ververica-platform/launch.yaml.tpl > tmp-launch.yaml
     split
 
-    #envsubst < /root/saas/dataops/api/logstash/build.yaml.tpl > tmp-build.yaml
-    #envsubst < /root/saas/dataops/api/logstash/launch.yaml.tpl > tmp-launch.yaml
-    #split
+    envsubst < /root/saas/dataops/api/logstash/build.yaml.tpl > tmp-build.yaml
+    envsubst < /root/saas/dataops/api/logstash/launch.yaml.tpl > tmp-launch.yaml
+    split
 
     envsubst < /root/saas/dataops/api/build.yaml.tpl > tmp-build.yaml
     envsubst < /root/saas/dataops/api/launch.yaml.tpl > tmp-launch.yaml
@@ -1059,42 +1174,28 @@ data:
 
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
     envsubst < /root/saas/team/api/build.yaml.tpl > /root/saas/team/api/build.yaml
-    envsubst < /root/saas/team/api/launch.yaml.tpl > /root/saas/team/api/launch.yaml
-    envsubst < /root/saas/team/ui/launch-v2.yaml.tpl > /root/saas/team/ui/launch.yaml
-    envsubst < /root/saas/team/ui/launch-v2-dev.yaml.tpl > /root/saas/team/ui/launch-dev.yaml
+    envsubst < /root/saas/team/build/launch.yaml.tpl > /root/saas/team/launch.yaml
+    envsubst < /root/saas/team/build/launch-backend.yaml.tpl > /root/saas/team/launch-backend.yaml
+    envsubst < /root/saas/team/build/launch-frontend.yaml.tpl > /root/saas/team/launch-frontend.yaml
+    envsubst < /root/saas/team/build/launch-frontend-dev.yaml.tpl > /root/saas/team/launch-frontend-dev.yaml
+    python /app/pack.py --src /root/saas/team/build --dest /root/saas/team/build.zip
  
 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
     
         cd /root/saas/team/api/
-        /root/swcli --config /swcli/swcli.yaml app-package oneflow --stage=prod --namespace=${NAMESPACE_ID} --app-id=team --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=./launch.yaml --disable-dir-check
+        /root/swcli --config /swcli/swcli.yaml app-package oneflow --stage=prod --namespace=${NAMESPACE_ID} --app-id=team --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=../launch-backend.yaml --disable-dir-check
 
         if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
             
-            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id team --filepath /root/saas/team/ui/team-auto.zip --print-only-app-package-id=true --reset-version=true)
-
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id team --path /root/saas/team/ui/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id team --path /root/saas/team/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+            sh /app/import.sh team /root/saas/team/build.zip /root/saas/team/launch-frontend.yaml /root/saas/team/launch-frontend-dev.yaml
+            
         fi
     else
 
-      cd /root/saas/team/
-
-      sh /app/core-action-service-check.sh
+      sh /app/import.sh team /root/saas/team/build.zip /root/saas/team/launch.yaml /root/saas/team/launch-frontend-dev.yaml
       
-      echo "" > merge-launch.yaml
-      cat /root/saas/team/api/launch.yaml >> merge-launch.yaml
-      echo "---" >> merge-launch.yaml
-      cat /root/saas/team/ui/launch.yaml >> merge-launch.yaml
-      cat merge-launch.yaml | python /app/reduce.py > launch.yaml
-      
-      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id team --filepath /root/saas/team/team.zip --print-only-app-package-id=true --reset-version=true)
-
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id team --path /root/saas/team/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id team --path /root/saas/team/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-
     fi
-
 
 
   saas-aiops.sh: |
@@ -1106,44 +1207,33 @@ data:
     sh /app/core-deploy-check.sh
     export NAMESPACE_ID=${NAMESPACE_AIOPS}
 
+    if [[ "$DATAOPS_DB_HOST" == "default-mysql" ]]
+    then
+      DATAOPS_DB_HOST='\{\{ Global.STAGE_ID \}\}-\{\{ Global.APP_ID \}\}-mysql.sreworks-dataops'
+      export DATAOPS_DB_HOST=$(echo $DATAOPS_DB_HOST|sed 's/\\//g')
+    fi 
+
     envsubst < /root/saas/aiops/api/build.yaml.tpl > /root/saas/aiops/api/build.yaml
-    envsubst < /root/saas/aiops/api/launch.yaml.tpl > /root/saas/aiops/api/launch.yaml
-    envsubst < /root/saas/aiops/ui/launch-v2.yaml.tpl > /root/saas/aiops/ui/launch.yaml
-    envsubst < /root/saas/aiops/ui/launch-v2-dev.yaml.tpl > /root/saas/aiops/ui/launch-dev.yaml
-    
+    envsubst < /root/saas/aiops/build/launch.yaml.tpl > /root/saas/aiops/launch.yaml
+    envsubst < /root/saas/aiops/build/launch-backend.yaml.tpl > /root/saas/aiops/launch-backend.yaml
+    envsubst < /root/saas/aiops/build/launch-frontend.yaml.tpl > /root/saas/aiops/launch-frontend.yaml
+    envsubst < /root/saas/aiops/build/launch-frontend-dev.yaml.tpl > /root/saas/aiops/launch-frontend-dev.yaml
+    python /app/pack.py --src /root/saas/aiops/build --dest /root/saas/aiops/build.zip    
 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
 
         cd /root/saas/aiops/api/
-        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=aiops --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=./launch.yaml --disable-dir-check
-
+        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=aiops --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=../launch-backend.yaml --disable-dir-check
 
         if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
+      
+            sh /app/import.sh aiops /root/saas/aiops/build.zip /root/saas/aiops/launch-frontend.yaml /root/saas/aiops/launch-frontend-dev.yaml
             
-            sh /app/core-deploy-check.sh
-
-            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id aiops --filepath /root/saas/aiops/ui/aiops-auto.zip --print-only-app-package-id=true --reset-version=true)
-
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id aiops --path /root/saas/aiops/ui/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id aiops --path /root/saas/aiops/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
         fi
 
     else
-
-      cd /root/saas/aiops/
-
-      sh /app/core-action-service-check.sh
       
-      echo "" > merge-launch.yaml
-      cat /root/saas/aiops/api/launch.yaml >> merge-launch.yaml
-      echo "---" >> merge-launch.yaml
-      cat /root/saas/aiops/ui/launch.yaml >> merge-launch.yaml
-      cat merge-launch.yaml | python /app/reduce.py > launch.yaml
-      
-      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id aiops --filepath /root/saas/aiops/aiops.zip --print-only-app-package-id=true --reset-version=true)
-
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id aiops --path /root/saas/aiops/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id aiops --path /root/saas/aiops/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+      sh /app/import.sh aiops /root/saas/aiops/build.zip /root/saas/aiops/launch.yaml /root/saas/aiops/launch-frontend-dev.yaml
 
     fi
 
@@ -1160,43 +1250,26 @@ data:
     # build&launch cluster api
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
     envsubst < /root/saas/job/api/build.yaml.tpl > /root/saas/job/api/build.yaml
-    envsubst < /root/saas/job/api/launch.yaml.tpl > /root/saas/job/api/launch.yaml
-    envsubst < /root/saas/job/ui/launch-v2.yaml.tpl > /root/saas/job/ui/launch.yaml
-    envsubst < /root/saas/job/ui/launch-v2-dev.yaml.tpl > /root/saas/job/ui/launch-dev.yaml
- 
+    envsubst < /root/saas/job/build/launch.yaml.tpl > /root/saas/job/launch.yaml
+    envsubst < /root/saas/job/build/launch-backend.yaml.tpl > /root/saas/job/launch-backend.yaml
+    envsubst < /root/saas/job/build/launch-frontend.yaml.tpl > /root/saas/job/launch-frontend.yaml
+    envsubst < /root/saas/job/build/launch-frontend-dev.yaml.tpl > /root/saas/job/launch-frontend-dev.yaml
+    python /app/pack.py --src /root/saas/job/build --dest /root/saas/job/build.zip
 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
     
         cd /root/saas/job/api/
-        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=job --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=./launch.yaml --disable-dir-check
+        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=job --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=../launch-backend.yaml --disable-dir-check
 
         if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
             
+            sh /app/import.sh job /root/saas/job/build.zip /root/saas/job/launch-frontend.yaml /root/saas/job/launch-frontend-dev.yaml
 
-            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id job --filepath /root/saas/job/ui/job-auto.zip --print-only-app-package-id=true --reset-version=true)
-
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id job --path /root/saas/job/ui/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id job --path /root/saas/job/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
         fi
 
     else
 
-
-      cd /root/saas/job/
-
-      sh /app/core-action-service-check.sh
-      
-      echo "" > merge-launch.yaml
-      cat /root/saas/job/api/launch.yaml >> merge-launch.yaml
-      echo "---" >> merge-launch.yaml
-      cat /root/saas/job/ui/launch.yaml >> merge-launch.yaml
-      cat merge-launch.yaml | python /app/reduce.py > launch.yaml
-      
-      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id job --filepath /root/saas/job/job.zip --print-only-app-package-id=true --reset-version=true)
-
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id job --path /root/saas/job/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id job --path /root/saas/job/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-
+      sh /app/import.sh job /root/saas/job/build.zip /root/saas/job/launch.yaml /root/saas/job/launch-frontend-dev.yaml
 
     fi
 
@@ -1213,14 +1286,13 @@ data:
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
     
     if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
+    
+        envsubst < /root/saas/healing/build/launch-frontend.yaml.tpl > /root/saas/healing/launch-frontend.yaml
+        envsubst < /root/saas/healing/build/launch-frontend-dev.yaml.tpl > /root/saas/healing/launch-frontend-dev.yaml
+        python /app/pack.py --src /root/saas/healing/build --dest /root/saas/healing/build.zip    
         
+        sh /app/import.sh healing /root/saas/healing/build.zip /root/saas/healing/launch-frontend.yaml /root/saas/healing/launch-frontend-dev.yaml
 
-        envsubst < /root/saas/healing/ui/launch-v2.yaml.tpl > /root/saas/healing/ui/launch.yaml
-        envsubst < /root/saas/healing/ui/launch-v2-dev.yaml.tpl > /root/saas/healing/ui/launch-dev.yaml
-        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id healing --filepath /root/saas/healing/ui/healing-auto.zip --print-only-app-package-id=true --reset-version=true)
-
-        /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id healing --path /root/saas/healing/ui/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-        /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id healing --path /root/saas/healing/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
     fi
 
   saas-health.sh: |
@@ -1233,43 +1305,36 @@ data:
     cd /root
     
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+    export VERSION_CHECK=$(python /app/version_check.py /root/saas/health/build)
+
+    if [[ "$DATAOPS_DB_HOST" == "default-mysql" ]]
+    then
+      DATAOPS_DB_HOST='\{\{ Global.STAGE_ID \}\}-\{\{ Global.APP_ID \}\}-mysql.sreworks-dataops'
+      export DATAOPS_DB_HOST=$(echo $DATAOPS_DB_HOST|sed 's/\\//g')
+    fi
 
     envsubst < /root/saas/health/api/build.yaml.tpl > /root/saas/health/api/build.yaml
-    envsubst < /root/saas/health/api/launch.yaml.tpl > /root/saas/health/api/launch.yaml
-    envsubst < /root/saas/health/ui/launch-v2.yaml.tpl > /root/saas/health/ui/launch.yaml
-    envsubst < /root/saas/health/ui/launch-v2-dev.yaml.tpl > /root/saas/health/ui/launch-dev.yaml
-    
+    envsubst < /root/saas/health/build/launch.yaml.tpl > /root/saas/health/launch.yaml
+    envsubst < /root/saas/health/build/launch-backend.yaml.tpl > /root/saas/health/launch-backend.yaml
+    envsubst < /root/saas/health/build/launch-frontend.yaml.tpl > /root/saas/health/launch-frontend.yaml
+    envsubst < /root/saas/health/build/launch-frontend-dev.yaml.tpl > /root/saas/health/launch-frontend-dev.yaml
+    python /app/pack.py --src /root/saas/health/build --dest /root/saas/health/build.zip
+
+ 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
     
         cd /root/saas/health/api/
-        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=health --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=./launch.yaml --disable-dir-check
-
+        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=health --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=../launch-backend.yaml --disable-dir-check
 
         if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
             
+            sh /app/import.sh health /root/saas/health/build.zip /root/saas/health/launch-frontend.yaml /root/saas/health/launch-frontend-dev.yaml
 
-            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id health --filepath /root/saas/health/ui/health-auto.zip --print-only-app-package-id=true --reset-version=true)
-
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id health --path /root/saas/health/ui/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id health --path /root/saas/health/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
         fi
 
-    else
-
-      cd /root/saas/health/
-
-      sh /app/core-action-service-check.sh
+    elif [[ "$VERSION_CHECK" == "NEED UPDATE" ]] ; then
       
-      echo "" > merge-launch.yaml
-      cat /root/saas/health/api/launch.yaml >> merge-launch.yaml
-      echo "---" >> merge-launch.yaml
-      cat /root/saas/health/ui/launch.yaml >> merge-launch.yaml
-      cat merge-launch.yaml | python /app/reduce.py > launch.yaml
-      
-      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id health --filepath /root/saas/health/health.zip --print-only-app-package-id=true --reset-version=true)
-
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id health --path /root/saas/health/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id health --path /root/saas/health/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+      sh /app/import.sh health /root/saas/health/build.zip /root/saas/health/launch.yaml /root/saas/health/launch-frontend-dev.yaml
 
     fi
 
@@ -1285,16 +1350,17 @@ data:
     cd /root
     
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+    export VERSION_CHECK=$(python /app/version_check.py /root/saas/ocenter/build)
 
-    if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
+    if [[ "$IMPORT_FRONTEND" == "true" && "$VERSION_CHECK" == "NEED UPDATE" ]] ; then
         
 
-        envsubst < /root/saas/ocenter/ui/launch-v2.yaml.tpl > /root/saas/ocenter/ui/launch.yaml
-        envsubst < /root/saas/ocenter/ui/launch-v2-dev.yaml.tpl > /root/saas/ocenter/ui/launch-dev.yaml
-        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id ocenter --filepath /root/saas/ocenter/ui/ocenter-auto.zip --print-only-app-package-id=true --reset-version=true)
+        envsubst < /root/saas/ocenter/build/launch-frontend.yaml.tpl > /root/saas/ocenter/launch-frontend.yaml
+        envsubst < /root/saas/ocenter/build/launch-frontend-dev.yaml.tpl > /root/saas/ocenter/launch-frontend-dev.yaml
+        python /app/pack.py --src /root/saas/ocenter/build --dest /root/saas/ocenter/build.zip
+      
+        sh /app/import.sh ocenter /root/saas/ocenter/build.zip /root/saas/health/launch.yaml /root/saas/ocenter/launch-frontend-dev.yaml
 
-        /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id ocenter --path /root/saas/ocenter/ui/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-        /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id ocenter --path /root/saas/ocenter/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
     fi
 
   saas-help.sh: |
@@ -1307,16 +1373,17 @@ data:
     cd /root
     
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+    export VERSION_CHECK=$(python /app/version_check.py /root/saas/help/build)
 
-    if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
-        
+    if [[ "$IMPORT_FRONTEND" == "true" && "$VERSION_CHECK" == "NEED UPDATE" ]] ; then
 
-        envsubst < /root/saas/help/ui/launch-v2.yaml.tpl > /root/saas/help/ui/launch.yaml
-        envsubst < /root/saas/help/ui/launch-v2-dev.yaml.tpl > /root/saas/help/ui/launch-dev.yaml
-        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id help --filepath /root/saas/help/ui/help-auto.zip --print-only-app-package-id=true --reset-version=true)
+    
+        python /app/pack.py --src /root/saas/help/build --dest /root/saas/help/build.zip
+        envsubst < /root/saas/job/build/launch-frontend.yaml.tpl > /root/saas/help/launch-frontend.yaml
+        envsubst < /root/saas/job/build/launch-frontend-dev.yaml.tpl > /root/saas/help/launch-frontend-dev.yaml
 
-        /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id help --path /root/saas/help/ui/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-        /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id help --path /root/saas/help/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+        sh /app/import.sh help /root/saas/help/build.zip /root/saas/help/launch-frontend.yaml /root/saas/help/launch-frontend-dev.yaml
+
     fi
 
 
@@ -1331,44 +1398,29 @@ data:
 
     # build&launch search api
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+    export VERSION_CHECK=$(python /app/version_check.py /root/saas/search/build)
     envsubst < /root/saas/search/api/build.yaml.tpl > /root/saas/search/api/build.yaml
-    envsubst < /root/saas/search/api/launch.yaml.tpl > /root/saas/search/api/launch.yaml
-    envsubst < /root/saas/search/ui/launch-v2.yaml.tpl > /root/saas/search/ui/launch.yaml
-    envsubst < /root/saas/search/ui/launch-v2-dev.yaml.tpl > /root/saas/search/ui/launch-dev.yaml
- 
+    envsubst < /root/saas/search/build/launch.yaml.tpl > /root/saas/search/launch.yaml
+    envsubst < /root/saas/search/build/launch-backend.yaml.tpl > /root/saas/search/launch-backend.yaml
+    envsubst < /root/saas/search/build/launch-frontend.yaml.tpl > /root/saas/search/launch-frontend.yaml
+    envsubst < /root/saas/search/build/launch-frontend-dev.yaml.tpl > /root/saas/search/launch-frontend-dev.yaml
+    python /app/pack.py --src /root/saas/search/build --dest /root/saas/search/build.zip
 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
   
         cd /root/saas/search/api/
-        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=search --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=./launch.yaml --disable-dir-check
+        /root/swcli --config /swcli/swcli.yaml app-package oneflow --app-id=search --stage=prod --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=../launch-backend.yaml --disable-dir-check
 
         if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
+      
+            sh /app/import.sh search /root/saas/search/build.zip /root/saas/search/launch-frontend.yaml /root/saas/search/launch-frontend-dev.yaml
             
-            envsubst < /root/saas/search/ui/launch-v2.yaml.tpl > /root/saas/search/ui/launch.yaml
-            envsubst < /root/saas/search/ui/launch-v2-dev.yaml.tpl > /root/saas/search/ui/launch-dev.yaml
-            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id search --filepath /root/saas/search/ui/search-auto.zip --print-only-app-package-id=true --reset-version=true)
-
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id search --path /root/saas/search/ui/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id search --path /root/saas/search/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
         fi
 
-    else
+    elif [[ "$VERSION_CHECK" == "NEED UPDATE" ]] ; then
 
-      cd /root/saas/search/
-
-      sh /app/core-action-service-check.sh
+      sh /app/import.sh search /root/saas/search/build.zip /root/saas/search/launch.yaml /root/saas/search/launch-frontend-dev.yaml
       
-      echo "" > merge-launch.yaml
-      cat /root/saas/search/api/launch.yaml >> merge-launch.yaml
-      echo "---" >> merge-launch.yaml
-      cat /root/saas/search/ui/launch.yaml >> merge-launch.yaml
-      cat merge-launch.yaml | python /app/reduce.py > launch.yaml
-      
-      result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id search --filepath /root/saas/search/search.zip --print-only-app-package-id=true --reset-version=true)
-
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id search --path /root/saas/search/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-      /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id search --path /root/saas/search/ui/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-
     fi
 
 
@@ -1423,6 +1475,75 @@ data:
        /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace sreworks --stage prod --app-id sreworks1 --path /root/saas/app/launch-demoApp.yaml --app-package-id $result --arch x86 --wait=true --cluster master
     fi
 
+  version_check.py: |
+
+    import sys
+    import os
+    import yaml
+    from oauthlib.oauth2 import LegacyApplicationClient
+    from requests_oauthlib import OAuth2Session
+    from distutils.version import StrictVersion
+
+    ENDPOINT = 'http://sreworks-appmanager'
+    CLIENT_ID = os.getenv('APPMANAGER_CLIENT_ID')
+    CLIENT_SECRET = os.getenv('APPMANAGER_CLIENT_SECRET')
+    USERNAME = os.getenv('APPMANAGER_USERNAME')
+    PASSWORD = os.getenv('APPMANAGER_PASSWORD')
+
+    class AppManagerClient(object):
+
+        def __init__(self, endpoint, client_id, client_secret, username, password):
+            os.environ.setdefault('OAUTHLIB_INSECURE_TRANSPORT', '1')
+            self._endpoint = endpoint
+            self._client_id = client_id
+            self._client_secret = client_secret
+            self._username = username
+            self._password = password
+            self._token = self._fetch_token()
+
+        @property
+        def client(self):
+            return OAuth2Session(self._client_id, token=self._token)
+
+        def _fetch_token(self):
+            oauth = OAuth2Session(client=LegacyApplicationClient(client_id=CLIENT_ID))
+            return oauth.fetch_token(
+                token_url=os.path.join(ENDPOINT, 'oauth/token'),
+                username=self._username,
+                password=self._password,
+                client_id=self._client_id,
+                client_secret=self._client_secret
+            )
+
+    appBuildPath = sys.argv[1]
+
+    f = open(appBuildPath + "/meta.yaml", 'r')
+    metaData = yaml.safe_load(f.read())
+    f.close()
+
+    appId = metaData["appId"]
+    baselineVersion = metaData["packageVersion"].split("+")[0]
+
+    appmanagerClient = AppManagerClient(ENDPOINT, CLIENT_ID, CLIENT_SECRET, USERNAME, PASSWORD)
+    res = appmanagerClient.client.get(ENDPOINT + "/realtime/app-instances?appId=" + appId + "&stageId=prod")
+    items = res.json()["data"].get("items", [])
+    if len(items) == 0:
+        print("NEED UPDATE")
+        sys.exit(0)        
+
+    for item in items:
+        if StrictVersion(baselineVersion) > StrictVersion(item["simpleVersion"]):
+            print("NEED UPDATE")
+            sys.exit(0)
+
+        if  StrictVersion(baselineVersion) == StrictVersion(item["simpleVersion"]) and item["status"] not in ["RUNNING","PENDING"]:
+            print("NEED UPDATE")
+            sys.exit(0)
+
+
+    print("NO UPDATE")
+    sys.exit(0)
+
   saas-sleep.sh: |
     sleep 999999999999
 
@@ -1444,6 +1565,24 @@ data:
 kind: ConfigMap
 metadata:
   name: init-swcli
+---
+# Source: sreworks/charts/appmanagerbase/charts/openebs/templates/localprovisioner/hostpath-class.yaml
+# The second operand in the AND operation can be removed
+# when enableHostpathClass is deprecated.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sreworks-hostpath
+  annotations:
+    openebs.io/cas-type: local
+    cas.openebs.io/config: |
+      - name: StorageType
+        value: "hostpath"
+      - name: BasePath
+        value: "/var/openebs/local"
+provisioner: openebs.io/local
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Delete
 ---
 # Source: sreworks/charts/appmanagerbase/charts/minio/templates/pvc-standalone.yaml
 kind: PersistentVolumeClaim
@@ -15481,6 +15620,56 @@ rules:
   - list
   - watch
 ---
+# Source: sreworks/charts/appmanagerbase/charts/openebs/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: sreworks-openebs
+  labels:
+    app: openebs
+    chart: openebs-3.1.0
+    release: sreworks
+    heritage: Helm
+rules:
+- apiGroups: ["*"]
+  resources: ["nodes", "nodes/proxy"]
+  verbs: ["*"]
+- apiGroups: ["*"]
+  resources: ["namespaces", "services", "pods", "pods/exec", "deployments", "deployments/finalizers", "replicationcontrollers", "replicasets", "events", "endpoints", "configmaps", "secrets",  "jobs", "cronjobs" ]
+  verbs: ["*"]
+- apiGroups: ["*"]
+  resources: ["statefulsets", "daemonsets"]
+  verbs: ["*"]
+- apiGroups: ["*"]
+  resources: ["resourcequotas", "limitranges"]
+  verbs: ["list", "watch"]
+- apiGroups: ["*"]
+  resources: ["ingresses", "horizontalpodautoscalers", "verticalpodautoscalers", "poddisruptionbudgets", "certificatesigningrequests"]
+  verbs: ["list", "watch"]
+- apiGroups: ["*"]
+  resources: ["storageclasses", "persistentvolumeclaims", "persistentvolumes"]
+  verbs: ["*"]
+- apiGroups: ["volumesnapshot.external-storage.k8s.io"]
+  resources: ["volumesnapshots", "volumesnapshotdatas"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["apiextensions.k8s.io"]
+  resources: ["customresourcedefinitions"]
+  verbs: [ "get", "list", "create", "update", "delete", "patch"]
+- apiGroups: ["openebs.io"]
+  resources: [ "*"]
+  verbs: ["*" ]
+- apiGroups: ["cstor.openebs.io"]
+  resources: [ "*"]
+  verbs: ["*" ]
+- apiGroups: ["coordination.k8s.io"]
+  resources: ["leases"]
+  verbs: ["get", "watch", "list", "delete", "update", "create"]
+- apiGroups: ["admissionregistration.k8s.io"]
+  resources: ["validatingwebhookconfigurations", "mutatingwebhookconfigurations"]
+  verbs: ["get", "create", "list", "delete", "update", "patch"]
+- nonResourceURLs: ["/metrics"]
+  verbs: ["get"]
+---
 # Source: sreworks/charts/appmanager/templates/rbac-admin.yaml
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -15522,6 +15711,25 @@ subjects:
   - kind: ServiceAccount
     name: kruise-daemon
     namespace: kruise-system
+---
+# Source: sreworks/charts/appmanagerbase/charts/openebs/templates/clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: sreworks-openebs
+  labels:
+    app: openebs
+    chart: openebs-3.1.0
+    release: sreworks
+    heritage: Helm
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: sreworks-openebs
+subjects:
+- kind: ServiceAccount
+  name: sreworks-openebs
+  namespace: sreworks
 ---
 # Source: sreworks/charts/appmanagerbase/charts/kruise/templates/rbac_role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -15920,6 +16128,135 @@ spec:
           type: ""
         name: runtime-socket
 ---
+# Source: sreworks/charts/appmanagerbase/charts/openebs/templates/ndm/daemonset-ndm.yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: sreworks-openebs-ndm
+  labels:
+    app: openebs
+    chart: openebs-3.1.0
+    release: sreworks
+    heritage: Helm
+    component: ndm
+    openebs.io/component-name: ndm
+    openebs.io/version: 3.1.0
+spec:
+  updateStrategy:
+    type: "RollingUpdate"
+  selector:
+    matchLabels:
+      app: openebs
+      release: sreworks
+      component: ndm
+  template:
+    metadata:
+      labels:
+        app: openebs
+        release: sreworks
+        component: ndm
+        openebs.io/component-name: ndm
+        name: openebs-ndm
+        openebs.io/version: 3.1.0
+    spec:
+      serviceAccountName: sreworks-openebs
+      hostNetwork: true
+      # host PID is used to check status of iSCSI Service when the NDM
+      # API service is enabled
+      containers:
+      - name: openebs-ndm
+        image: "openebs/node-disk-manager:1.8.0"
+        args:
+          - -v=4
+          - --feature-gates=GPTBasedUUID
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          privileged: true
+        env:
+        # namespace in which NDM is installed will be passed to NDM Daemonset
+        # as environment variable
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        # pass hostname as env variable using downward API to the NDM container
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        # specify the directory where the sparse files need to be created.
+        # if not specified, then sparse files will not be created.
+        - name: SPARSE_FILE_DIR
+          value: "/var/openebs/sparse"
+        # Size(bytes) of the sparse file to be created.
+        - name: SPARSE_FILE_SIZE
+          value: "10737418240"
+        # Specify the number of sparse files to be created
+        - name: SPARSE_FILE_COUNT
+          value: "0"
+        # Process name used for matching is limited to the 15 characters
+        # present in the pgrep output.
+        # So fullname can be used here with pgrep (cmd is < 15 chars).
+        livenessProbe:
+          exec:
+            command:
+            - pgrep
+            - "ndm"
+          initialDelaySeconds: 30
+          periodSeconds: 60
+        volumeMounts:
+        - name: config
+          mountPath: /host/node-disk-manager.config
+          subPath: node-disk-manager.config
+          readOnly: true
+        - name: udev
+          mountPath: /run/udev
+        - name: procmount
+          mountPath: /host/proc
+          readOnly: true
+        - name: devmount
+          mountPath: /dev
+        - name: basepath
+          mountPath: /var/openebs/ndm
+        - name: sparsepath
+          mountPath: /var/openebs/sparse
+      volumes:
+      - name: config
+        configMap:
+          name: sreworks-openebs-ndm-config
+      - name: udev
+        hostPath:
+          path: /run/udev
+          type: Directory
+      # mount /proc (to access mount file of process 1 of host) inside container
+      # to read mount-point of disks and partitions
+      - name: procmount
+        hostPath:
+          path: /proc
+          type: Directory
+      # the /dev directory is mounted so that we have access to the devices that
+      # are connected at runtime of the pod.
+      - name: devmount
+        hostPath:
+          path: /dev
+          type: Directory
+      - name: basepath
+        hostPath:
+          path: "/var/openebs/ndm"
+          type: DirectoryOrCreate
+      - name: sparsepath
+        hostPath:
+          path: /var/openebs/sparse
+      # By default the node-disk-manager will be run on all kubernetes nodes
+      # If you would like to limit this to only some nodes, say the nodes
+      # that have storage attached, you could label those node and use
+      # nodeSelector.
+      #
+      # e.g. label the storage nodes with - "openebs.io/nodegroup"="storage-node"
+      # kubectl label node <node-name> "openebs.io/nodegroup"="storage-node"
+      #nodeSelector:
+      #  "openebs.io/nodegroup": "storage-node"
+---
 # Source: sreworks/charts/appmanager/templates/operator-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -15956,7 +16293,7 @@ spec:
         - --global-listener=true
         command:
         - /manager
-        image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-paas-appmanager-operator:v0.5
+        image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-paas-appmanager-operator:v1.2
         imagePullPolicy: Always
         name: manager
         resources:
@@ -15985,7 +16322,7 @@ spec:
     spec:
       initContainers:
         - name: server-init
-          image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-paas-appmanager-db-migration:v0.5
+          image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-paas-appmanager-db-migration:v1.2
           imagePullPolicy: Always
           envFrom:
             - configMapRef:
@@ -15996,10 +16333,10 @@ spec:
             httpGet:
               path: /status.taobao
               port: 7001
-            initialDelaySeconds: 120
+            initialDelaySeconds: 1200
             failureThreshold: 5
             periodSeconds: 20
-          image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-paas-appmanager:v0.5
+          image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-paas-appmanager:v1.2
           imagePullPolicy: Always
           ports:
             - containerPort: 7001
@@ -16198,6 +16535,173 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: sreworks-minio
+---
+# Source: sreworks/charts/appmanagerbase/charts/openebs/templates/localprovisioner/deployment-local-provisioner.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sreworks-openebs-localpv-provisioner
+  labels:
+    app: openebs
+    chart: openebs-3.1.0
+    release: sreworks
+    heritage: Helm
+    component: localpv-provisioner
+    openebs.io/component-name: openebs-localpv-provisioner
+    openebs.io/version: 3.1.0
+spec:
+  replicas: 1
+  strategy:
+    type: "Recreate"
+    rollingUpdate: null
+  selector:
+    matchLabels:
+      app: openebs
+      release: sreworks
+  template:
+    metadata:
+      labels:
+        app: openebs
+        release: sreworks
+        component: localpv-provisioner
+        name: openebs-localpv-provisioner
+        openebs.io/component-name: openebs-localpv-provisioner
+        openebs.io/version: 3.1.0
+    spec:
+      serviceAccountName: sreworks-openebs
+      containers:
+      - name: openebs-localpv-provisioner
+        image: "openebs/provisioner-localpv:3.1.0"
+        imagePullPolicy: IfNotPresent
+        args:
+          - "--bd-time-out=$(BDC_BD_BIND_RETRIES)"
+        env:
+        # OPENEBS_IO_K8S_MASTER enables openebs provisioner to connect to K8s
+        # based on this address. This is ignored if empty.
+        # This is supported for openebs provisioner version 0.5.2 onwards
+        #- name: OPENEBS_IO_K8S_MASTER
+        #  value: "http://10.128.0.12:8080"
+        # OPENEBS_IO_KUBE_CONFIG enables openebs provisioner to connect to K8s
+        # based on this config. This is ignored if empty.
+        # This is supported for openebs provisioner version 0.5.2 onwards
+        #- name: OPENEBS_IO_KUBE_CONFIG
+        #  value: "/home/ubuntu/.kube/config"
+        # This sets the number of times the provisioner should try
+        # with a polling interval of 5 seconds, to get the Blockdevice
+        # Name from a BlockDeviceClaim, before the BlockDeviceClaim
+        # is deleted. E.g. 12 * 5 seconds = 60 seconds timeout
+        - name: BDC_BD_BIND_RETRIES
+          value: "12"
+        # OPENEBS_NAMESPACE is the namespace that this provisioner will
+        # lookup to find maya api service
+        - name: OPENEBS_NAMESPACE
+          value: "sreworks"
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        # OPENEBS_SERVICE_ACCOUNT provides the service account of this pod as
+        # environment variable
+        - name: OPENEBS_SERVICE_ACCOUNT
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.serviceAccountName
+        # OPENEBS_IO_BASE_PATH is the environment variable that provides the
+        # default base path on the node where host-path PVs will be provisioned.
+        - name: OPENEBS_IO_ENABLE_ANALYTICS
+          value: "true"
+        - name: OPENEBS_IO_BASE_PATH
+          value: "/var/openebs/local"
+        - name: OPENEBS_IO_HELPER_IMAGE
+          value: "openebs/linux-utils:3.1.0"
+        - name: OPENEBS_IO_INSTALLER_TYPE
+          value: "charts-helm"
+        # LEADER_ELECTION_ENABLED is used to enable/disable leader election. By default
+        # leader election is enabled.
+        - name: LEADER_ELECTION_ENABLED
+          value: "true"
+        # Process name used for matching is limited to the 15 characters
+        # present in the pgrep output.
+        # So fullname can't be used here with pgrep (>15 chars).A regular expression
+        # that matches the entire command name has to specified.
+        # Anchor `^` : matches any string that starts with `provisioner-loc`
+        # `.*`: matches any string that has `provisioner-loc` followed by zero or more char
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - test `pgrep -c "^provisioner-loc.*"` = 1
+          initialDelaySeconds: 30
+          periodSeconds: 60
+---
+# Source: sreworks/charts/appmanagerbase/charts/openebs/templates/ndm/deployment-ndm-operator.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sreworks-openebs-ndm-operator
+  labels:
+    app: openebs
+    chart: openebs-3.1.0
+    release: sreworks
+    heritage: Helm
+    component: ndm-operator
+    openebs.io/component-name: ndm-operator
+    openebs.io/version: 3.1.0
+    name: ndm-operator
+spec:
+  replicas: 1
+  strategy:
+    type: "Recreate"
+    rollingUpdate: null
+  selector:
+    matchLabels:
+      app: openebs
+      release: sreworks
+  template:
+    metadata:
+      labels:
+        app: openebs
+        release: sreworks
+        component: ndm-operator
+        name: ndm-operator
+        openebs.io/component-name: ndm-operator
+        openebs.io/version: 3.1.0
+    spec:
+      serviceAccountName: sreworks-openebs
+      containers:
+      - name: sreworks-openebs-ndm-operator
+        image: "openebs/node-disk-operator:1.8.0"
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8585
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8585
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        env:
+        - name: WATCH_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: SERVICE_ACCOUNT
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.serviceAccountName
+        - name: OPERATOR_NAME
+          value: "node-disk-operator"
+        - name: CLEANUP_JOB_IMAGE
+          value: "openebs/linux-utils:3.1.0"
 ---
 # Source: sreworks/charts/appmanagerbase/charts/kafka/templates/statefulset.yaml
 apiVersion: apps/v1
@@ -16829,7 +17333,7 @@ spec:
     spec:
       containers:
       - name: job
-        image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-paas-appmanager-cluster-init:v0.5
+        image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-paas-appmanager-cluster-init:v1.2
         imagePullPolicy: Always
         envFrom:
         - configMapRef:
@@ -16853,7 +17357,7 @@ spec:
     spec:
       containers:
       - name: job
-        image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-paas-appmanager-postrun:v0.5
+        image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-paas-appmanager-postrun:v1.2
         imagePullPolicy: Always
         envFrom:
         - configMapRef:
@@ -16867,7 +17371,7 @@ metadata:
   name: sreworks-core-init-job
   annotations:
 spec:
-  backoffLimit: 20
+  backoffLimit: 100000
   ttlSecondsAfterFinished: 600
   template:
     spec:
@@ -16875,7 +17379,7 @@ spec:
       restartPolicy: OnFailure 
        
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v0.5
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v1.2
         name: job
         command: ["sh"]
         args: ["/app/core.sh"]
@@ -16903,10 +17407,10 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata: 
-  name: sreworks-saas-cluster-init-job
+  name: sreworks-saas-demoapp-init-job
   annotations:
 spec:
-  backoffLimit: 20
+  backoffLimit: 100000
   ttlSecondsAfterFinished: 600
   template:
     spec:
@@ -16914,7 +17418,46 @@ spec:
       restartPolicy: OnFailure 
        
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v0.5
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v1.2
+        name: job
+        command: ["sh"]
+        #args: ["/app/sleep.sh"]
+        imagePullPolicy: Always
+        args: ["/app/saas-demoapp.sh"]
+        workingDir: /root
+        envFrom:
+          - configMapRef:
+              name: init-configmap
+        volumeMounts:
+        - name: run-volume
+          mountPath: /app
+        - name: swcli-volume
+          mountPath: /swcli
+ 
+      volumes:
+      - name: run-volume
+        configMap:
+          name: init-run
+      - name: swcli-volume
+        configMap:
+          name: init-swcli
+---
+# Source: sreworks/templates/init-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata: 
+  name: sreworks-saas-cluster-init-job
+  annotations:
+spec:
+  backoffLimit: 100000
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      
+      restartPolicy: OnFailure 
+       
+      containers:
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v1.2
         name: job
         command: ["sh"]
         #args: ["/app/sleep.sh"]
@@ -16945,7 +17488,7 @@ metadata:
   name: sreworks-saas-app-init-job
   annotations:
 spec:
-  backoffLimit: 20
+  backoffLimit: 100000
   ttlSecondsAfterFinished: 600
   template:
     spec:
@@ -16953,7 +17496,7 @@ spec:
       restartPolicy: OnFailure 
        
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v0.5
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v1.2
         name: job
         command: ["sh"]
         #args: ["/app/sleep.sh"]
@@ -16984,7 +17527,7 @@ metadata:
   name: sreworks-saas-team-init-job
   annotations:
 spec:
-  backoffLimit: 20
+  backoffLimit: 100000
   ttlSecondsAfterFinished: 600
   template:
     spec:
@@ -16992,7 +17535,7 @@ spec:
       restartPolicy: OnFailure 
        
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v0.5
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v1.2
         name: job
         command: ["sh"]
         #args: ["/app/sleep.sh"]
@@ -17023,7 +17566,7 @@ metadata:
   name: sreworks-saas-dataops-init-job
   annotations:
 spec:
-  backoffLimit: 20
+  backoffLimit: 100000
   ttlSecondsAfterFinished: 600
   template:
     spec:
@@ -17031,7 +17574,7 @@ spec:
       restartPolicy: OnFailure 
        
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v0.5
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v1.2
         name: job
         command: ["sh"]
         #args: ["/app/sleep.sh"]
@@ -17062,7 +17605,7 @@ metadata:
   name: sreworks-saas-system-init-job
   annotations:
 spec:
-  backoffLimit: 20
+  backoffLimit: 100000
   ttlSecondsAfterFinished: 600
   template:
     spec:
@@ -17070,7 +17613,7 @@ spec:
       restartPolicy: OnFailure 
        
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v0.5
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v1.2
         name: job
         command: ["sh"]
         #args: ["/app/sleep.sh"]
@@ -17101,7 +17644,7 @@ metadata:
   name: sreworks-saas-job-init-job
   annotations:
 spec:
-  backoffLimit: 20
+  backoffLimit: 100000
   ttlSecondsAfterFinished: 600
   template:
     spec:
@@ -17109,7 +17652,7 @@ spec:
       restartPolicy: OnFailure 
        
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v0.5
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v1.2
         name: job
         command: ["sh"]
         #args: ["/app/sleep.sh"]
@@ -17140,7 +17683,7 @@ metadata:
   name: sreworks-saas-search-init-job
   annotations:
 spec:
-  backoffLimit: 20
+  backoffLimit: 100000
   ttlSecondsAfterFinished: 600
   template:
     spec:
@@ -17148,7 +17691,7 @@ spec:
       restartPolicy: OnFailure 
        
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v0.5
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v1.2
         name: job
         command: ["sh"]
         #args: ["/app/sleep.sh"]
@@ -17179,7 +17722,7 @@ metadata:
   name: sreworks-saas-healing-init-job
   annotations:
 spec:
-  backoffLimit: 20
+  backoffLimit: 100000
   ttlSecondsAfterFinished: 600
   template:
     spec:
@@ -17187,7 +17730,7 @@ spec:
       restartPolicy: OnFailure 
        
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v0.5
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v1.2
         name: job
         command: ["sh"]
         #args: ["/app/sleep.sh"]
@@ -17218,7 +17761,7 @@ metadata:
   name: sreworks-saas-aiops-init-job
   annotations:
 spec:
-  backoffLimit: 20
+  backoffLimit: 100000
   ttlSecondsAfterFinished: 600
   template:
     spec:
@@ -17226,7 +17769,7 @@ spec:
       restartPolicy: OnFailure 
        
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v0.5
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v1.2
         name: job
         command: ["sh"]
         #args: ["/app/sleep.sh"]
@@ -17257,7 +17800,7 @@ metadata:
   name: sreworks-saas-health-init-job
   annotations:
 spec:
-  backoffLimit: 20
+  backoffLimit: 100000
   ttlSecondsAfterFinished: 600
   template:
     spec:
@@ -17265,7 +17808,7 @@ spec:
       restartPolicy: OnFailure 
        
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v0.5
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v1.2
         name: job
         command: ["sh"]
         #args: ["/app/sleep.sh"]
@@ -17296,7 +17839,7 @@ metadata:
   name: sreworks-saas-ocenter-init-job
   annotations:
 spec:
-  backoffLimit: 20
+  backoffLimit: 100000
   ttlSecondsAfterFinished: 600
   template:
     spec:
@@ -17304,7 +17847,7 @@ spec:
       restartPolicy: OnFailure 
        
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v0.5
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v1.2
         name: job
         command: ["sh"]
         #args: ["/app/sleep.sh"]
@@ -17335,7 +17878,7 @@ metadata:
   name: sreworks-saas-help-init-job
   annotations:
 spec:
-  backoffLimit: 20
+  backoffLimit: 100000
   ttlSecondsAfterFinished: 600
   template:
     spec:
@@ -17343,7 +17886,7 @@ spec:
       restartPolicy: OnFailure 
        
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v0.5
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v1.2
         name: job
         command: ["sh"]
         #args: ["/app/sleep.sh"]
@@ -17374,7 +17917,7 @@ metadata:
   name: sreworks-saas-upload-init-job
   annotations:
 spec:
-  backoffLimit: 20
+  backoffLimit: 100000
   ttlSecondsAfterFinished: 600
   template:
     spec:
@@ -17382,7 +17925,7 @@ spec:
       restartPolicy: OnFailure 
        
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v0.5
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v1.2
         name: job
         command: ["sh"]
         #args: ["/app/sleep.sh"]
@@ -17406,44 +17949,28 @@ spec:
         configMap:
           name: init-swcli
 ---
-# Source: sreworks/templates/init-job.yaml
+# Source: sreworks/templates/progress-check-job.yaml
 apiVersion: batch/v1
 kind: Job
 metadata: 
-  name: sreworks-saas-demoapp-init-job
-  annotations:
+  name: sreworks-progress-check
 spec:
-  backoffLimit: 20
+  backoffLimit: 100000
   ttlSecondsAfterFinished: 600
   template:
     spec:
-      
       restartPolicy: OnFailure 
-       
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/swcli-builtin-package:v0.5
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-progress-check:v1.2
         name: job
-        command: ["sh"]
-        #args: ["/app/sleep.sh"]
         imagePullPolicy: Always
-        args: ["/app/saas-demoapp.sh"]
-        workingDir: /root
         envFrom:
           - configMapRef:
               name: init-configmap
-        volumeMounts:
-        - name: run-volume
-          mountPath: /app
-        - name: swcli-volume
-          mountPath: /swcli
- 
-      volumes:
-      - name: run-volume
-        configMap:
-          name: init-run
-      - name: swcli-volume
-        configMap:
-          name: init-swcli
+---
+# Source: sreworks/charts/appmanagerbase/charts/openebs/templates/localprovisioner/device-class.yaml
+# The second operand in the AND operation can be removed
+# when enableDeviceClass is deprecated.
 ---
 # Source: sreworks/charts/appmanagerbase/charts/kruise/templates/webhookconfiguration.yaml
 apiVersion: admissionregistration.k8s.io/v1

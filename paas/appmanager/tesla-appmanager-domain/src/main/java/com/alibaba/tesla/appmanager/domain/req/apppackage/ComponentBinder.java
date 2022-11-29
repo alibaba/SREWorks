@@ -23,7 +23,7 @@ public class ComponentBinder {
     /**
      * 组件类型
      */
-    private ComponentTypeEnum componentType;
+    private String componentType;
 
     /**
      * 组件唯一标示
@@ -31,9 +31,9 @@ public class ComponentBinder {
     private String componentName;
 
     /**
-     * 组件名称
+     * 分类
      */
-    private String componentLabel;
+    private String category;
 
     /**
      * 组件版本

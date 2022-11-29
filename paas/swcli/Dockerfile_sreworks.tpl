@@ -3,7 +3,7 @@ WORKDIR /app
 COPY . ./
 ENV GOPROXY=${GOPROXY}
 RUN go mod download -x && \
-    go build -o /swcli-linux-amd64 && \
+    CGO_ENABLED=0 go build -a -ldflags '-extldflags "-static"' -o /swcli-linux-amd64 && \
     CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o /swcli-darwin-amd64 && \
     CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o /swcli-windows-amd64
     

@@ -53,7 +53,7 @@ public class AddonManager implements ApplicationListener<AddonLoadedEvent> {
      * @param addonId Addon ID
      * @return Addon 对象，如果不存在则抛出异常
      */
-    public Addon getAddon(ComponentTypeEnum componentType, String addonId) {
+    public Addon getAddon(String componentType, String addonId) {
         Addon addon = this.addonMap.get(AddonUtil.combineAddonKey(componentType, addonId));
         if (addon == null) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,
@@ -92,12 +92,12 @@ public class AddonManager implements ApplicationListener<AddonLoadedEvent> {
         addonMap.put(key, addon);
 
         // 更新当前插件信息到数据库中
-        ComponentTypeEnum addonType = addon.getAddonType();
+        String addonType = addon.getAddonType();
         String addonId = addon.getAddonId();
         AddonMetaDO meta = addonMetaRepository.get(addonType, addonId);
         if (meta == null) {
             meta = AddonMetaDO.builder()
-                    .addonType(addonType.toString())
+                    .addonType(addonType)
                     .addonId(addonId)
                     .addonVersion(DefaultConstant.AUTO_VERSION)
                     .addonLabel(addon.getAddonLabel())
@@ -110,7 +110,7 @@ public class AddonManager implements ApplicationListener<AddonLoadedEvent> {
         } else {
             // addon version 已废弃
             meta.setAddonVersion(DefaultConstant.AUTO_VERSION);
-            meta.setAddonType(addon.getAddonType().toString());
+            meta.setAddonType(addon.getAddonType());
             meta.setAddonLabel(addon.getAddonLabel());
             meta.setAddonDescription(addon.getAddonDescription());
             meta.setAddonSchema(SchemaUtil.toYamlMapStr(addon.getAddonSchema()));

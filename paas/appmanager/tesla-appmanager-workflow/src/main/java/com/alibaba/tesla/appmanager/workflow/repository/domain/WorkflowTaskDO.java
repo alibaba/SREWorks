@@ -1,16 +1,19 @@
 package com.alibaba.tesla.appmanager.workflow.repository.domain;
 
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Workflow 任务表
  */
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -66,7 +69,7 @@ public class WorkflowTaskDO {
     private String taskStatus;
 
     /**
-     * 部署单 ID
+     * 发起的新 DeployApp ID
      */
     private Long deployAppId;
 
@@ -75,16 +78,40 @@ public class WorkflowTaskDO {
      */
     private Integer lockVersion;
 
+    /**
+     * 发起的新 DeployApp ID 归属单元
+     */
     private String deployAppUnitId;
 
+    /**
+     * 发起的新 DeployApp ID 归属 Namespace
+     */
     private String deployAppNamespaceId;
 
+    /**
+     * 发起的新 DeployApp ID 归属 Stage
+     */
     private String deployAppStageId;
+
+    /**
+     * 发起的新 WorkflowInstance ID
+     */
+    private Long deployWorkflowInstanceId;
 
     /**
      * Workflow 任务节点属性 (JSONObject 字符串)
      */
     private String taskProperties;
+
+    /**
+     * Workflow 任务Outputs数组 (JSONArray 字符串)
+     */
+    private String taskOutputs;
+
+    /**
+     * Workflow 任务Inputs数组 (JSONArray 字符串)
+     */
+    private String taskInputs;
 
     /**
      * Workflow 任务节点执行出错信息 (仅 task_status==EXCEPTIOIN 下存在)

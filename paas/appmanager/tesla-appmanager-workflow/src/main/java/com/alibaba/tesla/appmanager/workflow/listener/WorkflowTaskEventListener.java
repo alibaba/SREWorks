@@ -79,6 +79,10 @@ public class WorkflowTaskEventListener implements ApplicationListener<WorkflowTa
                     event.getTask().getDeployAppNamespaceId(),
                     event.getTask().getDeployAppStageId());
         }
+        if (event.getTask().getDeployWorkflowInstanceId() != null && event.getTask().getDeployWorkflowInstanceId() > 0) {
+            task.setDeployWorkflowInstanceId(event.getTask().getDeployWorkflowInstanceId());
+            logSuffix += String.format("|deployWorkflowInstanceId=%d", event.getTask().getDeployWorkflowInstanceId());
+        }
         try {
             workflowTaskService.update(task);
         } catch (AppException e) {
@@ -101,7 +105,7 @@ public class WorkflowTaskEventListener implements ApplicationListener<WorkflowTa
                 log.info(logPre + "locker version expired, skip" + logSuffix);
                 return;
             }
-            markAsException(workflowTaskId, nextStatus, e.getErrorMessage());
+            markAsException(workflowTaskId, nextStatus, ExceptionUtils.getStackTrace(e));
         } catch (Exception e) {
             markAsException(workflowTaskId, nextStatus, ExceptionUtils.getStackTrace(e));
         }

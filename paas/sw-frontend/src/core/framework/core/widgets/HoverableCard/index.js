@@ -1,6 +1,5 @@
 import React from "react";
 import { Card } from "antd"
-import JSXRender from "../../../../../components/JSXRender";
 import "./index.less";
 
 const { Meta } = Card;

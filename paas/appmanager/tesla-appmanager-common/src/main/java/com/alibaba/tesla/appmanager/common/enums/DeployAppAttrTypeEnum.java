@@ -20,5 +20,10 @@ public enum DeployAppAttrTypeEnum {
     /**
      * 全局变量 (初始化)
      */
-    GLOBAL_VARIABLES;
+    GLOBAL_VARIABLES,
+
+    /**
+     * 初始化时提供的覆盖变量 (用于 GLOBAL_PARAMS 的覆盖)
+     */
+    OVERWRITE_PARAMS;
 }

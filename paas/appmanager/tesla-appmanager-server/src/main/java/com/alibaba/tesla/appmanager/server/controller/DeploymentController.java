@@ -10,8 +10,10 @@ import com.alibaba.tesla.appmanager.domain.dto.DeployComponentAttrDTO;
 import com.alibaba.tesla.appmanager.domain.req.deploy.*;
 import com.alibaba.tesla.appmanager.domain.res.deploy.DeployAppPackageLaunchRes;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,7 @@ import java.util.HashMap;
  * @author yaoxing.gyx@alibaba-inc.com
  */
 @Slf4j
+@Tag(name = "部署单 API")
 @RequestMapping("/deployments")
 @RestController
 public class DeploymentController extends AppManagerBaseController {
@@ -32,7 +35,7 @@ public class DeploymentController extends AppManagerBaseController {
     @Autowired
     private DeployAppProvider deployAppProvider;
 
-    // 发起部署
+    @Operation(summary = "发起部署")
     @PostMapping(value = "/launch")
     @ResponseBody
     public TeslaBaseResult launch(
@@ -49,7 +52,7 @@ public class DeploymentController extends AppManagerBaseController {
         }
     }
 
-    // 发起部署
+    @Operation(summary = "发起快速部署")
     @PostMapping(value = "/fast-launch")
     @ResponseBody
     public TeslaBaseResult fastLaunch(@RequestBody FastDeployAppLaunchReq request, OAuth2Authentication auth) {
@@ -63,7 +66,7 @@ public class DeploymentController extends AppManagerBaseController {
         }
     }
 
-    // 根据过滤条件查询部署单详情
+    @Operation(summary = "查询部署单列表")
     @GetMapping
     @ResponseBody
     public TeslaBaseResult list(
@@ -73,7 +76,7 @@ public class DeploymentController extends AppManagerBaseController {
         return buildSucceedResult(response);
     }
 
-    // 重新部署当前部署单
+    @Operation(summary = "重新发起指定部署单")
     @PostMapping("{deployAppId}/replay")
     @ResponseBody
     public TeslaBaseResult replay(
@@ -92,7 +95,7 @@ public class DeploymentController extends AppManagerBaseController {
         }
     }
 
-    // 查询指定部署单详情
+    @Operation(summary = "查询部署单详情")
     @GetMapping("{deployAppId}")
     @ResponseBody
     public TeslaBaseResult get(
@@ -109,7 +112,7 @@ public class DeploymentController extends AppManagerBaseController {
         return buildSucceedResult(response);
     }
 
-    // 查询指定部署单详情
+    @Operation(summary = "查询部署单属性")
     @GetMapping("{deployAppId}/attributes")
     @ResponseBody
     public TeslaBaseResult getAttributes(
@@ -122,7 +125,7 @@ public class DeploymentController extends AppManagerBaseController {
         return buildSucceedResult(response);
     }
 
-    // 查询指定部署单的指定步骤详情
+    @Operation(summary = "查询部署单下指定组件属性")
     @GetMapping("{deployAppId}/components/{deployComponentId}/attributes")
     @ResponseBody
     public TeslaBaseResult getComponentAttributes(
@@ -137,7 +140,7 @@ public class DeploymentController extends AppManagerBaseController {
         return buildSucceedResult(response);
     }
 
-    // 重试指定部署单
+    @Operation(summary = "重试部署单")
     @PostMapping("{deployAppId}/retry")
     @ResponseBody
     public TeslaBaseResult retry(
@@ -149,7 +152,7 @@ public class DeploymentController extends AppManagerBaseController {
         return buildSucceedResult(new HashMap<String, String>());
     }
 
-    // 终止指定部署单
+    @Operation(summary = "终止部署单")
     @PostMapping("{deployAppId}/terminate")
     @ResponseBody
     public TeslaBaseResult terminate(

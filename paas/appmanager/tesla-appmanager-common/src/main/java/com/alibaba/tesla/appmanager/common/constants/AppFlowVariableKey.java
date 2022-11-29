@@ -53,6 +53,11 @@ public class AppFlowVariableKey {
     public static final String CONFIGURATION = "CONFIGURATION";
 
     /**
+     * 启动覆盖全局参数
+     */
+    public static final String OVERWRITE_PARAMS = "OVERWRITE_PARAMS";
+
+    /**
      * 当前系统中的组件包列表
      */
     public static final String COMPONENT_PACKAGES = "COMPONENT_PACKAGES";

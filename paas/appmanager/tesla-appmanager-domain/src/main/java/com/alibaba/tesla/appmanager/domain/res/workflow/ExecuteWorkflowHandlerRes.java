@@ -31,7 +31,12 @@ public class ExecuteWorkflowHandlerRes implements Serializable {
     private DeployAppSchema configuration;
 
     /**
-     * 如果当前 workflow 触发了部署，那么此处返回部署单 ID
+     * 如果当前 Workflow 触发了新的 Workflow，那么此处返回 Workflow 实例 ID
+     */
+    private Long deployWorkflowInstanceId;
+
+    /**
+     * 如果当前 Workflow 触发了部署，那么此处返回部署单 ID
      */
     private Long deployAppId;
 
@@ -54,4 +59,14 @@ public class ExecuteWorkflowHandlerRes implements Serializable {
      * 是否暂停
      */
     private boolean suspend;
+
+    /**
+     * 是否自行终止后续所有 workflow 任务执行
+     */
+    private boolean terminate;
+
+    /**
+     * 终止原因
+     */
+    private String terminateReason;
 }

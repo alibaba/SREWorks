@@ -61,13 +61,69 @@ public class TestServiceDeployConfigGenerateByConfiguration {
     }
 
     /**
+     * 测试生成 Trait 的 ApplicationConfiguration
+     */
+    @Test
+    public void testGenerateTraitNoInherit() throws Exception {
+        // 准备数据
+        String traitTypeId = "Type:traits::ComponentType:K8S_MICROSERVICE::ComponentName:aiops-server::Trait:test.abm.io";
+        String componentTypeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE.toString(), "aiops-server").toString();
+        String config = getConfig();
+        DeployAppSchema schema = SchemaUtil.toSchema(DeployAppSchema.class, config);
+        List<DeployConfigDO> mockResults = new ArrayList<>();
+        mockResults.add(DeployConfigDO.builder()
+                .appId(APP_ID)
+                .typeId(traitTypeId)
+                .envId("")
+                .apiVersion(API_VERSION)
+                .currentRevision(0)
+                .config(SchemaUtil.toYamlStr(schema.getSpec().getComponents().get(0).getTraits().get(0), DeployAppSchema.SpecComponentTrait.class))
+                .enabled(true)
+                .inherit(false)
+                .build());
+        // 删除 example 中的 traits
+        schema.getSpec().getComponents().get(0).setTraits(new ArrayList<>());
+        mockResults.add(DeployConfigDO.builder()
+                .appId(APP_ID)
+                .typeId(componentTypeId)
+                .envId("")
+                .apiVersion(API_VERSION)
+                .currentRevision(0)
+                .config(SchemaUtil.toYamlMapStr(schema.getSpec().getComponents().get(0)))
+                .enabled(true)
+                .inherit(false)
+                .build());
+        Mockito.doReturn(mockResults)
+                .when(deployConfigRepository)
+                .selectByCondition(DeployConfigQueryCondition.builder()
+                        .apiVersion(API_VERSION)
+                        .appId(APP_ID)
+                        .enabled(true)
+                        .build());
+
+        // 测试调用
+        DeployConfigGenerateReq req = DeployConfigGenerateReq.builder()
+                .apiVersion(API_VERSION)
+                .appId(APP_ID)
+                .appPackageId(APP_PACKAGE_ID)
+                .clusterId(CLUSTER_ID)
+                .namespaceId(NAMESPACE_ID)
+                .stageId(STAGE_ID)
+                .appInstanceName(APP_INSTANCE_NAME)
+                .build();
+        DeployConfigGenerateRes res = deployConfigService.generate(req);
+        log.info("generateRes: {}", JSONObject.toJSONString(res.getSchema()));
+//        DeployAppSchema generatedSchema = res.getSchema();
+    }
+
+    /**
      * 测试生成 K8S Microservice 的 ApplicationConfiguration
      */
     @Test
     public void testGenerateK8SMicroserviceNoInherit() throws Exception {
         // 准备数据
         String parameterValueTypeId = new DeployConfigTypeId(DeployConfigTypeId.TYPE_PARAMETER_VALUES).toString();
-        String componentTypeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE, "aiops-server").toString();
+        String componentTypeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE.toString(), "aiops-server").toString();
         String config = getConfig();
         DeployAppSchema schema = SchemaUtil.toSchema(DeployAppSchema.class, config);
         List<DeployConfigDO> mockResults = new ArrayList<>();
@@ -136,7 +192,7 @@ public class TestServiceDeployConfigGenerateByConfiguration {
     public void testGenerateK8SMicroserviceWithInherit() throws Exception {
         // 准备数据
         String parameterValueTypeId = new DeployConfigTypeId(DeployConfigTypeId.TYPE_PARAMETER_VALUES).toString();
-        String componentTypeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE, "aiops-server").toString();
+        String componentTypeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE.toString(), "aiops-server").toString();
         String config = getConfig();
         DeployAppSchema schema = SchemaUtil.toSchema(DeployAppSchema.class, config);
         Mockito.doReturn(

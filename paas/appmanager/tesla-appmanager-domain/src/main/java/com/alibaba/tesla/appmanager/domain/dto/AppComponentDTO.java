@@ -1,29 +1,38 @@
 package com.alibaba.tesla.appmanager.domain.dto;
 
-import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
-
+import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * 应用关联组件 DTO
- *
- * @author qianmo.zm@alibaba-inc.com
- */
+import java.util.Date;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppComponentDTO {
 
+    /**
+     * ID
+     */
     private Long id;
 
     /**
-     * 应用 ID
+     * 是否为兼容记录 (true: 历史上的兼容记录, false: 通用记录)
      */
-    private String appId;
+    private boolean compatible;
+
+    /**
+     * 创建时间
+     */
+    private Date gmtCreate;
+
+    /**
+     * 最后修改时间
+     */
+    private Date gmtModified;
 
     /**
      * Namespace ID
@@ -36,22 +45,37 @@ public class AppComponentDTO {
     private String stageId;
 
     /**
-     * 组件描述
+     * 应用 ID
      */
-    private String componentLabel;
+    private String appId;
+
+    /**
+     * 分类
+     */
+    private String category;
 
     /**
      * 组件类型
      */
-    private ComponentTypeEnum componentType;
+    private String componentType;
 
     /**
-     * 组件唯一标示
+     * 组件名称
      */
     private String componentName;
 
     /**
-     * 组件版本
+     * 组件对应的当前应用插件版本
      */
-    private String componentVersion;
+    private String pluginVersion;
+
+    /**
+     * 配置内容
+     */
+    private JSONObject config;
+
+    /**
+     * 自动生成: 当前组件对应的类型 ID
+     */
+    private String typeId;
 }

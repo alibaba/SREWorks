@@ -41,7 +41,7 @@ data = cluster_cursor.fetchone()
 clusterId = str(data[0]) + "id"
 
 core_cursor = core_db.cursor()
-core_cursor.execute("select cluster_id from am_cluster where cluster_id = '{clusterId}'")
+core_cursor.execute("select cluster_id from am_cluster where cluster_id = '" + clusterId + "'")
 data = core_cursor.fetchone()
 cluster_config = json.dumps({"kube":json.loads(kubeconfig)})
 current_datetime = datetime.datetime.now()

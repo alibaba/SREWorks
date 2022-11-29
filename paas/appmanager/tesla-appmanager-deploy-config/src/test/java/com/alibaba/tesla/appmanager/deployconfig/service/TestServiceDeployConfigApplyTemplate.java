@@ -59,7 +59,7 @@ public class TestServiceDeployConfigApplyTemplate {
     @Test
     public void testWithExistsRecords() throws Exception {
         String parameterValueTypeId = new DeployConfigTypeId(DeployConfigTypeId.TYPE_PARAMETER_VALUES).toString();
-        String componentTypeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE, "aiops-server").toString();
+        String componentTypeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE.toString(), "aiops-server").toString();
         Mockito.doReturn(Collections.singletonList(DeployConfigHistoryDO.builder().revision(10).build()))
                 .when(deployConfigHistoryRepository)
                 .selectByExample(DeployConfigHistoryQueryCondition.builder()
@@ -174,7 +174,7 @@ public class TestServiceDeployConfigApplyTemplate {
     @Test
     public void testWithNoRecords() throws Exception {
         String parameterValueTypeId = new DeployConfigTypeId(DeployConfigTypeId.TYPE_PARAMETER_VALUES).toString();
-        String componentTypeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE, "aiops-server").toString();
+        String componentTypeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE.toString(), "aiops-server").toString();
         String config = getConfig();
         DeployConfigApplyTemplateRes<DeployConfigDO> res = deployConfigService.applyTemplate(
                 DeployConfigApplyTemplateReq.builder()

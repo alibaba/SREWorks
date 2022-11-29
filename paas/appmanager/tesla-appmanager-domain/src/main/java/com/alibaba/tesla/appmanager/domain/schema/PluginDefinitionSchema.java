@@ -25,6 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PluginDefinitionSchema implements Schema {
 
+    public static final String ANNOTATIONS_LABEL = "definition.oam.dev/label";
     public static final String ANNOTATIONS_DESCRIPTION = "definition.oam.dev/description";
     public static final String ANNOTATIONS_VERSION = "definition.oam.dev/version";
     public static final String ANNOTATIONS_TAGS = "definition.oam.dev/tags";
@@ -35,7 +36,7 @@ public class PluginDefinitionSchema implements Schema {
     private Spec spec;
 
     public PluginKindEnum getPluginKind() {
-        return PluginKindEnum.valueOf(kind);
+        return PluginKindEnum.fromString(kind);
     }
 
     public String getPluginName() {
@@ -141,6 +142,7 @@ public class PluginDefinitionSchema implements Schema {
         private String kind;
         private String name;
         private String path;
+        private JSONObject properties;
     }
 
     @Data

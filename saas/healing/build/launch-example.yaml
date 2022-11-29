@@ -1,0 +1,32 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: ApplicationConfiguration
+metadata:
+  annotations:
+    appId: healing
+  name: healing
+spec:
+  components:
+  - clusterId: ''
+    dataInputs: []
+    dataOutputs: []
+    dependencies: []
+    namespaceId: ''
+    parameterValues: []
+    revisionName: INTERNAL_ADDON|productopsv2|_
+    scopes: []
+    stageId: ''
+    traits: []
+  - revisionName: INTERNAL_ADDON|developmentmeta|_
+  - revisionName: INTERNAL_ADDON|appmeta|_
+  parameterValues:
+  - name: CLUSTER_ID
+    value: ''
+  - name: NAMESPACE_ID
+    value: ''
+  - name: STAGE_ID
+    value: ''
+  - name: APP_ID
+    value: healing
+  policies: []
+  workflow:
+    steps: []

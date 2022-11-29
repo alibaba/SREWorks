@@ -359,7 +359,7 @@ class SimpleTable extends React.Component {
         if (filterParams) {
             tableParams.filters = filterParams
         }
-        let dynamiConf = {}, { outputs, selectable = {}, checkbox, border, headerActions, headerLinks, title, api, footerActions, customPagination = {}, expandedRow, size = "small", bordered = false, rowColorMapping } = mode.config;
+        let dynamiConf = {}, { outputs, selectable = {}, checkbox, border, headerActions, headerLinks, title, api, footerActions, customPagination = {}, expandedRow, size = "small", bordered = false, rowColorMapping,expandedData } = mode.config;
         if (outputs && (checkbox !== false && checkbox !== 'false') && outputs.length) {
             let rowSelection = {};
             //rowSelection.type=selectable.type||'checkbox';
@@ -474,7 +474,7 @@ class SimpleTable extends React.Component {
             dynamiConf.dataMethod = 'POST';
         }
         if (expandedRow && Object.keys(expandedRow).length) {
-            dynamiConf.expandedRowRender = record => <OamWidget openAction={openAction} widget={mode.__template.config.expandedRow} parameters={parameters} nodeParams={nodeParams} nodeId={nodeId} rowData={record} widgetParams={record} />
+            dynamiConf.expandedRowRender = record => <OamWidget openAction={openAction} widget={mode.__template.config.expandedRow} parameters={parameters} nodeParams={nodeParams} nodeId={nodeId} rowData={record} widgetParams={record} widgetData={expandedData?_.get(record,expandedData):null}/>
         }
         let tableKey = "table_reload_" + reloadCount + data && data.length, { wrapper } = widgetConfig, dyClass = "inner-table globalBackground";
         if (size !== "small") {

@@ -151,7 +151,15 @@ export default {
         },
       },
       "supportItemToolbar":true,
-      "dataMock": {},
+      "dataMock": {
+        "description": "水波图应用于展示比例(百分比)",
+        "formats":[
+          {
+            "description":"接收的数据源为一个number类型的数值，如“26%”的比例来源：2600/10000,10000为水波图的默认分母值(最大值-最小值)，这个最大数值可以在水波图的可视化字段配置处修改。",
+            "data": 2600
+          }
+        ]
+      }
     },
-    "catgory": "charts",
+    "category": "charts",
   };

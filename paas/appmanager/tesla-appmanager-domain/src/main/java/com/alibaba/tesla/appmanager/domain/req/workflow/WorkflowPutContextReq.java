@@ -1,0 +1,21 @@
+package com.alibaba.tesla.appmanager.domain.req.workflow;
+
+import com.alibaba.fastjson.JSONObject;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class WorkflowPutContextReq implements Serializable {
+
+    /**
+     * Context
+     */
+    private JSONObject context;
+}

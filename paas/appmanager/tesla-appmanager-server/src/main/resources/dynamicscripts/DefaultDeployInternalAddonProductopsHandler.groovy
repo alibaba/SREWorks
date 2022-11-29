@@ -54,7 +54,7 @@ class DefaultDeployInternalAddonProductopsHandler implements DeployComponentHand
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 10
+    public static final Integer REVISION = 12
 
     private static final String IMPORT_TMP_FILE = "productops_tmp_import.zip"
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
@@ -132,9 +132,9 @@ class DefaultDeployInternalAddonProductopsHandler implements DeployComponentHand
 
         // 上报状态
         def annotations = (JSONObject) componentSchema.getSpec().getWorkload().getMetadata().getAnnotations()
-        def version = annotations.getOrDefault(ANNOTATIONS_VERSION, "")
-        def componentInstanceId = annotations.getOrDefault(ANNOTATIONS_COMPONENT_INSTANCE_ID, "")
-        def appInstanceName = annotations.getOrDefault(ANNOTATIONS_APP_INSTANCE_NAME, "")
+        def version = (String) annotations.getOrDefault(ANNOTATIONS_VERSION, "")
+        def componentInstanceId = (String) annotations.getOrDefault(ANNOTATIONS_COMPONENT_INSTANCE_ID, "")
+        def appInstanceName = (String) annotations.getOrDefault(ANNOTATIONS_APP_INSTANCE_NAME, "")
         componentInstanceService.report(ReportRtComponentInstanceStatusReq.builder()
                 .componentInstanceId(componentInstanceId)
                 .appInstanceName(appInstanceName)
@@ -188,7 +188,12 @@ class DefaultDeployInternalAddonProductopsHandler implements DeployComponentHand
         def httpClient = HttpClientFactory.getHttpClient()
         def times = 2
         while (true) {
-            def urlPrefix = String.format("%s/jobs/report_app_tree_structures/%s/start", endpoint, appTreeId)
+            def urlPrefix
+            if ("Internal".equals(System.getenv("CLOUD_TYPE"))) {
+                urlPrefix = String.format("%s/jobs/async_report_app_tree_structures/%s/start", endpoint, appTreeId)
+            } else {
+                urlPrefix = String.format("%s/jobs/report_app_tree_structures/%s/start", endpoint, appTreeId)
+            }
             def urlBuilder = Objects.requireNonNull(HttpUrl.parse(urlPrefix)).newBuilder()
             def reqBuilder = new Request.Builder()
                     .url(urlBuilder.build())
@@ -287,48 +292,31 @@ class DefaultDeployInternalAddonProductopsHandler implements DeployComponentHand
             LaunchDeployComponentHandlerReq request, JSONObject options, String endpoint, String zipPath,
             String namespaceId, String envId) {
         def httpClient = HttpClientFactory.getHttpClient()
-        def times = 2
         def cloudType = System.getenv("CLOUD_TYPE")
-        while (true) {
-            def urlPrefix = String.format("%s/maintainer/upload", endpoint)
-            def urlBuilder = Objects.requireNonNull(HttpUrl.parse(urlPrefix)).newBuilder()
-            def resetVersion = options.getString("resetVersion")
-            if (resetVersion == null) {
-                resetVersion = "false"
-            }
-            urlBuilder.addQueryParameter("resetVersion", resetVersion)
-            if (StringUtils.isNotEmpty(namespaceId)
-                    || "OXS" == cloudType
-                    || "ApsaraStack" == cloudType
-                    || "ApsaraStackAgility" == cloudType) {
-                urlBuilder.addQueryParameter("envId", envId)
-            }
-            def body = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("file", IMPORT_TMP_FILE,
-                            RequestBody.create(MediaType.parse("application/octet-stream"),
-                                    new File(zipPath)))
-                    .build()
-            def reqBuilder = new Request.Builder()
-                    .url(urlBuilder.build())
-                    .post(body)
-            try {
-                NetworkUtil.sendRequest(httpClient, reqBuilder, "")
-                log.info("[app_id.{}] import productops config success", request.getAppId())
-                times -= 1
-                if (times <= 0) {
-                    break
-                }
-            } catch (Exception e) {
-                if (times <= 0) {
-                    throw e
-                } else {
-                    log.error("[app_id.{}] import productops config failed, exception={}",
-                            request.getAppId(), ExceptionUtils.getStackTrace(e))
-                    times -= 1
-                }
-            }
+        def urlPrefix = String.format("%s/maintainer/upload", endpoint)
+        def urlBuilder = Objects.requireNonNull(HttpUrl.parse(urlPrefix)).newBuilder()
+        def resetVersion = options.getString("resetVersion")
+        if (resetVersion == null) {
+            resetVersion = "false"
         }
+        urlBuilder.addQueryParameter("resetVersion", resetVersion)
+        if (StringUtils.isNotEmpty(namespaceId)
+                || "OXS" == cloudType
+                || "ApsaraStack" == cloudType
+                || "ApsaraStackAgility" == cloudType) {
+            urlBuilder.addQueryParameter("envId", envId)
+        }
+        def body = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", IMPORT_TMP_FILE,
+                        RequestBody.create(MediaType.parse("application/octet-stream"),
+                                new File(zipPath)))
+                .build()
+        def reqBuilder = new Request.Builder()
+                .url(urlBuilder.build())
+                .post(body)
+        NetworkUtil.sendRequest(httpClient, reqBuilder, "")
+        log.info("[app_id.{}] import productops config success", request.getAppId())
     }
 
     /**

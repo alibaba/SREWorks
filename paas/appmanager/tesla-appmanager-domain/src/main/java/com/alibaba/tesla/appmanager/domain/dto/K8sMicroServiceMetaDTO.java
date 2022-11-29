@@ -66,7 +66,7 @@ public class K8sMicroServiceMetaDTO {
     /**
      * 组件类型
      */
-    private ComponentTypeEnum componentType;
+    private String componentType;
 
     /**
      * 架构

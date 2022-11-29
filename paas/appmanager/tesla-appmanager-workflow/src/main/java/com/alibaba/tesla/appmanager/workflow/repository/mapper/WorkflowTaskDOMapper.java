@@ -2,10 +2,9 @@ package com.alibaba.tesla.appmanager.workflow.repository.mapper;
 
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDOExample;
+import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 @Mapper
 public interface WorkflowTaskDOMapper {

@@ -8,6 +8,7 @@
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
     <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="category" jdbcType="VARCHAR" property="category" />
     <result column="gmt_start" jdbcType="TIMESTAMP" property="gmtStart" />
     <result column="gmt_end" jdbcType="TIMESTAMP" property="gmtEnd" />
     <result column="workflow_status" jdbcType="VARCHAR" property="workflowStatus" />
@@ -85,8 +86,8 @@
   </sql>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, gmt_create, gmt_modified, app_id, gmt_start, gmt_end, workflow_status, workflow_sha256, 
-    workflow_creator, lock_version, client_host
+    id, gmt_create, gmt_modified, app_id, category, gmt_start, gmt_end, workflow_status, 
+    workflow_sha256, workflow_creator, lock_version, client_host
   </sql>
   <sql id="Blob_Column_List">
     <!--@mbg.generated-->
@@ -140,6 +141,9 @@
       <if test="appId != null">
         app_id,
       </if>
+      <if test="category != null">
+        category,
+      </if>
       <if test="gmtStart != null">
         gmt_start,
       </if>
@@ -180,6 +184,9 @@
       </if>
       <if test="appId != null">
         #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null">
+        #{category,jdbcType=VARCHAR},
       </if>
       <if test="gmtStart != null">
         #{gmtStart,jdbcType=TIMESTAMP},

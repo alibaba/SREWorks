@@ -1,22 +1,48 @@
 package com.alibaba.tesla.appmanager.server.provider.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.AppAddonProvider;
 import com.alibaba.tesla.appmanager.api.provider.AppComponentProvider;
 import com.alibaba.tesla.appmanager.api.provider.HelmMetaProvider;
 import com.alibaba.tesla.appmanager.api.provider.K8sMicroServiceMetaProvider;
+import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
+import com.alibaba.tesla.appmanager.common.enums.PluginKindEnum;
+import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
+import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.common.util.ClassUtil;
+import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
+import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
+import com.alibaba.tesla.appmanager.deployconfig.util.DeployConfigGenerator;
+import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.dto.AppComponentDTO;
 import com.alibaba.tesla.appmanager.domain.req.AppAddonQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQueryReq;
+import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentCreateReq;
+import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentQueryReq;
+import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentUpdateReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpsertReq;
 import com.alibaba.tesla.appmanager.domain.req.helm.HelmMetaQueryReq;
+import com.alibaba.tesla.appmanager.plugin.repository.condition.PluginDefinitionQueryCondition;
+import com.alibaba.tesla.appmanager.plugin.repository.domain.PluginDefinitionDO;
+import com.alibaba.tesla.appmanager.plugin.service.PluginService;
+import com.alibaba.tesla.appmanager.server.assembly.AppComponentDtoConvert;
+import com.alibaba.tesla.appmanager.server.repository.condition.AppComponentQueryCondition;
+import com.alibaba.tesla.appmanager.server.repository.domain.AppComponentDO;
+import com.alibaba.tesla.appmanager.server.service.appcomponent.AppComponentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.yaml.snakeyaml.Yaml;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 应用关联组件 Provider
@@ -28,6 +54,12 @@ import java.util.List;
 public class AppComponentProviderImpl implements AppComponentProvider {
 
     @Autowired
+    private AppComponentService appComponentService;
+
+    @Autowired
+    private AppComponentDtoConvert appComponentDtoConvert;
+
+    @Autowired
     private K8sMicroServiceMetaProvider k8SMicroServiceMetaProvider;
 
     @Autowired
@@ -35,6 +67,190 @@ public class AppComponentProviderImpl implements AppComponentProvider {
 
     @Autowired
     private HelmMetaProvider helmMetaProvider;
+
+    @Autowired
+    private PluginService pluginService;
+
+    @Autowired
+    private DeployConfigService deployConfigService;
+
+    /**
+     * 获取指定应用下的指定关联 Component 对象
+     *
+     * @param request  应用组件绑定查询请求
+     * @param operator 操作人
+     * @return AppComponentDTO
+     */
+    @Override
+    public AppComponentDTO get(AppComponentQueryReq request, String operator) {
+        AppComponentQueryCondition condition = new AppComponentQueryCondition();
+        ClassUtil.copy(request, condition);
+        return appComponentDtoConvert.to(appComponentService.get(condition));
+    }
+
+    /**
+     * 创建应用下的关联 Component 绑定
+     *
+     * @param request  创建请求
+     * @param operator 操作人
+     * @return 绑定后的结果
+     */
+    @Override
+    public AppComponentDTO create(AppComponentCreateReq request, String operator) {
+        String namespaceId = request.getNamespaceId();
+        String stageId = request.getStageId();
+        String appId = request.getAppId();
+        String category = request.getCategory();
+        String componentType = request.getComponentType();
+        String componentName = request.getComponentName();
+        String config = JSONObject.toJSONString(request.getConfig());
+
+        // 提前检查是否已经存在记录
+        AppComponentDO origin = appComponentService.get(AppComponentQueryCondition.builder()
+                .namespaceId(namespaceId)
+                .stageId(stageId)
+                .appId(appId)
+                .category(category)
+                .componentType(componentType)
+                .componentName(componentName)
+                .build());
+        if (origin != null) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "the app component binding record exists");
+        }
+
+        AppComponentDO record = AppComponentDO.builder()
+                .namespaceId(namespaceId)
+                .stageId(stageId)
+                .appId(appId)
+                .category(category)
+                .componentType(componentType)
+                .componentName(componentName)
+                .config(config)
+                .build();
+        int count = appComponentService.create(record);
+        if (count != 1) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("invalid count when creating app component|count=%d|record=%s",
+                            count, JSONObject.toJSONString(record)));
+        }
+        log.info("app component has created|operator={}|id={}|namespaceId={}|stageId={}|appId={}|category={}|" +
+                        "componentType={}|componentName={}|config={}", record.getId(), operator, namespaceId,
+                stageId, appId, category, componentType, componentName, config);
+
+        DeployConfigGenerator configObject = new DeployConfigGenerator();
+        configObject.addRevisionName(componentType, componentName);
+        configObject.addScope("Namespace", namespaceId);
+        String typeId = new DeployConfigTypeId(componentType, componentName).toString();
+        deployConfigService.update(DeployConfigUpsertReq.builder()
+                .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                .appId(appId)
+                .typeId(typeId)
+                .envId("")
+                .inherit(false)
+                .config(configObject.toString())
+                .isolateNamespaceId(namespaceId)
+                .isolateStageId(stageId)
+                .build());
+
+        return appComponentDtoConvert.to(appComponentService.get(AppComponentQueryCondition.builder()
+                .id(record.getId())
+                .build()));
+    }
+
+    /**
+     * 更新应用下的关联 Component 绑定
+     *
+     * @param request  更新请求
+     * @param operator 操作人
+     * @return 绑定后的结果
+     */
+    @Override
+    public AppComponentDTO update(AppComponentUpdateReq request, String operator) {
+        String namespaceId = request.getNamespaceId();
+        String stageId = request.getStageId();
+        String appId = request.getAppId();
+        String category = request.getCategory();
+        String componentType = request.getComponentType();
+        String componentName = request.getComponentName();
+        String config = JSONObject.toJSONString(request.getConfig());
+        AppComponentQueryCondition condition = AppComponentQueryCondition.builder()
+                .id(request.getId())
+                .build();
+        AppComponentDO record = appComponentService.get(condition);
+        if (record == null) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "cannot find specified app component record");
+        }
+
+        record.setConfig(config);
+        int count = appComponentService.update(record, condition);
+        if (count != 1) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("invalid count when updating app component|count=%d|record=%s",
+                            count, JSONObject.toJSONString(record)));
+        }
+        log.info("app component has updated|operator={}|namespaceId={}|stageId={}|appId={}|category={}|" +
+                        "componentType={}|componentName={}|config={}", operator, namespaceId, stageId, appId, category,
+                componentType, componentName, config);
+
+        DeployConfigGenerator configObject = new DeployConfigGenerator();
+        configObject
+                .addRevisionName(componentType, componentName)
+                .addScope("Namespace", namespaceId)
+                .addDataInputs(request.getConfig().getJSONArray("dataInputs"))
+                .addDataOutputs(request.getConfig().getJSONArray("dataOutputs"));
+        String typeId = new DeployConfigTypeId(componentType, componentName).toString();
+        deployConfigService.update(DeployConfigUpsertReq.builder()
+                .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                .appId(appId)
+                .typeId(typeId)
+                .envId("")
+                .inherit(false)
+                .config(configObject.toString())
+                .isolateNamespaceId(namespaceId)
+                .isolateStageId(stageId)
+                .build());
+
+        return appComponentDtoConvert.to(appComponentService.get(condition));
+    }
+
+    /**
+     * 删除指定应用下的指定关联 Component 对象
+     *
+     * @param request  应用组件绑定查询请求
+     * @param operator 操作人
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(AppComponentDeleteReq request, String operator) {
+        AppComponentQueryCondition condition = AppComponentQueryCondition.builder().id(request.getId()).build();
+        if (condition.getId() == null || condition.getId() == 0) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "empty app component delete request");
+        }
+        AppComponentDO appComponent = appComponentService.get(condition);
+        if (appComponent == null) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "the id provided is not exist");
+        }
+        appComponentService.delete(condition);
+
+        // 执行 Deploy Config 删除动作
+        String appId = appComponent.getAppId();
+        String componentType = appComponent.getComponentType();
+        String componentName = appComponent.getComponentName();
+        String namespaceId = appComponent.getNamespaceId();
+        String stageId = appComponent.getStageId();
+        String typeId = new DeployConfigTypeId(componentType, componentName).toString();
+        deployConfigService.delete(DeployConfigDeleteReq.builder()
+                .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                .appId(appId)
+                .isolateNamespaceId(namespaceId)
+                .isolateStageId(stageId)
+                .envId("")
+                .typeId(typeId)
+                .build());
+        log.info("app component record has deleted|id={}|appId={}|componentType={}|componentName={}|namespaceId={}|" +
+                        "stageId={}|typeId={}", condition.getId(), appId, componentType, componentName, namespaceId,
+                stageId, typeId);
+    }
 
     /**
      * 获取指定 appId 下的所有关联 Component 对象
@@ -49,9 +265,31 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         String namespaceId = request.getNamespaceId();
         String stageId = request.getStageId();
         String arch = request.getArch();
-        List<AppComponentDTO> result = new ArrayList<>();
+        boolean isWithBlobs = request.isWithBlobs();
 
-        // 获取 K8S 微应用组件
+        // 获取通用 Component
+        List<AppComponentDO> appComponents = appComponentService.list(AppComponentQueryCondition.builder()
+                .appId(appId)
+                .namespaceId(namespaceId)
+                .stageId(stageId)
+                .withBlobs(isWithBlobs)
+                .build());
+        Map<String, PluginDefinitionDO> pluginMap = pluginService
+                .list(PluginDefinitionQueryCondition.builder()
+                        .pluginKind(PluginKindEnum.COMPONENT_DEFINITION.toString())
+                        .pluginRegistered(true)
+                        .build())
+                .getItems()
+                .stream()
+                .collect(Collectors.toMap(PluginDefinitionDO::getPluginName, Function.identity()));
+        List<AppComponentDTO> result = appComponents.stream()
+                .filter(item -> pluginMap.containsKey(item.getComponentType()))
+                .map(item -> appComponentDtoConvert.to(item, pluginMap.get(item.getComponentType())))
+                .collect(Collectors.toList());
+        log.info("fetch app component records|appId={}|namespaceId={}|stageId={}|size={}",
+                appId, namespaceId, stageId, result.size());
+
+        // 获取 K8S 微应用组件 TODO: 迁移到通用 Component
         K8sMicroServiceMetaQueryReq k8sMicroServiceMetaQueryReq = new K8sMicroServiceMetaQueryReq();
         k8sMicroServiceMetaQueryReq.setAppId(appId);
         k8sMicroServiceMetaQueryReq.setNamespaceId(namespaceId);
@@ -62,17 +300,19 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                 .forEach(k8sMicroServiceMetaDTO ->
                         result.add(AppComponentDTO.builder()
                                 .id(k8sMicroServiceMetaDTO.getId())
+                                .compatible(true)
                                 .appId(appId)
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)
-                                .componentName(k8sMicroServiceMetaDTO.getMicroServiceId())
-                                .componentLabel(k8sMicroServiceMetaDTO.getName())
                                 .componentType(k8sMicroServiceMetaDTO.getComponentType())
+                                .componentName(k8sMicroServiceMetaDTO.getMicroServiceId())
                                 .build()
                         )
                 );
+        log.info("fetch k8s microservice records|appId={}|namespaceId={}|stageId={}|total={}",
+                appId, namespaceId, stageId, result.size());
 
-        // 获取 HELM 组件
+        // 获取 HELM 组件 TODO: 迁移到通用 Component
         HelmMetaQueryReq helmMetaQueryReq = new HelmMetaQueryReq();
         helmMetaQueryReq.setAppId(appId);
         helmMetaQueryReq.setNamespaceId(namespaceId);
@@ -82,60 +322,64 @@ public class AppComponentProviderImpl implements AppComponentProvider {
                 .forEach(helmMetaDO ->
                         result.add(AppComponentDTO.builder()
                                 .id(helmMetaDO.getId())
+                                .compatible(true)
                                 .appId(appId)
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)
                                 .componentName(helmMetaDO.getHelmPackageId())
-                                .componentLabel(helmMetaDO.getName())
                                 .componentType(helmMetaDO.getComponentType())
                                 .build()
                         )
 
                 );
+        log.info("fetch helm microservice records|appId={}|namespaceId={}|stageId={}|total={}",
+                appId, namespaceId, stageId, result.size());
 
-        // 获取 Internal Addon
+        // 获取 Internal Addon TODO: 迁移到通用 Component
         AppAddonQueryReq internalAddonQueryReq = new AppAddonQueryReq();
         internalAddonQueryReq.setAppId(appId);
         internalAddonQueryReq.setNamespaceId(namespaceId);
         internalAddonQueryReq.setStageId(stageId);
         internalAddonQueryReq.setPagination(false);
-        internalAddonQueryReq.setAddonTypeList(Collections.singletonList(ComponentTypeEnum.INTERNAL_ADDON));
+        internalAddonQueryReq.setAddonTypeList(Collections.singletonList(ComponentTypeEnum.INTERNAL_ADDON.toString()));
         appAddonProvider.list(internalAddonQueryReq).getItems()
                 .forEach(item ->
                         result.add(AppComponentDTO.builder()
                                 .id(item.getId())
+                                .compatible(true)
                                 .appId(appId)
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)
                                 .componentType(item.getAddonType())
                                 .componentName(item.getAddonId())
-                                .componentVersion(item.getAddonVersion())
-                                .componentLabel(String.format("%s@%s", item.getAddonId(), item.getName()))
                                 .build()
                         )
                 );
+        log.info("fetch internal addon records|appId={}|namespaceId={}|stageId={}|total={}",
+                appId, namespaceId, stageId, result.size());
 
-        // 获取 Resource Addon
+        // 获取 Resource Addon TODO: 迁移到通用 Component
         AppAddonQueryReq resourceAddonQueryReq = new AppAddonQueryReq();
         resourceAddonQueryReq.setAppId(appId);
         resourceAddonQueryReq.setNamespaceId(namespaceId);
         resourceAddonQueryReq.setStageId(stageId);
         resourceAddonQueryReq.setPagination(false);
-        resourceAddonQueryReq.setAddonTypeList(Collections.singletonList(ComponentTypeEnum.RESOURCE_ADDON));
+        resourceAddonQueryReq.setAddonTypeList(Collections.singletonList(ComponentTypeEnum.RESOURCE_ADDON.toString()));
         appAddonProvider.list(resourceAddonQueryReq).getItems()
                 .forEach(item ->
                         result.add(AppComponentDTO.builder()
                                 .id(item.getId())
+                                .compatible(true)
                                 .appId(appId)
                                 .namespaceId(namespaceId)
                                 .stageId(stageId)
                                 .componentType(item.getAddonType())
                                 .componentName(String.format("%s@%s", item.getAddonId(), item.getName()))
-                                .componentVersion(item.getAddonVersion())
-                                .componentLabel(String.format("%s@%s", item.getAddonId(), item.getName()))
                                 .build()
                         )
                 );
+        log.info("fetch resource addon records|appId={}|namespaceId={}|stageId={}|total={}",
+                appId, namespaceId, stageId, result.size());
         return result;
     }
 }

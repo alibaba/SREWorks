@@ -153,7 +153,7 @@ func (r *MicroserviceReconciler) ReconcileMicroserviceCloneSet(ctx context.Conte
 			return err
 		}
 		log.V(1).Info("deleted conflict cloneset", "CloneSet", instance)
-		return nil
+		return err
 	}
 	log.V(1).Info(fmt.Sprintf("update CloneSet %s spec to %+v", microservice.Name, instance.Spec))
 	return nil

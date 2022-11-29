@@ -22,10 +22,12 @@ public class DagJobEndNode extends AbstractLocalNodeBase {
 
     @Override
     public DagInstNodeRunRet run() {
-        log.info("start DagJobEndNode");
+        log.info("Start dagJobEndNode");
+        String jobInstanceId = globalVariable.getString("sreworksJobInstanceId");
+        log.info("Scheduled job dagJobEndNode, dagInstId:{}, jobInstanceId:{}", dagInstId, jobInstanceId);
         ElasticJobInstanceRepository jobInstanceRepository = BeansUtil.context.getBean(
             ElasticJobInstanceRepository.class);
-        ElasticJobInstance jobInstance = jobInstanceRepository.findFirstByScheduleInstanceId(dagInstId);
+        ElasticJobInstance jobInstance = jobInstanceRepository.findFirstById(jobInstanceId);
         jobInstance.setGmtEnd(System.currentTimeMillis());
         jobInstance.setStatus(JobInstanceStatus.SUCCESS.name());
         jobInstanceRepository.save(jobInstance);

@@ -7,7 +7,7 @@ global:
 
   images:
     registry: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks
-    tag: v1.2
+    tag: v1.3
 
   accessMode: ingress
 
@@ -20,6 +20,7 @@ global:
     mavenSettingsXml: https://sreworks.oss-cn-beijing.aliyuncs.com/resource/settings.xml  
     alpineImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/alpine:latest
     nodeImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/node:14.20.0-alpine3.15
+    nodeImage2: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/node:16.17-alpine
     npmRegistryUrl: https://registry.npmmirror.com
     migrateImage: sw-migrate 
     postrunImage: sw-postrun
@@ -32,8 +33,8 @@ global:
     grafanaImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/grafana:7.5.3
     kibanaImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kibana:7.10.2 
     elasticsearchImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/elasticsearch:7.10.2-with-plugins
-    skywalkingOapImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-oap-server-utc-8:8.5.0-es7
-    skywalkingUiImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-ui:8.5.0
+    skywalkingOapImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-oap-server-utc-8:9.2.0
+    skywalkingUiImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-ui:9.2.0
     busyboxImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/busybox:1.30
 
     vvpRegistry: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror
@@ -50,7 +51,7 @@ platformLogo: /static/publicMedia/sreworks.png
 
 installMode: default
 
-progressCheck: false
+progressCheck: true
 debug: false
 adminInitPassword: "12345678"
 
@@ -72,6 +73,7 @@ saas:
   stageId: prod
   onlyBase: false
   list:
+  - demoapp
   - cluster
   - app
   - team
@@ -85,7 +87,6 @@ saas:
   - ocenter
   - help
   - upload
-  - demoapp
   baseList:
   - cluster
   - app
@@ -103,6 +104,11 @@ saas:
     esPort: 9200
     esUser: "elastic"
     esPassword: "sreworkses123."
+    prometheusHost: "prod-dataops-prometheus-server.sreworks-dataops"
+    prometheusPort: "80"
+    filebeatEnable: true
+    metricbeatEnable: true
+
   grafana:
     password: "sreworks123456"
 
@@ -113,7 +119,7 @@ swcli:
   clientSecret: stLCjCPKbWmki65DsAj2jPoeBLPimpJa
 
 source:
-  branch: v1.2
+  branch: v1.3
   repo: https://code.aliyun.com/sreworks_public/mirror.git
 
 appmanagerbase:
@@ -131,6 +137,7 @@ appmanager:
     account_super_secret_key: test-super-secret-key 
 
   server:
+    sreworksEnvs: true
     jvmXMX: "512m"
     docker:
       enableKaniko: true

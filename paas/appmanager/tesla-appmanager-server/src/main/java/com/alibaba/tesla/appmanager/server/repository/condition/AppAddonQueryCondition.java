@@ -24,7 +24,7 @@ public class AppAddonQueryCondition extends BaseCondition {
 
     private String appId;
 
-    private List<ComponentTypeEnum> addonTypeList;
+    private List<String> addonTypeList;
 
     private String addonId;
 

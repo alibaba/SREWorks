@@ -1,0 +1,24 @@
+{
+
+    "sources":[{
+        "name": "社区仓库",
+        "type": "artifacthub",
+        "parameters":[{
+            "type": 1,
+            "name": "chartUrl",
+            "label": "Chart仓库"
+        },{
+            "type": 1,
+            "name": "chartName",
+            "label": "Chart名称"
+        },{
+            "type": 1,
+            "name": "chartVersion",
+            "label": "Chart版本"
+       }]
+    },{
+        "type": "git"
+    },{
+        "type": "team-git"
+    }]
+}

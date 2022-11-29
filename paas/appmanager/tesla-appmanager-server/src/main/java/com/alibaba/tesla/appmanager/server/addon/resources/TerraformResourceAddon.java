@@ -43,7 +43,7 @@ import java.util.Map;
 public class TerraformResourceAddon extends BaseAddon {
 
     @Getter
-    private final ComponentTypeEnum addonType = ComponentTypeEnum.RESOURCE_ADDON;
+    private final String addonType = ComponentTypeEnum.RESOURCE_ADDON.toString();
 
     @Getter
     private final String addonId = "terraform";
@@ -72,6 +72,7 @@ public class TerraformResourceAddon extends BaseAddon {
             "      annotations: {}\n" +
             "      name: terraform\n" +
             "    spec:\n" +
+            "      variables: []\n" +
             "      environments: []\n" +
             "      configuration:\n" +
             "        git:\n" +
@@ -159,6 +160,22 @@ public class TerraformResourceAddon extends BaseAddon {
             }
         }
 
+        // 如果存在 variables，那么写入 terraform.tfvars.json 文件
+        Map<String, String> variables = getVariables(spec);
+        if (variables.size() > 0) {
+            Path variablePath = Paths.get(gitDir.toString(), "terraform.tfvars.json");
+            String variableContent = JSONObject.toJSONString(variables);
+            try {
+                Files.writeString(variablePath, variableContent, StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                        String.format("cannot write terraform.tfvars.json content|%s|path=%s|content=%s",
+                                logSuffix, variablePath, variableContent));
+            }
+            log.info("write terraform.tfvars.json succeed|{}|path={}|content={}",
+                    logSuffix, variablePath, variableContent);
+        }
+
         // 准备环境变量并执行命令
         Map<String, String> environments = getEnvironments(spec);
         String applyCommand = String.format("cd %s; /app/terraform apply -auto-approve -no-color", gitDir);
@@ -213,6 +230,28 @@ public class TerraformResourceAddon extends BaseAddon {
                 String value = env.getString("value");
                 if (StringUtils.isAnyEmpty(name, value)) {
                     throw new AppException(AppErrorCode.INVALID_USER_ARGS, "invalid environments in terraform spec");
+                }
+                result.put(name, value);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 获取 spec 中定义的运行参数
+     *
+     * @param spec Spec
+     * @return 环境变量
+     */
+    private Map<String, String> getVariables(JSONObject spec) {
+        Map<String, String> result = new HashMap<>();
+        JSONArray specVariables = spec.getJSONArray("variables");
+        if (specVariables != null) {
+            for (JSONObject env : specVariables.toJavaList(JSONObject.class)) {
+                String name = env.getString("name");
+                String value = env.getString("value");
+                if (StringUtils.isAnyEmpty(name, value)) {
+                    throw new AppException(AppErrorCode.INVALID_USER_ARGS, "invalid variables in terraform spec");
                 }
                 result.put(name, value);
             }

@@ -175,5 +175,5 @@ export default {
     },
     "dataMock": {},
   },
-  "catgory": "layout",
+  "category": "layout",
 };

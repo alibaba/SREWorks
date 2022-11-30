@@ -32,7 +32,7 @@ yarn-error.log*
 .vscode
 
 .cache
-
+debug.sh
 
 
 

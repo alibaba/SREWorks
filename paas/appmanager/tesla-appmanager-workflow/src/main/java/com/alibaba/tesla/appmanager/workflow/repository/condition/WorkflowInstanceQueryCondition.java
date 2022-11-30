@@ -28,12 +28,17 @@ public class WorkflowInstanceQueryCondition extends BaseCondition {
     private String appId;
 
     /**
+     * 分类
+     */
+    private String category;
+
+    /**
      * Workflow 实例状态
      */
     private String workflowStatus;
 
     /**
-     *  Workflow 实例创建者
+     * Workflow 实例创建者
      */
     private String workflowCreator;
 }

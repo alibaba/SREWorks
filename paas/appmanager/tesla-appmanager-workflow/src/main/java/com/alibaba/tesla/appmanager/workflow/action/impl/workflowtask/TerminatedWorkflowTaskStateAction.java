@@ -7,6 +7,7 @@ import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceD
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO;
 import com.alibaba.tesla.appmanager.workflow.service.WorkflowInstanceService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -41,6 +42,10 @@ public class TerminatedWorkflowTaskStateAction implements WorkflowTaskStateActio
         log.info("the current workflow task enters the TERMINATED state|workflowInstanceId={}|workflowTaskId={}",
                 task.getWorkflowInstanceId(), task.getId());
         WorkflowInstanceDO instance = workflowInstanceService.get(task.getWorkflowInstanceId(), true);
-        workflowInstanceService.triggerOpTerminate(instance, "terminated");
+        if (StringUtils.isNotEmpty(task.getTaskErrorMessage())) {
+            workflowInstanceService.triggerOpTerminate(instance, task.getTaskErrorMessage());
+        } else {
+            workflowInstanceService.triggerOpTerminate(instance, "terminated");
+        }
     }
 }

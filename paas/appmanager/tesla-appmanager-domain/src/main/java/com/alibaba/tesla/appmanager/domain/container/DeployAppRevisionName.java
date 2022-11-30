@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 
@@ -37,7 +38,7 @@ public class DeployAppRevisionName {
     /**
      * 组件类型
      */
-    private ComponentTypeEnum componentType;
+    private String componentType;
 
     /**
      * 组件名称
@@ -60,8 +61,8 @@ public class DeployAppRevisionName {
     private DeployAppRevisionName(String revisionName, boolean mirrorFlag) {
         String[] splitNames = revisionName.split(SPLITTER, SPLIT_LIMIT);
         assert splitNames.length == SPLIT_LIMIT;
-        this.componentType = Enums.getIfPresent(ComponentTypeEnum.class, splitNames[0]).orNull();
-        if (this.componentType == null) {
+        this.componentType = splitNames[0];
+        if (StringUtils.isEmpty(this.componentType)) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                 String.format("cannot parse revisionName %s", revisionName));
         }
@@ -109,9 +110,9 @@ public class DeployAppRevisionName {
      * @return addonId
      */
     public String addonId() {
-        assert componentType.equals(ComponentTypeEnum.RESOURCE_ADDON)
-            || componentType.equals(ComponentTypeEnum.TRAIT_ADDON)
-            || componentType.equals(ComponentTypeEnum.CUSTOM_ADDON);
+        assert componentType.equals(ComponentTypeEnum.RESOURCE_ADDON.toString())
+            || componentType.equals(ComponentTypeEnum.TRAIT_ADDON.toString())
+            || componentType.equals(ComponentTypeEnum.CUSTOM_ADDON.toString());
         String[] array = componentName.split("@", 2);
         assert array.length == 2;
         return array[0];
@@ -123,9 +124,9 @@ public class DeployAppRevisionName {
      * @return addonName
      */
     public String addonName() {
-        assert componentType.equals(ComponentTypeEnum.RESOURCE_ADDON)
-            || componentType.equals(ComponentTypeEnum.TRAIT_ADDON)
-            || componentType.equals(ComponentTypeEnum.CUSTOM_ADDON);
+        assert componentType.equals(ComponentTypeEnum.RESOURCE_ADDON.toString())
+            || componentType.equals(ComponentTypeEnum.TRAIT_ADDON.toString())
+            || componentType.equals(ComponentTypeEnum.CUSTOM_ADDON.toString());
         String[] array = componentName.split("@", 2);
         assert array.length == 2;
         return array[1];

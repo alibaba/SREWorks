@@ -21,7 +21,27 @@ options:
         ciAccount: ${SOURCE_CI_ACCOUNT}
         ciToken: ${SOURCE_CI_TOKEN}
 
+  initContainers:
+    - name: resource-upload
+      build:
+        imagePush: ${IMAGE_BUILD_ENABLE}
+        imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
+        dockerfileTemplateArgs:
+          APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
+          MINIO_CLIENT_URL: ${MINIO_CLIENT_URL}
+          PYTHON3_IMAGE: ${PYTHON3_IMAGE}
+        dockerfileTemplate: Dockerfile.tpl
+        repoPath: saas/system/api/resource
+        branch: ${SOURCE_BRANCH}
+        repo: ${SOURCE_REPO}
+        ciAccount: ${SOURCE_CI_ACCOUNT}
+        ciToken: ${SOURCE_CI_TOKEN}
   env:
+    - APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL
+    - APPMANAGER_PACKAGE_ENDPOINT
+    - APPMANAGER_PACKAGE_ACCESS_KEY
+    - APPMANAGER_PACKAGE_SECRET_KEY
+
 ---
 #componentType: K8S_MICROSERVICE
 #componentName: plugin-aliyun-rds
@@ -72,30 +92,30 @@ options:
   env:
 ---
 
-componentType: K8S_JOB
-componentName: resource-upload
-options:
-  job:
-    name: job
-    build:
-      imagePush: ${IMAGE_BUILD_ENABLE}
-      imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-      dockerfileTemplateArgs:
-        APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
-        MINIO_CLIENT_URL: ${MINIO_CLIENT_URL}
-        PYTHON3_IMAGE: ${PYTHON3_IMAGE}
-      dockerfileTemplate: Dockerfile.tpl
-      repoPath: saas/system/api/resource
-      branch: ${SOURCE_BRANCH}
-      repo: ${SOURCE_REPO}
-      ciAccount: ${SOURCE_CI_ACCOUNT}
-      ciToken: ${SOURCE_CI_TOKEN}
- 
-  env:
-    - APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL
-    - APPMANAGER_PACKAGE_ENDPOINT
-    - APPMANAGER_PACKAGE_ACCESS_KEY
-    - APPMANAGER_PACKAGE_SECRET_KEY
+#componentType: K8S_JOB
+#componentName: resource-upload
+#options:
+#  job:
+#    name: job
+#    build:
+#      imagePush: ${IMAGE_BUILD_ENABLE}
+#      imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
+#      dockerfileTemplateArgs:
+#        APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
+#        MINIO_CLIENT_URL: ${MINIO_CLIENT_URL}
+#        PYTHON3_IMAGE: ${PYTHON3_IMAGE}
+#      dockerfileTemplate: Dockerfile.tpl
+#      repoPath: saas/system/api/resource
+#      branch: ${SOURCE_BRANCH}
+#      repo: ${SOURCE_REPO}
+#      ciAccount: ${SOURCE_CI_ACCOUNT}
+#      ciToken: ${SOURCE_CI_TOKEN}
+# 
+#  env:
+#    - APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL
+#    - APPMANAGER_PACKAGE_ENDPOINT
+#    - APPMANAGER_PACKAGE_ACCESS_KEY
+#    - APPMANAGER_PACKAGE_SECRET_KEY
 
 
 

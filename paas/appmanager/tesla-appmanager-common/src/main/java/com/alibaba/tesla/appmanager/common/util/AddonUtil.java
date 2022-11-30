@@ -39,7 +39,7 @@ public class AddonUtil {
      * @param addonId       Addon ID
      * @return Addon Key
      */
-    public static String combineAddonKey(ComponentTypeEnum componentType, String addonId) {
+    public static String combineAddonKey(String componentType, String addonId) {
         return String.format("%s-%s", componentType, addonId);
     }
 }

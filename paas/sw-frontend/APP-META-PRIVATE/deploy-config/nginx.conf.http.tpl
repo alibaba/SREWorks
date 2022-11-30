@@ -47,10 +47,10 @@ http {
 
         default_type "text/javascript; charset=utf-8";
 
-        location ~* /docs/documents/([0-9A-Za-z]+)$ {
-            alias /app/docs/documents/;
-            try_files $uri $uri.html;
-        }
+        #location ~* /docs/documents/([0-9A-Za-z]+)$ {
+        #    alias /app/docs/documents/;
+        #    try_files $uri $uri.html;
+        #}
 
         location / {
             alias  /app/;

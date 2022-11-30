@@ -48,6 +48,11 @@ public class ImageBuilderCreateReq implements Serializable {
     private Boolean imagePushUseBranchAsTag;
 
     /**
+     * 是否保留 .git 仓库文件
+     */
+    private boolean keepGitFiles;
+
+    /**
      * 构建好的镜像名称 (不提供则自动生成)
      */
     private String imageName;

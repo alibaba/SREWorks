@@ -14,8 +14,8 @@ ARG APP_NAME=tesla-appmanager
 COPY --from=build /app/${APP_NAME}-start-standalone/target/${APP_NAME}.jar /app/${APP_NAME}-standalone.jar
 COPY --from=build /app/${APP_NAME}-start-standalone/target/${APP_NAME}/BOOT-INF/classes/application-docker.properties /app/config/application.properties
 # Copy Resources
-COPY --from=build /app/${APP_NAME}-start-standalone/target/${APP_NAME}/BOOT-INF/classes/dynamicscripts /app/dynamicscripts
-COPY --from=build /app/${APP_NAME}-start-standalone/target/${APP_NAME}/BOOT-INF/classes/jinja /app/jinja
+COPY --from=build /app/${APP_NAME}-start-standalone/target/classes/dynamicscripts /app/dynamicscripts
+COPY --from=build /app/${APP_NAME}-start-standalone/target/classes/jinja /app/jinja
 RUN wget -O /app/helm "https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/helm" \
     && chmod +x /app/helm \
     && wget -O /app/kustomize "https://abm-storage.oss-cn-zhangjiakou.aliyuncs.com/lib/kustomize" \

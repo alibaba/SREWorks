@@ -1,5 +1,7 @@
 package com.alibaba.tesla.appmanager.domain.dto;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -89,4 +91,9 @@ public class DeployConfigDTO {
      * 发布版本 ID
      */
     private String releaseId;
+
+    /**
+     * 自动生成: 配置内容的 JSON 形式
+     */
+    private JSON configJson;
 }

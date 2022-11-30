@@ -33,6 +33,7 @@ class WidgetSetting extends React.Component {
         let { widgetModel, config } = props;
         let paramsDef = [], { title, visibleExp = '', dependParams, backgroundColor = "#ffffff", headerColor = "#ffffff", cardBorder = true,
             refreshInterval, style = {}, foldEnable, hiddenEnable, hasWrapper = Constants.CARD_WRAPPER_DEFAULT, wrapper = Constants.CARD_WRAPPER_DEFAULT } = config;
+
         paramsDef.push({ type: FormElementType.INPUT, name: 'title', initValue: title, required: false, label: "组件标题", tooltip: "组件显示的卡片标题" });
         paramsDef.push({
             type: FormElementType.SELECT_TAG, name: 'dependParams', initValue: dependParams, required: false, label: "组件渲染",

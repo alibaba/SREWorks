@@ -16,6 +16,11 @@ public enum PluginKindEnum {
     COMPONENT_DEFINITION("ComponentDefinition"),
 
     /**
+     * Resource Addon
+     */
+    RESOURCE_ADDON_DEFINITION("ResourceAddonDefinition"),
+
+    /**
      * Trait
      */
     TRAIT_DEFINITION("TraitDefinition"),

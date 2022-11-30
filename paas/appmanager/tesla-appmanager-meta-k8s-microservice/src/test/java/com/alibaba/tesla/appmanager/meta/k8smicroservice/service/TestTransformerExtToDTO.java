@@ -136,7 +136,7 @@ public class TestTransformerExtToDto {
                         .microServiceId(MICROSERVICE_ID)
                         .name(MICROSERVICE_ID)
                         .description(MICROSERVICE_DESCRIPTION)
-                        .componentType(ComponentTypeEnum.K8S_MICROSERVICE)
+                        .componentType(ComponentTypeEnum.K8S_MICROSERVICE.toString())
                         .microServiceExt(MICROSERVICE_EXT)
                         .options("")
                         .build()), Function.identity()))
@@ -155,7 +155,7 @@ public class TestTransformerExtToDto {
         assertThat(meta.getMicroServiceId()).isEqualTo(MICROSERVICE_ID);
         assertThat(meta.getName()).isEqualTo(MICROSERVICE_ID);
         assertThat(meta.getDescription()).isEqualTo(MICROSERVICE_DESCRIPTION);
-        assertThat(meta.getComponentType()).isEqualTo(ComponentTypeEnum.K8S_MICROSERVICE);
+        assertThat(meta.getComponentType()).isEqualTo(ComponentTypeEnum.K8S_MICROSERVICE.toString());
         // 解析部分
         assertThat(meta.getKind()).isEqualTo("AdvancedStatefulSet");
 

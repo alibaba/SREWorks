@@ -39,7 +39,7 @@ public class AppAddonDO {
     /**
      * 类型（可选 CORE-SERVICE / THIRDPARTY）
      */
-    private ComponentTypeEnum addonType;
+    private String addonType;
 
     /**
      * 附加组件唯一标识

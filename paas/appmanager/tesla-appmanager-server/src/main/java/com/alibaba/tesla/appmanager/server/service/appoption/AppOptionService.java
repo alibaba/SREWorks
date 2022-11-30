@@ -36,7 +36,16 @@ public interface AppOptionService {
      * @param appId 应用 ID
      * @return List of AppOptionDO
      */
-    List<AppOptionDO> getOptions(String appId);
+    List<AppOptionDO> getOptionsByApp(String appId);
+
+    /**
+     * 获取指定 key+value 对应的全部 Option 内容
+     *
+     * @param key   配置 Key
+     * @param value 配置 Value
+     * @return List of AppOptionDO
+     */
+    List<AppOptionDO> getOptionsByKeyValue(String key, String value);
 
     /**
      * 获取指定应用下的全部 Option 内容 (带缓存, 可能有延迟)

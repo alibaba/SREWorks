@@ -3,10 +3,13 @@ package com.alibaba.tesla.appmanager.workflow.util;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.DeployAppProvider;
 import com.alibaba.tesla.appmanager.api.provider.UnitProvider;
+import com.alibaba.tesla.appmanager.api.provider.WorkflowInstanceProvider;
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
+import com.alibaba.tesla.appmanager.domain.dto.WorkflowInstanceDTO;
+import com.alibaba.tesla.appmanager.domain.option.WorkflowInstanceOption;
 import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppLaunchReq;
 import com.alibaba.tesla.appmanager.domain.res.deploy.DeployAppPackageLaunchRes;
 import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
@@ -62,19 +65,38 @@ public class WorkflowHandlerUtil {
     }
 
     /**
+     * 执行部署 Workflow，并返回 Workflow Instance ID
+     *
+     * @param appId         应用 ID
+     * @param configuration Workflow 配置
+     * @param option        Workflow 发起选项
+     * @return Workflow Instance ID
+     */
+    public static Long deployWorkflow(String appId, String configuration, WorkflowInstanceOption option) {
+        WorkflowInstanceProvider workflowInstanceProvider = BeanUtil.getBean(WorkflowInstanceProvider.class);
+        if (workflowInstanceProvider == null) {
+            throw new AppException(AppErrorCode.UNKNOWN_ERROR, "cannot find WorkflowInstanceProvider bean");
+        }
+        WorkflowInstanceDTO instance = workflowInstanceProvider.launch(appId, configuration, option);
+        return instance.getId();
+    }
+
+    /**
      * 执行部署，并返回部署单 ID
      *
-     * @param configuration 部署配置文件
-     * @param creator       创建者
+     * @param configuration       部署配置文件
+     * @param overwriteParameters 覆盖全局参数 (可为 null)
+     * @param creator             创建者
      * @return 部署单 ID
      */
-    public static Long deploy(DeployAppSchema configuration, String creator) {
+    public static Long deploy(DeployAppSchema configuration, JSONObject overwriteParameters, String creator) {
         DeployAppProvider deployAppProvider = BeanUtil.getBean(DeployAppProvider.class);
         if (deployAppProvider == null) {
             throw new AppException(AppErrorCode.UNKNOWN_ERROR, "cannot find DeployAppProvider bean");
         }
         DeployAppLaunchReq req = DeployAppLaunchReq.builder()
                 .configuration(SchemaUtil.toYamlMapStr(configuration))
+                .overwriteParameters(overwriteParameters)
                 .build();
         DeployAppPackageLaunchRes res = deployAppProvider.launch(req, creator);
         return res.getDeployAppId();

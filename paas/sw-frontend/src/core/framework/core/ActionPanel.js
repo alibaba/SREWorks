@@ -46,9 +46,10 @@ class ActionPanel extends React.Component {
 
     componentDidMount() {
        Bus.on('stepFormClose', (msg) => {
-            this.setState({
-                visible: false,
-            });
+            // this.setState({
+            //     visible: false,
+            // });
+            this.onClose()
         });
     }
     componentWillUnmount() {

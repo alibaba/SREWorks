@@ -42,4 +42,9 @@ public class WorkflowTaskListReq implements Serializable {
      * 部署单 ID
      */
     private Long deployAppId;
+
+    /**
+     * 部署 Workflow Instance ID
+     */
+    private Long deployWorkflowInstanceId;
 }

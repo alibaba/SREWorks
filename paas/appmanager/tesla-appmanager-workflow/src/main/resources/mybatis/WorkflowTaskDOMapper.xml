@@ -19,11 +19,14 @@
     <result column="deploy_app_unit_id" jdbcType="VARCHAR" property="deployAppUnitId" />
     <result column="deploy_app_namespace_id" jdbcType="VARCHAR" property="deployAppNamespaceId" />
     <result column="deploy_app_stage_id" jdbcType="VARCHAR" property="deployAppStageId" />
+    <result column="deploy_workflow_instance_id" jdbcType="BIGINT" property="deployWorkflowInstanceId" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO">
     <!--@mbg.generated-->
     <!--@Table am_workflow_task-->
     <result column="task_properties" jdbcType="LONGVARCHAR" property="taskProperties" />
+    <result column="task_outputs" jdbcType="LONGVARCHAR" property="taskOutputs" />
+    <result column="task_inputs" jdbcType="LONGVARCHAR" property="taskInputs" />
     <result column="task_error_message" jdbcType="LONGVARCHAR" property="taskErrorMessage" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -90,11 +93,11 @@
     <!--@mbg.generated-->
     id, gmt_create, gmt_modified, workflow_instance_id, app_id, gmt_start, gmt_end, task_type, 
     task_stage, task_status, deploy_app_id, lock_version, deploy_app_unit_id, deploy_app_namespace_id, 
-    deploy_app_stage_id
+    deploy_app_stage_id, deploy_workflow_instance_id
   </sql>
   <sql id="Blob_Column_List">
     <!--@mbg.generated-->
-    task_properties, task_error_message
+    task_properties, task_outputs, task_inputs, task_error_message
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDOExample" resultMap="ResultMapWithBLOBs">
     <!--@mbg.generated-->
@@ -177,8 +180,17 @@
       <if test="deployAppStageId != null">
         deploy_app_stage_id,
       </if>
+      <if test="deployWorkflowInstanceId != null">
+        deploy_workflow_instance_id,
+      </if>
       <if test="taskProperties != null">
         task_properties,
+      </if>
+      <if test="taskOutputs != null">
+        task_outputs,
+      </if>
+      <if test="taskInputs != null">
+        task_inputs,
       </if>
       <if test="taskErrorMessage != null">
         task_error_message,
@@ -227,8 +239,17 @@
       <if test="deployAppStageId != null">
         #{deployAppStageId,jdbcType=VARCHAR},
       </if>
+      <if test="deployWorkflowInstanceId != null">
+        #{deployWorkflowInstanceId,jdbcType=BIGINT},
+      </if>
       <if test="taskProperties != null">
         #{taskProperties,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="taskOutputs != null">
+        #{taskOutputs,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="taskInputs != null">
+        #{taskInputs,jdbcType=LONGVARCHAR},
       </if>
       <if test="taskErrorMessage != null">
         #{taskErrorMessage,jdbcType=LONGVARCHAR},
@@ -287,8 +308,17 @@
       <if test="record.deployAppStageId != null">
         deploy_app_stage_id = #{record.deployAppStageId,jdbcType=VARCHAR},
       </if>
+      <if test="record.deployWorkflowInstanceId != null">
+        deploy_workflow_instance_id = #{record.deployWorkflowInstanceId,jdbcType=BIGINT},
+      </if>
       <if test="record.taskProperties != null">
         task_properties = #{record.taskProperties,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.taskOutputs != null">
+        task_outputs = #{record.taskOutputs,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.taskInputs != null">
+        task_inputs = #{record.taskInputs,jdbcType=LONGVARCHAR},
       </if>
       <if test="record.taskErrorMessage != null">
         task_error_message = #{record.taskErrorMessage,jdbcType=LONGVARCHAR},
@@ -341,8 +371,17 @@
       <if test="deployAppStageId != null">
         deploy_app_stage_id = #{deployAppStageId,jdbcType=VARCHAR},
       </if>
+      <if test="deployWorkflowInstanceId != null">
+        deploy_workflow_instance_id = #{deployWorkflowInstanceId,jdbcType=BIGINT},
+      </if>
       <if test="taskProperties != null">
         task_properties = #{taskProperties,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="taskOutputs != null">
+        task_outputs = #{taskOutputs,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="taskInputs != null">
+        task_inputs = #{taskInputs,jdbcType=LONGVARCHAR},
       </if>
       <if test="taskErrorMessage != null">
         task_error_message = #{taskErrorMessage,jdbcType=LONGVARCHAR},

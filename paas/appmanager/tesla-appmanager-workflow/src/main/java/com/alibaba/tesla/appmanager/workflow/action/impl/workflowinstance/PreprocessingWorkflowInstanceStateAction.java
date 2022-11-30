@@ -83,10 +83,14 @@ public class PreprocessingWorkflowInstanceStateAction implements WorkflowInstanc
                     "firstTask={}", appId, workflowInstanceId, JSONObject.toJSONString(firstTask));
 
             // 创建一个空的快照到第一个 task 上
+            JSONObject context = new JSONObject();
+            if (options.getInitContext() != null) {
+                context.putAll(options.getInitContext());
+            }
             WorkflowSnapshotDO snapshot = workflowSnapshotService.update(UpdateWorkflowSnapshotReq.builder()
                     .workflowInstanceId(firstTask.getWorkflowInstanceId())
                     .workflowTaskId(firstTask.getId())
-                    .context(new JSONObject())
+                    .context(context)
                     .build());
             log.info("workflow snapshot has created|workflowInstanceId={}|workflowTaskId={}|workflowSnapshotId={}|" +
                             "context={}", snapshot.getWorkflowInstanceId(), snapshot.getWorkflowTaskId(),
@@ -130,6 +134,8 @@ public class PreprocessingWorkflowInstanceStateAction implements WorkflowInstanc
             checkWorkflowTypeExists(workflowType);
             WorkflowStageEnum workflowStage = WorkflowStageEnum.fromString(currentStep.getStage());
             JSONObject workflowProperties = currentStep.getProperties();
+            JSONArray outputs = currentStep.getOutputs();
+            JSONArray inputs = currentStep.getInputs();
 
             // 根据 workflow stage 进行前置渲染
             switch (workflowStage) {
@@ -156,6 +162,8 @@ public class PreprocessingWorkflowInstanceStateAction implements WorkflowInstanc
                     .taskStage(workflowStage.toString())
                     .taskProperties(JSONObject.toJSONString(workflowProperties))
                     .taskStatus(taskStatus)
+                    .taskOutputs(JSONObject.toJSONString(outputs))
+                    .taskInputs(JSONObject.toJSONString(inputs))
                     .build();
             WorkflowTaskDO task = workflowTaskService.create(record);
             log.info("action=createWorkflowTask|workflowInstanceId={}|appId={}|taskType={}|taskStage={}|" +

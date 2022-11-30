@@ -54,7 +54,7 @@
                 <version>${tesla-spring-boot-starter.version}</version>
             </dependency>
             <dependency>
-                <groupId>iosreworks</groupId>
+                <groupId>io.sreworks</groupId>
                 <artifactId>tesla-mybatis-spring-boot-starter</artifactId>
             </dependency>
             <!-- other -->

@@ -9,7 +9,6 @@ import NavSelectPanel from './NavSelectPanel';
 import './index.less';
 import { connect } from "dva";
 import * as util from '../../utils/utils';
-import httpClient from '../../utils/httpClient';
 import Bus from '../../utils/eventBus';
 import AppService from "../../core/services/appService";
 import properties from "../../properties";
@@ -91,7 +90,6 @@ export default class Desktop extends React.Component {
       <div className="abm-toggle-menu-bar" style={theme === 'light' ? { background: "#fffffd" } : { background: "#2c2f40" }}>
         <div onClick={this.switchNavVisible}>
           <LegacyIcon type={this.props.icon || "menu"} style={this.props.cStyle || {
-            height: 48,
             lineHeight: "25px",
           }} className="menu-icon" />
         </div>

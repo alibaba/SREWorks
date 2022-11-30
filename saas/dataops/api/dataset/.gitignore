@@ -7,6 +7,7 @@
 
 */src/test/*
 test.sh
+*_bak.json
 
 *daily.properties
 *test.properties

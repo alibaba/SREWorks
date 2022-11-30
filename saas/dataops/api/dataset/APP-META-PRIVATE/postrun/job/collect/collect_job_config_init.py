@@ -11,12 +11,12 @@ config_path = module_path = os.path.dirname(__file__)
 
 task_dw_model_mapping = {
     "oem_pod_event": "POD_EVENT",
-    "oem_demoApp_pod_event": "EVENT_INSTANCE",
-    "oem_demoApp_ram_efficiency": "METRIC_DATA",
-    "oem_demoApp_cpu_efficiency": "METRIC_DATA",
-    "oem_demoApp_response_time_avg": "METRIC_DATA",
-    "oem_demoApp_success_rate": "METRIC_DATA",
-    "oem_demoApp_user_order_failed_cnt": "METRIC_DATA",
+    "oem_sreworks1_pod_event": "EVENT_INSTANCE",
+    "oem_sreworks1_ram_efficiency": "METRIC_DATA",
+    "oem_sreworks1_cpu_efficiency": "METRIC_DATA",
+    "oem_sreworks1_response_time_avg": "METRIC_DATA",
+    "oem_sreworks1_success_rate": "METRIC_DATA",
+    "oem_sreworks1_user_order_failed_cnt": "METRIC_DATA",
     "oem_app_delivery": "DELIVERY",
     "oem_app_deployment": "DEPLOYMENT",
     "oem_app_delivery_deployment_quality": "APP_DELIVERY_DEPLOYMENT_QUALITY",
@@ -42,11 +42,11 @@ task_dw_model_mapping = {
 }
 
 task_metric_mapping = {
-    # "oem_demoApp_ram_efficiency": "app_ram_efficiency",
-    # "oem_demoApp_cpu_efficiency": "app_cpu_efficiency",
-    "oem_demoApp_user_order_failed_cnt": "user_order_failed_cnt",
-    # "oem_demoApp_response_time_avg": "app_resp_time_avg",
-    # "oem_demoApp_success_rate": "app_success_rate",
+    # "oem_sreworks1_ram_efficiency": "app_ram_efficiency",
+    # "oem_sreworks1_cpu_efficiency": "app_cpu_efficiency",
+    "oem_sreworks1_user_order_failed_cnt": "user_order_failed_cnt",
+    # "oem_sreworks1_response_time_avg": "app_resp_time_avg",
+    # "oem_sreworks1_success_rate": "app_success_rate",
 }
 
 

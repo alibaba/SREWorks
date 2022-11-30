@@ -12,6 +12,7 @@ import com.alibaba.sreworks.health.domain.req.definition.DefinitionBaseReq;
 import com.alibaba.sreworks.health.domain.req.definition.DefinitionCreateReq;
 import com.alibaba.sreworks.health.domain.req.definition.DefinitionExConfigReq;
 import com.alibaba.sreworks.health.domain.req.definition.DefinitionUpdateReq;
+import com.alibaba.sreworks.health.operator.AppOperator;
 import com.alibaba.sreworks.health.services.cache.HealthDomainCacheService;
 import com.alibaba.sreworks.health.utils.DefExConfigValidator;
 import com.google.common.collect.ImmutableList;
@@ -63,6 +64,9 @@ public class DefinitionServiceImpl implements DefinitionService {
     @Autowired
     HealthDomainCacheService domainCacheService;
 
+    @Autowired
+    AppOperator appOperator;
+
     @Override
     public JSONObject getDefinitionsStat() {
         List<CommonDefinitionGroupCount> stats = definitionMapper.countGroupByCategory();
@@ -70,11 +74,9 @@ public class DefinitionServiceImpl implements DefinitionService {
         stats.forEach(stat -> definitionStat.put(stat.getCategory(), stat.getCnt()));
 
         JSONObject totalInsStat = getTotalInstancesInc(null);
-
         JSONObject curDayInsStat = getCurrentDayInstancesInc(null);
 
         JSONObject result = new JSONObject();
-
         ImmutableList<String> categories = ImmutableList.of(Constant.RISK, Constant.ALERT, Constant.INCIDENT, Constant.FAILURE);
         for (String category : categories) {
             JSONObject item = new JSONObject();
@@ -89,6 +91,34 @@ public class DefinitionServiceImpl implements DefinitionService {
 
     @Override
     public JSONObject getInstancesStat(String appInstanceId) {
+        String appId = null;
+        try {
+            JSONObject appInstance = appOperator.getAppIdByInstanceId(appInstanceId);
+            if (!CollectionUtils.isEmpty(appInstance)) {
+                appId = appInstance.getString("appId");
+            }
+        } catch (Exception ex) {
+            log.warn("Get instance[{}] failed, {}", appInstanceId, ex);
+        }
+
+        JSONObject definitionStat = new JSONObject();
+        if (appId != null) {
+            CommonDefinitionExample definitionExample = new CommonDefinitionExample();
+            if (StringUtils.isNotEmpty(appId)) {
+                definitionExample.createCriteria().andAppIdEqualTo(appId);
+            }
+            List<CommonDefinition> definitions = definitionMapper.selectByExample(definitionExample);
+            for (CommonDefinition definition : definitions) {
+                String category = definition.getCategory();
+                if (definitionStat.containsKey(category)) {
+                    definitionStat.put(category, definitionStat.getInteger(category) + 1);
+                } else {
+                    definitionStat.put(category, 1);
+                }
+            }
+        }
+
+
         JSONObject totalInsStat = getTotalInstancesInc(appInstanceId);
         JSONObject curDayInsStat = getCurrentDayInstancesInc(appInstanceId);
 
@@ -96,6 +126,8 @@ public class DefinitionServiceImpl implements DefinitionService {
         ImmutableList<String> categories = ImmutableList.of(Constant.RISK, Constant.ALERT, Constant.INCIDENT, Constant.FAILURE);
         for (String category : categories) {
             JSONObject item = new JSONObject();
+            Integer definitionCount = definitionStat.getInteger(category);
+            item.put("definition", definitionCount == null ? 0 : definitionCount);
             item.put("totalIns", totalInsStat.getLong(category));
             item.put("curDayIns", curDayInsStat.getLong(category));
             result.put(category, item);

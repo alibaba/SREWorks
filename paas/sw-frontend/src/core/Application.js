@@ -67,10 +67,10 @@ class Application extends React.Component {
           recievedVueList.push(item.name)
         }
       })
-      let remoteComp = await Promise.all(pros);
       window['REMOTE_COMP_LIST'] = recievedList;
-      let vueComp = await Promise.all(prosVue);
       window['REMOTE_VUE_LIST'] = recievedVueList;
+      let remoteComp = await Promise.all(pros);
+      let vueComp = await Promise.all(prosVue);
     } catch (error) {
       console.log(error);
     }

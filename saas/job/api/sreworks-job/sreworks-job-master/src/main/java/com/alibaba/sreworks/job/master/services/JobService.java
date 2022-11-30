@@ -263,6 +263,10 @@ public class JobService {
         }
         if (job.getTriggerType().equals(JobTriggerType.CRON.getType())) {
             jobTriggerService.getJobTrigger(job.getTriggerType()).toggleState(id, state);
+            JSONObject triggerConf = JSONObject.parseObject(job.getTriggerConf());
+            triggerConf.put("enabled", state);
+            job.setTriggerConf(triggerConf.toJSONString());
+            jobRepository.saveAndFlush(job);
         }
     }
 
@@ -290,19 +294,50 @@ public class JobService {
 
         tags.addAll(job.tags());
         tags = tags.stream().distinct().collect(Collectors.toList());
-        Long scheduleInstanceId = jobScheduleService.getJobSchedule(job.getScheduleType()).start(id, jobVarConf);
+
         ElasticJobInstance jobInstance = new ElasticJobInstance();
-        jobInstance.setId(UUID.randomUUID().toString().replace("-", ""));
+        String jobInstanceId = UUID.randomUUID().toString().replace("-", "");
+        jobInstance.setId(jobInstanceId);
         jobInstance.setOperator(operator);
         jobInstance.setGmtCreate(System.currentTimeMillis());
         jobInstance.setGmtExecute(System.currentTimeMillis());
         jobInstance.setJobId(id);
         jobInstance.setJob(JSONObject.toJSONString(new SreworksJobDTO(job)));
         jobInstance.setVarConf(JSONObject.toJSONString(jobVarConf));
-        jobInstance.setScheduleInstanceId(scheduleInstanceId);
+//        jobInstance.setScheduleInstanceId(scheduleInstanceId);
         jobInstance.setStatus(JobInstanceStatus.INIT.name());
         jobInstance.setTags(tags);
         jobInstance.setTraceIds(traceIds);
-        return jobInstanceRepository.save(jobInstance);
+        ElasticJobInstance elasticJobInstance = jobInstanceRepository.save(jobInstance);
+
+        if (checkInstanceInvisible(jobInstanceId)) {
+            log.error("Check job instance:{} is invisible", jobInstanceId);
+            return elasticJobInstance;
+        }
+
+        jobVarConf.put("sreworksJobInstanceId", jobInstanceId);
+        log.info("Ready to start job, jobInstanceId:{}", jobInstanceId);
+        long dagInstId = jobScheduleService.getJobSchedule(job.getScheduleType()).start(id, jobVarConf);
+        log.info("Started job, dagInstId:{}, jobInstanceId:{}", dagInstId, jobInstanceId);
+        return elasticJobInstance;
+    }
+
+    private boolean checkInstanceInvisible(String jobInstanceId) {
+        int retryTime = 5;
+        int invokeTime = 0;
+        while (invokeTime < retryTime) {
+            if (jobInstanceRepository.findFirstById(jobInstanceId) == null) {
+                log.warn("Check job instance:{} is invisible, waiting...", jobInstanceId);
+                invokeTime++;
+                try {
+                    Thread.sleep(1000 * invokeTime);
+                } catch (InterruptedException ex) {
+                    log.warn("", ex);
+                }
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 }

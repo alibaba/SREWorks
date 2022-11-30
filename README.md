@@ -10,6 +10,7 @@
 
 <p align="center">
    <a href="https://www.yuque.com/sreworks-doc/docs" target="_blank">Documentation</a> 
+   <a href="https://sreworks.opensource.alibaba.com/" target="_blank">Website</a> 
 </p>
 
 ---
@@ -31,12 +32,12 @@ Alibaba Cloud Big Data SRE team has been working hard to practice the "DataOps a
 
 There are many excellent open-source O & M platforms that reflect cloud-native scenarios in the traditional IT O&M field. There are currently no systematic O & M solutions available. With the rise of the cloud-native era, the Alibaba Cloud Big Data SRE team will open-source its O & M platform, SREWorks, in the hopes of providing O & M engineers with an out-of-the-box experience.
 
-![image.png](paas/sw-frontend/docs/pictures/1650534633770-0f784bd7-1996-473a-9b6f-91a54064a155.png)
+![image.png](paas/sw-frontend/docs/docs/pictures/1663627633334-32214451-31cf-4e1a-b0a3-3cc3047ab842.jpeg.png)
 
 ## Getting Started
 
-- [Quick Install](/paas/sw-frontend/docs/documents/rr5g10.md)
-- [Installation from source code](/paas/sw-frontend/docs/documents/mzz07m.md)
+- [Quick Install](/paas/sw-frontend/docs/docs/rr5g10.md)
+- [Installation from source code](/paas/sw-frontend/docs/docs/mzz07m.md)
 - [Document](https://www.yuque.com/sreworks-doc/docs/)
 - [Online Demo](https://wj.qq.com/s2/10565748/53da/)
 

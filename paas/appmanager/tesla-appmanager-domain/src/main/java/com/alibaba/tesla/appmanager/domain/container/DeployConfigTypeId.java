@@ -4,6 +4,7 @@ import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -16,13 +17,17 @@ import java.util.List;
  */
 public class DeployConfigTypeId {
 
+    public static final String TYPE_ENV_BINDING = "envBinding";
     public static final String TYPE_PARAMETER_VALUES = "parameterValues";
     public static final String TYPE_COMPONENTS = "components";
     public static final String TYPE_POLICIES = "policies";
     public static final String TYPE_WORKFLOW = "workflow";
+    // 注意，TYPE_COMPONENT_TRAITS 仅附属于 components，无法独立存在
+    public static final String TYPE_TRAITS = "traits";
 
     public static final String ATTR_COMPONENT_TYPE = "ComponentType";
     public static final String ATTR_COMPONENT_NAME = "ComponentName";
+    public static final String ATTR_TRAIT = "Trait";
 
     @Getter
     private final String type;
@@ -34,17 +39,13 @@ public class DeployConfigTypeId {
         this.attrs = new ArrayList<>();
     }
 
-    public DeployConfigTypeId(ComponentTypeEnum componentType) {
+    public DeployConfigTypeId(String componentType, String componentName) {
         this.type = TYPE_COMPONENTS;
         this.attrs = new ArrayList<>();
-        this.attrs.add(Pair.of(ATTR_COMPONENT_TYPE, componentType.toString()));
-    }
-
-    public DeployConfigTypeId(ComponentTypeEnum componentType, String componentName) {
-        this.type = TYPE_COMPONENTS;
-        this.attrs = new ArrayList<>();
-        this.attrs.add(Pair.of(ATTR_COMPONENT_TYPE, componentType.toString()));
-        this.attrs.add(Pair.of(ATTR_COMPONENT_NAME, componentName));
+        this.attrs.add(Pair.of(ATTR_COMPONENT_TYPE, componentType));
+        if (StringUtils.isNotEmpty(componentName)) {
+            this.attrs.add(Pair.of(ATTR_COMPONENT_NAME, componentName));
+        }
     }
 
     /**
@@ -63,6 +64,9 @@ public class DeployConfigTypeId {
     }
 
     public static DeployConfigTypeId valueOf(String typeId) {
+        if (StringUtils.isEmpty(typeId)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "empty typeId parameter");
+        }
         String[] arr = typeId.split("::");
         if (arr.length == 0) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "typeId must have :: spliter");

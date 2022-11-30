@@ -55,7 +55,6 @@ class DataSourceConnector(object):
         self.logger.info(datasource)
         es_clusters = [{
             "host": datasource.get("endpoint"),
-            # "host": "elasticsearch-master.ca221ae8860d9421688e59c8ab45c8b21.cn-hangzhou.alicontainer.com",
             "port": datasource.get("port"),
             # "port": 80,
             "index": datasource.get("source_table")

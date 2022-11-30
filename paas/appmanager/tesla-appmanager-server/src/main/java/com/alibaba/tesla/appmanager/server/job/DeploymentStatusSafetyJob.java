@@ -58,6 +58,7 @@ public class DeploymentStatusSafetyJob {
     @SchedulerLock(name = "deploymentStatusSafetyJob", lockAtLeastFor = "250s")
     public void execute() {
         long limit = systemProperties.getDeploymentMaxRunningSeconds() * 1000;
+        long waitingLimit = 240 * 1000;
         long currentTime = System.currentTimeMillis();
         for (DeployAppStateEnum status : DEPLOY_APP_WAITING_STATUS_LIST) {
             DeployAppQueryCondition condition = DeployAppQueryCondition.builder().deployStatus(status).build();
@@ -85,6 +86,24 @@ public class DeploymentStatusSafetyJob {
                                     "deployAppId={}", deployAppId);
                         } else {
                             log.error("action=deployAppStatusSafetyJob|cannot set error messages on " +
+                                            "deployment order, skip|deployAppId={}|exception={}", deployAppId,
+                                    ExceptionUtils.getStackTrace(e));
+                        }
+                    }
+                } else if (DeployAppStateEnum.WAITING.toString().equals(item.getOrder().getDeployStatus())
+                        && orderTime + waitingLimit < currentTime) {
+                    try {
+                        DeployAppEvent event = new DeployAppEvent(this, DeployAppEventEnum.TRIGGER_UPDATE, deployAppId);
+                        eventPublisher.publishEvent(event);
+                        log.info("action=deployAppStatusSafetyJob|found long waiting deployment order, trigger update|" +
+                                        "deployAppId={}|orderTime={}|currentTime={}|order={}", deployAppId,
+                                orderTime, currentTime, JSONObject.toJSONString(item.getOrder()));
+                    } catch (AppException e) {
+                        if (e.getErrorCode().equals(AppErrorCode.LOCKER_VERSION_EXPIRED)) {
+                            log.info("action=deployAppStatusSafetyJob|lock failed on deployment order, skip it|" +
+                                    "deployAppId={}", deployAppId);
+                        } else {
+                            log.error("action=deployAppStatusSafetyJob|cannot trigger update on " +
                                             "deployment order, skip|deployAppId={}|exception={}", deployAppId,
                                     ExceptionUtils.getStackTrace(e));
                         }

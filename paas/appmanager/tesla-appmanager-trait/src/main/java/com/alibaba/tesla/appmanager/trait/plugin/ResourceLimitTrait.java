@@ -59,6 +59,20 @@ public class ResourceLimitTrait extends BaseTrait {
                     limits.put("cpu", String.format("%dm", cpuInt));
                 }
             }
+            JSONObject requests = resources.getJSONObject("requests");
+            if (requests != null) {
+                String cpu = requests.getString("cpu");
+                if (!StringUtils.isEmpty(cpu)) {
+                    int cpuInt;
+                    if (cpu.endsWith("m")) {
+                        cpuInt = Integer.parseInt(cpu.substring(0, cpu.length() - 1));
+                    } else {
+                        cpuInt = Integer.parseInt(cpu) * 1000;
+                    }
+                    cpuInt /= 6;
+                    requests.put("cpu", String.format("%dm", cpuInt));
+                }
+            }
         }
 
         JSONObject workloadSpec = (JSONObject) getWorkloadRef().getSpec();
@@ -101,6 +115,13 @@ public class ResourceLimitTrait extends BaseTrait {
             for (int i = 0; i < containers.size(); i++) {
                 JSONObject container = containers.getJSONObject(i);
                 container.put("resources", resources);
+                JSONObject requests = resources.getJSONObject("requests");
+                if (requests == null && resources.getJSONObject("limits") != null) {
+                    JSONObject obj = JSONObject.parseObject(resources.getJSONObject("limits").toJSONString());
+                    container.getJSONObject("resources").put("requests", obj);
+                    log.info("copy resources limits to requests|resources={}",
+                            container.getJSONObject("resources").toJSONString());
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.workflow.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.req.UpdateWorkflowSnapshotReq;
 import com.alibaba.tesla.appmanager.domain.req.DeleteWorkflowSnapshotReq;
@@ -30,6 +31,15 @@ public interface WorkflowSnapshotService {
     Pagination<WorkflowSnapshotDO> list(WorkflowSnapshotQueryCondition condition);
 
     /**
+     * 对指定的 Workflow 实例 put context 对象，进行 Merge
+     *
+     * @param workflowInstanceId Workflow 实例 ID
+     * @param context            Context 对象 (JSONObject)
+     * @return 更新后的指定 workflow task 对应的 workflow snapshot 对象
+     */
+    WorkflowSnapshotDO putContext(Long workflowInstanceId, JSONObject context);
+
+    /**
      * 更新一个 Workflow 快照
      *
      * @param request 更新 Workflow 快照请求
@@ -44,4 +54,21 @@ public interface WorkflowSnapshotService {
      * @return 删除数量
      */
     int delete(DeleteWorkflowSnapshotReq request);
+
+    /**
+     * 获取指定 Workflow Task 对应的 Context JSON Object 对象
+     *
+     * @param workflowInstanceId Workflow 实例 ID
+     * @param workflowTaskId     Workflow 任务 ID
+     * @return Context JSONObject
+     */
+    JSONObject getContext(Long workflowInstanceId, Long workflowTaskId);
+
+    /**
+     * 获取指定 Workflow Instance 对应的 Context JSON Object 对象
+     *
+     * @param workflowInstanceId Workflow 实例 ID
+     * @return Context JSONObject
+     */
+    JSONObject getContext(Long workflowInstanceId);
 }

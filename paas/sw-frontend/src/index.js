@@ -12,10 +12,10 @@ import AppService from './core/services/appService';
 import MenuTreeService from './core/services/appMenuTreeService'
 //不能去掉用于引入less.js来换肤使用
 import less from 'less';
-import 'antd/dist/antd.less';
+// import 'antd/dist/antd.less';
 import 'antd/dist/antd.css';
 import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
+import 'react-resizable/css/styles.css'; 
 import * as util from './utils/utils';
 import { dispatch } from 'dva'
 
@@ -60,9 +60,8 @@ app.router(router);
         if (isLogined && islogined['name']) {
             const res = await AppService.getAllProfile(params)
             let { collectList = [], customQuickList = [], workspaces } = res.profile;
-            app.start();
-            app._store.dispatch({ type: "home/setDesktopData", workspaces, collectList, customQuickList, isEqual: res.isEqual })
             app.start('#root');
+            app._store.dispatch({ type: "home/setDesktopData", workspaces, collectList, customQuickList, isEqual: res.isEqual })
         } else {
             return false
         }

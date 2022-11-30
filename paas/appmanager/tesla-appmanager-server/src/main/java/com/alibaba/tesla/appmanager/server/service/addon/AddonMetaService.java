@@ -35,7 +35,7 @@ public interface AddonMetaService {
      * @param addonId Addon ID
      * @return AddonMetaDO
      */
-    AddonMetaDO get(ComponentTypeEnum addonType, String addonId);
+    AddonMetaDO get(String addonType, String addonId);
 
     /**
      * 更新指定的 Addon 元信息

@@ -5,7 +5,8 @@
     <parent>
         <artifactId>tesla-appmanager</artifactId>
         <groupId>com.alibaba.tesla</groupId>
-        <version>1.0.4-SNAPSHOT</version>
+        <version>1.0.5-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -27,6 +28,10 @@
         </dependency>
         <dependency>
             <groupId>com.alibaba.tesla</groupId>
+            <artifactId>tesla-appmanager-auth</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.tesla</groupId>
             <artifactId>tesla-appmanager-api</artifactId>
         </dependency>
         <dependency>
@@ -36,6 +41,14 @@
         <dependency>
             <groupId>com.alibaba.tesla</groupId>
             <artifactId>tesla-appmanager-dynamic-script</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.tesla</groupId>
+            <artifactId>tesla-appmanager-definition</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.tesla</groupId>
+            <artifactId>tesla-appmanager-trait</artifactId>
         </dependency>
         <dependency>
             <groupId>com.alibaba.tesla</groupId>
@@ -62,6 +75,32 @@
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
         </dependency>
-    </dependencies>
 
+        <!-- test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

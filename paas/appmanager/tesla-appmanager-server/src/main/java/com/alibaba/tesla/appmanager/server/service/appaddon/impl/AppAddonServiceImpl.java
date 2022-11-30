@@ -14,7 +14,7 @@ import com.alibaba.tesla.appmanager.domain.dto.AppAddonDTO;
 import com.alibaba.tesla.appmanager.domain.req.AppAddonCreateReq;
 import com.alibaba.tesla.appmanager.domain.req.appaddon.AppAddonSyncReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
-import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpdateReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpsertReq;
 import com.alibaba.tesla.appmanager.server.assembly.AppAddonDtoConvert;
 import com.alibaba.tesla.appmanager.server.repository.AppAddonRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppAddonQueryCondition;
@@ -100,11 +100,11 @@ public class AppAddonServiceImpl implements AppAddonService {
     public AppAddonDO create(AppAddonCreateReq request) {
         AddonMetaDO addonMetaDO;
         if (StringUtils.isNotEmpty(request.getAddonType()) && StringUtils.isNotEmpty(request.getAddonId())) {
-            addonMetaDO = addonMetaService.get(ComponentTypeEnum.parse(request.getAddonType()), request.getAddonId());
+            addonMetaDO = addonMetaService.get(request.getAddonType(), request.getAddonId());
         } else {
             addonMetaDO = addonMetaService.get(request.getAddonMetaId());
         }
-        ComponentTypeEnum addonType = ComponentTypeEnum.parse(addonMetaDO.getAddonType());
+        String addonType = addonMetaDO.getAddonType();
         AppAddonDTO appAddonDTO = AppAddonDTO.builder()
                 .appId(request.getAppId())
                 .namespaceId(request.getNamespaceId())
@@ -123,7 +123,7 @@ public class AppAddonServiceImpl implements AppAddonService {
 
         // 更新 application configuration 绑定关系
         String componentName;
-        if (addonType.isInternalAddon()) {
+        if (ComponentTypeEnum.INTERNAL_ADDON.toString().equals(addonType)) {
             componentName = addonMetaDO.getAddonId();
         } else {
             componentName = AddonUtil.combineComponentName(addonMetaDO.getAddonId(), request.getAddonName());
@@ -136,7 +136,7 @@ public class AppAddonServiceImpl implements AppAddonService {
             requestNamespaceId = EnvUtil.defaultNamespaceId();
             requestStageId = EnvUtil.defaultStageId();
         }
-        deployConfigService.update(DeployConfigUpdateReq.builder()
+        deployConfigService.update(DeployConfigUpsertReq.builder()
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(request.getAppId())
                 .typeId(typeId)
@@ -165,7 +165,7 @@ public class AppAddonServiceImpl implements AppAddonService {
         }
         String appId = condition.getAppId();
         String componentName;
-        if (appAddon.getAddonType().isInternalAddon()) {
+        if (ComponentTypeEnum.INTERNAL_ADDON.toString().equals(appAddon.getAddonType())) {
             componentName = appAddon.getAddonId();
         } else {
             componentName = AddonUtil.combineComponentName(appAddon.getAddonId(), appAddon.getName());
@@ -197,13 +197,13 @@ public class AppAddonServiceImpl implements AppAddonService {
         }
         for (AppAddonDO appAddon : appAddons) {
             String componentName;
-            if (appAddon.getAddonType().isInternalAddon()) {
+            if (ComponentTypeEnum.INTERNAL_ADDON.toString().equals(appAddon.getAddonType())) {
                 componentName = appAddon.getAddonId();
             } else {
                 componentName = AddonUtil.combineComponentName(appAddon.getAddonId(), appAddon.getName());
             }
             String typeId = new DeployConfigTypeId(appAddon.getAddonType(), componentName).toString();
-            deployConfigService.update(DeployConfigUpdateReq.builder()
+            deployConfigService.update(DeployConfigUpsertReq.builder()
                     .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                     .appId(appAddon.getAppId())
                     .typeId(typeId)

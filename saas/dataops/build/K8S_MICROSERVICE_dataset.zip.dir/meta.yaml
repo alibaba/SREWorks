@@ -1,0 +1,68 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: Component
+metadata:
+  annotations:
+    annotations.appmanager.oam.dev/version: 8.6.1+20221122094839102057
+  labels:
+    labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+    appId: dataops
+    labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+    componentName: dataset
+    labels.appmanager.oam.dev/appId: dataops
+    labels.appmanager.oam.dev/componentName: dataset
+    stageId: PLACEHOLDER_STAGE_ID
+  name: microservice-dataops-dataset
+spec:
+  images: []
+  workload:
+    apiVersion: apps.abm.io/v1
+    dataOutputs: []
+    kind: Microservice
+    metadata:
+      annotations:
+        annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
+        annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
+        annotations.appmanager.oam.dev/version: 8.6.1+20221122094839102057
+        annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+      labels:
+        labels.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+        labels.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        appId: dataops
+        labels.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+        labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+        componentName: dataset
+        labels.appmanager.oam.dev/appId: dataops
+        labels.appmanager.oam.dev/componentName: dataset
+        stageId: PLACEHOLDER_STAGE_ID
+      name: PLACEHOLDER_NAME
+      namespace: PLACEHOLDER_NAMESPACE_ID
+    spec:
+      kind: Deployment
+      replicas: 1
+      containers:
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/dataops-dataset-dataset:1669110519465
+        name: dataset
+      env:
+        DATA_DB_PMDB_NAME: '{{ Global.DATA_DB_PMDB_NAME }}'
+        DATA_ES_PASSWORD: '{{ Global.DATA_ES_PASSWORD }}'
+        DATA_DB_USER: '{{ Global.DATA_DB_USER }}'
+        DATA_SKYW_PORT: '{{ Global.DATA_SKYW_PORT }}'
+        DATA_ES_PORT: '{{ Global.DATA_ES_PORT }}'
+        DATA_DB_PASSWORD: '{{ Global.DATA_DB_PASSWORD }}'
+        DATA_DB_DATASET_NAME: '{{ Global.DATA_DB_DATASET_NAME }}'
+        DATA_SKYW_ENABLE: '{{ Global.DATA_SKYW_ENABLE }}'
+        DATA_ES_INDEX: '{{ Global.DATA_ES_INDEX }}'
+        DATA_DB_DATASOURCE_NAME: '{{ Global.DATA_DB_DATASOURCE_NAME }}'
+        DATA_ES_HOST: '{{ Global.DATA_ES_HOST }}'
+        DATA_SKYW_HOST: '{{ Global.DATA_SKYW_HOST }}'
+        DATA_DB_HOST: '{{ Global.DATA_DB_HOST }}'
+        DATA_ES_USER: '{{ Global.DATA_ES_USER }}'
+        DATA_DB_PORT: '{{ Global.DATA_DB_PORT }}'
+      initContainers:
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/dataops-dataset-db-migration:1669110519465
+        name: db-migration
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/dataops-dataset-db-migration-datasource:1669110519465
+        name: db-migration-datasource

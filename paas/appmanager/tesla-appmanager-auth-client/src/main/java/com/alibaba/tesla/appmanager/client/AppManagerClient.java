@@ -156,8 +156,10 @@ public class AppManagerClient {
         Request request;
         if (!StringUtils.isEmpty(internalAuthToken)) {
             request = requestBuilder.header("Authorization", "Bearer " + internalAuthToken).build();
+            log.info("action=appmanagerAccessToken|token={}|expiresAt={}", internalAuthToken, internalExpiresAt);
         } else {
             request = requestBuilder.header("X-EmpId", "SYSTEM").build();
+            log.info("action=appmanagerAccessToken|empId=SYSTEM");
         }
         return httpClient.newCall(request).execute();
     }
@@ -174,8 +176,10 @@ public class AppManagerClient {
         Request request;
         if (!StringUtils.isEmpty(internalAuthToken)) {
             request = requestBuilder.header("Authorization", "Bearer " + internalAuthToken).build();
+            log.info("action=appmanagerAccessToken|token={}|expiresAt={}", internalAuthToken, internalExpiresAt);
         } else {
             request = requestBuilder.header("X-EmpId", "SYSTEM").build();
+            log.info("action=appmanagerAccessToken|empId=SYSTEM");
         }
         Response response = httpClient.newCall(request).execute();
         ResponseBody responseBody = response.body();

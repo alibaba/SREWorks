@@ -15,7 +15,6 @@ const paths = require('./paths');
 const getClientEnvironment = require('./env');
 const cdnPath = require('./cdnPath');
 const GlobalTheme = require('./globalTheme');
-const runtimePaths = require('./runtimePaths');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const threadLoader = require('thread-loader');
 const publicPath = cdnPath();
@@ -249,7 +248,7 @@ module.exports = {
             from: paths.appSrc + '/publicMedia',
             to: paths.appBuild + '/static/publicMedia'
         },
-        ...runtimePaths.dependency_arr
+        // ...runtimePaths.dependency_arr
         ]),
         new webpack.DefinePlugin(env.stringified),
         new ManifestPlugin({

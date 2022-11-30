@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.alibaba.tesla</groupId>
         <artifactId>tesla-appmanager</artifactId>
-        <version>1.0.4-SNAPSHOT</version>
+        <version>1.0.5-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -87,7 +87,6 @@
             <groupId>com.alibaba.tesla</groupId>
             <artifactId>tesla-appmanager-storage</artifactId>
         </dependency>
-
         <!-- spring -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -180,6 +179,12 @@
         <dependency>
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
+        </dependency>
+
+        <!-- SLS -->
+        <dependency>
+            <groupId>com.aliyun.openservices</groupId>
+            <artifactId>aliyun-log</artifactId>
         </dependency>
 
         <!-- jsonpath -->

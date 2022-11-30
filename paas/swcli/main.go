@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/viper"
 	"gitlab.alibaba-inc.com/pe3/swcli/cmd/apppackage"
 	"gitlab.alibaba-inc.com/pe3/swcli/cmd/deployment"
+	"gitlab.alibaba-inc.com/pe3/swcli/cmd/plugin"
 	"gitlab.alibaba-inc.com/pe3/swcli/lib"
 	"os"
 	"time"
@@ -25,6 +26,7 @@ var (
 func Execute() error {
 	apppackage.Init(rootCmd)
 	deployment.Init(rootCmd)
+	plugin.Init(rootCmd)
 	rootCmd.SetHelpFunc(func(command *cobra.Command, strings []string) {
 		command.Println(command.UsageString())
 		lib.Exit()

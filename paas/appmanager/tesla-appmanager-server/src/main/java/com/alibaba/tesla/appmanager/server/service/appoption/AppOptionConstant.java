@@ -48,6 +48,11 @@ public class AppOptionConstant {
     public static final String APP_NAV_LINK = "navLink";
 
     /**
+     * 是否在导航中显示
+     */
+    public static final String APP_IS_SHOW_IN_NAV = "isShowInNav";
+
+    /**
      * 应用配置 Key 类型映射字典
      */
     public static final Map<String, AppOptionTypeEnum> VALUE_TYPE_MAP =
@@ -116,7 +121,7 @@ public class AppOptionConstant {
                 // 是否需要日常环境
                 put("isNeedDailyEnv", AppOptionTypeEnum.INTEGER);
                 // 是否在导航中显示
-                put("isShowInNav", AppOptionTypeEnum.INTEGER);
+                put(APP_IS_SHOW_IN_NAV, AppOptionTypeEnum.INTEGER);
                 // 是否包含钉钉二维码
                 put("isHasDingdingQrcode", AppOptionTypeEnum.INTEGER);
                 // 是否包含导航条

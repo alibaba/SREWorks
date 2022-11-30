@@ -1,0 +1,72 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: Component
+metadata:
+  annotations:
+    annotations.appmanager.oam.dev/version: 4.0.6+20220914093109777265
+  labels:
+    labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+    appId: search
+    labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+    componentName: tkgone
+    labels.appmanager.oam.dev/appId: search
+    labels.appmanager.oam.dev/componentName: tkgone
+    stageId: PLACEHOLDER_STAGE_ID
+  name: microservice-search-tkgone
+spec:
+  images: []
+  workload:
+    apiVersion: apps.abm.io/v1
+    dataOutputs: []
+    kind: Microservice
+    metadata:
+      annotations:
+        annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
+        annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
+        annotations.appmanager.oam.dev/version: 4.0.6+20220914093109777265
+        annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+      labels:
+        labels.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+        labels.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        appId: search
+        labels.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+        labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+        componentName: tkgone
+        labels.appmanager.oam.dev/appId: search
+        labels.appmanager.oam.dev/componentName: tkgone
+        stageId: PLACEHOLDER_STAGE_ID
+      name: PLACEHOLDER_NAME
+      namespace: PLACEHOLDER_NAMESPACE_ID
+    spec:
+      kind: StatefulSet
+      replicas: 1
+      containers:
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/search-tkgone-tkgone:1663147869443
+        name: tkgone
+      env:
+        REDIS_HOST: '{{ Global.REDIS_HOST }}'
+        REDIS_DB: '{{ Global.REDIS_DB }}'
+        DATA_ES_PASSWORD: '{{ Global.DATA_ES_PASSWORD }}'
+        DB_PORT: '{{ Global.DB_PORT }}'
+        DB_USER: '{{ Global.DB_USER }}'
+        DATA_ES_PORT: '{{ Global.DATA_ES_PORT }}'
+        DB_NAME: '{{ Global.DB_NAME }}'
+        NACOS_ENDPOINT: '{{ Global.NACOS_ENDPOINT }}'
+        DB_HOST: '{{ Global.DB_HOST }}'
+        ELASTICSEARCH_USER: '{{ Global.ELASTICSEARCH_USER }}'
+        ELASTICSEARCH_PASSWORD: '{{ Global.ELASTICSEARCH_PASSWORD }}'
+        ELASTICSEARCH_HOST: '{{ Global.ELASTICSEARCH_HOST }}'
+        DATA_ES_HOST: '{{ Global.DATA_ES_HOST }}'
+        REDIS_PORT: '{{ Global.REDIS_PORT }}'
+        REDIS_PASSWORD: '{{ Global.REDIS_PASSWORD }}'
+        NACOS_NAMESPACE: '{{ Global.NACOS_NAMESPACE }}'
+        DATA_ES_USER: '{{ Global.DATA_ES_USER }}'
+        CONTAINER_IP_LIST: '{{ Global.CONTAINER_IP_LIST }}'
+        ELASTICSEARCH_PORT: '{{ Global.ELASTICSEARCH_PORT }}'
+        CONTAINER_IP_LIST_TKGONE: '{{ Global.CONTAINER_IP_LIST_TKGONE }}'
+        DB_PASSWORD: '{{ Global.DB_PASSWORD }}'
+      initContainers:
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/search-tkgone-db-migration:1663147869443
+        name: db-migration

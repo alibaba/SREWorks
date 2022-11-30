@@ -13,7 +13,7 @@
 
     <groupId>com.alibaba.tesla</groupId>
     <artifactId>tesla-appmanager-auth-client</artifactId>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0.5-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>

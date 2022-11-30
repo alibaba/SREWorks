@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.server.action.impl.deploy.app;
 
+import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.DeployAppAttrTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.DeployAppEventEnum;
 import com.alibaba.tesla.appmanager.common.enums.DeployAppStateEnum;
@@ -94,15 +95,15 @@ public class ComponentCheckingDeployAppStateAction implements DeployAppStateActi
                 attrMap.get(DeployAppAttrTypeEnum.APP_CONFIGURATION.toString()));
         for (DeployAppSchema.SpecComponent specComponent : configuration.getSpec().getComponents()) {
             DeployAppRevisionName revision = DeployAppRevisionName.valueOf(specComponent.getRevisionName());
-            if (!revision.getComponentType().isNotAddon() || !revision.isEmptyVersion()) {
+            if (ComponentTypeEnum.isAddon(revision.getComponentType()) || !revision.isEmptyVersion()) {
                 continue;
             }
-            String key = componentKey(revision.getComponentType().toString(), revision.getComponentName());
+            String key = componentKey(revision.getComponentType(), revision.getComponentName());
             String actualVersion = componentVersionMap.get(key);
             if (StringUtils.isEmpty(actualVersion)) {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                         String.format("invalid deploy configuration, cannot find mapping component by componentType %s " +
-                                "and componentName %s", revision.getComponentType().toString(), revision.getComponentName()));
+                                "and componentName %s", revision.getComponentType(), revision.getComponentName()));
             }
             String newRevisionName = DeployAppRevisionName.builder()
                     .componentType(revision.getComponentType())

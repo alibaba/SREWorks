@@ -2,7 +2,7 @@ import { RollbackOutlined } from '@ant-design/icons';
 import { Table, Button, Tag, Divider, Card } from "antd";
 import * as React from "react";
 import { connect } from "dva";
-import './index.less';1
+import './index.less';
 
 @connect(({ node, global }) => ({
   userParams: Object.assign({}, { __currentUser__: global.currentUser }, node.userParams),

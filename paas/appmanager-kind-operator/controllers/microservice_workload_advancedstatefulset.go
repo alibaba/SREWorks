@@ -146,7 +146,7 @@ func (r *MicroserviceReconciler) ReconcileMicroserviceAdvancedStatefulSet(
 			return err
 		}
 		log.V(1).Info("deleted conflict advancedStatefulSet", "AdvancedStatefulSet", instance)
-		return nil
+		return err
 	}
 	log.V(1).Info(fmt.Sprintf("update AdvancedStatefulSet %s spec to %+v", microservice.Name, instance.Spec))
 	return nil

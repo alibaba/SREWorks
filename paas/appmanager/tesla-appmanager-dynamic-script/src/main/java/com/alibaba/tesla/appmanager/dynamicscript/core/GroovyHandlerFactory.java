@@ -9,6 +9,7 @@ import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.dynamicscript.repository.condition.DynamicScriptQueryCondition;
 import com.alibaba.tesla.appmanager.dynamicscript.repository.domain.DynamicScriptDO;
 import com.alibaba.tesla.appmanager.dynamicscript.service.DynamicScriptService;
+import com.alibaba.tesla.appmanager.server.dynamicscript.handler.ComponentHandler;
 import com.alibaba.tesla.appmanager.spring.util.SpringBeanUtil;
 import groovy.lang.GroovyClassLoader;
 import lombok.Builder;
@@ -149,121 +150,23 @@ public class GroovyHandlerFactory {
      * @return Handler 如果不支持，返回 null
      */
     public <T extends GroovyHandler> T getByComponentType(
-            Class<T> scriptClass, String appId, ComponentTypeEnum componentType, String componentName,
+            Class<T> scriptClass, String appId, String componentType, String componentName,
             ComponentActionEnum action) {
         assert ComponentActionEnum.BUILD.equals(action) || ComponentActionEnum.DEPLOY.equals(action);
-        switch (componentType) {
-            case K8S_MICROSERVICE:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_MICROSERVICE_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_MICROSERVICE_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case K8S_JOB:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_JOB_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_JOB_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case ABM_OPERATOR_TVD:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_ABM_OPERATOR_TVD_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_ABM_OPERATOR_TVD_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case HELM:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_HELM_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_HELM_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case ABM_CHART:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_ABM_CHART_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_ABM_CHART_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case ASI_COMPONENT:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_ASI_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_ASI_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case ABM_KUSTOMIZE:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_ABM_KUSTOMIZE_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_ABM_KUSTOMIZE_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case ABM_HELM:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_ABM_HELM_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_ABM_HELM_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case SCRIPT:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_SCRIPT_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_SCRIPT_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case ABM_STATUS:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_ABM_STATUS_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_ABM_STATUS_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case ABM_ES_STATUS:
-                if (ComponentActionEnum.BUILD.equals(action)) {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.BUILD_ABM_ES_STATUS_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                } else {
-                    return get(scriptClass,
-                            DynamicScriptKindEnum.DEPLOY_ABM_ES_STATUS_COMPONENT.toString(),
-                            DefaultConstant.DEFAULT_GROOVY_HANDLER);
-                }
-            case INTERNAL_ADDON:
+        try {
+            ComponentHandler componentHandler = get(ComponentHandler.class, "COMPONENT", componentType);
+            if (ComponentActionEnum.BUILD.equals(action)) {
+                return get(scriptClass, DynamicScriptKindEnum.COMPONENT_BUILD.toString(),
+                        componentHandler.buildScriptName());
+            } else {
+                return get(scriptClass, DynamicScriptKindEnum.COMPONENT_DEPLOY.toString(),
+                        componentHandler.deployScriptName());
+            }
+        } catch (Exception e) {
+            log.error("failed to get executor via generic method, fallback|appId={}|componentType={}|" +
+                            "componentName={}|action={}|exception={}", appId, componentType,
+                    componentName, action, e.getMessage());
+            if (ComponentTypeEnum.INTERNAL_ADDON.toString().equals(componentType)) {
                 if ("tianji_productops".equals(componentName)) {
                     if (ComponentActionEnum.BUILD.equals(action)) {
                         return get(scriptClass,
@@ -317,7 +220,7 @@ public class GroovyHandlerFactory {
                 } else {
                     return null;
                 }
-            case RESOURCE_ADDON:
+            } else if (ComponentTypeEnum.RESOURCE_ADDON.toString().equals(componentType)) {
                 if (ComponentActionEnum.BUILD.equals(action)) {
                     return get(scriptClass,
                             DynamicScriptKindEnum.BUILD_RESOURCE_ADDON_COMPONENT.toString(),
@@ -327,8 +230,9 @@ public class GroovyHandlerFactory {
                             DynamicScriptKindEnum.DEPLOY_RESOURCE_ADDON_COMPONENT.toString(),
                             DefaultConstant.DEFAULT_GROOVY_HANDLER);
                 }
-            default:
+            } else {
                 return null;
+            }
         }
     }
 
@@ -366,6 +270,25 @@ public class GroovyHandlerFactory {
             throw new AppException(AppErrorCode.USER_CONFIG_ERROR,
                     String.format("parse class from database failed in groovy loading progress|" +
                             "kind=%s|name=%s", kind, name), e);
+        }
+    }
+
+    /**
+     * 删除 Handler
+     *
+     * @param kind 动态脚本类型
+     * @param name 动态脚本唯一标识
+     */
+    public void uninstall(String kind, String name) {
+        String key = keyGenerator(kind, name);
+        if (!VERSION_MAP.containsKey(key)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("the plugin has not been loaded|kind=%s|name=%s", kind, name));
+        }
+        synchronized (GroovyHandlerFactory.class) {
+            VERSION_MAP.remove(key);
+            HANDLER_INSTANCES.remove(key);
+            log.info("groovy handler has unloaded|kind={}|name={}", kind, name);
         }
     }
 

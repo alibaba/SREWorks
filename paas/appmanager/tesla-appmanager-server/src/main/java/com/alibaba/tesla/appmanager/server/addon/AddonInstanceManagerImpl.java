@@ -64,7 +64,7 @@ public class AddonInstanceManagerImpl implements AddonInstanceManager {
         Map<String, String> addonAttrs = request.getAddonAttrs();
 
         // 检查 Addon Instance 是否存在，如果存在直接返回实例 ID
-        Addon addon = addonManager.getAddon(ComponentTypeEnum.RESOURCE_ADDON, request.getAddonId());
+        Addon addon = addonManager.getAddon(ComponentTypeEnum.RESOURCE_ADDON.toString(), request.getAddonId());
         AddonInstanceQueryCondition condition = AddonInstanceQueryCondition.builder()
                 .namespaceId(namespaceId)
                 .addonId(addonId)
@@ -125,7 +125,7 @@ public class AddonInstanceManagerImpl implements AddonInstanceManager {
         }
 
         // TODO: release 的 addon instance task 类型，要 return 回去
-        Addon addon = addonManager.getAddon(ComponentTypeEnum.RESOURCE_ADDON, addonInstance.getAddonId());
+        Addon addon = addonManager.getAddon(ComponentTypeEnum.RESOURCE_ADDON.toString(), addonInstance.getAddonId());
         addon.release(request);
         return null;
     }

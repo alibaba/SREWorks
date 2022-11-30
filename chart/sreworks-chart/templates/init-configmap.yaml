@@ -17,6 +17,7 @@ data:
   JRE11_IMAGE: {{ .Values.global.artifacts.openjdk11Image }}
   MAVEN_SETTINGS_XML: {{ .Values.global.artifacts.mavenSettingsXml }}
   NODE_IMAGE: {{ .Values.global.artifacts.nodeImage }}
+  NODE_IMAGE2: {{ .Values.global.artifacts.nodeImage2 }}
   ALPINE_IMAGE: {{ .Values.global.artifacts.alpineImage }}
   MIGRATE_IMAGE: {{ template "migrate.image" . }}
   POSTRUN_IMAGE: {{ template "postrun.image" . }}
@@ -68,7 +69,7 @@ data:
   ZOOKEEPER_ENDPOINT: {{ .Release.Name }}-zookeeper
   ENDPOINT_PAAS_MINIO: {{ template "minio.endpoint" . }}
   APPMANAGER_ENDPOINT: {{ .Release.Name }}-appmanager
-  KAFKA_ENDPOINT: {{ .Release.Name }}-kafka.{{ .Release.Namespace }}
+  KAFKA_ENDPOINT: prod-dataops-kafka.sreworks-dataops
   AUTHPROXY_ENDPOINT: {{ .Values.core.stageId }}-{{ .Values.core.appId }}-paas-authproxy
   REDIS_ENDPOINT: {{ .Release.Name }}-redis-master.{{ .Release.Namespace }}
   REDIS_PASSWORD: {{ .Values.appmanagerbase.redis.password | quote }}
@@ -103,14 +104,20 @@ data:
   DATAOPS_DB_PASSWORD: {{ .Values.saas.dataops.dbPassword | quote }}
   DATAOPS_DB_PORT: {{ .Values.saas.dataops.dbPort | quote }}
   DATAOPS_DB_USER: {{ .Values.saas.dataops.dbUser | quote }}
+  DATA_DB_HOST: {{ .Values.saas.dataops.dbHost | quote }}
+  DATA_DB_PASSWORD: {{ .Values.saas.dataops.dbPassword | quote }}
+  DATA_DB_PORT: {{ .Values.saas.dataops.dbPort | quote }}
+  DATA_DB_USER: {{ .Values.saas.dataops.dbUser | quote }}
   GRAFANA_ADMIN_PASSWORD: {{ .Values.saas.grafana.password | quote }} 
   DATA_ES_HOST: {{ .Values.saas.dataops.esHost | quote }}
   DATA_ES_PORT: {{ .Values.saas.dataops.esPort | quote }}
   DATA_ES_USER: {{ .Values.saas.dataops.esUser | quote }}
   DATA_ES_PASSWORD: {{ .Values.saas.dataops.esPassword | quote }}
+  DATAOPS_FILEBEAT_ENABLE: {{ .Values.saas.dataops.filebeatEnable | quote}}
+  DATAOPS_METRICBEAT_ENABLE: {{ .Values.saas.dataops.metricbeatEnable | quote}}
 
-  DATA_PROM_HOST: "localhost"
-  DATA_PROM_PORT: "80"
+  DATA_PROM_HOST: {{ .Values.saas.dataops.prometheusHost | quote }}
+  DATA_PROM_PORT: {{ .Values.saas.dataops.prometheusPort | quote }}
 
   ACCOUNT_SUPER_CLIENT_ID: {{ .Values.appmanager.gateway.account_super_client_id }}
   ACCOUNT_SUPER_CLIENT_SECRET: {{ .Values.appmanager.gateway.account_super_client_secret }}

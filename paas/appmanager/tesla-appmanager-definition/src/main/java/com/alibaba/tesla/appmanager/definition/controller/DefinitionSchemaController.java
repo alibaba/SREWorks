@@ -6,6 +6,7 @@ import com.alibaba.tesla.appmanager.domain.dto.DefinitionSchemaDTO;
 import com.alibaba.tesla.appmanager.domain.req.DefinitionSchemaQueryReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.alibaba.tesla.web.controller.BaseController;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import java.util.HashMap;
  * @author yaoxing.gyx@alibaba-inc.com
  */
 @Slf4j
+@Tag(name = "DefinitionSchema API")
 @RequestMapping("/definition-schemas")
 @RestController
 public class DefinitionSchemaController extends BaseController {

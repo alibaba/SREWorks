@@ -25,8 +25,6 @@ import { localImglist, requiredImglist } from "./localImglist";
 import cacheRepository from "../../utils/cacheRepository";
 const { TabPane } = Tabs;
 
-// let VueWrapper = window['vuera']['VueWrapper'];
-// let vuecalendar = window['vuecalendar']['vuecalendar'];
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -454,10 +452,6 @@ export default class WorkspaceSetting extends React.Component {
                                         </div>
                                     </div>
                                 </Spin>
-                            </TabPane>
-                            <TabPane tab="vue" key="vue">
-                                <Button type="primary" onClick={this.changeDate}>改变日期</Button>
-                                {/* <VueWrapper widgetConfig={widgetConfig} component={vuecalendar}/> */}
                             </TabPane>
                         </Tabs>
                     }

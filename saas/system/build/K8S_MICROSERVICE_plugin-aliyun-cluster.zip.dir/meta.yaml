@@ -1,0 +1,55 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: Component
+metadata:
+  annotations:
+    annotations.appmanager.oam.dev/version: 4.0.6+20221116024020108126
+  labels:
+    labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+    appId: system
+    labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+    componentName: plugin-aliyun-cluster
+    labels.appmanager.oam.dev/appId: system
+    labels.appmanager.oam.dev/componentName: plugin-aliyun-cluster
+    stageId: PLACEHOLDER_STAGE_ID
+  name: microservice-system-plugin-aliyun-cluster
+spec:
+  images: []
+  workload:
+    apiVersion: apps.abm.io/v1
+    dataOutputs: []
+    kind: Microservice
+    metadata:
+      annotations:
+        annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
+        annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
+        annotations.appmanager.oam.dev/version: 4.0.6+20221116024020108126
+        annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+      labels:
+        labels.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+        labels.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        appId: system
+        labels.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+        labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+        componentName: plugin-aliyun-cluster
+        labels.appmanager.oam.dev/appId: system
+        labels.appmanager.oam.dev/componentName: plugin-aliyun-cluster
+        stageId: PLACEHOLDER_STAGE_ID
+      name: PLACEHOLDER_NAME
+      namespace: PLACEHOLDER_NAMESPACE_ID
+    spec:
+      kind: Deployment
+      replicas: 1
+      containers:
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/system-plugin-aliyun-cluster-plugin-aliyun-cluster:1668566420764
+        name: plugin-aliyun-cluster
+      env:
+        APPMANAGER_PACKAGE_ACCESS_KEY: '{{ Global.APPMANAGER_PACKAGE_ACCESS_KEY }}'
+        APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL: '{{ Global.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL }}'
+        APPMANAGER_PACKAGE_ENDPOINT: '{{ Global.APPMANAGER_PACKAGE_ENDPOINT }}'
+        APPMANAGER_PACKAGE_SECRET_KEY: '{{ Global.APPMANAGER_PACKAGE_SECRET_KEY }}'
+      initContainers:
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/system-plugin-aliyun-cluster-resource-upload:1668566420764
+        name: resource-upload

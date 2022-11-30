@@ -248,7 +248,7 @@ module.exports = {
   //  !DEV && new CompressionPlugin({
   //   filename: "[path][base].gz",
   //   exclude: [        
-  //     path.resolve(__dirname, 'common_vendor'),             
+  //     path.resolve(__dirname, 'vendors'),             
   //   ],
   //   algorithm: "gzip",
   //   test: /\.(js|css|png|svg|jpg)$/,

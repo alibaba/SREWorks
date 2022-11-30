@@ -5789,10 +5789,6 @@ __metadata:
     sortablejs: 1.13.0
     uuid: ^9.0.0
   peerDependencies:
-    "@ant-design/compatible": ^1.1.2
-    "@ant-design/icons": ^4.7.0
-    "@ant-design/pro-card": ^2.0.10
-    antd: 4.17.4
     react: ^16.14.0
     react-dom: ^16.14.0
   languageName: unknown
@@ -5980,9 +5976,6 @@ __metadata:
     rollup-plugin-terser: ^7.0.2
     sass: 1.54.5
   peerDependencies:
-    "@ant-design/compatible": 1.1.2
-    "@ant-design/pro-card": ^2.0.10
-    antd: 4.17.4
     react: ^16.14.0
     react-dom: ^16.14.0
   languageName: unknown

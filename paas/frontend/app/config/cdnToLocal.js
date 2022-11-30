@@ -46,59 +46,59 @@ const dependency_arr_init = (env='dev')=> {
     try {
         return [{
             from: paths.appNodeModules + '/antd/dist/antd.min.js',
-            to: workspacePath + '/common_vendor/antd/' + antdPath + '/antd.min.js'
+            to: workspacePath + '/vendors/antd/' + antdPath + '/antd.min.js'
         },
         {
             from: paths.appNodeModules + '/react/umd/react.production.min.js',
-            to: workspacePath + '/common_vendor/react/' + reactPath + '/react.production.min.js'
+            to: workspacePath + '/vendors/react/' + reactPath + '/react.production.min.js'
         },
         {
             from: paths.appNodeModules + '/react-dom/umd/react-dom.production.min.js',
-            to: workspacePath + '/common_vendor/react-dom/' + react_dom_path + '/react-dom.production.min.js'
+            to: workspacePath + '/vendors/react-dom/' + react_dom_path + '/react-dom.production.min.js'
         },
         {
             from: paths.appNodeModules + '/moment/min/moment.min.js',
-            to: workspacePath + '/common_vendor/moment/' + momentPath + '/moment.min.js'
+            to: workspacePath + '/vendors/moment/' + momentPath + '/moment.min.js'
         },
         {
             from: paths.appNodeModules + '/systemjs/dist/system.min.js',
-            to: workspacePath + '/common_vendor/systemjs/' + systemjsPath + '/system.min.js'
+            to: workspacePath + '/vendors/systemjs/' + systemjsPath + '/system.min.js'
         },
         {
             from: paths.appNodeModules + '/vue/dist/vue.min.js',
-            to: workspacePath + '/common_vendor/vue/' + vuePath + '/vue.min.js'
+            to: workspacePath + '/vendors/vue/' + vuePath + '/vue.min.js'
         },
         {
             from: paths.appNodeModules + '/vuera/dist/vuera.iife.js',
-            to: workspacePath + '/common_vendor/vuera/' + vueraPath + '/vuera.iife.js'
+            to: workspacePath + '/vendors/vuera/' + vueraPath + '/vuera.iife.js'
         },
         {
             from: paths.appNodeModules + '/element-ui/lib/index.js',
-            to: workspacePath + '/common_vendor/element-ui/' + elementUIPath + '/index.js'
+            to: workspacePath + '/vendors/element-ui/' + elementUIPath + '/index.js'
         },
         {
             from: paths.appNodeModules + '/element-ui/lib/theme-chalk/index.css',
-            to: workspacePath + '/common_vendor/element-ui/' + elementUIPath + '/index.css'
+            to: workspacePath + '/vendors/element-ui/' + elementUIPath + '/index.css'
         },
         {
             from: paths.appNodeModules + '/bizcharts/umd/BizCharts.min.js',
-            to: workspacePath + '/common_vendor/bizcharts/' + bizchartsPath + '/BizCharts.min.js'
+            to: workspacePath + '/vendors/bizcharts/' + bizchartsPath + '/BizCharts.min.js'
         },
         {
             from: paths.appNodeModules + '/react-ace/dist/react-ace.min.js/main.js',
-            to: workspacePath + '/common_vendor/react-ace/' + reactAcePath + '/main.js'
+            to: workspacePath + '/vendors/react-ace/' + reactAcePath + '/main.js'
         },
         {
             from: paths.appNodeModules + '/lodash/lodash.min.js',
-            to: workspacePath + '/common_vendor/lodash/' + lodashPath + '/lodash.min.js'
+            to: workspacePath + '/vendors/lodash/' + lodashPath + '/lodash.min.js'
         },
         {
             from: paths.appNodeModules + '/jquery/dist/jquery.min.js',
-            to: workspacePath + '/common_vendor/jquery/' + jqueryPath + '/jquery.min.js'
+            to: workspacePath + '/vendors/jquery/' + jqueryPath + '/jquery.min.js'
         },
         {
             from: paths.appNodeModules + '/html2canvas/dist/html2canvas.min.js',
-            to: workspacePath + '/common_vendor/html2canvas/' + html2canvasPath + '/html2canvas.min.js'
+            to: workspacePath + '/vendors/html2canvas/' + html2canvasPath + '/html2canvas.min.js'
         },
         ]
     } catch(error) {

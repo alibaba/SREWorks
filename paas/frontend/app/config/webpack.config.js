@@ -3,7 +3,7 @@
  * @Author: deeham.ww
  * @Date: 2022-11-16 11:32:36
  * @LastEditors: deeham.ww
- * @LastEditTime: 2022-11-24 16:54:17
+ * @LastEditTime: 2022-11-30 11:37:49
  */
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -248,7 +248,7 @@ module.exports = {
   //  !DEV && new CompressionPlugin({
   //   filename: "[path][base].gz",
   //   exclude: [        
-  //     path.resolve(__dirname, 'common_vendor'),             
+  //     path.resolve(__dirname, 'vendors'),             
   //   ],
   //   algorithm: "gzip",
   //   test: /\.(js|css|png|svg|jpg)$/,

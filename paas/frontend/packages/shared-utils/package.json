@@ -15,6 +15,7 @@
     "test": "jest",
     "clean": "rimraf ./dist && rimraf ./lib"
   },
+  "repository": "https://github.com/alibaba/SREWorks/tree/master/paas/frontend/packages/shared-utils",
   "dependencies": {
     "@rollup/plugin-node-resolve": "11.2.1",
     "antd": "4.17.4",

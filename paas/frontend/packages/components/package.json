@@ -14,6 +14,7 @@
     "build": "npm run clean && rollup -c ",
     "clean": "rimraf ./dist && rimraf ./lib"
   },
+  "repository": "https://github.com/alibaba/SREWorks/tree/master/paas/frontend/packages/components",
   "browserslist": [
     "cover 99.5%",
     "dead",

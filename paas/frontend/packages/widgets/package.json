@@ -16,6 +16,7 @@
     "test": "jest",
     "clean": "rimraf ./dist && rimraf ./lib"
   },
+  "repository": "https://github.com/alibaba/SREWorks/tree/master/paas/frontend/packages/widgets",
   "resolutions": {
     "react": "16.14.0",
     "react-dom": "16.14.0"

@@ -1,3 +1,10 @@
+/*
+ * @version: 2.0.0
+ * @Author: deeham.ww
+ * @Date: 2022-11-30 11:34:54
+ * @LastEditors: deeham.ww
+ * @LastEditTime: 2022-11-30 15:16:02
+ */
 import babel from 'rollup-plugin-babel'
 import commonjs from 'rollup-plugin-commonjs'
 import postcss from 'rollup-plugin-postcss'
@@ -48,11 +55,6 @@ const configFn = (name) => ({
 const mainConfig = {
   input: './src/index.js',
   output: [
-    {
-      file: './dist/index-umd.js',
-      format: 'umd',
-      name: 'sre_framework',
-    },
     {
       file: './dist/index-es.js',
       format: 'es',

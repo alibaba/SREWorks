@@ -43,7 +43,7 @@
                 },
                 {
                     "id": "mzz07m",
-                    "label": "2.2 \u6e90\u7801\u6784\u5efa\u5b89\u88c5",
+                    "label": "2.2 \u5b89\u88c5\u53c2\u6570\u660e\u7ec6",
                     "type": "doc"
                 }
             ],
@@ -135,16 +135,106 @@
                     "collapsed": true,
                     "items": [
                         {
-                            "id": "ngx61f",
-                            "label": "5.1.1 \u8fd0\u7ef4\u524d\u7aef\u7ec4\u4ef6\u5f00\u53d1",
+                            "id": "zn4oqgdqnpaf5ztz",
+                            "label": "\u63d2\u4ef6\u5305\u673a\u5236\u603b\u89c8",
                             "type": "doc"
                         }
                     ],
-                    "label": "5.1 \u8fd0\u7ef4\u5f00\u53d1\u6269\u5c55",
+                    "label": "5.1 \u63d2\u4ef6\u5f00\u53d1",
+                    "type": "category"
+                },
+                {
+                    "collapsed": true,
+                    "items": [
+                        {
+                            "id": "ngx61f",
+                            "label": "5.2.1 \u8fd0\u7ef4\u524d\u7aef\u7ec4\u4ef6\u5f00\u53d1",
+                            "type": "doc"
+                        },
+                        {
+                            "id": "sfh65n",
+                            "label": "5.2.2 widget \u5f00\u53d1\u89c4\u8303",
+                            "type": "doc"
+                        }
+                    ],
+                    "label": "5.2 \u524d\u7aef\u5f00\u53d1",
+                    "type": "category"
+                },
+                {
+                    "collapsed": true,
+                    "items": [
+                        {
+                            "id": "ek2tysaxo4d9108i",
+                            "label": "5.3.1 \u6e90\u7801\u6784\u5efa",
+                            "type": "doc"
+                        }
+                    ],
+                    "label": "5.3 \u6e90\u7801\u5f00\u53d1",
+                    "type": "category"
+                },
+                {
+                    "collapsed": true,
+                    "items": [
+                        {
+                            "id": "luggi9ul29277cy6",
+                            "label": "5.4.1 \u7b97\u6cd5\u5f00\u53d1",
+                            "type": "doc"
+                        }
+                    ],
+                    "label": "5.4 \u7b97\u6cd5\u5f00\u53d1",
+                    "type": "category"
+                },
+                {
+                    "collapsed": true,
+                    "items": [
+                        {
+                            "id": "wsxgx1r2gs54nw2x",
+                            "label": "5.5.1 \u5de5\u5177\u7ad9\u70b9\u96c6\u6210",
+                            "type": "doc"
+                        },
+                        {
+                            "id": "pxd52gvbndyvvcno",
+                            "label": "5.5.2 \u4ee3\u7801\u6e90\u96c6\u6210",
+                            "type": "doc"
+                        },
+                        {
+                            "id": "nk796gr0nwvgyt8g",
+                            "label": "5.5.3 \u8d26\u53f7\u96c6\u6210",
+                            "type": "doc"
+                        },
+                        {
+                            "id": "yg33lfa6p0631cfo",
+                            "label": "5.5.4 \u767b\u5f55\u96c6\u6210",
+                            "type": "doc"
+                        },
+                        {
+                            "id": "ytk76m9ndx0y04bk",
+                            "label": "5.5.5 API\u63a5\u53e3\u96c6\u6210",
+                            "type": "doc"
+                        }
+                    ],
+                    "label": "5.5 \u529f\u80fd\u96c6\u6210",
+                    "type": "category"
+                },
+                {
+                    "collapsed": true,
+                    "items": [
+                        {
+                            "id": "yc64sk",
+                            "label": "5.3.1 \u53c2\u4e0eSREWorks\u5f00\u6e90",
+                            "type": "doc"
+                        },
+                        {
+                            "id": "rxgxgz",
+                            "label": "5.3.2 \u4ee3\u7801\u8d21\u732e\u6307\u5357",
+                            "type": "doc"
+                        }
+                    ],
+                    "label": "5.6 \u53c2\u4e0e\u5f00\u6e90\u8d21\u732e",
                     "type": "category"
                 }
             ],
-            "label": "5. \u6269\u5c55SREWorks",
+            "label": "5. \u5f00\u53d1\u8005\u6307\u5357",
             "type": "category"
         },
         {
@@ -164,26 +254,16 @@
             "items": [
                 {
                     "id": "iwa896",
-                    "label": "7.1 \u5e38\u89c1\u95ee\u9898",
+                    "label": "7.1 \u5e38\u89c1\u90e8\u7f72\u95ee\u9898",
                     "type": "doc"
                 },
                 {
-                    "id": "yc64sk",
-                    "label": "7.2 \u53c2\u4e0eSREWorks\u5f00\u6e90",
-                    "type": "doc"
-                },
-                {
-                    "id": "rxgxgz",
-                    "label": "7.3 \u4ee3\u7801\u8d21\u732e\u6307\u5357",
-                    "type": "doc"
-                },
-                {
-                    "id": "sfh65n",
-                    "label": "7.4 widget \u5f00\u53d1\u89c4\u8303",
+                    "id": "xnk5d9d8m3ck5gtp",
+                    "label": "7.2 \u5e38\u89c1\u4f7f\u7528\u95ee\u9898",
                     "type": "doc"
                 }
             ],
-            "label": "7.\u793e\u533a",
+            "label": "7.\u5e38\u89c1\u95ee\u9898",
             "type": "category"
         }
     ]

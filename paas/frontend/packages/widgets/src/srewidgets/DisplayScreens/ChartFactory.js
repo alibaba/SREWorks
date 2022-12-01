@@ -3,7 +3,7 @@
  * @Author: deeham.ww
  * @Date: 2022-03-23 12:00:04
  * @LastEditors: deeham.ww
- * @LastEditTime: 2022-11-22 14:03:44
+ * @LastEditTime: 2022-12-01 18:05:43
  */
 import React, { Component } from 'react'
 import BChart from '../BChart'

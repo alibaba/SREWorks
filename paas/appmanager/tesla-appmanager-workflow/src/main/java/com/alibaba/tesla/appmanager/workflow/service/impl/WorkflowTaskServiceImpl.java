@@ -41,6 +41,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Workflow Task 服务实现
@@ -320,41 +322,72 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
      */
     private JSONObject plugTaskProperties(WorkflowTaskDO task, JSONObject context) {
         JSONObject taskProperties = JSONObject.parseObject(task.getTaskProperties());
-        String taskInputs = task.getTaskInputs();
-        if (StringUtils.isEmpty(taskInputs)) {
-            return taskProperties;
-        }
-        JSONArray inputs = JSONObject.parseArray(taskInputs);
-        if (inputs.size() == 0) {
-            return taskProperties;
-        }
         JSONObject deliverData = context.getJSONObject(WorkflowContextKeyConstant.DEPLOY_DELIVER_PARAMETERS);
-        if (deliverData == null) {
-            return taskProperties;
-        }
-
-        DocumentContext propertiesContext = JsonPath.parse(task.getTaskProperties());
-        for (int i = 0; i < inputs.size(); i++) {
-            JSONObject input = inputs.getJSONObject(i);
-            String parameterKey = input.getString("parameterKey");
-            int splitIndex = parameterKey.lastIndexOf(".");
-            if (splitIndex == -1) {
-                propertiesContext.set(DefaultConstant.JSONPATH_PREFIX + parameterKey,
-                        deliverData.get(input.getString("from")));
-                continue;
+        if (deliverData != null) {
+            String taskInputs = task.getTaskInputs();
+            JSONArray inputs = JSONObject.parseArray(taskInputs);
+            log.info("task id={}|deliverData={}|inputs={}", task.getId(), deliverData, inputs);
+            for (int i = 0; i < inputs.size(); i++) {
+                JSONObject input = inputs.getJSONObject(i);
+                String parameterKey = input.getString("parameterKey");
+                String[] parameterKeySequences = parameterKey.split("\\.");
+                if (parameterKeySequences.length > 10) {
+                    log.warn("parameterKey level is more than 10:{}, {}", task.getId(), parameterKey);
+                    continue;
+                }
+                addTaskProperties(task.getId(), taskProperties, parameterKeySequences, 0, parameterKeySequences.length, deliverData.getString(input.getString("from")));
             }
-            String inputPrefix = parameterKey.substring(0, splitIndex);
-            String inputSuffix = parameterKey.substring(splitIndex + 1);
-            HashMap<String, Object> prevJsonObject = propertiesContext
-                    .read(DefaultConstant.JSONPATH_PREFIX + inputPrefix);
-            prevJsonObject.put(inputSuffix, deliverData.get(input.getString("from")));
-            String currentValue = JSONObject.toJSONString(prevJsonObject);
-            propertiesContext.set(DefaultConstant.JSONPATH_PREFIX + inputPrefix, currentValue);
         }
-        taskProperties = JSONObject.parseObject(propertiesContext.jsonString());
-        log.info("plug task properties succeed|workflowTaskId={}|workflowInstanceId={}|deliverData={}|" +
-                        "taskProperties={}", task.getId(), task.getWorkflowInstanceId(), deliverData.toJSONString(),
-                taskProperties.toJSONString());
+        log.info("task id={}|deliverData={}|taskProperties={}", task.getId(), deliverData, taskProperties);
         return taskProperties;
+    }
+
+    /**
+     * @param currentObject 待处理对象
+     * @param keySequences  json Path风格字符串切割后数组
+     * @param currentIndex  当前索引
+     * @param arrayLength   数组长度
+     * @param value         末端待添加值
+     */
+    private void addTaskProperties(Long taskId, JSONObject currentObject, String[] keySequences, Integer currentIndex, Integer arrayLength, String value) {
+        String var1 = "(.*)\\[(\\d+)\\]$";
+        if (currentIndex >= arrayLength) {
+            log.warn("addParameterKey warning currentIndex:{} >= arrayLength:{} taskId: {}", currentIndex, arrayLength, taskId);
+            return;
+        }
+        String var2 = keySequences[currentIndex];
+        Pattern pattern = Pattern.compile(var1);
+        Matcher matcher = pattern.matcher(var2);
+        if (currentIndex == arrayLength - 1) {
+            // 将最终值补充
+            if (matcher.find()) {
+                // 处理数组字符串
+                String objectName = matcher.group(1);
+                String objectIndex = matcher.group(2);
+                if (currentObject.getJSONArray(objectName) == null) {
+                    currentObject.put(objectName, new JSONArray());
+                }
+                currentObject.getJSONArray(objectName).add(value);
+            } else {
+                currentObject.put(var2, value);
+            }
+            return;
+        }
+        if (matcher.find()) {
+            // 处理JSONArray字符串
+            String objectName = matcher.group(1);
+            String objectIndex = matcher.group(2);
+            if (currentObject.getJSONArray(objectName) != null && currentObject.getJSONArray(objectName).getJSONObject(Integer.parseInt(objectIndex)) != null) {
+                addTaskProperties(taskId, currentObject.getJSONArray(objectName).getJSONObject(Integer.parseInt(objectIndex)), keySequences, currentIndex + 1, arrayLength, value);
+            } else {
+                log.warn("addParameterKey get ParameterKey fail currentObject:{}, currentString:{}, ParameterKey:{} taskId: {}", currentObject, var2, keySequences, taskId);
+            }
+        } else {
+            // 处理JSONObject字符串
+            if (currentObject.getJSONObject(var2) == null) {
+                currentObject.put(var2, new JSONObject());
+            }
+            addTaskProperties(taskId, currentObject.getJSONObject(var2), keySequences, currentIndex + 1, arrayLength, value);
+        }
     }
 }

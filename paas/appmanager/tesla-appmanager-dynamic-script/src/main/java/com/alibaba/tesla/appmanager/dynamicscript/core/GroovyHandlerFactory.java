@@ -187,6 +187,56 @@ public class GroovyHandlerFactory {
                                 DynamicScriptKindEnum.DEPLOY_IA_PRODUCTOPS_COMPONENT.toString(),
                                 DefaultConstant.DEFAULT_GROOVY_HANDLER);
                     }
+                } else if ("authproxy".equals(componentName)) {
+                    if (ComponentActionEnum.BUILD.equals(action)) {
+                        return get(scriptClass,
+                                DynamicScriptKindEnum.BUILD_IA_AUTHPROXY_COMPONENT.toString(),
+                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                    } else {
+                        return get(scriptClass,
+                                DynamicScriptKindEnum.DEPLOY_IA_AUTHPROXY_COMPONENT.toString(),
+                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                    }
+                } else if ("check".equals(componentName)) {
+                    if (ComponentActionEnum.BUILD.equals(action)) {
+                        return get(scriptClass,
+                                DynamicScriptKindEnum.BUILD_IA_CHECK_COMPONENT.toString(),
+                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                    } else {
+                        return get(scriptClass,
+                                DynamicScriptKindEnum.DEPLOY_IA_CHECK_COMPONENT.toString(),
+                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                    }
+                } else if ("check_monitor".equals(componentName)) {
+                    if (ComponentActionEnum.BUILD.equals(action)) {
+                        return get(scriptClass,
+                                DynamicScriptKindEnum.BUILD_IA_CHECK_MONITOR_COMPONENT.toString(),
+                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                    } else {
+                        return get(scriptClass,
+                                DynamicScriptKindEnum.DEPLOY_IA_CHECK_MONITOR_COMPONENT.toString(),
+                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                    }
+                } else if ("taskplatform".equals(componentName)) {
+                    if (ComponentActionEnum.BUILD.equals(action)) {
+                        return get(scriptClass,
+                                DynamicScriptKindEnum.BUILD_IA_TASKPLATFORM_COMPONENT.toString(),
+                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                    } else {
+                        return get(scriptClass,
+                                DynamicScriptKindEnum.DEPLOY_IA_TASKPLATFORM_COMPONENT.toString(),
+                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                    }
+                } else if ("zmn".equals(componentName)) {
+                    if (ComponentActionEnum.BUILD.equals(action)) {
+                        return get(scriptClass,
+                                DynamicScriptKindEnum.BUILD_IA_ZMN_COMPONENT.toString(),
+                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                    } else {
+                        return get(scriptClass,
+                                DynamicScriptKindEnum.DEPLOY_IA_ZMN_COMPONENT.toString(),
+                                DefaultConstant.DEFAULT_GROOVY_HANDLER);
+                    }
                 } else if ("productopsv2".equals(componentName)) {
                     if (ComponentActionEnum.BUILD.equals(action)) {
                         return get(scriptClass,

@@ -133,9 +133,59 @@ public enum DynamicScriptKindEnum {
     BUILD_IA_PRODUCTOPS_COMPONENT,
 
     /**
+     * 构建 AUTHPROXY 组件
+     */
+    BUILD_IA_AUTHPROXY_COMPONENT,
+
+    /**
+     * 构建 CHECK 组件
+     */
+    BUILD_IA_CHECK_COMPONENT,
+
+    /**
+     * 构建 CHECK_MONITOR 组件
+     */
+    BUILD_IA_CHECK_MONITOR_COMPONENT,
+
+    /**
+     * 构建 TASKPLATFORM 组件
+     */
+    BUILD_IA_TASKPLATFORM_COMPONENT,
+
+    /**
+     * 构建 ZMN 组件
+     */
+    BUILD_IA_ZMN_COMPONENT,
+
+    /**
      * 部署 ProductOps 组件
      */
     DEPLOY_IA_PRODUCTOPS_COMPONENT,
+
+    /**
+     * 部署 AUTHPROXY 组件
+     */
+    DEPLOY_IA_AUTHPROXY_COMPONENT,
+
+    /**
+     * 部署 CHECK 组件
+     */
+    DEPLOY_IA_CHECK_COMPONENT,
+
+    /**
+     * 部署 CHECK_MONITOR 组件
+     */
+    DEPLOY_IA_CHECK_MONITOR_COMPONENT,
+
+    /**
+     * 部署 TASKPLATFORM 组件
+     */
+    DEPLOY_IA_TASKPLATFORM_COMPONENT,
+
+    /**
+     * 部署 ZMN 组件
+     */
+    DEPLOY_IA_ZMN_COMPONENT,
 
     /**
      * 构建 tianji ProductOps 组件

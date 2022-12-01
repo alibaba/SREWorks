@@ -39,6 +39,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -336,6 +337,7 @@ public class RtAppInstanceServiceImpl implements RtAppInstanceService {
      * @return RtAppInstanceDO
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int delete(String appInstanceId) {
         RtAppInstanceQueryCondition condition = RtAppInstanceQueryCondition.builder()
                 .appInstanceId(appInstanceId).build();
@@ -351,8 +353,8 @@ public class RtAppInstanceServiceImpl implements RtAppInstanceService {
         List<RtComponentInstanceDO> componentInstances = rtComponentInstanceRepository.selectByCondition(
                 RtComponentInstanceQueryCondition.builder().appInstanceId(appInstanceId).build());
         log.info("prepare to delete app instance|appInstanceId={}|appId={}|clusterId={}|namespaceId={}|" +
-                "stageId={}|componentInstances={}", appInstanceId, appId, clusterId, namespaceId, stageId,
-                JSONObject.toJSONString(componentInstances));
+                "stageId={}|componentInstanceSize={}", appInstanceId, appId, clusterId, namespaceId, stageId,
+                componentInstances.size());
 
         // 删除 application
         appInstance.setStatus(AppInstanceStatusEnum.DELETING.toString());
@@ -398,27 +400,21 @@ public class RtAppInstanceServiceImpl implements RtAppInstanceService {
                         .stageId(componentInstance.getStageId())
                         .build());
             } catch (AppException e) {
-                if (AppErrorCode.INVALID_USER_ARGS.equals(e.getErrorCode())) {
-                    log.info("cannot use component type handler to delete component instance, skip|componentType={}|" +
-                                    "componentName={}|componentInstanceId={}", componentType, componentName,
-                            componentInstanceId);
+                if (e.getErrorCode().equals(AppErrorCode.INVALID_USER_ARGS)) {
+                    log.warn("cannot use component type handler to delete component instance, skip|" +
+                                    "componentType={}|componentName={}|componentInstanceId={}|errorCode={}|" +
+                                    "errorMessage={}", componentType, componentName, componentInstanceId,
+                            e.getErrorCode(), e.getErrorMessage());
                 } else {
-                    log.warn("cannot use component type handler to delete component instance, skip|componentType={}|" +
-                                    "componentName={}|componentInstanceId={}|errorMessage={}", componentType,
-                            componentName, componentInstanceId, e.getErrorMessage());
+                    throw e;
                 }
-            } catch (Exception e) {
-                log.warn("cannot use component type handler to delete component instance, skip|componentType={}|" +
-                        "componentInstanceId={}|exception={}", componentType, componentInstanceId,
-                        ExceptionUtils.getStackTrace(e));
-            } finally {
-                rtComponentInstanceRepository.deleteByCondition(RtComponentInstanceQueryCondition.builder()
-                        .componentInstanceId(componentInstance.getComponentInstanceId())
-                        .build());
-                log.info("component instance has destroyed|componentInstanceId={}|appInstanceId={}|" +
-                                "componentInstance={}", componentInstanceId, appInstanceId,
-                        JSONObject.toJSONString(componentInstance));
             }
+            rtComponentInstanceRepository.deleteByCondition(RtComponentInstanceQueryCondition.builder()
+                    .componentInstanceId(componentInstance.getComponentInstanceId())
+                    .build());
+            log.info("component instance has destroyed|componentInstanceId={}|appInstanceId={}|" +
+                            "componentInstance={}", componentInstanceId, appInstanceId,
+                    JSONObject.toJSONString(componentInstance));
         }
         return rtAppInstanceRepository.deleteByCondition(condition);
     }

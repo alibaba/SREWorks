@@ -1,16 +1,19 @@
 package com.alibaba.tesla.appmanager.server.repository.domain;
 
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 实时组件实例表
  */
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -91,6 +94,11 @@ public class RtComponentInstanceDO {
      * 当前状态详情 (Yaml Array)
      */
     private String conditions;
+
+    /**
+     * 当前组件的 ComponentSchema YAML 存储
+     */
+    private String componentSchema;
 
     /**
      * 锁版本

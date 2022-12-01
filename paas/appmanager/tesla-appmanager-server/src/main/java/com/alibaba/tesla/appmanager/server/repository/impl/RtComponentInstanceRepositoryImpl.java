@@ -176,6 +176,9 @@ public class RtComponentInstanceRepositoryImpl implements RtComponentInstanceRep
                 criteria.andTimesBetween(condition.getTimesGreaterThan(), condition.getTimesLessThan());
             }
         }
+        if (condition.isEmptyComponentSchema()) {
+            criteria.andComponentSchemaIsNull();
+        }
         return example;
     }
 

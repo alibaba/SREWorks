@@ -20,6 +20,7 @@
     <result column="watch_kind" jdbcType="VARCHAR" property="watchKind" />
     <result column="times" jdbcType="BIGINT" property="times" />
     <result column="conditions" jdbcType="LONGVARCHAR" property="conditions" />
+    <result column="component_schema" jdbcType="LONGVARCHAR" property="componentSchema" />
     <result column="lock_version" jdbcType="INTEGER" property="lockVersion" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -116,7 +117,7 @@
     <!--@mbg.generated-->
     id, gmt_create, gmt_modified, component_instance_id, app_instance_id, app_id, component_type, 
     component_name, cluster_id, namespace_id, stage_id, version, `status`, watch_kind, 
-    times, conditions, lock_version
+    times, conditions, component_schema, lock_version
   </sql>
   <sql id="Join_Column_List">
     A.id, A.gmt_create, A.gmt_modified, A.component_instance_id, A.app_instance_id, A.app_id, A.component_type,
@@ -204,6 +205,9 @@
       <if test="conditions != null">
         conditions,
       </if>
+      <if test="componentSchema != null">
+        component_schema,
+      </if>
       <if test="lockVersion != null">
         lock_version,
       </if>
@@ -253,6 +257,9 @@
       </if>
       <if test="conditions != null">
         #{conditions,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="componentSchema != null">
+        #{componentSchema,jdbcType=LONGVARCHAR},
       </if>
       <if test="lockVersion != null">
         #{lockVersion,jdbcType=INTEGER},
@@ -316,6 +323,9 @@
       </if>
       <if test="record.conditions != null">
         conditions = #{record.conditions,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.componentSchema != null">
+        component_schema = #{record.componentSchema,jdbcType=LONGVARCHAR},
       </if>
       lock_version = lock_version + 1,
     </set>

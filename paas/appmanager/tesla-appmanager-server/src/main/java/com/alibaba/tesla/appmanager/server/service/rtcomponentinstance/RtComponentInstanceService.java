@@ -7,12 +7,29 @@ import com.alibaba.tesla.appmanager.server.repository.condition.RtComponentInsta
 import com.alibaba.tesla.appmanager.server.repository.domain.RtComponentInstanceDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.RtComponentInstanceHistoryDO;
 
+import java.util.List;
+
 /**
  * 组件实例服务
  *
  * @author yaoxing.gyx@alibaba-inc.com
  */
 public interface RtComponentInstanceService {
+
+    /**
+     * 刷新指定 records 中的 component_schema 字段
+     *
+     * @param records 组件实例列表
+     */
+    List<String> refreshComponentSchema(List<RtComponentInstanceDO> records);
+
+    /**
+     * 上报 ComponentSchema YAML 到组件实例对象中
+     *
+     * @param condition              组件实例定位条件
+     * @param componentSchemaYamlStr 需要上报的 ComponentSchema YAML 内容
+     */
+    void reportComponentSchema(RtComponentInstanceQueryCondition condition, String componentSchemaYamlStr);
 
     /**
      * 上报原始数据

@@ -95,6 +95,7 @@ public class OrphanComponentInstanceJob {
                         continue;
                     }
                     current.setAppInstanceId(appInstanceId);
+                    current.setComponentSchema(null);
                     componentInstanceService.reportRaw(current);
                     log.warn("change invalid component instance, update app instance id to {} from {}|" +
                                     "componentInstanceId={}|appId={}|clusterId={}|namespaceId={}|stageId={}",

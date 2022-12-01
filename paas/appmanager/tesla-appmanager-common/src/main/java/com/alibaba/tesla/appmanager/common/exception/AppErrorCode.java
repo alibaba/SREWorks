@@ -85,7 +85,12 @@ public enum AppErrorCode {
     /**
      * Groovy 脚本异常
      */
-    GROOVY_ERROR(10014, "GROOVY_ERROR");
+    GROOVY_ERROR(10014, "GROOVY_ERROR"),
+
+    /**
+     * DB 异常
+     */
+    DB_ERROR(10015, "DB_ERROR");
 
     private final int code;
     private final String description;

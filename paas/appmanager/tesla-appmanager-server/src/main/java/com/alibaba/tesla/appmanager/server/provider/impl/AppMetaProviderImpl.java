@@ -37,6 +37,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -186,6 +187,12 @@ public class AppMetaProviderImpl implements AppMetaProvider {
             return true;
         }
 
+        // 先删除所有的应用实例
+        if (request.getRemoveAllInstances() != null && request.getRemoveAllInstances()) {
+            log.info("action=appMetaProvider|prepare to remove all app instances|appId={}", appId);
+            removeAllAppInstances(appId);
+        }
+
         deleteAppMeta(appId);
         log.info("action=appMetaProvider|deleteAppMeta SUCCESS|appId={}", appId);
 
@@ -209,23 +216,20 @@ public class AppMetaProviderImpl implements AppMetaProvider {
 
         deleteAppPackage(appId);
         log.info("action=appMetaProvider|deleteAppPackage SUCCESS|appId={}", appId);
+        return true;
+    }
 
-        if (request.getRemoveAllInstances() != null && request.getRemoveAllInstances()) {
-            log.info("action=appMetaProvider|prepare to remove all app instances|appId={}", appId);
-            Pagination<RtAppInstanceDO> records = rtAppInstanceService.list(RtAppInstanceQueryCondition.builder()
-                    .appId(appId)
-                    .build());
-            if (!records.isEmpty()) {
-                records.getItems().forEach(item -> {
-                    rtAppInstanceService.delete(item.getAppInstanceId());
-                    log.info("action=appMetaProvider|deleteAppInstance SUCCESS|appId={}|appInstanceId={}",
-                            appId, item.getAppInstanceId());
-                });
+    @Transactional(rollbackFor = Exception.class)
+    public void removeAllAppInstances(String appId) {
+        Pagination<RtAppInstanceDO> records = rtAppInstanceService.list(RtAppInstanceQueryCondition.builder()
+                .appId(appId)
+                .build());
+        if (!records.isEmpty()) {
+            for (RtAppInstanceDO item : records.getItems()) {
+                rtAppInstanceService.delete(item.getAppInstanceId());
+                log.info("remove app instance successfully|appId={}|appInstanceId={}", appId, item.getAppInstanceId());
             }
         }
-        log.info("action=appMetaProvider|deleteAppInstance SUCCESS|all succeed|appId={}", appId);
-
-        return true;
     }
 
     private void deleteAppMeta(String appId) {

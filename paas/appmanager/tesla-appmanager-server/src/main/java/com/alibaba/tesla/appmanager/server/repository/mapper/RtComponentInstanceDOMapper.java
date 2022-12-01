@@ -2,10 +2,9 @@ package com.alibaba.tesla.appmanager.server.repository.mapper;
 
 import com.alibaba.tesla.appmanager.server.repository.domain.RtComponentInstanceDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.RtComponentInstanceDOExample;
+import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 @Mapper
 public interface RtComponentInstanceDOMapper {

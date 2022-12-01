@@ -42,7 +42,7 @@ public class WorkflowController extends AppManagerBaseController {
     @ResponseBody
     public TeslaBaseResult launch(
             @RequestParam("appId") String appId,
-            @RequestParam("category") String category,
+            @RequestParam(value = "category", required = false, defaultValue = "") String category,
             @RequestBody String body, OAuth2Authentication auth) {
         WorkflowInstanceOption options = WorkflowInstanceOption.builder()
                 .category(category)

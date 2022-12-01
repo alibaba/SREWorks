@@ -119,4 +119,9 @@ public class DefaultConstant {
      * 默认 Workflow 分类
      */
     public static final String WORKFLOW_CATEGORY = "DEFAULT";
+
+    /**
+     * DB 尝试重试最大次数
+     */
+    public static final Integer DB_RETRY_MAX_TIMES = 100;
 }

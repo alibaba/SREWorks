@@ -15,7 +15,9 @@
     "lint": "prettier --write \"**/src/**/*.js?(x)\"",
     "test": "jest",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "build:sequential": "yarn workspace @sreworks/shared-utils build && yarn workspace @sreworks/components build && yarn workspace @sreworks/widgets build && yarn workspace @sreworks/framework build && yarn workspace @sreworks/app build",
+    "start:sequential": "yarn workspace @sreworks/shared-utils build && yarn workspace @sreworks/components build && yarn workspace @sreworks/widgets build && yarn workspace @sreworks/framework build && yarn workspace @sreworks/app serve"
   },
   "devDependencies": {
     "@babel/cli": "7.18.10",

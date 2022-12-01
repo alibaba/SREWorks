@@ -23,7 +23,7 @@ let properties = {
   defaultStageId: 'dev',
   deployEnv: process.env.DEPLOY_ENV || 'local',
   platformName: 'SREWorks',
-  platformLogo: '/static/publicMedia/new_favicon.png',
+  platformLogo: '/static/icons/new_favicon.png',
 }
 
 /**

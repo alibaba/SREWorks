@@ -56,24 +56,22 @@ public class GitServiceImpl implements GitService {
 
             // Clone
             String repo = getAuthorizedRepo(request);
-            String cloneCommand;
+            String[] cloneCommand;
             if (StringUtils.isEmpty(request.getBranch())) {
                 if (request.isKeepGitFiles()) {
-                    cloneCommand = String.format("git clone --recursive %s %s", repo, tmpDir.toString());
+                    cloneCommand = new String[]{"git", "clone", "--recursive", repo, tmpDir.toString()};
                 } else {
-                    cloneCommand = String.format("git clone --recursive --depth 1 %s %s", repo, tmpDir.toString());
+                    cloneCommand = new String[]{"git clone --recursive --depth 1 %s %s", repo, tmpDir.toString()};
                 }
             } else {
                 if (request.isKeepGitFiles()) {
-                    cloneCommand = String.format("git clone --recursive -b %s %s %s",
-                            request.getBranch(), repo, tmpDir.toString());
+                    cloneCommand = new String[]{"git", "clone", "--recursive", "-b", request.getBranch(), repo, tmpDir.toString()};
                 } else {
-                    cloneCommand = String.format("git clone --recursive -b %s --depth 1 %s %s",
-                            request.getBranch(), repo, tmpDir.toString());
+                    cloneCommand = new String[]{"git", "clone", "--recursive", "-b", request.getBranch(), "--depth", "1", repo,  tmpDir.toString()};
                 }
             }
             logContent.append(String.format("run command: %s\n", cloneCommand));
-            logContent.append(CommandUtil.runLocalCommand(cloneCommand));
+            logContent.append(CommandUtil.runLocalCommand(cloneCommand, null));
 
             // 如果指定了特定的 commit，那么切换到对应的 commit
             if (!StringUtils.isEmpty(request.getCommit())) {
@@ -138,10 +136,12 @@ public class GitServiceImpl implements GitService {
                     .ciAccount(request.getCiAccount())
                     .ciToken(request.getCiToken())
                     .build());
+
             String command = String.format("cd %s; git clone -b %s --no-checkout --depth=1 --no-tags %s .; git restore " +
                 "--staged %s; git checkout %s", tmpDir.toString(), branch, repo, filepath, filepath);
             logContent.append(String.format("run command: %s\n", command));
             logContent.append(CommandUtil.runLocalCommand(command));
+
             return new String(Files.readAllBytes(Paths.get(tmpDir.toString(), filepath)));
         } catch (IOException e) {
             throw new AppException(AppErrorCode.UNKNOWN_ERROR, "cannot create temp directory", e);

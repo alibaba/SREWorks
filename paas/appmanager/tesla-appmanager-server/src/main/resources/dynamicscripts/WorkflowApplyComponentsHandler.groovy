@@ -44,7 +44,7 @@ class WorkflowApplyComponentsHandler implements WorkflowHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 3
+    public static final Integer REVISION = 4
 
     /**
      * 执行逻辑
@@ -62,10 +62,15 @@ class WorkflowApplyComponentsHandler implements WorkflowHandler {
 
         // 判断是否有取消执行的标志位，那么直接置为 terminate
         if (context.getBooleanValue(WorkflowContextKeyConstant.CANCEL_EXECUTION)) {
+            def terminateReason = context.getString(WorkflowContextKeyConstant.CANCEL_EXECUTION_REASON)
+            if (StringUtils.isEmpty(terminateReason)) {
+                terminateReason = "canceled by user"
+            }
             return ExecuteWorkflowHandlerRes.builder()
                     .context(context)
                     .configuration(request.getConfiguration())
                     .terminate(true)
+                    .terminateReason(terminateReason)
                     .build()
         }
 

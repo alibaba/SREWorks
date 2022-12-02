@@ -220,7 +220,7 @@ const config = {
             ],
           }
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} SREWorks | 浙公网安备: 33010002000092号 | ICP备案网站信息: 浙B2-20120091-4`,
+        copyright: `Copyright © ${new Date().getFullYear()} SREWorks | ICP备案网站信息: <a href="https://beian.miit.gov.cn/" target="_blank">浙ICP备12022327号</a>`,
       },
       prism: {
         theme: lightCodeTheme,

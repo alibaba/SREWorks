@@ -32,6 +32,25 @@ spec:
                 value: true
                 toFieldPaths:
                   - spec.ignoreCreateNamespace
+              - name: values
+                value:
+                  tolerations:
+                  - effect: NoSchedule
+                    key: sigma.ali/is-ecs
+                    operator: Exists
+                  - effect: NoSchedule
+                    key: sigma.ali/resource-pool
+                    operator: Equal
+                    value: sigma_public
+                  resources:
+                    limits:
+                      cpu: "1"
+                      memory: "2Gi"
+                  image:
+                    repository: "reg.docker.alibaba-inc.com/abm-aone/nginx"
+                    tag: "latest"
+                toFieldPaths:
+                - spec.values
   workflow:
     steps:
       - type: deploy

@@ -383,7 +383,11 @@ public class DeployAppHelper {
             WorkloadResource workload, DeployAppSchema.SpecComponent component, String appId, String componentName) {
         // namespace
         String namespaceId = component.getNamespaceId();
-        assert !StringUtils.isEmpty(namespaceId);
+        if (StringUtils.isEmpty(namespaceId)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("empty namespaceId in scopes, please check your application configuration|" +
+                            "appId=%s|componentName=%s", appId, componentName));
+        }
         workload.getMetadata().setNamespace(namespaceId);
 
         // stageId && name

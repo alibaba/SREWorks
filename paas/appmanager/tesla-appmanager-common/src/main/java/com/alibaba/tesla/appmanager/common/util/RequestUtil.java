@@ -111,7 +111,6 @@ public class RequestUtil {
     }
 
     public static <T> T get(String url, JSONObject params, JSONObject headers, Class<T> tClass) throws Exception {
-        log.info("GET_URL: {}, PARAMS: {}", url, params.toJSONString());
         String resp = get(url, params, headers);
         return transfer(resp, tClass);
     }

@@ -11,6 +11,16 @@
         </encoder>
     </appender>
 
+    <logger name="status" additivity="false">
+        <level value="ERROR" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+    <logger name="com.alibaba.tesla.appmanager.server.job" additivity="false">
+        <level value="ERROR" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
     </root>

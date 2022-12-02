@@ -65,6 +65,10 @@ const dependency_arr = [{
 {
     from: paths.appNodeModules + '/element-ui/lib/theme-chalk/index.css',
     to: paths.appBuild + '/common_vendor/element-ui/' + elementUIPath + '/index.css'
+},
+{
+    from: paths.appNodeModules + '/bizcharts/umd/BizCharts.min.js',
+    to: paths.appBuild + '/common_vendor/bizcharts/' + bizchartsPath + '/BizCharts.min.js'
 }
 ]
 // {
@@ -106,6 +110,10 @@ const dependency_arr_pre = [{
 {
     from: paths.appNodeModules + '/element-ui/lib/theme-chalk/index.css',
     to: paths.appPublic + '/common_vendor/element-ui/' + elementUIPath + '/index.css'
+},
+{
+    from: paths.appNodeModules + '/bizcharts/umd/BizCharts.min.js',
+    to: paths.appPublic + '/common_vendor/bizcharts/' + bizchartsPath + '/BizCharts.min.js'
 }
 ]
 dependency_arr_pre.forEach(item => {

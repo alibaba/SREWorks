@@ -8,6 +8,7 @@ import org.zeroturnaround.exec.ProcessResult;
 import org.zeroturnaround.exec.stop.DestroyProcessStopper;
 import org.zeroturnaround.exec.stream.slf4j.Slf4jStream;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -94,11 +95,53 @@ public class CommandUtil {
     /**
      * 在本机运行命令，并返回运行结果
      *
+     * @param commands 命令数组
+     * @param envMap  环境变量字典
+     * @return 命令执行结果
+     */
+    public static String runLocalCommand(String[] commands, Map<String, String> envMap, File pwd) {
+        try {
+            ProcessExecutor process = new ProcessExecutor()
+                    .command(commands)
+                    .environment(envMap)
+                    .redirectOutput(Slf4jStream.ofCaller().asInfo())
+                    .redirectErrorStream(true)
+                    .timeout(120, TimeUnit.MINUTES)
+                    .stopper(DestroyProcessStopper.INSTANCE)
+                    .readOutput(true);
+
+            if (pwd != null) {
+                process.directory(pwd);
+            }
+
+            ProcessResult result = process.execute();
+            int retCode = result.getExitValue();
+            String output = result.outputUTF8();
+            if (retCode != 0) {
+                throw new AppException(AppErrorCode.COMMAND_ERROR,
+                        String.format("action=runLocalCommand|command=%s|retCode=%d|output=%s",
+                                commands, retCode, output));
+            }
+            log.info("action=runLocalCommand|command={}|retCode={}", commands, retCode);
+            return output;
+        } catch (IOException | InterruptedException | TimeoutException e) {
+            throw new AppException(AppErrorCode.COMMAND_ERROR,
+                    String.format("action=runLocalCommand|command=%s", String.join(" ", commands)), e);
+        }
+    }
+
+    /**
+     * 在本机运行命令，并返回运行结果
+     *
      * @param command 命令
      * @return 命令执行结果
      */
     public static String runLocalCommand(String command) {
         return runLocalCommand(command, new HashMap<>());
+    }
+
+    public static String runLocalCommand(String[] commands, File pwd) {
+        return runLocalCommand(commands, new HashMap<>(), pwd);
     }
 
     /**

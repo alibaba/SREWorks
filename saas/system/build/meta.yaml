@@ -9,7 +9,7 @@ componentPackages:
     metadata:
       name: microservice-system-plugin-aliyun-cluster
       annotations:
-        annotations.appmanager.oam.dev/version: "4.0.6+20221116024020108126"
+        annotations.appmanager.oam.dev/version: "4.0.8+20221202081056122621"
       labels:
         labels.appmanager.oam.dev/appId: "system"
         labels.appmanager.oam.dev/componentName: "plugin-aliyun-cluster"
@@ -39,7 +39,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "4.0.6+20221116024020108126"
+            annotations.appmanager.oam.dev/version: "4.0.8+20221202081056122621"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -53,13 +53,13 @@ componentPackages:
             APPMANAGER_PACKAGE_SECRET_KEY: "{{ Global.APPMANAGER_PACKAGE_SECRET_KEY }}"
           initContainers:
           - name: "resource-upload"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/system-plugin-aliyun-cluster-resource-upload:1668566420764"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/system-plugin-aliyun-cluster-resource-upload:1669968656663"
           containers:
           - name: "plugin-aliyun-cluster"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/system-plugin-aliyun-cluster-plugin-aliyun-cluster:1668566420764"
-  packageMd5: b20caf7dd0c65bafaea0129d93efb200
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/system-plugin-aliyun-cluster-plugin-aliyun-cluster:1669968656663"
+  packageMd5: 8284b1166ee887d0a2b2da7de323dc71
   packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile-cluster-aliyun-with-resource-upload","ciAccount":"public","ciToken":"public","repoPath":"saas/system/api","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/build"},"name":"plugin-aliyun-cluster"}],"env":["APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL","APPMANAGER_PACKAGE_ENDPOINT","APPMANAGER_PACKAGE_ACCESS_KEY","APPMANAGER_PACKAGE_SECRET_KEY"],"initContainers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile-resource-upload","ciAccount":"public","ciToken":"public","repoPath":"saas/system/api","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/build"},"name":"resource-upload"}],"componentConfiguration":"revisionName: K8S_MICROSERVICE|plugin-aliyun-cluster|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: ''7001''\n      targetPort: 7001\n    labels:\n      pluginType: CLUSTER\n      accountType: aliyun\n- name: gateway.trait.abm.io\n  runtime: post\n  spec:\n    path: /system/plugin-aliyun-cluster/**\n    authEnabled: false\n    serviceName: ''{{ Global.STAGE_ID }}-system-plugin-aliyun-cluster.{{ Global.NAMESPACE_ID }}''\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 4.0.6+20221116024020108126
+  packageVersion: 4.0.8+20221202081056122621
   relativePath: K8S_MICROSERVICE_plugin-aliyun-cluster.zip
 - componentName: plugin-account-aliyun
   componentType: K8S_MICROSERVICE
@@ -70,7 +70,7 @@ componentPackages:
     metadata:
       name: microservice-system-plugin-account-aliyun
       annotations:
-        annotations.appmanager.oam.dev/version: "4.0.6+20221116024020799950"
+        annotations.appmanager.oam.dev/version: "4.0.8+20221202081056882426"
       labels:
         labels.appmanager.oam.dev/appId: "system"
         labels.appmanager.oam.dev/componentName: "plugin-account-aliyun"
@@ -100,7 +100,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "4.0.6+20221116024020799950"
+            annotations.appmanager.oam.dev/version: "4.0.8+20221202081056882426"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -109,10 +109,10 @@ componentPackages:
           replicas: 1
           containers:
           - name: "plugin-account-aliyun"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/system-plugin-account-aliyun-plugin-account-aliyun:1668566420764"
-  packageMd5: 6ebcd740025bee1ca0baed85fccbb6a8
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/system-plugin-account-aliyun-plugin-account-aliyun:1669968656663"
+  packageMd5: 19fcff5066e384e8915f7ee8e7cc071d
   packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"saas/system/api/plugin-teammanage-account-aliyun","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/build"},"name":"plugin-account-aliyun"}],"env":[],"componentConfiguration":"revisionName: K8S_MICROSERVICE|plugin-account-aliyun|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: ''7001''\n      targetPort: 7001\n    labels:\n      pluginType: ACCOUNT\n      accountType: aliyun\n- name: gateway.trait.abm.io\n  runtime: post\n  spec:\n    path: /system/plugin-account-aliyun/**\n    authEnabled: true\n    serviceName: ''{{ Global.STAGE_ID }}-system-plugin-account-aliyun.{{ Global.NAMESPACE_ID }}''\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 4.0.6+20221116024020799950
+  packageVersion: 4.0.8+20221202081056882426
   relativePath: K8S_MICROSERVICE_plugin-account-aliyun.zip
 - componentName: productopsv2
   componentType: INTERNAL_ADDON
@@ -123,7 +123,7 @@ componentPackages:
     metadata:
       name: microservice-system-productopsv2
       annotations:
-        annotations.appmanager.oam.dev/version: "1.0.4+20221116024020912493"
+        annotations.appmanager.oam.dev/version: "1.0.6+20221202081056911811"
       labels:
         labels.appmanager.oam.dev/appId: "system"
         labels.appmanager.oam.dev/componentName: "productopsv2"
@@ -153,15 +153,15 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "1.0.4+20221116024020912493"
+            annotations.appmanager.oam.dev/version: "1.0.6+20221202081056911811"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec:
           targetEndpoint: ''
-  packageMd5: a108f989d4ff1f950fd050c2c0a7fe49
+  packageMd5: a2d3574863985797fd4fc93264224f4c
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"componentConfiguration":"clusterId: ''''\ndataInputs: []\ndataOutputs: []\ndependencies: []\nnamespaceId: ''''\nparameterValues: []\nrevisionName: INTERNAL_ADDON|productopsv2|_\nscopes: []\nstageId: ''''\ntraits: []\n","isDevelop":true,"binderTraits":[]}'
-  packageVersion: 1.0.4+20221116024020912493
+  packageVersion: 1.0.6+20221202081056911811
   relativePath: INTERNAL_ADDON_productopsv2.zip
 - componentName: system-env@system-env
   componentType: RESOURCE_ADDON
@@ -204,9 +204,9 @@ componentPackages:
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec: {}
-  packageMd5: c334f2f38c1e786c00bd8fee7ea2a383
+  packageMd5: 0064adefe9144f82d745c1bcef37a542
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"componentConfiguration":"clusterId: ''''\ndataInputs: []\ndataOutputs:\n- fieldPath: ''{{ spec.env.DB_HOST }}''\n  name: Global.DB_HOST\n- fieldPath: ''{{ spec.env.DB_PASSWORD }}''\n  name: Global.DB_PASSWORD\n- fieldPath: ''{{ spec.env.DB_PORT }}''\n  name: Global.DB_PORT\n- fieldPath: ''{{ spec.env.DB_USER }}''\n  name: Global.DB_USER\n- fieldPath: ''{{ spec.env.APPMANAGER_ACCESS_ID }}''\n  name: Global.APPMANAGER_USERNAME\n- fieldPath: ''{{ spec.env.APPMANAGER_ACCESS_SECRET }}''\n  name: Global.APPMANAGER_PASSWORD\n- fieldPath: ''{{ spec.env.APPMANAGER_CLIENT_ID }}''\n  name: Global.APPMANAGER_CLIENT_ID\n- fieldPath: ''{{ spec.env.APPMANAGER_CLIENT_SECRET }}''\n  name: Global.APPMANAGER_CLIENT_SECRET\n- fieldPath: ''{{ spec.env.COOKIE_DOMAIN }}''\n  name: Global.COOKIE_DOMAIN\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ACCESS_KEY }}''\n  name: Global.APPMANAGER_PACKAGE_ACCESS_KEY\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_SECRET_KEY }}''\n  name: Global.APPMANAGER_PACKAGE_SECRET_KEY\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL }}''\n  name: Global.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT }}''\n  name: Global.APPMANAGER_PACKAGE_ENDPOINT\n- fieldPath: ''{{ spec.env.STORAGE_CLASS }}''\n  name: Global.STORAGE_CLASS\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_CLIENT_ID }}''\n  name: Global.ACCOUNT_SUPER_CLIENT_ID\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_CLIENT_SECRET }}''\n  name: Global.ACCOUNT_SUPER_CLIENT_SECRET\n- fieldPath: ''{{ spec.env.DATA_ES_PASSWORD }}''\n  name: Global.DATA_ES_PASSWORD\n- fieldPath: ''{{ spec.env.DATA_ES_USER }}''\n  name: Global.DATA_ES_USER\n- fieldPath: ''{{ spec.env.DATA_ES_HOST }}''\n  name: Global.DATA_ES_HOST\n- fieldPath: ''{{ spec.env.DATA_ES_PORT }}''\n  name: Global.DATA_ES_PORT\n- fieldPath: ''{{ spec.env.DATA_PROM_HOST }}''\n  name: Global.DATA_PROM_HOST\n- fieldPath: ''{{ spec.env.DATA_PROM_PORT }}''\n  name: Global.DATA_PROM_PORT\n- fieldPath: ''{{ spec.env.DATA_DB_PORT }}''\n  name: Global.DATA_DB_PORT\n- fieldPath: ''{{ spec.env.DATA_DB_HOST }}''\n  name: Global.DATA_DB_HOST\n- fieldPath: ''{{ spec.env.DATA_DB_USER }}''\n  name: Global.DATA_DB_USER\n- fieldPath: ''{{ spec.env.DATA_DB_PASSWORD }}''\n  name: Global.DATA_DB_PASSWORD\n- fieldPath: ''{{ spec.env.KAFKA_ENDPOINT }}''\n  name: Global.KAFKA_ENDPOINT\n- fieldPath: ''{{ spec.env.MINIO_ENDPOINT }}''\n  name: Global.MINIO_ENDPOINT\n- fieldPath: ''{{ spec.env.MINIO_ACCESS_KEY }}''\n  name: Global.MINIO_ACCESS_KEY\n- fieldPath: ''{{ spec.env.MINIO_SECRET_KEY }}''\n  name: Global.MINIO_SECRET_KEY\ndependencies: []\nnamespaceId: ''''\nparameterValues:\n- name: keys\n  toFieldPaths:\n  - spec.keys\n  value:\n  - DB_HOST\n  - DB_PASSWORD\n  - DB_PORT\n  - DB_USER\n  - APPMANAGER_ACCESS_ID\n  - APPMANAGER_ACCESS_SECRET\n  - APPMANAGER_CLIENT_ID\n  - APPMANAGER_CLIENT_SECRET\n  - COOKIE_DOMAIN\n  - APPMANAGER_PACKAGE_ACCESS_KEY\n  - APPMANAGER_PACKAGE_SECRET_KEY\n  - APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL\n  - APPMANAGER_PACKAGE_ENDPOINT\n  - STORAGE_CLASS\n  - ACCOUNT_SUPER_CLIENT_ID\n  - ACCOUNT_SUPER_CLIENT_SECRET\n  - DATA_ES_PASSWORD\n  - DATA_ES_USER\n  - DATA_ES_HOST\n  - DATA_ES_PORT\n  - DATA_PROM_HOST\n  - DATA_PROM_PORT\n  - DATA_DB_HOST\n  - DATA_DB_PORT\n  - DATA_DB_USER\n  - DATA_DB_PASSWORD\n  - KAFKA_ENDPOINT\n  - MINIO_ENDPOINT\n  - MINIO_ACCESS_KEY\n  - MINIO_SECRET_KEY\nrevisionName: RESOURCE_ADDON|system-env@system-env|1.0\nscopes: []\nstageId: ''''\ntraits: []\n","binderTraits":[]}'
-  packageVersion: 1.0.3+20221116024020964024
+  packageVersion: 1.0.5+20221202081056221619
   relativePath: RESOURCE_ADDON_system-env@system-env.zip
 - componentName: developmentmeta
   componentType: INTERNAL_ADDON
@@ -217,7 +217,7 @@ componentPackages:
     metadata:
       name: internal-addon-system-developmentmeta
       annotations:
-        annotations.appmanager.oam.dev/version: "1.0.4+20221116024020187486"
+        annotations.appmanager.oam.dev/version: "1.0.6+20221202081056902950"
       labels:
         labels.appmanager.oam.dev/appId: "system"
         labels.appmanager.oam.dev/componentName: "developmentmeta"
@@ -247,14 +247,14 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "1.0.4+20221116024020187486"
+            annotations.appmanager.oam.dev/version: "1.0.6+20221202081056902950"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec: {}
-  packageMd5: 451251206417b10c9670ba38e9e2d0bf
+  packageMd5: 00e899fc913e31fb2c8a3a0894096633
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
-  packageVersion: 1.0.4+20221116024020187486
+  packageVersion: 1.0.6+20221202081056902950
   relativePath: INTERNAL_ADDON_developmentmeta.zip
 - componentName: appmeta
   componentType: INTERNAL_ADDON
@@ -265,7 +265,7 @@ componentPackages:
     metadata:
       name: internal-addon-system-appmeta
       annotations:
-        annotations.appmanager.oam.dev/version: "1.0.4+20221116024020622699"
+        annotations.appmanager.oam.dev/version: "1.0.6+20221202081056712243"
       labels:
         labels.appmanager.oam.dev/appId: "system"
         labels.appmanager.oam.dev/componentName: "appmeta"
@@ -295,19 +295,19 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "1.0.4+20221116024020622699"
+            annotations.appmanager.oam.dev/version: "1.0.6+20221202081056712243"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec:
           overwriteIsDevelopment: false
           overwriteBuiltIn: false
-  packageMd5: 0f1bc8554e7c755b29b4b7759370a3f7
+  packageMd5: 77520267f1203fdc494a2d5d63e90bf1
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
-  packageVersion: 1.0.4+20221116024020622699
+  packageVersion: 1.0.6+20221202081056712243
   relativePath: INTERNAL_ADDON_appmeta.zip
 packageCreator: '999999999'
-packageVersion: 1.0.1+20221116025712502764
+packageVersion: 1.0.2+20221202082517429507
 tags:
 - release=sreworks/x86_64
 - on-sale

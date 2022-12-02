@@ -1,3 +1,10 @@
+/*
+ * @version: 2.0.0
+ * @Author: deeham.ww
+ * @Date: 2022-12-02 11:18:47
+ * @LastEditors: deeham.ww
+ * @LastEditTime: 2022-12-02 14:20:15
+ */
 import Loading from './components/Loading'
 import AceViewer from './components/AceViewer'
 import CardWrapper from './components/CardWrapper'
@@ -16,7 +23,6 @@ import GridCheckBox from './components/GridCheckBox'
 import JsonEditor from './components/JsonEditor'
 import NewJsonEditor from './components/NewJsonEditor'
 import JSXRender from './components/JSXRender'
-import Login from './components/Login'
 import NoticeBoardBar from './components/NoticeBoardBar'
 import NotifyCenter from './components/NotifyCenter'
 import PagingTable from './components/PagingTable'
@@ -45,7 +51,6 @@ export {
   GridCheckBox,
   JsonEditor,
   JSXRender,
-  Login,
   NoticeBoardBar,
   NotifyCenter,
   PagingTable,

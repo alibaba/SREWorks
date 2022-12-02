@@ -5559,9 +5559,9 @@ __metadata:
     "@babel/plugin-transform-runtime": 7.19.6
     "@babel/preset-env": 7.18.10
     "@babel/preset-react": 7.18.6
-    "@sreworks/components": ^0.0.0-alpha.0
-    "@sreworks/framework": ^0.0.0-alpha.0
-    "@sreworks/shared-utils": ^0.0.0-alpha.0
+    "@sreworks/components": ^0.0.0-alpha.1
+    "@sreworks/framework": ^0.0.0-alpha.1
+    "@sreworks/shared-utils": ^0.0.0-alpha.1
     antd: 4.17.4
     antd-theme-generator: 1.1.6
     babel-loader: 8.2.5
@@ -5633,7 +5633,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@sreworks/components@^0.0.0-alpha.0, @sreworks/components@workspace:packages/components":
+"@sreworks/components@^0.0.0-alpha.1, @sreworks/components@workspace:packages/components":
   version: 0.0.0-use.local
   resolution: "@sreworks/components@workspace:packages/components"
   dependencies:
@@ -5650,7 +5650,7 @@ __metadata:
     "@rollup/plugin-node-resolve": ^11.2.1
     "@rollup/plugin-replace": ^5.0.1
     "@rollup/plugin-url": ^8.0.0
-    "@sreworks/shared-utils": ^0.0.0-alpha.0
+    "@sreworks/shared-utils": ^0.0.0-alpha.1
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 12.1.5
     ace-diff: ^3.0.3
@@ -5712,7 +5712,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@sreworks/framework@^0.0.0-alpha.0, @sreworks/framework@workspace:packages/framework":
+"@sreworks/framework@^0.0.0-alpha.1, @sreworks/framework@workspace:packages/framework":
   version: 0.0.0-use.local
   resolution: "@sreworks/framework@workspace:packages/framework"
   dependencies:
@@ -5728,9 +5728,9 @@ __metadata:
     "@rollup/plugin-json": ^4.0.3
     "@rollup/plugin-replace": ^5.0.1
     "@rollup/plugin-url": ^8.0.0
-    "@sreworks/components": ^0.0.0-alpha.0
-    "@sreworks/shared-utils": ^0.0.0-alpha.0
-    "@sreworks/widgets": ^0.0.0-alpha.0
+    "@sreworks/components": ^0.0.0-alpha.1
+    "@sreworks/shared-utils": ^0.0.0-alpha.1
+    "@sreworks/widgets": ^0.0.0-alpha.1
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 12.1.5
     antd: 4.17.4
@@ -5842,7 +5842,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@sreworks/shared-utils@^0.0.0-alpha.0, @sreworks/shared-utils@workspace:packages/shared-utils":
+"@sreworks/shared-utils@^0.0.0-alpha.1, @sreworks/shared-utils@workspace:packages/shared-utils":
   version: 0.0.0-use.local
   resolution: "@sreworks/shared-utils@workspace:packages/shared-utils"
   dependencies:
@@ -5918,7 +5918,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@sreworks/widgets@^0.0.0-alpha.0, @sreworks/widgets@workspace:packages/widgets":
+"@sreworks/widgets@^0.0.0-alpha.1, @sreworks/widgets@workspace:packages/widgets":
   version: 0.0.0-use.local
   resolution: "@sreworks/widgets@workspace:packages/widgets"
   dependencies:
@@ -5935,8 +5935,8 @@ __metadata:
     "@rollup/plugin-node-resolve": ^11.2.1
     "@rollup/plugin-replace": ^5.0.1
     "@rollup/plugin-url": ^8.0.0
-    "@sreworks/components": ^0.0.0-alpha.0
-    "@sreworks/shared-utils": ^0.0.0-alpha.0
+    "@sreworks/components": ^0.0.0-alpha.1
+    "@sreworks/shared-utils": ^0.0.0-alpha.1
     "@svgr/webpack": 6.3.1
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 12.1.5

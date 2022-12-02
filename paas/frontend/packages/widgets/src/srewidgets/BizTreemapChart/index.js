@@ -3,7 +3,7 @@ import { safeEval, ChartTool } from '@sreworks/shared-utils'
 import { TreemapChart } from 'bizcharts'
 import _ from 'lodash'
 
-class BizTreemapChart extends Component {
+export default class BizTreemapChart extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -110,4 +110,3 @@ class BizTreemapChart extends Component {
     )
   }
 }
-export default BizTreemapChart

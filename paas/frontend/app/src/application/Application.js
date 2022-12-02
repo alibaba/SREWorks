@@ -7,11 +7,12 @@ import { connect } from 'dva'
 import { withRouter } from 'dva/router'
 import { Spin, Alert, Popover, Button, Space } from 'antd'
 import DefaultLayout from '../layouts/DefaultLayout'
-import { Loading, Login, JsonEditor } from '@sreworks/components'
+import { Loading, JsonEditor } from '@sreworks/components'
 import * as Home from '../layouts/Home/index'
 import { util, cacheRepository } from '@sreworks/shared-utils'
 import MenuTreeService from '../services/appMenuTreeService'
 import properties from '../properties'
+import Login from '../layouts/Login'
 
 @connect(({ node, global }) => ({
   nodeParams: node.nodeParams,

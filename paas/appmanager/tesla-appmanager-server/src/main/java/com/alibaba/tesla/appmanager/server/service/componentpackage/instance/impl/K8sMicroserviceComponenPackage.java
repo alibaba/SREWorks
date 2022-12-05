@@ -1,21 +1,5 @@
 package com.alibaba.tesla.appmanager.server.service.componentpackage.instance.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.annotation.PostConstruct;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.autoconfig.ImageBuilderProperties;
@@ -25,14 +9,7 @@ import com.alibaba.tesla.appmanager.common.enums.AppPackageTaskStatusEnum;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
-import com.alibaba.tesla.appmanager.common.util.CommandUtil;
-import com.alibaba.tesla.appmanager.common.util.ExceptionUtil;
-import com.alibaba.tesla.appmanager.common.util.FileUtil;
-import com.alibaba.tesla.appmanager.common.util.JsonUtil;
-import com.alibaba.tesla.appmanager.common.util.KanikoBuildCheckUtil;
-import com.alibaba.tesla.appmanager.common.util.PackageUtil;
-import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
-import com.alibaba.tesla.appmanager.common.util.StringUtil;
+import com.alibaba.tesla.appmanager.common.util.*;
 import com.alibaba.tesla.appmanager.domain.core.StorageFile;
 import com.alibaba.tesla.appmanager.server.event.componentpackage.FailedComponentPackageTaskEvent;
 import com.alibaba.tesla.appmanager.server.event.componentpackage.SucceedComponentPackageTaskEvent;
@@ -49,7 +26,6 @@ import com.alibaba.tesla.appmanager.server.service.componentpackage.instance.dto
 import com.alibaba.tesla.appmanager.server.service.componentpackage.instance.util.BuildUtil;
 import com.alibaba.tesla.appmanager.server.service.componentpackage.instance.util.RetryUtil;
 import com.alibaba.tesla.appmanager.server.storage.Storage;
-
 import com.hubspot.jinjava.Jinjava;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
@@ -69,6 +45,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @ClassName: K8sMicroserviceComponenPackage
@@ -486,8 +471,8 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
             }
         }
         String branch = String.valueOf(JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "branch")));
-        String gitCloneComannd = String.format("git clone -b %s %s %s", branch, gitHttpRep, localDir);
-        CommandUtil.runLocalCommand(gitCloneComannd);
+        String[] gitCloneCommand = new String[]{"git", "clone", "-b", branch, gitHttpRep, localDir};
+        CommandUtil.runLocalCommand(gitCloneCommand, null);
         Object commit = JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "commit"));
         if (commit != null) {
             String resetCommit = String.format("cd %s; git reset --hard %s", localDir, commit);

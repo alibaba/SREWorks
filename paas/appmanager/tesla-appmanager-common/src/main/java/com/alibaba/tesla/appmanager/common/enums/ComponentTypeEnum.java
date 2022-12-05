@@ -108,4 +108,17 @@ public enum ComponentTypeEnum {
     public static boolean isMicroserviceOrJob(String componentType) {
         return K8S_MICROSERVICE.toString().equals(componentType) || K8S_JOB.toString().equals(componentType);
     }
+
+    /**
+     * 返回指定的 componentType 是否为系统内置类型
+     *
+     * @param componentType Component Type
+     * @return true or false
+     */
+    public static boolean isSystemComponentType(String componentType) {
+        return INTERNAL_ADDON.toString().equals(componentType)
+                || RESOURCE_ADDON.toString().equals(componentType)
+                || CUSTOM_ADDON.toString().equals(componentType)
+                || TRAIT_ADDON.toString().equals(componentType);
+    }
 }

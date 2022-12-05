@@ -12,6 +12,7 @@ import com.alibaba.tesla.appmanager.domain.dto.DeployConfigDTO;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.*;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigApplyTemplateRes;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigGenerateRes;
+import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -61,6 +62,17 @@ public class DeployConfigProviderImpl implements DeployConfigProvider {
     @Override
     public DeployConfigGenerateRes generate(DeployConfigGenerateReq req) {
         return deployConfigService.generate(req);
+    }
+
+    /**
+     * 获取指定应用在指定环境中的默认 Application Configuration 模板
+     *
+     * @param req 请求参数 (全部参数必填项)
+     * @return Application Configuration
+     */
+    @Override
+    public DeployAppSchema getDefaultTemplate(DeployConfigGetDefaultTemplateReq req) {
+        return deployConfigService.getDefaultTemplate(req);
     }
 
     /**

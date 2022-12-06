@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.deployconfig.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
+import com.alibaba.tesla.appmanager.common.service.GitService;
 import com.alibaba.tesla.appmanager.deployconfig.repository.DeployConfigHistoryRepository;
 import com.alibaba.tesla.appmanager.deployconfig.repository.DeployConfigRepository;
 import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDO;
@@ -53,13 +54,17 @@ public class TestServiceDeployConfigGetDefaultTemplate {
     @Mock
     private DeployConfigHistoryRepository deployConfigHistoryRepository;
 
+    @Mock
+    private GitService gitService;
+
     private DeployConfigService deployConfigService;
 
     @Before
     public void before() {
         deployConfigService = Mockito.spy(new DeployConfigServiceImpl(
                 deployConfigRepository,
-                deployConfigHistoryRepository
+                deployConfigHistoryRepository,
+                gitService
         ));
     }
 

@@ -11,13 +11,17 @@ import com.alibaba.tesla.appmanager.common.util.StringUtil;
 import com.alibaba.tesla.appmanager.domain.dto.ContainerObjectDTO;
 import com.alibaba.tesla.appmanager.domain.req.git.GitCloneReq;
 import com.alibaba.tesla.appmanager.domain.req.git.GitFetchFileReq;
+import com.alibaba.tesla.appmanager.domain.req.git.GitUpdateFileReq;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -67,7 +71,7 @@ public class GitServiceImpl implements GitService {
                 if (request.isKeepGitFiles()) {
                     cloneCommand = new String[]{"git", "clone", "--recursive", "-b", request.getBranch(), repo, tmpDir.toString()};
                 } else {
-                    cloneCommand = new String[]{"git", "clone", "--recursive", "-b", request.getBranch(), "--depth", "1", repo,  tmpDir.toString()};
+                    cloneCommand = new String[]{"git", "clone", "--recursive", "-b", request.getBranch(), "--depth", "1", repo, tmpDir.toString()};
                 }
             }
             logContent.append(String.format("run command: %s\n", cloneCommand));
@@ -91,15 +95,15 @@ public class GitServiceImpl implements GitService {
             if (StringUtils.isNotEmpty(request.getRepoPath())) {
                 Path fromdir;
                 Path todir;
-                if(request.getRepoPath().startsWith("/")){
+                if (request.getRepoPath().startsWith("/")) {
                     fromdir = tmpDir.resolve(request.getRepoPath().substring(1));
-                }else{
+                } else {
                     fromdir = tmpDir.resolve(request.getRepoPath());
                 }
-                if(StringUtils.isNotEmpty(request.getRewriteRepoPath())){
+                if (StringUtils.isNotEmpty(request.getRewriteRepoPath())) {
                     todir = dir.resolve(request.getRewriteRepoPath());
                     FileUtils.moveDirectory(fromdir.toFile(), todir.toFile());
-                }else{
+                } else {
                     todir = dir.resolve(request.getRepoPath()).getParent();
                     FileUtils.moveDirectoryToDirectory(fromdir.toFile(), todir.toFile(), true);
                 }
@@ -138,7 +142,7 @@ public class GitServiceImpl implements GitService {
                     .build());
 
             String command = String.format("cd %s; git clone -b %s --no-checkout --depth=1 --no-tags %s .; git restore " +
-                "--staged %s; git checkout %s", tmpDir.toString(), branch, repo, filepath, filepath);
+                    "--staged %s; git checkout %s", tmpDir.toString(), branch, repo, filepath, filepath);
             logContent.append(String.format("run command: %s\n", command));
             logContent.append(CommandUtil.runLocalCommand(command));
 
@@ -153,6 +157,37 @@ public class GitServiceImpl implements GitService {
                 }
             }
         }
+    }
+
+    /**
+     * 更新远端 Git 仓库中的指定文件内容
+     *
+     * @param logContent 日志 StringBuilder
+     * @param request    更新文件请求
+     */
+    @Override
+    public void updateFile(StringBuilder logContent, GitUpdateFileReq request) {
+        Path cloneDir = request.getCloneDir();
+        String filePath = request.getFilePath();
+        String fileContent = request.getFileContent();
+        try {
+            File targetFile = Paths.get(cloneDir.toString(), filePath).toFile();
+            FileUtils.writeStringToFile(targetFile, fileContent, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new AppException(AppErrorCode.GIT_ERROR,
+                    String.format("cannot write file to git directory|appId=%s|filePath=%s|exception=%s",
+                            request.getAppId(), request.getFilePath(), ExceptionUtils.getStackTrace(e)));
+        }
+        String[] addCommand = new String[]{"git", "add", filePath};
+        String[] commitCommand = new String[]{
+                "git",
+                "commit",
+                "-m",
+                String.format("baseline file for %s app modified by %s", request.getAppId(), request.getOperator())
+        };
+
+        logContent.append(CommandUtil.runLocalCommand(addCommand, cloneDir.toFile()));
+        logContent.append(CommandUtil.runLocalCommand(commitCommand, cloneDir.toFile()));
     }
 
     /**

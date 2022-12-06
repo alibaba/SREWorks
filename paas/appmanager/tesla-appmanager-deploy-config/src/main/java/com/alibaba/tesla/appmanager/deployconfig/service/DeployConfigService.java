@@ -64,6 +64,13 @@ public interface DeployConfigService {
     DeployConfigGenerateRes generate(DeployConfigGenerateReq req);
 
     /**
+     * 将当前的 Application 同步到指定仓库基线中
+     *
+     * @param req 当前 Application 及目标仓库路径
+     */
+    void syncToGitBaseline(DeployConfigSyncToGitBaselineReq req);
+
+    /**
      * 获取当前的指定隔离环境下的全局模板清单
      *
      * @param apiVersion         API 版本

@@ -7,6 +7,7 @@ import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.common.service.GitService;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.deployconfig.repository.DeployConfigHistoryRepository;
 import com.alibaba.tesla.appmanager.deployconfig.repository.DeployConfigRepository;
@@ -20,17 +21,24 @@ import com.alibaba.tesla.appmanager.domain.container.DeployAppRevisionName;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigEnvId;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.*;
+import com.alibaba.tesla.appmanager.domain.req.git.GitCloneReq;
+import com.alibaba.tesla.appmanager.domain.req.git.GitUpdateFileReq;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigApplyTemplateRes;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigGenerateRes;
 import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
 import com.alibaba.tesla.dag.common.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -48,12 +56,15 @@ public class DeployConfigServiceImpl implements DeployConfigService {
 
     private final DeployConfigRepository deployConfigRepository;
     private final DeployConfigHistoryRepository deployConfigHistoryRepository;
+    private final GitService gitService;
 
     public DeployConfigServiceImpl(
             DeployConfigRepository deployConfigRepository,
-            DeployConfigHistoryRepository deployConfigHistoryRepository) {
+            DeployConfigHistoryRepository deployConfigHistoryRepository,
+            GitService gitService) {
         this.deployConfigRepository = deployConfigRepository;
         this.deployConfigHistoryRepository = deployConfigHistoryRepository;
+        this.gitService = gitService;
     }
 
     /**
@@ -238,6 +249,78 @@ public class DeployConfigServiceImpl implements DeployConfigService {
         return DeployConfigGenerateRes.builder()
                 .schema(schema)
                 .build();
+    }
+
+    /**
+     * 将当前的 Application 同步到指定仓库基线中
+     *
+     * @param req 当前 Application 及目标仓库路径
+     */
+    @Override
+    public void syncToGitBaseline(DeployConfigSyncToGitBaselineReq req) {
+        // clone 远端基线到本地
+        DeployAppSchema config = req.getConfiguration();
+        String appId = config.getMetadata().getAnnotations().getAppId();
+        StringBuilder logContent = new StringBuilder();
+        Path cloneDir;
+        try {
+            cloneDir = Files.createTempDirectory("appmanager_sync_to_git_baseline_clone_");
+        } catch (IOException e) {
+            throw new AppException(AppErrorCode.UNKNOWN_ERROR, "cannot create temp directory", e);
+        }
+        try {
+            gitService.cloneRepo(logContent, GitCloneReq.builder()
+                    .repo(req.getRepo())
+                    .branch(req.getBranch())
+                    .ciAccount(req.getCiAccount())
+                    .ciToken(req.getCiToken())
+                    .keepGitFiles(true)
+                    .build(), cloneDir);
+            log.info("git baseline has cloned|appId={}|repo={}|branch={}|filePath={}",
+                    appId, req.getRepo(), req.getBranch(), req.getFilePath());
+
+            // 解析仓库中的指定文件到 DeployAppSchema
+            Path filePath = Paths.get(cloneDir.toString(), req.getFilePath());
+            String remoteConfigStr = "";
+            DeployAppSchema remoteConfig = new DeployAppSchema();
+            if (Files.exists(filePath)) {
+                try {
+                    remoteConfigStr = Files.readString(filePath);
+                    remoteConfig = SchemaUtil.toSchema(DeployAppSchema.class, remoteConfigStr);
+                } catch (Exception e) {
+                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                            String.format("cannot parse remote application in git repo|appId=%s|repo=%s|branch=%s|" +
+                                            "filePath=%s|exception=%s", appId, req.getRepo(), req.getBranch(),
+                                    filePath, ExceptionUtils.getStackTrace(e)));
+                }
+            }
+
+            // 根据远端配置更新当前配置
+            config.copyFrom(remoteConfig);
+            String configStr = SchemaUtil.toYamlMapStr(config);
+            if (StringUtils.compare(configStr, remoteConfigStr) != 0) {
+                gitService.updateFile(logContent, GitUpdateFileReq.builder()
+                        .appId(appId)
+                        .cloneDir(cloneDir)
+                        .filePath(req.getFilePath())
+                        .fileContent(configStr)
+                        .operator(req.getOperator())
+                        .build());
+                log.info("remote config yaml has updated in git braseline|appId={}|repo={}|branch={}|filePath={}|" +
+                        "content={}", appId, req.getRepo(), req.getBranch(), req.getFilePath(), configStr);
+            } else {
+                log.info("no need to update remote config yaml in git braseline|appId={}|repo={}|branch={}|filePath={}",
+                        appId, req.getRepo(), req.getBranch(), req.getFilePath());
+            }
+        } finally {
+            try {
+                FileUtils.forceDelete(cloneDir.toFile());
+            } catch (Exception e) {
+                throw new AppException(AppErrorCode.UNKNOWN_ERROR,
+                        String.format("cannot delete clone dir %s|exception=%s",
+                                cloneDir.toString(), ExceptionUtils.getStackTrace(e)));
+            }
+        }
     }
 
     /**

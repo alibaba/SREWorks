@@ -307,8 +307,8 @@ options:
           NODE_IMAGE2: ${NODE_IMAGE2}
           APK_REPO_DOMAIN: ${APK_REPO_DOMAIN}
           NPM_REGISTRY_URL: ${NPM_REGISTRY_URL}
-        dockerfileTemplate: Dockerfile_standalone.tpl
-        repoPath: paas/sw-frontend
+        dockerfileTemplate: app/Dockerfile
+        repoPath: paas/frontend
         branch: ${SOURCE_BRANCH}
         repo: ${SOURCE_REPO}
         ciAccount: ${SOURCE_CI_ACCOUNT}

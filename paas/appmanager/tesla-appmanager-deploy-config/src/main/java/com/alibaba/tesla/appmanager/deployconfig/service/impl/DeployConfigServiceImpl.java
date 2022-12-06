@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.ProductReleaseProvider;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
+import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
@@ -14,6 +15,7 @@ import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConf
 import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDO;
 import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigHistoryDO;
 import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
+import com.alibaba.tesla.appmanager.domain.container.AppComponentLocationContainer;
 import com.alibaba.tesla.appmanager.domain.container.DeployAppRevisionName;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigEnvId;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
@@ -259,8 +261,287 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                 isolateNamespaceId, isolateStageId, productId, releaseId);
     }
 
-    public void getGlobalTemplate(String isolateNamespaceId, String isolateStageId) {
+    /**
+     * 获取当前的指定隔离环境下的全局模板清单
+     *
+     * @param apiVersion         API 版本
+     * @param envId              目标环境 ID
+     * @param isolateNamespaceId 隔离 Namespace ID
+     * @param isolateStageId     隔离 Stage ID
+     * @return Deploy Config 记录列表 (如果当前全局模板不合法则抛出异常)
+     */
+    @Override
+    public List<DeployConfigDO> getGlobalTemplate(
+            String apiVersion, String envId, String isolateNamespaceId, String isolateStageId) {
+        DeployConfigQueryCondition condition = DeployConfigQueryCondition.builder()
+                .apiVersion(apiVersion)
+                .appId("")
+                .enabled(true)
+                .envId(envId)
+                .isolateNamespaceId(isolateNamespaceId)
+                .isolateStageId(isolateStageId)
+                .build();
+        List<DeployConfigDO> records = deployConfigRepository.selectByCondition(condition);
+        for (DeployConfigDO record : records) {
+            if (record.getInherit()) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                        String.format("inherit is forbidden in global template|record=%s",
+                                JSONObject.toJSONString(record)));
+            }
+        }
+        String conflictTypeId = getConflictGlobalTemplateTypeId(records);
+        if (StringUtils.isNotEmpty(conflictTypeId)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("conflict global template in deploy config|envId=%s|isolateNamespaceId=%s|" +
+                            "isolateStageId=%s|typeId=%s", envId, isolateNamespaceId, isolateStageId, conflictTypeId));
+        }
+        return records;
+    }
 
+    /**
+     * 获取指定应用在指定环境中的默认 Application Configuration 模板
+     *
+     * @param req 请求参数 (全部参数必填项)
+     * @return Application Configuration
+     */
+    @Override
+    public DeployAppSchema getDefaultTemplate(DeployConfigGetDefaultTemplateReq req) {
+        // 以下变量用于定位全局模板
+        String apiVersion = req.getApiVersion();
+        String envId = req.getEnvId();
+        String isolateNamespaceId = req.getIsolateNamespaceId();
+        String isolateStageId = req.getIsolateStageId();
+        // 以下变量用于生成模板
+        String appId = req.getAppId();
+        String unitId = req.getUnitId();
+        String clusterId = req.getClusterId();
+        String namespaceId = req.getNamespaceId();
+        String stageId = req.getStageId();
+        List<AppComponentLocationContainer> appComponentContainers = req.getAppComponents();
+        if (StringUtils.isAnyEmpty(apiVersion, envId, isolateNamespaceId, isolateStageId,
+                appId, unitId, clusterId, namespaceId, stageId)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "apiVersion/envId/isolateNamespaceId/" +
+                    "isolateStageId/appId/unitId/clusterId/namespaceId/stageId are required");
+        }
+
+        // 根据当前的全局模板生成 Application Configuration
+        DeployConfigGenerateReq deployConfigGenerateRequest = DeployConfigGenerateReq.builder()
+                .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                .appId(appId)
+                .unitId(unitId)
+                .clusterId(clusterId)
+                .namespaceId(namespaceId)
+                .stageId(stageId)
+                .build();
+        DeployAppSchema schema = emptyDeployAppSchema(deployConfigGenerateRequest);
+        List<DeployConfigDO> records = getGlobalTemplate(apiVersion, envId, isolateNamespaceId, isolateStageId);
+
+        // 根据全局模板组装生成当前的应用级的默认模板
+        // step==0 非 traits 类型组装, step==1 traits 类型组装 (step==1 依赖 step==0 完成)
+        for (int step = 0; step < 2; step++) {
+            for (DeployConfigDO current : records) {
+                String typeId = current.getTypeId();
+                DeployConfigTypeId typeIdObj = DeployConfigTypeId.valueOf(typeId);
+                if (step == 0 && DeployConfigTypeId.TYPE_TRAITS.equals(typeIdObj.getType())) {
+                    continue;
+                } else if (step == 1 && !DeployConfigTypeId.TYPE_TRAITS.equals(typeIdObj.getType())) {
+                    continue;
+                }
+
+                String config = current.getConfig();
+                switch (typeIdObj.getType()) {
+                    case DeployConfigTypeId.TYPE_PARAMETER_VALUES: {
+                        if (StringUtils.isEmpty(config)) {
+                            schema.getSpec().setParameterValues(new ArrayList<>());
+                        } else {
+                            schema.getSpec().setParameterValues(
+                                    SchemaUtil.toSchemaList(DeployAppSchema.ParameterValue.class, config));
+                        }
+                        break;
+                    }
+                    case DeployConfigTypeId.TYPE_COMPONENTS: {
+                        String componentType = typeIdObj.getAttr(DeployConfigTypeId.ATTR_COMPONENT_TYPE);
+                        String componentName = typeIdObj.getAttr(DeployConfigTypeId.ATTR_COMPONENT_NAME);
+                        if (ComponentTypeEnum.isSystemComponentType(componentType)) {
+                            // 系统内置类型组件，只需要对自身进行配置加载
+                            if (StringUtils.isEmpty(componentName)) {
+                                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                        String.format("componentName is required in current component type %s",
+                                                componentType));
+                            }
+
+                            DeployAppSchema.SpecComponent component;
+                            if (StringUtils.isNotEmpty(config)) {
+                                component = SchemaUtil.toSchema(DeployAppSchema.SpecComponent.class, config);
+                            } else {
+                                component = new DeployAppSchema.SpecComponent();
+                            }
+                            component.setIdentifier(componentType, componentName);
+                            component = enrichComponentScopes(deployConfigGenerateRequest, component);
+                            schema.getSpec().getComponents().add(component);
+                        } else {
+                            // 用户定义类型组件，需要对当前组件的所有实例进行扫描，并扩展到所有对象
+                            if (StringUtils.isNotEmpty(componentName)) {
+                                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                        String.format("componentName is not allowed in current component type %s",
+                                                componentType));
+                            }
+
+                            for (AppComponentLocationContainer container : appComponentContainers) {
+                                if (!componentType.equals(container.getComponentType())) {
+                                    continue;
+                                }
+
+                                DeployAppSchema.SpecComponent component;
+                                if (StringUtils.isNotEmpty(config)) {
+                                    component = SchemaUtil.toSchema(DeployAppSchema.SpecComponent.class, config);
+                                } else {
+                                    component = new DeployAppSchema.SpecComponent();
+                                }
+                                component.setIdentifier(container.getComponentType(), container.getComponentName());
+                                component = enrichComponentScopes(deployConfigGenerateRequest, component);
+                                schema.getSpec().getComponents().add(component);
+                            }
+                        }
+                        break;
+                    }
+                    case DeployConfigTypeId.TYPE_TRAITS: {
+                        String componentType = typeIdObj.getAttr(DeployConfigTypeId.ATTR_COMPONENT_TYPE);
+                        String componentName = typeIdObj.getAttr(DeployConfigTypeId.ATTR_COMPONENT_NAME);
+                        String traitName = typeIdObj.getAttr(DeployConfigTypeId.ATTR_TRAIT);
+                        if (StringUtils.isAnyEmpty(componentType, traitName)) {
+                            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                    String.format("invalid trait typeId found, ComponentType/Trait are required|" +
+                                            "typeId=%s", typeId));
+                        }
+                        DeployAppSchema.SpecComponentTrait trait = SchemaUtil
+                                .toSchema(DeployAppSchema.SpecComponentTrait.class, config);
+                        trait.setName(traitName);
+                        if (StringUtils.isEmpty(trait.getRuntime())) {
+                            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                    "the field 'runtime' is required in trait deploy config");
+                        }
+                        boolean componentFound = false;
+                        for (DeployAppSchema.SpecComponent specComponent : schema.getSpec().getComponents()) {
+                            DeployAppRevisionName revisionName = DeployAppRevisionName
+                                    .valueOf(specComponent.getRevisionName());
+
+                            if (ComponentTypeEnum.isSystemComponentType(componentType)) {
+                                // 系统内置类型组件，只需要对自身进行配置加载
+                                if (StringUtils.isEmpty(componentName)) {
+                                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                            String.format("componentName is required in current component type %s",
+                                                    componentType));
+                                }
+                                if (componentType.equalsIgnoreCase(revisionName.getComponentType())
+                                        && componentName.equals(revisionName.getComponentName())) {
+                                    componentFound = true;
+                                    for (DeployAppSchema.SpecComponentTrait specComponentTrait
+                                            : specComponent.getTraits()) {
+                                        if (traitName.equals(specComponentTrait.getName())) {
+                                            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                                    String.format("conflict trait deploy config, which already " +
+                                                            "exists at the component level|typeId=%s", typeId));
+                                        }
+                                    }
+                                    specComponent.getTraits().add(trait);
+                                }
+                            } else {
+                                // 用户定义类型组件，需要对当前组件的所有实例进行扫描，并扩展到所有对象
+                                if (StringUtils.isNotEmpty(componentName)) {
+                                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                            String.format("componentName is not allowed in current component type %s",
+                                                    componentType));
+                                }
+                                if (componentType.equalsIgnoreCase(revisionName.getComponentType())) {
+                                    componentFound = true;
+                                    for (DeployAppSchema.SpecComponentTrait specComponentTrait
+                                            : specComponent.getTraits()) {
+                                        if (traitName.equals(specComponentTrait.getName())) {
+                                            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                                    String.format("conflict trait deploy config, which already " +
+                                                            "exists at the component level|typeId=%s", typeId));
+                                        }
+                                    }
+                                    specComponent.getTraits().add(trait);
+                                }
+                            }
+                        }
+                        if (!componentFound) {
+                            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                    String.format("cannot find related component when processing trait " +
+                                            "deploy config|typeId=%s", typeId));
+                        }
+                        break;
+                    }
+                    case DeployConfigTypeId.TYPE_POLICIES: {
+                        if (StringUtils.isEmpty(config)) {
+                            schema.getSpec().setPolicies(new ArrayList<>());
+                        } else {
+                            schema.getSpec().setPolicies(SchemaUtil.toSchemaList(DeployAppSchema.Policy.class, config));
+                        }
+                        break;
+                    }
+                    case DeployConfigTypeId.TYPE_WORKFLOW: {
+                        if (StringUtils.isEmpty(config)) {
+                            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                    "empty workflow config is now allowed");
+                        } else {
+                            schema.getSpec().setWorkflow(SchemaUtil.toSchema(DeployAppSchema.Workflow.class, config));
+                        }
+                        break;
+                    }
+                    default:
+                        break;
+                }
+            }
+        }
+        return schema;
+    }
+
+    /**
+     * 检查给定的 Deploy Config 记录是否满足不冲突的前提条件
+     *
+     * @param records Deploy Config 记录
+     * @return true or false (valid or not)
+     */
+    private String getConflictGlobalTemplateTypeId(List<DeployConfigDO> records) {
+        Set<String> usedSet = new HashSet<>();
+        for (DeployConfigDO record : records) {
+            if (usedSet.contains(record.getTypeId())) {
+                return record.getTypeId();
+            }
+            usedSet.add(record.getTypeId());
+        }
+        return null;
+    }
+
+    /**
+     * 生成一个新的 Application Configuration 模板
+     *
+     * @param req 生成配置请求
+     * @return 空的 DeployAppSchema
+     */
+    private DeployAppSchema emptyDeployAppSchema(DeployConfigGenerateReq req) {
+        DeployAppSchema schema = new DeployAppSchema();
+        schema.setApiVersion(req.getApiVersion());
+        schema.setKind("ApplicationConfiguration");
+        schema.setMetadata(DeployAppSchema.MetaData.builder()
+                .name(req.getAppId())
+                .annotations(DeployAppSchema.MetaDataAnnotations.builder()
+                        .unitId(req.getUnitId())
+                        .clusterId(req.getClusterId())
+                        .namespaceId(req.getNamespaceId())
+                        .stageId(req.getStageId())
+                        .appId(req.getAppId())
+                        .appInstanceName(req.getAppInstanceName())
+                        .appPackageId(req.getAppPackageId())
+                        .build())
+                .build());
+        schema.setSpec(new DeployAppSchema.Spec());
+        schema.getSpec().setParameterValues(new ArrayList<>());
+        schema.getSpec().setComponents(new ArrayList<>());
+        return schema;
     }
 
     /**
@@ -279,26 +560,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
         String isolateNamespaceId = req.getIsolateNamespaceId();
         String isolateStageId = req.getIsolateStageId();
 
-        DeployAppSchema schema = new DeployAppSchema();
-        schema.setApiVersion(apiVersion);
-        schema.setKind("ApplicationConfiguration");
-        schema.setMetadata(DeployAppSchema.MetaData.builder()
-                .name(appId)
-                .annotations(DeployAppSchema.MetaDataAnnotations.builder()
-                        .unitId(unitId)
-                        .clusterId(clusterId)
-                        .namespaceId(namespaceId)
-                        .stageId(stageId)
-                        .appId(appId)
-                        .appInstanceName(req.getAppInstanceName())
-                        .appPackageId(req.getAppPackageId())
-                        .build())
-                .build());
-        schema.setSpec(new DeployAppSchema.Spec());
-        schema.getSpec().setParameterValues(new ArrayList<>());
-        schema.getSpec().setComponents(new ArrayList<>());
-
         // 组装每个 type 到 schema 中
+        DeployAppSchema schema = emptyDeployAppSchema(req);
         List<DeployConfigDO> appRecords = deployConfigRepository.selectByCondition(
                 DeployConfigQueryCondition.builder()
                         .apiVersion(apiVersion)

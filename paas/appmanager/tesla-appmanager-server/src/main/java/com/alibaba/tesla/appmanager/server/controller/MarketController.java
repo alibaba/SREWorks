@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.AppMetaProvider;
 import com.alibaba.tesla.appmanager.api.provider.AppPackageProvider;
+import com.alibaba.tesla.appmanager.api.provider.DeployConfigProvider;
 import com.alibaba.tesla.appmanager.api.provider.MarketProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
+import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.util.NetworkUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.dto.AppPackageDTO;
@@ -14,6 +16,7 @@ import com.alibaba.tesla.appmanager.domain.dto.MarketPackageDTO;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaUpdateReq;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.AppPackageImportReq;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.AppPackageQueryReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpsertReq;
 import com.alibaba.tesla.appmanager.domain.req.market.*;
 import com.alibaba.tesla.appmanager.domain.schema.AppPackageSchema;
 import com.alibaba.tesla.appmanager.server.storage.impl.OssStorage;
@@ -60,6 +63,8 @@ public class MarketController extends AppManagerBaseController {
     @Autowired
     private AppMetaProvider appMetaProvider;
 
+    @Autowired
+    private DeployConfigProvider deployConfigProvider;
 
     @GetMapping(value = "/apps")
     public TeslaBaseResult listApp(MarketAppListReq request) {
@@ -161,6 +166,7 @@ public class MarketController extends AppManagerBaseController {
                 remoteAppId, request.getRemoteSimplePackageVersion());
         marketPackage.setAppName(appPackageInfo.getAppName());
         marketPackage.setAppOptions(appPackageInfo.getAppOptions());
+        marketPackage.setAppPackageId(request.getAppPackageId());
         marketPackage.setAppSchemaObject(SchemaUtil.toSchema(AppPackageSchema.class, appPackageInfo.getAppSchema()));
 
         JSONObject result = new JSONObject();
@@ -257,6 +263,30 @@ public class MarketController extends AppManagerBaseController {
                     URLEncoder.encode(packageUrl, StandardCharsets.UTF_8));
         } else {
             return buildClientErrorResult("not support");
+        }
+
+        // 获取到ApplicationConfiguration之后解析出APP级别的paramValues并注入
+        try{
+            String applicationConfigurationUrl = downloadUrl.replace(".zip", ".json");
+            File localApplicationConfigurationFile = Files.createTempFile("applicationConfiguration", ".yaml").toFile();
+            NetworkUtil.download(applicationConfigurationUrl, localApplicationConfigurationFile.getAbsolutePath());
+
+            String appJson = FileUtils.readFileToString(localApplicationConfigurationFile.toPath().toFile(), StandardCharsets.UTF_8);
+            JSONObject appJsonObject = JSONObject.parseObject(appJson);
+            if(appJsonObject.getJSONArray("Type:parameterValues") != null) {
+                DeployConfigUpsertReq deployConfigUpdateRequest = DeployConfigUpsertReq.builder()
+                .appId(request.getAppId())
+                .typeId("Type:parameterValues")
+                .envId("")
+                .configJsonArray(appJsonObject.getJSONArray("Type:parameterValues"))
+                .isolateNamespaceId("sreworks")
+                .isolateStageId("dev")
+                .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2).build();
+                deployConfigProvider.upsert(deployConfigUpdateRequest);
+            }
+
+        }catch (Exception exception){
+            log.info("appId {} downloadUrl:{} not found {}", request.getAppId(), downloadUrl, exception);
         }
 
         File localPackageFile = Files.createTempFile("market", ".zip").toFile();

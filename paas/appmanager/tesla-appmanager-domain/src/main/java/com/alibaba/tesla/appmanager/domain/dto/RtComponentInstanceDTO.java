@@ -93,4 +93,9 @@ public class RtComponentInstanceDTO {
      * 当前状态详情 (Yaml Array)
      */
     private JSONArray conditions;
+
+    /**
+     * 当前组件的 ComponentSchema YAML 存储
+     */
+    private String componentSchema;
 }

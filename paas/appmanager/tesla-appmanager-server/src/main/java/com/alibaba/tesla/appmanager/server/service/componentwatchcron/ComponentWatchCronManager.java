@@ -432,6 +432,7 @@ public class ComponentWatchCronManager {
                         .getIfPresent(ComponentInstanceStatusEnum.class, componentInstance.getStatus()).orNull());
                 componentInstance.setStatus(status.toString());
                 componentInstance.setConditions(JSONArray.toJSONString(conditions));
+                componentInstance.setComponentSchema(null);
                 if (componentInstance.getTimes() != null) {
                     if (becomeUnstable) {
                         log.info("unstable status changes detected, prepare to set times to 0 to query status " +

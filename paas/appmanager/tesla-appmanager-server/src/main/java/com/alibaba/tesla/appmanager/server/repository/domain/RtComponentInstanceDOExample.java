@@ -1185,6 +1185,76 @@ public class RtComponentInstanceDOExample {
             return (Criteria) this;
         }
 
+        public Criteria andComponentSchemaIsNull() {
+            addCriterion("component_schema is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andComponentSchemaIsNotNull() {
+            addCriterion("component_schema is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andComponentSchemaEqualTo(String value) {
+            addCriterion("component_schema =", value, "componentSchema");
+            return (Criteria) this;
+        }
+
+        public Criteria andComponentSchemaNotEqualTo(String value) {
+            addCriterion("component_schema <>", value, "componentSchema");
+            return (Criteria) this;
+        }
+
+        public Criteria andComponentSchemaGreaterThan(String value) {
+            addCriterion("component_schema >", value, "componentSchema");
+            return (Criteria) this;
+        }
+
+        public Criteria andComponentSchemaGreaterThanOrEqualTo(String value) {
+            addCriterion("component_schema >=", value, "componentSchema");
+            return (Criteria) this;
+        }
+
+        public Criteria andComponentSchemaLessThan(String value) {
+            addCriterion("component_schema <", value, "componentSchema");
+            return (Criteria) this;
+        }
+
+        public Criteria andComponentSchemaLessThanOrEqualTo(String value) {
+            addCriterion("component_schema <=", value, "componentSchema");
+            return (Criteria) this;
+        }
+
+        public Criteria andComponentSchemaLike(String value) {
+            addCriterion("component_schema like", value, "componentSchema");
+            return (Criteria) this;
+        }
+
+        public Criteria andComponentSchemaNotLike(String value) {
+            addCriterion("component_schema not like", value, "componentSchema");
+            return (Criteria) this;
+        }
+
+        public Criteria andComponentSchemaIn(List<String> values) {
+            addCriterion("component_schema in", values, "componentSchema");
+            return (Criteria) this;
+        }
+
+        public Criteria andComponentSchemaNotIn(List<String> values) {
+            addCriterion("component_schema not in", values, "componentSchema");
+            return (Criteria) this;
+        }
+
+        public Criteria andComponentSchemaBetween(String value1, String value2) {
+            addCriterion("component_schema between", value1, value2, "componentSchema");
+            return (Criteria) this;
+        }
+
+        public Criteria andComponentSchemaNotBetween(String value1, String value2) {
+            addCriterion("component_schema not between", value1, value2, "componentSchema");
+            return (Criteria) this;
+        }
+
         public Criteria andLockVersionIsNull() {
             addCriterion("lock_version is null");
             return (Criteria) this;

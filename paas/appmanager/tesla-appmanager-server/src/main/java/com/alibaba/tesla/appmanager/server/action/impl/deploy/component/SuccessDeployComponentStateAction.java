@@ -1,11 +1,15 @@
 package com.alibaba.tesla.appmanager.server.action.impl.deploy.component;
 
+import com.alibaba.tesla.appmanager.common.enums.DeployComponentAttrTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentEventEnum;
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentStateEnum;
+import com.alibaba.tesla.appmanager.domain.container.DeployAppRevisionName;
 import com.alibaba.tesla.appmanager.server.action.DeployComponentStateAction;
 import com.alibaba.tesla.appmanager.server.event.deploy.DeployComponentEvent;
 import com.alibaba.tesla.appmanager.server.event.loader.DeployComponentStateActionLoadedEvent;
+import com.alibaba.tesla.appmanager.server.repository.condition.RtComponentInstanceQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.DeployComponentDO;
+import com.alibaba.tesla.appmanager.server.service.rtcomponentinstance.RtComponentInstanceService;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
@@ -42,6 +46,9 @@ public class SuccessDeployComponentStateAction implements DeployComponentStateAc
     @Autowired
     private MeterRegistry meterRegistry;
 
+    @Autowired
+    private RtComponentInstanceService componentInstanceService;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         timer = meterRegistry.timer("deploy.component.status.success.timer");
@@ -58,6 +65,25 @@ public class SuccessDeployComponentStateAction implements DeployComponentStateAc
      */
     @Override
     public void run(DeployComponentDO subOrder, Map<String, String> attrMap) {
+        // 成功后将 ComponentSchema 数据写入到组件实例表中
+        String appId = subOrder.getAppId();
+        DeployAppRevisionName revisionName = DeployAppRevisionName.valueOf(subOrder.getIdentifier());
+        String componentType = revisionName.getComponentType();
+        String componentName = revisionName.getComponentName();
+        String clusterId = subOrder.getClusterId();
+        String namespaceId = subOrder.getNamespaceId();
+        String stageId = subOrder.getStageId();
+        String componentSchemaYamlStr = attrMap.get(DeployComponentAttrTypeEnum.COMPONENT_SCHEMA.toString());
+        componentInstanceService.reportComponentSchema(RtComponentInstanceQueryCondition.builder()
+                .appId(appId)
+                .componentType(componentType)
+                .componentName(componentName)
+                .clusterId(clusterId)
+                .namespaceId(namespaceId)
+                .stageId(stageId)
+                .build(), componentSchemaYamlStr);
+
+        // 计算消耗时间
         String cost = subOrder.costTime();
         if (StringUtils.isNumeric(cost)) {
             timer.record(Long.parseLong(cost), TimeUnit.MILLISECONDS);

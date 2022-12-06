@@ -451,6 +451,15 @@ public class DeployAppSchema implements Schema, Serializable {
         private List<ParameterValue> parameterValues = new ArrayList<>();
 
         /**
+         * 通用: 设置 Identifier
+         * @param componentType Component Type
+         * @param componentName Component Name
+         */
+        public void setIdentifier(String componentType, String componentName) {
+            revisionName = String.format("%s|%s|%s", componentType, componentName, "_");
+        }
+
+        /**
          * 获取唯一定位 ID
          *
          * @return 唯一定位 ID

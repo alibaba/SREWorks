@@ -54,4 +54,6 @@ public class RtComponentInstanceQueryCondition extends BaseCondition {
     private String optionKey;
 
     private String optionValue;
+
+    private boolean emptyComponentSchema;
 }

@@ -55,4 +55,9 @@ public class MarketPackageDTO implements Serializable {
      */
     private AppPackageSchema appSchemaObject;
 
+    /**
+     * 应用包ID
+     */
+    private Long appPackageId;
+
 }

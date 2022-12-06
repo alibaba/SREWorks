@@ -4,7 +4,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
     && apk add --update --no-cache zip
 RUN ls -l /app/
 RUN /usr/local/bin/yarn --version
-RUN npm upgrade yarn@latest -g 
+RUN /usr/local/bin/yarn set version latest 
 RUN /usr/local/bin/yarn --version
 RUN export NPM_REGISTRY_URL="https://registry.npmmirror.com" && cd /app && /usr/local/bin/yarn install --registry=$NPM_REGISTRY_URL && ls -l /app/app/node_modules/antd/ && /usr/local/bin/yarn run build:sequential
 RUN cd /app/app && mv ./sbin ./build/ && mv ./APP-META-PRIVATE/deploy-config ./build/ && zip -r /app/build.zip ./

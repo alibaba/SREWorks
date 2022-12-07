@@ -387,7 +387,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
         log.info("action=JinjaRender||dockerFileStr:{}", dockerFileStr);
         // 4. 打包成tar.gz （不打包 markdown 文件）
         String compressTarName = dockerFileName + ".tar.gz";
-        String tarCommand = String.format("cd %s; tar -zcvf %s -C %s *", buildAbsolutePath, buildAbsolutePath + compressTarName, buildAbsolutePath);
+        String tarCommand = String.format("cd %s; tar -zcvf %s -C %s .[!.]* *", buildAbsolutePath, buildAbsolutePath + compressTarName, buildAbsolutePath);
         CommandUtil.runLocalCommand(tarCommand);
 
         String bucketName = packageProperties.getBucketName();

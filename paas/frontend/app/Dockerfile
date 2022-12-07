@@ -7,7 +7,7 @@ RUN cd /app/app && mv ./sbin ./build/ && mv ./APP-META-PRIVATE/deploy-config ./b
 
 FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/alpine:latest AS release
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
-    && apk add --update --no-cache nginx zip
+    && apk add --update --no-cache bash gettext sudo nginx zip
 
 COPY --from=build-source /app/build.zip /app/build.zip
 

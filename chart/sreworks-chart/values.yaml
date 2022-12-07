@@ -6,7 +6,7 @@ global:
     secretKey: 'Df229gtwZ4bssMzK23VJXq9vrGqpxdHA'
 
   images:
-    registry: sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks
+    registry: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub
     tag: v1.3
 
   accessMode: ingress

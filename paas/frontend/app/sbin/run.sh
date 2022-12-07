@@ -15,7 +15,7 @@ echo "Docker Command: ${DOCKER_COMMAND}"
 # 渲染配置文件
 ENV_ARG=$(awk 'BEGIN{for(v in ENVIRON) printf "${%s} ", v;}')
 envsubst "${ENV_ARG}" </app/deploy-config/nginx.conf.http.tpl >/etc/nginx/nginx.conf
-envsubst "${ENV_ARG}" </app/deplpy-config/config.js.tpl >/app/config.js
+envsubst "${ENV_ARG}" </app/deploy-config/config.js.tpl >/app/config.js
 
 # 启动 nginx
 mkdir -p /run/nginx

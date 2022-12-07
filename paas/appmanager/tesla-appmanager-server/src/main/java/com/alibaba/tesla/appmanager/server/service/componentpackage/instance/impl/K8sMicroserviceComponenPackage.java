@@ -43,6 +43,7 @@ import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -355,10 +356,13 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
         }
         // 2. 读取dockertemplateFile
         String tplName = JsonUtil.recursiveGetString(container, Arrays.asList("build", "dockerfileTemplate"));
-        assert !StringUtils.isEmpty(tplName);
+        Assert.isTrue(!StringUtils.isEmpty(tplName), "The parameter of build.dockerfileTemplate can not been null!");
         String dockerFileName = tplName;
         if (tplName.endsWith(".tpl")) {
             dockerFileName = tplName.substring(0, tplName.length() - 4);
+        }
+        if (tplName.contains("/")) {
+            dockerFileName = dockerFileName.substring(tplName.lastIndexOf("/")+1);
         }
         File dockerTemplateFile = new File(buildAbsolutePath + tplName);
         if (!dockerTemplateFile.exists()) {

@@ -25,6 +25,10 @@ if [ $es_init_count -gt 0 ]; then
    kubectl delete job prod-dataops-skywalking-es-init -nsreworks-dataops
 fi
 
+progress_check_init_count=$(kubectl get job sreworks-progress-check -n sreworks|wc -l)
+if [ $progress_check_init_count -gt 0 ]; then
+   kubectl delete job sreworks-progress-check -nsreworks
+fi
 
 helm upgrade sreworks $script_dir/../chart/sreworks-chart --namespace sreworks -f /tmp/sreworks-values.yaml $*
 

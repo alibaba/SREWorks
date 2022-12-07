@@ -64,6 +64,33 @@ public interface DeployConfigService {
     DeployConfigGenerateRes generate(DeployConfigGenerateReq req);
 
     /**
+     * 将当前的 Application 同步到指定仓库基线中
+     *
+     * @param req 当前 Application 及目标仓库路径
+     */
+    void syncToGitBaseline(DeployConfigSyncToGitBaselineReq req);
+
+    /**
+     * 获取当前的指定隔离环境下的全局模板清单
+     *
+     * @param apiVersion         API 版本
+     * @param envId              目标环境 ID
+     * @param isolateNamespaceId 隔离 Namespace ID
+     * @param isolateStageId     隔离 Stage ID
+     * @return Deploy Config 记录列表 (如果当前全局模板不合法则抛出异常)
+     */
+    List<DeployConfigDO> getGlobalTemplate(
+            String apiVersion, String envId, String isolateNamespaceId, String isolateStageId);
+
+    /**
+     * 获取指定应用在指定环境中的默认 Application Configuration 模板
+     *
+     * @param req 请求参数 (全部参数必填项)
+     * @return Application Configuration
+     */
+    DeployAppSchema getDefaultTemplate(DeployConfigGetDefaultTemplateReq req);
+
+    /**
      * 针对目标 Scope 进行 Cluster/Namespace/Stage 覆盖
      *
      * @param req    请求

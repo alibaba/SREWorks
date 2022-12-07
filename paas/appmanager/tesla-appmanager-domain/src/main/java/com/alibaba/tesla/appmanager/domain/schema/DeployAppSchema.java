@@ -451,6 +451,16 @@ public class DeployAppSchema implements Schema, Serializable {
         private List<ParameterValue> parameterValues = new ArrayList<>();
 
         /**
+         * 通用: 设置 Identifier
+         *
+         * @param componentType Component Type
+         * @param componentName Component Name
+         */
+        public void setIdentifier(String componentType, String componentName) {
+            revisionName = String.format("%s|%s|%s", componentType, componentName, "_");
+        }
+
+        /**
          * 获取唯一定位 ID
          *
          * @return 唯一定位 ID
@@ -647,5 +657,39 @@ public class DeployAppSchema implements Schema, Serializable {
          * 全局策略
          */
         private List<Policy> policies = new ArrayList<>();
+    }
+
+    /**
+     * 从指定对象处 copy 变动信息到自身
+     *
+     * @param obj 另一个 DeployAppSchema 对象
+     */
+    public void copyFrom(DeployAppSchema obj) {
+        if (obj == null) {
+            return;
+        }
+
+        // 复制 obj 中的全局 parameterValues 到自身 (merge, 确保用户参数可以覆盖原始参数)
+        spec.getParameterValues().addAll(0, obj.getSpec().getParameterValues());
+
+        // 对于自身不存在的组件，但 obj 中存在的组件，将 obj 中的对应组件复制到自身
+        // 对于自身多出来的组件 (obj 中不存在)，进行删除
+        // 两边都存在的，不动
+        Set<String> componentSet = new HashSet<>();
+        Set<String> objComponentSet = new HashSet<>();
+        spec.getComponents().forEach(item -> componentSet.add(componentKey(item.getRevisionName())));
+        obj.getSpec().getComponents().forEach(item -> objComponentSet.add(componentKey(item.getRevisionName())));
+        obj.getSpec().getComponents().forEach(specComponent -> {
+            String key = componentKey(specComponent.getRevisionName());
+            if (!componentSet.contains(key)) {
+                spec.getComponents().add(specComponent);
+            }
+        });
+        spec.getComponents().removeIf(item -> !objComponentSet.contains(componentKey(item.getRevisionName())));
+    }
+
+    private String componentKey(String revisionName) {
+        DeployAppRevisionName name = DeployAppRevisionName.valueOf(revisionName);
+        return String.format("%s|%s", name.getComponentType(), name.getComponentName());
     }
 }

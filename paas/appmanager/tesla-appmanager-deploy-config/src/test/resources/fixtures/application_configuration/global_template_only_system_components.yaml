@@ -1,0 +1,10 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: ApplicationConfiguration
+spec:
+  components:
+    - revisionName: INTERNAL_ADDON|productops|_
+      parameterValues:
+        - name: MULTIPLE_ENV
+          value: true
+          toFieldPaths:
+            - spec.multipleEnv

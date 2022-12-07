@@ -64,7 +64,8 @@
   },
   "packageManager": "yarn@3.2.2",
   "engines": {
-    "node": "^14.13.1 || >=16.0.0"
+    "node": ">=14.13.1 <19.0.0",
+    "yarn": ">=3.2.2"
   },
   "dependencies": {
     "antd": "4.17.4"

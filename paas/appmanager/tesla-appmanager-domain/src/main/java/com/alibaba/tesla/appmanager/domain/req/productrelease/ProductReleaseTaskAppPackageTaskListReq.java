@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ListProductReleaseTaskAppPackageTaskReq {
+public class ProductReleaseTaskAppPackageTaskListReq {
 
     /**
      * 任务 ID

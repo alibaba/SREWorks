@@ -1,10 +1,12 @@
 package com.alibaba.tesla.appmanager.domain.req.deployconfig;
 
+import com.alibaba.tesla.appmanager.domain.container.AppComponentLocationContainer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -72,4 +74,9 @@ public class DeployConfigGenerateReq {
      * Isolate Stage ID
      */
     private String isolateStageId;
+
+    /**
+     * 应用绑定的组件清单
+     */
+    List<AppComponentLocationContainer> appComponents = new ArrayList<>();
 }

@@ -308,7 +308,7 @@ public class DeployAppSchema implements Schema, Serializable {
          * @param componentRevisionContainer trait parent component revision
          * @return unique id
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public String getUniqueId(DeployAppRevisionName componentRevisionContainer) {
             DeployAppRevisionName container = DeployAppRevisionName.builder()
                     .componentType(ComponentTypeEnum.TRAIT_ADDON.toString())
@@ -465,7 +465,7 @@ public class DeployAppSchema implements Schema, Serializable {
          *
          * @return 唯一定位 ID
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public String getUniqueId() {
             return revisionName;
         }
@@ -475,7 +475,7 @@ public class DeployAppSchema implements Schema, Serializable {
          *
          * @return 镜像唯一定位 ID
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public String getMirrorUniqueId() {
             return DefaultConstant.MIRROR_COMPONENT_PREFIX + revisionName;
         }
@@ -485,7 +485,7 @@ public class DeployAppSchema implements Schema, Serializable {
          *
          * @return namespaceId, 如果不存在则返回 null
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public String getNamespaceId() {
             for (SpecComponentScope scope : scopes) {
                 SpecComponentScopeRef ref = scope.getScopeRef();
@@ -502,7 +502,7 @@ public class DeployAppSchema implements Schema, Serializable {
          *
          * @param namespaceId Namespace ID
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public void setNamespaceId(String namespaceId) {
             boolean found = false;
             for (SpecComponentScope scope : scopes) {
@@ -529,7 +529,7 @@ public class DeployAppSchema implements Schema, Serializable {
          *
          * @return clusterId, 如果不存在则返回 null
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public String getClusterId() {
             for (SpecComponentScope scope : scopes) {
                 SpecComponentScopeRef ref = scope.getScopeRef();
@@ -546,7 +546,7 @@ public class DeployAppSchema implements Schema, Serializable {
          *
          * @param clusterId 集群 ID
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public void setClusterId(String clusterId) {
             boolean found = false;
             for (SpecComponentScope scope : scopes) {
@@ -573,7 +573,7 @@ public class DeployAppSchema implements Schema, Serializable {
          *
          * @return stageId, 如果不存在则返回 null
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public String getStageId() {
             for (SpecComponentScope scope : scopes) {
                 SpecComponentScopeRef ref = scope.getScopeRef();
@@ -590,7 +590,7 @@ public class DeployAppSchema implements Schema, Serializable {
          *
          * @param stageId Stage ID
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public void setStageId(String stageId) {
             boolean found = false;
             for (SpecComponentScope scope : scopes) {
@@ -618,7 +618,7 @@ public class DeployAppSchema implements Schema, Serializable {
          * @param name 参数 Key
          * @return Value
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public Object getParameterValue(String name) {
             assert !StringUtils.isEmpty(name);
             for (ParameterValue item : parameterValues) {
@@ -668,9 +668,29 @@ public class DeployAppSchema implements Schema, Serializable {
         if (obj == null) {
             return;
         }
+        if (StringUtils.isNotEmpty(obj.getApiVersion())) {
+            apiVersion = obj.getApiVersion();
+        }
+        if (StringUtils.isNotEmpty(obj.getKind())) {
+            kind = obj.getKind();
+        }
+        if (obj.getSpec() == null) {
+            return;
+        }
+        if (spec == null) {
+            spec = new Spec();
+        }
 
-        // 复制 obj 中的全局 parameterValues 到自身 (merge, 确保用户参数可以覆盖原始参数)
-        spec.getParameterValues().addAll(0, obj.getSpec().getParameterValues());
+        // 复制 obj 中的全局项到自身
+        if (obj.getSpec().getParameterValues() != null) {
+            spec.setParameterValues(obj.getSpec().getParameterValues());
+        }
+        if (obj.getSpec().getPolicies() != null) {
+            spec.setPolicies(obj.getSpec().getPolicies());
+        }
+        if (obj.getSpec().getWorkflow() != null) {
+            spec.setWorkflow(obj.getSpec().getWorkflow());
+        }
 
         // 对于自身不存在的组件，但 obj 中存在的组件，将 obj 中的对应组件复制到自身
         // 对于自身多出来的组件 (obj 中不存在)，进行删除

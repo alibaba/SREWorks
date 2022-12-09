@@ -83,6 +83,22 @@ public class SchemaUtil {
      * @param schema Schema 对象
      * @return Yaml 字符串内容
      */
+    public static <T> String toYamlMapStr(T schema, DumperOptions options) {
+        try {
+            return createYaml(JSONObject.class, options).dumpAsMap(schema);
+        } catch (Exception e) {
+            log.error("cannot convert schema to yaml|schema={}|exception={}",
+                    JSONObject.toJSONString(schema), ExceptionUtils.getStackTrace(e));
+            throw e;
+        }
+    }
+
+    /**
+     * 将 Schema 对象还原为 yaml 字符串内容
+     *
+     * @param schema Schema 对象
+     * @return Yaml 字符串内容
+     */
     public static <T> String toYamlStr(T schema) {
         try {
             return createYaml(JSON.class).dump(schema);
@@ -123,6 +139,17 @@ public class SchemaUtil {
     /**
      * 创建 Yaml 实例
      *
+     * @param cls Class 对象
+     *
+     * @return Yaml instance
+     */
+    public static Yaml createYaml(Class<?> cls, DumperOptions options) {
+        return createYaml(List.of(cls), null, options);
+    }
+
+    /**
+     * 创建 Yaml 实例
+     *
      * @param classList Class 对象列表
      *
      * @return Yaml instance
@@ -151,6 +178,37 @@ public class SchemaUtil {
      */
     public static Yaml createYaml(List<Class<?>> classList, List<Class<?>> mapClassList) {
         DumperOptions options = new DumperOptions();
+        options.setSplitLines(false);
+        options.setIndent(2);
+        options.setIndicatorIndent(0);
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        Representer representer = new Representer() {
+            @Override
+            protected NodeTuple representJavaBeanProperty(
+                    Object javaBean, Property property, Object propertyValue, Tag customTag) {
+                if (propertyValue == null) {
+                    return null;
+                } else {
+                    return super.representJavaBeanProperty(javaBean, property, propertyValue, customTag);
+                }
+            }
+        };
+        if (mapClassList != null) {
+            for (Class<?> cls : mapClassList) {
+                representer.addClassTag(cls, Tag.MAP);
+            }
+        }
+        return new Yaml(new ClassFilterConstructor(classList), representer, options);
+    }
+
+    /**
+     * 创建 Yaml 实例
+     *
+     * @param classList Class 对象列表
+     *
+     * @return Yaml instance
+     */
+    public static Yaml createYaml(List<Class<?>> classList, List<Class<?>> mapClassList, DumperOptions options) {
         options.setSplitLines(false);
         options.setIndent(2);
         options.setIndicatorIndent(0);

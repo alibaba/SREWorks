@@ -30,6 +30,21 @@ public class GitUpdateFileReq implements Serializable {
     private Path cloneDir;
 
     /**
+     * Git User Name
+     */
+    private String gitUserName;
+
+    /**
+     * Git User Email
+     */
+    private String gitUserEmail;
+
+    /**
+     * Git 远端分支
+     */
+    private String gitRemoteBranch;
+
+    /**
      * 需要更新的文件路径
      */
     private String filePath;

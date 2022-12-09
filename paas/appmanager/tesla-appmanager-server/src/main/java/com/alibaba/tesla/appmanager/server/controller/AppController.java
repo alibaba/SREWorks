@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.server.controller;
 
+import com.alibaba.tesla.appmanager.api.provider.AppComponentProvider;
 import com.alibaba.tesla.appmanager.api.provider.AppMetaProvider;
 import com.alibaba.tesla.appmanager.api.provider.DeployConfigProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
@@ -42,6 +43,9 @@ public class AppController extends AppManagerBaseController {
 
     @Autowired
     private DeployConfigProvider deployConfigProvider;
+
+    @Autowired
+    private AppComponentProvider appComponentProvider;
 
     @Operation(summary = "查询应用列表")
     @GetMapping
@@ -147,6 +151,8 @@ public class AppController extends AppManagerBaseController {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         request.setIsolateNamespaceId(container.getNamespaceId());
         request.setIsolateStageId(container.getStageId());
+        request.setAppComponents(appComponentProvider
+                .getFullComponentRelations(appId, container.getNamespaceId(), container.getStageId()));
         DeployConfigGenerateRes result = deployConfigProvider.generate(request);
         return buildSucceedResult(ApplicationConfigurationGenerateRes.builder()
                 .yaml(SchemaUtil.toYamlMapStr(result.getSchema()))

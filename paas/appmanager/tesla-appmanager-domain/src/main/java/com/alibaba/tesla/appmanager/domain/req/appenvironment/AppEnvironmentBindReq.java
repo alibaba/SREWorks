@@ -1,4 +1,4 @@
-package com.alibaba.tesla.appmanager.domain.req.deployconfig;
+package com.alibaba.tesla.appmanager.domain.req.appenvironment;
 
 import com.alibaba.tesla.appmanager.domain.container.AppComponentLocationContainer;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 获取 DeployConfig 下的全局模板
+ * 将指定应用绑定到指定环境
  *
  * @author yaoxing.gyx@alibaba-inc.com
  */
@@ -18,7 +18,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeployConfigGetDefaultTemplateReq {
+public class AppEnvironmentBindReq {
 
     /**
      * API Version
@@ -26,42 +26,62 @@ public class DeployConfigGetDefaultTemplateReq {
     private String apiVersion;
 
     /**
-     * 隔离 Namespace
-     */
-    private String isolateNamespaceId;
-
-    /**
-     * 隔离 Stage
-     */
-    private String isolateStageId;
-
-    /**
      * 应用 ID
      */
     private String appId;
 
     /**
-     * 单元 ID
+     * 隔离 Namespace ID
+     */
+    private String isolateNamespaceId;
+
+    /**
+     * 隔离 Stage ID
+     */
+    private String isolateStageId;
+
+    /**
+     * 产品 ID
+     */
+    private String productId;
+
+    /**
+     * 发布版本 ID
+     */
+    private String releaseId;
+
+    /**
+     * 部署目标单元 ID
      */
     private String unitId;
 
     /**
-     * 集群 ID
+     * 部署目标集群 ID
      */
     private String clusterId;
 
     /**
-     * Namespace ID
+     * 部署目标 Namespace ID
      */
     private String namespaceId;
 
     /**
-     * Stage ID
+     * 部署目标 Stage ID
      */
     private String stageId;
+
+    /**
+     * 基线分支
+     */
+    private String baselineBranch;
 
     /**
      * 应用对应的 Component 列表
      */
     private List<AppComponentLocationContainer> appComponents = new ArrayList<>();
+
+    /**
+     * 操作人员
+     */
+    private String operator;
 }

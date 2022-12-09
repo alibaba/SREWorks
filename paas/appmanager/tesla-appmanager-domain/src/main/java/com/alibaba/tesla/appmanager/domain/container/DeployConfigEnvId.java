@@ -68,6 +68,17 @@ public class DeployConfigEnvId {
     }
 
     /**
+     * 返回 Unit + Namespace 字符串标识
+     *
+     * @param unitId      Unit ID
+     * @param namespaceId Namespace ID
+     * @return 字符串标识
+     */
+    public static String unitNamespaceStr(String unitId, String namespaceId) {
+        return String.format("Unit:%s::Namespace:%s", unitId, namespaceId);
+    }
+
+    /**
      * 返回 Stage 字符串标识
      *
      * @param stageId Stage ID

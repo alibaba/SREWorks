@@ -181,13 +181,24 @@ public class GitServiceImpl implements GitService {
         String[] addCommand = new String[]{"git", "add", filePath};
         String[] commitCommand = new String[]{
                 "git",
+                "-c",
+                String.format("user.name=%s", request.getGitUserName()),
+                "-c",
+                String.format("user.email=%s", request.getGitUserEmail()),
                 "commit",
                 "-m",
                 String.format("baseline file for %s app modified by %s", request.getAppId(), request.getOperator())
         };
+        String[] pushCommand = new String[]{
+                "git",
+                "push",
+                "origin",
+                request.getGitRemoteBranch(),
+        };
 
         logContent.append(CommandUtil.runLocalCommand(addCommand, cloneDir.toFile()));
         logContent.append(CommandUtil.runLocalCommand(commitCommand, cloneDir.toFile()));
+        logContent.append(CommandUtil.runLocalCommand(pushCommand, cloneDir.toFile()));
     }
 
     /**

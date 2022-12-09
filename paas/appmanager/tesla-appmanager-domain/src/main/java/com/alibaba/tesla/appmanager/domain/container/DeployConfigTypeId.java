@@ -97,4 +97,21 @@ public class DeployConfigTypeId {
         }
         return String.join("::", arr);
     }
+
+    /**
+     * 获取当前 typeId 的父亲 typeId (去除最后一个元素)
+     *
+     * @return 父亲 typeId
+     */
+    public String parentTypeId() {
+        List<String> arr = new ArrayList<>();
+        arr.add(String.format("Type:%s", this.type));
+        if (this.attrs != null) {
+            for (int i = 0; i < this.attrs.size() - 1; i++) {
+                Pair<String, String> attr = this.attrs.get(i);
+                arr.add(String.format("%s:%s", attr.getKey(), attr.getValue()));
+            }
+        }
+        return String.join("::", arr);
+    }
 }

@@ -8,6 +8,7 @@ import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.service.GitService;
+import com.alibaba.tesla.appmanager.common.util.EnvUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.deployconfig.repository.DeployConfigHistoryRepository;
 import com.alibaba.tesla.appmanager.deployconfig.repository.DeployConfigRepository;
@@ -20,16 +21,20 @@ import com.alibaba.tesla.appmanager.domain.container.AppComponentLocationContain
 import com.alibaba.tesla.appmanager.domain.container.DeployAppRevisionName;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigEnvId;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
+import com.alibaba.tesla.appmanager.domain.dto.ProductDTO;
+import com.alibaba.tesla.appmanager.domain.req.appenvironment.AppEnvironmentBindReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.*;
 import com.alibaba.tesla.appmanager.domain.req.git.GitCloneReq;
 import com.alibaba.tesla.appmanager.domain.req.git.GitUpdateFileReq;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigApplyTemplateRes;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigGenerateRes;
+import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigSyncToGitBaselineRes;
 import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
 import com.alibaba.tesla.dag.common.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.stereotype.Service;
@@ -39,10 +44,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -107,6 +109,16 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                     SchemaUtil.toYamlMapStr(component), enabled, false, isolateNamespace, isolateStage,
                     productId, releaseId));
         }
+        // 保存 policies 配置
+        String policyTypeId = new DeployConfigTypeId(DeployConfigTypeId.TYPE_POLICIES).toString();
+        items.add(applySingleConfig(apiVersion, appId, policyTypeId, envId,
+                SchemaUtil.toYamlStr(schema.getSpec().getPolicies(), DeployAppSchema.Policy.class),
+                enabled, false, isolateNamespace, isolateStage, productId, releaseId));
+        // 保存 workflow 配置
+        String workflowTypeId = new DeployConfigTypeId(DeployConfigTypeId.TYPE_WORKFLOW).toString();
+        items.add(applySingleConfig(apiVersion, appId, workflowTypeId, envId,
+                SchemaUtil.toYamlStr(schema.getSpec().getWorkflow(), DeployAppSchema.Workflow.class),
+                enabled, false, isolateNamespace, isolateStage, productId, releaseId));
         return DeployConfigApplyTemplateRes.<DeployConfigDO>builder().items(items).build();
     }
 
@@ -257,8 +269,9 @@ public class DeployConfigServiceImpl implements DeployConfigService {
      * @param req 当前 Application 及目标仓库路径
      */
     @Override
-    public void syncToGitBaseline(DeployConfigSyncToGitBaselineReq req) {
+    public DeployConfigSyncToGitBaselineRes syncToGitBaseline(DeployConfigSyncToGitBaselineReq req) {
         // clone 远端基线到本地
+        DeployAppSchema remoteConfig = new DeployAppSchema();
         DeployAppSchema config = req.getConfiguration();
         String appId = config.getMetadata().getAnnotations().getAppId();
         StringBuilder logContent = new StringBuilder();
@@ -282,7 +295,6 @@ public class DeployConfigServiceImpl implements DeployConfigService {
             // 解析仓库中的指定文件到 DeployAppSchema
             Path filePath = Paths.get(cloneDir.toString(), req.getFilePath());
             String remoteConfigStr = "";
-            DeployAppSchema remoteConfig = new DeployAppSchema();
             if (Files.exists(filePath)) {
                 try {
                     remoteConfigStr = Files.readString(filePath);
@@ -296,18 +308,26 @@ public class DeployConfigServiceImpl implements DeployConfigService {
             }
 
             // 根据远端配置更新当前配置
-            config.copyFrom(remoteConfig);
-            String configStr = SchemaUtil.toYamlMapStr(config);
-            if (StringUtils.compare(configStr, remoteConfigStr) != 0) {
+            remoteConfig.setMetadata(null);
+            String originRemoteConfigStr = SchemaUtil.toYamlMapStr(remoteConfig);
+            remoteConfig.copyFrom(config);
+            remoteConfigStr = SchemaUtil.toYamlMapStr(remoteConfig);
+            if (StringUtils.compare(originRemoteConfigStr, remoteConfigStr) != 0) {
+                log.info("current file is different than remote baseline file|appId={}|repo={}|branch={}|filePath={}|" +
+                                "originRemoteConfigStr={}|remoteConfigStr={}", appId, req.getRepo(), req.getBranch(), filePath,
+                        originRemoteConfigStr, remoteConfigStr);
                 gitService.updateFile(logContent, GitUpdateFileReq.builder()
                         .appId(appId)
                         .cloneDir(cloneDir)
+                        .gitUserName(req.getCiAccount())
+                        .gitUserEmail(String.format("%s@alibaba-inc.com", req.getCiAccount()))
+                        .gitRemoteBranch(req.getBranch())
                         .filePath(req.getFilePath())
-                        .fileContent(configStr)
+                        .fileContent(remoteConfigStr)
                         .operator(req.getOperator())
                         .build());
                 log.info("remote config yaml has updated in git braseline|appId={}|repo={}|branch={}|filePath={}|" +
-                        "content={}", appId, req.getRepo(), req.getBranch(), req.getFilePath(), configStr);
+                        "content={}", appId, req.getRepo(), req.getBranch(), req.getFilePath(), remoteConfigStr);
             } else {
                 log.info("no need to update remote config yaml in git braseline|appId={}|repo={}|branch={}|filePath={}",
                         appId, req.getRepo(), req.getBranch(), req.getFilePath());
@@ -321,27 +341,59 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                                 cloneDir.toString(), ExceptionUtils.getStackTrace(e)));
             }
         }
+        return DeployConfigSyncToGitBaselineRes.builder()
+                .schema(remoteConfig)
+                .build();
     }
 
     /**
      * 将指定应用加入到指定环境中
      *
-     * @param req 加入环境请求
+     * @param req      加入环境请求
+     * @param product  产品对象
+     * @param filePath 目标路径
      */
-    public void bindEnvironment(DeployConfigBindEnvironmentReq req) {
-        String appId = req.getAppId();
-        String isolateNamespaceId = req.getIsolateNamespaceId();
-        String isolateStageId = req.getIsolateStageId();
-        String envId = req.getEnvId();
-        String productId = req.getProductId();
-        String releaseId = req.getReleaseId();
-        String baselineBranch = req.getBaselineBranch();
+    @Override
+    public void bindEnvironment(AppEnvironmentBindReq req, ProductDTO product, String filePath) {
+        String envId = EnvUtil.generate(req.getUnitId(), req.getClusterId(), req.getNamespaceId(), req.getStageId());
+
+        // 获取当前的基线层面的 Application Configuration
+        DeployAppSchema configuration = getDefaultTemplate(DeployConfigGetDefaultTemplateReq.builder()
+                .apiVersion(req.getApiVersion())
+                .isolateNamespaceId(req.getIsolateNamespaceId())
+                .isolateStageId(req.getIsolateStageId())
+                .unitId(req.getUnitId())
+                .clusterId(req.getClusterId())
+                .namespaceId(req.getNamespaceId())
+                .stageId(req.getStageId())
+                .appId(req.getAppId())
+                .appComponents(req.getAppComponents())
+                .build());
+        log.info("current configuration has generated based on current baseline|appId={}|isolateNamespaceId={}|" +
+                        "isolateStageId={}|envId={}|operator={}|res={}", req.getAppId(), req.getIsolateNamespaceId(),
+                req.getIsolateStageId(), envId, req.getOperator(), SchemaUtil.toYamlMapStr(configuration));
+
+        // 同步配置文件到远端 Git 仓库文件
+        DeployConfigSyncToGitBaselineRes syncRes = syncToGitBaseline(DeployConfigSyncToGitBaselineReq.builder()
+                .configuration(configuration)
+                .repo(product.getBaselineGitAddress())
+                .ciAccount(product.getBaselineGitUser())
+                .ciToken(product.getBaselineGitToken())
+                .branch(req.getBaselineBranch())
+                .filePath(filePath)
+                .operator(req.getOperator())
+                .build());
+        log.info("configuration has synced to remote git baseline|productId={}|releaseId={}|appId={}|" +
+                        "isolateNamespaceId={}|isolateStageId={}|baselineBranch={}|repo={}|filePath={}|envId={}|" +
+                        "operator={}|res={}", req.getProductId(), req.getReleaseId(), req.getAppId(),
+                req.getIsolateNamespaceId(), req.getIsolateStageId(),
+                req.getBaselineBranch(), product.getBaselineGitAddress(), filePath, envId, req.getOperator(),
+                SchemaUtil.toYamlMapStr(syncRes.getSchema()));
 
         // 写入 Type:envBinding 的类型记录
-        String apiVersion = DefaultConstant.API_VERSION_V1_ALPHA2;
         DeployConfigTypeId typeId = new DeployConfigTypeId(DeployConfigTypeId.TYPE_ENV_BINDING);
-        applySingleConfig(apiVersion, appId, typeId.toString(), envId, "", true, false,
-                isolateNamespaceId, isolateStageId, productId, releaseId);
+        applySingleConfig(req.getApiVersion(), req.getAppId(), typeId.toString(), envId, "", true, false,
+                req.getIsolateNamespaceId(), req.getIsolateStageId(), req.getProductId(), req.getReleaseId());
     }
 
     /**
@@ -389,27 +441,27 @@ public class DeployConfigServiceImpl implements DeployConfigService {
      */
     @Override
     public DeployAppSchema getDefaultTemplate(DeployConfigGetDefaultTemplateReq req) {
-        // 以下变量用于定位全局模板
-        String apiVersion = req.getApiVersion();
-        String envId = req.getEnvId();
-        String isolateNamespaceId = req.getIsolateNamespaceId();
-        String isolateStageId = req.getIsolateStageId();
         // 以下变量用于生成模板
         String appId = req.getAppId();
         String unitId = req.getUnitId();
         String clusterId = req.getClusterId();
         String namespaceId = req.getNamespaceId();
         String stageId = req.getStageId();
+        // 以下变量用于定位全局模板
+        String apiVersion = req.getApiVersion();
+        String envId = EnvUtil.generate(unitId, clusterId, namespaceId, stageId);
+        String isolateNamespaceId = req.getIsolateNamespaceId();
+        String isolateStageId = req.getIsolateStageId();
         List<AppComponentLocationContainer> appComponentContainers = req.getAppComponents();
-        if (StringUtils.isAnyEmpty(apiVersion, envId, isolateNamespaceId, isolateStageId,
-                appId, unitId, clusterId, namespaceId, stageId)) {
+        if (StringUtils.isAnyEmpty(apiVersion, isolateNamespaceId, isolateStageId, appId, unitId, namespaceId)) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "apiVersion/envId/isolateNamespaceId/" +
-                    "isolateStageId/appId/unitId/clusterId/namespaceId/stageId are required");
+                    "isolateStageId/appId/unitId/namespaceId are required");
         }
+        boolean multipleCluster = StringUtils.isEmpty(clusterId);
 
         // 根据当前的全局模板生成 Application Configuration
         DeployConfigGenerateReq deployConfigGenerateRequest = DeployConfigGenerateReq.builder()
-                .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                .apiVersion(apiVersion)
                 .appId(appId)
                 .unitId(unitId)
                 .clusterId(clusterId)
@@ -418,6 +470,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                 .build();
         DeployAppSchema schema = emptyDeployAppSchema(deployConfigGenerateRequest);
         List<DeployConfigDO> records = getGlobalTemplate(apiVersion, envId, isolateNamespaceId, isolateStageId);
+        log.info("find global templates in system|apiVersion={}|envId={}|isolateNamespaceId={}|isolateStageId={}|" +
+                "records={}", apiVersion, envId, isolateNamespaceId, isolateStageId, JSONArray.toJSONString(records));
 
         // 根据全局模板组装生成当前的应用级的默认模板
         // step==0 非 traits 类型组装, step==1 traits 类型组装 (step==1 依赖 step==0 完成)
@@ -460,7 +514,9 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                                 component = new DeployAppSchema.SpecComponent();
                             }
                             component.setIdentifier(componentType, componentName);
-                            component = enrichComponentScopes(deployConfigGenerateRequest, component);
+                            if (!multipleCluster || ComponentTypeEnum.isSystemComponentType(componentType)) {
+                                component = enrichComponentScopes(deployConfigGenerateRequest, component);
+                            }
                             schema.getSpec().getComponents().add(component);
                         } else {
                             // 用户定义类型组件，需要对当前组件的所有实例进行扫描，并扩展到所有对象
@@ -482,7 +538,9 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                                     component = new DeployAppSchema.SpecComponent();
                                 }
                                 component.setIdentifier(container.getComponentType(), container.getComponentName());
-                                component = enrichComponentScopes(deployConfigGenerateRequest, component);
+                                if (!multipleCluster) {
+                                    component = enrichComponentScopes(deployConfigGenerateRequest, component);
+                                }
                                 schema.getSpec().getComponents().add(component);
                             }
                         }
@@ -642,6 +700,8 @@ public class DeployConfigServiceImpl implements DeployConfigService {
         String stageId = req.getStageId();
         String isolateNamespaceId = req.getIsolateNamespaceId();
         String isolateStageId = req.getIsolateStageId();
+        // 没有传入 clusterId 的情况下视为多集群
+        boolean multipleCluster = StringUtils.isEmpty(clusterId);
 
         // 组装每个 type 到 schema 中
         DeployAppSchema schema = emptyDeployAppSchema(req);
@@ -662,9 +722,60 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                         .isolateStageId(isolateStageId)
                         .build());
         // 明确是具体特定组件的 typeIds，明确有 componentName 的 (非通用类型 typeIds)
+        // 如果包含 envBinding 字段，那么进行 typeId 自动填充
         List<String> typeIds = CollectionUtils.isEmpty(req.getTypeIds())
                 ? distinctTypeIds(appRecords)
                 : req.getTypeIds();
+        String staticEnvId = EnvUtil.generate(unitId, clusterId, namespaceId, "");
+        String envBindingTypeId = (new DeployConfigTypeId(DeployConfigTypeId.TYPE_ENV_BINDING)).toString();
+        if (deployConfigRepository.selectByCondition(
+                DeployConfigQueryCondition.builder()
+                        .apiVersion(apiVersion)
+                        .appId(appId)
+                        .enabled(true)
+                        .typeId(envBindingTypeId)
+                        .envId(staticEnvId)
+                        .isolateNamespaceId(isolateNamespaceId)
+                        .isolateStageId(isolateStageId)
+                        .build()).size() > 0) {
+            Set<String> usedTypeIdSet = appRecords.stream().map(DeployConfigDO::getTypeId).collect(Collectors.toSet());
+            DeployConfigDO mockSource = DeployConfigDO.builder()
+                    .apiVersion(req.getApiVersion())
+                    .appId(req.getAppId())
+                    .typeId("MOCK")
+                    .envId(staticEnvId)
+                    .currentRevision(0)
+                    .enabled(true)
+                    .config("")
+                    .inherit(true)
+                    .namespaceId(isolateNamespaceId)
+                    .stageId(isolateStageId)
+                    .build();
+            for (AppComponentLocationContainer item : req.getAppComponents()) {
+                String typeId = (new DeployConfigTypeId(item.getComponentType(), item.getComponentName())).toString();
+                if (!usedTypeIdSet.contains(typeId)) {
+                    typeIds.add(typeId);
+                    DeployConfigDO record = SerializationUtils.clone(mockSource);
+                    record.setTypeId(typeId);
+                    appRecords.add(record);
+                }
+            }
+
+            // 公共类型直接加入
+            for (String typeId : Arrays.asList(
+                    (new DeployConfigTypeId(DeployConfigTypeId.TYPE_PARAMETER_VALUES)).toString(),
+                    (new DeployConfigTypeId(DeployConfigTypeId.TYPE_POLICIES)).toString(),
+                    (new DeployConfigTypeId(DeployConfigTypeId.TYPE_WORKFLOW)).toString())) {
+                typeIds.add(typeId);
+                DeployConfigDO record = SerializationUtils.clone(mockSource);
+                record.setTypeId(typeId);
+                appRecords.add(record);
+            }
+        }
+        // 最后删除 envBinding 自身
+        typeIds.remove(envBindingTypeId);
+        typeIds = typeIds.stream().distinct().collect(Collectors.toList());
+
         // step==0 非 traits 类型组装, step==1 traits 类型组装 (step==1 依赖 step==0 完成)
         for (int step = 0; step < 2; step++) {
             for (String typeId : typeIds) {
@@ -678,41 +789,71 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                 List<DeployConfigDO> filterAppRecords = appRecords.stream()
                         .filter(item -> item.getTypeId().equals(typeId))
                         .collect(Collectors.toList());
+                if (filterAppRecords.size() == 0) {
+                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                            String.format("cannot find the suitable app records when combines application|" +
+                                            "unitId=%s|clusterId=%s|namespaceId=%s|stageId=%s|typeId=%s", unitId,
+                                    clusterId, namespaceId, stageId, typeId));
+                }
                 List<DeployConfigDO> filterRootRecords = rootRecords.stream()
                         .filter(item -> item.getTypeId().equals(typeId))
                         .collect(Collectors.toList());
+                List<DeployConfigDO> filterRootParentRecords = rootRecords.stream()
+                        .filter(item -> item.getTypeId().equals(typeIdObj.parentTypeId()))
+                        .collect(Collectors.toList());
                 DeployConfigDO best = findBestConfigInRecordsBySpecifiedName(
-                        filterAppRecords, filterRootRecords, unitId, clusterId, namespaceId, stageId);
+                        filterAppRecords, filterRootRecords, filterRootParentRecords,
+                        unitId, clusterId, namespaceId, stageId);
                 if (best == null) {
-                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                            String.format("cannot find best config in database|appId=%s|typeId=%s|clusterId=%s|" +
-                                            "namespaceId=%s|stageId=%s", appId, typeId,
-                                    clusterId, namespaceId, stageId));
+                    log.info("no best deploy config found by given condition|unitId={}|clusterId={}|namespaceId={}|" +
+                            "stageId={}|typeId={}, skip", unitId, clusterId, namespaceId, stageId, typeId);
+                    continue;
                 }
+                log.info("find the best deploy config by given condition|unitId={}|clusterId={}|namespaceId={}|" +
+                                "stageId={}|typeId={}|best={}", unitId, clusterId, namespaceId, stageId, typeId,
+                        JSONObject.toJSONString(best));
                 String config = best.getConfig();
-                if (StringUtils.isEmpty(config)) {
-                    if (StringUtils.isNotEmpty(best.getProductId()) && StringUtils.isNotEmpty(best.getReleaseId())) {
-                        config = fetchConfigInGit(best.getProductId(), best.getReleaseId(), appId, typeId);
-                        log.info("fetch config in git succeed|productId={}|releaseId={}|appId={}|typeId={}|config={}",
-                                best.getProductId(), best.getReleaseId(), appId, typeId, config);
-                    } else {
+                if (StringUtils.isNotEmpty(best.getProductId()) && StringUtils.isNotEmpty(best.getReleaseId())) {
+                    config = fetchConfigInGit(best.getProductId(), best.getReleaseId(), appId, typeId);
+                    log.info("fetch config in git succeed|productId={}|releaseId={}|appId={}|typeId={}|config={}",
+                            best.getProductId(), best.getReleaseId(), appId, typeId, config);
+                } else {
+                    if (StringUtils.isEmpty(config)) {
                         throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                                 String.format("invalid inherit config, cannot get config by typeId %s|appRecords=%s|" +
-                                                "rootRecords=%s", typeId, JSONArray.toJSONString(filterAppRecords),
-                                        JSONArray.toJSONString(filterRootRecords)));
+                                                "rootRecords=%s|rootParentRecords=%s", typeId,
+                                        JSONArray.toJSONString(filterAppRecords),
+                                        JSONArray.toJSONString(filterRootRecords),
+                                        JSONArray.toJSONString(filterRootParentRecords)));
                     }
                 }
+
                 switch (typeIdObj.getType()) {
-                    case DeployConfigTypeId.TYPE_PARAMETER_VALUES:
+                    case DeployConfigTypeId.TYPE_PARAMETER_VALUES: {
                         schema.getSpec().setParameterValues(
                                 SchemaUtil.toSchemaList(DeployAppSchema.ParameterValue.class, config));
                         break;
-                    case DeployConfigTypeId.TYPE_COMPONENTS:
-                        DeployAppSchema.SpecComponent component = enrichComponentScopes(
-                                req, SchemaUtil.toSchema(DeployAppSchema.SpecComponent.class, config));
+                    }
+                    case DeployConfigTypeId.TYPE_COMPONENTS: {
+                        String componentType = typeIdObj.getAttr(DeployConfigTypeId.ATTR_COMPONENT_TYPE);
+                        String componentName = typeIdObj.getAttr(DeployConfigTypeId.ATTR_COMPONENT_NAME);
+                        DeployAppSchema.SpecComponent component = SchemaUtil
+                                .toSchema(DeployAppSchema.SpecComponent.class, config);
+                        // 如果是单集群目标部署模式，或者是系统组件，那么默认填充 scopes 参数
+                        if (!multipleCluster || ComponentTypeEnum.isSystemComponentType(componentType)) {
+                            component = enrichComponentScopes(req, component);
+                        }
+                        // 如果当前的 componentName 没有在 specComponent revisionName 下，说明是通用配置
+                        // 那么需要使用当前 typeId 中的值进行填充
+                        if (StringUtils.isEmpty(DeployAppRevisionName
+                                .valueOf(component.getRevisionName()).getComponentName())) {
+                            component.setRevisionName(
+                                    (new DeployAppRevisionName(componentType, componentName, "_")).revisionName());
+                        }
                         schema.getSpec().getComponents().add(component);
                         break;
-                    case DeployConfigTypeId.TYPE_TRAITS:
+                    }
+                    case DeployConfigTypeId.TYPE_TRAITS: {
                         String componentType = typeIdObj.getAttr(DeployConfigTypeId.ATTR_COMPONENT_TYPE);
                         String componentName = typeIdObj.getAttr(DeployConfigTypeId.ATTR_COMPONENT_NAME);
                         String traitName = typeIdObj.getAttr(DeployConfigTypeId.ATTR_TRAIT);
@@ -752,16 +893,28 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                                             "deploy config|typeId=%s", typeId));
                         }
                         break;
-                    case DeployConfigTypeId.TYPE_POLICIES:
+                    }
+                    case DeployConfigTypeId.TYPE_POLICIES: {
                         schema.getSpec().setPolicies(SchemaUtil.toSchemaList(DeployAppSchema.Policy.class, config));
                         break;
-                    case DeployConfigTypeId.TYPE_WORKFLOW:
+                    }
+                    case DeployConfigTypeId.TYPE_WORKFLOW: {
                         schema.getSpec().setWorkflow(SchemaUtil.toSchema(DeployAppSchema.Workflow.class, config));
                         break;
+                    }
                     default:
                         break;
                 }
             }
+        }
+
+        // 检查是否有 components 被完成组装，如果没有的话，说明本次生成 Yaml 请求无效
+        if (schema.getSpec().getComponents().size() == 0) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("the current application does not have permission to access the environment|" +
+                                    "appId=%s|unitId=%s|clusterId=%s|namespaceId=%s|stageId=%s|isolateNamespaceId=%s|" +
+                                    "isolateStageId=%s",
+                            appId, unitId, clusterId, namespaceId, stageId, isolateNamespaceId, isolateStageId));
         }
         return schema;
     }
@@ -785,18 +938,24 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                 case "Cluster":
                     if (StringUtils.isNotEmpty(req.getClusterId())) {
                         ref.setName(req.getClusterId());
+                    } else {
+                        ref.setName("");
                     }
                     clusterFlag = true;
                     break;
                 case "Namespace":
                     if (StringUtils.isNotEmpty(req.getNamespaceId())) {
                         ref.setName(req.getNamespaceId());
+                    } else {
+                        ref.setName("");
                     }
                     namespaceFlag = true;
                     break;
                 case "Stage":
                     if (StringUtils.isNotEmpty(req.getStageId())) {
                         ref.setName(req.getStageId());
+                    } else {
+                        ref.setName("");
                     }
                     stageFlag = true;
                     break;
@@ -809,7 +968,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                     .scopeRef(DeployAppSchema.SpecComponentScopeRef.builder()
                             .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                             .kind("Cluster")
-                            .name(req.getClusterId())
+                            .name(StringUtils.isEmpty(req.getClusterId()) ? "" : req.getClusterId())
                             .spec(new JSONObject())
                             .build())
                     .build());
@@ -819,7 +978,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                     .scopeRef(DeployAppSchema.SpecComponentScopeRef.builder()
                             .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                             .kind("Namespace")
-                            .name(req.getNamespaceId())
+                            .name(StringUtils.isEmpty(req.getNamespaceId()) ? "" : req.getNamespaceId())
                             .spec(new JSONObject())
                             .build())
                     .build());
@@ -829,7 +988,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                     .scopeRef(DeployAppSchema.SpecComponentScopeRef.builder()
                             .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                             .kind("Stage")
-                            .name(req.getStageId())
+                            .name(StringUtils.isEmpty(req.getStageId()) ? "" : req.getStageId())
                             .spec(new JSONObject())
                             .build())
                     .build());
@@ -891,20 +1050,24 @@ public class DeployConfigServiceImpl implements DeployConfigService {
     /**
      * 根据指定条件寻找最佳部署配置
      *
-     * @param appRecords  指定应用下的 deploy config 配置
-     * @param rootRecords 根 deploy config 配置 (无 appId，全局配置)
-     * @param unitId      单元 ID
-     * @param clusterId   集群 ID
-     * @param namespaceId Namespace ID
-     * @param stageId     Stage ID
-     * @return 最佳配置记录
+     * @param appRecords        指定应用下的 deploy config 配置
+     * @param rootRecords       根 deploy config 配置 (无 appId, 全局配置)
+     * @param rootParentRecords rootRecords 的 parent type id 对应的过滤 deploy config 配置 (无 appId, 全局配置)
+     * @param unitId            单元 ID
+     * @param clusterId         集群 ID
+     * @param namespaceId       Namespace ID
+     * @param stageId           Stage ID
+     * @return 最佳配置记录 (如果返回 null，表明当前无异常，但无法由给定条件找到合理数据，应当由上层忽略此次查找)
      */
     private DeployConfigDO findBestConfigInRecordsBySpecifiedName(
-            List<DeployConfigDO> appRecords, List<DeployConfigDO> rootRecords, String unitId, String clusterId,
-            String namespaceId, String stageId) {
+            List<DeployConfigDO> appRecords, List<DeployConfigDO> rootRecords, List<DeployConfigDO> rootParentRecords,
+            String unitId, String clusterId, String namespaceId, String stageId) {
         List<String> priorities = new ArrayList<>();
         if (StringUtils.isNotEmpty(unitId) && StringUtils.isNotEmpty(namespaceId) && StringUtils.isNotEmpty(stageId)) {
             priorities.add(DeployConfigEnvId.unitNamespaceStageStr(unitId, namespaceId, stageId));
+        }
+        if (StringUtils.isNotEmpty(unitId) && StringUtils.isNotEmpty(namespaceId)) {
+            priorities.add(DeployConfigEnvId.unitNamespaceStr(unitId, namespaceId));
         }
         if (StringUtils.isNotEmpty(stageId)) {
             priorities.add(DeployConfigEnvId.stageStr(stageId));
@@ -920,50 +1083,60 @@ public class DeployConfigServiceImpl implements DeployConfigService {
         }
         for (String current : priorities) {
             List<DeployConfigDO> filteredAppRecords = filterDeployConfigByEnvId(appRecords, current);
-            if (filteredAppRecords.size() > 0) {
-                DeployConfigDO result = filteredAppRecords.get(0);
-                if (result.getInherit() != null && result.getInherit()) {
-                    List<DeployConfigDO> filteredRootRecords = filterDeployConfigByEnvId(rootRecords, current);
+            if (filteredAppRecords.size() == 0) {
+                continue;
+            }
+
+            DeployConfigDO result = filteredAppRecords.get(0);
+            if (result.getInherit() != null && result.getInherit()) {
+                List<DeployConfigDO> filteredRootRecords = filterDeployConfigByEnvId(rootRecords, current);
+                if (filteredRootRecords.size() > 0) {
+                    return filteredRootRecords.get(0);
+                } else {
+                    // 第一层找不到后，向上提一层 TypeId 进行继承查找，如果仍然找不到，返回 null
+                    filteredRootRecords = filterDeployConfigByEnvId(rootParentRecords, current);
                     if (filteredRootRecords.size() > 0) {
                         return filteredRootRecords.get(0);
                     }
                 }
+                return null;
+            } else {
                 return result;
             }
         }
 
-        // 通过无 appId 的部署配置记录进行二次查找
+        // 通过无 envId 的部署配置记录进行二次查找
+        // 该记录查找项属于应用层面的公共基线配置，及向上从 envId 层面环境配置进行公共配置继承
         List<DeployConfigDO> filteredAppRecords = appRecords.stream()
                 .filter(item -> StringUtils.isEmpty(item.getEnvId()))
                 .collect(Collectors.toList());
-        if (filteredAppRecords.size() > 0) {
-            DeployConfigDO result = filteredAppRecords.get(0);
-            if (result.getInherit() != null && result.getInherit()) {
-                for (String current : priorities) {
-                    List<DeployConfigDO> filteredRootRecords = filterDeployConfigByEnvId(rootRecords, current);
-                    if (filteredRootRecords.size() > 0) {
-                        return filteredRootRecords.get(0);
-                    }
-                }
-                List<DeployConfigDO> filterRootRecords = rootRecords.stream()
-                        .filter(item -> StringUtils.isEmpty(item.getEnvId()))
-                        .collect(Collectors.toList());
-                if (filterRootRecords.size() > 0) {
-                    return filterRootRecords.get(0);
-                }
-                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                        String.format("cannot find inherit record by deploy config app record|unitId=%s|clusterId=%s" +
-                                        "|namespaceId=%s|stageId=%s|appRecords=%s|rootRecords=%s", unitId, clusterId,
-                                namespaceId, stageId, JSONObject.toJSONString(appRecords),
-                                JSONObject.toJSONString(rootRecords)));
-            }
-            return result;
+        if (filteredAppRecords.size() == 0) {
+            throw new AppException(AppErrorCode.DEPLOY_ERROR,
+                    String.format("cannot find best deploy config with given condition(specified name)|unitId=%s|" +
+                                    "clusterId=%s|namespaceId=%s|stageId=%s|appRecords=%s|rootRecords=%s|" +
+                                    "rootParentRecords=%s", unitId, clusterId, namespaceId, stageId,
+                            JSONArray.toJSONString(appRecords), JSONArray.toJSONString(rootRecords),
+                            JSONArray.toJSONString(rootParentRecords)));
         }
 
-        // 再不行就报错了
-        throw new AppException(AppErrorCode.DEPLOY_ERROR,
-                String.format("cannot find best deploy config with given condition(specified name)|unitId=%s|" +
-                        "clusterId=%s|namespaceId=%s|stageId=%s", unitId, clusterId, namespaceId, stageId));
+        DeployConfigDO result = filteredAppRecords.get(0);
+        if (result.getInherit() != null && result.getInherit()) {
+            for (String current : priorities) {
+                List<DeployConfigDO> filteredRootRecords = filterDeployConfigByEnvId(rootRecords, current);
+                if (filteredRootRecords.size() > 0) {
+                    return filteredRootRecords.get(0);
+                }
+            }
+            List<DeployConfigDO> filterRootRecords = rootRecords.stream()
+                    .filter(item -> StringUtils.isEmpty(item.getEnvId()))
+                    .collect(Collectors.toList());
+            if (filterRootRecords.size() > 0) {
+                return filterRootRecords.get(0);
+            }
+            return null;
+        } else {
+            return result;
+        }
     }
 
     /**

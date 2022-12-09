@@ -4,16 +4,20 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.AppPackageTaskProvider;
 import com.alibaba.tesla.appmanager.api.provider.ProductReleaseProvider;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
-import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.service.GitService;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
+import com.alibaba.tesla.appmanager.domain.dto.ProductDTO;
+import com.alibaba.tesla.appmanager.domain.dto.ProductReleaseAppRelDTO;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.AppPackageTaskCreateReq;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.ComponentBinder;
-import com.alibaba.tesla.appmanager.domain.req.productrelease.CreateAppPackageTaskInProductReleaseTaskReq;
+import com.alibaba.tesla.appmanager.domain.req.productrelease.AppPackageTaskInProductReleaseTaskCreateReq;
+import com.alibaba.tesla.appmanager.domain.req.productrelease.ProductReleaseAppUpdateReq;
 import com.alibaba.tesla.appmanager.domain.res.apppackage.AppPackageTaskCreateRes;
 import com.alibaba.tesla.appmanager.domain.res.productrelease.CreateAppPackageTaskInProductReleaseTaskRes;
+import com.alibaba.tesla.appmanager.server.assembly.ProductDtoConvert;
+import com.alibaba.tesla.appmanager.server.assembly.ProductReleaseAppRelDtoConvert;
 import com.alibaba.tesla.appmanager.server.repository.ProductReleaseTaskAppPackageTaskRelRepository;
 import com.alibaba.tesla.appmanager.server.repository.domain.ProductReleaseTaskAppPackageTaskRelDO;
 import com.alibaba.tesla.appmanager.server.service.productrelease.ProductReleaseService;
@@ -46,6 +50,12 @@ public class ProductReleaseProviderImpl implements ProductReleaseProvider {
     private GitService gitService;
 
     @Autowired
+    private ProductReleaseAppRelDtoConvert productReleaseAppRelDtoConvert;
+
+    @Autowired
+    private ProductDtoConvert productDtoConvert;
+
+    @Autowired
     private ProductReleaseTaskAppPackageTaskRelRepository productReleaseTaskAppPackageTaskRelRepository;
 
     /**
@@ -62,6 +72,28 @@ public class ProductReleaseProviderImpl implements ProductReleaseProvider {
     }
 
     /**
+     * 获取指定的产品对象
+     *
+     * @param productId 产品 ID
+     * @return ProductDTO
+     */
+    @Override
+    public ProductDTO getProduct(String productId) {
+        return productDtoConvert.to(productReleaseService.getProduct(productId));
+    }
+
+    /**
+     * 创建或更新产品发布版本关联应用关系
+     *
+     * @param req 创建或更新请求
+     * @return 更新好的关联记录
+     */
+    @Override
+    public ProductReleaseAppRelDTO updateAppRel(ProductReleaseAppUpdateReq req) {
+        return productReleaseAppRelDtoConvert.to(productReleaseService.updateAppRel(req));
+    }
+
+    /**
      * 在产品发布版本任务中创建 AppPackage 打包任务
      *
      * @param request 请求内容
@@ -69,7 +101,7 @@ public class ProductReleaseProviderImpl implements ProductReleaseProvider {
      */
     @Override
     public CreateAppPackageTaskInProductReleaseTaskRes createAppPackageTaskInProductReleaseTask(
-            CreateAppPackageTaskInProductReleaseTaskReq request) {
+            AppPackageTaskInProductReleaseTaskCreateReq request) {
         // Git 切换到自己的分支
         gitService.checkoutBranch(request.getLogContent(), request.getBranch(), request.getDir());
         log.info("git repo has checkout to branch {}|dir={}|productId={}|releaseId={}",

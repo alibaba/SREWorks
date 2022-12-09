@@ -5,14 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ListProductReleaseTaskReq {
+public class ProductReleaseTaskCheckReq {
 
     /**
      * 产品 ID
@@ -23,9 +20,4 @@ public class ListProductReleaseTaskReq {
      * 发布版本 ID
      */
     private String releaseId;
-
-    /**
-     * 状态列表
-     */
-    private List<String> status = new ArrayList<>();
 }

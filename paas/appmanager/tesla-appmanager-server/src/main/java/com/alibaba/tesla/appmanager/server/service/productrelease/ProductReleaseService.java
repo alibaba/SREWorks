@@ -1,15 +1,11 @@
 package com.alibaba.tesla.appmanager.server.service.productrelease;
 
 import com.alibaba.tesla.appmanager.common.enums.ProductReleaseTaskStatusEnum;
-import com.alibaba.tesla.appmanager.domain.req.productrelease.CheckProductReleaseTaskReq;
-import com.alibaba.tesla.appmanager.domain.req.productrelease.CreateProductReleaseTaskReq;
-import com.alibaba.tesla.appmanager.domain.req.productrelease.ListProductReleaseTaskAppPackageTaskReq;
-import com.alibaba.tesla.appmanager.domain.req.productrelease.ListProductReleaseTaskReq;
+import com.alibaba.tesla.appmanager.domain.dto.ProductDTO;
+import com.alibaba.tesla.appmanager.domain.req.productrelease.*;
 import com.alibaba.tesla.appmanager.domain.res.productrelease.CheckProductReleaseTaskRes;
 import com.alibaba.tesla.appmanager.domain.res.productrelease.CreateProductReleaseTaskRes;
-import com.alibaba.tesla.appmanager.server.repository.domain.ProductReleaseSchedulerDO;
-import com.alibaba.tesla.appmanager.server.repository.domain.ProductReleaseTaskAppPackageTaskRelDO;
-import com.alibaba.tesla.appmanager.server.repository.domain.ProductReleaseTaskDO;
+import com.alibaba.tesla.appmanager.server.repository.domain.*;
 import com.alibaba.tesla.appmanager.server.service.productrelease.business.ProductReleaseBO;
 
 import java.util.List;
@@ -38,6 +34,14 @@ public interface ProductReleaseService {
     ProductReleaseSchedulerDO getScheduler(String productId, String releaseId);
 
     /**
+     * 创建或更新产品发布版本关联应用关系
+     *
+     * @param req 创建或更新请求
+     * @return 更新好的关联记录
+     */
+    ProductReleaseAppRelDO updateAppRel(ProductReleaseAppUpdateReq req);
+
+    /**
      * 根据 productId 和 releaseId 获取对应产品、发布版本及相关引用的全量信息
      *
      * @param productId 产品 ID
@@ -45,6 +49,14 @@ public interface ProductReleaseService {
      * @return 全量信息
      */
     ProductReleaseBO get(String productId, String releaseId);
+
+    /**
+     * 获取指定的产品对象
+     *
+     * @param productId 产品 ID
+     * @return ProductDO
+     */
+    ProductDO getProduct(String productId);
 
     /**
      * 获取指定 productId + releaseId + appId 的 launch yaml 文件内容
@@ -62,7 +74,7 @@ public interface ProductReleaseService {
      * @param request 请求内容
      * @return 任务 ID 及应用包 ID 内容
      */
-    CreateProductReleaseTaskRes createProductReleaseTask(CreateProductReleaseTaskReq request);
+    CreateProductReleaseTaskRes createProductReleaseTask(ProductReleaseTaskCreateReq request);
 
     /**
      * 检查当前是否存在冲突的产品发布版本运行项任务
@@ -70,7 +82,7 @@ public interface ProductReleaseService {
      * @param request 请求内容
      * @return 检测结果
      */
-    CheckProductReleaseTaskRes checkProductReleaseTask(CheckProductReleaseTaskReq request);
+    CheckProductReleaseTaskRes checkProductReleaseTask(ProductReleaseTaskCheckReq request);
 
     /**
      * 根据过滤条件获取产品发布版本任务列表
@@ -78,7 +90,7 @@ public interface ProductReleaseService {
      * @param request 请求内容
      * @return 过滤出的列表
      */
-    List<ProductReleaseTaskDO> listProductReleaseTask(ListProductReleaseTaskReq request);
+    List<ProductReleaseTaskDO> listProductReleaseTask(ProductReleaseTaskListReq request);
 
     /**
      * 更新 ProductRelease Task
@@ -95,7 +107,7 @@ public interface ProductReleaseService {
      * @return 过滤出的列表
      */
     List<ProductReleaseTaskAppPackageTaskRelDO> listProductReleaseTaskAppPackageTask(
-            ListProductReleaseTaskAppPackageTaskReq request);
+            ProductReleaseTaskAppPackageTaskListReq request);
 
     /**
      * 将产品发布版本任务设置状态

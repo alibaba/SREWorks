@@ -75,6 +75,13 @@ public class DeployAppRevisionName {
         this.mirrorFlag = mirrorFlag;
     }
 
+    public DeployAppRevisionName(String componentType, String componentName, String version) {
+        this.componentType = componentType;
+        this.componentName = componentName;
+        this.version = version;
+        this.mirrorFlag = false;
+    }
+
     /**
      * 根据 revisionName 生成一个 Container 容器对象
      *

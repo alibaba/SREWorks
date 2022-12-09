@@ -1,0 +1,28 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: ApplicationConfiguration
+metadata:
+  annotations:
+    appId: "testapp"
+spec:
+  parameterValues:
+    - name: CLUSTER_ID
+      value: "slave"
+    - name: TEST_VARIABLE
+      value: "fake-value"
+  components:
+    - revisionName: INTERNAL_ADDON|productops|_
+      parameterValues:
+        - name: MULTIPLE_ENV
+          value: true
+          toFieldPaths:
+            - spec.multipleEnv
+        - name: TARGET_ENDPOINT
+          value: "SET_BY_USER"
+          toFieldPaths:
+            - spec.targetEndpoint
+    - revisionName: INTERNAL_ADDON|authproxy|_
+      parameterValues:
+        - name: MULTIPLE_ENV
+          value: true
+          toFieldPaths:
+            - spec.multipleEnv

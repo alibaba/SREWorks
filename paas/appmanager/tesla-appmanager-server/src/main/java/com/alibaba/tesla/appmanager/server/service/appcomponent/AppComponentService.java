@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.server.service.appcomponent;
 
+import com.alibaba.tesla.appmanager.domain.container.AppComponentLocationContainer;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppComponentQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.AppComponentDO;
 
@@ -11,6 +12,16 @@ import java.util.List;
  * @author yaoxing.gyx@alibaba-inc.com
  */
 public interface AppComponentService {
+
+    /**
+     * 获取指定应用下绑定了哪些组件及组件名称
+     * @param appId 应用 ID
+     * @param isolateNamespaceId 隔离 Namespace ID
+     * @param isolateStageId 隔离 Stage ID
+     * @return List of AppComponentLocationContainer
+     */
+    List<AppComponentLocationContainer> getFullComponentRelations(
+            String appId, String isolateNamespaceId, String isolateStageId);
 
     /**
      * 根据条件过滤应用绑定组件

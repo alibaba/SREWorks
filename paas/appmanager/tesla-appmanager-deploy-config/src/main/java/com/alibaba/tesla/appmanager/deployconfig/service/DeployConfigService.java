@@ -2,9 +2,12 @@ package com.alibaba.tesla.appmanager.deployconfig.service;
 
 import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConfigQueryCondition;
 import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDO;
+import com.alibaba.tesla.appmanager.domain.dto.ProductDTO;
+import com.alibaba.tesla.appmanager.domain.req.appenvironment.AppEnvironmentBindReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.*;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigApplyTemplateRes;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigGenerateRes;
+import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigSyncToGitBaselineRes;
 import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
 
 import java.util.List;
@@ -68,7 +71,16 @@ public interface DeployConfigService {
      *
      * @param req 当前 Application 及目标仓库路径
      */
-    void syncToGitBaseline(DeployConfigSyncToGitBaselineReq req);
+    DeployConfigSyncToGitBaselineRes syncToGitBaseline(DeployConfigSyncToGitBaselineReq req);
+
+    /**
+     * 将指定应用加入到指定环境中
+     *
+     * @param req      加入环境请求
+     * @param product  产品对象
+     * @param filePath 目标路径
+     */
+    void bindEnvironment(AppEnvironmentBindReq req, ProductDTO product, String filePath);
 
     /**
      * 获取当前的指定隔离环境下的全局模板清单

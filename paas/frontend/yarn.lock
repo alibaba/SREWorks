@@ -5562,6 +5562,7 @@ __metadata:
     "@sreworks/components": ^0.0.0-alpha.1
     "@sreworks/framework": ^0.0.0-alpha.1
     "@sreworks/shared-utils": ^0.0.0-alpha.1
+    "@sreworks/widgets": ^0.0.0-alpha.1
     antd: 4.17.4
     antd-theme-generator: 1.1.6
     babel-loader: 8.2.5

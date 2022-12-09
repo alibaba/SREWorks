@@ -1,8 +1,3 @@
-/*
- * @version: 2.0.0
- * @Author: deeham.ww
- * @Date: 2022-12-02 11:18:47
- */
 import dva from 'dva'
 import createLoading from 'dva-loading'
 import { createHashHistory } from 'history'
@@ -21,6 +16,7 @@ import home from './models/home'
 import './index.less'
 import '@sreworks/framework/dist/theme/index.css'
 import '@sreworks/widgets/dist/theme/index.css'
+import '@sreworks/components/dist/theme/index.css'
 
 const app = dva({
   history: createHashHistory(),

@@ -41,23 +41,6 @@ spec:
 {{ toYaml .Values.ui.podAnnotations | indent 8 }}
         {{- end }}
     spec:
-      affinity:
-      {{- with .Values.ui.nodeAffinity }}
-        nodeAffinity:
-{{ toYaml . | indent 10 }}
-      {{- end }}
-{{- if .Values.ui.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.ui.nodeSelector | indent 8 }}
-{{- end }}
-{{- if .Values.ui.tolerations }}
-      tolerations:
-{{ toYaml .Values.ui.tolerations | indent 8 }}
-{{- end }}
-{{- if .Values.imagePullSecrets }}
-      imagePullSecrets:
-{{ toYaml .Values.imagePullSecrets | indent 8 }}
-{{- end }}
       containers:
       - name: {{ .Values.ui.name }}
         image: {{ .Values.ui.image.repository }}:{{ required "ui.image.tag is required" .Values.ui.image.tag }}
@@ -71,4 +54,4 @@ spec:
 {{- end }}
         env:
         - name: SW_OAP_ADDRESS
-          value: http://{{ template "skywalking.oap.fullname" . }}:{{ .Values.oap.ports.rest }}
+          value: {{ template "skywalking.oap.fullname" . }}:{{ .Values.oap.ports.rest }}

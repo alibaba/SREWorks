@@ -5,7 +5,7 @@ import * as util from './utills/utils'
 import localeHelper from './utills/localeHelper'
 import cacheRepository from './utills/cacheRepository'
 import Bus from './utills/eventBus'
-import properties from './properties'
+import Property from './Property'
 
 export const pkg = 'shared-utils'
-export { safeEval, ChartTool, httpClient, util, localeHelper, cacheRepository, Bus, properties }
+export { safeEval, ChartTool, httpClient, util, localeHelper, cacheRepository, Bus, Property }

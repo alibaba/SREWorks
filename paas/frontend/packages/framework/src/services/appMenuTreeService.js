@@ -4,8 +4,8 @@
 
 import { httpClient, util, cacheRepository } from '@sreworks/shared-utils'
 import { getBuiltInWidgetCategory } from '../framework/components/WidgetRepository'
-import properties from '../properties'
-// let properties = window.PROPERTY
+import Property from '../Property'
+let properties = Property.getProperties()
 const newPrefix = 'gateway/v2/foundation/frontend-service/frontend'
 const opsPrefix = 'gateway/v2/common/productops/frontend'
 

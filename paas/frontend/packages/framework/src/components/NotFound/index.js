@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { Button } from 'antd'
 import { connect } from 'dva'
 import { cacheRepository, localeHelper } from '@sreworks/shared-utils'
-import properties from '../../properties'
-// let properties = window.PROPERTY
+import Property from '../../Property'
+let properties = Property.getProperties()
 
 @connect(({ global }) => ({
   currentUser: global.currentUser,

@@ -17,6 +17,16 @@ import './index.less'
 import '@sreworks/framework/dist/theme/index.css'
 import '@sreworks/widgets/dist/theme/index.css'
 import '@sreworks/components/dist/theme/index.css'
+import { Property as util_properties } from '@sreworks/shared-utils'
+import { Property as components_properties } from '@sreworks/components'
+import { Property as widgets_properties } from '@sreworks/widgets'
+import { Property as frame_properties } from '@sreworks/framework'
+import properties from './properties'
+
+util_properties.injectProperties(properties)
+components_properties.injectProperties(properties)
+widgets_properties.injectProperties(properties)
+frame_properties.injectProperties(properties)
 
 const app = dva({
   history: createHashHistory(),

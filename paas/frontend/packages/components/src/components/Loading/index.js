@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import styles from './index.module.less'
-import properties from '../../properties'
+import Property from '../../Property'
+let properties = Property.getProperties()
 export default class Loading extends Component {
   render() {
     const { platformName } = properties

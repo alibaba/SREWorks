@@ -1,4 +1,3 @@
-
 /**
  * Created by caoshuaibiao on 2018/12/8.
  * 信息挂件工厂

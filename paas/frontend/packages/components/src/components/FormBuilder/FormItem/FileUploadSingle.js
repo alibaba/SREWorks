@@ -2,8 +2,8 @@ import { UploadOutlined } from '@ant-design/icons'
 import { Upload, message } from 'antd'
 import React, { Component } from 'react'
 import { cacheRepository } from '@sreworks/shared-utils'
-import properties from '../../../properties'
-// let properties = window.PROPERTY
+import Property from '../../../Property'
+let properties = Property.getProperties()
 class FileUploadSingle extends Component {
   constructor(props) {
     super(props)

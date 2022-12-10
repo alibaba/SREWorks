@@ -1,3 +1,4 @@
+import Property from './Property'
 let SRE_builtInWidgets = {}
 let SRE_builtInWidgetMetaMapping = {}
 const SRE_widgetsContext = require.context(
@@ -23,4 +24,4 @@ SRE_widgetMetasContext.keys().forEach((key) => {
   SRE_builtInWidgetMetaMapping[meta.type] = meta
 })
 
-export { SRE_builtInWidgets, SRE_builtInWidgetMetaMapping }
+export { SRE_builtInWidgets, SRE_builtInWidgetMetaMapping, Property }

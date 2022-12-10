@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { JSXRender } from '@sreworks/components'
 import './index.less'
-import properties from '../../properties'
+import Property from '../../Property'
+let properties = Property.getProperties()
 
 export default class SwitchCard extends Component {
   render() {

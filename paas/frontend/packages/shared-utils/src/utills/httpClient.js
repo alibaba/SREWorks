@@ -3,10 +3,10 @@ import axios from 'axios'
 import debounce from 'lodash.debounce'
 import Qs from 'qs'
 import { notification } from 'antd'
-import properties from '../properties'
+import Property from '../Property'
 import _ from 'lodash'
 
-// let properties = window.PROPERTY
+let properties = Property.getProperties()
 let request = axios.create({
   withCredentials: true,
 })

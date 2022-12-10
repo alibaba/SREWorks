@@ -3,8 +3,8 @@
  * 用户服务接口
  */
 import { cacheRepository, httpClient } from '@sreworks/shared-utils'
-import properties from '../properties'
-//  let properties = window.PROPERTY;
+import Property from '../Property'
+let properties = Property.getProperties()
 const baseUrl = properties.baseUrl
 
 const apiEndpoint = properties.apiEndpoint

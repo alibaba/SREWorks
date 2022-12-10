@@ -7,8 +7,8 @@ import { Icon as LegacyIcon } from '@ant-design/compatible'
 import { List, Avatar } from 'antd'
 import { connect } from 'dva'
 import _ from 'lodash'
-import properties from '../../properties'
-// let properties = window.PROPERTY
+import Property from '../../Property'
+let properties = Property.getProperties()
 const colors = [
   '#90ee90',
   '#2191ee',

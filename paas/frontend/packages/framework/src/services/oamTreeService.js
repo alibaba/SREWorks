@@ -3,9 +3,9 @@
  * 运维树相关服务
  */
 import { httpClient, cacheRepository } from '@sreworks/shared-utils'
-import properties from '../properties'
+import Property from '../Property'
 
-// let properties = window.PROPERTY
+let properties = Property.getProperties()
 function getProductName() {
   //从路径获取应用名,如果没有则默认为sreworks主站
   let productName = window.location.hash.split('/')[1]

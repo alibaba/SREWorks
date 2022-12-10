@@ -3,9 +3,9 @@ import qs from 'qs'
 import Mustache from 'mustache'
 import shortid from 'shortid'
 import cacheRepository from './cacheRepository'
-import properties from '../properties'
+import Property from '../Property'
 
-// let properties = window.PROPERTY
+let properties = Property.getProperties()
 const jsonexport = require('jsonexport/dist')
 
 export const stringToObject = (str, exclude = []) => {

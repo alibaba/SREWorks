@@ -6,7 +6,8 @@ import PropTypes from 'prop-types'
 import { Card, message, Tabs, Divider, Tooltip } from 'antd'
 import { MoreOutlined } from '@ant-design/icons'
 import _ from 'lodash'
-import properties from '../../../properties'
+import Property from '../../../Property'
+let properties = Property.getProperties()
 class FlatList extends Component {
   constructor(props) {
     super(props)

@@ -1,36 +1,25 @@
 package com.alibaba.tesla.appmanager.server.service.productrelease.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.tesla.appmanager.api.provider.AppPackageTaskProvider;
-import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
-import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.ProductReleaseTaskStatusEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.service.GitService;
-import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
-import com.alibaba.tesla.appmanager.domain.req.apppackage.AppPackageTaskCreateReq;
-import com.alibaba.tesla.appmanager.domain.req.apppackage.ComponentBinder;
 import com.alibaba.tesla.appmanager.domain.req.git.GitFetchFileReq;
 import com.alibaba.tesla.appmanager.domain.req.productrelease.*;
-import com.alibaba.tesla.appmanager.domain.res.apppackage.AppPackageTaskCreateRes;
 import com.alibaba.tesla.appmanager.domain.res.productrelease.CheckProductReleaseTaskRes;
-import com.alibaba.tesla.appmanager.domain.res.productrelease.CreateAppPackageTaskInProductReleaseTaskRes;
 import com.alibaba.tesla.appmanager.domain.res.productrelease.CreateProductReleaseTaskRes;
 import com.alibaba.tesla.appmanager.server.repository.*;
 import com.alibaba.tesla.appmanager.server.repository.condition.*;
 import com.alibaba.tesla.appmanager.server.repository.domain.*;
 import com.alibaba.tesla.appmanager.server.service.productrelease.ProductReleaseService;
 import com.alibaba.tesla.appmanager.server.service.productrelease.business.ProductReleaseBO;
+import com.aliyuncs.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.Yaml;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -95,6 +84,40 @@ public class ProductReleaseServiceImpl implements ProductReleaseService {
     }
 
     /**
+     * 创建或更新产品发布版本关联应用关系
+     *
+     * @param req 创建或更新请求
+     * @return 更新好的关联记录
+     */
+    @Override
+    public ProductReleaseAppRelDO updateAppRel(ProductReleaseAppUpdateReq req) {
+        ProductReleaseAppRelQueryCondition condition = ProductReleaseAppRelQueryCondition.builder()
+                .productId(req.getProductId())
+                .releaseId(req.getReleaseId())
+                .appId(req.getAppId())
+                .build();
+        ProductReleaseAppRelDO record = productReleaseAppRelRepository.getByCondition(condition);
+        if (record == null) {
+            productReleaseAppRelRepository.insert(ProductReleaseAppRelDO.builder()
+                    .productId(req.getProductId())
+                    .releaseId(req.getReleaseId())
+                    .appId(req.getAppId())
+                    .tag(req.getTag())
+                    .baselineGitBranch(req.getBranch())
+                    .baselineBuildPath(req.getBuildPath())
+                    .baselineLaunchPath(req.getLaunchPath())
+                    .build());
+        } else {
+            record.setTag(req.getTag());
+            record.setBaselineGitBranch(req.getBranch());
+            record.setBaselineBuildPath(req.getBuildPath());
+            record.setBaselineLaunchPath(req.getLaunchPath());
+            productReleaseAppRelRepository.updateByCondition(record, condition);
+        }
+        return productReleaseAppRelRepository.getByCondition(condition);
+    }
+
+    /**
      * 根据 productId 和 releaseId 获取对应产品、发布版本及相关引用的全量信息
      *
      * @param productId 产品 ID
@@ -128,6 +151,22 @@ public class ProductReleaseServiceImpl implements ProductReleaseService {
                 .productReleaseRel(productReleaseRel)
                 .appRelList(appRelList)
                 .build();
+    }
+
+    /**
+     * 获取指定的产品对象
+     *
+     * @param productId 产品 ID
+     * @return ProductDO
+     */
+    @Override
+    public ProductDO getProduct(String productId) {
+        if (StringUtils.isEmpty(productId)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "empty productId");
+        }
+        return productRepository.getByCondition(ProductQueryCondition.builder()
+                .productId(productId)
+                .build());
     }
 
     /**
@@ -176,7 +215,7 @@ public class ProductReleaseServiceImpl implements ProductReleaseService {
      * @return 任务 ID 及应用包 ID 内容
      */
     @Override
-    public CreateProductReleaseTaskRes createProductReleaseTask(CreateProductReleaseTaskReq request) {
+    public CreateProductReleaseTaskRes createProductReleaseTask(ProductReleaseTaskCreateReq request) {
         // 创建任务
         String taskId = UUID.randomUUID().toString().replaceAll("-", "");
         ProductReleaseTaskDO taskDO = ProductReleaseTaskDO.builder()
@@ -205,7 +244,7 @@ public class ProductReleaseServiceImpl implements ProductReleaseService {
      * @return 检测结果
      */
     @Override
-    public CheckProductReleaseTaskRes checkProductReleaseTask(CheckProductReleaseTaskReq request) {
+    public CheckProductReleaseTaskRes checkProductReleaseTask(ProductReleaseTaskCheckReq request) {
         ProductReleaseTaskQueryCondition condition = ProductReleaseTaskQueryCondition.builder()
                 .productId(request.getProductId())
                 .releaseId(request.getReleaseId())
@@ -230,7 +269,7 @@ public class ProductReleaseServiceImpl implements ProductReleaseService {
      * @return 过滤出的列表
      */
     @Override
-    public List<ProductReleaseTaskDO> listProductReleaseTask(ListProductReleaseTaskReq request) {
+    public List<ProductReleaseTaskDO> listProductReleaseTask(ProductReleaseTaskListReq request) {
         ProductReleaseTaskQueryCondition condition = ProductReleaseTaskQueryCondition.builder()
                 .productId(request.getProductId())
                 .releaseId(request.getReleaseId())
@@ -260,7 +299,7 @@ public class ProductReleaseServiceImpl implements ProductReleaseService {
      */
     @Override
     public List<ProductReleaseTaskAppPackageTaskRelDO> listProductReleaseTaskAppPackageTask(
-            ListProductReleaseTaskAppPackageTaskReq request) {
+            ProductReleaseTaskAppPackageTaskListReq request) {
         ProductReleaseTaskAppPackageTaskRelQueryCondition condition =
                 ProductReleaseTaskAppPackageTaskRelQueryCondition.builder()
                         .taskId(request.getTaskId())

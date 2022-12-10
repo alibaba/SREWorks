@@ -1,8 +1,10 @@
 package com.alibaba.tesla.appmanager.deployconfig.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.api.provider.ProductReleaseProvider;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.service.GitService;
+import com.alibaba.tesla.appmanager.common.util.EnvUtil;
 import com.alibaba.tesla.appmanager.deployconfig.repository.DeployConfigHistoryRepository;
 import com.alibaba.tesla.appmanager.deployconfig.repository.DeployConfigRepository;
 import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDO;
@@ -40,7 +42,6 @@ public class TestServiceDeployConfigGetDefaultTemplate {
 
     private static final String APP_ID = "testapp";
     private static final String API_VERSION = DefaultConstant.API_VERSION_V1_ALPHA2;
-    private static final String ENV_ID = "Namespace:abm-daily";
     private static final String ISOLATE_NAMESPACE_ID = "default";
     private static final String ISOLATE_STAGE_ID = "pre";
     private static final String UNIT_ID = "internal";
@@ -83,12 +84,12 @@ public class TestServiceDeployConfigGetDefaultTemplate {
                                 .enabled(true)
                                 .build())
                 .getItems();
+        String envId = EnvUtil.generate(UNIT_ID, CLUSTER_ID, NAMESPACE_ID, STAGE_ID);
         Mockito.doReturn(deployConfigItems)
                 .when(deployConfigService)
-                .getGlobalTemplate(API_VERSION, ENV_ID, ISOLATE_NAMESPACE_ID, ISOLATE_STAGE_ID);
+                .getGlobalTemplate(API_VERSION, envId, ISOLATE_NAMESPACE_ID, ISOLATE_STAGE_ID);
         DeployAppSchema res = deployConfigService.getDefaultTemplate(DeployConfigGetDefaultTemplateReq.builder()
                 .apiVersion(API_VERSION)
-                .envId(ENV_ID)
                 .isolateNamespaceId(ISOLATE_NAMESPACE_ID)
                 .isolateStageId(ISOLATE_STAGE_ID)
                 .appId(APP_ID)
@@ -118,12 +119,12 @@ public class TestServiceDeployConfigGetDefaultTemplate {
                         .enabled(true)
                         .build())
                 .getItems();
+        String envId = EnvUtil.generate(UNIT_ID, CLUSTER_ID, NAMESPACE_ID, STAGE_ID);
         Mockito.doReturn(deployConfigItems)
                 .when(deployConfigService)
-                .getGlobalTemplate(API_VERSION, ENV_ID, ISOLATE_NAMESPACE_ID, ISOLATE_STAGE_ID);
+                .getGlobalTemplate(API_VERSION, envId, ISOLATE_NAMESPACE_ID, ISOLATE_STAGE_ID);
         DeployAppSchema res = deployConfigService.getDefaultTemplate(DeployConfigGetDefaultTemplateReq.builder()
                 .apiVersion(API_VERSION)
-                .envId(ENV_ID)
                 .isolateNamespaceId(ISOLATE_NAMESPACE_ID)
                 .isolateStageId(ISOLATE_STAGE_ID)
                 .appId(APP_ID)
@@ -160,12 +161,12 @@ public class TestServiceDeployConfigGetDefaultTemplate {
                                 .enabled(true)
                                 .build())
                 .getItems();
+        String envId = EnvUtil.generate(UNIT_ID, CLUSTER_ID, NAMESPACE_ID, STAGE_ID);
         Mockito.doReturn(deployConfigItems)
                 .when(deployConfigService)
-                .getGlobalTemplate(API_VERSION, ENV_ID, ISOLATE_NAMESPACE_ID, ISOLATE_STAGE_ID);
+                .getGlobalTemplate(API_VERSION, envId, ISOLATE_NAMESPACE_ID, ISOLATE_STAGE_ID);
         DeployAppSchema res = deployConfigService.getDefaultTemplate(DeployConfigGetDefaultTemplateReq.builder()
                 .apiVersion(API_VERSION)
-                .envId(ENV_ID)
                 .isolateNamespaceId(ISOLATE_NAMESPACE_ID)
                 .isolateStageId(ISOLATE_STAGE_ID)
                 .appId(APP_ID)

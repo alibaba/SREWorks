@@ -19,17 +19,17 @@
 
 oap:
   image:
-    tag: 9.2.0
-  storageType: elasticsearch
+    tag: 8.1.0-es7      # Set the right tag according to the existing Elasticsearch version
+  storageType: elasticsearch7
 
 ui:
   image:
-    tag: 9.2.0
+    tag: 8.1.0
 
 elasticsearch:
   enabled: false
   config:               # For users of an existing elasticsearch cluster,takes effect when `elasticsearch.enabled` is false
-    host: elasticsearch-es-http
+    host: your.elasticsearch.host.or.ip
     port:
       http: 9200
     user: "xxx"         # [optional]

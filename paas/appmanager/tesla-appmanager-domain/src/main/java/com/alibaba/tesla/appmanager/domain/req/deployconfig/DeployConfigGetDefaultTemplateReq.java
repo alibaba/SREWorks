@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,11 +24,6 @@ public class DeployConfigGetDefaultTemplateReq {
      * API Version
      */
     private String apiVersion;
-
-    /**
-     * 环境 ID
-     */
-    private String envId;
 
     /**
      * 隔离 Namespace
@@ -67,5 +63,5 @@ public class DeployConfigGetDefaultTemplateReq {
     /**
      * 应用对应的 Component 列表
      */
-    private List<AppComponentLocationContainer> appComponents;
+    private List<AppComponentLocationContainer> appComponents = new ArrayList<>();
 }

@@ -11,9 +11,9 @@ import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.service.GitService;
 import com.alibaba.tesla.appmanager.domain.req.git.GitCloneReq;
-import com.alibaba.tesla.appmanager.domain.req.productrelease.CheckProductReleaseTaskReq;
-import com.alibaba.tesla.appmanager.domain.req.productrelease.CreateAppPackageTaskInProductReleaseTaskReq;
-import com.alibaba.tesla.appmanager.domain.req.productrelease.CreateProductReleaseTaskReq;
+import com.alibaba.tesla.appmanager.domain.req.productrelease.ProductReleaseTaskCheckReq;
+import com.alibaba.tesla.appmanager.domain.req.productrelease.AppPackageTaskInProductReleaseTaskCreateReq;
+import com.alibaba.tesla.appmanager.domain.req.productrelease.ProductReleaseTaskCreateReq;
 import com.alibaba.tesla.appmanager.domain.res.productrelease.CheckProductReleaseTaskRes;
 import com.alibaba.tesla.appmanager.domain.res.productrelease.CreateAppPackageTaskInProductReleaseTaskRes;
 import com.alibaba.tesla.appmanager.domain.res.productrelease.CreateProductReleaseTaskRes;
@@ -331,13 +331,13 @@ public class ProductReleaseSchedulerJob {
 
             // 如果当前存在已经运行的记录，则终止当前任务
             CheckProductReleaseTaskRes checkRes = productReleaseService.checkProductReleaseTask(
-                    CheckProductReleaseTaskReq.builder()
+                    ProductReleaseTaskCheckReq.builder()
                             .productId(storage.getProductId())
                             .releaseId(storage.getReleaseId())
                             .build());
             if (checkRes.isExists()) {
                 CreateProductReleaseTaskRes res = productReleaseService.createProductReleaseTask(
-                        CreateProductReleaseTaskReq.builder()
+                        ProductReleaseTaskCreateReq.builder()
                                 .logContent(logContent)
                                 .productId(storage.getProductId())
                                 .releaseId(storage.getReleaseId())
@@ -387,7 +387,7 @@ public class ProductReleaseSchedulerJob {
 
             // 创建 Task 记录
             CreateProductReleaseTaskRes res = productReleaseService.createProductReleaseTask(
-                    CreateProductReleaseTaskReq.builder()
+                    ProductReleaseTaskCreateReq.builder()
                             .logContent(logContent)
                             .productId(storage.getProductId())
                             .releaseId(storage.getReleaseId())
@@ -408,7 +408,7 @@ public class ProductReleaseSchedulerJob {
                 String buildPath = item.getBaselineBuildPath();
                 CreateAppPackageTaskInProductReleaseTaskRes appPackageTaskRes = productReleaseProvider
                         .createAppPackageTaskInProductReleaseTask(
-                                CreateAppPackageTaskInProductReleaseTaskReq.builder()
+                                AppPackageTaskInProductReleaseTaskCreateReq.builder()
                                         .logContent(logContent)
                                         .productId(storage.getProductId())
                                         .releaseId(storage.getReleaseId())

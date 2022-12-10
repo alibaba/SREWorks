@@ -11,9 +11,9 @@ import com.alibaba.tesla.appmanager.common.enums.PluginKindEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.ClassUtil;
-import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
 import com.alibaba.tesla.appmanager.deployconfig.util.DeployConfigGenerator;
+import com.alibaba.tesla.appmanager.domain.container.AppComponentLocationContainer;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.dto.AppComponentDTO;
 import com.alibaba.tesla.appmanager.domain.req.AppAddonQueryReq;
@@ -36,7 +36,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.yaml.snakeyaml.Yaml;
 
 import java.util.Collections;
 import java.util.List;
@@ -73,6 +72,19 @@ public class AppComponentProviderImpl implements AppComponentProvider {
 
     @Autowired
     private DeployConfigService deployConfigService;
+
+    /**
+     * 获取指定应用下绑定了哪些组件及组件名称
+     * @param appId 应用 ID
+     * @param isolateNamespaceId 隔离 Namespace ID
+     * @param isolateStageId 隔离 Stage ID
+     * @return List of AppComponentLocationContainer
+     */
+    @Override
+    public List<AppComponentLocationContainer> getFullComponentRelations(
+            String appId, String isolateNamespaceId, String isolateStageId) {
+        return appComponentService.getFullComponentRelations(appId, isolateNamespaceId, isolateStageId);
+    }
 
     /**
      * 获取指定应用下的指定关联 Component 对象

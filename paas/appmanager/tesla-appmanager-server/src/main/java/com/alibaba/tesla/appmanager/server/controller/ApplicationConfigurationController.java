@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.server.controller;
 
+import com.alibaba.tesla.appmanager.api.provider.AppComponentProvider;
 import com.alibaba.tesla.appmanager.api.provider.DeployConfigProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
@@ -13,6 +14,7 @@ import com.alibaba.tesla.appmanager.domain.dto.DeployConfigDTO;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.*;
 import com.alibaba.tesla.appmanager.domain.res.apppackage.ApplicationConfigurationGenerateRes;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigGenerateRes;
+import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,6 +37,9 @@ public class ApplicationConfigurationController extends AppManagerBaseController
 
     @Autowired
     private DeployConfigProvider deployConfigProvider;
+
+    @Autowired
+    private AppComponentProvider appComponentProvider;
 
     @Operation(summary = "更新全局部署信息")
     @PutMapping
@@ -71,9 +76,13 @@ public class ApplicationConfigurationController extends AppManagerBaseController
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         request.setIsolateNamespaceId(container.getNamespaceId());
         request.setIsolateStageId(container.getStageId());
+        if (StringUtils.isNotEmpty(request.getAppId())) {
+            request.setAppComponents(appComponentProvider
+                    .getFullComponentRelations(request.getAppId(), container.getNamespaceId(), container.getStageId()));
+        }
         DeployConfigGenerateRes result = deployConfigProvider.generate(request);
         return buildSucceedResult(ApplicationConfigurationGenerateRes.builder()
-                .yaml(SchemaUtil.toYamlMapStr(result.getSchema()))
+                .yaml(SchemaUtil.toYamlStr(result.getSchema(), DeployAppSchema.class))
                 .build());
     }
 

@@ -3,8 +3,8 @@ package com.alibaba.tesla.appmanager.server.job;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.enums.AppPackageTaskStatusEnum;
 import com.alibaba.tesla.appmanager.common.enums.ProductReleaseTaskStatusEnum;
-import com.alibaba.tesla.appmanager.domain.req.productrelease.ListProductReleaseTaskAppPackageTaskReq;
-import com.alibaba.tesla.appmanager.domain.req.productrelease.ListProductReleaseTaskReq;
+import com.alibaba.tesla.appmanager.domain.req.productrelease.ProductReleaseTaskAppPackageTaskListReq;
+import com.alibaba.tesla.appmanager.domain.req.productrelease.ProductReleaseTaskListReq;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppPackageTaskInQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.AppPackageTaskDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.ProductReleaseTaskAppPackageTaskRelDO;
@@ -41,7 +41,7 @@ public class ProductReleaseTaskStatusUpdateJob {
     @Scheduled(cron = "${appmanager.cron-job.product-release-task-status-update}")
     @SchedulerLock(name = "productReleaseTaskStatusUpdateJob", lockAtLeastFor = "19s")
     public void run() {
-        ListProductReleaseTaskReq request = ListProductReleaseTaskReq.builder()
+        ProductReleaseTaskListReq request = ProductReleaseTaskListReq.builder()
                 .status(Collections.singletonList(ProductReleaseTaskStatusEnum.RUNNING.toString()))
                 .build();
         List<ProductReleaseTaskDO> tasks = productReleaseService.listProductReleaseTask(request);
@@ -53,7 +53,7 @@ public class ProductReleaseTaskStatusUpdateJob {
         for (ProductReleaseTaskDO task : tasks) {
             String taskId = task.getTaskId();
             List<ProductReleaseTaskAppPackageTaskRelDO> rels = productReleaseService
-                    .listProductReleaseTaskAppPackageTask(ListProductReleaseTaskAppPackageTaskReq.builder()
+                    .listProductReleaseTaskAppPackageTask(ProductReleaseTaskAppPackageTaskListReq.builder()
                             .taskId(taskId)
                             .build());
             List<AppPackageTaskDO> appPackageTasks = appPackageTaskService.listIn(

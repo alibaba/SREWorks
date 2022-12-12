@@ -76,6 +76,11 @@ public class AppEnvironmentBindReq {
     private String baselineBranch;
 
     /**
+     * 是否使用安全模式 (不进行同步 Git 仓库操作，仅在数据库中添加对应记录)
+     */
+    private boolean safeMode = false;
+
+    /**
      * 应用对应的 Component 列表
      */
     private List<AppComponentLocationContainer> appComponents = new ArrayList<>();

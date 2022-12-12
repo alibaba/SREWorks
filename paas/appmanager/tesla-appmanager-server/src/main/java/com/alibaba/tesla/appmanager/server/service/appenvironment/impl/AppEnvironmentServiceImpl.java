@@ -59,18 +59,20 @@ public class AppEnvironmentServiceImpl implements AppEnvironmentService {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                     "appId/isolateNamespaceId/isolateStageId are required");
         }
-        if (StringUtils.isAnyEmpty(req.getUnitId(), req.getNamespaceId())) {
-            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "unitId/stageId are required");
-        }
         if (StringUtils.isAnyEmpty(productId, releaseId, baselineBranch, operator)) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                     "productId/releaseId/baselineBranch/operator are required");
         }
         String envId = EnvUtil.generate(req.getUnitId(), req.getClusterId(), req.getNamespaceId(), req.getStageId());
+        if (StringUtils.isNotEmpty(envId) && StringUtils.isAnyEmpty(req.getUnitId(), req.getNamespaceId())) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "invalid unitId/clusterId/namespaceId/stageId");
+        }
 
         // 检查当前 ProductReleaseAppRel 表中的引用是否存在，不存在则新增
         String filePath;
-        if (StringUtils.isEmpty(req.getStageId())) {
+        if (StringUtils.isEmpty(envId)) {
+            filePath = String.format("%s/__global__.yaml", appId);
+        } else if (StringUtils.isEmpty(req.getStageId())) {
             filePath = String.format("%s/%s/%s.yaml", appId, req.getUnitId(), req.getNamespaceId());
         } else {
             filePath = String.format("%s/%s/%s_%s.yaml", appId, req.getUnitId(), req.getNamespaceId(), req.getStageId());
@@ -80,15 +82,18 @@ public class AppEnvironmentServiceImpl implements AppEnvironmentService {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                     String.format("cannot find product by productId %s", productId));
         }
-        ProductReleaseAppRelDO appRel = productReleaseService.updateAppRel(ProductReleaseAppUpdateReq.builder()
-                .productId(productId)
-                .releaseId(releaseId)
-                .appId(appId)
-                .tag("")
-                .branch(baselineBranch)
-                .buildPath("")
-                .launchPath(filePath)
-                .build());
+        ProductReleaseAppRelDO appRel = new ProductReleaseAppRelDO();
+        if (!req.isSafeMode()) {
+            appRel = productReleaseService.updateAppRel(ProductReleaseAppUpdateReq.builder()
+                    .productId(productId)
+                    .releaseId(releaseId)
+                    .appId(appId)
+                    .tag("")
+                    .branch(baselineBranch)
+                    .buildPath("")
+                    .launchPath(filePath)
+                    .build());
+        }
         log.info("update product release app rel successfully|productId={}|releaseId={}|appId={}|baselineBranch={}|" +
                         "isolateNamespaceId={}|isolateStageId={}|filePath={}|envId={}|operator={}|res={}", productId,
                 releaseId, appId, baselineBranch, isolateNamespaceId, isolateStageId, filePath, envId, operator,

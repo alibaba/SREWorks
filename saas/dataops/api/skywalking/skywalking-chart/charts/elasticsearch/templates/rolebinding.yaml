@@ -11,11 +11,7 @@ metadata:
     app: {{ $fullName | quote }}
 subjects:
   - kind: ServiceAccount
-    {{- if eq .Values.rbac.serviceAccountName "" }}
-    name: {{ $fullName | quote }}
-    {{- else }}
-    name: {{ .Values.rbac.serviceAccountName | quote }}
-    {{- end }}
+    name: "{{ template "elasticsearch.serviceAccount" . }}"
     namespace: {{ .Release.Namespace | quote }}
 roleRef:
   kind: Role

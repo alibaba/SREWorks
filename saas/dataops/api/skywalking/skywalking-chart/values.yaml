@@ -20,6 +20,8 @@
 serviceAccounts:
   oap:
 
+imagePullSecrets: []
+
 initContainer:
   image: busybox
   tag: '1.30'
@@ -31,11 +33,13 @@ oap:
   # Sync period in seconds. Defaults to 60 seconds. env: SW_CONFIG_CONFIGMAP_PERIOD
   dynamicConfigEnabled: false
   image:
-    repository: apache/skywalking-oap-server
+    repository: skywalking.docker.scarf.sh/apache/skywalking-oap-server
     tag: null  # Must be set explicitly
     pullPolicy: IfNotPresent
   storageType: null
   ports:
+    # add more ports here if you need, for example
+    # zabbix: 10051
     grpc: 11800
     rest: 12800
   replicas: 2
@@ -59,22 +63,39 @@ oap:
     als:
       enabled: false
       # more envoy ALS ,please refer to https://github.com/apache/skywalking/blob/master/docs/en/setup/envoy/als_setting.md#observe-service-mesh-through-als
-  istio:
-    adapter:
-      enabled: false
   env:
     # more env, please refer to https://hub.docker.com/r/apache/skywalking-oap-server
     # or https://github.com/apache/skywalking-docker/blob/master/6/6.4/oap/README.md#sw_telemetry
+
+  # Allows you to add any config files in /skywalking/config
+  # such as log4j2.xml, oal/core.oal, etc.
+  config: {}
+    # metadata-service-mapping.yaml: |
+    #   serviceName: e2e::${LABELS."service.istio.io/canonical-name"}
+    #   serviceInstanceName: ${NAME}
+    # oal:
+    #   core.oal: |
+    #     service_resp_time = from(Service.latency).longAvg();
+    #     service_sla = from(Service.*).percent(status == true);
+    #     service_cpm = from(Service.*).cpm();
+    # log4j2.xml: |
+    #   <Configuration status="DEBUG">
+    #     <!-- ... -->
+    #   </Configuration>
+
 
 ui:
   name: ui
   replicas: 1
   image:
-    repository: apache/skywalking-ui
+    repository: skywalking.docker.scarf.sh/apache/skywalking-ui
     tag: null  # Must be set explicitly
     pullPolicy: IfNotPresent
   # podAnnotations:
   #   example: oap-foo
+  nodeAffinity: {}
+  nodeSelector: {}
+  tolerations: []
   ingress:
     enabled: false
     annotations: {}
@@ -92,6 +113,10 @@ ui:
     # clusterIP: None
     externalPort: 80
     internalPort: 8080
+    ## nodePort is the port on each node on which this service is exposed when type=NodePort
+    ## Default: auto-allocated port if not specified. 30080 is just an example
+    ##
+    # nodePort: 30080
     ## External IP addresses of service
     ## Default: nil
     ##
@@ -107,6 +132,11 @@ ui:
     annotations: {}
     ## Limit load balancer source ips to list of CIDRs (where available)
     # loadBalancerSourceRanges: []
+
+oapInit:
+  nodeAffinity: {}
+  nodeSelector: {}
+  tolerations: []
 
 elasticsearch:
   enabled: true
@@ -158,10 +188,6 @@ elasticsearch:
   #  - name: elastic-certificates
   #    secretName: elastic-certificates
   #    path: /usr/share/elasticsearch/config/certs
-
-  image: "docker.elastic.co/elasticsearch/elasticsearch"
-  imageTag: "6.8.6"
-  imagePullPolicy: "IfNotPresent"
 
   podAnnotations: {}
   # iam.amazonaws.com/role: es-cluster
@@ -356,6 +382,58 @@ elasticsearch:
     enabled: true
 
   keystore: []
+
+postgresql:
+  enabled: false # Whether to start a demo postgresql deployment, don't use this for production.
+  config:
+    # The hostname of your own postgresql service, this only takes effect when postgresql.enabled is false.
+    host: postgresql-service.your-awesome-company.com
+  auth:
+    username: postgres
+    password: "123456"
+    database: skywalking
+  containerPorts:
+    postgresql: 5432
+  primary:
+    persistence:
+      enabled: false
+  readReplicas:
+    persistence:
+      enabled: false
+
+satellite:
+  name: satellite
+  replicas: 1
+  enabled: false
+  image:
+    repository: skywalking.docker.scarf.sh/apache/skywalking-satellite
+    tag: null # Must be set explicitly
+    pullPolicy: IfNotPresent
+  ports:
+    grpc: 11800
+    prometheus: 1234
+  service:
+    type: ClusterIP
+  antiAffinity: "soft"
+  nodeAffinity: {}
+  nodeSelector: {}
+  tolerations: []
+  resources: {}
+    # limits:
+    #   cpu: 4
+    #   memory: 8Gi
+    # requests:
+    #   cpu: 4
+    #   memory: 4Gi
+  podAnnotations:
+    # example: oap-foo
+  env:
+    # more env, please refer to https://skywalking.apache.org/docs/skywalking-satellite/latest/en/setup/readme/#satellite_configyaml
+  # Allows you to add any config files in /skywalking/config.
+  config: {}
+    # satellite_config.yaml: |
+    #   key: val
+
 
 nameOverride: ""
 fullnameOverride: ""

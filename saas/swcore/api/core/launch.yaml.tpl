@@ -406,6 +406,10 @@ spec:
           value: "abm_paas_authproxy"
         - name: Global.LOGIN_URL
           value: "fake-login-url"
+        - name: Global.POSTRUN_WAIT_TIME
+          value: "5s"
+        - name: Global.DB_NAME_AUTHPROXY
+          value: "abm_paas_authproxy"
       dependencies:
         - component: K8S_MICROSERVICE|paas-gateway
         - component: K8S_MICROSERVICE|paas-authproxy

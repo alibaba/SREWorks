@@ -10,7 +10,7 @@ PYTHON_SUFFIX='.py'
 WAIT_TIME='60s'
 
 if [ -z $POSTRUN_WAIT_TIME ];then
-    WAIT_TIME=${$POSTRUN_WAIT_TIME}
+    WAIT_TIME=${POSTRUN_WAIT_TIME}
 fi
 
 # tpl文件渲染

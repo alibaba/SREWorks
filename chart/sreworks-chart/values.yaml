@@ -47,7 +47,7 @@ global:
     mysqlImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/mysql:8.0.22-debian-10-r44
 
 platformName: SREWorks
-platformLogo: /static/publicMedia/sreworks.png
+platformLogo: /static/icons/sreworks.png
 
 installMode: default
 

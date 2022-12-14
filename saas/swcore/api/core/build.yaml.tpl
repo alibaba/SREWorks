@@ -156,58 +156,6 @@ options:
     - ADMIN_INIT_PASSWORD
 
 ---
-componentType: K8S_JOB
-componentName: paas-authproxy-postrun
-options:
-  job:
-    name: job
-    build:
-      imagePush: ${IMAGE_BUILD_ENABLE}
-      imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-      args:
-        TAG: ack
-      dockerfileTemplateArgs:
-        POSTRUN_IMAGE: ${POSTRUN_IMAGE}
-      dockerfileTemplate: Dockerfile_postrun.tpl
-      repoPath: paas/tesla-authproxy
-      branch: ${SOURCE_BRANCH}
-      repo: ${SOURCE_REPO}
-      ciAccount: ${SOURCE_CI_ACCOUNT}
-      ciToken: ${SOURCE_CI_TOKEN}
- 
-  env:
-    - ENDPOINT_SAAS_DATAWORKS
-    - ENDPOINT_SAAS_TESLA 
-    - ENDPOINT_PAAS_AUTHPROXY
-    - DNS_PAAS_HOME
-    - DB_HOST
-    - DB_NAME
-    - DB_PASSWORD
-    - DB_PORT
-    - DB_USER
-    - ACCOUNT_BASE_ACCESS_ID
-    - ACCOUNT_BASE_ACCESS_KEY
-    - ACCOUNT_BASE_ID
-    - ACCOUNT_BASE_PK
-    - ACCOUNT_BASE_SECRET_KEY
-    - ACCOUNT_ODPS_ACCESS_ID
-    - ACCOUNT_ODPS_ACCESS_KEY
-    - ACCOUNT_ODPS_ID
-    - ACCOUNT_ODPS_PK
-    - ACCOUNT_ODPS_SECRET_KEY
-    - ACCOUNT_SUPER_ACCESS_ID
-    - ACCOUNT_SUPER_ACCESS_KEY
-    - ACCOUNT_SUPER_ID
-    - ACCOUNT_SUPER_PK
-    - ACCOUNT_SUPER_SECRET_KEY
-    - ACCOUNT_SUPER_CLIENT_ID
-    - ACCOUNT_SUPER_CLIENT_SECRET
-    - ENV_TYPE
-    - LOGIN_URL
-    - NETWORK_PROTOCOL
-    - TESLA_ADMIN_USERS
-    - DEFAULT_AMDIN_AVATOR
----
 componentType: K8S_MICROSERVICE
 componentName: paas-frontend
 options:
@@ -366,36 +314,6 @@ options:
 ---
 
 
-#componentType: K8S_JOB
-#componentName: paas-gateway-route-config
-#options:
-#  env:
-#    - ENDPOINT_PAAS_GATEWAY
-#    - ACCOUNT_SUPER_CLIENT_ID
-#    - ACCOUNT_SUPER_CLIENT_SECRET
-#    - ACCOUNT_SUPER_ID
-#    - ACCOUNT_SUPER_SECRET_KEY
-#    - ENDPOINT_PAAS_APPMANAGER
-#    - CORE_APP_ID
-#    - CORE_STAGE_ID
-#    - NAMESPACE_DATAOPS
-#    - ENDPOINT_PAAS_MINIO
-#  job:
-#    build:
-#      imagePush: ${IMAGE_BUILD_ENABLE}
-#      imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-#      dockerfileTemplate: Dockerfile_route_config.tpl
-#      branch: ${SOURCE_BRANCH}
-#      repo: ${SOURCE_REPO}
-#      ciAccount: ${SOURCE_CI_ACCOUNT}
-#      ciToken: ${SOURCE_CI_TOKEN}
-#      repoPath: paas/tesla-gateway
-#      dockerfileTemplateArgs:
-#        POSTRUN_IMAGE: ${POSTRUN_IMAGE}
-#    name: route-config
-
-
----
 componentType: K8S_MICROSERVICE
 componentName: paas-action
 options:

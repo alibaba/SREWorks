@@ -10,6 +10,8 @@ PYTHON_SUFFIX='.py'
 WAIT_TIME='60s'
 
 if [ -z $POSTRUN_WAIT_TIME ];then
+   echo "no POSTRUN_WAIT_TIME"
+else
     WAIT_TIME=${POSTRUN_WAIT_TIME}
 fi
 

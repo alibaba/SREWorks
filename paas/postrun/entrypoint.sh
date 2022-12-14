@@ -7,6 +7,11 @@ PYTHON_BIN=python
 RUN_DIR=/app/postrun
 SPLIT_STRING='.'
 PYTHON_SUFFIX='.py'
+WAIT_TIME='60s'
+
+if [ -z $POSTRUN_WAIT_TIME ];then
+    WAIT_TIME=${$POSTRUN_WAIT_TIME}
+fi
 
 # tpl文件渲染
 ENV_ARG=$(awk 'BEGIN{for(v in ENVIRON) printf "${%s} ", v;}')
@@ -20,7 +25,7 @@ for file in $(find $RUN_DIR); do
 done
 
 # 等待 60s 避免发生意外
-sleep 60s
+sleep ${WAIT_TIME}
 
 # postrun 脚本执行
 for script in `find $RUN_DIR -maxdepth 1 -type f -name "*.sh" -o -name "*.py" | sort`

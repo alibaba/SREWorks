@@ -528,23 +528,6 @@ spec:
         - name: Global.DB_NAME
           value: "abm_paas_nacos"
       dependencies:
-    - revisionName: K8S_JOB|paas-gateway-route-config|_
-      scopes:
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Cluster
-            name: "{{ Global.CLUSTER_ID }}"
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Namespace
-            name: "{{ Global.NAMESPACE_ID }}"
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Stage
-            name: "{{ Global.STAGE_ID }}"
-      parameterValues:
-      dependencies:
-        - component: K8S_MICROSERVICE|paas-gateway
     - revisionName: K8S_MICROSERVICE|paas-action|_
       scopes:
         - scopeRef:

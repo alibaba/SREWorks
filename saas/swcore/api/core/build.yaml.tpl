@@ -313,71 +313,39 @@ options:
         repo: ${SOURCE_REPO}
         ciAccount: ${SOURCE_CI_ACCOUNT}
         ciToken: ${SOURCE_CI_TOKEN}
+
+  initContainers:
+    - name: route-config
+      build:
+        imagePush: ${IMAGE_BUILD_ENABLE} 
+        imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
+        dockerfileTemplate: Dockerfile_route_config.tpl
+        branch: ${SOURCE_BRANCH}
+        repo: ${SOURCE_REPO}
+        ciAccount: ${SOURCE_CI_ACCOUNT}
+        ciToken: ${SOURCE_CI_TOKEN}
+        repoPath: paas/tesla-gateway
+        dockerfileTemplateArgs:
+          POSTRUN_IMAGE: ${POSTRUN_IMAGE}
+
  
   env:
-    - ABM_CLUSTER
-    - CENTER_REGION
-    - CICD_PROJECTID
-    - CLOUD_TYPE
-    - CLUSTER_SCALE_FLAG
-    - COOKIE_DOMAIN
-    - HOME_URL
-    - DNS_PAAS_COMPATIBLE_HOME
-    - DNS_PAAS_HOME
-    - DNS_PAAS_HOME_DISASTER
-    - ENDPOINT_GRPC_PAAS_CHECK
-    - ENDPOINT_GRPC_PAAS_TASKPLATFORM
-    - ENDPOINT_GRPC_PAAS_TIANJI
-    - ENDPOINT_PAAS_AUTHPROXY
-    - ENDPOINT_PAAS_CHANNEL
-    - ENDPOINT_PAAS_CHECK
-    - ENDPOINT_PAAS_CMDB
-    - ENDPOINT_PAAS_CONNECTOR
-    - ENDPOINT_PAAS_DR_MUTILCLOUD
-    - ENDPOINT_PAAS_FAAS_MANAGER
-    - ENDPOINT_PAAS_FRONTEND_SERVICE
     - ENDPOINT_PAAS_GATEWAY
-    - ENDPOINT_PAAS_GRAFANA
-    - ENDPOINT_PAAS_HOME
-    - ENDPOINT_PAAS_MINIO
-    - ENDPOINT_PAAS_PROCESS
-    - ENDPOINT_PAAS_PRODUCTOPS
-    - ENDPOINT_PAAS_STARAGENT
-    - ENDPOINT_PAAS_TASKPLATFORM
-    - ENDPOINT_PAAS_TIANJI
-    - ENDPOINT_PAAS_TKGONE
-    - ENDPOINT_SAAS_BASE_CONSOLE
-    - ENDPOINT_SAAS_BLINK
-    - ENDPOINT_SAAS_CALIFORNIA
-    - ENDPOINT_SAAS_DATAHUB
-    - ENDPOINT_SAAS_DATAWORKS
-    - ENDPOINT_SAAS_DWG
-    - ENDPOINT_SAAS_EBLINK
-    - ENDPOINT_SAAS_ELASTICSEARCH
-    - ENDPOINT_SAAS_GRAPHCOMPUTE
-    - ENDPOINT_SAAS_HOLO
-    - ENDPOINT_SAAS_ODPS
-    - ENDPOINT_SAAS_STANDARD_CLUSTER
-    - ENDPOINT_SAAS_TESLA
-    - ENV_TYPE
-    - EXTERNAL_DATAWORKS_CONSOLE_URL
-    - IDC_MAP
-    - IDC_ROOM
-    - NETWORK_PROTOCOL
-    - REGION
-    - URL_PAAS_GATEWAY
     - URL_PAAS_HOME
-    - VIP_IP_PAAS_GRAFANA
-    - VIP_IP_PAAS_HOME
-    - VIP_IP_PAAS_TASKPLATFORM_GRPC
-    - VIP_IP_PAAS_TKGONE
-    - VIP_PORT_PAAS_TASKPLATFORM_GRPC
-    - VIP_PORT_PAAS_TKGONE
-    - VM_IP_LIST
-    - ZONE
+    - ENV_TYPE
+    - DNS_PAAS_HOME
     - K8S_NAMESPACE
     - PLATFORM_NAME
     - PLATFORM_LOGO
+    - ACCOUNT_SUPER_CLIENT_ID
+    - ACCOUNT_SUPER_CLIENT_SECRET
+    - ACCOUNT_SUPER_ID
+    - ACCOUNT_SUPER_SECRET_KEY
+    - ENDPOINT_PAAS_APPMANAGER
+    - CORE_APP_ID
+    - CORE_STAGE_ID
+    - NAMESPACE_DATAOPS
+    - ENDPOINT_PAAS_MINIO 
 
 ---
 componentType: K8S_MICROSERVICE
@@ -434,33 +402,33 @@ options:
 ---
 
 
-componentType: K8S_JOB
-componentName: paas-gateway-route-config
-options:
-  env:
-    - ENDPOINT_PAAS_GATEWAY
-    - ACCOUNT_SUPER_CLIENT_ID
-    - ACCOUNT_SUPER_CLIENT_SECRET
-    - ACCOUNT_SUPER_ID
-    - ACCOUNT_SUPER_SECRET_KEY
-    - ENDPOINT_PAAS_APPMANAGER
-    - CORE_APP_ID
-    - CORE_STAGE_ID
-    - NAMESPACE_DATAOPS
-    - ENDPOINT_PAAS_MINIO
-  job:
-    build:
-      imagePush: ${IMAGE_BUILD_ENABLE}
-      imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
-      dockerfileTemplate: Dockerfile_route_config.tpl
-      branch: ${SOURCE_BRANCH}
-      repo: ${SOURCE_REPO}
-      ciAccount: ${SOURCE_CI_ACCOUNT}
-      ciToken: ${SOURCE_CI_TOKEN}
-      repoPath: paas/tesla-gateway
-      dockerfileTemplateArgs:
-        POSTRUN_IMAGE: ${POSTRUN_IMAGE}
-    name: route-config
+#componentType: K8S_JOB
+#componentName: paas-gateway-route-config
+#options:
+#  env:
+#    - ENDPOINT_PAAS_GATEWAY
+#    - ACCOUNT_SUPER_CLIENT_ID
+#    - ACCOUNT_SUPER_CLIENT_SECRET
+#    - ACCOUNT_SUPER_ID
+#    - ACCOUNT_SUPER_SECRET_KEY
+#    - ENDPOINT_PAAS_APPMANAGER
+#    - CORE_APP_ID
+#    - CORE_STAGE_ID
+#    - NAMESPACE_DATAOPS
+#    - ENDPOINT_PAAS_MINIO
+#  job:
+#    build:
+#      imagePush: ${IMAGE_BUILD_ENABLE}
+#      imagePushRegistry: ${IMAGE_PUSH_REGISTRY}
+#      dockerfileTemplate: Dockerfile_route_config.tpl
+#      branch: ${SOURCE_BRANCH}
+#      repo: ${SOURCE_REPO}
+#      ciAccount: ${SOURCE_CI_ACCOUNT}
+#      ciToken: ${SOURCE_CI_TOKEN}
+#      repoPath: paas/tesla-gateway
+#      dockerfileTemplateArgs:
+#        POSTRUN_IMAGE: ${POSTRUN_IMAGE}
+#    name: route-config
 
 
 ---

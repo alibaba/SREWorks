@@ -6,7 +6,7 @@ RUN cd /app/tesla-nacos-opensource && mvn -Dmaven.test.skip=true clean install
 
 RUN cd /app && mvn -Dmaven.test.skip=true clean package
 
-FROM {{ JRE8_IMAGE }} AS release
+FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/openjdk8:alpine-jre AS release
 ARG START_MODULE=tesla-nacos-start-private
 ARG SERVER_NAME=tesla-nacos
 ARG DEPENDENCY=/app/${START_MODULE}/target

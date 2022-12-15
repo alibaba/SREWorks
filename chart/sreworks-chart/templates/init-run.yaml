@@ -20,11 +20,11 @@ data:
 
     cd /root/saas/swcore/api/core/
 
+    export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
 
         # build&launch paas
-        export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
         envsubst < /root/saas/swcore/api/core/build.yaml.tpl > build.yaml
 
         if [[ "$ACCESS_MODE" == "ingress" ]] ; then
@@ -39,15 +39,16 @@ data:
 
     else
     
-        export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+        python /app/pack.py --src /root/saas/swcore/build --dest /root/saas/swcore/build.zip
+        envsubst < /root/saas/swcore/build/launch.yaml.tpl > /root/saas/swcore/launch.yaml
 
-        if [[ "$ACCESS_MODE" == "ingress" ]] ; then
-           envsubst < /root/saas/swcore/api/core/launch.yaml.tpl > /root/saas/swcore/launch.yaml
-        else
-           envsubst < /root/saas/swcore/api/core/launch-nodeport.yaml.tpl > /root/saas/swcore/launch.yaml
-        fi
+        #if [[ "$ACCESS_MODE" == "ingress" ]] ; then
+        #   envsubst < /root/saas/swcore/api/core/launch.yaml.tpl > /root/saas/swcore/launch.yaml
+        #else
+        #   envsubst < /root/saas/swcore/api/core/launch-nodeport.yaml.tpl > /root/saas/swcore/launch.yaml
+        #fi
 
-        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id=${CORE_APP_ID} --filepath /root/saas/swcore/flycore.zip --print-only-app-package-id=true --reset-version=true)
+        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id=${CORE_APP_ID} --filepath /root/saas/swcore/build.zip --print-only-app-package-id=true --reset-version=true)
         /root/swcli --config /swcli/swcli.yaml deployment launch --wait-max-seconds 300 --app-id=${CORE_APP_ID} --stage=prod --namespace=${NAMESPACE_ID} --path /root/saas/swcore/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
 
     fi

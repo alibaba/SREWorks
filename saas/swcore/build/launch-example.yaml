@@ -187,6 +187,12 @@ spec:
       value: 1
     - name: Global.DB_NAME
       value: abm_paas_authproxy
+    - name: Global.REDIS_HOST
+      value: '{{Global.REDIS_ENDPOINT}}'
+    - name: Global.REDIS_PORT
+      value: '{{Global.APPMANAGER_REDIS_PORT}}'
+    - name: Global.REDIS_PASSWORD
+      value: '{{Global.REDIS_PASSWORD}}'
     revisionName: K8S_MICROSERVICE|paas-authproxy|_
     scopes:
     - scopeRef:

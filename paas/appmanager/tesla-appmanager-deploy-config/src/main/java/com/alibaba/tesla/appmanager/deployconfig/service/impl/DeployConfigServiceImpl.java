@@ -70,6 +70,25 @@ public class DeployConfigServiceImpl implements DeployConfigService {
     }
 
     /**
+     * 在指定条件下是否存在 Type:envBinding 项
+     *
+     * @param req 检查请求
+     * @return true or false
+     */
+    @Override
+    public boolean hasEnvBinding(DeployConfigHasEnvBindingReq req) {
+        return deployConfigRepository.selectByCondition(DeployConfigQueryCondition.builder()
+                .apiVersion(req.getApiVersion())
+                .appId(req.getAppId())
+                .isolateNamespaceId(req.getIsolateNamespaceId())
+                .isolateStageId(req.getIsolateStageId())
+                .typeId((new DeployConfigTypeId(DeployConfigTypeId.TYPE_ENV_BINDING)).toString())
+                .enabled(true)
+                .build()
+        ).size() > 0;
+    }
+
+    /**
      * 应用部署模板 (拆分 launch yaml 并分别应用保存)
      *
      * @param req 应用请求
@@ -738,6 +757,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
         );
         staticEnvPriorities = staticEnvPriorities.stream().distinct().collect(Collectors.toList());
         String envBindingTypeId = (new DeployConfigTypeId(DeployConfigTypeId.TYPE_ENV_BINDING)).toString();
+        Set<String> usedTypeIdSet = appRecords.stream().map(DeployConfigDO::getTypeId).collect(Collectors.toSet());
         for (String staticEnvId : staticEnvPriorities) {
             // 不存在的话，直接 continue 到下个 envId 优先级继续搜索
             List<DeployConfigDO> envBindingRecords = deployConfigRepository.selectByCondition(
@@ -752,14 +772,13 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                             .build());
             if (envBindingRecords.size() == 0) {
                 log.info("no Type:envBinding matching records found in deploy config, skip|appId={}|envId={}|" +
-                        "isolateNamespaceId={}|isolateStageId={}", appId, staticEnvId, isolateNamespaceId,
+                                "isolateNamespaceId={}|isolateStageId={}", appId, staticEnvId, isolateNamespaceId,
                         isolateStageId);
                 continue;
             }
 
             log.info("find Type:envBinding matching records in deploy config|appId={}|envId={}|" +
                     "isolateNamespaceId={}|isolateStageId={}", appId, staticEnvId, isolateNamespaceId, isolateStageId);
-            Set<String> usedTypeIdSet = appRecords.stream().map(DeployConfigDO::getTypeId).collect(Collectors.toSet());
             DeployConfigDO mockSource = DeployConfigDO.builder()
                     .apiVersion(req.getApiVersion())
                     .appId(req.getAppId())
@@ -795,7 +814,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                 appRecords.add(record);
             }
 
-            // 注意这里不 break，所有 staticEnvPriorities 的内容都要 mock 出对应的 appRecords
+            break;
         }
         // 最后删除 envBinding 自身
         typeIds.remove(envBindingTypeId);
@@ -803,7 +822,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
 
         // step==0 非 traits 类型组装, step==1 traits 类型组装 (step==1 依赖 step==0 完成)
         log.info("after searching, there are some app records in deploy config|appId={}|isolateNamespaceId={}|" +
-                "isolateStageId={}|typeIds={}|appRecords={}", appId, isolateNamespaceId, isolateStageId,
+                        "isolateStageId={}|typeIds={}|appRecords={}", appId, isolateNamespaceId, isolateStageId,
                 JSONArray.toJSONString(typeIds), JSONArray.toJSONString(appRecords));
         for (int step = 0; step < 2; step++) {
             for (String typeId : typeIds) {
@@ -834,7 +853,7 @@ public class DeployConfigServiceImpl implements DeployConfigService {
                         unitId, clusterId, namespaceId, stageId);
                 if (best == null) {
                     log.info("no best deploy config found by given condition|appId={}|unitId={}|clusterId={}|" +
-                            "namespaceId={}|stageId={}|typeId={}, skip", appId, unitId, clusterId,
+                                    "namespaceId={}|stageId={}|typeId={}, skip", appId, unitId, clusterId,
                             namespaceId, stageId, typeId);
                     continue;
                 }
@@ -1379,7 +1398,15 @@ public class DeployConfigServiceImpl implements DeployConfigService {
      */
     private String fetchConfigInGit(String productId, String releaseId, String appId, String typeId) {
         ProductReleaseProvider productReleaseProvider = BeanUtil.getBean(ProductReleaseProvider.class);
-        String config = productReleaseProvider.getLaunchYaml(productId, releaseId, appId);
+        String config;
+        try {
+            config = productReleaseProvider.getLaunchYaml(productId, releaseId, appId);
+        } catch (AppException e) {
+            if (AppErrorCode.INVALID_USER_ARGS.equals(e.getErrorCode())) {
+                return null;
+            }
+            throw e;
+        }
         DeployAppSchema schema = SchemaUtil.toSchema(DeployAppSchema.class, config);
         DeployConfigTypeId deployConfigType = DeployConfigTypeId.valueOf(typeId);
         String errorMessage = String.format("could not find a component configuration that satisfies the condition|" +

@@ -55,7 +55,7 @@ class JobComponentDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 12
+    public static final Integer REVISION = 15
 
     /**
      * CRD Context
@@ -228,6 +228,7 @@ class JobComponentDeployHandler implements DeployComponentHandler {
      * @param componentSchema ComponentSchema 对象
      */
     private void apply(LaunchDeployComponentHandlerReq request, ComponentSchema componentSchema) {
+        def userCustomName = ((JSONObject) componentSchema.getSpec().getWorkload().getSpec()).getString("name")
         def appId = request.getAppId()
         def componentName = request.getComponentName()
         def cluster = request.getClusterId()
@@ -263,6 +264,12 @@ class JobComponentDeployHandler implements DeployComponentHandler {
             for (String key : removeKeyMap) {
                 envObject.remove(key)
             }
+        }
+
+        // 如果用户自定义了名字，那么使用用户自己的
+        if (StringUtils.isNotEmpty(userCustomName)) {
+            name = getMetaName(userCustomName, componentName, stageId)
+            workload.getMetadata().setName(name)
         }
 
         // 将全部的 PLACEHOLDER 进行渲染

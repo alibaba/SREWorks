@@ -47,6 +47,7 @@ spec:
         annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
         annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
     spec:
+      name: ''
       kind: AdvancedStatefulSet
       replicas: 1
       advancedStatefulSet:

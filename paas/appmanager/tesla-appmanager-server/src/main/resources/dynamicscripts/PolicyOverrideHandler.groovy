@@ -34,12 +34,18 @@ class PolicyOverrideHandler implements PolicyHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 3
+    public static final Integer REVISION = 4
 
     @Override
     ExecutePolicyHandlerRes execute(ExecutePolicyHandlerReq request) throws InterruptedException {
         def overrideComponentProperties = request.getPolicyProperties().getJSONArray("components")
         def configuration = request.getConfiguration()
+        if (overrideComponentProperties == null) {
+            return ExecutePolicyHandlerRes.builder()
+                    .context(request.getContext())
+                    .configuration(configuration)
+                    .build()
+        }
         for (def overrideComponent : overrideComponentProperties.toJavaList(JSONObject.class)) {
             def overrideRevisionName = DeployAppRevisionName.valueOf(overrideComponent.getString("revisionName"))
             for (def component : configuration.getSpec().getComponents()) {

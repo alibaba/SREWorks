@@ -64,14 +64,17 @@ public class AppEnvironmentServiceImpl implements AppEnvironmentService {
                     "productId/releaseId/baselineBranch/operator are required");
         }
         String envId = EnvUtil.generate(req.getUnitId(), req.getClusterId(), req.getNamespaceId(), req.getStageId());
-        if (StringUtils.isNotEmpty(envId) && StringUtils.isAnyEmpty(req.getUnitId(), req.getNamespaceId())) {
-            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "invalid unitId/clusterId/namespaceId/stageId");
+        if (StringUtils.isNotEmpty(envId) && StringUtils.isEmpty(req.getNamespaceId())) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "namespaceId cannot be empty when others set");
         }
 
         // 检查当前 ProductReleaseAppRel 表中的引用是否存在，不存在则新增
         String filePath;
         if (StringUtils.isEmpty(envId)) {
             filePath = String.format("%s/__global__.yaml", appId);
+        } else if (StringUtils.isAllEmpty(req.getUnitId(), req.getStageId())
+                && StringUtils.isNotEmpty(req.getNamespaceId())) {
+            filePath = String.format("%s/%s.yaml", appId, req.getNamespaceId());
         } else if (StringUtils.isEmpty(req.getStageId())) {
             filePath = String.format("%s/%s/%s.yaml", appId, req.getUnitId(), req.getNamespaceId());
         } else {

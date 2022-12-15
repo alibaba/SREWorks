@@ -14,6 +14,7 @@ import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigD
 import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigHasEnvBindingReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpsertReq;
 import com.alibaba.tesla.appmanager.meta.helm.repository.HelmMetaRepository;
 import com.alibaba.tesla.appmanager.meta.helm.repository.condition.HelmMetaQueryCondition;
@@ -206,14 +207,28 @@ public class HelmMetaServiceImpl implements HelmMetaService {
     @Override
     public int create(HelmMetaDO record) {
         int res = helmMetaRepository.insert(record);
-        this.refreshDeployConfig(record);
+        if (!deployConfigService.hasEnvBinding(DeployConfigHasEnvBindingReq.builder()
+                .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                .appId(record.getAppId())
+                .isolateNamespaceId(record.getNamespaceId())
+                .isolateStageId(record.getStageId())
+                .build())) {
+            this.refreshDeployConfig(record);
+        }
         return res;
     }
 
     @Override
     public int update(HelmMetaDO record, HelmMetaQueryCondition condition) {
         int res = helmMetaRepository.updateByCondition(record, condition);
-        this.refreshDeployConfig(record);
+        if (!deployConfigService.hasEnvBinding(DeployConfigHasEnvBindingReq.builder()
+                .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                .appId(record.getAppId())
+                .isolateNamespaceId(record.getNamespaceId())
+                .isolateStageId(record.getStageId())
+                .build())) {
+            this.refreshDeployConfig(record);
+        }
         return res;
     }
 
@@ -224,15 +239,23 @@ public class HelmMetaServiceImpl implements HelmMetaService {
         }
 
         HelmMetaDO record = this.get(id, namespaceId, stageId);
-        String typeId = new DeployConfigTypeId(ComponentTypeEnum.HELM.toString(), record.getHelmPackageId()).toString();
-        deployConfigService.delete(DeployConfigDeleteReq.builder()
+        if (!deployConfigService.hasEnvBinding(DeployConfigHasEnvBindingReq.builder()
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(record.getAppId())
-                .typeId(typeId)
-                .envId("")
-                .isolateNamespaceId(namespaceId)
-                .isolateStageId(stageId)
-                .build());
+                .isolateNamespaceId(record.getNamespaceId())
+                .isolateStageId(record.getStageId())
+                .build())) {
+            String typeId = new DeployConfigTypeId(ComponentTypeEnum.HELM.toString(),
+                    record.getHelmPackageId()).toString();
+            deployConfigService.delete(DeployConfigDeleteReq.builder()
+                    .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                    .appId(record.getAppId())
+                    .typeId(typeId)
+                    .envId("")
+                    .isolateNamespaceId(namespaceId)
+                    .isolateStageId(stageId)
+                    .build());
+        }
         return helmMetaRepository.deleteByPrimaryKey(id);
     }
 }

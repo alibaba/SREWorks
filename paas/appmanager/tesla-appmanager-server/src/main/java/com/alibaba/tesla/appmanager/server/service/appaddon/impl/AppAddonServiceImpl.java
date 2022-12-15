@@ -14,6 +14,7 @@ import com.alibaba.tesla.appmanager.domain.dto.AppAddonDTO;
 import com.alibaba.tesla.appmanager.domain.req.AppAddonCreateReq;
 import com.alibaba.tesla.appmanager.domain.req.appaddon.AppAddonSyncReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigHasEnvBindingReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpsertReq;
 import com.alibaba.tesla.appmanager.server.assembly.AppAddonDtoConvert;
 import com.alibaba.tesla.appmanager.server.repository.AppAddonRepository;
@@ -122,30 +123,37 @@ public class AppAddonServiceImpl implements AppAddonService {
         }
 
         // 更新 application configuration 绑定关系
-        String componentName;
-        if (ComponentTypeEnum.INTERNAL_ADDON.toString().equals(addonType)) {
-            componentName = addonMetaDO.getAddonId();
-        } else {
-            componentName = AddonUtil.combineComponentName(addonMetaDO.getAddonId(), request.getAddonName());
-        }
-        String typeId = new DeployConfigTypeId(addonType, componentName).toString();
-        String requestNamespaceId = request.getNamespaceId();
-        String requestStageId = request.getStageId();
-        // TODO: FOR SREWORKS ONLY TEMPORARY
-        if (EnvUtil.isSreworks()) {
-            requestNamespaceId = EnvUtil.defaultNamespaceId();
-            requestStageId = EnvUtil.defaultStageId();
-        }
-        deployConfigService.update(DeployConfigUpsertReq.builder()
+        if (!deployConfigService.hasEnvBinding(DeployConfigHasEnvBindingReq.builder()
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(request.getAppId())
-                .typeId(typeId)
-                .envId("")
-                .inherit(true)
-                .config("")
-                .isolateNamespaceId(requestNamespaceId)
-                .isolateStageId(requestStageId)
-                .build());
+                .isolateNamespaceId(request.getNamespaceId())
+                .isolateStageId(request.getStageId())
+                .build())) {
+            String componentName;
+            if (ComponentTypeEnum.INTERNAL_ADDON.toString().equals(addonType)) {
+                componentName = addonMetaDO.getAddonId();
+            } else {
+                componentName = AddonUtil.combineComponentName(addonMetaDO.getAddonId(), request.getAddonName());
+            }
+            String typeId = new DeployConfigTypeId(addonType, componentName).toString();
+            String requestNamespaceId = request.getNamespaceId();
+            String requestStageId = request.getStageId();
+            // TODO: FOR SREWORKS ONLY TEMPORARY
+            if (EnvUtil.isSreworks()) {
+                requestNamespaceId = EnvUtil.defaultNamespaceId();
+                requestStageId = EnvUtil.defaultStageId();
+            }
+            deployConfigService.update(DeployConfigUpsertReq.builder()
+                    .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                    .appId(request.getAppId())
+                    .typeId(typeId)
+                    .envId("")
+                    .inherit(true)
+                    .config("")
+                    .isolateNamespaceId(requestNamespaceId)
+                    .isolateStageId(requestStageId)
+                    .build());
+        }
         return record;
     }
 
@@ -202,17 +210,24 @@ public class AppAddonServiceImpl implements AppAddonService {
             } else {
                 componentName = AddonUtil.combineComponentName(appAddon.getAddonId(), appAddon.getName());
             }
-            String typeId = new DeployConfigTypeId(appAddon.getAddonType(), componentName).toString();
-            deployConfigService.update(DeployConfigUpsertReq.builder()
+            if (!deployConfigService.hasEnvBinding(DeployConfigHasEnvBindingReq.builder()
                     .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                     .appId(appAddon.getAppId())
-                    .typeId(typeId)
-                    .envId("")
-                    .inherit(true)
-                    .config("")
-                    .isolateNamespaceId(requestNamespaceId)
-                    .isolateStageId(requestStageId)
-                    .build());
+                    .isolateNamespaceId(appAddon.getNamespaceId())
+                    .isolateStageId(appAddon.getStageId())
+                    .build())) {
+                String typeId = new DeployConfigTypeId(appAddon.getAddonType(), componentName).toString();
+                deployConfigService.update(DeployConfigUpsertReq.builder()
+                        .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                        .appId(appAddon.getAppId())
+                        .typeId(typeId)
+                        .envId("")
+                        .inherit(true)
+                        .config("")
+                        .isolateNamespaceId(requestNamespaceId)
+                        .isolateStageId(requestStageId)
+                        .build());
+            }
         }
     }
 }

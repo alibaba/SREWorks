@@ -55,4 +55,7 @@
   "appId": "dataops",
   "packagePath": "saas/dataops/build", 
   "patch": "saas/dataops/api/patch.yaml"
+},{
+   "appId": "flycore",
+   "packagePath": "saas/swcore/build"
 }]

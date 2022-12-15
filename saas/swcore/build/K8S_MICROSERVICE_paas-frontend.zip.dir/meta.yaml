@@ -1,0 +1,80 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: Component
+metadata:
+  annotations:
+    annotations.appmanager.oam.dev/version: 8.6.1+20221215072654710848
+  labels:
+    labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+    appId: flycore
+    labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+    componentName: paas-frontend
+    labels.appmanager.oam.dev/appId: flycore
+    labels.appmanager.oam.dev/componentName: paas-frontend
+    stageId: PLACEHOLDER_STAGE_ID
+  name: microservice-flycore-paas-frontend
+spec:
+  images: []
+  workload:
+    apiVersion: apps.abm.io/v1
+    dataOutputs: []
+    kind: Microservice
+    metadata:
+      annotations:
+        annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
+        annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
+        annotations.appmanager.oam.dev/version: 8.6.1+20221215072654710848
+        annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+      labels:
+        labels.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+        labels.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        appId: flycore
+        labels.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+        labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+        componentName: paas-frontend
+        labels.appmanager.oam.dev/appId: flycore
+        labels.appmanager.oam.dev/componentName: paas-frontend
+        stageId: PLACEHOLDER_STAGE_ID
+      name: PLACEHOLDER_NAME
+      namespace: PLACEHOLDER_NAMESPACE_ID
+    spec:
+      kind: Deployment
+      replicas: 1
+      containers:
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/flycore-paas-frontend-paas-frontend:1671089214626
+        name: paas-frontend
+      env:
+        K8S_NAMESPACE: '{{ Global.K8S_NAMESPACE }}'
+        DB_PORT: '{{ Global.DB_PORT }}'
+        DB_USER: '{{ Global.DB_USER }}'
+        PLATFORM_NAME: '{{ Global.PLATFORM_NAME }}'
+        NAMESPACE_DATAOPS: '{{ Global.NAMESPACE_DATAOPS }}'
+        DEFAULT_AMDIN_AVATOR: '{{ Global.DEFAULT_AMDIN_AVATOR }}'
+        DB_NAME: '{{ Global.DB_NAME }}'
+        ENDPOINT_PAAS_AUTHPROXY: '{{ Global.ENDPOINT_PAAS_AUTHPROXY }}'
+        ACCOUNT_SUPER_PK: '{{ Global.ACCOUNT_SUPER_PK }}'
+        ENDPOINT_PAAS_GATEWAY: '{{ Global.ENDPOINT_PAAS_GATEWAY }}'
+        ENDPOINT_PAAS_APPMANAGER: '{{ Global.ENDPOINT_PAAS_APPMANAGER }}'
+        ACCOUNT_SUPER_CLIENT_ID: '{{ Global.ACCOUNT_SUPER_CLIENT_ID }}'
+        ENV_TYPE: '{{ Global.ENV_TYPE }}'
+        ACCOUNT_SUPER_ACCESS_ID: '{{ Global.ACCOUNT_SUPER_ACCESS_ID }}'
+        URL_PAAS_HOME: '{{ Global.URL_PAAS_HOME }}'
+        ENDPOINT_PAAS_MINIO: '{{ Global.ENDPOINT_PAAS_MINIO }}'
+        DNS_PAAS_HOME: '{{ Global.DNS_PAAS_HOME }}'
+        ACCOUNT_SUPER_SECRET_KEY: '{{ Global.ACCOUNT_SUPER_SECRET_KEY }}'
+        NETWORK_PROTOCOL: '{{ Global.NETWORK_PROTOCOL }}'
+        LOGIN_URL: '{{ Global.LOGIN_URL }}'
+        DB_HOST: '{{ Global.DB_HOST }}'
+        ACCOUNT_SUPER_ACCESS_KEY: '{{ Global.ACCOUNT_SUPER_ACCESS_KEY }}'
+        ACCOUNT_SUPER_ID: '{{ Global.ACCOUNT_SUPER_ID }}'
+        ACCOUNT_SUPER_CLIENT_SECRET: '{{ Global.ACCOUNT_SUPER_CLIENT_SECRET }}'
+        PLATFORM_LOGO: '{{ Global.PLATFORM_LOGO }}'
+        DB_NAME_AUTHPROXY: '{{ Global.DB_NAME_AUTHPROXY }}'
+        DB_PASSWORD: '{{ Global.DB_PASSWORD }}'
+      initContainers:
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/flycore-paas-frontend-route-config:1671089214626
+        name: route-config
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/flycore-paas-frontend-authproxy-init:1671089214626
+        name: authproxy-init

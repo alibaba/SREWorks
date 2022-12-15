@@ -1,0 +1,59 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: Component
+metadata:
+  annotations:
+    annotations.appmanager.oam.dev/version: 8.6.4+20221215072654309733
+  labels:
+    labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+    appId: flycore
+    labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+    componentName: paas-action
+    labels.appmanager.oam.dev/appId: flycore
+    labels.appmanager.oam.dev/componentName: paas-action
+    stageId: PLACEHOLDER_STAGE_ID
+  name: microservice-flycore-paas-action
+spec:
+  images: []
+  workload:
+    apiVersion: apps.abm.io/v1
+    dataOutputs: []
+    kind: Microservice
+    metadata:
+      annotations:
+        annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
+        annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
+        annotations.appmanager.oam.dev/version: 8.6.4+20221215072654309733
+        annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+      labels:
+        labels.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+        labels.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        appId: flycore
+        labels.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+        labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+        componentName: paas-action
+        labels.appmanager.oam.dev/appId: flycore
+        labels.appmanager.oam.dev/componentName: paas-action
+        stageId: PLACEHOLDER_STAGE_ID
+      name: PLACEHOLDER_NAME
+      namespace: PLACEHOLDER_NAMESPACE_ID
+    spec:
+      kind: Deployment
+      replicas: 1
+      containers:
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/flycore-paas-action-paas-action:1671089214632
+        name: paas-action
+      env:
+        ENDPOINT_PAAS_HOME: '{{ Global.ENDPOINT_PAAS_HOME }}'
+        ENDPOINT_PAAS_TKGONE: '{{ Global.ENDPOINT_PAAS_TKGONE }}'
+        DB_PORT: '{{ Global.DB_PORT }}'
+        DB_USER: '{{ Global.DB_USER }}'
+        URL_PAAS_HOME: '{{ Global.URL_PAAS_HOME }}'
+        DB_NAME: '{{ Global.DB_NAME }}'
+        DB_HOST: '{{ Global.DB_HOST }}'
+        DB_PASSWORD: '{{ Global.DB_PASSWORD }}'
+      initContainers:
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/flycore-paas-action-db-migration:1671089214632
+        name: db-migration

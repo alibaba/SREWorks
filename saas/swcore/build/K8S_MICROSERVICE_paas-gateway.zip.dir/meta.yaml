@@ -1,0 +1,62 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: Component
+metadata:
+  annotations:
+    annotations.appmanager.oam.dev/version: 8.6.3+20221215072654719091
+  labels:
+    labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+    appId: flycore
+    labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+    componentName: paas-gateway
+    labels.appmanager.oam.dev/appId: flycore
+    labels.appmanager.oam.dev/componentName: paas-gateway
+    stageId: PLACEHOLDER_STAGE_ID
+  name: microservice-flycore-paas-gateway
+spec:
+  images: []
+  workload:
+    apiVersion: apps.abm.io/v1
+    dataOutputs: []
+    kind: Microservice
+    metadata:
+      annotations:
+        annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
+        annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
+        annotations.appmanager.oam.dev/version: 8.6.3+20221215072654719091
+        annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+      labels:
+        labels.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+        labels.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        appId: flycore
+        labels.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+        labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+        componentName: paas-gateway
+        labels.appmanager.oam.dev/appId: flycore
+        labels.appmanager.oam.dev/componentName: paas-gateway
+        stageId: PLACEHOLDER_STAGE_ID
+      name: PLACEHOLDER_NAME
+      namespace: PLACEHOLDER_NAMESPACE_ID
+    spec:
+      kind: Deployment
+      replicas: 1
+      containers:
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/flycore-paas-gateway-paas-gateway:1671089214631
+        name: paas-gateway
+      env:
+        REDIS_HOST: '{{ Global.REDIS_HOST }}'
+        STORE_NACOS_GROUP: '{{ Global.STORE_NACOS_GROUP }}'
+        REDIS_DB: '{{ Global.REDIS_DB }}'
+        DB_PORT: '{{ Global.DB_PORT }}'
+        STORE_NACOS_DATA_ID: '{{ Global.STORE_NACOS_DATA_ID }}'
+        NACOS_ENDPOINT: '{{ Global.NACOS_ENDPOINT }}'
+        DB_HOST: '{{ Global.DB_HOST }}'
+        ENDPOINT_PAAS_AUTHPROXY: '{{ Global.ENDPOINT_PAAS_AUTHPROXY }}'
+        MANAGER_SERVER_PORT: '{{ Global.MANAGER_SERVER_PORT }}'
+        REDIS_PORT: '{{ Global.REDIS_PORT }}'
+        AUTH_JWT_SECRET: '{{ Global.AUTH_JWT_SECRET }}'
+        NACOS_NAMESPACE: '{{ Global.NACOS_NAMESPACE }}'
+        REDIS_PASSWORD: '{{ Global.REDIS_PASSWORD }}'
+        DB_PASSWORD: '{{ Global.DB_PASSWORD }}'

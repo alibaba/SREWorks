@@ -43,10 +43,6 @@ spec:
       value: test-access-id
     - name: Global.ACCOUNT_SUPER_SECRET_KEY
       value: test-super-secret-key
-    - name: Global.ENDPOINT_PAAS_MINIO
-      value: '{{Global.ENDPOINT_PAAS_MINIO}}'
-    - name: Global.ACCOUNT_SUPER_CLIENT_SECRET
-      value: '{{Global.ACCOUNT_SUPER_CLIENT_SECRET}}'
     revisionName: K8S_MICROSERVICE|paas-frontend|_
     scopes:
     - scopeRef:

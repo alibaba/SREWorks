@@ -2,7 +2,7 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 8.6.7+20221215072654901041
+    annotations.appmanager.oam.dev/version: 8.6.8+20221215083411358939
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
     appId: flycore
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 8.6.7+20221215072654901041
+        annotations.appmanager.oam.dev/version: 8.6.8+20221215083411358939
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -43,13 +43,14 @@ spec:
       kind: Deployment
       replicas: 1
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/flycore-paas-authproxy-paas-authproxy:1671089214633
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/flycore-paas-authproxy-paas-authproxy:1671093251373
         name: paas-authproxy
       env:
         DB_PORT: '{{ Global.DB_PORT }}'
+        DB_USER: '{{ Global.DB_USER }}'
         DB_NAME: '{{ Global.DB_NAME }}'
         DB_HOST: '{{ Global.DB_HOST }}'
         DB_PASSWORD: '{{ Global.DB_PASSWORD }}'
       initContainers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/flycore-paas-authproxy-db-migration:1671089214633
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/flycore-paas-authproxy-db-migration:1671093251373
         name: db-migration

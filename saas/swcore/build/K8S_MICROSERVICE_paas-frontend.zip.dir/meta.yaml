@@ -2,7 +2,7 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 8.6.1+20221215072654710848
+    annotations.appmanager.oam.dev/version: 8.6.2+20221215083411741364
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
     appId: flycore
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 8.6.1+20221215072654710848
+        annotations.appmanager.oam.dev/version: 8.6.2+20221215083411741364
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -43,7 +43,7 @@ spec:
       kind: Deployment
       replicas: 1
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/flycore-paas-frontend-paas-frontend:1671089214626
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/flycore-paas-frontend-paas-frontend:1671093251370
         name: paas-frontend
       env:
         K8S_NAMESPACE: '{{ Global.K8S_NAMESPACE }}'
@@ -74,7 +74,7 @@ spec:
         DB_NAME_AUTHPROXY: '{{ Global.DB_NAME_AUTHPROXY }}'
         DB_PASSWORD: '{{ Global.DB_PASSWORD }}'
       initContainers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/flycore-paas-frontend-route-config:1671089214626
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/flycore-paas-frontend-route-config:1671093251370
         name: route-config
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/flycore-paas-frontend-authproxy-init:1671089214626
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/flycore-paas-frontend-authproxy-init:1671093251370
         name: authproxy-init

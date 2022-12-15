@@ -681,14 +681,18 @@ public class DeployAppSchema implements Schema, Serializable {
             spec = new Spec();
         }
 
-        // 复制 obj 中的全局项到自身
-        if (obj.getSpec().getParameterValues() != null) {
+        // 如果当前自身对应对象为空的时候，复制 obj 中的全局项到自身
+        if ((spec.getParameterValues() == null || spec.getParameterValues().size() == 0)
+                && obj.getSpec().getParameterValues() != null) {
             spec.setParameterValues(obj.getSpec().getParameterValues());
         }
-        if (obj.getSpec().getPolicies() != null) {
+        if ((spec.getPolicies() == null || spec.getPolicies().size() == 0)
+                && obj.getSpec().getPolicies() != null) {
             spec.setPolicies(obj.getSpec().getPolicies());
         }
-        if (obj.getSpec().getWorkflow() != null) {
+        if ((spec.getWorkflow() == null || spec.getWorkflow().getSteps() == null
+                || spec.getWorkflow().getSteps().size() == 0)
+                && obj.getSpec().getWorkflow() != null) {
             spec.setWorkflow(obj.getSpec().getWorkflow());
         }
 

@@ -3,6 +3,7 @@ package dynamicscripts
 import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import com.alibaba.tesla.appmanager.autoconfig.SystemProperties
+import com.alibaba.tesla.appmanager.common.enums.DeployComponentAttrTypeEnum
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentStateEnum
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode
@@ -10,6 +11,7 @@ import com.alibaba.tesla.appmanager.common.exception.AppException
 import com.alibaba.tesla.appmanager.common.util.CommandUtil
 import com.alibaba.tesla.appmanager.common.util.ImageUtil
 import com.alibaba.tesla.appmanager.common.util.NetworkUtil
+import com.alibaba.tesla.appmanager.common.util.SchemaUtil
 import com.alibaba.tesla.appmanager.common.util.ZipUtil
 import com.alibaba.tesla.appmanager.domain.req.deploy.GetDeployComponentHandlerReq
 import com.alibaba.tesla.appmanager.domain.req.deploy.LaunchDeployComponentHandlerReq
@@ -60,7 +62,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 38
+    public static final Integer REVISION = 42
 
     /**
      * CRD Context
@@ -193,9 +195,16 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
      */
     @Override
     GetDeployComponentHandlerRes get(GetDeployComponentHandlerReq request) {
+        def schema = SchemaUtil.toSchema(ComponentSchema.class,
+                request.getAttrMap().get(DeployComponentAttrTypeEnum.COMPONENT_SCHEMA.toString()))
+        def name = getMetaName(request.getAppId(), request.getComponentName(), request.getStageId())
+        def userCustomName = ((JSONObject) schema.getSpec().getWorkload().getSpec()).getString("name")
+        if (StringUtils.isNotEmpty(userCustomName)) {
+            name = getMetaName(userCustomName, request.getComponentName(), request.getStageId())
+        }
+
         def cluster = request.getClusterId()
         def namespace = request.getNamespaceId()
-        def name = getMetaName(request.getAppId(), request.getComponentName(), request.getStageId())
         def client = kubernetesClientFactory.get(cluster)
         def result = client.customResource(CRD_CONTEXT).get(namespace, name)
         if (result == null) {
@@ -378,6 +387,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
      * @param componentSchema ComponentSchema 对象
      */
     private void apply(LaunchDeployComponentHandlerReq request, ComponentSchema componentSchema) {
+        def userCustomName = ((JSONObject) componentSchema.getSpec().getWorkload().getSpec()).getString("name")
         def appId = request.getAppId()
         def componentName = request.getComponentName()
         def cluster = request.getClusterId()
@@ -413,6 +423,12 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
             for (String key : removeKeyMap) {
                 envObject.remove(key)
             }
+        }
+
+        // 如果用户自定义了名字，那么使用用户自己的
+        if (StringUtils.isNotEmpty(userCustomName)) {
+            name = getMetaName(userCustomName, componentName, stageId)
+            workload.getMetadata().setName(name)
         }
 
         // 将全部的 PLACEHOLDER 进行渲染

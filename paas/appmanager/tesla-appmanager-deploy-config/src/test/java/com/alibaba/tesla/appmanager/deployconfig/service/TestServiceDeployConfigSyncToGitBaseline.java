@@ -116,6 +116,6 @@ public class TestServiceDeployConfigSyncToGitBaseline {
         log.info("res: {}", SchemaUtil.toYamlMapStr(res.getSchema()));
         assertThat(res.getSchema().getSpec().getComponents().size()).isEqualTo(2);
         assertThat(res.getSchema().getSpec().getComponents().get(0).getParameterValue("TARGET_ENDPOINT")).isEqualTo("SET_BY_USER");
-        assertThat(res.getSchema().getSpec().getParameterValues().size()).isEqualTo(3);
+        assertThat(res.getSchema().getSpec().getParameterValues().size()).isEqualTo(2);
     }
 }

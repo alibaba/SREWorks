@@ -20,6 +20,14 @@ import java.util.List;
 public interface DeployConfigService {
 
     /**
+     * 在指定条件下是否存在 Type:envBinding 项
+     *
+     * @param req 检查请求
+     * @return true or false
+     */
+    boolean hasEnvBinding(DeployConfigHasEnvBindingReq req);
+
+    /**
      * 应用部署模板 (拆分 launch yaml 并分别应用保存)
      *
      * @param req 应用请求

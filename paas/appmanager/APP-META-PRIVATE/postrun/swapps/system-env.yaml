@@ -37,6 +37,7 @@ spec:
             - MINIO_ENDPOINT
             - MINIO_ACCESS_KEY
             - MINIO_SECRET_KEY
+            - HOME_URL
 
           toFieldPaths:
             - spec.keys
@@ -101,3 +102,5 @@ spec:
           fieldPath: '{{ spec.env.MINIO_ACCESS_KEY }}'
         - name: Global.MINIO_SECRET_KEY
           fieldPath: '{{ spec.env.MINIO_SECRET_KEY }}'
+        - name: Global.HOME_URL
+          fieldPath: '{{ spec.env.HOME_URL }}'

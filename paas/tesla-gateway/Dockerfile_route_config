@@ -1,4 +1,4 @@
-FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/sw-postrun:v1.3 AS release
+FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/sw-postrun:v1.4 AS release
 
 COPY ./build/config /app
 

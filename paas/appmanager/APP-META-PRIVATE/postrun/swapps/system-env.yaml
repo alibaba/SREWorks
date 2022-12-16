@@ -47,6 +47,7 @@ spec:
             - K8S_NAMESPACE
             - ENDPOINT_PAAS_MINIO
             - ZOOKEEPER_ENDPOINT
+            - ACCOUNT_SUPER_SECRET_KEY
 
           toFieldPaths:
             - spec.keys
@@ -131,7 +132,8 @@ spec:
           fieldPath: '{{ spec.env.ENDPOINT_PAAS_MINIO }}'
         - name: Global.ZOOKEEPER_ENDPOINT
           fieldPath: '{{ spec.env.ZOOKEEPER_ENDPOINT }}'
-
+        - name: Global.ACCOUNT_SUPER_SECRET_KEY
+          fieldPath: '{{ spec.env.ACCOUNT_SUPER_SECRET_KEY }}'
 
 
 

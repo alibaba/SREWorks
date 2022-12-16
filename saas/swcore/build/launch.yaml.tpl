@@ -175,6 +175,8 @@ spec:
       toFieldPaths:
       - spec.replicas
       value: 1
+    - name: Global.DB_NAME
+      value: abm_paas_nacos
     revisionName: K8S_MICROSERVICE|paas-nacos|_
     scopes:
     - scopeRef:
@@ -212,6 +214,8 @@ spec:
       value: 1
     - name: Global.DB_NAME
       value: abm_paas_authproxy
+    - name: Global.REDIS_DB
+      value: '0'
     revisionName: K8S_MICROSERVICE|paas-authproxy|_
     scopes:
     - scopeRef:

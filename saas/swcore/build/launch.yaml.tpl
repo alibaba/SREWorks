@@ -304,6 +304,24 @@ spec:
       name: Global.MINIO_SECRET_KEY
     - fieldPath: '{{ spec.env.HOME_URL }}'
       name: Global.HOME_URL
+    - fieldPath: '{{ spec.env.REDIS_ENDPOINT }}'
+      name: Global.REDIS_ENDPOINT
+    - fieldPath: '{{ spec.env.APPMANAGER_REDIS_PORT }}'
+      name: Global.APPMANAGER_REDIS_PORT
+    - fieldPath: '{{ spec.env.REDIS_PASSWORD }}'
+      name: Global.REDIS_PASSWORD
+    - fieldPath: '{{ spec.env.APPMANAGER_JWT_SECRET_KEY }}'
+      name: Global.APPMANAGER_JWT_SECRET_KEY
+    - fieldPath: '{{ spec.env.PLATFORM_NAME }}'
+      name: Global.PLATFORM_NAME
+    - fieldPath: '{{ spec.env.PLATFORM_LOGO }}'
+      name: Global.PLATFORM_LOGO
+    - fieldPath: '{{ spec.env.K8S_NAMESPACE }}'
+      name: Global.K8S_NAMESPACE
+    - fieldPath: '{{ spec.env.ENDPOINT_PAAS_MINIO }}'
+      name: Global.ENDPOINT_PAAS_MINIO
+    - fieldPath: '{{ spec.env.ZOOKEEPER_ENDPOINT }}'
+      name: Global.ZOOKEEPER_ENDPOINT
     dependencies: []
     parameterValues:
     - name: keys
@@ -341,6 +359,15 @@ spec:
       - MINIO_ACCESS_KEY
       - MINIO_SECRET_KEY
       - HOME_URL
+      - REDIS_ENDPOINT
+      - APPMANAGER_REDIS_PORT
+      - REDIS_PASSWORD
+      - APPMANAGER_JWT_SECRET_KEY
+      - PLATFORM_NAME
+      - PLATFORM_LOGO
+      - K8S_NAMESPACE
+      - ENDPOINT_PAAS_MINIO
+      - ZOOKEEPER_ENDPOINT
     revisionName: RESOURCE_ADDON|system-env@system-env|1.0
     scopes:
     - scopeRef:

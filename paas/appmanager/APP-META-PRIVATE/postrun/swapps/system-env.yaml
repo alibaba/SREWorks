@@ -46,6 +46,7 @@ spec:
             - PLATFORM_LOGO
             - K8S_NAMESPACE
             - ENDPOINT_PAAS_MINIO
+            - ZOOKEEPER_ENDPOINT
 
           toFieldPaths:
             - spec.keys
@@ -128,5 +129,9 @@ spec:
           fieldPath: '{{ spec.env.K8S_NAMESPACE }}'
         - name: Global.ENDPOINT_PAAS_MINIO
           fieldPath: '{{ spec.env.ENDPOINT_PAAS_MINIO }}'
+        - name: Global.ZOOKEEPER_ENDPOINT
+          fieldPath: '{{ spec.env.ZOOKEEPER_ENDPOINT }}'
+
+
 
 

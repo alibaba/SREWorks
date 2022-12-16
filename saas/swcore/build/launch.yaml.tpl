@@ -46,6 +46,8 @@ spec:
       value: test-access-id
     - name: Global.ACCOUNT_SUPER_SECRET_KEY
       value: test-super-secret-key
+    - name: Global.POSTRUN_WAIT_TIME
+      value: 5s
     revisionName: K8S_MICROSERVICE|paas-frontend|_
     scopes:
     - scopeRef:
@@ -84,7 +86,7 @@ spec:
     - name: Global.NACOS_NAMESPACE
       value: ad2d92c6-1a21-47ac-9da8-203fcbed9146
     - name: Global.NACOS_ENDPOINT
-      value: prod-paas-nacos:8848
+      value: prod-flycore-paas-nacos:8848
     - name: Global.MANAGER_SERVER_PORT
       value: '7002'
     - name: Global.STORE_NACOS_GROUP
@@ -96,6 +98,8 @@ spec:
     - name: Global.ENDPOINT_PAAS_AUTHPROXY
       value: prod-flycore-paas-authproxy
     - name: Global.AUTH_JWT_SECRET
+      value: '{{Global.APPMANAGER_JWT_SECRET_KEY}}'
+    - name: Global.AUTH_ADMIN_TOKEN
       value: '{{Global.APPMANAGER_JWT_SECRET_KEY}}'
     revisionName: K8S_MICROSERVICE|paas-gateway|_
     scopes:

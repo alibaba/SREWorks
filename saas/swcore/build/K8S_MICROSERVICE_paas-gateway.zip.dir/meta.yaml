@@ -2,7 +2,7 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 8.6.8+20221216031602135515
+    annotations.appmanager.oam.dev/version: 8.7.1+20221216065955740350
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
     appId: flycore
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 8.6.8+20221216031602135515
+        annotations.appmanager.oam.dev/version: 8.7.1+20221216065955740350
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -43,13 +43,14 @@ spec:
       kind: Deployment
       replicas: 1
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/flycore-paas-gateway-paas-gateway:1671160562608
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/flycore-paas-gateway-paas-gateway:1671173995612
         name: paas-gateway
       env:
         REDIS_HOST: '{{ Global.REDIS_HOST }}'
         STORE_NACOS_GROUP: '{{ Global.STORE_NACOS_GROUP }}'
         REDIS_DB: '{{ Global.REDIS_DB }}'
         DB_PORT: '{{ Global.DB_PORT }}'
+        AUTH_ADMIN_TOKEN: '{{ Global.AUTH_ADMIN_TOKEN }}'
         STORE_NACOS_DATA_ID: '{{ Global.STORE_NACOS_DATA_ID }}'
         NACOS_ENDPOINT: '{{ Global.NACOS_ENDPOINT }}'
         DB_HOST: '{{ Global.DB_HOST }}'

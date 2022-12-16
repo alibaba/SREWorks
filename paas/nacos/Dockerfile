@@ -48,3 +48,6 @@ RUN mkdir -p logs \
 	&& ln -sf /dev/stdout start.out \
 	&& ln -sf /dev/stderr start.out
 
+EXPOSE 8848
+RUN chmod +x bin/start.sh
+ENTRYPOINT ["bin/start.sh"]

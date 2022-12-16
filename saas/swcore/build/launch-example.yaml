@@ -207,6 +207,20 @@ spec:
       value: com.alibaba.tesla.authproxy.service.impl.DataBaseAuthServiceManager
     - name: Global.DATABASE_LOGIN_INTERCEPTOR_CLASS_NAME
       value: com.alibaba.tesla.authproxy.interceptor.DataBaseLoginInterceptor
+    - name: Global.ACCOUNT_SUPER_ACCESS_KEY
+      value: test-access-key
+    - name: Global.ACCOUNT_SUPER_PK
+      value: '999999999'
+    - name: Global.ACCOUNT_SUPER_ACCESS_ID
+      value: test-access-id
+    - name: Global.ACCOUNT_SUPER_ID
+      value: admin
+    - name: Global.DNS_PAAS_HOME
+      value: '{{Global.COOKIE_DOMAIN}}'
+    - name: Global.NETWORK_PROTOCOL
+      value: http
+    - name: Global.URL_PAAS_HOME
+      value: '{{Global.HOME_URL}}'
     revisionName: K8S_MICROSERVICE|paas-authproxy|_
     scopes:
     - scopeRef:

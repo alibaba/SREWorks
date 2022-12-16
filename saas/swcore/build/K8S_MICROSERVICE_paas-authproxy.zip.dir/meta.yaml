@@ -2,7 +2,7 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 8.7.6+20221216122421614761
+    annotations.appmanager.oam.dev/version: 8.7.8+20221216145829920168
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
     appId: flycore
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 8.7.6+20221216122421614761
+        annotations.appmanager.oam.dev/version: 8.7.8+20221216145829920168
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -44,22 +44,31 @@ spec:
       replicas: 1
       name: ''
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-authproxy-paas-authproxy:1671193461654
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-authproxy-paas-authproxy:1671202709363
         name: paas-authproxy
       env:
         COOKIE_DOMAIN: '{{ Global.COOKIE_DOMAIN }}'
         REDIS_HOST: '{{ Global.REDIS_HOST }}'
         REDIS_DB: '{{ Global.REDIS_DB }}'
         DATABASE_LOGIN_INTERCEPTOR_CLASS_NAME: '{{ Global.DATABASE_LOGIN_INTERCEPTOR_CLASS_NAME }}'
+        ACCOUNT_SUPER_SECRET_KEY: '{{ Global.ACCOUNT_SUPER_SECRET_KEY }}'
         DB_PORT: '{{ Global.DB_PORT }}'
         DB_USER: '{{ Global.DB_USER }}'
+        NETWORK_PROTOCOL: '{{ Global.NETWORK_PROTOCOL }}'
         DB_NAME: '{{ Global.DB_NAME }}'
         DATABASE_AUTH_SERVICE_MGR_CLASS_NAME: '{{ Global.DATABASE_AUTH_SERVICE_MGR_CLASS_NAME }}'
         DB_HOST: '{{ Global.DB_HOST }}'
+        ACCOUNT_SUPER_ACCESS_KEY: '{{ Global.ACCOUNT_SUPER_ACCESS_KEY }}'
         ZOOKEEPER_ENDPOINT: '{{ Global.ZOOKEEPER_ENDPOINT }}'
+        ACCOUNT_SUPER_PK: '{{ Global.ACCOUNT_SUPER_PK }}'
+        ACCOUNT_SUPER_ID: '{{ Global.ACCOUNT_SUPER_ID }}'
         REDIS_PORT: '{{ Global.REDIS_PORT }}'
+        ACCOUNT_SUPER_CLIENT_SECRET: '{{ Global.ACCOUNT_SUPER_CLIENT_SECRET }}'
         REDIS_PASSWORD: '{{ Global.REDIS_PASSWORD }}'
+        ACCOUNT_SUPER_ACCESS_ID: '{{ Global.ACCOUNT_SUPER_ACCESS_ID }}'
+        URL_PAAS_HOME: '{{ Global.URL_PAAS_HOME }}'
+        DNS_PAAS_HOME: '{{ Global.DNS_PAAS_HOME }}'
         DB_PASSWORD: '{{ Global.DB_PASSWORD }}'
       initContainers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-authproxy-db-migration:1671193461654
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-authproxy-db-migration:1671202709363
         name: db-migration

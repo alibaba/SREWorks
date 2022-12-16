@@ -43,8 +43,10 @@ spec:
       value: admin
     - name: Global.ACCOUNT_SUPER_ACCESS_ID
       value: test-access-id
-    - name: Global.ACCOUNT_SUPER_SECRET_KEY
-      value: test-super-secret-key
+    - name: Global.ACCOUNT_SUPER_ACCESS_KEY
+      value: test-access-key
+    - name: Global.ACCOUNT_SUPER_PK
+      value: '999999999'
     - name: Global.POSTRUN_WAIT_TIME
       value: 5s
     revisionName: K8S_MICROSERVICE|paas-frontend|_
@@ -215,6 +217,10 @@ spec:
       value: abm_paas_authproxy
     - name: Global.REDIS_DB
       value: '0'
+    - name: Global.DATABASE_AUTH_SERVICE_MGR_CLASS_NAME
+      value: com.alibaba.tesla.authproxy.service.impl.DataBaseAuthServiceManager
+    - name: Global.DATABASE_LOGIN_INTERCEPTOR_CLASS_NAME
+      value: com.alibaba.tesla.authproxy.interceptor.DataBaseLoginInterceptor
     revisionName: K8S_MICROSERVICE|paas-authproxy|_
     scopes:
     - scopeRef:
@@ -325,6 +331,8 @@ spec:
       name: Global.ENDPOINT_PAAS_MINIO
     - fieldPath: '{{ spec.env.ZOOKEEPER_ENDPOINT }}'
       name: Global.ZOOKEEPER_ENDPOINT
+    - fieldPath: '{{ spec.env.ACCOUNT_SUPER_SECRET_KEY }}'
+      name: Global.ACCOUNT_SUPER_SECRET_KEY
     dependencies: []
     parameterValues:
     - name: keys
@@ -371,6 +379,7 @@ spec:
       - K8S_NAMESPACE
       - ENDPOINT_PAAS_MINIO
       - ZOOKEEPER_ENDPOINT
+      - ACCOUNT_SUPER_SECRET_KEY
     revisionName: RESOURCE_ADDON|system-env@system-env|1.0
     scopes:
     - scopeRef:

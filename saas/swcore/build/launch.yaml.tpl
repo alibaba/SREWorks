@@ -72,12 +72,6 @@ spec:
         - port: 80
           protocol: TCP
           targetPort: 80
-    - name: gateway.trait.abm.io
-      runtime: post
-      spec:
-        authEnabled: false
-        path: /flycore/paas-frontend/**
-        serviceName: '{{ Global.STAGE_ID }}-flycore-paas-frontend.{{ Global.NAMESPACE_ID }}'
   - dependencies:
     - component: RESOURCE_ADDON|system-env@system-env
     parameterValues:
@@ -125,12 +119,6 @@ spec:
         - port: 80
           protocol: TCP
           targetPort: 7001
-    - name: gateway.trait.abm.io
-      runtime: post
-      spec:
-        authEnabled: false
-        path: /flycore/paas-gateway/**
-        serviceName: '{{ Global.STAGE_ID }}-flycore-paas-gateway.{{ Global.NAMESPACE_ID }}'
   - dependencies:
     - component: RESOURCE_ADDON|system-env@system-env
     parameterValues:
@@ -168,12 +156,6 @@ spec:
         - port: 80
           protocol: TCP
           targetPort: 7001
-    - name: gateway.trait.abm.io
-      runtime: post
-      spec:
-        authEnabled: false
-        path: /flycore/paas-action/**
-        serviceName: '{{ Global.STAGE_ID }}-flycore-paas-action.{{ Global.NAMESPACE_ID }}'
   - dependencies:
     - component: RESOURCE_ADDON|system-env@system-env
     parameterValues:
@@ -205,12 +187,6 @@ spec:
         - port: '8848'
           protocol: TCP
           targetPort: 8848
-    - name: gateway.trait.abm.io
-      runtime: post
-      spec:
-        authEnabled: false
-        path: /flycore/paas-nacos/**
-        serviceName: '{{ Global.STAGE_ID }}-flycore-paas-nacos.{{ Global.NAMESPACE_ID }}'
   - dependencies:
     - component: RESOURCE_ADDON|system-env@system-env
     parameterValues:
@@ -262,12 +238,6 @@ spec:
         - port: 80
           protocol: TCP
           targetPort: 7001
-    - name: gateway.trait.abm.io
-      runtime: post
-      spec:
-        authEnabled: false
-        path: /flycore/paas-authproxy/**
-        serviceName: '{{ Global.STAGE_ID }}-flycore-paas-authproxy.{{ Global.NAMESPACE_ID }}'
   - dataInputs: []
     dataOutputs:
     - fieldPath: '{{ spec.env.DB_HOST }}'

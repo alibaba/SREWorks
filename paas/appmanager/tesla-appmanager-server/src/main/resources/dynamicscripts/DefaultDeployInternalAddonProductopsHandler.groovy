@@ -54,7 +54,7 @@ class DefaultDeployInternalAddonProductopsHandler implements DeployComponentHand
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 15
+    public static final Integer REVISION = 16
 
     private static final String IMPORT_TMP_FILE = "productops_tmp_import.zip"
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
@@ -101,6 +101,9 @@ class DefaultDeployInternalAddonProductopsHandler implements DeployComponentHand
             endpoint = "http://" + (StringUtils.isEmpty(System.getenv("ENDPOINT_PAAS_PRODUCTOPS"))
                     ? "" : System.getenv("ENDPOINT_PAAS_PRODUCTOPS"))
             if (endpoint == "http://") {
+                endpoint = options.getString("targetEndpoint")
+            }
+            if ("OXS" == System.getenv("CLOUD_TYPE")) {
                 endpoint = options.getString("targetEndpoint")
             }
             def multipleEnv = options.getBoolean("multipleEnv")

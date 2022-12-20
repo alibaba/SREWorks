@@ -37,6 +37,17 @@ spec:
             - MINIO_ENDPOINT
             - MINIO_ACCESS_KEY
             - MINIO_SECRET_KEY
+            - HOME_URL
+            - REDIS_ENDPOINT
+            - APPMANAGER_REDIS_PORT
+            - REDIS_PASSWORD
+            - APPMANAGER_JWT_SECRET_KEY 
+            - PLATFORM_NAME
+            - PLATFORM_LOGO
+            - K8S_NAMESPACE
+            - ENDPOINT_PAAS_MINIO
+            - ZOOKEEPER_ENDPOINT
+            - ACCOUNT_SUPER_SECRET_KEY
 
           toFieldPaths:
             - spec.keys
@@ -101,3 +112,28 @@ spec:
           fieldPath: '{{ spec.env.MINIO_ACCESS_KEY }}'
         - name: Global.MINIO_SECRET_KEY
           fieldPath: '{{ spec.env.MINIO_SECRET_KEY }}'
+        - name: Global.HOME_URL
+          fieldPath: '{{ spec.env.HOME_URL }}'
+        - name: Global.REDIS_ENDPOINT
+          fieldPath: '{{ spec.env.REDIS_ENDPOINT }}'
+        - name: Global.APPMANAGER_REDIS_PORT
+          fieldPath: '{{ spec.env.APPMANAGER_REDIS_PORT }}'
+        - name: Global.REDIS_PASSWORD
+          fieldPath: '{{ spec.env.REDIS_PASSWORD }}' 
+        - name: Global.APPMANAGER_JWT_SECRET_KEY
+          fieldPath: '{{ spec.env.APPMANAGER_JWT_SECRET_KEY }}'
+        - name: Global.PLATFORM_NAME
+          fieldPath: '{{ spec.env.PLATFORM_NAME }}'
+        - name: Global.PLATFORM_LOGO
+          fieldPath: '{{ spec.env.PLATFORM_LOGO }}'
+        - name: Global.K8S_NAMESPACE
+          fieldPath: '{{ spec.env.K8S_NAMESPACE }}'
+        - name: Global.ENDPOINT_PAAS_MINIO
+          fieldPath: '{{ spec.env.ENDPOINT_PAAS_MINIO }}'
+        - name: Global.ZOOKEEPER_ENDPOINT
+          fieldPath: '{{ spec.env.ZOOKEEPER_ENDPOINT }}'
+        - name: Global.ACCOUNT_SUPER_SECRET_KEY
+          fieldPath: '{{ spec.env.ACCOUNT_SUPER_SECRET_KEY }}'
+
+
+

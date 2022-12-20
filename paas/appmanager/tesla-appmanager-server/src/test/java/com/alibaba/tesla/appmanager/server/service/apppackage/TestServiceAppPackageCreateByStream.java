@@ -14,6 +14,7 @@ import com.alibaba.tesla.appmanager.server.repository.AppPackageTagRepository;
 import com.alibaba.tesla.appmanager.server.repository.CustomAddonMetaRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppPackageQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.AppPackageDO;
+import com.alibaba.tesla.appmanager.server.service.appcomponent.AppComponentService;
 import com.alibaba.tesla.appmanager.server.service.apppackage.impl.AppPackageServiceImpl;
 import com.alibaba.tesla.appmanager.server.service.componentpackage.ComponentPackageService;
 import com.alibaba.tesla.appmanager.server.service.deploy.DeployAppService;
@@ -72,6 +73,9 @@ public class TestServiceAppPackageCreateByStream {
     @Mock
     private DeployConfigService deployConfigService;
 
+    @Mock
+    private AppComponentService appComponentService;
+
     private AppPackageService appPackageService;
 
     @Before
@@ -87,7 +91,8 @@ public class TestServiceAppPackageCreateByStream {
                 deployAppService,
                 packageProperties,
                 storage,
-                deployConfigService
+                deployConfigService,
+                appComponentService
         ));
         Mockito.doReturn(BUCKET_NAME).when(packageProperties).getBucketName();
     }

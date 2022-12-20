@@ -58,7 +58,7 @@ class HelmComponentDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 51
+    public static final Integer REVISION = 52
 
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
     private static final String ANNOTATIONS_COMPONENT_INSTANCE_ID = "annotations.appmanager.oam.dev/componentInstanceId"
@@ -180,16 +180,15 @@ class HelmComponentDeployHandler implements DeployComponentHandler {
         def command
         def kubeFile = null
         if (StringUtils.isNotEmpty(token) && StringUtils.isNotEmpty(apiserver)) {
-            command = String.format(
-                    "/app/helm status %s --kube-token=%s --kube-apiserver=%s " +
-                            "--kube-ca-file=/run/secrets/kubernetes.io/serviceaccount/ca.crt -n %s -o json",
-                    name, token, apiserver, namespace
-            )
+            command = new String[]{"/app/helm", "status", name, String.format("--kube-token=%s", token),
+                    String.format("--kube-apiserver=%s", apiserver),
+                    "--kube-ca-file=/run/secrets/kubernetes.io/serviceaccount/ca.crt",
+                    "-n", namespace, "-o", "json"}
         } else if (StringUtils.isNotEmpty(kube)) {
             kubeFile = Files.createTempFile("kubeconfig", ".json").toFile();
             FileUtils.writeStringToFile(kubeFile, kube, StandardCharsets.UTF_8)
-            command = String.format(
-                    "/app/helm status %s --kubeconfig %s -n %s -o json", name, kubeFile.getAbsolutePath(), namespace)
+            command = new String[]{"/app/helm", "status", name, "--kubeconfig",
+                    kubeFile.getAbsolutePath(), "-n", namespace, "-o", "json"}
         } else {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                     String.format("cannot find cluster authorization info|clusterId=%s", cluster))
@@ -258,37 +257,32 @@ class HelmComponentDeployHandler implements DeployComponentHandler {
         def kubeFile = null
         if (StringUtils.isNotEmpty(repoPath)) {
             if (StringUtils.isNotEmpty(token) && StringUtils.isNotEmpty(apiserver)) {
-                command = String.format(
-                        "/app/helm upgrade --install %s %s -f %s -n %s --kube-token=%s --kube-apiserver=%s " +
-                                "--kube-ca-file=/run/secrets/kubernetes.io/serviceaccount/ca.crt ",
-                        name, Paths.get(packageDir, repoPath).toString(), valuesPath, namespace, token, apiserver
-                )
+                command = new String[]{"/app/helm", "upgrade", "--install", name,
+                        Paths.get(packageDir, repoPath).toString(), "-f", valuesPath, "-n", namespace,
+                        String.format("--kube-token=%s", token), String.format("--kube-apiserver=%s", apiserver),
+                        "--kube-ca-file=/run/secrets/kubernetes.io/serviceaccount/ca.crt"}
             } else if (StringUtils.isNotEmpty(kube)) {
                 kubeFile = Files.createTempFile("kubeconfig", ".json").toFile();
                 FileUtils.writeStringToFile(kubeFile, kube, StandardCharsets.UTF_8)
-                command = String.format(
-                        "/app/helm upgrade --install %s %s -f %s -n %s --kubeconfig %s",
-                        name, Paths.get(packageDir, repoPath).toString(), valuesPath, namespace,
-                        kubeFile.getAbsolutePath()
-                )
+                command = new String[]{"/app/helm", "upgrade", "--install", name,
+                        Paths.get(packageDir, repoPath).toString(), "-f", valuesPath, "-n", namespace,
+                        "--kubeconfig", kubeFile.getAbsolutePath()}
             } else {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                         String.format("cannot find cluster authorization info|clusterId=%s", cluster))
             }
         } else {
             if (StringUtils.isNotEmpty(token) && StringUtils.isNotEmpty(apiserver)) {
-                command = String.format(
-                        "/app/helm upgrade --install --repo %s %s %s -f %s -n %s --version %s --kube-token=%s " +
-                                "--kube-apiserver=%s --kube-ca-file=/run/secrets/kubernetes.io/serviceaccount/ca.crt ",
-                        repoUrl, name, chartName, valuesPath, namespace, chartVersion, token, apiserver
-                )
+                command = new String[]{"/app/helm", "upgrade", "--install", "--repo", repoUrl, name, chartName,
+                        "-f", valuesPath, "-n", namespace, "--version", chartVersion,
+                        String.format("--kube-token=%s", token), String.format("--kube-apiserver=%s", apiserver),
+                        "--kube-ca-file=/run/secrets/kubernetes.io/serviceaccount/ca.crt"}
             } else if (StringUtils.isNotEmpty(kube)) {
                 kubeFile = Files.createTempFile("kubeconfig", ".json").toFile();
                 FileUtils.writeStringToFile(kubeFile, kube, StandardCharsets.UTF_8)
-                command = String.format(
-                        "/app/helm upgrade --install --repo %s %s %s -f %s -n %s --version %s --kubeconfig %s",
-                        repoUrl, name, chartName, valuesPath, namespace, chartVersion, kubeFile.getAbsolutePath()
-                )
+                command = new String[]{"/app/helm", "upgrade", "--install", "--repo", repoUrl, name, chartName,
+                        "-f", valuesPath, "-n", namespace, "--version", chartVersion, "--kubeconfig",
+                        kubeFile.getAbsolutePath()}
             } else {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                         String.format("cannot find cluster authorization info|clusterId=%s", cluster))
@@ -300,17 +294,15 @@ class HelmComponentDeployHandler implements DeployComponentHandler {
         } catch (AppException e) {
             if (e.getErrorMessage().contains("cannot re-use a name")) {
                 if (StringUtils.isNotEmpty(repoPath)) {
-                    command = String.format(
-                            "/app/helm upgrade %s %s -f %s -n %s --kube-token=%s --kube-apiserver=%s " +
-                                    "--kube-ca-file=/run/secrets/kubernetes.io/serviceaccount/ca.crt ",
-                            name, Paths.get(packageDir, repoPath).toString(), valuesPath, namespace, token, apiserver
-                    )
+                    command = new String[]{"/app/helm", "upgrade", name, Paths.get(packageDir, repoPath).toString(),
+                            "-f", valuesPath, "-n", namespace, String.format("--kube-token=%s", token),
+                            String.format("--kube-apiserver=%s", apiserver),
+                            "--kube-ca-file=/run/secrets/kubernetes.io/serviceaccount/ca.crt"}
                 } else {
-                    command = String.format(
-                            "/app/helm upgrade --repo %s %s %s -f %s -n %s --version %s --kube-token=%s " +
-                                    "--kube-apiserver=%s --kube-ca-file=/run/secrets/kubernetes.io/serviceaccount/ca.crt ",
-                            repoUrl, name, chartName, valuesPath, namespace, chartVersion, token, apiserver
-                    )
+                    command = new String[]{"/app/helm", "upgrade", "--repo", repoUrl, name, chartName, "-f", valuesPath,
+                            "-n", namespace, "--version", chartVersion, String.format("--kube-token=%s", token),
+                            String.format("--kube-apiserver=%s", apiserver),
+                            "--kube-ca-file=/run/secrets/kubernetes.io/serviceaccount/ca.crt"}
                 }
                 def output = CommandUtil.runLocalCommand(command)
                 log.info("action=runHelmCommand|command={}|output={}", command, output)

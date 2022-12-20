@@ -98,7 +98,7 @@ class DefaultDeployInternalAddonAppMetaHandler implements DeployComponentHandler
         }
         data.setAppId(request.getAppId())
         data.setOptions(options)
-        def response = appMetaProvider.save(data, DefaultConstant.SYSTEM_OPERATOR)
+        def response = appMetaProvider.update(data, DefaultConstant.SYSTEM_OPERATOR)
         log.info("import app meta config success|appId={}|response={}",
                 request.getAppId(), JSONObject.toJSONString(response))
 

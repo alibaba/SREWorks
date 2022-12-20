@@ -121,8 +121,17 @@ public class ComponentPackageBuilderServiceImpl implements ComponentPackageBuild
         String targetFilePath = targetFile.toPath().toString();
 
         // 执行导出命令
-        String command = String.format("%s saas-package export-component-package --config-file-path %s " +
-                "--creator SYSTEM --target-path %s", packageProperties.getAbmcliBin(), configFilePath, targetFilePath);
+        String[] command = new String[]{
+                packageProperties.getAbmcliBin(),
+                "saas-package",
+                "export-component-package",
+                "--config-file-path",
+                configFilePath,
+                "--creator",
+                "SYSTEM",
+                "--target-path",
+                targetFilePath,
+        };
         String output = CommandUtil.runLocalCommand(command);
         String targetFileMd5 = StringUtil.getMd5Checksum(targetFilePath);
         String targetFileMeta = PackageUtil.getComponentPackageMeta(targetFilePath);

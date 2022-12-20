@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -387,8 +388,9 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
         log.info("action=JinjaRender||dockerFileStr:{}", dockerFileStr);
         // 4. 打包成tar.gz （不打包 markdown 文件）
         String compressTarName = dockerFileName + ".tar.gz";
-        String tarCommand = String.format("cd %s; tar zcvf %s -C %s .[!.]* *", buildAbsolutePath, buildAbsolutePath + compressTarName, buildAbsolutePath);
-        CommandUtil.runLocalCommand(tarCommand);
+//        String tarCommand = String.format("cd %s; tar zcvf %s -C %s .[!.]* *", buildAbsolutePath, buildAbsolutePath + compressTarName, buildAbsolutePath);
+        String[] tarCommand = new String[]{"tar", "zcvf", buildAbsolutePath + compressTarName, "-C", buildAbsolutePath, ".[!.]*", "*"};
+        CommandUtil.runLocalCommand(CommandUtil.getBashCommand(tarCommand), Paths.get(buildAbsolutePath).toFile());
 
         String bucketName = packageProperties.getBucketName();
         String remotePath = PackageUtil
@@ -485,12 +487,12 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
             }
         }
         String branch = String.valueOf(JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "branch")));
-        String gitCloneComannd = String.format("git clone -b %s %s %s", branch, gitHttpRep, localDir);
+        String[] gitCloneComannd = new String[]{"git", "clone", "-b", branch, gitHttpRep, localDir};
         CommandUtil.runLocalCommand(gitCloneComannd);
         Object commit = JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "commit"));
         if (commit != null) {
-            String resetCommit = String.format("cd %s; git reset --hard %s", localDir, commit);
-            CommandUtil.runLocalCommand(resetCommit);
+            String[] resetCommit = new String[]{"git", "reset", "--hard", String.valueOf(commit)};
+            CommandUtil.runLocalCommand(resetCommit, Paths.get(localDir).toFile());
         }
         return true;
     }
@@ -586,7 +588,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
             log.error("action=deleteDir|| dir is empty!");
             return;
         }
-        String deleteCommand = String.format("rm -rf %s", targetFileDir);
+        String[] deleteCommand = new String[]{"rm", "-rf", targetFileDir};
         CommandUtil.runLocalCommand(deleteCommand);
     }
 

@@ -281,7 +281,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
         def images = componentSchema.getSpec().getImages()
         for (def image : images) {
             if (StringUtils.isNotEmpty(image.getName())) {
-                def systemArch = CommandUtil.runLocalCommand("uname -i").strip()
+                def systemArch = CommandUtil.runLocalCommand(new String[]{"uname", "-i"}).strip()
                 if (systemArch == "x86_64") {
                     if (StringUtils.isNotEmpty(image.getArch()) && image.getArch() != "x86") {
                         log.info("image arch {} is incompatible with system arch {}, skip", image.getArch(), systemArch)
@@ -362,23 +362,29 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
         def dockerNamespace = systemProperties.getDockerNamespace()
         def daemonEnv = systemProperties.getRemoteDockerDaemon()
         def newImage = ImageUtil.generateLatestImage(dockerRegistry, dockerNamespace, image)
-        if (StringUtils.isEmpty(daemonEnv)) {
-            daemonEnv = ""
-        } else {
-            daemonEnv = "-H " + daemonEnv
+
+        // 准备命令前缀
+        def commandPrefixArray = new ArrayList<>()
+        commandPrefixArray.add("docker")
+        if (StringUtils.isNotEmpty(daemonEnv)) {
+            commandPrefixArray.add("-H")
+            commandPrefixArray.add(daemonEnv)
         }
 
         // 加载 Docker 镜像
-        String loadCmd = String.format("cd %s && docker %s load -i %s", packageDir, daemonEnv, imagePath)
-        CommandUtil.runLocalCommand(loadCmd)
+        def loadCmd = new ArrayList<>(commandPrefixArray)
+        loadCmd.addAll(Arrays.asList("load", "-i", imagePath))
+        CommandUtil.runLocalCommand(loadCmd.toArray(new String[0]), Paths.get(packageDir).toFile())
 
         // 重新 tag 镜像，增加 UUID
-        String tagCmd = String.format("docker %s tag %s %s", daemonEnv, sha256, newImage)
-        CommandUtil.runLocalCommand(tagCmd)
+        def tagCmd = new ArrayList<>(commandPrefixArray)
+        tagCmd.addAll(Arrays.asList("tag", sha256, newImage))
+        CommandUtil.runLocalCommand(tagCmd.toArray(new String[0]))
 
         // 推送到环境仓库
-        String pushCmd = String.format("docker %s push %s", daemonEnv, newImage)
-        CommandUtil.runLocalCommand(pushCmd)
+        def pushCmd = new ArrayList<>(commandPrefixArray)
+        pushCmd.addAll(Arrays.asList("push", newImage))
+        CommandUtil.runLocalCommand(pushCmd.toArray(new String[0]))
     }
 
     /**

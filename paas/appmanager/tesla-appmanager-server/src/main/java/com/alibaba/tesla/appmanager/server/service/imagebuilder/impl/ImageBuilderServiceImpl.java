@@ -26,6 +26,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
@@ -155,8 +158,7 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
         // 拉取镜像 (abm.io 意味着是自己本地构建的镜像，不再需要拉取了)
         if (imageName.startsWith("abm.io")) {
             // 计算 SHA256
-            String calcCommand = String.format("%s %s %s images --no-trunc --quiet %s",
-                    sudoCommand, dockerBin, dockerTarget, imageName);
+            String[] calcCommand = new String[]{sudoCommand, dockerBin, dockerTarget, "images", "--no-trunc", "--quiet", imageName};
             logContent.append(String.format("run command: %s\n", calcCommand));
             String result = CommandUtil.runLocalCommand(calcCommand);
             logContent.append(result);
@@ -166,13 +168,12 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
             String split = "sha256:";
             return fullname.substring(split.length());
         } else {
-            String pullCommand = String.format("%s %s %s pull %s", sudoCommand, dockerBin, dockerTarget, imageName);
+            String[] pullCommand = new String[]{sudoCommand, dockerBin, dockerTarget, "pull", imageName};
             logContent.append(String.format("run command: %s\n", pullCommand));
             logContent.append(CommandUtil.runLocalCommand(pullCommand));
 
             // 计算 SHA256
-            String calcCommand = String.format("%s %s %s inspect --format='{{index .RepoDigests 0}}' %s",
-                    sudoCommand, dockerBin, dockerTarget, imageName);
+            String[] calcCommand = new String[]{sudoCommand, dockerBin, dockerTarget, "inspect", "--format='{{index .RepoDigests 0}}'", imageName};
             logContent.append(String.format("run command: %s\n", calcCommand));
             String result = CommandUtil.runLocalCommand(calcCommand);
             logContent.append(result);
@@ -198,12 +199,13 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
     private String dockerBuild(
             StringBuilder logContent, ImageBuilderCreateReq request, Path cloneDir, Path imageDir,
             String imageName, Path dockerfile) {
-        StringBuilder buildArgs = new StringBuilder();
+        List<String> buildArgs = new ArrayList<>();
         if (request.getArgs() != null && request.getArgs().size() > 0) {
             for (Map.Entry<String, String> entry : request.getArgs().entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
-                buildArgs.append(String.format("--build-arg %s=%s ", key, value));
+                buildArgs.add("--build-arg");
+                buildArgs.add(String.format("%s=%s", key, value));
             }
         }
 
@@ -230,31 +232,33 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
         } else {
             localDir = Paths.get(cloneDir.toString(), request.getRepoPath()).toString();
         }
-        String buildCommand = String.format(
-                "cd %s; %s %s %s build -t %s --pull --no-cache %s -f %s .",
-                localDir, sudoCommand, dockerBin, dockerTarget, imageName, buildArgs, dockerfile.toString());
+        List<String> buildCommand = Arrays.asList(sudoCommand, dockerBin, dockerTarget, "build", "-t", imageName, "--pull", "--no-cache");
+        buildCommand.addAll(buildArgs);
+        buildCommand.add("-f");
+        buildCommand.add(dockerfile.toString());
+        buildCommand.add(".");
         // for internal use
         if ("Internal".equals(System.getenv("CLOUD_TYPE"))) {
-            buildCommand += " --secret id=abm-build-secret,src=/etc/abm-build-secret";
+            buildCommand.add("--secret");
+            buildCommand.add("id=abm-build-secret,src=/etc/abm-build-secret");
         }
         logContent.append(String.format("run command: %s\n", buildCommand));
-        logContent.append(CommandUtil.runLocalCommand(buildCommand));
+        logContent.append(CommandUtil.runLocalCommand(buildCommand.toArray(new String[0]), Paths.get(localDir).toFile()));
 
         // 镜像上传或镜像导出
         if (request.isImagePush()) {
-            String pushCommand = String.format("%s %s %s push %s", sudoCommand, dockerBin, dockerTarget, imageName);
+            String[] pushCommand = new String[]{sudoCommand, dockerBin, dockerTarget, "push", imageName};
             logContent.append(String.format("run command: %s\n", pushCommand));
             logContent.append(CommandUtil.runLocalCommand(pushCommand));
             return "";
         } else {
             String imagePath = Paths
-                    .get(imageDir.toString(),
-                            ImageUtil.getImagePath(request.getAppId(), request.getComponentName(), request.getBasename()))
+                    .get(imageDir.toString(), ImageUtil
+                            .getImagePath(request.getAppId(), request.getComponentName(), request.getBasename()))
                     .toString();
-            String exportCommand = String.format("%s %s %s save %s > %s",
-                    sudoCommand, dockerBin, dockerTarget, imageName, imagePath);
+            String[] exportCommand = new String[]{sudoCommand, dockerBin, dockerTarget, "save", imageName, ">", imagePath};
             logContent.append(String.format("run command: %s\n", exportCommand));
-            logContent.append(CommandUtil.runLocalCommand(exportCommand));
+            logContent.append(CommandUtil.runLocalCommand(CommandUtil.getBashCommand(exportCommand)));
             return imagePath;
         }
     }

@@ -234,6 +234,8 @@ spec:
       value: http
     - name: Global.URL_PAAS_HOME
       value: '{{Global.HOME_URL}}'
+    - name: Global.OAUTH2_JWT_SECRET_KEY
+      value: '{{Global.APPMANAGER_JWT_SECRET_KEY}}'
     revisionName: K8S_MICROSERVICE|paas-authproxy|_
     scopes:
     - scopeRef:

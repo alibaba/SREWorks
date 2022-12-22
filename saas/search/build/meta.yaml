@@ -9,7 +9,7 @@ componentPackages:
     metadata:
       name: microservice-search-tkgone
       annotations:
-        annotations.appmanager.oam.dev/version: "4.0.6+20220914093109777265"
+        annotations.appmanager.oam.dev/version: "4.4.8+20221222122230781809"
       labels:
         labels.appmanager.oam.dev/appId: "search"
         labels.appmanager.oam.dev/componentName: "tkgone"
@@ -39,11 +39,12 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "4.0.6+20220914093109777265"
+            annotations.appmanager.oam.dev/version: "4.4.8+20221222122230781809"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec:
+          name: ''
           kind: StatefulSet
           replicas: 1
           env:
@@ -70,13 +71,13 @@ componentPackages:
             DATA_ES_USER: "{{ Global.DATA_ES_USER }}"
           initContainers:
           - name: "db-migration"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/search-tkgone-db-migration:1663147869443"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/search-tkgone-db-migration:1671711750184"
           containers:
           - name: "tkgone"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/build/search-tkgone-tkgone:1663147869443"
-  packageMd5: b55b5f124b5d77c52d1a6d33b69dc8d2
-  packageOptions: '{"kind":"StatefulSet","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"saas/search/api/tkg-one","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/build"},"name":"tkgone"}],"env":["CONTAINER_IP_LIST_TKGONE","CONTAINER_IP_LIST","ELASTICSEARCH_HOST","ELASTICSEARCH_PORT","DB_USER","DB_HOST","DB_PASSWORD","DB_PORT","REDIS_HOST","REDIS_PORT","REDIS_PASSWORD","REDIS_DB","NACOS_ENDPOINT","NACOS_NAMESPACE","DB_NAME","ELASTICSEARCH_PASSWORD","DATA_ES_PASSWORD","ELASTICSEARCH_USER","DATA_ES_HOST","DATA_ES_PORT","DATA_ES_USER"],"initContainers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile-db-migration","ciAccount":"public","ciToken":"public","repoPath":"saas/search/api/tkg-one","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/build"},"name":"db-migration"}],"componentConfiguration":"revisionName: K8S_MICROSERVICE|tkgone|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 7001\n- name: gateway.trait.abm.io\n  runtime: post\n  spec:\n    path: /v2/foundation/kg/**\n    authEnabled: true\n    serviceName: ''{{ Global.STAGE_ID }}-search-tkgone.{{ Global.NAMESPACE_ID }}''\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n- name: Global.ELASTICSEARCH_HOST\n  value: prod-dataops-elasticsearch-master.sreworks-dataops\n- name: Global.ELASTICSEARCH_PORT\n  value: ''9200''\n- name: Global.REDIS_HOST\n  value: sreworks-redis-master.sreworks\n- name: Global.REDIS_PORT\n  value: ''6379''\n- name: Global.REDIS_PASSWORD\n  value: siJEULmQYQ\n- name: Global.REDIS_DB\n  value: ''0''\n- name: Global.NACOS_ENDPOINT\n  value: prod-flycore-paas-nacos:8848\n- name: Global.NACOS_NAMESPACE\n  value: ad2d92c6-1a21-47ac-9da8-203fcbed9146\n- name: Global.DB_NAME\n  value: search_saas_tkgone\n- name: Global.ELASTICSEARCH_PASSWORD\n  value: sreworkses123.\n- name: Global.DATA_ES_PASSWORD\n  value: sreworkses123.\n- name: Global.ELASTICSEARCH_USER\n  value: elastic\n- name: Global.DATA_ES_HOST\n  value: prod-dataops-elasticsearch-master.sreworks-dataops\n- name: Global.DATA_ES_PORT\n  value: ''9200''\n- name: Global.DATA_ES_USER\n  value: elastic\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 4.0.6+20220914093109777265
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/search-tkgone-tkgone:1671711750184"
+  packageMd5: dc2fb32bc8287a60b5a6b5440c2eabf6
+  packageOptions: '{"kind":"StatefulSet","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"saas/search/api/tkg-one","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"tkgone"}],"env":["CONTAINER_IP_LIST_TKGONE","CONTAINER_IP_LIST","ELASTICSEARCH_HOST","ELASTICSEARCH_PORT","DB_USER","DB_HOST","DB_PASSWORD","DB_PORT","REDIS_HOST","REDIS_PORT","REDIS_PASSWORD","REDIS_DB","NACOS_ENDPOINT","NACOS_NAMESPACE","DB_NAME","ELASTICSEARCH_PASSWORD","DATA_ES_PASSWORD","ELASTICSEARCH_USER","DATA_ES_HOST","DATA_ES_PORT","DATA_ES_USER"],"initContainers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile-db-migration","ciAccount":"public","ciToken":"public","repoPath":"saas/search/api/tkg-one","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"db-migration"}],"componentConfiguration":"revisionName: K8S_MICROSERVICE|tkgone|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 7001\n- name: gateway.trait.abm.io\n  runtime: post\n  spec:\n    path: /v2/foundation/kg/**\n    authEnabled: true\n    serviceName: ''{{ Global.STAGE_ID }}-search-tkgone.{{ Global.NAMESPACE_ID }}''\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n- name: Global.ELASTICSEARCH_HOST\n  value: prod-dataops-elasticsearch-master.sreworks-dataops\n- name: Global.ELASTICSEARCH_PORT\n  value: ''9200''\n- name: Global.REDIS_HOST\n  value: sreworks-redis-master.sreworks\n- name: Global.REDIS_PORT\n  value: ''6379''\n- name: Global.REDIS_PASSWORD\n  value: siJEULmQYQ\n- name: Global.REDIS_DB\n  value: ''0''\n- name: Global.NACOS_ENDPOINT\n  value: prod-flycore-paas-nacos:8848\n- name: Global.NACOS_NAMESPACE\n  value: ad2d92c6-1a21-47ac-9da8-203fcbed9146\n- name: Global.DB_NAME\n  value: search_saas_tkgone\n- name: Global.ELASTICSEARCH_PASSWORD\n  value: sreworkses123.\n- name: Global.DATA_ES_PASSWORD\n  value: sreworkses123.\n- name: Global.ELASTICSEARCH_USER\n  value: elastic\n- name: Global.DATA_ES_HOST\n  value: prod-dataops-elasticsearch-master.sreworks-dataops\n- name: Global.DATA_ES_PORT\n  value: ''9200''\n- name: Global.DATA_ES_USER\n  value: elastic\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
+  packageVersion: 4.4.8+20221222122230781809
   relativePath: K8S_MICROSERVICE_tkgone.zip
 - componentName: productopsv2
   componentType: INTERNAL_ADDON
@@ -87,7 +88,7 @@ componentPackages:
     metadata:
       name: microservice-search-productopsv2
       annotations:
-        annotations.appmanager.oam.dev/version: "1.0.8+20220914093109448358"
+        annotations.appmanager.oam.dev/version: "1.1.0+20221222122230944622"
       labels:
         labels.appmanager.oam.dev/appId: "search"
         labels.appmanager.oam.dev/componentName: "productopsv2"
@@ -117,15 +118,15 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "1.0.8+20220914093109448358"
+            annotations.appmanager.oam.dev/version: "1.1.0+20221222122230944622"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec:
           targetEndpoint: ''
-  packageMd5: d533dd8a8c80785adcaaec70430f5863
+  packageMd5: 8cb74f90e9ac30cabea2094313da52ed
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"componentConfiguration":"clusterId: ''''\ndataInputs: []\ndataOutputs: []\ndependencies: []\nnamespaceId: ''''\nparameterValues: []\nrevisionName: INTERNAL_ADDON|productopsv2|_\nscopes: []\nstageId: ''''\ntraits: []\n","isDevelop":true,"binderTraits":[]}'
-  packageVersion: 1.0.8+20220914093109448358
+  packageVersion: 1.1.0+20221222122230944622
   relativePath: INTERNAL_ADDON_productopsv2.zip
 - componentName: system-env@system-env
   componentType: RESOURCE_ADDON
@@ -168,9 +169,9 @@ componentPackages:
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec: {}
-  packageMd5: c1fc82a12136e65e268b8399359c3746
-  packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"componentConfiguration":"clusterId: ''''\ndataInputs: []\ndataOutputs:\n- fieldPath: ''{{ spec.env.DB_HOST }}''\n  name: Global.DB_HOST\n- fieldPath: ''{{ spec.env.DB_PASSWORD }}''\n  name: Global.DB_PASSWORD\n- fieldPath: ''{{ spec.env.DB_PORT }}''\n  name: Global.DB_PORT\n- fieldPath: ''{{ spec.env.DB_USER }}''\n  name: Global.DB_USER\n- fieldPath: ''{{ spec.env.APPMANAGER_ACCESS_ID }}''\n  name: Global.APPMANAGER_USERNAME\n- fieldPath: ''{{ spec.env.APPMANAGER_ACCESS_SECRET }}''\n  name: Global.APPMANAGER_PASSWORD\n- fieldPath: ''{{ spec.env.APPMANAGER_CLIENT_ID }}''\n  name: Global.APPMANAGER_CLIENT_ID\n- fieldPath: ''{{ spec.env.APPMANAGER_CLIENT_SECRET }}''\n  name: Global.APPMANAGER_CLIENT_SECRET\n- fieldPath: ''{{ spec.env.COOKIE_DOMAIN }}''\n  name: Global.COOKIE_DOMAIN\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ACCESS_KEY }}''\n  name: Global.APPMANAGER_PACKAGE_ACCESS_KEY\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_SECRET_KEY }}''\n  name: Global.APPMANAGER_PACKAGE_SECRET_KEY\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL }}''\n  name: Global.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT }}''\n  name: Global.APPMANAGER_PACKAGE_ENDPOINT\n- fieldPath: ''{{ spec.env.STORAGE_CLASS }}''\n  name: Global.STORAGE_CLASS\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_CLIENT_ID }}''\n  name: Global.ACCOUNT_SUPER_CLIENT_ID\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_CLIENT_SECRET }}''\n  name: Global.ACCOUNT_SUPER_CLIENT_SECRET\ndependencies: []\nnamespaceId: ''''\nparameterValues:\n- name: keys\n  toFieldPaths:\n  - spec.keys\n  value:\n  - DB_HOST\n  - DB_PASSWORD\n  - DB_PORT\n  - DB_USER\n  - APPMANAGER_ACCESS_ID\n  - APPMANAGER_ACCESS_SECRET\n  - APPMANAGER_CLIENT_ID\n  - APPMANAGER_CLIENT_SECRET\n  - COOKIE_DOMAIN\n  - APPMANAGER_PACKAGE_ACCESS_KEY\n  - APPMANAGER_PACKAGE_SECRET_KEY\n  - APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL\n  - APPMANAGER_PACKAGE_ENDPOINT\n  - STORAGE_CLASS\n  - ACCOUNT_SUPER_CLIENT_ID\n  - ACCOUNT_SUPER_CLIENT_SECRET\nrevisionName: RESOURCE_ADDON|system-env@system-env|1.0\nscopes: []\nstageId: ''''\ntraits: []\n","binderTraits":[]}'
-  packageVersion: 1.0.7+20220914093109757613
+  packageMd5: 54a1f9429ca18de7796502e68539a163
+  packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"componentConfiguration":"clusterId: ''''\ndataInputs: []\ndataOutputs:\n- fieldPath: ''{{ spec.env.DB_HOST }}''\n  name: Global.DB_HOST\n- fieldPath: ''{{ spec.env.DB_PASSWORD }}''\n  name: Global.DB_PASSWORD\n- fieldPath: ''{{ spec.env.DB_PORT }}''\n  name: Global.DB_PORT\n- fieldPath: ''{{ spec.env.DB_USER }}''\n  name: Global.DB_USER\n- fieldPath: ''{{ spec.env.APPMANAGER_ACCESS_ID }}''\n  name: Global.APPMANAGER_USERNAME\n- fieldPath: ''{{ spec.env.APPMANAGER_ACCESS_SECRET }}''\n  name: Global.APPMANAGER_PASSWORD\n- fieldPath: ''{{ spec.env.APPMANAGER_CLIENT_ID }}''\n  name: Global.APPMANAGER_CLIENT_ID\n- fieldPath: ''{{ spec.env.APPMANAGER_CLIENT_SECRET }}''\n  name: Global.APPMANAGER_CLIENT_SECRET\n- fieldPath: ''{{ spec.env.COOKIE_DOMAIN }}''\n  name: Global.COOKIE_DOMAIN\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ACCESS_KEY }}''\n  name: Global.APPMANAGER_PACKAGE_ACCESS_KEY\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_SECRET_KEY }}''\n  name: Global.APPMANAGER_PACKAGE_SECRET_KEY\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL }}''\n  name: Global.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT }}''\n  name: Global.APPMANAGER_PACKAGE_ENDPOINT\n- fieldPath: ''{{ spec.env.STORAGE_CLASS }}''\n  name: Global.STORAGE_CLASS\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_CLIENT_ID }}''\n  name: Global.ACCOUNT_SUPER_CLIENT_ID\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_CLIENT_SECRET }}''\n  name: Global.ACCOUNT_SUPER_CLIENT_SECRET\n- fieldPath: ''{{ spec.env.DATA_ES_PASSWORD }}''\n  name: Global.DATA_ES_PASSWORD\n- fieldPath: ''{{ spec.env.DATA_ES_USER }}''\n  name: Global.DATA_ES_USER\n- fieldPath: ''{{ spec.env.DATA_ES_HOST }}''\n  name: Global.DATA_ES_HOST\n- fieldPath: ''{{ spec.env.DATA_ES_PORT }}''\n  name: Global.DATA_ES_PORT\n- fieldPath: ''{{ spec.env.DATA_PROM_HOST }}''\n  name: Global.DATA_PROM_HOST\n- fieldPath: ''{{ spec.env.DATA_PROM_PORT }}''\n  name: Global.DATA_PROM_PORT\n- fieldPath: ''{{ spec.env.DATA_DB_PORT }}''\n  name: Global.DATA_DB_PORT\n- fieldPath: ''{{ spec.env.DATA_DB_HOST }}''\n  name: Global.DATA_DB_HOST\n- fieldPath: ''{{ spec.env.DATA_DB_USER }}''\n  name: Global.DATA_DB_USER\n- fieldPath: ''{{ spec.env.DATA_DB_PASSWORD }}''\n  name: Global.DATA_DB_PASSWORD\n- fieldPath: ''{{ spec.env.KAFKA_ENDPOINT }}''\n  name: Global.KAFKA_ENDPOINT\n- fieldPath: ''{{ spec.env.MINIO_ENDPOINT }}''\n  name: Global.MINIO_ENDPOINT\n- fieldPath: ''{{ spec.env.MINIO_ACCESS_KEY }}''\n  name: Global.MINIO_ACCESS_KEY\n- fieldPath: ''{{ spec.env.MINIO_SECRET_KEY }}''\n  name: Global.MINIO_SECRET_KEY\n- fieldPath: ''{{ spec.env.HOME_URL }}''\n  name: Global.HOME_URL\n- fieldPath: ''{{ spec.env.REDIS_ENDPOINT }}''\n  name: Global.REDIS_ENDPOINT\n- fieldPath: ''{{ spec.env.APPMANAGER_REDIS_PORT }}''\n  name: Global.APPMANAGER_REDIS_PORT\n- fieldPath: ''{{ spec.env.REDIS_PASSWORD }}''\n  name: Global.REDIS_PASSWORD\n- fieldPath: ''{{ spec.env.APPMANAGER_JWT_SECRET_KEY }}''\n  name: Global.APPMANAGER_JWT_SECRET_KEY\n- fieldPath: ''{{ spec.env.PLATFORM_NAME }}''\n  name: Global.PLATFORM_NAME\n- fieldPath: ''{{ spec.env.PLATFORM_LOGO }}''\n  name: Global.PLATFORM_LOGO\n- fieldPath: ''{{ spec.env.K8S_NAMESPACE }}''\n  name: Global.K8S_NAMESPACE\n- fieldPath: ''{{ spec.env.ENDPOINT_PAAS_MINIO }}''\n  name: Global.ENDPOINT_PAAS_MINIO\n- fieldPath: ''{{ spec.env.ZOOKEEPER_ENDPOINT }}''\n  name: Global.ZOOKEEPER_ENDPOINT\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_SECRET_KEY }}''\n  name: Global.ACCOUNT_SUPER_SECRET_KEY\n- fieldPath: ''{{ spec.env.ADMIN_INIT_PASSWORD }}''\n  name: Global.ADMIN_INIT_PASSWORD\ndependencies: []\nnamespaceId: ''''\nparameterValues:\n- name: keys\n  toFieldPaths:\n  - spec.keys\n  value:\n  - DB_HOST\n  - DB_PASSWORD\n  - DB_PORT\n  - DB_USER\n  - APPMANAGER_ACCESS_ID\n  - APPMANAGER_ACCESS_SECRET\n  - APPMANAGER_CLIENT_ID\n  - APPMANAGER_CLIENT_SECRET\n  - COOKIE_DOMAIN\n  - APPMANAGER_PACKAGE_ACCESS_KEY\n  - APPMANAGER_PACKAGE_SECRET_KEY\n  - APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL\n  - APPMANAGER_PACKAGE_ENDPOINT\n  - STORAGE_CLASS\n  - ACCOUNT_SUPER_CLIENT_ID\n  - ACCOUNT_SUPER_CLIENT_SECRET\n  - DATA_ES_PASSWORD\n  - DATA_ES_USER\n  - DATA_ES_HOST\n  - DATA_ES_PORT\n  - DATA_PROM_HOST\n  - DATA_PROM_PORT\n  - DATA_DB_HOST\n  - DATA_DB_PORT\n  - DATA_DB_USER\n  - DATA_DB_PASSWORD\n  - KAFKA_ENDPOINT\n  - MINIO_ENDPOINT\n  - MINIO_ACCESS_KEY\n  - MINIO_SECRET_KEY\n  - HOME_URL\n  - REDIS_ENDPOINT\n  - APPMANAGER_REDIS_PORT\n  - REDIS_PASSWORD\n  - APPMANAGER_JWT_SECRET_KEY\n  - PLATFORM_NAME\n  - PLATFORM_LOGO\n  - K8S_NAMESPACE\n  - ENDPOINT_PAAS_MINIO\n  - ZOOKEEPER_ENDPOINT\n  - ACCOUNT_SUPER_SECRET_KEY\n  - ADMIN_INIT_PASSWORD\nrevisionName: RESOURCE_ADDON|system-env@system-env|1.0\nscopes: []\nstageId: ''''\ntraits: []\n","binderTraits":[]}'
+  packageVersion: 1.0.9+20221222122230745905
   relativePath: RESOURCE_ADDON_system-env@system-env.zip
 - componentName: developmentmeta
   componentType: INTERNAL_ADDON
@@ -181,7 +182,7 @@ componentPackages:
     metadata:
       name: internal-addon-search-developmentmeta
       annotations:
-        annotations.appmanager.oam.dev/version: "1.0.8+20220914093109366229"
+        annotations.appmanager.oam.dev/version: "1.1.0+20221222122230791420"
       labels:
         labels.appmanager.oam.dev/appId: "search"
         labels.appmanager.oam.dev/componentName: "developmentmeta"
@@ -211,14 +212,14 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "1.0.8+20220914093109366229"
+            annotations.appmanager.oam.dev/version: "1.1.0+20221222122230791420"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec: {}
-  packageMd5: 90e2997077348425a5b7d8d339785a3d
+  packageMd5: 8abf029e858b188d5af62acf2dd73509
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
-  packageVersion: 1.0.8+20220914093109366229
+  packageVersion: 1.1.0+20221222122230791420
   relativePath: INTERNAL_ADDON_developmentmeta.zip
 - componentName: appmeta
   componentType: INTERNAL_ADDON
@@ -229,7 +230,7 @@ componentPackages:
     metadata:
       name: internal-addon-search-appmeta
       annotations:
-        annotations.appmanager.oam.dev/version: "1.0.8+20220914093109738202"
+        annotations.appmanager.oam.dev/version: "1.1.0+20221222122230929220"
       labels:
         labels.appmanager.oam.dev/appId: "search"
         labels.appmanager.oam.dev/componentName: "appmeta"
@@ -259,19 +260,19 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "1.0.8+20220914093109738202"
+            annotations.appmanager.oam.dev/version: "1.1.0+20221222122230929220"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec:
           overwriteIsDevelopment: false
           overwriteBuiltIn: false
-  packageMd5: 0bfc5f51a1647394a202453e8350627e
+  packageMd5: 0505669b1b6fcd3343ef0987b12a8aeb
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
-  packageVersion: 1.0.8+20220914093109738202
+  packageVersion: 1.1.0+20221222122230929220
   relativePath: INTERNAL_ADDON_appmeta.zip
 packageCreator: '999999999'
-packageVersion: 1.0.1+20220914093935995295
+packageVersion: 1.0.2+20221222130727278738
 tags:
 - release=sreworks/x86_64
 - on-sale

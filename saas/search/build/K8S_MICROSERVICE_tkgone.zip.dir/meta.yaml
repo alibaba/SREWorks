@@ -2,7 +2,7 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 4.0.6+20220914093109777265
+    annotations.appmanager.oam.dev/version: 4.4.8+20221222122230781809
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
     appId: search
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 4.0.6+20220914093109777265
+        annotations.appmanager.oam.dev/version: 4.4.8+20221222122230781809
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -42,8 +42,9 @@ spec:
     spec:
       kind: StatefulSet
       replicas: 1
+      name: ''
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/search-tkgone-tkgone:1663147869443
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/search-tkgone-tkgone:1671711750184
         name: tkgone
       env:
         REDIS_HOST: '{{ Global.REDIS_HOST }}'
@@ -68,5 +69,5 @@ spec:
         CONTAINER_IP_LIST_TKGONE: '{{ Global.CONTAINER_IP_LIST_TKGONE }}'
         DB_PASSWORD: '{{ Global.DB_PASSWORD }}'
       initContainers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/search-tkgone-db-migration:1663147869443
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/search-tkgone-db-migration:1671711750184
         name: db-migration

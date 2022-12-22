@@ -63,7 +63,7 @@ def values_tpl_replace(launchYAML, patchYAML):
     if patchYAML != None:
         for component in patchYAML.get("components", []):
             component["parameterValueMaps"] = {}
-            for v in component["parameterValues"]:
+            for v in component.get("parameterValues", []):
                 component["parameterValueMaps"][v["name"]] = v["value"]
             patchComponents[component["revisionName"]] = component
 
@@ -126,6 +126,13 @@ def values_tpl_replace(launchYAML, patchYAML):
                         "value": v,
                     })
                
+            if patchComponents[component["revisionName"]].get("traits") != None:
+                if "traits" not in component: component["traits"] = []
+                component["traits"] += patchComponents[component["revisionName"]]["traits"]
+            
+
+
+
 
 def only_frontend_filter(launchYAML):
 

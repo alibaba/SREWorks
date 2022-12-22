@@ -72,6 +72,20 @@ spec:
         - port: 80
           protocol: TCP
           targetPort: 80
+    - name: ingress.trait.abm.io
+      runtime: post
+      spec:
+        rules:
+        - host: '{{ Global.COOKIE_DOMAIN }}'
+          http:
+            paths:
+            - backend:
+                service:
+                  name: prod-flycore-paas-frontend
+                  port:
+                    number: 80
+              path: /
+              pathType: ImplementationSpecific
   - dependencies:
     - component: RESOURCE_ADDON|system-env@system-env
     parameterValues:

@@ -50,6 +50,10 @@ spec:
       value: '999999999'
     - name: Global.POSTRUN_WAIT_TIME
       value: 5s
+    - name: Global.CORE_STAGE_ID
+      value: prod
+    - name: Global.CORE_APP_ID
+      value: flycore
     revisionName: K8S_MICROSERVICE|paas-frontend|_
     scopes:
     - scopeRef:

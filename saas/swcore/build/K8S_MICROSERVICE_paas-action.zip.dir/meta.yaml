@@ -2,7 +2,7 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 8.8.2+20221222052314272292
+    annotations.appmanager.oam.dev/version: 8.8.3+20221222090743294729
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
     appId: flycore
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 8.8.2+20221222052314272292
+        annotations.appmanager.oam.dev/version: 8.8.3+20221222090743294729
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -44,7 +44,7 @@ spec:
       replicas: 1
       name: ''
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-action-paas-action:1671686594617
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-action-paas-action:1671700063840
         name: paas-action
       env:
         ENDPOINT_PAAS_HOME: '{{ Global.ENDPOINT_PAAS_HOME }}'
@@ -56,5 +56,5 @@ spec:
         DB_HOST: '{{ Global.DB_HOST }}'
         DB_PASSWORD: '{{ Global.DB_PASSWORD }}'
       initContainers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-action-db-migration:1671686594617
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-action-db-migration:1671700063840
         name: db-migration

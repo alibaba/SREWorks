@@ -335,6 +335,8 @@ spec:
       name: Global.ZOOKEEPER_ENDPOINT
     - fieldPath: '{{ spec.env.ACCOUNT_SUPER_SECRET_KEY }}'
       name: Global.ACCOUNT_SUPER_SECRET_KEY
+    - fieldPath: '{{ spec.env.ADMIN_INIT_PASSWORD }}'
+      name: Global.ADMIN_INIT_PASSWORD
     dependencies: []
     parameterValues:
     - name: keys
@@ -382,6 +384,7 @@ spec:
       - ENDPOINT_PAAS_MINIO
       - ZOOKEEPER_ENDPOINT
       - ACCOUNT_SUPER_SECRET_KEY
+      - ADMIN_INIT_PASSWORD
     revisionName: RESOURCE_ADDON|system-env@system-env|1.0
     scopes:
     - scopeRef:

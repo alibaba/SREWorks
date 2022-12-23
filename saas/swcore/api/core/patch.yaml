@@ -17,5 +17,18 @@ launch.yaml.tpl:
                   port:
                     number: 80
 
-
-
+launch-nodeport.yaml.tpl:
+  components:
+  - revisionName: K8S_MICROSERVICE|paas-frontend|_
+    traits:
+    - name: service.trait.abm.io
+      runtime: post
+      spec:
+        type: NodePort
+        ports:
+        - protocol: TCP
+          port: 80
+          targetPort: 80
+          nodePort: "${NODE_PORT}"
+    - name: ingress.trait.abm.io
+      spec: null

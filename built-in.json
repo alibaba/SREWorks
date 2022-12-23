@@ -58,5 +58,9 @@
 },{
    "appId": "flycore",
    "packagePath": "saas/swcore/build",
-   "patch": "saas/swcore/api/core/patch.yaml"
+   "patch": "saas/swcore/api/core/patch.yaml",
+   "duplicateYAML":[{
+       "source": "launch.yaml.tpl",
+       "target": "launch-nodeport.yaml.tpl"
+   }]
 }]

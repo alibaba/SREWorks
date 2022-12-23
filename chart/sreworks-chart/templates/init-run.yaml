@@ -40,16 +40,16 @@ data:
     else
     
         python /app/pack.py --src /root/saas/swcore/build --dest /root/saas/swcore/build.zip
-        envsubst < /root/saas/swcore/build/launch.yaml.tpl > /root/saas/swcore/launch.yaml
 
-        #if [[ "$ACCESS_MODE" == "ingress" ]] ; then
-        #   envsubst < /root/saas/swcore/api/core/launch.yaml.tpl > /root/saas/swcore/launch.yaml
-        #else
-        #   envsubst < /root/saas/swcore/api/core/launch-nodeport.yaml.tpl > /root/saas/swcore/launch.yaml
-        #fi
-
+        if [[ "$ACCESS_MODE" == "ingress" ]] ; then
+            envsubst < /root/saas/swcore/build/launch.yaml.tpl > /root/saas/swcore/launch.yaml
+        else
+            envsubst < /root/saas/swcore/build/launch-nodeport.yaml.tpl > /root/saas/swcore/launch.yaml
+        fi
+        
         result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id=${CORE_APP_ID} --filepath /root/saas/swcore/build.zip --print-only-app-package-id=true --reset-version=true)
-        /root/swcli --config /swcli/swcli.yaml deployment launch --wait-max-seconds 300 --app-id=${CORE_APP_ID} --stage=prod --namespace=${NAMESPACE_ID} --path /root/saas/swcore/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+        /root/swcli --config /swcli/swcli.yaml deployment launch --wait-max-seconds 400 --app-id=${CORE_APP_ID} --stage=prod --namespace=${NAMESPACE_ID} --path /root/saas/swcore/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
+
 
     fi
 
@@ -329,7 +329,7 @@ data:
     f.close()
 
     srcData["spec"]["components"] = list(filter(lambda c: c.get("revisionName") not in args.components, srcData["spec"]["components"]))
-
+            
     f = open(args.src, 'w')
     f.write(yaml.safe_dump(srcData, width=float("inf")))
     f.close()

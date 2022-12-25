@@ -128,7 +128,7 @@ kafka:
 
 
 openebs:
-  enabled: true
+  enabled: false
   localprovisioner:
     deviceClass:
       enabled: false

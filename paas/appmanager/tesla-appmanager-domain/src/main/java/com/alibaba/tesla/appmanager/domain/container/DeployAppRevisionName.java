@@ -103,7 +103,7 @@ public class DeployAppRevisionName {
      * @returne revisionName
      */
     public String revisionName() {
-        return String.join("|", Arrays.asList(componentType.toString(), componentName, version));
+        return String.join("|", Arrays.asList(componentType, componentName, version));
     }
 
     /**

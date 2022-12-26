@@ -11,6 +11,7 @@ import com.alibaba.tesla.appmanager.domain.req.git.GitCloneReq;
 import com.alibaba.tesla.appmanager.domain.req.imagebuilder.ImageBuilderCreateReq;
 import com.alibaba.tesla.appmanager.domain.res.imagebuilder.ImageBuilderCreateRes;
 import com.alibaba.tesla.appmanager.server.service.imagebuilder.ImageBuilderService;
+import com.google.common.collect.Lists;
 import com.hubspot.jinjava.Jinjava;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -232,7 +233,7 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
         } else {
             localDir = Paths.get(cloneDir.toString(), request.getRepoPath()).toString();
         }
-        List<String> buildCommand = Arrays.asList(sudoCommand, dockerBin, dockerTarget, "build", "-t", imageName, "--pull", "--no-cache");
+        List<String> buildCommand = Lists.newArrayList(sudoCommand, dockerBin, dockerTarget, "build", "-t", imageName, "--pull", "--no-cache");
         buildCommand.addAll(buildArgs);
         buildCommand.add("-f");
         buildCommand.add(dockerfile.toString());
@@ -248,7 +249,7 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
         // 镜像上传或镜像导出
         if (request.isImagePush()) {
             String[] pushCommand = new String[]{sudoCommand, dockerBin, dockerTarget, "push", imageName};
-            logContent.append(String.format("run command: %s\n", pushCommand));
+            logContent.append(String.format("run command: %s\n", String.join(" ", pushCommand)));
             logContent.append(CommandUtil.runLocalCommand(pushCommand));
             return "";
         } else {
@@ -257,7 +258,7 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
                             .getImagePath(request.getAppId(), request.getComponentName(), request.getBasename()))
                     .toString();
             String[] exportCommand = new String[]{sudoCommand, dockerBin, dockerTarget, "save", imageName, ">", imagePath};
-            logContent.append(String.format("run command: %s\n", exportCommand));
+            logContent.append(String.format("run command: %s\n", String.join(" ", exportCommand)));
             logContent.append(CommandUtil.runLocalCommand(CommandUtil.getBashCommand(exportCommand)));
             return imagePath;
         }

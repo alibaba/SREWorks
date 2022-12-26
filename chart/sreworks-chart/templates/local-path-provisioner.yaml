@@ -84,7 +84,7 @@ spec:
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: local-path
+  name: sreworks-local
 provisioner: rancher.io/local-path
 volumeBindingMode: WaitForFirstConsumer
 reclaimPolicy: Delete

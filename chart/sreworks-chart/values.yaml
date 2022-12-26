@@ -1,5 +1,5 @@
 global:
-  storageClass: "sreworks-hostpath"
+  storageClass: "sreworks-local"
 
   minio:
     accessKey: 'XmizyTRKhgYTrVkK'
@@ -51,6 +51,7 @@ platformLogo: /static/icons/sreworks.png
 
 installMode: default
 
+localPathProvisioner: true
 progressCheck: true
 debug: false
 adminInitPassword: "12345678"

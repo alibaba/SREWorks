@@ -3,13 +3,17 @@ package com.alibaba.tesla.appmanager.workflow.repository.domain;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Workflow 实例表
  */
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -88,4 +92,9 @@ public class WorkflowInstanceDO {
      * Workflow 启动选项 (JSON)
      */
     private String workflowOptions;
+
+    /**
+     * Workflow Graph 信息存储 (JSON)
+     */
+    private String workflowGraph;
 }

@@ -292,6 +292,17 @@ public class AppPackageServiceImpl implements AppPackageService {
                         .pageSize(DefaultConstant.UNLIMITED_PAGE_SIZE)
                         .build());
         mergeApplicationConfiguration(req, schema, componentPackages.getItems());
+        
+        // 检查是否有 components 被完成组装，如果没有的话，说明本次生成 Yaml 请求无效
+        if (schema.getSpec().getComponents().size() == 0
+                && (schema.getSpec().getWorkflow() == null || schema.getSpec().getWorkflow().getSteps().size() == 0)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("the current application does not have permission to access the environment|" +
+                                    "appId=%s|unitId=%s|clusterId=%s|namespaceId=%s|stageId=%s|isolateNamespaceId=%s|" +
+                                    "isolateStageId=%s",
+                            appId, req.getUnitId(), req.getClusterId(), req.getNamespaceId(), req.getStageId(),
+                            req.getIsolateNamespaceId(), req.getIsolateStageId()));
+        }
 
         // 检查是否有 components 被完成组装，如果没有的话，说明本次生成 Yaml 请求无效
         if (schema.getSpec().getComponents().size() == 0) {

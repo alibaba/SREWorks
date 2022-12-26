@@ -12,6 +12,7 @@
     <result column="gmt_start" jdbcType="TIMESTAMP" property="gmtStart" />
     <result column="gmt_end" jdbcType="TIMESTAMP" property="gmtEnd" />
     <result column="task_type" jdbcType="VARCHAR" property="taskType" />
+    <result column="task_name" jdbcType="VARCHAR" property="taskName" />
     <result column="task_stage" jdbcType="VARCHAR" property="taskStage" />
     <result column="task_status" jdbcType="VARCHAR" property="taskStatus" />
     <result column="deploy_app_id" jdbcType="BIGINT" property="deployAppId" />
@@ -25,9 +26,9 @@
     <!--@mbg.generated-->
     <!--@Table am_workflow_task-->
     <result column="task_properties" jdbcType="LONGVARCHAR" property="taskProperties" />
+    <result column="task_error_message" jdbcType="LONGVARCHAR" property="taskErrorMessage" />
     <result column="task_outputs" jdbcType="LONGVARCHAR" property="taskOutputs" />
     <result column="task_inputs" jdbcType="LONGVARCHAR" property="taskInputs" />
-    <result column="task_error_message" jdbcType="LONGVARCHAR" property="taskErrorMessage" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <!--@mbg.generated-->
@@ -92,15 +93,14 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, gmt_create, gmt_modified, workflow_instance_id, app_id, gmt_start, gmt_end, task_type, 
-    task_stage, task_status, deploy_app_id, lock_version, deploy_app_unit_id, deploy_app_namespace_id, 
-    deploy_app_stage_id, deploy_workflow_instance_id
+    task_name, task_stage, task_status, deploy_app_id, lock_version, deploy_app_unit_id, 
+    deploy_app_namespace_id, deploy_app_stage_id, deploy_workflow_instance_id
   </sql>
   <sql id="Blob_Column_List">
     <!--@mbg.generated-->
-    task_properties, task_outputs, task_inputs, task_error_message
+    task_properties, task_error_message, task_outputs, task_inputs
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDOExample" resultMap="ResultMapWithBLOBs">
-    <!--@mbg.generated-->
     select
     <if test="distinct">
       distinct
@@ -112,10 +112,9 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    order by id
+    order by id desc
   </select>
   <select id="selectByExample" parameterType="com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDOExample" resultMap="BaseResultMap">
-    <!--@mbg.generated-->
     select
     <if test="distinct">
       distinct
@@ -125,7 +124,7 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    order by id
+    order by id desc
   </select>
   <delete id="deleteByExample" parameterType="com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDOExample">
     <!--@mbg.generated-->
@@ -159,6 +158,9 @@
       <if test="taskType != null">
         task_type,
       </if>
+      <if test="taskName != null">
+        task_name,
+      </if>
       <if test="taskStage != null">
         task_stage,
       </if>
@@ -186,14 +188,14 @@
       <if test="taskProperties != null">
         task_properties,
       </if>
+      <if test="taskErrorMessage != null">
+        task_error_message,
+      </if>
       <if test="taskOutputs != null">
         task_outputs,
       </if>
       <if test="taskInputs != null">
         task_inputs,
-      </if>
-      <if test="taskErrorMessage != null">
-        task_error_message,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -217,6 +219,9 @@
       </if>
       <if test="taskType != null">
         #{taskType,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null">
+        #{taskName,jdbcType=VARCHAR},
       </if>
       <if test="taskStage != null">
         #{taskStage,jdbcType=VARCHAR},
@@ -245,14 +250,14 @@
       <if test="taskProperties != null">
         #{taskProperties,jdbcType=LONGVARCHAR},
       </if>
+      <if test="taskErrorMessage != null">
+        #{taskErrorMessage,jdbcType=LONGVARCHAR},
+      </if>
       <if test="taskOutputs != null">
         #{taskOutputs,jdbcType=LONGVARCHAR},
       </if>
       <if test="taskInputs != null">
         #{taskInputs,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="taskErrorMessage != null">
-        #{taskErrorMessage,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
@@ -289,6 +294,9 @@
       </if>
       <if test="record.taskType != null">
         task_type = #{record.taskType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskName != null">
+        task_name = #{record.taskName,jdbcType=VARCHAR},
       </if>
       <if test="record.taskStage != null">
         task_stage = #{record.taskStage,jdbcType=VARCHAR},
@@ -353,6 +361,9 @@
       <if test="taskType != null">
         task_type = #{taskType,jdbcType=VARCHAR},
       </if>
+      <if test="taskName != null">
+        task_name = #{taskName,jdbcType=VARCHAR},
+      </if>
       <if test="taskStage != null">
         task_stage = #{taskStage,jdbcType=VARCHAR},
       </if>
@@ -391,16 +402,14 @@
     where id = #{id,jdbcType=BIGINT} AND lock_version = #{lockVersion,jdbcType=INTEGER}
   </update>
 
-  <!-- 获取指定 workflowInstance 中指定 workflowTask 的下一个 PENDING 待运行任务 -->
-  <select id="nextPendingTask" resultMap="BaseResultMap">
+  <!-- 获取指定 workflowInstance 中剩余还没有完成的任务清单 -->
+  <select id="notFinishedTasks" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
     from am_workflow_task
-    where workflow_instance_id = #{workflowInstanceId,jdbcType=BIGINT} and id <![CDATA[ > ]]> #{workflowTaskId,jdbcType=BIGINT} and task_status = 'PENDING'
-    order by id
-    limit 1
+    where workflow_instance_id = #{workflowInstanceId,jdbcType=BIGINT} and task_status not in ('SUCCESS', 'FAILURE', 'EXCEPTION', 'TERMINATED')
   </select>
 
   <select id="listRunningRemoteTask" resultMap="BaseResultMap">

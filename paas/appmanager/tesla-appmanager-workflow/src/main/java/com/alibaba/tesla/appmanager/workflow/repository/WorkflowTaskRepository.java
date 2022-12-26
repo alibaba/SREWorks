@@ -22,13 +22,12 @@ public interface WorkflowTaskRepository {
     int updateByPrimaryKey(WorkflowTaskDO record);
 
     /**
-     * 获取指定 workflowInstance 中指定 workflowTask 的下一个 PENDING 待运行任务
+     * 获取指定 workflowInstance 中剩余的 PENDING 待运行任务
      *
      * @param workflowInstanceId Workflow Instance ID
-     * @param workflowTaskId     Workflow Task ID
      * @return 待运行 Workflow 任务
      */
-    WorkflowTaskDO nextPendingTask(Long workflowInstanceId, Long workflowTaskId);
+    List<WorkflowTaskDO> notFinishedTasks(Long workflowInstanceId);
 
     /**
      * 列出当前所有正在运行中的远程 workflow task

@@ -122,6 +122,7 @@ public class CommandUtil {
                     || c == '{' || c == '}'
                     || c == '(' || c == ')'
                     || c == ' ' || c == '.'
+                    || c == ':' || c == '@'
                     || (c >= 0x4e00 && c <= 0x9fbb)) {
                 sb.append(c);
             } else {

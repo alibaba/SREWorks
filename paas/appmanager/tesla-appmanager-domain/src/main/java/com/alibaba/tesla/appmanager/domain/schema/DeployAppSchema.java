@@ -340,14 +340,19 @@ public class DeployAppSchema implements Schema, Serializable {
         private String type;
 
         /**
+         * 当前 Workflow 可读名称
+         */
+        private String name;
+
+        /**
          * Workflow 传递参数输出
          */
-        private JSONArray outputs = new JSONArray();
+        private List<WorkflowStepOutput> outputs = new ArrayList<>();
 
         /**
          * Workflow 传递参数输入
          */
-        private JSONArray inputs = new JSONArray();
+        private List<WorkflowStepInput> inputs = new ArrayList<>();
 
         /**
          * Workflow 任务运行时机 (pre-render/post-render/post-deploy)
@@ -358,6 +363,50 @@ public class DeployAppSchema implements Schema, Serializable {
          * Workflow 任务运行参数
          */
         private JSONObject properties = new JSONObject();
+    }
+
+    /**
+     * Workflow Step 变量输入
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class WorkflowStepInput implements Serializable {
+
+        private static final long serialVersionUID = 1478151091982680015L;
+
+        /**
+         * 变量输入值来源
+         */
+        private String from;
+
+        /**
+         * 变量插入到的目标 JSONPATH 路径
+         */
+        private String parameterKey;
+    }
+
+    /**
+     * Workflow Step 变量输出
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class WorkflowStepOutput implements Serializable {
+
+        private static final long serialVersionUID = 7146762715307276588L;
+
+        /**
+         * 出变量名称
+         */
+        private String name;
+
+        /**
+         * 变量值来源 JSONPATH 路径
+         */
+        private String valueFrom;
     }
 
     /**

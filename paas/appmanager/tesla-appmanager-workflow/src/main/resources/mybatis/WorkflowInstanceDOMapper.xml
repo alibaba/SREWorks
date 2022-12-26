@@ -23,6 +23,7 @@
     <result column="workflow_error_message" jdbcType="LONGVARCHAR" property="workflowErrorMessage" />
     <result column="workflow_configuration" jdbcType="LONGVARCHAR" property="workflowConfiguration" />
     <result column="workflow_options" jdbcType="LONGVARCHAR" property="workflowOptions" />
+    <result column="workflow_graph" jdbcType="LONGVARCHAR" property="workflowGraph" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <!--@mbg.generated-->
@@ -91,7 +92,7 @@
   </sql>
   <sql id="Blob_Column_List">
     <!--@mbg.generated-->
-    workflow_error_message, workflow_configuration, workflow_options
+    workflow_error_message, workflow_configuration, workflow_options, workflow_graph
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDOExample" resultMap="ResultMapWithBLOBs">
     <!--@mbg.generated-->
@@ -174,6 +175,9 @@
       <if test="workflowOptions != null">
         workflow_options,
       </if>
+      <if test="workflowGraph != null">
+        workflow_graph,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="gmtCreate != null">
@@ -217,6 +221,9 @@
       </if>
       <if test="workflowOptions != null">
         #{workflowOptions,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="workflowGraph != null">
+        #{workflowGraph,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
@@ -269,6 +276,9 @@
       <if test="record.workflowOptions != null">
         workflow_options = #{record.workflowOptions,jdbcType=LONGVARCHAR},
       </if>
+      <if test="record.workflowGraph != null">
+        workflow_graph = #{record.workflowGraph,jdbcType=LONGVARCHAR},
+      </if>
       lock_version = lock_version + 1,
     </set>
     <if test="_parameter != null">
@@ -313,6 +323,9 @@
       </if>
       <if test="workflowOptions != null">
         workflow_options = #{workflowOptions,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="workflowGraph != null">
+        workflow_graph = #{workflowGraph,jdbcType=LONGVARCHAR},
       </if>
       lock_version = lock_version + 1,
     </set>

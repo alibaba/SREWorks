@@ -65,6 +65,11 @@ public class WorkflowTaskDTO {
     private String taskType;
 
     /**
+     * 任务名称
+     */
+    private String taskName;
+
+    /**
      * Workflow 任务节点运行阶段 (pre-render, post-render, post-deploy)
      */
     private String taskStage;

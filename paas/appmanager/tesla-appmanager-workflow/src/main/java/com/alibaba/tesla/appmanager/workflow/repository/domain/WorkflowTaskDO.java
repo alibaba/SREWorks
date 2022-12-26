@@ -59,6 +59,11 @@ public class WorkflowTaskDO {
     private String taskType;
 
     /**
+     * 任务名称
+     */
+    private String taskName;
+
+    /**
      * Workflow 任务节点运行阶段 (pre-render, post-render, post-deploy)
      */
     private String taskStage;
@@ -104,17 +109,17 @@ public class WorkflowTaskDO {
     private String taskProperties;
 
     /**
-     * Workflow 任务Outputs数组 (JSONArray 字符串)
+     * Workflow 任务节点执行出错信息 (仅 task_status==EXCEPTIOIN 下存在)
+     */
+    private String taskErrorMessage;
+
+    /**
+     * Workflow 任务节点输出 (JSONArray)
      */
     private String taskOutputs;
 
     /**
-     * Workflow 任务Inputs数组 (JSONArray 字符串)
+     * Workflow 任务节点输入 (JSONArray)
      */
     private String taskInputs;
-
-    /**
-     * Workflow 任务节点执行出错信息 (仅 task_status==EXCEPTIOIN 下存在)
-     */
-    private String taskErrorMessage;
 }

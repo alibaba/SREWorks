@@ -23,6 +23,15 @@ public interface WorkflowSnapshotService {
     WorkflowSnapshotDO get(Long workflowSnapshotId);
 
     /**
+     * 根据条件获取指定的 Workflow Snapshot 记录
+     *
+     * @param workflowInstanceId Workflow Instance ID
+     * @param workflowTaskId     Workflow Task ID
+     * @return Workflow 快照对象
+     */
+    WorkflowSnapshotDO get(Long workflowInstanceId, Long workflowTaskId);
+
+    /**
      * 根据条件过滤 Workflow 任务列表
      *
      * @param condition 过滤条件
@@ -35,9 +44,8 @@ public interface WorkflowSnapshotService {
      *
      * @param workflowInstanceId Workflow 实例 ID
      * @param context            Context 对象 (JSONObject)
-     * @return 更新后的指定 workflow task 对应的 workflow snapshot 对象
      */
-    WorkflowSnapshotDO putContext(Long workflowInstanceId, JSONObject context);
+    void putContext(Long workflowInstanceId, JSONObject context);
 
     /**
      * 更新一个 Workflow 快照

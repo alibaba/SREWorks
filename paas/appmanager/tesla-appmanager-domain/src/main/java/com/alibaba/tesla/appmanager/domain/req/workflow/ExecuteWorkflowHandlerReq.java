@@ -41,6 +41,11 @@ public class ExecuteWorkflowHandlerReq implements Serializable {
     private String taskType;
 
     /**
+     * 任务名称
+     */
+    private String taskName;
+
+    /**
      * 任务运行阶段
      */
     private String taskStage;

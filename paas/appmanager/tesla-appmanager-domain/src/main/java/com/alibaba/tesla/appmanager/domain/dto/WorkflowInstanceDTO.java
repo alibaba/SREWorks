@@ -92,4 +92,9 @@ public class WorkflowInstanceDTO {
      * 乐观锁版本
      */
     private Integer lockVersion;
+
+    /**
+     * Workflow Graph 信息存储 (JSON)
+     */
+    private JSONObject workflowGraph;
 }

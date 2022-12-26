@@ -48,6 +48,7 @@ spec:
             - ENDPOINT_PAAS_MINIO
             - ZOOKEEPER_ENDPOINT
             - ACCOUNT_SUPER_SECRET_KEY
+            - ADMIN_INIT_PASSWORD
 
           toFieldPaths:
             - spec.keys
@@ -134,6 +135,7 @@ spec:
           fieldPath: '{{ spec.env.ZOOKEEPER_ENDPOINT }}'
         - name: Global.ACCOUNT_SUPER_SECRET_KEY
           fieldPath: '{{ spec.env.ACCOUNT_SUPER_SECRET_KEY }}'
-
+        - name: Global.ADMIN_INIT_PASSWORD
+          fieldPath: '{{ spec.env.ADMIN_INIT_PASSWORD }}'
 
 

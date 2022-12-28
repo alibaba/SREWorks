@@ -381,7 +381,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
         // 4. 打包成tar.gz （不打包 markdown 文件）
         String compressTarName = dockerFileName + ".tar.gz";
         // String tarCommand = String.format("cd %s; tar zcvf %s -C %s .[!.]* *", buildAbsolutePath, buildAbsolutePath + compressTarName, buildAbsolutePath);
-        String[] tarCommand = new String[]{"tar", "zcvf", buildAbsolutePath + compressTarName, buildAbsolutePath+"."};
+        String[] tarCommand = new String[]{"tar", "zcvf", buildAbsolutePath + compressTarName, ".", "--warning=no-file-changed"};
         CommandUtil.runLocalCommand(CommandUtil.getBashCommand(tarCommand), Paths.get(buildAbsolutePath).toFile());
 
         String bucketName = packageProperties.getBucketName();

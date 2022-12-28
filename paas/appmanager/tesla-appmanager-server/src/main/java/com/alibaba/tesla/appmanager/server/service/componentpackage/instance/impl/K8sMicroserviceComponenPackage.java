@@ -104,7 +104,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
     public void init() {
         this.api = kanikoInformerFactory.getDefaultApi();
         publisher.publishEvent(new ComponentPackageLoadEvent(
-                this, COMPONENT_TYPE, this.getClass().getSimpleName()));
+            this, COMPONENT_TYPE, this.getClass().getSimpleName()));
     }
 
     /**
@@ -324,21 +324,21 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
             return existImage;
         }
         String imageBaseName = String.format("%s-%s-%s", taskDO.getAppId(), taskDO.getComponentName(),
-                container.get("name"));
+            container.get("name"));
         String image = imageBaseName + ":" + tag;
         String destination = JsonUtil.recursiveGetString(container, Arrays.asList("build", "imagePushRegistry"));
         if (StringUtils.isEmpty(destination)) {
             throw new AppException(AppErrorCode.USER_CONFIG_ERROR,
-                    "Can not find imagePushRegistry from build.yaml");
+                "Can not find imagePushRegistry from build.yaml");
         }
         return destination.concat("/").concat(image);
     }
 
     private V1Pod renderBuildPod(CoreV1Api api, JSONObject container, String podTpl,
-                            ComponentPackageTaskDO taskDO, String relativePath, long tag, Set<String> remoteObjectSet)
-            throws Exception {
+        ComponentPackageTaskDO taskDO, String relativePath, long tag, Set<String> remoteObjectSet)
+        throws Exception {
         Object nameOb = JsonUtil.recursiveGetParameter(container,
-                Collections.singletonList("name"));
+            Collections.singletonList("name"));
         String containerName = nameOb != null ? nameOb.toString() : "default";
         log.info("action=renderBuildPod || Start render container:{}, build yaml:{}", containerName, container);
 
@@ -369,10 +369,10 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
         File dockerTemplateFile = new File(buildAbsolutePath + tplName);
         if (!dockerTemplateFile.exists()) {
             throw new AppException(AppErrorCode.USER_CONFIG_ERROR,
-                    "Can not find dockerfileTemplateFile:" + dockerTemplateFile.getAbsolutePath());
+                "Can not find dockerfileTemplateFile:" + dockerTemplateFile.getAbsolutePath());
         }
         JSONObject dockerTemplateArgs = JSONObject.parseObject(JSONObject.toJSONString(
-                JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "dockerfileTemplateArgs"))));
+            JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "dockerfileTemplateArgs"))));
         String dockerTemplateRaw = IOUtils.toString(new FileInputStream(dockerTemplateFile), StandardCharsets.UTF_8);
         String dockerFileStr = jinjaRender(dockerTemplateRaw, dockerTemplateArgs);
         // 3. 生成 dockerfile
@@ -381,18 +381,20 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
         // 4. 打包成tar.gz （不打包 markdown 文件）
         String compressTarName = dockerFileName + ".tar.gz";
         // String tarCommand = String.format("cd %s; tar zcvf %s -C %s .[!.]* *", buildAbsolutePath, buildAbsolutePath + compressTarName, buildAbsolutePath);
-        String[] tarCommand = new String[]{"tar", "zcvf", buildAbsolutePath + compressTarName, ".", "--warning=no-file-changed"};
+        String[] createCompressTar = new String[]{"touch", buildAbsolutePath + compressTarName};
+        CommandUtil.runLocalCommand(CommandUtil.getBashCommand(createCompressTar), Paths.get(buildAbsolutePath).toFile());
+        String[] tarCommand = new String[]{"tar", "zcvf", buildAbsolutePath + compressTarName, "."};
         CommandUtil.runLocalCommand(CommandUtil.getBashCommand(tarCommand), Paths.get(buildAbsolutePath).toFile());
 
         String bucketName = packageProperties.getBucketName();
         String remotePath = PackageUtil
-                .buildKanikoBuildRemotePath(taskDO.getAppId(), taskDO.getComponentType(), taskDO.getComponentName(), containerName,
-                        taskDO.getPackageVersion());
+            .buildKanikoBuildRemotePath(taskDO.getAppId(), taskDO.getComponentType(), taskDO.getComponentName(), containerName,
+                taskDO.getPackageVersion());
         storage.putObject(bucketName, remotePath, buildAbsolutePath + compressTarName);
         remoteObjectSet.add(remotePath);
         StorageFile storageFile = new StorageFile(bucketName, remotePath);
         log.info("kaniko build package has uploaded to storage||componentPackageTaskId={}||bucketName={}||" +
-                "remotePath={}||localPath={}", taskDO.getId(), bucketName, remotePath, buildAbsolutePath + compressTarName);
+            "remotePath={}||localPath={}", taskDO.getId(), bucketName, remotePath, buildAbsolutePath + compressTarName);
 
         // 5. 渲染 kaniko pod
         JSONObject parameters = new JSONObject();
@@ -401,7 +403,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
         String podName = genPodName(taskDO.getAppId(), taskDO.getComponentName(), containerName, taskDO.getId(), tag);
         parameters.put("POD_NAME", podName);
         JSONObject buildArgs = JSONObject.parseObject(JSONObject.toJSONString(
-                JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "args"))));
+            JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "args"))));
         if (buildArgs != null) {
             JSONArray args = new JSONArray();
             for (String key : buildArgs.keySet()) {
@@ -411,7 +413,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
             parameters.put("BUILD_ARGS", args);
         }
         JSONArray imageTags = JSONArray.parseArray(JSONObject.toJSONString(
-                JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "imagePushTags"))));
+            JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "imagePushTags"))));
         JSONArray destinations = new JSONArray();
         destinations.add(container.getString("image"));
         if (imageTags != null) {
@@ -435,7 +437,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
         }
         // 携带flag设定
         JSONArray configKanikoFlags = JSONArray.parseArray(JSONObject.toJSONString(
-                JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "configKanikoFlags"))));
+            JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "configKanikoFlags"))));
         if (configKanikoFlags != null) {
             parameters.put("CONFIG_KANIKO_FLAGS", configKanikoFlags);
         }
@@ -445,7 +447,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
         V1Pod v1Pod = SchemaUtil.toSchema(V1Pod.class, render);
         try {
             api.deleteNamespacedPod(podName.toString(), systemProperties.getK8sNamespace(), null,
-                    null, null, null, null, null);
+                null, null, null, null, null);
         } catch (ApiException e) {
             log.info("clean pod");
         }
@@ -464,7 +466,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
         String gitHttpRep;
         if (repoPara == null) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                    "can not found git repo from the container yaml path: build.repo!");
+                "can not found git repo from the container yaml path: build.repo!");
         } else {
             String repo = repoPara.toString();
             if (repo.startsWith(HTTP_PREFIX)) {
@@ -494,7 +496,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
     }
 
     private void generateMetaYaml(ComponentPackageTaskDO taskDO,
-                                  JSONObject packageOptions, String targetFileDir) throws IOException {
+        JSONObject packageOptions, String targetFileDir) throws IOException {
 
         packageOptions.put("appId", taskDO.getAppId());
         packageOptions.put("version", taskDO.getPackageVersion());
@@ -515,7 +517,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
     private void packageComponentZip(Long taskId) throws IOException {
         String targetFileDir = taskTargetDirMap.get(taskId);
         ComponentPackageTaskDO taskDO = componentPackageTaskRepository.getByCondition(
-                ComponentPackageTaskQueryCondition.builder().id(taskId).build());
+            ComponentPackageTaskQueryCondition.builder().id(taskId).build());
         String zipFilePath = targetFileDir + "component_package_task.zip";
         ZipFile zip = new ZipFile(zipFilePath);
         ZipParameters zipParameters = new ZipParameters();
@@ -540,32 +542,32 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
 
         String bucketName = packageProperties.getBucketName();
         String remotePath = PackageUtil
-                .buildComponentPackageRemotePath(taskDO.getAppId(), taskDO.getComponentType(), taskDO.getComponentName(),
-                        taskDO.getPackageVersion());
+            .buildComponentPackageRemotePath(taskDO.getAppId(), taskDO.getComponentType(), taskDO.getComponentName(),
+                taskDO.getPackageVersion());
         storage.putObject(bucketName, remotePath, zipFilePath);
         StorageFile storageFile = new StorageFile(bucketName, remotePath);
         log.info("component package has uploaded to storage||componentPackageTaskId={}||bucketName={}||" +
-                "remotePath={}||localPath={}", taskDO.getId(), bucketName, remotePath, zipFilePath);
+            "remotePath={}||localPath={}", taskDO.getId(), bucketName, remotePath, zipFilePath);
 
         // 增加 Component Package 包记录
         ComponentPackageDO componentPackageDO = ComponentPackageDO.builder()
-                .appId(taskDO.getAppId())
-                .componentType(taskDO.getComponentType())
-                .componentName(taskDO.getComponentName())
-                .packageVersion(taskDO.getPackageVersion())
-                .packageCreator(taskDO.getPackageCreator())
-                .packageMd5(targetFileMd5)
-                .packagePath(storageFile.toPath())
-                .packageOptions(taskDO.getPackageOptions())
-                .componentSchema(fileToString(targetFileDir + "meta.yaml"))
-                .build();
+            .appId(taskDO.getAppId())
+            .componentType(taskDO.getComponentType())
+            .componentName(taskDO.getComponentName())
+            .packageVersion(taskDO.getPackageVersion())
+            .packageCreator(taskDO.getPackageCreator())
+            .packageMd5(targetFileMd5)
+            .packagePath(storageFile.toPath())
+            .packageOptions(taskDO.getPackageOptions())
+            .componentSchema(fileToString(targetFileDir + "meta.yaml"))
+            .build();
         taskDO.setPackagePath(storageFile.toPath());
         taskDO.setPackageMd5(targetFileMd5);
         genComponentPackageRecord(componentPackageDO, taskId);
         log.info("component package task has inserted to db||AppPackageTaskId={}||" +
-                        "componentPackageId={}||appId={}||componentType={}||componentName={}||version={}||md5={}",
-                taskDO.getAppPackageTaskId(), componentPackageDO.getId(), taskDO.getAppId(), taskDO.getComponentType(),
-                taskDO.getComponentName(), taskDO.getPackageVersion(), targetFileMd5);
+                "componentPackageId={}||appId={}||componentType={}||componentName={}||version={}||md5={}",
+            taskDO.getAppPackageTaskId(), componentPackageDO.getId(), taskDO.getAppId(), taskDO.getComponentType(),
+            taskDO.getComponentName(), taskDO.getPackageVersion(), targetFileMd5);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -599,10 +601,10 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
     private String genPodName(String appId, String componentName, String containerName, Long taskId, long tag) {
         StringBuilder podName = new StringBuilder();
         podName.append("appmanager-build-").append(appId).append("-")
-                .append(componentName).append("-")
-                .append(containerName).append("-")
-                .append(taskId).append("-")
-                .append(tag);
+            .append(componentName).append("-")
+            .append(containerName).append("-")
+            .append(taskId).append("-")
+            .append(tag);
         return podName.toString();
     }
 }

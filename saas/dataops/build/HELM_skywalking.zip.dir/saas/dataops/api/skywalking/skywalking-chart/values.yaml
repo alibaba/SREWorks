@@ -37,7 +37,6 @@ oap:
     tag: null  # Must be set explicitly
     pullPolicy: IfNotPresent
   storageType: null
-  initEs: true # Whether need to initial ES
   ports:
     # add more ports here if you need, for example
     # zabbix: 10051
@@ -67,6 +66,23 @@ oap:
   env:
     # more env, please refer to https://hub.docker.com/r/apache/skywalking-oap-server
     # or https://github.com/apache/skywalking-docker/blob/master/6/6.4/oap/README.md#sw_telemetry
+
+  # Allows you to add any config files in /skywalking/config
+  # such as log4j2.xml, oal/core.oal, etc.
+  config: {}
+    # metadata-service-mapping.yaml: |
+    #   serviceName: e2e::${LABELS."service.istio.io/canonical-name"}
+    #   serviceInstanceName: ${NAME}
+    # oal:
+    #   core.oal: |
+    #     service_resp_time = from(Service.latency).longAvg();
+    #     service_sla = from(Service.*).percent(status == true);
+    #     service_cpm = from(Service.*).cpm();
+    # log4j2.xml: |
+    #   <Configuration status="DEBUG">
+    #     <!-- ... -->
+    #   </Configuration>
+
 
 ui:
   name: ui
@@ -117,7 +133,7 @@ ui:
     ## Limit load balancer source ips to list of CIDRs (where available)
     # loadBalancerSourceRanges: []
 
-esInit:
+oapInit:
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
@@ -172,10 +188,6 @@ elasticsearch:
   #  - name: elastic-certificates
   #    secretName: elastic-certificates
   #    path: /usr/share/elasticsearch/config/certs
-
-  image: "docker.elastic.co/elasticsearch/elasticsearch"
-  imageTag: "6.8.6"
-  imagePullPolicy: "IfNotPresent"
 
   podAnnotations: {}
   # iam.amazonaws.com/role: es-cluster
@@ -371,6 +383,24 @@ elasticsearch:
 
   keystore: []
 
+postgresql:
+  enabled: false # Whether to start a demo postgresql deployment, don't use this for production.
+  config:
+    # The hostname of your own postgresql service, this only takes effect when postgresql.enabled is false.
+    host: postgresql-service.your-awesome-company.com
+  auth:
+    username: postgres
+    password: "123456"
+    database: skywalking
+  containerPorts:
+    postgresql: 5432
+  primary:
+    persistence:
+      enabled: false
+  readReplicas:
+    persistence:
+      enabled: false
+
 satellite:
   name: satellite
   replicas: 1
@@ -399,6 +429,11 @@ satellite:
     # example: oap-foo
   env:
     # more env, please refer to https://skywalking.apache.org/docs/skywalking-satellite/latest/en/setup/readme/#satellite_configyaml
+  # Allows you to add any config files in /skywalking/config.
+  config: {}
+    # satellite_config.yaml: |
+    #   key: val
+
 
 nameOverride: ""
 fullnameOverride: ""

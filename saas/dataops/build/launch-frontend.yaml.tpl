@@ -16,6 +16,67 @@ spec:
       toFieldPaths:
       - spec.values
       value:
+        image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/logstash
+        imageTag: 7.10.2
+        logstashConfig:
+          logstash.yml: 'http.host: 0.0.0.0
+
+            xpack.monitoring.enabled: true
+
+            xpack.monitoring.elasticsearch.username: ''elastic''
+
+            xpack.monitoring.elasticsearch.password: ''sreworkses123.''
+
+            xpack.monitoring.elasticsearch.hosts: ["prod-dataops-elasticsearch-master.sreworks-dataops:9200"]
+
+            '
+        logstashPipeline:
+          logstash.conf: "input {\n  elasticsearch {\n    hosts => \"prod-dataops-elasticsearch-master.sreworks-dataops:9200\"\n    user => \"elastic\"\n    password => \"sreworkses123.\"\n    index => \"metricbeat\"\n    query => '{\"query\":{\"bool\":{\"must\":[{\"range\":{\"@timestamp\":{\"gte\":\"now-1m/m\",\"lt\":\"now/m\"}}},{\"query_string\":{\"query\":\"metricset.name:json\"}},{\"exists\":{\"field\":\"http\"}}]}},\"sort\":[\"service.address\"]}'\n    schedule => \"* * * * *\"\n    scroll => \"5m\"\n    size => 10000\n  }\n}\noutput {\n  kafka {\n    bootstrap_servers => \"sreworks-kafka.sreworks.svc.cluster.local:9092\"\n    codec => json\n    topic_id => \"sreworks-telemetry-metric\"\n  }\n}\n"
+        service:
+          loadBalancerIP: ''
+          ports:
+          - name: beats
+            port: 5044
+            protocol: TCP
+            targetPort: 5044
+          - name: http
+            port: 8080
+            protocol: TCP
+            targetPort: 8080
+          type: ClusterIP
+        volumeClaimTemplate:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 50Gi
+          storageClassName: '{{ Global.STORAGE_CLASS }}'
+    - name: name
+      toFieldPaths:
+      - spec.name
+      value: '{{ Global.STAGE_ID }}-dataops-logstash'
+    revisionName: HELM|logstash|_
+    scopes:
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Cluster
+        name: '{{ Global.CLUSTER_ID }}'
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Namespace
+        name: '{{ Global.NAMESPACE_ID }}'
+    - scopeRef:
+        apiVersion: apps.abm.io/v1
+        kind: Stage
+        name: '{{ Global.STAGE_ID }}'
+    traits: []
+  - dependencies:
+    - component: RESOURCE_ADDON|system-env@system-env
+    parameterValues:
+    - name: values
+      toFieldPaths:
+      - spec.values
+      value:
         global:
           storageClass: '{{ Global.STORAGE_CLASS }}'
         image:
@@ -963,14 +1024,14 @@ spec:
         oap:
           image:
             repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-oap-server-utc-8
-            tag: 9.2.0
+            tag: 9.3.0
           javaOpts: -Xmx1g -Xms1g
           replicas: 1
           storageType: elasticsearch
         ui:
           image:
             repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-ui
-            tag: 9.2.0
+            tag: 9.3.0
     - name: name
       toFieldPaths:
       - spec.name

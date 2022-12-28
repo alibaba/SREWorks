@@ -5,6 +5,7 @@ securityContext:
 
 podSecurityContext:
   fsGroup: null
+  runAsUser: null
 
 sysctlInitContainer:
   enabled: false

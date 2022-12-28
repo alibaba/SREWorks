@@ -16,7 +16,7 @@ spec:
     - name: Global.DATA_DB_PMDB_NAME
       value: pmdb
     - name: Global.DATA_SKYW_HOST
-      value: '{{Global.STAGE_ID}}-dataops-skywalking-oap'
+      value: '{{Global.STAGE_ID}}-dataops-skywalking-skywalking-helm-oap'
     - name: Global.DATA_SKYW_PORT
       value: '11800'
     - name: Global.DATA_SKYW_ENABLE
@@ -104,7 +104,7 @@ spec:
     - name: Global.DATA_DB_DATASOURCE_NAME
       value: sw_saas_datasource
     - name: Global.DATA_SKYW_HOST
-      value: '{{Global.STAGE_ID}}-dataops-skywalking-oap'
+      value: '{{Global.STAGE_ID}}-dataops-skywalking-skywalking-helm-oap'
     - name: Global.DATA_SKYW_PORT
       value: '11800'
     - name: Global.DATA_SKYW_ENABLE
@@ -130,6 +130,60 @@ spec:
         authEnabled: false
         path: /dataset/**
         serviceName: '{{ Global.STAGE_ID }}-dataops-dataset.{{ Global.NAMESPACE_ID }}'
+  - dependencies:
+    - component: RESOURCE_ADDON|system-env@system-env
+    parameterValues:
+    - name: values
+      toFieldPaths:
+      - spec.values
+      value:
+        image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/logstash
+        imageTag: 7.10.2
+        logstashConfig:
+          logstash.yml: 'http.host: 0.0.0.0
+
+            xpack.monitoring.enabled: true
+
+            xpack.monitoring.elasticsearch.username: ''elastic''
+
+            xpack.monitoring.elasticsearch.password: ''sreworkses123.''
+
+            xpack.monitoring.elasticsearch.hosts: ["prod-dataops-elasticsearch-master.sreworks-dataops:9200"]
+
+            '
+        logstashPipeline:
+          logstash.conf: "input {\n  elasticsearch {\n    hosts => \"prod-dataops-elasticsearch-master.sreworks-dataops:9200\"\n    user => \"elastic\"\n    password => \"sreworkses123.\"\n    index => \"metricbeat\"\n    query => '{\"query\":{\"bool\":{\"must\":[{\"range\":{\"@timestamp\":{\"gte\":\"now-1m/m\",\"lt\":\"now/m\"}}},{\"query_string\":{\"query\":\"metricset.name:json\"}},{\"exists\":{\"field\":\"http\"}}]}},\"sort\":[\"service.address\"]}'\n    schedule => \"* * * * *\"\n    scroll => \"5m\"\n    size => 10000\n  }\n}\noutput {\n  kafka {\n    bootstrap_servers => \"sreworks-kafka.sreworks.svc.cluster.local:9092\"\n    codec => json\n    topic_id => \"sreworks-telemetry-metric\"\n  }\n}\n"
+        service:
+          loadBalancerIP: ''
+          ports:
+          - name: beats
+            port: 5044
+            protocol: TCP
+            targetPort: 5044
+          - name: http
+            port: 8080
+            protocol: TCP
+            targetPort: 8080
+          type: ClusterIP
+        volumeClaimTemplate:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 50Gi
+          storageClassName: '{{ Global.STORAGE_CLASS }}'
+    - name: name
+      toFieldPaths:
+      - spec.name
+      value: '{{ Global.STAGE_ID }}-dataops-logstash'
+    revisionName: HELM|logstash|_
+    scopes:
+    - scopeRef:
+        apiVersion: core.oam.dev/v1alpha2
+        kind: Namespace
+        spec:
+          autoCreate: true
+    traits: []
   - dependencies:
     - component: RESOURCE_ADDON|system-env@system-env
     parameterValues:
@@ -1021,14 +1075,14 @@ spec:
         oap:
           image:
             repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-oap-server-utc-8
-            tag: 9.2.0
+            tag: 9.3.0
           javaOpts: -Xmx1g -Xms1g
           replicas: 1
           storageType: elasticsearch
         ui:
           image:
             repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-ui
-            tag: 9.2.0
+            tag: 9.3.0
     - name: name
       toFieldPaths:
       - spec.name
@@ -1159,6 +1213,30 @@ spec:
       name: Global.MINIO_ACCESS_KEY
     - fieldPath: '{{ spec.env.MINIO_SECRET_KEY }}'
       name: Global.MINIO_SECRET_KEY
+    - fieldPath: '{{ spec.env.HOME_URL }}'
+      name: Global.HOME_URL
+    - fieldPath: '{{ spec.env.REDIS_ENDPOINT }}'
+      name: Global.REDIS_ENDPOINT
+    - fieldPath: '{{ spec.env.APPMANAGER_REDIS_PORT }}'
+      name: Global.APPMANAGER_REDIS_PORT
+    - fieldPath: '{{ spec.env.REDIS_PASSWORD }}'
+      name: Global.REDIS_PASSWORD
+    - fieldPath: '{{ spec.env.APPMANAGER_JWT_SECRET_KEY }}'
+      name: Global.APPMANAGER_JWT_SECRET_KEY
+    - fieldPath: '{{ spec.env.PLATFORM_NAME }}'
+      name: Global.PLATFORM_NAME
+    - fieldPath: '{{ spec.env.PLATFORM_LOGO }}'
+      name: Global.PLATFORM_LOGO
+    - fieldPath: '{{ spec.env.K8S_NAMESPACE }}'
+      name: Global.K8S_NAMESPACE
+    - fieldPath: '{{ spec.env.ENDPOINT_PAAS_MINIO }}'
+      name: Global.ENDPOINT_PAAS_MINIO
+    - fieldPath: '{{ spec.env.ZOOKEEPER_ENDPOINT }}'
+      name: Global.ZOOKEEPER_ENDPOINT
+    - fieldPath: '{{ spec.env.ACCOUNT_SUPER_SECRET_KEY }}'
+      name: Global.ACCOUNT_SUPER_SECRET_KEY
+    - fieldPath: '{{ spec.env.ADMIN_INIT_PASSWORD }}'
+      name: Global.ADMIN_INIT_PASSWORD
     dependencies: []
     namespaceId: ''
     parameterValues:
@@ -1196,6 +1274,18 @@ spec:
       - MINIO_ENDPOINT
       - MINIO_ACCESS_KEY
       - MINIO_SECRET_KEY
+      - HOME_URL
+      - REDIS_ENDPOINT
+      - APPMANAGER_REDIS_PORT
+      - REDIS_PASSWORD
+      - APPMANAGER_JWT_SECRET_KEY
+      - PLATFORM_NAME
+      - PLATFORM_LOGO
+      - K8S_NAMESPACE
+      - ENDPOINT_PAAS_MINIO
+      - ZOOKEEPER_ENDPOINT
+      - ACCOUNT_SUPER_SECRET_KEY
+      - ADMIN_INIT_PASSWORD
     revisionName: RESOURCE_ADDON|system-env@system-env|1.0
     scopes: []
     stageId: ''

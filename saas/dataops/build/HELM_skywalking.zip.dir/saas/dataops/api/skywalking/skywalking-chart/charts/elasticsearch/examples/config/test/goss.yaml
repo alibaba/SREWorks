@@ -2,18 +2,21 @@ http:
   http://localhost:9200/_cluster/health:
     status: 200
     timeout: 2000
+    username: elastic
+    password: "{{ .Env.ELASTIC_PASSWORD }}"
     body:
-      - 'green'
+      - "green"
       - '"number_of_nodes":1'
       - '"number_of_data_nodes":1'
 
   http://localhost:9200:
     status: 200
     timeout: 2000
+    username: elastic
+    password: "{{ .Env.ELASTIC_PASSWORD }}"
     body:
       - '"cluster_name" : "config"'
-      - '"name" : "config-master-0"'
-      - 'You Know, for Search'
+      - "You Know, for Search"
 
 command:
   "elasticsearch-keystore list":

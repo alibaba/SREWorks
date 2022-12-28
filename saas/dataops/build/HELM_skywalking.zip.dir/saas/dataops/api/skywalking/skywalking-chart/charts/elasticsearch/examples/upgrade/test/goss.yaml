@@ -3,7 +3,7 @@ http:
     status: 200
     timeout: 2000
     body:
-      - 'green'
+      - "green"
       - '"number_of_nodes":3'
       - '"number_of_data_nodes":3'
 
@@ -11,7 +11,6 @@ http:
     status: 200
     timeout: 2000
     body:
-      - '"number" : "7.5.2"'
+      - '"number" : "7.17.3"'
       - '"cluster_name" : "upgrade"'
-      - '"name" : "upgrade-master-0"'
-      - 'You Know, for Search'
+      - "You Know, for Search"

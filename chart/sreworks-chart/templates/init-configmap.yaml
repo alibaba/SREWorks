@@ -9,7 +9,7 @@ apiVersion: v1
 data:
 
   IMAGE_PUSH_REGISTRY: {{ .Values.appmanager.server.docker.registry }}/{{ .Values.appmanager.server.docker.namespace }}
-  
+  IMAGE_REGISTRY: {{ .Values.global.images.registry }} 
 
   APK_REPO_DOMAIN: {{ .Values.global.artifacts.apkRepoDomain }} 
   MAVEN_IMAGE: {{ .Values.global.artifacts.mavenImage }}

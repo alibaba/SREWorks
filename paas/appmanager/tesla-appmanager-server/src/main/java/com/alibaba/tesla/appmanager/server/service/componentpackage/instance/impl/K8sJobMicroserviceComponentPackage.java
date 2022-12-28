@@ -349,6 +349,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
         Object nameOb = JsonUtil.recursiveGetParameter(container,
                 Collections.singletonList("name"));
         String containerName = nameOb != null ? nameOb.toString() : "default";
+        log.info("action=renderBuildPod || Start render container:{}, build yaml:{}", containerName, container);
 
         // 渲染 dockerfileTpl
         // 1. 下载 repo
@@ -389,7 +390,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
         // 4. 打包成tar.gz （不打包 markdown 文件）
         String compressTarName = dockerFileName + ".tar.gz";
 //        String tarCommand = String.format("cd %s; tar zcvf %s -C %s .[!.]* *", buildAbsolutePath, buildAbsolutePath + compressTarName, buildAbsolutePath);
-        String[] tarCommand = new String[]{"tar", "zcvf", buildAbsolutePath + compressTarName, "-C", buildAbsolutePath, ".[!.]*", "*"};
+        String[] tarCommand = new String[]{"tar", "zcvf", buildAbsolutePath + compressTarName, "."};
         CommandUtil.runLocalCommand(CommandUtil.getBashCommand(tarCommand), Paths.get(buildAbsolutePath).toFile());
 
         String bucketName = packageProperties.getBucketName();

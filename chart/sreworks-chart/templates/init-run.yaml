@@ -39,6 +39,7 @@ data:
 
     else
     
+        python /app/patch_meta_yaml.py /root/saas/swcore/build
         python /app/pack.py --src /root/saas/swcore/build --dest /root/saas/swcore/build.zip
 
         if [[ "$ACCESS_MODE" == "ingress" ]] ; then
@@ -206,6 +207,8 @@ data:
     envsubst < /root/saas/system/build/launch-backend.yaml.tpl > /root/saas/system/launch-backend.yaml
     envsubst < /root/saas/system/build/launch-frontend.yaml.tpl > /root/saas/system/launch-frontend.yaml
     envsubst < /root/saas/system/build/launch-frontend-dev.yaml.tpl > /root/saas/system/launch-frontend-dev.yaml
+    
+    python /app/patch_meta_yaml.py /root/saas/system/build
     python /app/pack.py --src /root/saas/system/build --dest /root/saas/system/build.zip
  
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
@@ -240,6 +243,8 @@ data:
     envsubst < /root/saas/upload/build/launch-backend.yaml.tpl > /root/saas/upload/launch-backend.yaml
     envsubst < /root/saas/upload/build/launch-frontend.yaml.tpl > /root/saas/upload/launch-frontend.yaml
     envsubst < /root/saas/upload/build/launch-frontend-dev.yaml.tpl > /root/saas/upload/launch-frontend-dev.yaml
+
+    python /app/patch_meta_yaml.py /root/saas/upload/build
     python /app/pack.py --src /root/saas/upload/build --dest /root/saas/upload/build.zip
  
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
@@ -356,8 +361,9 @@ data:
     envsubst < /root/saas/dataops/build/launch-backend.yaml.tpl > /root/saas/dataops/launch-backend.yaml
     envsubst < /root/saas/dataops/build/launch-frontend.yaml.tpl > /root/saas/dataops/launch-frontend.yaml
     envsubst < /root/saas/dataops/build/launch-frontend-dev.yaml.tpl > /root/saas/dataops/launch-frontend-dev.yaml
+    
+    python /app/patch_meta_yaml.py /root/saas/dataops/build
     python /app/pack.py --src /root/saas/dataops/build --dest /root/saas/dataops/build.zip
-
 
     # mysql地址如果从外部传入就不拉起mysql
     if [[ "$DATAOPS_DB_HOST" != "prod-dataops-mysql.sreworks-dataops" ]]
@@ -419,6 +425,8 @@ data:
     envsubst < /root/saas/team/build/launch-backend.yaml.tpl > /root/saas/team/launch-backend.yaml
     envsubst < /root/saas/team/build/launch-frontend.yaml.tpl > /root/saas/team/launch-frontend.yaml
     envsubst < /root/saas/team/build/launch-frontend-dev.yaml.tpl > /root/saas/team/launch-frontend-dev.yaml
+
+    python /app/patch_meta_yaml.py /root/saas/team/build
     python /app/pack.py --src /root/saas/team/build --dest /root/saas/team/build.zip
  
 
@@ -459,6 +467,8 @@ data:
     envsubst < /root/saas/aiops/build/launch-backend.yaml.tpl > /root/saas/aiops/launch-backend.yaml
     envsubst < /root/saas/aiops/build/launch-frontend.yaml.tpl > /root/saas/aiops/launch-frontend.yaml
     envsubst < /root/saas/aiops/build/launch-frontend-dev.yaml.tpl > /root/saas/aiops/launch-frontend-dev.yaml
+
+    python /app/patch_meta_yaml.py /root/saas/aiops/build
     python /app/pack.py --src /root/saas/aiops/build --dest /root/saas/aiops/build.zip    
 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
@@ -495,6 +505,8 @@ data:
     envsubst < /root/saas/job/build/launch-backend.yaml.tpl > /root/saas/job/launch-backend.yaml
     envsubst < /root/saas/job/build/launch-frontend.yaml.tpl > /root/saas/job/launch-frontend.yaml
     envsubst < /root/saas/job/build/launch-frontend-dev.yaml.tpl > /root/saas/job/launch-frontend-dev.yaml
+  
+    python /app/patch_meta_yaml.py /root/saas/job/build
     python /app/pack.py --src /root/saas/job/build --dest /root/saas/job/build.zip
 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
@@ -559,6 +571,8 @@ data:
     envsubst < /root/saas/health/build/launch-backend.yaml.tpl > /root/saas/health/launch-backend.yaml
     envsubst < /root/saas/health/build/launch-frontend.yaml.tpl > /root/saas/health/launch-frontend.yaml
     envsubst < /root/saas/health/build/launch-frontend-dev.yaml.tpl > /root/saas/health/launch-frontend-dev.yaml
+
+    python /app/patch_meta_yaml.py /root/saas/health/build
     python /app/pack.py --src /root/saas/health/build --dest /root/saas/health/build.zip
 
  

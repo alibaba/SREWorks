@@ -3,7 +3,7 @@
  * @Author: deeham.ww
  * @Date: 2022-11-16 11:32:36
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-27 16:27:09
+ * @LastEditTime: 2022-12-27 15:59:27
  */
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -24,10 +24,7 @@ const DEV = NODE_ENV === 'development'
 module.exports = {
   mode: DEV ? 'development' : 'production',
   devtool: DEV ? 'source-map' : false,
-  entry: {
-    index: paths.appIndexJs,
-    ven_ant: ['@ant-design/compatible','@ant-design/icons','brace','ace-builds'],
-  },
+  entry: paths.appIndexJs,
   output: {
     path: path.join(__dirname, '../build'),
     filename: 'static/js/[name].[chunkhash:8].js',
@@ -42,7 +39,7 @@ module.exports = {
     port: 8080,
     proxy: {
       '/gateway': {
-        target: 'http://dev.sreworks.net/',
+        target: '',
         changeOrigin: true,
         cookieDomainRewrite: 'localhost',
       },
@@ -230,10 +227,6 @@ module.exports = {
   new copyWebpackPlugin({
     patterns: [
       { from: 'public', to: './',globOptions: { ignore: [ "**/index.html",]}},
-      {
-        from: paths.appSrc + '/assets/icons',
-        to: paths.appBuild + '/static/icons'
-    }
     ],
   }),
   new webpack.ProgressPlugin({

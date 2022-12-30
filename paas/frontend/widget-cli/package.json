@@ -1,0 +1,61 @@
+{
+  "name": "@sreworks/widget-cli",
+  "version": "0.0.0-beta",
+  "license": "Apache-2.0",
+  "description": "",
+  "repository": "",
+  "keywords": [
+    "SREWorks",
+    "sre",
+    "remote-components"
+  ],
+  "engines": {
+    "node": ">=14"
+  },
+  "files": [
+    "bin",
+    "config",
+    "scripts",
+    "template",
+    "vue-template",
+    ".gitignore",
+    "package.json",
+    "LICENSE",
+    "README.md"
+  ],
+  "bin": {
+    "sreworks": "./bin/react-scripts.js"
+  },
+  "scripts": {
+    "create": "node ./bin/react-scripts.js create",
+    "create-vue": "node ./bin/react-scripts.js create-vue",
+    "alipb": "tnpm publish --registry=https://registry.npm.alibaba-inc.com/",
+    "pb": "npm publish --registry=https://registry.npmjs.org/ --access public"
+  },
+  "dependencies": {
+    "fs-extra": "7.0.0",
+    "cross-spawn": "^7.0.3",
+    "cross-env": "^5.2.0",
+    "core-js": "^3.21.1",
+    "chalk": "2.4.1"
+  },
+  "devDependencies": {
+    "history": "^4.9.0",
+    "http-proxy-middleware": "^2.0.0"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "proxy": {
+    "/**/*.json": {
+      "target": "http://localhost:3000",
+      "secure": false
+    }
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  }
+}

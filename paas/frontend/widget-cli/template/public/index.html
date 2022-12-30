@@ -7,18 +7,15 @@
   <meta name="theme-color" content="#000000">
   <script>
     window.__ABM_LOAD_START__ = (new Date).getTime();
-    window.REMOTE_COMP_LIST = []
-    window.REMOTE_VUE_LIST = []
   </script>
   <!--
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
     -->
-  <link rel="manifest" href="./manifest.json">
-  <link rel="shortcut icon" href="./new_favicon.png">
-  <link rel="stylesheet" type="text/css" href="./screen_loading.css" />
-  <link rel="stylesheet" type="text/css" href="./iconfont/iconfont.css" />
-  <link href="./vendors/element-ui/2.15.9/index.css" rel="stylesheet">
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+  <link rel="shortcut icon" href="%PUBLIC_URL%/new_favicon.png">
+  <link rel="stylesheet" type="text/css" href="%PUBLIC_URL%/screen_loading.css" />
+  <link rel="stylesheet" type="text/css" href="%PUBLIC_URL%/iconfont/iconfont.css" />
   <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -41,18 +38,19 @@
   <noscript>
     You need to enable JavaScript to run this app.
   </noscript>
-  <script src="./vendors/moment/2.27.0/moment.min.js"></script>
-  <script src="./vendors/react/16.14.0/react.production.min.js"></script>
-  <script src="./vendors/react-dom/16.14.0/react-dom.production.min.js"></script>
-  <script src="./vendors/vue/2.7.9/vue.min.js"></script>
-  <script src="./vendors/vuera/0.2.7/vuera.iife.js"></script>
-  <script src="./vendors/element-ui/2.15.9/index.js"></script>
-  <script src="./vendors/bizcharts/4.1.15/BizCharts.min.js"></script>
-  <script src="./vendors/react-ace/10.1.0/main.js"></script>
-  <script src="./vendors/lodash/4.17.21/lodash.min.js"></script>
-  <script src="./vendors/jquery/3.6.1/jquery.min.js"></script>
-  <script src="./vendors/html2canvas/1.4.1/html2canvas.min.js"></script>
-  
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/moment-duration-format/2.3.2/moment-duration-format.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/react/16.14.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/react-dom/16.14.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/react-router/4.3.1/react-router.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/redux/3.7.2/redux.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/react-redux/5.0.7/react-redux.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/ant-design-icons/4.6.2/index.umd.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/antd/4.17.2/antd.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/bizcharts/4.1.15/BizCharts.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <div id="root" style="min-width: 1400px;overflow: hidden">
     <div id="abm-pre-screen-loading">
       <div id="abm-pre-screen-loading-center">
@@ -63,6 +61,7 @@
           <div class="abm-pre-screen-object" id="abm-pre-screen-object_one"></div>
         </div>
         <h1 class="abm-pre-screen-text">
+          <span id="loading-mark">SREWorks</span>
         </h1>
         <!--<h1 class="abm-pre-screen-text">
             <span>Apsara Big Data Manager</span>
@@ -81,10 +80,11 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   <!-- for antd-theme-generator START -->
-  <script src="./vendors/antd/4.17.4/antd.min.js"></script>
-  <script src="./vendors/systemjs/6.10.2/system.min.js"></script>
-  <link rel="stylesheet/less" type="text/css" href="./color.less" />
-  <script type="text/javascript" src="./config.js" ></script>
+  <link rel="stylesheet/less" type="text/css" href="%PUBLIC_URL%/color.less" />
+  <link rel="stylesheet/css" type="text/css" href="%PUBLIC_URL%/root.css" />
+  <!--<script type="text/javascript" src="%PUBLIC_URL%/system.js"></script>-->
+  <!--<script type="text/javascript" src="%PUBLIC_URL%/es6-promise.auto.min.js"></script>-->
+  <script type="text/javascript" src="%PUBLIC_URL%/config.js"></script>
   <script>
     window.less = {
       async: false,
@@ -93,9 +93,7 @@
     };
     if (window.GlobalBackendConf && window.GlobalBackendConf.production) {
       var targetDom = document.getElementById('loading-mark')
-      if (targetDom) {
-        targetDom.innerHTML = window.GlobalBackendConf['production']['platformName'] || "SREWorks"
-      }
+      targetDom.innerHTML = window.GlobalBackendConf['production']['platformName'] || "SREWorks"
     }
   </script>
 </body>

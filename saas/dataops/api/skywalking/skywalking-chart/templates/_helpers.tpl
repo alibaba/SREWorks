@@ -49,11 +49,26 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Create a oap full labels value.
+*/}}
+{{- define "skywalking.oap.labels" -}}
+app={{ template "skywalking.name" . }},release={{ .Release.Name }},component={{ .Values.oap.name }}
+{{- end -}}
+
+{{/*
 Create a default fully qualified ui name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "skywalking.ui.fullname" -}}
 {{ template "skywalking.fullname" . }}-{{ .Values.ui.name }}
+{{- end -}}
+
+{{/*
+Create a default fully qualified satellite name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "skywalking.satellite.fullname" -}}
+{{ template "skywalking.fullname" . }}-{{ .Values.satellite.name }}
 {{- end -}}
 
 {{/*
@@ -63,13 +78,73 @@ Create the name of the service account to use for the oap cluster
 {{ default (include "skywalking.oap.fullname" .) .Values.serviceAccounts.oap }}
 {{- end -}}
 
-{{- define "skywalking.containers.wait-for-es" -}}
+{{/*
+Create the name of the service account to use for the satellite cluster
+*/}}
+{{- define "skywalking.serviceAccountName.satellite" -}}
+{{ default (include "skywalking.satellite.fullname" .) .Values.serviceAccounts.satellite }}
+{{- end -}}
+
+{{- define "skywalking.containers.wait-for-storage" -}}
+{{- if eq .Values.oap.storageType "elasticsearch" }}
 - name: wait-for-elasticsearch
   image: {{ .Values.initContainer.image }}:{{ .Values.initContainer.tag }}
   imagePullPolicy: IfNotPresent
-{{- if .Values.elasticsearch.enabled }}
+    {{- if .Values.elasticsearch.enabled }}
   command: ['sh', '-c', 'for i in $(seq 1 60); do nc -z -w3 {{ .Values.elasticsearch.clusterName }}-{{ .Values.elasticsearch.nodeGroup }} {{ .Values.elasticsearch.httpPort }} && exit 0 || sleep 5; done; exit 1']
-{{- else }}
+    {{- else }}
   command: ['sh', '-c', 'for i in $(seq 1 60); do nc -z -w3 {{ .Values.elasticsearch.config.host }} {{ .Values.elasticsearch.config.port.http }} && exit 0 || sleep 5; done; exit 1']
+    {{- end }}
+{{- else if eq .Values.oap.storageType "postgresql" -}}
+- name: wait-for-postgresql
+  image: postgres:13
+  imagePullPolicy: IfNotPresent
+  command:
+    - sh
+    - -c
+    - |
+    {{- if .Values.postgresql.enabled }}
+      until pg_isready -h '{{ template "skywalking.name" . }}-postgresql' -p '{{ .Values.postgresql.containerPorts.postgresql }}' -U '{{ .Values.postgresql.auth.username }}'; do
+    {{- else }}
+      until pg_isready -h '{{ .Values.postgresql.config.host }}' -p '{{ .Values.postgresql.containerPorts.postgresql }}' -U '{{ .Values.postgresql.auth.username }}'; do
+    {{- end }}
+        echo "Waiting for postgresql..."
+        sleep 3
+      done
+{{- end }}
+{{- end -}}
+
+# Storage-related environment variables are defined here.
+{{- define "skywalking.oap.envs.storage" -}}
+- name: SW_STORAGE
+  value: {{ required "oap.storageType is required" .Values.oap.storageType }}
+{{- if eq .Values.oap.storageType "elasticsearch" }}
+- name: SW_STORAGE_ES_CLUSTER_NODES
+  {{- if .Values.elasticsearch.enabled }}
+  value: "{{ .Values.elasticsearch.clusterName }}-{{ .Values.elasticsearch.nodeGroup }}:{{ .Values.elasticsearch.httpPort }}"
+  {{- else }}
+  value: "{{ .Values.elasticsearch.config.host }}:{{ .Values.elasticsearch.config.port.http }}"
+  {{- end }}
+  {{- if not .Values.elasticsearch.enabled }}
+    {{- if .Values.elasticsearch.config.user }}
+- name: SW_ES_USER
+  value: "{{ .Values.elasticsearch.config.user }}"
+    {{- end }}
+    {{- if .Values.elasticsearch.config.password }}
+- name: SW_ES_PASSWORD
+  value: "{{ .Values.elasticsearch.config.password }}"
+    {{- end }}
+  {{- end }}
+{{- else if eq .Values.oap.storageType "postgresql" }}
+{{- $postgresqlHost := print (include "skywalking.name" .) "-postgresql" -}}
+{{- if not .Values.postgresql.enabled -}}
+{{- $postgresqlHost = .Values.postgresql.config.host -}}
+{{- end }}
+- name: SW_JDBC_URL
+  value: "jdbc:postgresql://{{ $postgresqlHost }}:{{ .Values.postgresql.containerPorts.postgresql }}/{{ .Values.postgresql.auth.database }}"
+- name: SW_DATA_SOURCE_USER
+  value: "{{ .Values.postgresql.auth.username }}"
+- name: SW_DATA_SOURCE_PASSWORD
+  value: "{{ .Values.postgresql.auth.password }}"
 {{- end }}
 {{- end -}}

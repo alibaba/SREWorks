@@ -6,9 +6,11 @@ import com.alibaba.tesla.appmanager.common.enums.*;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
+import com.alibaba.tesla.appmanager.domain.container.WorkflowGraphNodeId;
 import com.alibaba.tesla.appmanager.domain.option.WorkflowInstanceOption;
 import com.alibaba.tesla.appmanager.domain.req.UpdateWorkflowSnapshotReq;
 import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
+import com.alibaba.tesla.appmanager.domain.schema.WorkflowGraph;
 import com.alibaba.tesla.appmanager.dynamicscript.core.GroovyHandlerFactory;
 import com.alibaba.tesla.appmanager.workflow.action.WorkflowInstanceStateAction;
 import com.alibaba.tesla.appmanager.workflow.event.WorkflowInstanceEvent;
@@ -29,7 +31,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service("PreprocessingWorkflowInstanceStateAction")
@@ -69,36 +73,37 @@ public class PreprocessingWorkflowInstanceStateAction implements WorkflowInstanc
                     DeployAppSchema.class, instance.getWorkflowConfiguration());
             WorkflowInstanceOption options = JSONObject.parseObject(
                     instance.getWorkflowOptions(), WorkflowInstanceOption.class);
-            List<Integer> executeOrders = options.calculateExecuteOrders(configuration);
-            if (executeOrders.size() == 0) {
-                throw new AppException(AppErrorCode.INVALID_USER_ARGS, "empty executor orders size");
+            log.info("action=preprocessingWorkflowInstance|appId={}|workflowInstanceId={}", appId, workflowInstanceId);
+
+            // 创建 tasks
+            WorkflowGraph graph = JSONObject.parseObject(instance.getWorkflowGraph(), WorkflowGraph.class);
+            List<String> entryNodes = graph.getZeroDegreeNodes();
+            List<WorkflowTaskDO> tasks = createWorkflowTasks(instance, configuration);
+            log.info("all workflow tasks has created, prepare to run entry tasks|appId={}|workflowInstanceId={}",
+                    appId, workflowInstanceId);
+            for (WorkflowTaskDO task : tasks) {
+                // 创建一个空的快照到当前 task 上
+                JSONObject context = new JSONObject();
+                if (options.getInitContext() != null) {
+                    context.putAll(options.getInitContext());
+                }
+                WorkflowSnapshotDO snapshot = workflowSnapshotService.update(UpdateWorkflowSnapshotReq.builder()
+                        .workflowInstanceId(task.getWorkflowInstanceId())
+                        .workflowTaskId(task.getId())
+                        .context(context)
+                        .build());
+                log.info("workflow snapshot has created|workflowInstanceId={}|workflowTaskId={}|workflowSnapshotId={}|" +
+                                "context={}", snapshot.getWorkflowInstanceId(), snapshot.getWorkflowTaskId(),
+                        snapshot.getId(), snapshot.getSnapshotContext());
+
+                // 如果当前 task 可以没有前置节点，直接触发执行
+                String nodeId = (new WorkflowGraphNodeId(task.getTaskType(), task.getTaskName())).toString();
+                if (!entryNodes.contains(nodeId)) {
+                    continue;
+                }
+                WorkflowTaskEvent event = new WorkflowTaskEvent(this, WorkflowTaskEventEnum.START, task);
+                publisher.publishEvent(event);
             }
-            log.info("action=preprocessingWorkflowInstance|appId={}|workflowInstanceId={}|executeOrders={}",
-                    appId, workflowInstanceId, JSONArray.toJSONString(executeOrders));
-
-            // 针对每一个 execute order 创建一个 workflow task
-            List<WorkflowTaskDO> tasks = createWorkflowTasks(instance, configuration, executeOrders);
-            WorkflowTaskDO firstTask = tasks.get(0);
-            log.info("all workflow tasks has created, prepare to run first task|appId={}|workflowInstanceId={}|" +
-                    "firstTask={}", appId, workflowInstanceId, JSONObject.toJSONString(firstTask));
-
-            // 创建一个空的快照到第一个 task 上
-            JSONObject context = new JSONObject();
-            if (options.getInitContext() != null) {
-                context.putAll(options.getInitContext());
-            }
-            WorkflowSnapshotDO snapshot = workflowSnapshotService.update(UpdateWorkflowSnapshotReq.builder()
-                    .workflowInstanceId(firstTask.getWorkflowInstanceId())
-                    .workflowTaskId(firstTask.getId())
-                    .context(context)
-                    .build());
-            log.info("workflow snapshot has created|workflowInstanceId={}|workflowTaskId={}|workflowSnapshotId={}|" +
-                            "context={}", snapshot.getWorkflowInstanceId(), snapshot.getWorkflowTaskId(),
-                    snapshot.getId(), snapshot.getSnapshotContext());
-
-            // 触发第一个 task 的启动执行
-            WorkflowTaskEvent event = new WorkflowTaskEvent(this, WorkflowTaskEventEnum.START, firstTask);
-            publisher.publishEvent(event);
         } catch (AppException e) {
             throw e;
         } catch (Exception e) {
@@ -119,23 +124,29 @@ public class PreprocessingWorkflowInstanceStateAction implements WorkflowInstanc
      *
      * @param instance      Workflow Instance 数据库对象
      * @param configuration Workflow Configuration
-     * @param executeOrders workflow task 执行顺序索引
      * @return WorkflowTask 列表
      */
     @Transactional(rollbackFor = Exception.class)
-    public List<WorkflowTaskDO> createWorkflowTasks(
-            WorkflowInstanceDO instance, DeployAppSchema configuration, List<Integer> executeOrders) {
+    public List<WorkflowTaskDO> createWorkflowTasks(WorkflowInstanceDO instance, DeployAppSchema configuration) {
         Long workflowInstanceId = instance.getId();
         List<DeployAppSchema.WorkflowStep> workflowSteps = configuration.getSpec().getWorkflow().getSteps();
         List<WorkflowTaskDO> tasks = new ArrayList<>();
-        for (int index : executeOrders) {
+        Set<String> usedSet = new HashSet<>();
+        for (int index = 0; index < workflowSteps.size(); index++) {
             DeployAppSchema.WorkflowStep currentStep = workflowSteps.get(index);
-            String workflowType = currentStep.getType();
-            checkWorkflowTypeExists(workflowType);
+            String taskType = currentStep.getType();
+            String taskName = currentStep.getName();
+            WorkflowGraphNodeId nodeId = new WorkflowGraphNodeId(taskType, taskName);
+            if (usedSet.contains(nodeId.toString())) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS, String.format("duplicate workflow step name " +
+                        "in the same workflow type|step=%s", JSONObject.toJSONString(currentStep)));
+            }
+            usedSet.add(nodeId.toString());
+            checkWorkflowTypeExists(taskType);
             WorkflowStageEnum workflowStage = WorkflowStageEnum.fromString(currentStep.getStage());
             JSONObject workflowProperties = currentStep.getProperties();
-            JSONArray outputs = currentStep.getOutputs();
-            JSONArray inputs = currentStep.getInputs();
+            List<DeployAppSchema.WorkflowStepOutput> outputs = currentStep.getOutputs();
+            List<DeployAppSchema.WorkflowStepInput> inputs = currentStep.getInputs();
 
             // 根据 workflow stage 进行前置渲染
             switch (workflowStage) {
@@ -158,17 +169,18 @@ public class PreprocessingWorkflowInstanceStateAction implements WorkflowInstanc
             WorkflowTaskDO record = WorkflowTaskDO.builder()
                     .workflowInstanceId(workflowInstanceId)
                     .appId(instance.getAppId())
-                    .taskType(workflowType)
+                    .taskType(taskType)
+                    .taskName(taskName)
                     .taskStage(workflowStage.toString())
                     .taskProperties(JSONObject.toJSONString(workflowProperties))
                     .taskStatus(taskStatus)
-                    .taskOutputs(JSONObject.toJSONString(outputs))
-                    .taskInputs(JSONObject.toJSONString(inputs))
+                    .taskInputs(JSONArray.toJSONString(inputs))
+                    .taskOutputs(JSONArray.toJSONString(outputs))
                     .build();
             WorkflowTaskDO task = workflowTaskService.create(record);
-            log.info("action=createWorkflowTask|workflowInstanceId={}|appId={}|taskType={}|taskStage={}|" +
-                            "taskStatus={}", workflowInstanceId, instance.getAppId(), workflowType,
-                    workflowStage, taskStatus);
+            log.info("action=createWorkflowTask|workflowInstanceId={}|workflowTaskId={}|appId={}|taskType={}|" +
+                            "taskName={}|taskStage={}|taskStatus={}", workflowInstanceId, task.getId(),
+                    instance.getAppId(), taskType, taskName, workflowStage, taskStatus);
             tasks.add(task);
         }
         return tasks;

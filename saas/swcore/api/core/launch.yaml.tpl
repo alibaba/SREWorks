@@ -300,95 +300,6 @@ spec:
           value: ""
         - name: Global.ADMIN_INIT_PASSWORD
           value: "${ADMIN_INIT_PASSWORD}"
-    - revisionName: K8S_JOB|paas-authproxy-postrun|_
-      scopes:
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Cluster
-            name: "{{ Global.CLUSTER_ID }}"
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Namespace
-            name: "{{ Global.NAMESPACE_ID }}"
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Stage
-            name: "{{ Global.STAGE_ID }}"
-      parameterValues:
-        - name: Global.DB_NAME
-          value: "abm_paas_authproxy"
-        - name: Global.AAS_DIRECT_LOGIN_URL
-          value: ""
-        - name: Global.AAS_INNER_ENDPOINT
-          value: ""
-        - name: Global.AAS_LOGIN_URL
-          value: ""
-        - name: Global.AAS_LOGOUT_URL
-          value: ""
-        - name: Global.AAS_OPENAPI_DOMAIN
-          value: ""
-        - name: Global.AAS_OPENAPI_URL
-          value: ""
-        - name: Global.AAS_POP_KEY
-          value: "unknown"
-        - name: Global.AAS_POP_SECRET
-          value: "unknown"
-        - name: Global.ACCOUNT_BASE_ACCESS_ID
-          value: ""
-        - name: Global.ACCOUNT_BASE_ACCESS_KEY
-          value: ""
-        - name: Global.ACCOUNT_BASE_ID
-          value: ""
-        - name: Global.ACCOUNT_BASE_PK
-          value: ""
-        - name: Global.ACCOUNT_BASE_SECRET_KEY
-          value: ""
-        - name: Global.ACCOUNT_ODPS_ACCESS_ID
-          value: ""
-        - name: Global.ACCOUNT_ODPS_ACCESS_KEY
-          value: ""
-        - name: Global.ACCOUNT_ODPS_ID
-          value: ""
-        - name: Global.ACCOUNT_ODPS_PK
-          value: ""
-        - name: Global.ACCOUNT_ODPS_SECRET_KEY
-          value: ""
-        - name: Global.ASS_CALLBACK_URL
-          value: ""
-        - name: Global.DATABASE_AUTH_SERVICE_MGR_CLASS_NAME
-          value: "com.alibaba.tesla.authproxy.service.impl.DataBaseAuthServiceManager"
-        - name: Global.DATABASE_LOGIN_INTERCEPTOR_CLASS_NAME
-          value: "com.alibaba.tesla.authproxy.interceptor.DataBaseLoginInterceptor"
-        - name: Global.LOGIN_URL
-          value: "fake-login-url"
-        - name: Global.OAM_ENDPOINT
-          value: ""
-        - name: Global.OAM_POP_KEY
-          value: ""
-        - name: Global.OAM_POP_SECRET
-          value: ""
-        - name: Global.TESLA_ADMIN_USERS
-          value: ""
-        - name: Global.TESLA_AUTHPROXY_OAUTH2_ACCESS_TOKEN_URI
-          value: "unknown"
-        - name: Global.TESLA_AUTHPROXY_OAUTH2_CLIENT_ID
-          value: "unknown"
-        - name: Global.TESLA_AUTHPROXY_OAUTH2_CLIENT_SECRET
-          value: "unknown"
-        - name: Global.TESLA_AUTHPROXY_OAUTH2_REDIRECT_URI
-          value: "unknown"
-        - name: Global.TESLA_AUTHPROXY_OAUTH2_USER_AUTHORIZATION_URI
-          value: "unknown"
-        - name: Global.TESLA_AUTHPROXY_OAUTH2_USER_INFO_URI
-          value: "unknown"
-        - name: Global.UMM_AK_ID
-          value: ""
-        - name: Global.UMM_AK_SECRET
-          value: ""
-        - name: Global.UMM_ENDPOINT
-          value: ""
-      dependencies:
-        - component: K8S_MICROSERVICE|paas-authproxy
     - revisionName: K8S_MICROSERVICE|paas-gateway|_
       scopes:
         - scopeRef:
@@ -491,8 +402,17 @@ spec:
           value: "Standalone"
         - name: Global.CLOUD_TYPE
           value: "Standalone"
+        - name: Global.DB_NAME
+          value: "abm_paas_authproxy"
+        - name: Global.LOGIN_URL
+          value: "fake-login-url"
+        - name: Global.POSTRUN_WAIT_TIME
+          value: "5s"
+        - name: Global.DB_NAME_AUTHPROXY
+          value: "abm_paas_authproxy"
       dependencies:
         - component: K8S_MICROSERVICE|paas-gateway
+        - component: K8S_MICROSERVICE|paas-authproxy
     - revisionName: K8S_MICROSERVICE|paas-nacos|_
       scopes:
         - scopeRef:
@@ -528,23 +448,6 @@ spec:
         - name: Global.DB_NAME
           value: "abm_paas_nacos"
       dependencies:
-    - revisionName: K8S_JOB|paas-gateway-route-config|_
-      scopes:
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Cluster
-            name: "{{ Global.CLUSTER_ID }}"
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Namespace
-            name: "{{ Global.NAMESPACE_ID }}"
-        - scopeRef:
-            apiVersion: apps.abm.io/v1
-            kind: Stage
-            name: "{{ Global.STAGE_ID }}"
-      parameterValues:
-      dependencies:
-        - component: K8S_MICROSERVICE|paas-gateway
     - revisionName: K8S_MICROSERVICE|paas-action|_
       scopes:
         - scopeRef:

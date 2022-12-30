@@ -79,16 +79,16 @@ public class GitServiceImpl implements GitService {
 
             // 如果指定了特定的 commit，那么切换到对应的 commit
             if (!StringUtils.isEmpty(request.getCommit())) {
-                String resetCommitCommand = String.format("cd %s; git reset --hard %s", tmpDir, request.getCommit());
+                String[] resetCommitCommand = new String[]{"git", "reset", "--hard", request.getCommit()};
                 logContent.append(String.format("run command: %s\n", resetCommitCommand));
-                logContent.append(CommandUtil.runLocalCommand(resetCommitCommand));
+                logContent.append(CommandUtil.runLocalCommand(resetCommitCommand, tmpDir.toFile()));
             }
 
             // 删除 .git 临时文件
             if (!request.isKeepGitFiles()) {
-                String rmInternalDirCommand = String.format("rm -rf %s/.git*", tmpDir);
+                String[] rmInternalDirCommand = new String[]{"rm", "-rf", String.format("%s/.git*", tmpDir)};
                 logContent.append(String.format("run command: %s\n", rmInternalDirCommand));
-                logContent.append(CommandUtil.runLocalCommand(rmInternalDirCommand));
+                logContent.append(CommandUtil.runLocalCommand(CommandUtil.getBashCommand(rmInternalDirCommand)));
             }
 
             // 存在 repoPath 的时候，需要将 repoPath 对应的目录拷贝到 dir 实际对应的目录中
@@ -141,10 +141,15 @@ public class GitServiceImpl implements GitService {
                     .ciToken(request.getCiToken())
                     .build());
 
-            String command = String.format("cd %s; git clone -b %s --no-checkout --depth=1 --no-tags %s .; git restore " +
-                    "--staged %s; git checkout %s", tmpDir.toString(), branch, repo, filepath, filepath);
-            logContent.append(String.format("run command: %s\n", command));
-            logContent.append(CommandUtil.runLocalCommand(command));
+            String[] cloneCommand = new String[]{"git", "clone", "-b", branch, "--no-checkout", "--depth=1", "--no-tags", repo, "."};
+            String[] restoreCommand = new String[]{"git", "restore", "--staged", filepath};
+            String[] checkoutCommand = new String[]{"git", "checkout", filepath};
+            logContent.append(String.format("run clone command: %s\n", cloneCommand));
+            logContent.append(CommandUtil.runLocalCommand(cloneCommand, tmpDir.toFile()));
+            logContent.append(String.format("run restore command: %s\n", restoreCommand));
+            logContent.append(CommandUtil.runLocalCommand(restoreCommand, tmpDir.toFile()));
+            logContent.append(String.format("run checkout command: %s\n", checkoutCommand));
+            logContent.append(CommandUtil.runLocalCommand(checkoutCommand, tmpDir.toFile()));
 
             return new String(Files.readAllBytes(Paths.get(tmpDir.toString(), filepath)));
         } catch (IOException e) {
@@ -189,12 +194,7 @@ public class GitServiceImpl implements GitService {
                 "-m",
                 String.format("baseline file for %s app modified by %s", request.getAppId(), request.getOperator())
         };
-        String[] pushCommand = new String[]{
-                "git",
-                "push",
-                "origin",
-                request.getGitRemoteBranch(),
-        };
+        String[] pushCommand = new String[]{"git", "push", "origin", request.getGitRemoteBranch()};
 
         logContent.append(CommandUtil.runLocalCommand(addCommand, cloneDir.toFile()));
         logContent.append(CommandUtil.runLocalCommand(commitCommand, cloneDir.toFile()));
@@ -210,8 +210,8 @@ public class GitServiceImpl implements GitService {
      */
     @Override
     public void checkoutBranch(StringBuilder logContent, String branch, Path dir) {
-        String command = String.format("cd %s; git checkout %s", dir, branch);
-        logContent.append(CommandUtil.runLocalCommand(command));
+        String[] command = new String[]{"git", "checkout", branch};
+        logContent.append(CommandUtil.runLocalCommand(command, dir.toFile()));
     }
 
     /**

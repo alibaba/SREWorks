@@ -47,6 +47,6 @@ public class AppEnvironmentController extends AppManagerBaseController {
         request.setAppComponents(appComponentProvider.getFullComponentRelations(
                 appId, container.getNamespaceId(), container.getStageId()));
         appEnvironmentProvider.bindEnvironment(request);
-        return buildSucceedResult();
+        return buildSucceedResult(DefaultConstant.EMPTY_OBJ);
     }
 }

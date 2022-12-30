@@ -2,11 +2,11 @@ package com.alibaba.tesla.appmanager.workflow.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
-import com.alibaba.tesla.appmanager.domain.dto.WorkflowInstanceDTO;
 import com.alibaba.tesla.appmanager.domain.option.WorkflowInstanceOption;
 import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowInstanceQueryCondition;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
 import com.alibaba.tesla.appmanager.domain.res.workflow.WorkflowInstanceOperationRes;
+import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO;
 
 /**
  * 工作流实例服务
@@ -62,10 +62,10 @@ public interface WorkflowInstanceService {
      * <p>
      * 该方法用于 WorkflowInstanceTask 在以 SUCCESS 完成时触发下一个 Task 的执行，并更新 Workflow 实例状态
      *
-     * @param instance       Workflow 实例
-     * @param workflowTaskId 当前 Workflow Instance 下已经执行成功的最后一个 workflowTaskId
+     * @param instance Workflow 实例
+     * @param task     当前执行成功的 Task 实例
      */
-    void triggerNextPendingTask(WorkflowInstanceDO instance, Long workflowTaskId);
+    void triggerRestPendingTasks(WorkflowInstanceDO instance, WorkflowTaskDO task);
 
     /**
      * 对指定 workflow instance 触发失败事件
@@ -116,7 +116,7 @@ public interface WorkflowInstanceService {
      * 如果更新 Owner 成功，执行强制终止；更新 Owner 失败则报错 (可能网络分区)
      *
      * @param workflowInstanceId Workflow 实例 ID
-     * @param command 命令
+     * @param command            命令
      * @return 操作执行结果
      */
     WorkflowInstanceOperationRes broadcastCommand(Long workflowInstanceId, String command);

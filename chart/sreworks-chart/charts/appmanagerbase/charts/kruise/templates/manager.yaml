@@ -56,7 +56,7 @@ spec:
           command:
             - /manager
           image: {{ .Values.manager.image.repository }}:{{ .Values.manager.image.tag }}
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.global.images.imagePullPolicy }}
           name: manager
           env:
             - name: POD_NAMESPACE
@@ -174,7 +174,7 @@ spec:
         - --addr=:{{ .Values.daemon.port }}
         - --feature-gates={{ .Values.featureGates }}
         image: {{ .Values.manager.image.repository }}:{{ .Values.manager.image.tag }}
-        imagePullPolicy: Always
+        imagePullPolicy: {{ .Values.global.images.imagePullPolicy }}
         name: daemon
         env:
         - name: NODE_NAME

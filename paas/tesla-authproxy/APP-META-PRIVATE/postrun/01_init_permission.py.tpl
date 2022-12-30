@@ -66,5 +66,4 @@ def import_permissions():
 
 
 if __name__ == '__main__':
-    time.sleep(300)
     import_permissions()

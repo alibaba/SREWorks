@@ -57,6 +57,14 @@
 {{- end -}}
 {{- end -}}
 
+{{- define "localPathProvisioner.image" -}}
+{{- if .Values.global.artifacts.localPathProvisioner -}}
+{{ .Values.global.artifacts.localPathProvisioner }}
+{{- else -}}
+{{ .Values.global.images.registry }}/local-path-provisioner:v0.0.23
+{{- end -}}
+{{- end -}}
+
 {{- define "python.pip.domain" -}}
 {{- (split "/" ((split "://" .Values.global.artifacts.pythonPip)._1))._0 | quote -}}
 {{- end -}}

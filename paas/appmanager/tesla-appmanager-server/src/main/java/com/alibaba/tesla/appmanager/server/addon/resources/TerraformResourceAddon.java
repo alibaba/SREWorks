@@ -178,12 +178,12 @@ public class TerraformResourceAddon extends BaseAddon {
 
         // 准备环境变量并执行命令
         Map<String, String> environments = getEnvironments(spec);
-        String applyCommand = String.format("cd %s; /app/terraform apply -auto-approve -no-color", gitDir);
-        String applyResult = CommandUtil.runLocalCommand(applyCommand, environments);
+        String[] applyCommand = new String[]{"/app/terraform", "apply", "-auto-approve", "-no-color"};
+        String applyResult = CommandUtil.runLocalCommand(applyCommand, environments, gitDir.toFile());
         log.info("'{}' has been executed in dir {}|{}|result={}", applyCommand, gitDir, logSuffix, applyResult);
 
-        String outputCommand = String.format("cd %s; /app/terraform output -no-color -json", gitDir);
-        String outputResult = CommandUtil.runLocalCommand(outputCommand, environments);
+        String[] outputCommand = new String[]{"/app/terraform", "output", "-no-color", "-json"};
+        String outputResult = CommandUtil.runLocalCommand(outputCommand, environments, gitDir.toFile());
         log.info("'{}' has been executed in dir {}|{}|result={}", outputCommand, gitDir, logSuffix, outputResult);
 
         // 解析返回 JSON 输出
@@ -200,8 +200,8 @@ public class TerraformResourceAddon extends BaseAddon {
         spec.put("tfstate", tfstate);
 
         // 获取当前 signature
-        String hashCommand = String.format("cd %s; git rev-parse HEAD", gitDir);
-        String signature = CommandUtil.runLocalCommand(hashCommand);
+        String[] hashCommand = new String[]{"git", "rev-parse", "HEAD"};
+        String signature = CommandUtil.runLocalCommand(hashCommand, gitDir.toFile());
 
         // 清理目录并返回
         try {

@@ -1,0 +1,2 @@
+FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/sw-postrun:v1.4
+COPY ./APP-META-PRIVATE/postrun /app/postrun

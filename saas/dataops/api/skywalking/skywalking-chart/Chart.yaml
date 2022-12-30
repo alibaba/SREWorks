@@ -3,8 +3,12 @@ dependencies:
 - condition: elasticsearch.enabled
   name: elasticsearch
   repository: https://helm.elastic.co/
-  version: ~7.5.1
-description: Apache SkyWalking APM System
+  version: ~7.17.1
+- condition: postgresql.enabled
+  name: postgresql
+  repository: https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+  version: 12.1.2
+description: Helm Chart for Apache SkyWalking
 home: https://skywalking.apache.org
 icon: https://raw.githubusercontent.com/apache/skywalking-kubernetes/master/logo/sw-logo-for-chart.jpg
 maintainers:
@@ -14,7 +18,7 @@ maintainers:
   name: innerpeacez
 - email: kezhenxu94@163.com
   name: kezhenxu94
-name: skywalking
+name: skywalking-helm
 sources:
 - https://github.com/apache/skywalking-kubernetes
-version: 4.0.0
+version: 4.4.0

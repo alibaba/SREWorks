@@ -51,7 +51,7 @@ class ScriptComponentDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 3
+    public static final Integer REVISION = 4
 
     /**
      * 上报状态常量
@@ -62,7 +62,7 @@ class ScriptComponentDeployHandler implements DeployComponentHandler {
     /**
      * 等待部署超时时间
      */
-    private static final Integer WAIT_TIMEOUT_SECONDS = 600
+    private static final Integer WAIT_TIMEOUT_SECONDS = 900
 
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
     private static final String ANNOTATIONS_COMPONENT_INSTANCE_ID = "annotations.appmanager.oam.dev/componentInstanceId"

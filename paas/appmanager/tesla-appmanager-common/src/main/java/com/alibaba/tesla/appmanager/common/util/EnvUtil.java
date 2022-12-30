@@ -37,6 +37,9 @@ public class EnvUtil {
         if (StringUtils.isNotEmpty(stageId)) {
             arr.add(String.format("Stage:%s", stageId));
         }
+        if (arr.size() == 0) {
+            return "";
+        }
         return String.join("::", arr);
     }
 

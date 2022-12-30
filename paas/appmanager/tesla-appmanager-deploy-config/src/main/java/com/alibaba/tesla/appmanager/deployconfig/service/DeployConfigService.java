@@ -20,6 +20,14 @@ import java.util.List;
 public interface DeployConfigService {
 
     /**
+     * 在指定条件下是否存在 Type:envBinding 项
+     *
+     * @param req 检查请求
+     * @return true or false
+     */
+    boolean hasEnvBinding(DeployConfigHasEnvBindingReq req);
+
+    /**
      * 应用部署模板 (拆分 launch yaml 并分别应用保存)
      *
      * @param req 应用请求
@@ -123,4 +131,20 @@ public interface DeployConfigService {
      */
     DeployConfigDO findBestConfigInRecordsByGeneralType(
             List<DeployConfigDO> records, String clusterId, String namespaceId, String stageId);
+
+    /**
+     * 根据指定条件寻找最佳部署配置
+     *
+     * @param appRecords        指定应用下的 deploy config 配置
+     * @param rootRecords       根 deploy config 配置 (无 appId, 全局配置)
+     * @param rootParentRecords rootRecords 的 parent type id 对应的过滤 deploy config 配置 (无 appId, 全局配置)
+     * @param unitId            单元 ID
+     * @param clusterId         集群 ID
+     * @param namespaceId       Namespace ID
+     * @param stageId           Stage ID
+     * @return 最佳配置记录 (如果返回 null，表明当前无异常，但无法由给定条件找到合理数据，应当由上层忽略此次查找)
+     */
+    DeployConfigDO findBestConfigInRecordsBySpecifiedName(
+            List<DeployConfigDO> appRecords, List<DeployConfigDO> rootRecords, List<DeployConfigDO> rootParentRecords,
+            String unitId, String clusterId, String namespaceId, String stageId);
 }

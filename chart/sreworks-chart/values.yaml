@@ -1,5 +1,5 @@
 global:
-  storageClass: "sreworks-hostpath"
+  storageClass: "sreworks-local"
 
   minio:
     accessKey: 'XmizyTRKhgYTrVkK'
@@ -7,7 +7,8 @@ global:
 
   images:
     registry: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub
-    tag: v1.3
+    tag: v1.4
+    imagePullPolicy: Always 
 
   accessMode: ingress
 
@@ -47,10 +48,11 @@ global:
     mysqlImage: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/mysql:8.0.22-debian-10-r44
 
 platformName: SREWorks
-platformLogo: /static/publicMedia/sreworks.png
+platformLogo: /static/icons/sreworks.png
 
 installMode: default
 
+localPathProvisioner: true
 progressCheck: true
 debug: false
 adminInitPassword: "12345678"
@@ -119,7 +121,7 @@ swcli:
   clientSecret: stLCjCPKbWmki65DsAj2jPoeBLPimpJa
 
 source:
-  branch: v1.3
+  branch: v1.4
   repo: https://code.aliyun.com/sreworks_public/mirror.git
 
 appmanagerbase:

@@ -20,11 +20,11 @@ data:
 
     cd /root/saas/swcore/api/core/
 
+    export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
 
         # build&launch paas
-        export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
         envsubst < /root/saas/swcore/api/core/build.yaml.tpl > build.yaml
 
         if [[ "$ACCESS_MODE" == "ingress" ]] ; then
@@ -39,16 +39,18 @@ data:
 
     else
     
-        export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+        python /app/patch_meta_yaml.py /root/saas/swcore/build
+        python /app/pack.py --src /root/saas/swcore/build --dest /root/saas/swcore/build.zip
 
         if [[ "$ACCESS_MODE" == "ingress" ]] ; then
-           envsubst < /root/saas/swcore/api/core/launch.yaml.tpl > /root/saas/swcore/launch.yaml
+            envsubst < /root/saas/swcore/build/launch.yaml.tpl > /root/saas/swcore/launch.yaml
         else
-           envsubst < /root/saas/swcore/api/core/launch-nodeport.yaml.tpl > /root/saas/swcore/launch.yaml
+            envsubst < /root/saas/swcore/build/launch-nodeport.yaml.tpl > /root/saas/swcore/launch.yaml
         fi
+        
+        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id=${CORE_APP_ID} --filepath /root/saas/swcore/build.zip --print-only-app-package-id=true --reset-version=true)
+        /root/swcli --config /swcli/swcli.yaml deployment launch --wait-max-seconds 400 --app-id=${CORE_APP_ID} --stage=prod --namespace=${NAMESPACE_ID} --path /root/saas/swcore/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
 
-        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id=${CORE_APP_ID} --filepath /root/saas/swcore/flycore.zip --print-only-app-package-id=true --reset-version=true)
-        /root/swcli --config /swcli/swcli.yaml deployment launch --wait-max-seconds 300 --app-id=${CORE_APP_ID} --stage=prod --namespace=${NAMESPACE_ID} --path /root/saas/swcore/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
 
     fi
 
@@ -129,6 +131,8 @@ data:
     envsubst < /root/saas/cluster/build/launch-backend.yaml.tpl > /root/saas/cluster/launch-backend.yaml
     envsubst < /root/saas/cluster/build/launch-frontend.yaml.tpl > /root/saas/cluster/launch-frontend.yaml
     envsubst < /root/saas/cluster/build/launch-frontend-dev.yaml.tpl > /root/saas/cluster/launch-frontend-dev.yaml
+  
+    python /app/patch_meta_yaml.py /root/saas/cluster/build
     python /app/pack.py --src /root/saas/cluster/build --dest /root/saas/cluster/build.zip
 
 
@@ -165,6 +169,8 @@ data:
     envsubst < /root/saas/app/build/launch-backend.yaml.tpl > /root/saas/app/launch-backend.yaml
     envsubst < /root/saas/app/build/launch-frontend.yaml.tpl > /root/saas/app/launch-frontend.yaml
     envsubst < /root/saas/app/build/launch-frontend-dev.yaml.tpl > /root/saas/app/launch-frontend-dev.yaml
+
+    python /app/patch_meta_yaml.py /root/saas/app/build
     python /app/pack.py --src /root/saas/app/build --dest /root/saas/app/build.zip
  
     
@@ -201,6 +207,8 @@ data:
     envsubst < /root/saas/system/build/launch-backend.yaml.tpl > /root/saas/system/launch-backend.yaml
     envsubst < /root/saas/system/build/launch-frontend.yaml.tpl > /root/saas/system/launch-frontend.yaml
     envsubst < /root/saas/system/build/launch-frontend-dev.yaml.tpl > /root/saas/system/launch-frontend-dev.yaml
+    
+    python /app/patch_meta_yaml.py /root/saas/system/build
     python /app/pack.py --src /root/saas/system/build --dest /root/saas/system/build.zip
  
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
@@ -235,6 +243,8 @@ data:
     envsubst < /root/saas/upload/build/launch-backend.yaml.tpl > /root/saas/upload/launch-backend.yaml
     envsubst < /root/saas/upload/build/launch-frontend.yaml.tpl > /root/saas/upload/launch-frontend.yaml
     envsubst < /root/saas/upload/build/launch-frontend-dev.yaml.tpl > /root/saas/upload/launch-frontend-dev.yaml
+
+    python /app/patch_meta_yaml.py /root/saas/upload/build
     python /app/pack.py --src /root/saas/upload/build --dest /root/saas/upload/build.zip
  
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
@@ -328,7 +338,7 @@ data:
     f.close()
 
     srcData["spec"]["components"] = list(filter(lambda c: c.get("revisionName") not in args.components, srcData["spec"]["components"]))
-
+            
     f = open(args.src, 'w')
     f.write(yaml.safe_dump(srcData, width=float("inf")))
     f.close()
@@ -351,8 +361,9 @@ data:
     envsubst < /root/saas/dataops/build/launch-backend.yaml.tpl > /root/saas/dataops/launch-backend.yaml
     envsubst < /root/saas/dataops/build/launch-frontend.yaml.tpl > /root/saas/dataops/launch-frontend.yaml
     envsubst < /root/saas/dataops/build/launch-frontend-dev.yaml.tpl > /root/saas/dataops/launch-frontend-dev.yaml
+    
+    python /app/patch_meta_yaml.py /root/saas/dataops/build
     python /app/pack.py --src /root/saas/dataops/build --dest /root/saas/dataops/build.zip
-
 
     # mysql地址如果从外部传入就不拉起mysql
     if [[ "$DATAOPS_DB_HOST" != "prod-dataops-mysql.sreworks-dataops" ]]
@@ -398,121 +409,6 @@ data:
 
     fi
 
- 
- 
-  saas-dataops1.sh: |
-    set -e
-    set -x 
-    
-    sh /app/core-deploy-check.sh
-
-    cd /root
-    export NAMESPACE_ID=${NAMESPACE_DATAOPS}
-    export NODE_NAME='$''{''NODE_NAME''}'
-    export NODE_IP='$''{''NODE_IP''}'
- 
-    echo "" > tmp-merge-build.yaml
-    echo "" > tmp-merge-launch.yaml
-
-    split(){
-        cat tmp-build.yaml >> tmp-merge-build.yaml
-        cat tmp-launch.yaml >> tmp-merge-launch.yaml
-        echo "---" >> tmp-merge-build.yaml
-        echo "---" >> tmp-merge-launch.yaml
-    }
-
-
-    # mysql地址如果从外部传入就不拉起mysql
-    if [[ "$DATAOPS_DB_HOST" == "prod-dataops-mysql.sreworks-dataops" ]]
-    then
-      envsubst < /root/saas/dataops/api/mysql/build.yaml.tpl > tmp-build.yaml
-      envsubst < /root/saas/dataops/api/mysql/launch.yaml.tpl > tmp-launch.yaml
-      split
-    fi
-
-    if [[ "$DATA_ES_HOST" == "prod-dataops-elasticsearch-master.sreworks-dataops" ]]
-    then
-       envsubst < /root/saas/dataops/api/elasticsearch/build.yaml.tpl > tmp-build.yaml
-       envsubst < /root/saas/dataops/api/elasticsearch/launch.yaml.tpl > tmp-launch.yaml
-       split
-    fi
-
-
-    envsubst < /root/saas/dataops/api/grafana/build.yaml.tpl > tmp-build.yaml
-    envsubst < /root/saas/dataops/api/grafana/launch.yaml.tpl > tmp-launch.yaml
-    split
-
-    envsubst < /root/saas/dataops/api/kibana/build.yaml.tpl > tmp-build.yaml
-    envsubst < /root/saas/dataops/api/kibana/launch.yaml.tpl > tmp-launch.yaml
-    split    
-
-    envsubst < /root/saas/dataops/api/metricbeat/build.yaml.tpl > tmp-build.yaml
-    envsubst < /root/saas/dataops/api/metricbeat/launch.yaml.tpl > tmp-launch.yaml
-    split
-
-    envsubst < /root/saas/dataops/api/filebeat/build.yaml.tpl > tmp-build.yaml
-    envsubst < /root/saas/dataops/api/filebeat/launch.yaml.tpl > tmp-launch.yaml
-    split
-
-    envsubst < /root/saas/dataops/api/skywalking/build.yaml.tpl > tmp-build.yaml
-    envsubst < /root/saas/dataops/api/skywalking/launch.yaml.tpl > tmp-launch.yaml
-    split
-
-    envsubst < /root/saas/dataops/api/prometheus/build.yaml.tpl > tmp-build.yaml
-    envsubst < /root/saas/dataops/api/prometheus/launch.yaml.tpl > tmp-launch.yaml
-    split
-
-    #envsubst < /root/saas/dataops/api/mongodb/build.yaml.tpl > tmp-build.yaml
-    #envsubst < /root/saas/dataops/api/mongodb/launch.yaml.tpl > tmp-launch.yaml
-    #split
-
-    envsubst < /root/saas/dataops/api/ververica-platform/build.yaml.tpl > tmp-build.yaml
-    envsubst < /root/saas/dataops/api/ververica-platform/launch.yaml.tpl > tmp-launch.yaml
-    split
-
-    envsubst < /root/saas/dataops/api/logstash/build.yaml.tpl > tmp-build.yaml
-    envsubst < /root/saas/dataops/api/logstash/launch.yaml.tpl > tmp-launch.yaml
-    split
-
-    envsubst < /root/saas/dataops/api/build.yaml.tpl > tmp-build.yaml
-    envsubst < /root/saas/dataops/api/launch.yaml.tpl > tmp-launch.yaml
-    split
-
-    cat tmp-merge-build.yaml | python -c 'import sys;print("\n---\n".join([raw.strip() for raw in sys.stdin.read().strip().split("---") if raw.strip()]))' > merge-build.yaml
-    cat tmp-merge-launch.yaml | python /app/reduce.py > merge-launch.yaml
-    
-    mv merge-build.yaml build.yaml
-
-    envsubst < /root/saas/dataops/ui/data/launch-v2.yaml.tpl > /root/saas/dataops/ui/data/launch.yaml
-    envsubst < /root/saas/dataops/ui/data/launch-v2-dev.yaml.tpl > /root/saas/dataops/ui/data/launch-dev.yaml
-
-    if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then 
-        /root/swcli --config /swcli/swcli.yaml app-package oneflow --stage=prod --app-id=dataops --namespace=${NAMESPACE_ID} --tags="release=sreworks/x86_64" --arch=x86 --cluster=master --path=./merge-launch.yaml --disable-dir-check
-
-        if [[ "$IMPORT_FRONTEND" == "true" ]] ; then
-            
-            result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id dataops --filepath /root/saas/dataops/ui/data/data-auto.zip --print-only-app-package-id=true --reset-version=true)
-
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage prod --app-id dataops --path /root/saas/dataops/ui/data/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-            /root/swcli --config /swcli/swcli.yaml deployment launch --namespace ${NAMESPACE_ID} --stage dev --app-id dataops --path /root/saas/dataops/ui/data/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-        fi
-    else
-        cd /root/saas/dataops/
-
-        sh /app/core-action-service-check.sh
-      
-        echo "" > merge-launch.yaml
-        cat /root/merge-launch.yaml >> merge-launch.yaml
-        echo "---" >> merge-launch.yaml
-        cat /root/saas/dataops/ui/data/launch.yaml >> merge-launch.yaml
-        cat merge-launch.yaml | python /app/reduce.py > launch.yaml
-      
-        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id dataops --filepath /root/saas/dataops/data.zip --print-only-app-package-id=true --reset-version=true)
-
-        /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id dataops --path /root/saas/dataops/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-        /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id dataops --path /root/saas/dataops/ui/data/launch-dev.yaml --app-package-id $result --arch x86 --wait=true --cluster master
-
-    fi
 
   saas-team.sh: |
 
@@ -529,6 +425,8 @@ data:
     envsubst < /root/saas/team/build/launch-backend.yaml.tpl > /root/saas/team/launch-backend.yaml
     envsubst < /root/saas/team/build/launch-frontend.yaml.tpl > /root/saas/team/launch-frontend.yaml
     envsubst < /root/saas/team/build/launch-frontend-dev.yaml.tpl > /root/saas/team/launch-frontend-dev.yaml
+
+    python /app/patch_meta_yaml.py /root/saas/team/build
     python /app/pack.py --src /root/saas/team/build --dest /root/saas/team/build.zip
  
 
@@ -569,6 +467,8 @@ data:
     envsubst < /root/saas/aiops/build/launch-backend.yaml.tpl > /root/saas/aiops/launch-backend.yaml
     envsubst < /root/saas/aiops/build/launch-frontend.yaml.tpl > /root/saas/aiops/launch-frontend.yaml
     envsubst < /root/saas/aiops/build/launch-frontend-dev.yaml.tpl > /root/saas/aiops/launch-frontend-dev.yaml
+
+    python /app/patch_meta_yaml.py /root/saas/aiops/build
     python /app/pack.py --src /root/saas/aiops/build --dest /root/saas/aiops/build.zip    
 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
@@ -605,6 +505,8 @@ data:
     envsubst < /root/saas/job/build/launch-backend.yaml.tpl > /root/saas/job/launch-backend.yaml
     envsubst < /root/saas/job/build/launch-frontend.yaml.tpl > /root/saas/job/launch-frontend.yaml
     envsubst < /root/saas/job/build/launch-frontend-dev.yaml.tpl > /root/saas/job/launch-frontend-dev.yaml
+  
+    python /app/patch_meta_yaml.py /root/saas/job/build
     python /app/pack.py --src /root/saas/job/build --dest /root/saas/job/build.zip
 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
@@ -669,6 +571,8 @@ data:
     envsubst < /root/saas/health/build/launch-backend.yaml.tpl > /root/saas/health/launch-backend.yaml
     envsubst < /root/saas/health/build/launch-frontend.yaml.tpl > /root/saas/health/launch-frontend.yaml
     envsubst < /root/saas/health/build/launch-frontend-dev.yaml.tpl > /root/saas/health/launch-frontend-dev.yaml
+
+    python /app/patch_meta_yaml.py /root/saas/health/build
     python /app/pack.py --src /root/saas/health/build --dest /root/saas/health/build.zip
 
  
@@ -754,6 +658,8 @@ data:
     envsubst < /root/saas/search/build/launch-backend.yaml.tpl > /root/saas/search/launch-backend.yaml
     envsubst < /root/saas/search/build/launch-frontend.yaml.tpl > /root/saas/search/launch-frontend.yaml
     envsubst < /root/saas/search/build/launch-frontend-dev.yaml.tpl > /root/saas/search/launch-frontend-dev.yaml
+    
+    python /app/patch_meta_yaml.py /root/saas/search/build
     python /app/pack.py --src /root/saas/search/build --dest /root/saas/search/build.zip
 
     if [[ "$IMAGE_BUILD_ENABLE" == "true" ]] ; then
@@ -788,6 +694,33 @@ data:
        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id sreworks1 --filepath /root/saas/app/demoApp.zip --print-only-app-package-id=true --reset-version=true)
        /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace sreworks --stage prod --app-id sreworks1 --path /root/saas/app/launch-demoApp.yaml --app-package-id $result --arch x86 --wait=true --cluster master
     fi
+
+  patch_meta_yaml.py: |
+
+    import sys
+    import yaml
+    import os
+
+    h = open(sys.argv[1] + "/meta.yaml", 'r')
+    content = yaml.safe_load(h.read())
+    h.close()
+
+    registry = os.environ.get("IMAGE_REGISTRY")
+
+    for package in content.get("componentPackages",[]):
+        packageExt = yaml.safe_load(package.get("packageExt"))
+        containers = packageExt.get("spec",{}).get("workload",{}).get("spec", {}).get("containers",[])
+        initContainers = packageExt.get("spec",{}).get("workload",{}).get("spec", {}).get("initContainers",[])
+        for c in containers + initContainers:
+            c["image"] = registry + "/" +  c["image"].split("/")[-1]
+
+        package["packageExt"] = yaml.safe_dump(packageExt, width=float("inf"))
+
+
+    h = open(sys.argv[1] + "/meta.yaml", 'w')
+    h.write(yaml.safe_dump(content, width=float("inf")))
+    h.close()
+
 
   version_check.py: |
 

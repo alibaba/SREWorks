@@ -605,6 +605,76 @@ public class WorkflowTaskDOExample {
             return (Criteria) this;
         }
 
+        public Criteria andTaskNameIsNull() {
+            addCriterion("task_name is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTaskNameIsNotNull() {
+            addCriterion("task_name is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTaskNameEqualTo(String value) {
+            addCriterion("task_name =", value, "taskName");
+            return (Criteria) this;
+        }
+
+        public Criteria andTaskNameNotEqualTo(String value) {
+            addCriterion("task_name <>", value, "taskName");
+            return (Criteria) this;
+        }
+
+        public Criteria andTaskNameGreaterThan(String value) {
+            addCriterion("task_name >", value, "taskName");
+            return (Criteria) this;
+        }
+
+        public Criteria andTaskNameGreaterThanOrEqualTo(String value) {
+            addCriterion("task_name >=", value, "taskName");
+            return (Criteria) this;
+        }
+
+        public Criteria andTaskNameLessThan(String value) {
+            addCriterion("task_name <", value, "taskName");
+            return (Criteria) this;
+        }
+
+        public Criteria andTaskNameLessThanOrEqualTo(String value) {
+            addCriterion("task_name <=", value, "taskName");
+            return (Criteria) this;
+        }
+
+        public Criteria andTaskNameLike(String value) {
+            addCriterion("task_name like", value, "taskName");
+            return (Criteria) this;
+        }
+
+        public Criteria andTaskNameNotLike(String value) {
+            addCriterion("task_name not like", value, "taskName");
+            return (Criteria) this;
+        }
+
+        public Criteria andTaskNameIn(List<String> values) {
+            addCriterion("task_name in", values, "taskName");
+            return (Criteria) this;
+        }
+
+        public Criteria andTaskNameNotIn(List<String> values) {
+            addCriterion("task_name not in", values, "taskName");
+            return (Criteria) this;
+        }
+
+        public Criteria andTaskNameBetween(String value1, String value2) {
+            addCriterion("task_name between", value1, value2, "taskName");
+            return (Criteria) this;
+        }
+
+        public Criteria andTaskNameNotBetween(String value1, String value2) {
+            addCriterion("task_name not between", value1, value2, "taskName");
+            return (Criteria) this;
+        }
+
         public Criteria andTaskStageIsNull() {
             addCriterion("task_stage is null");
             return (Criteria) this;

@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 /**
  * Workflow 实例 Task 查询条件
  *
@@ -38,9 +40,19 @@ public class WorkflowTaskQueryCondition extends BaseCondition {
     private String taskType;
 
     /**
+     * Task 名称
+     */
+    private String taskName;
+
+    /**
      * Task 状态
      */
     private String taskStatus;
+
+    /**
+     * Task 状态 In
+     */
+    private List<String> taskStatusIn;
 
     /**
      * 部署单 ID

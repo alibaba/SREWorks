@@ -8,7 +8,7 @@ This chart bootstraps a [Apache SkyWalking](https://skywalking.apache.org/) depl
 
 ## Prerequisites
 
- - Kubernetes 1.9.6+ 
+ - Kubernetes 1.9.6+
  - PV dynamic provisioning support on the underlying infrastructure (StorageClass)
  - Helm 3
 
@@ -42,9 +42,10 @@ The following table lists the configurable parameters of the Skywalking chart an
 |--------------------------------------------------------------|--------------------------------------------------------------------------------------------------|--------------------------------------|
 | `nameOverride`                                               | Override name                                                                                    | `nil`                                |
 | `serviceAccounts.oap`                                        | Name of the OAP service account to use or create                                                 | `nil`                                |
+| `imagePullSecrets`                                           | Image pull secrets                                                                               | `[]`                                 |
 | `oap.name`                                                   | OAP deployment name                                                                              | `oap`                                |
 | `oap.dynamicConfigEnabled`                                     | Enable oap dynamic configuration through k8s configmap                                           | `false`                              |
-| `oap.image.repository`                                       | OAP container image name                                                                         | `apache/skywalking-oap-server`       |
+| `oap.image.repository`                                       | OAP container image name                                                                         | `skywalking.docker.scarf.sh/apache/skywalking-oap-server`       |
 | `oap.image.tag`                                              | OAP container image tag                                                                          | `6.1.0`                              |
 | `oap.image.pullPolicy`                                       | OAP container image pull policy                                                                  | `IfNotPresent`                       |
 | `oap.ports.grpc`                                             | OAP grpc port for tracing or metric                                                              | `11800`                              |
@@ -61,9 +62,12 @@ The following table lists the configurable parameters of the Skywalking chart an
 | `oap.env`                                                    | OAP environment variables                                                                        | `[]`                                 |
 | `ui.name`                                                    | Web UI deployment name                                                                           | `ui`                                 |
 | `ui.replicas`                                                | Web UI k8s deployment replicas                                                                   | `1`                                  |
-| `ui.image.repository`                                        | Web UI container image name                                                                      | `apache/skywalking-ui`               |
+| `ui.image.repository`                                        | Web UI container image name                                                                      | `skywalking.docker.scarf.sh/apache/skywalking-ui`               |
 | `ui.image.tag`                                               | Web UI container image tag                                                                       | `6.1.0`                              |
 | `ui.image.pullPolicy`                                        | Web UI container image pull policy                                                               | `IfNotPresent`                       |
+| `ui.nodeAffinity`                                            | Web UI node affinity policy                                                                      | `{}`                                 |
+| `ui.nodeSelector`                                            | Web UI labels for pod assignment                                                                 | `{}`                                 |
+| `ui.tolerations`                                             | Web UI tolerations                                                                               | `[]`                                 |
 | `ui.ingress.enabled`                                         | Create Ingress for Web UI                                                                        | `false`                              |
 | `ui.ingress.annotations`                                     | Associate annotations to the Ingress                                                             | `{}`                                 |
 | `ui.ingress.path`                                            | Associate path with the Ingress                                                                  | `/`                                  |
@@ -76,6 +80,9 @@ The following table lists the configurable parameters of the Skywalking chart an
 | `ui.service.loadBalancerIP`                                  | Load Balancer IP address                                                                         | `nil`                                |
 | `ui.service.annotations`                                     | Kubernetes service annotations                                                                   | `{}`                                 |
 | `ui.service.loadBalancerSourceRanges`                        | Limit load balancer source IPs to list of CIDRs (where available))                               | `[]`                                 |
+| `oapInit.nodeAffinity`                                       | OAP init job node affinity policy                                                                | `{}`                                 |
+| `oapInit.nodeSelector`                                       | OAP init job labels for master pod assignment                                                    | `{}`                                 |
+| `oapInit.tolerations`                                        | OAP init job tolerations                                                                         | `[]`                                 |
 | `elasticsearch.enabled`                                      | Spin up a new elasticsearch cluster for SkyWalking                                               | `true`                               |
 | `elasticsearch.clusterName`                 | This will be used as the Elasticsearch [cluster.name](https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster.name.html) and should be unique per cluster in the namespace                                                                                                                                 | `elasticsearch`                                                                                                           |
 | `elasticsearch.nodeGroup`                   | This is the name that will be used for each group of nodes in the cluster. The name will be `clusterName-nodeGroup-X`                                                                                                                                                                                                      | `master`                                                                                                                  |
@@ -138,6 +145,22 @@ The following table lists the configurable parameters of the Skywalking chart an
 | `elasticsearch.keystore`                    | Allows you map Kubernetes secrets into the keystore. See the [config example](/elasticsearch/examples/config/values.yaml) and [how to use the keystore](#how-to-use-the-keystore)                                                                                                                                          | `[]`                                                                                                                      |
 | `elasticsearch.rbac`                    | Configuration for creating a role, role binding and service account as part of this helm chart with `create: true`. Also can be used to reference an external service account with `serviceAccountName: "externalServiceAccountName"`.                                                                                             | `create: false`<br>`serviceAccountName: ""`                       |
 | `elasticsearch.podSecurityPolicy`       | Configuration for create a pod security policy with minimal permissions to run this Helm chart with `create: true`. Also can be used to reference an external pod security policy with `name: "externalPodSecurityPolicy"`                                                                                                         | `create: false`<br>`name: ""`                                     |
+| `satellite.name`                            | Satellite deployment name                                                                           | `satellite`                         |
+| `satellite.replicas`                        | Satellite k8s deployment replicas                                                                   | `1`                                 |
+| `satellite.enabled`                         | Is enable Satellite                                                                                 | `false`                             |
+| `satellite.image.repository`                | Satellite container image name                                                                      | `skywalking.docker.scarf.sh/apache/skywalking-satellite`            |
+| `satellite.image.tag`                       | Satellite container image tag                                                                       | `v0.4.0`                            |
+| `satellite.image.pullPolicy`                | Satellite container image pull policy                                                               | `IfNotPresent`                      |
+| `satellite.antiAffinity`                    | Satellite anti-affinity policy                                                                      | `soft`                              |
+| `satellite.nodeAffinity`                    | Satellite node affinity policy                                                                      | `{}`                                |
+| `satellite.nodeSelector`                    | Satellite labels for pod assignment                                                                 | `{}`                                |
+| `satellite.tolerations`                     | Satellite tolerations                                                                               | `[]`                                |
+| `satellite.service.type`                    | Satellite svc type                                                                                  | `ClusterIP`                         |
+| `satellite.ports.grpc`                      | Satellite grpc port for tracing, metrics, logs, events                                              | `11800`                             |
+| `satellite.ports.prometheus`                | Satellite http port for Prometheus monitoring                                                       | `1234`                              |
+| `satellite.resources`                       | Satellite node resources requests & limits                                                          | `{} - cpu limit must be an integer` |
+| `satellite.podAnnotations`                  | Configurable [annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/) applied to all Satellite pods                                                                                                                                                                               | `{}`                                                                                                                      |
+| `satellite.env`                             | Satellite environment variables                                                                     | `[]`                                |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -194,7 +217,7 @@ ui:
 
 Envoy ALS(access log service) provides fully logs about RPC routed, including HTTP and TCP.
 
-If you want to open envoy ALS, you can do this by modifying values.yaml. 
+If you want to open envoy ALS, you can do this by modifying values.yaml.
 
 ```yaml
 oap:

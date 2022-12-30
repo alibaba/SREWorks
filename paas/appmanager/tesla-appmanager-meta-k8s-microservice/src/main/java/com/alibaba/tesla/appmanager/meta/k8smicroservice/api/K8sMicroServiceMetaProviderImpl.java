@@ -20,6 +20,7 @@ import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQuickUpdateReq
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaUpdateByOptionReq;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaUpdateReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigHasEnvBindingReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpsertReq;
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.assembly.K8sMicroServiceMetaDtoConvert;
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.condition.K8sMicroserviceMetaQueryCondition;
@@ -111,15 +112,23 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
             return true;
         }
         K8sMicroServiceMetaDTO metaDO = this.get(id);
-        String typeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE.toString(), metaDO.getMicroServiceId()).toString();
-        deployConfigService.delete(DeployConfigDeleteReq.builder()
+        if (!deployConfigService.hasEnvBinding(DeployConfigHasEnvBindingReq.builder()
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(metaDO.getAppId())
-                .typeId(typeId)
-                .envId("")
                 .isolateNamespaceId(metaDO.getNamespaceId())
                 .isolateStageId(metaDO.getStageId())
-                .build());
+                .build())) {
+            String typeId = new DeployConfigTypeId(ComponentTypeEnum.K8S_MICROSERVICE.toString(),
+                    metaDO.getMicroServiceId()).toString();
+            deployConfigService.delete(DeployConfigDeleteReq.builder()
+                    .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                    .appId(metaDO.getAppId())
+                    .typeId(typeId)
+                    .envId("")
+                    .isolateNamespaceId(metaDO.getNamespaceId())
+                    .isolateStageId(metaDO.getStageId())
+                    .build());
+        }
         k8SMicroserviceMetaService.delete(id);
         return true;
     }
@@ -255,10 +264,17 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
         }
 
         k8SMicroserviceMetaService.create(meta);
-        if (EnvUtil.isSreworks()) {
-            refreshDeployConfigForSreworks(dto);
-        } else {
-            refreshDeployConfig(dto);
+        if (!deployConfigService.hasEnvBinding(DeployConfigHasEnvBindingReq.builder()
+                .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                .appId(dto.getAppId())
+                .isolateNamespaceId(dto.getNamespaceId())
+                .isolateStageId(dto.getStageId())
+                .build())) {
+            if (EnvUtil.isSreworks()) {
+                refreshDeployConfigForSreworks(dto);
+            } else {
+                refreshDeployConfig(dto);
+            }
         }
         K8sMicroServiceMetaDO result = k8SMicroserviceMetaService.get(K8sMicroserviceMetaQueryCondition.builder()
                 .appId(dto.getAppId())
@@ -290,10 +306,17 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
                 .withBlobs(true)
                 .build();
         k8SMicroserviceMetaService.update(meta, condition);
-        if (EnvUtil.isSreworks()) {
-            refreshDeployConfigForSreworks(dto);
-        } else {
-            refreshDeployConfig(dto);
+        if (!deployConfigService.hasEnvBinding(DeployConfigHasEnvBindingReq.builder()
+                .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                .appId(dto.getAppId())
+                .isolateNamespaceId(dto.getNamespaceId())
+                .isolateStageId(dto.getStageId())
+                .build())) {
+            if (EnvUtil.isSreworks()) {
+                refreshDeployConfigForSreworks(dto);
+            } else {
+                refreshDeployConfig(dto);
+            }
         }
         return k8sMicroServiceMetaDtoConvert.to(k8SMicroserviceMetaService.get(condition));
     }

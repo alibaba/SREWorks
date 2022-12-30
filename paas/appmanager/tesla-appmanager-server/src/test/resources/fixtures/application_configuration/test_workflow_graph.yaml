@@ -1,0 +1,43 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: ApplicationConfiguration
+metadata:
+  name: test
+spec:
+  workflow:
+    steps:
+      - type: apply-components
+        name: deploy-env-e2e-1
+        outputs:
+          - name: var3
+            valueFrom: xxxx
+        inputs:
+          - from: var1
+            parameterKey: aaa
+          - from: var2
+            parameterKey: bbb
+        properties:
+          a: b
+      - type: apply-components
+        name: deploy-env-e2e-2
+        outputs:
+          - name: var1
+            valueFrom: xxxx
+        properties:
+          c: d
+      - type: apply-components
+        name: deploy-env-e2e-3
+        outputs:
+          - name: var2
+            valueFrom: xxxx
+        properties:
+          e: f
+      - type: apply-components
+        name: deploy-env-e2e-4
+        inputs:
+          - from: var3
+            parameterKey: aaa
+        outputs:
+          - name: var4
+            valueFrom: xxxx
+        properties:
+          g: h

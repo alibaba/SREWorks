@@ -184,6 +184,7 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
                     .instanceId(task.getWorkflowInstanceId())
                     .taskId(task.getId())
                     .taskType(task.getTaskType())
+                    .taskName(task.getTaskName())
                     .taskStage(task.getTaskStage())
                     .taskProperties(plugTaskProperties(task, context))
                     .context(context)
@@ -325,20 +326,24 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
         JSONObject deliverData = context.getJSONObject(WorkflowContextKeyConstant.DEPLOY_DELIVER_PARAMETERS);
         if (deliverData != null) {
             String taskInputs = task.getTaskInputs();
-            JSONArray inputs = JSONObject.parseArray(taskInputs);
-            log.info("task id={}|deliverData={}|inputs={}", task.getId(), deliverData, inputs);
+            List<DeployAppSchema.WorkflowStepInput> inputs = JSONObject
+                    .parseArray(taskInputs, DeployAppSchema.WorkflowStepInput.class);
+            log.info("plug task properties|workflowTaskId={}|deliverData={}|inputs={}",
+                    task.getId(), deliverData, inputs);
             for (int i = 0; i < inputs.size(); i++) {
-                JSONObject input = inputs.getJSONObject(i);
-                String parameterKey = input.getString("parameterKey");
+                DeployAppSchema.WorkflowStepInput input = inputs.get(i);
+                String parameterKey = input.getParameterKey();
                 String[] parameterKeySequences = parameterKey.split("\\.");
                 if (parameterKeySequences.length > 10) {
                     log.warn("parameterKey level is more than 10:{}, {}", task.getId(), parameterKey);
                     continue;
                 }
-                addTaskProperties(task.getId(), taskProperties, parameterKeySequences, 0, parameterKeySequences.length, deliverData.getString(input.getString("from")));
+                addTaskProperties(task.getId(), taskProperties, parameterKeySequences, 0,
+                        parameterKeySequences.length, deliverData.getString(input.getFrom()));
             }
         }
-        log.info("task id={}|deliverData={}|taskProperties={}", task.getId(), deliverData, taskProperties);
+        log.info("plug task properties success|workflowTaskId={}|deliverData={}|taskProperties={}",
+                task.getId(), deliverData, taskProperties);
         return taskProperties;
     }
 

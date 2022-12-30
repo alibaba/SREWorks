@@ -1,0 +1,67 @@
+[
+  {
+    "apiVersion": "core.oam.dev/v1alpha2",
+    "appId": "saas-utility-noarch",
+    "config": "",
+    "currentRevision": 0,
+    "enabled": true,
+    "envId": "",
+    "gmtCreate": 1670725996000,
+    "gmtModified": 1670725996000,
+    "id": 935,
+    "inherit": false,
+    "namespaceId": "default",
+    "productId": "abm",
+    "releaseId": "live",
+    "stageId": "live",
+    "typeId": "Type:envBinding"
+  },
+  {
+    "apiVersion": "core.oam.dev/v1alpha2",
+    "appId": "saas-utility-noarch",
+    "config": "",
+    "currentRevision": 0,
+    "enabled": true,
+    "envId": "",
+    "inherit": false,
+    "namespaceId": "default",
+    "stageId": "live",
+    "typeId": "Type:components::ComponentType:K8S_MICROSERVICE::ComponentName:server"
+  },
+  {
+    "apiVersion": "core.oam.dev/v1alpha2",
+    "appId": "saas-utility-noarch",
+    "config": "",
+    "currentRevision": 0,
+    "enabled": true,
+    "envId": "",
+    "inherit": false,
+    "namespaceId": "default",
+    "stageId": "live",
+    "typeId": "Type:parameterValues"
+  },
+  {
+    "apiVersion": "core.oam.dev/v1alpha2",
+    "appId": "saas-utility-noarch",
+    "config": "",
+    "currentRevision": 0,
+    "enabled": true,
+    "envId": "",
+    "inherit": false,
+    "namespaceId": "default",
+    "stageId": "live",
+    "typeId": "Type:policies"
+  },
+  {
+    "apiVersion": "core.oam.dev/v1alpha2",
+    "appId": "saas-utility-noarch",
+    "config": "",
+    "currentRevision": 0,
+    "enabled": true,
+    "envId": "",
+    "inherit": false,
+    "namespaceId": "default",
+    "stageId": "live",
+    "typeId": "Type:workflow"
+  }
+]

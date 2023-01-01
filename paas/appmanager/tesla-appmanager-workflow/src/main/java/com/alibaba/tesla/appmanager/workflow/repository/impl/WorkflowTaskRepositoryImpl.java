@@ -73,15 +73,14 @@ public class WorkflowTaskRepositoryImpl implements WorkflowTaskRepository {
     }
 
     /**
-     * 获取指定 workflowInstance 中指定 workflowTask 的下一个 PENDING 待运行任务
+     * 获取指定 workflowInstance 中剩余还没有完成的任务清单
      *
      * @param workflowInstanceId Workflow Instance ID
-     * @param workflowTaskId     Workflow Task ID
      * @return 待运行 Workflow 任务
      */
     @Override
-    public WorkflowTaskDO nextPendingTask(Long workflowInstanceId, Long workflowTaskId) {
-        return mapper.nextPendingTask(workflowInstanceId, workflowTaskId);
+    public List<WorkflowTaskDO> notFinishedTasks(Long workflowInstanceId) {
+        return mapper.notFinishedTasks(workflowInstanceId);
     }
 
     /**
@@ -109,8 +108,13 @@ public class WorkflowTaskRepositoryImpl implements WorkflowTaskRepository {
         if (StringUtils.isNotBlank(condition.getTaskType())) {
             criteria.andTaskTypeEqualTo(condition.getTaskType());
         }
+        if (StringUtils.isNotBlank(condition.getTaskName())) {
+            criteria.andTaskNameEqualTo(condition.getTaskName());
+        }
         if (StringUtils.isNotBlank(condition.getTaskStatus())) {
             criteria.andTaskStatusEqualTo(condition.getTaskStatus());
+        } else if (condition.getTaskStatusIn() != null && condition.getTaskStatusIn().size() > 0) {
+            criteria.andTaskStatusIn(condition.getTaskStatusIn());
         }
         if (condition.getDeployAppId() != null && condition.getDeployAppId() > 0) {
             criteria.andDeployAppIdEqualTo(condition.getDeployAppId());

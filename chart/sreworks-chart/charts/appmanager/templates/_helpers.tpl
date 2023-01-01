@@ -13,6 +13,14 @@
 {{- printf "%s/%s:%s" .Values.global.images.registry "sw-paas-appmanager-operator" .Values.global.images.tag -}}
 {{- end -}}
 {{- end -}}
+ 
+{{- define "images.rbacProxy" -}}
+{{- if .Values.images.rbacProxy -}}
+{{- .Values.images.rbacProxy -}}
+{{- else -}}
+{{- printf "%s/%s:%s" .Values.global.images.registry "kube-rbac-proxy" "v0.8.0" -}}
+{{- end -}}
+{{- end -}}
 
 {{- define "images.dbMigration" -}}
 {{- if .Values.images.dbMigration -}}

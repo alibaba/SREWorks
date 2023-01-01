@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.api.provider;
 
+import com.alibaba.tesla.appmanager.domain.container.AppComponentLocationContainer;
 import com.alibaba.tesla.appmanager.domain.dto.AppComponentDTO;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentCreateReq;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentDeleteReq;
@@ -14,6 +15,16 @@ import java.util.List;
  * @author yaoxing.gyx@alibaba-inc.com
  */
 public interface AppComponentProvider {
+
+    /**
+     * 获取指定应用下绑定了哪些组件及组件名称
+     * @param appId 应用 ID
+     * @param isolateNamespaceId 隔离 Namespace ID
+     * @param isolateStageId 隔离 Stage ID
+     * @return List of AppComponentLocationContainer
+     */
+    List<AppComponentLocationContainer> getFullComponentRelations(
+            String appId, String isolateNamespaceId, String isolateStageId);
 
     /**
      * 获取指定应用下的指定关联 Component 对象

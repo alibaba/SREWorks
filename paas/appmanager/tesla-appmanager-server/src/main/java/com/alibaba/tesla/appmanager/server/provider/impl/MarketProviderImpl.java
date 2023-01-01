@@ -4,14 +4,18 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.tesla.appmanager.api.provider.AppPackageProvider;
+import com.alibaba.tesla.appmanager.api.provider.DeployConfigProvider;
 import com.alibaba.tesla.appmanager.api.provider.MarketProvider;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.*;
 import com.alibaba.tesla.appmanager.domain.dto.*;
 import com.alibaba.tesla.appmanager.domain.req.apppackage.AppPackageVersionCountReq;
+import com.alibaba.tesla.appmanager.domain.req.apppackage.ApplicationConfigurationGenerateReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigListReq;
 import com.alibaba.tesla.appmanager.domain.req.market.MarketAppListReq;
 import com.alibaba.tesla.appmanager.domain.res.apppackage.AppPackageUrlRes;
+import com.alibaba.tesla.appmanager.domain.res.apppackage.ApplicationConfigurationGenerateRes;
 import com.alibaba.tesla.appmanager.domain.schema.AppPackageSchema;
 import com.alibaba.tesla.appmanager.domain.schema.ComponentSchema;
 import com.alibaba.tesla.appmanager.server.assembly.AppPackageDtoConvert;
@@ -30,7 +34,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -66,6 +72,9 @@ public class MarketProviderImpl implements MarketProvider {
 
     @Autowired
     private AppPackageProvider appPackageProvider;
+
+    @Autowired
+    private DeployConfigProvider deployConfigProvider;
 
     @Override
     public Pagination<MarketAppItemDTO> list(MarketAppListReq request) {
@@ -253,12 +262,45 @@ public class MarketProviderImpl implements MarketProvider {
         String applicationRemotePath = "applications/" + marketPackage.getAppId();
         String relativeRemotePath = applicationRemotePath + "/" + marketPackage.getPackageVersion() + ".zip";
         String fullRemotePath = marketEndpoint.getRemotePackagePath() + "/" + relativeRemotePath;
+        String fullRemoteConfPath =  marketEndpoint.getRemotePackagePath() + "/" +  applicationRemotePath + "/" + marketPackage.getPackageVersion() + ".json";
+
+        // 同时将该应用的ApplicationConfiguration.yaml也进行上传
+        ApplicationConfigurationGenerateRes applicationConfigurationObject = appPackageProvider.generate(
+                ApplicationConfigurationGenerateReq.builder()
+                        .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
+                        .appId(marketPackage.getAppId())
+                        .appPackageId(marketPackage.getAppPackageId())
+                        .componentPackageConfigurationFirst(true)
+                        .build());
+
+        JSONObject appJson = new JSONObject();
+
+        Pagination<DeployConfigDTO> configs = deployConfigProvider.list(
+                DeployConfigListReq.builder()
+                        .appId(marketPackage.getAppId())
+                        .typeId("Type:parameterValues")
+                        .isolateNamespaceId("sreworks")
+                        .isolateStageId("dev")
+                        .build()
+        );
+        if(configs.getItems().size() > 0){
+            appJson.put("Type:parameterValues", configs.getItems().get(0).getConfigJson());
+        }
+
+        appJson.put("applicationConfigurationYaml", applicationConfigurationObject.getYaml());
+        File applicationConfigurationFile = Files.createTempFile("applicationConfiguration", null).toFile();
+        BufferedWriter writeHandle = new BufferedWriter(new FileWriter(applicationConfigurationFile));
+        writeHandle.write(appJson.toJSONString());
+        writeHandle.close();
+
         if (StringUtils.equals(marketEndpoint.getEndpointType(), "oss")) {
             OssStorage client = new OssStorage(
                     marketEndpoint.getEndpoint(), marketEndpoint.getAccessKey(), marketEndpoint.getSecretKey());
             log.info("action=init|message=oss client has initialized|endpoint={}", marketEndpoint.getEndpoint());
             client.putObject(marketEndpoint.getRemoteBucket(), fullRemotePath, marketPackage.getPackageLocalPath());
             client.setObjectAclPublic(marketEndpoint.getRemoteBucket(), fullRemotePath);
+            client.putObject(marketEndpoint.getRemoteBucket(), fullRemoteConfPath, applicationConfigurationFile.getAbsolutePath());
+            client.setObjectAclPublic(marketEndpoint.getRemoteBucket(), fullRemoteConfPath);
 
             // logo如果为本地minio地址，则直接上传后替换
             if(marketPackage.getAppOptions() != null){

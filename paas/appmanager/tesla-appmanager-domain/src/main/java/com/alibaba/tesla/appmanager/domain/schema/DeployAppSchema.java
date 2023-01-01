@@ -308,7 +308,7 @@ public class DeployAppSchema implements Schema, Serializable {
          * @param componentRevisionContainer trait parent component revision
          * @return unique id
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public String getUniqueId(DeployAppRevisionName componentRevisionContainer) {
             DeployAppRevisionName container = DeployAppRevisionName.builder()
                     .componentType(ComponentTypeEnum.TRAIT_ADDON.toString())
@@ -340,14 +340,19 @@ public class DeployAppSchema implements Schema, Serializable {
         private String type;
 
         /**
+         * 当前 Workflow 可读名称
+         */
+        private String name;
+
+        /**
          * Workflow 传递参数输出
          */
-        private JSONArray outputs = new JSONArray();
+        private List<WorkflowStepOutput> outputs = new ArrayList<>();
 
         /**
          * Workflow 传递参数输入
          */
-        private JSONArray inputs = new JSONArray();
+        private List<WorkflowStepInput> inputs = new ArrayList<>();
 
         /**
          * Workflow 任务运行时机 (pre-render/post-render/post-deploy)
@@ -358,6 +363,50 @@ public class DeployAppSchema implements Schema, Serializable {
          * Workflow 任务运行参数
          */
         private JSONObject properties = new JSONObject();
+    }
+
+    /**
+     * Workflow Step 变量输入
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class WorkflowStepInput implements Serializable {
+
+        private static final long serialVersionUID = 1478151091982680015L;
+
+        /**
+         * 变量输入值来源
+         */
+        private String from;
+
+        /**
+         * 变量插入到的目标 JSONPATH 路径
+         */
+        private String parameterKey;
+    }
+
+    /**
+     * Workflow Step 变量输出
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class WorkflowStepOutput implements Serializable {
+
+        private static final long serialVersionUID = 7146762715307276588L;
+
+        /**
+         * 出变量名称
+         */
+        private String name;
+
+        /**
+         * 变量值来源 JSONPATH 路径
+         */
+        private String valueFrom;
     }
 
     /**
@@ -451,11 +500,21 @@ public class DeployAppSchema implements Schema, Serializable {
         private List<ParameterValue> parameterValues = new ArrayList<>();
 
         /**
+         * 通用: 设置 Identifier
+         *
+         * @param componentType Component Type
+         * @param componentName Component Name
+         */
+        public void setIdentifier(String componentType, String componentName) {
+            revisionName = String.format("%s|%s|%s", componentType, componentName, "_");
+        }
+
+        /**
          * 获取唯一定位 ID
          *
          * @return 唯一定位 ID
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public String getUniqueId() {
             return revisionName;
         }
@@ -465,7 +524,7 @@ public class DeployAppSchema implements Schema, Serializable {
          *
          * @return 镜像唯一定位 ID
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public String getMirrorUniqueId() {
             return DefaultConstant.MIRROR_COMPONENT_PREFIX + revisionName;
         }
@@ -475,7 +534,7 @@ public class DeployAppSchema implements Schema, Serializable {
          *
          * @return namespaceId, 如果不存在则返回 null
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public String getNamespaceId() {
             for (SpecComponentScope scope : scopes) {
                 SpecComponentScopeRef ref = scope.getScopeRef();
@@ -492,7 +551,7 @@ public class DeployAppSchema implements Schema, Serializable {
          *
          * @param namespaceId Namespace ID
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public void setNamespaceId(String namespaceId) {
             boolean found = false;
             for (SpecComponentScope scope : scopes) {
@@ -519,7 +578,7 @@ public class DeployAppSchema implements Schema, Serializable {
          *
          * @return clusterId, 如果不存在则返回 null
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public String getClusterId() {
             for (SpecComponentScope scope : scopes) {
                 SpecComponentScopeRef ref = scope.getScopeRef();
@@ -536,7 +595,7 @@ public class DeployAppSchema implements Schema, Serializable {
          *
          * @param clusterId 集群 ID
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public void setClusterId(String clusterId) {
             boolean found = false;
             for (SpecComponentScope scope : scopes) {
@@ -563,7 +622,7 @@ public class DeployAppSchema implements Schema, Serializable {
          *
          * @return stageId, 如果不存在则返回 null
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public String getStageId() {
             for (SpecComponentScope scope : scopes) {
                 SpecComponentScopeRef ref = scope.getScopeRef();
@@ -580,7 +639,7 @@ public class DeployAppSchema implements Schema, Serializable {
          *
          * @param stageId Stage ID
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public void setStageId(String stageId) {
             boolean found = false;
             for (SpecComponentScope scope : scopes) {
@@ -608,7 +667,7 @@ public class DeployAppSchema implements Schema, Serializable {
          * @param name 参数 Key
          * @return Value
          */
-        @JSONField(serialize = false)
+        @JSONField(serialize = false, deserialize = false)
         public Object getParameterValue(String name) {
             assert !StringUtils.isEmpty(name);
             for (ParameterValue item : parameterValues) {
@@ -647,5 +706,63 @@ public class DeployAppSchema implements Schema, Serializable {
          * 全局策略
          */
         private List<Policy> policies = new ArrayList<>();
+    }
+
+    /**
+     * 从指定对象处 copy 变动信息到自身
+     *
+     * @param obj 另一个 DeployAppSchema 对象
+     */
+    public void copyFrom(DeployAppSchema obj) {
+        if (obj == null) {
+            return;
+        }
+        if (StringUtils.isNotEmpty(obj.getApiVersion())) {
+            apiVersion = obj.getApiVersion();
+        }
+        if (StringUtils.isNotEmpty(obj.getKind())) {
+            kind = obj.getKind();
+        }
+        if (obj.getSpec() == null) {
+            return;
+        }
+        if (spec == null) {
+            spec = new Spec();
+        }
+
+        // 如果当前自身对应对象为空的时候，复制 obj 中的全局项到自身
+        if ((spec.getParameterValues() == null || spec.getParameterValues().size() == 0)
+                && obj.getSpec().getParameterValues() != null) {
+            spec.setParameterValues(obj.getSpec().getParameterValues());
+        }
+        if ((spec.getPolicies() == null || spec.getPolicies().size() == 0)
+                && obj.getSpec().getPolicies() != null) {
+            spec.setPolicies(obj.getSpec().getPolicies());
+        }
+        if ((spec.getWorkflow() == null || spec.getWorkflow().getSteps() == null
+                || spec.getWorkflow().getSteps().size() == 0)
+                && obj.getSpec().getWorkflow() != null) {
+            spec.setWorkflow(obj.getSpec().getWorkflow());
+        }
+
+        // 对于自身不存在的组件，但 obj 中存在的组件，将 obj 中的对应组件复制到自身
+        // 对于自身多出来的组件 (obj 中不存在)，进行删除
+        // 两边都存在的，不动
+        Set<String> componentSet = new HashSet<>();
+        Set<String> objComponentSet = new HashSet<>();
+        spec.getComponents().forEach(item -> componentSet.add(componentKey(item.getRevisionName())));
+        obj.getSpec().getComponents().forEach(item -> objComponentSet.add(componentKey(item.getRevisionName())));
+        obj.getSpec().getComponents().forEach(specComponent -> {
+            String key = componentKey(specComponent.getRevisionName());
+            if (!componentSet.contains(key)) {
+                spec.getComponents().add(specComponent);
+            }
+        });
+        spec.getComponents().removeIf(item -> !objComponentSet.contains(componentKey(item.getRevisionName())));
+    }
+
+    private String componentKey(String revisionName) {
+        DeployAppRevisionName name = DeployAppRevisionName.valueOf(revisionName);
+        return String.format("%s|%s", name.getComponentType(), name.getComponentName());
     }
 }

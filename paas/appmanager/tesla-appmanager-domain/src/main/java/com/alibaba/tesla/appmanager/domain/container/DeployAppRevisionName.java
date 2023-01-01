@@ -60,15 +60,26 @@ public class DeployAppRevisionName {
      */
     private DeployAppRevisionName(String revisionName, boolean mirrorFlag) {
         String[] splitNames = revisionName.split(SPLITTER, SPLIT_LIMIT);
-        assert splitNames.length == SPLIT_LIMIT;
+        if (splitNames.length != 1 && splitNames.length != 3) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "cannot parse revisionName %s", revisionName);
+        }
         this.componentType = splitNames[0];
         if (StringUtils.isEmpty(this.componentType)) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                 String.format("cannot parse revisionName %s", revisionName));
         }
-        this.componentName = splitNames[1];
-        this.version = splitNames[2];
+        if (splitNames.length == 3) {
+            this.componentName = splitNames[1];
+            this.version = splitNames[2];
+        }
         this.mirrorFlag = mirrorFlag;
+    }
+
+    public DeployAppRevisionName(String componentType, String componentName, String version) {
+        this.componentType = componentType;
+        this.componentName = componentName;
+        this.version = version;
+        this.mirrorFlag = false;
     }
 
     /**
@@ -92,7 +103,7 @@ public class DeployAppRevisionName {
      * @returne revisionName
      */
     public String revisionName() {
-        return String.join("|", Arrays.asList(componentType.toString(), componentName, version));
+        return String.join("|", Arrays.asList(componentType, componentName, version));
     }
 
     /**

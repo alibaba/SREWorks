@@ -1,0 +1,34 @@
+launch.yaml.tpl:
+  components:
+  - revisionName: K8S_MICROSERVICE|paas-frontend|_
+    traits:
+    - name: ingress.trait.abm.io
+      runtime: post
+      spec:
+        rules:
+        - host: "{{ Global.COOKIE_DOMAIN }}"
+          http:
+            paths:
+            - path: /
+              pathType: ImplementationSpecific
+              backend:
+                service:
+                  name: prod-flycore-paas-frontend
+                  port:
+                    number: 80
+
+launch-nodeport.yaml.tpl:
+  components:
+  - revisionName: K8S_MICROSERVICE|paas-frontend|_
+    traits:
+    - name: service.trait.abm.io
+      runtime: post
+      spec:
+        type: NodePort
+        ports:
+        - protocol: TCP
+          port: 80
+          targetPort: 80
+          nodePort: "${NODE_PORT}"
+    - name: ingress.trait.abm.io
+      spec: null

@@ -15,7 +15,6 @@ operator:
 
 images:
   kaniko: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kaniko-executor:latest
-  rbacProxy: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kube-rbac-proxy:v0.8.0
 
 server:
   sreworksEnvs: false

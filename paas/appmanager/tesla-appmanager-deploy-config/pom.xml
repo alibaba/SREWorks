@@ -24,6 +24,10 @@
         </dependency>
         <dependency>
             <groupId>com.alibaba.tesla</groupId>
+            <artifactId>tesla-appmanager-common-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.tesla</groupId>
             <artifactId>tesla-appmanager-api</artifactId>
         </dependency>
         <dependency>

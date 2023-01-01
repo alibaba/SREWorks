@@ -55,7 +55,7 @@ class JobComponentDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 12
+    public static final Integer REVISION = 17
 
     /**
      * CRD Context
@@ -122,7 +122,7 @@ class JobComponentDeployHandler implements DeployComponentHandler {
         def images = componentSchema.getSpec().getImages()
         for (def image : images) {
             if (StringUtils.isNotEmpty(image.getName())) {
-                def systemArch = CommandUtil.runLocalCommand("uname -i").strip()
+                def systemArch = CommandUtil.runLocalCommand(new String[]{"uname", "-i"}).strip()
                 if (systemArch == "x86_64") {
                     if (StringUtils.isNotEmpty(image.getArch()) && image.getArch() != "x86") {
                         log.info("image arch {} is incompatible with system arch {}, skip", image.getArch(), systemArch)
@@ -203,23 +203,29 @@ class JobComponentDeployHandler implements DeployComponentHandler {
         def dockerNamespace = systemProperties.getDockerNamespace()
         def daemonEnv = systemProperties.getRemoteDockerDaemon()
         def newImage = ImageUtil.generateLatestImage(dockerRegistry, dockerNamespace, image)
-        if (StringUtils.isEmpty(daemonEnv)) {
-            daemonEnv = ""
-        } else {
-            daemonEnv = "-H " + daemonEnv
+
+        // 准备命令前缀
+        def commandPrefixArray = new ArrayList<>()
+        commandPrefixArray.add("docker")
+        if (StringUtils.isNotEmpty(daemonEnv)) {
+            commandPrefixArray.add("-H")
+            commandPrefixArray.add(daemonEnv)
         }
 
         // 加载 Docker 镜像
-        String loadCmd = String.format("cd %s && docker %s load -i %s", packageDir, daemonEnv, imagePath)
-        CommandUtil.runLocalCommand(loadCmd)
+        def loadCmd = new ArrayList<>(commandPrefixArray)
+        loadCmd.addAll(Arrays.asList("load", "-i", imagePath))
+        CommandUtil.runLocalCommand(loadCmd.toArray(new String[0]), Paths.get(packageDir).toFile())
 
         // 重新 tag 镜像，增加 UUID
-        String tagCmd = String.format("docker %s tag %s %s", daemonEnv, sha256, newImage)
-        CommandUtil.runLocalCommand(tagCmd)
+        def tagCmd = new ArrayList<String>(commandPrefixArray)
+        tagCmd.addAll(Arrays.asList("tag", sha256, newImage))
+        CommandUtil.runLocalCommand(tagCmd.toArray(new String[0]))
 
         // 推送到环境仓库
-        String pushCmd = String.format("docker %s push %s", daemonEnv, newImage)
-        CommandUtil.runLocalCommand(pushCmd)
+        def pushCmd = new ArrayList<>(commandPrefixArray)
+        pushCmd.addAll(Arrays.asList("push", newImage))
+        CommandUtil.runLocalCommand(pushCmd.toArray(new String[0]))
     }
 
     /**
@@ -228,6 +234,7 @@ class JobComponentDeployHandler implements DeployComponentHandler {
      * @param componentSchema ComponentSchema 对象
      */
     private void apply(LaunchDeployComponentHandlerReq request, ComponentSchema componentSchema) {
+        def userCustomName = ((JSONObject) componentSchema.getSpec().getWorkload().getSpec()).getString("name")
         def appId = request.getAppId()
         def componentName = request.getComponentName()
         def cluster = request.getClusterId()
@@ -263,6 +270,12 @@ class JobComponentDeployHandler implements DeployComponentHandler {
             for (String key : removeKeyMap) {
                 envObject.remove(key)
             }
+        }
+
+        // 如果用户自定义了名字，那么使用用户自己的
+        if (StringUtils.isNotEmpty(userCustomName)) {
+            name = getMetaName(userCustomName, componentName, stageId)
+            workload.getMetadata().setName(name)
         }
 
         // 将全部的 PLACEHOLDER 进行渲染

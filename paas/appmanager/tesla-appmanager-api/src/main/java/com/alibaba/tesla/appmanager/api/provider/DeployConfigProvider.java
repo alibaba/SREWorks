@@ -5,6 +5,7 @@ import com.alibaba.tesla.appmanager.domain.dto.DeployConfigDTO;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.*;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigApplyTemplateRes;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigGenerateRes;
+import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
 
 /**
  * 部署配置 Provider
@@ -28,6 +29,14 @@ public interface DeployConfigProvider {
      * @return 生成 Yaml 结果
      */
     DeployConfigGenerateRes generate(DeployConfigGenerateReq req);
+
+    /**
+     * 获取指定应用在指定环境中的默认 Application Configuration 模板
+     *
+     * @param req 请求参数 (全部参数必填项)
+     * @return Application Configuration
+     */
+    DeployAppSchema getDefaultTemplate(DeployConfigGetDefaultTemplateReq req);
 
     /**
      * 根据指定查询条件获取列表（不支持继承）

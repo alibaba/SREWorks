@@ -54,7 +54,7 @@ class DefaultDeployInternalAddonProductopsHandler implements DeployComponentHand
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 12
+    public static final Integer REVISION = 16
 
     private static final String IMPORT_TMP_FILE = "productops_tmp_import.zip"
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
@@ -97,14 +97,13 @@ class DefaultDeployInternalAddonProductopsHandler implements DeployComponentHand
             endpoint = options.getString("targetEndpoint")
             namespaceId = request.getNamespaceId()
             stageId = options.getString("stageId")
-        } else if ("OXS" == System.getenv("CLOUD_TYPE") && StringUtils.isNotEmpty(options.getString("targetEndpoint"))) {
-            endpoint = options.getString("targetEndpoint")
-            namespaceId = ""
-            stageId = options.getString("stageId")
         } else {
             endpoint = "http://" + (StringUtils.isEmpty(System.getenv("ENDPOINT_PAAS_PRODUCTOPS"))
                     ? "" : System.getenv("ENDPOINT_PAAS_PRODUCTOPS"))
             if (endpoint == "http://") {
+                endpoint = options.getString("targetEndpoint")
+            }
+            if ("OXS" == System.getenv("CLOUD_TYPE")) {
                 endpoint = options.getString("targetEndpoint")
             }
             def multipleEnv = options.getBoolean("multipleEnv")
@@ -171,7 +170,7 @@ class DefaultDeployInternalAddonProductopsHandler implements DeployComponentHand
         def appTreeIds = getAppTreeIds(endpoint, appId, envId)
         for (String appTreeId : appTreeIds) {
             try {
-                reportSingleAppTreeToElasticsearch(endpoint, appTreeId, envId)
+                reportSingleAppTreeToElasticsearch(endpoint, appId, appTreeId, envId)
             } catch (Exception e) {
                 log.warn("report app tree {} failed, exception={}", appTreeId, ExceptionUtils.getStackTrace(e))
             }
@@ -181,10 +180,12 @@ class DefaultDeployInternalAddonProductopsHandler implements DeployComponentHand
     /**
      * 上报单个 appTreeId 的数据到 Elasticsearch 后端中
      * @param endpoint ProductOps Endpoint
+     * @param appId 应用 ID
      * @param appTreeId AppTree ID
      * @param envId 环境 ID
      */
-    private static void reportSingleAppTreeToElasticsearch(String endpoint, String appTreeId, String envId) {
+    private static void reportSingleAppTreeToElasticsearch(
+            String endpoint, String appId, String appTreeId, String envId) {
         def httpClient = HttpClientFactory.getHttpClient()
         def times = 2
         while (true) {
@@ -195,10 +196,21 @@ class DefaultDeployInternalAddonProductopsHandler implements DeployComponentHand
                 urlPrefix = String.format("%s/jobs/report_app_tree_structures/%s/start", endpoint, appTreeId)
             }
             def urlBuilder = Objects.requireNonNull(HttpUrl.parse(urlPrefix)).newBuilder()
-            def reqBuilder = new Request.Builder()
-                    .url(urlBuilder.build())
-                    .headers(Headers.of("X-Env", envId))
-                    .put(RequestBody.create(null, ""))
+            def reqBuilder
+            if (envId.contains(",")) {
+                reqBuilder = new Request.Builder()
+                        .url(urlBuilder.build())
+                        .headers(Headers.of(
+                                "X-Env", "prod",
+                                "X-Biz-App", String.format("%s,%s", appId, envId),
+                        ))
+                        .put(RequestBody.create(null, ""))
+            } else {
+                reqBuilder = new Request.Builder()
+                        .url(urlBuilder.build())
+                        .headers(Headers.of("X-Env", envId))
+                        .put(RequestBody.create(null, ""))
+            }
             try {
                 def response = NetworkUtil.sendRequestSimple(httpClient, reqBuilder, "")
                 def responseBody = response.body()

@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.server.controller;
 
+import com.alibaba.tesla.appmanager.api.provider.AppComponentProvider;
 import com.alibaba.tesla.appmanager.api.provider.AppMetaProvider;
 import com.alibaba.tesla.appmanager.api.provider.DeployConfigProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
@@ -8,6 +9,7 @@ import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.dto.AppMetaDTO;
+import com.alibaba.tesla.appmanager.domain.req.AppMetaCreateReq;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaUpdateReq;
@@ -43,6 +45,9 @@ public class AppController extends AppManagerBaseController {
     @Autowired
     private DeployConfigProvider deployConfigProvider;
 
+    @Autowired
+    private AppComponentProvider appComponentProvider;
+
     @Operation(summary = "查询应用列表")
     @GetMapping
     public TeslaBaseResult list(AppMetaQueryReq request, OAuth2Authentication auth) {
@@ -53,11 +58,11 @@ public class AppController extends AppManagerBaseController {
     @Operation(summary = "创建应用")
     @PostMapping
     public TeslaBaseResult create(
-            @RequestBody AppMetaUpdateReq request,
+            @RequestBody AppMetaCreateReq request,
             @RequestHeader(value = "X-EmpId", required = false) String empId,
             OAuth2Authentication auth) {
         String operator = getOperator(auth, empId);
-        AppMetaDTO result = appMetaProvider.save(request, operator);
+        AppMetaDTO result = appMetaProvider.create(request, operator);
         return buildSucceedResult(result);
     }
 
@@ -88,14 +93,14 @@ public class AppController extends AppManagerBaseController {
             OAuth2Authentication auth) {
         String operator = getOperator(auth, empId);
         request.setAppId(appId);
-        AppMetaDTO result = appMetaProvider.save(request, operator);
+        AppMetaDTO result = appMetaProvider.update(request, operator);
         return buildSucceedResult(result);
     }
 
     @Operation(summary = "更新应用详情 (兼容API)")
     @PutMapping
     public TeslaBaseResult updateCompatible(@RequestBody AppMetaUpdateReq request, OAuth2Authentication auth) {
-        AppMetaDTO result = appMetaProvider.save(request, getOperator(auth));
+        AppMetaDTO result = appMetaProvider.update(request, getOperator(auth));
         return buildSucceedResult(result);
     }
 
@@ -147,6 +152,8 @@ public class AppController extends AppManagerBaseController {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         request.setIsolateNamespaceId(container.getNamespaceId());
         request.setIsolateStageId(container.getStageId());
+        request.setAppComponents(appComponentProvider
+                .getFullComponentRelations(appId, container.getNamespaceId(), container.getStageId()));
         DeployConfigGenerateRes result = deployConfigProvider.generate(request);
         return buildSucceedResult(ApplicationConfigurationGenerateRes.builder()
                 .yaml(SchemaUtil.toYamlMapStr(result.getSchema()))

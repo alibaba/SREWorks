@@ -32,7 +32,7 @@ class HelmComponentDestroyHandler implements ComponentDestroyHandler {
      */
     public static final String KIND = DynamicScriptKindEnum.COMPONENT_DESTROY.toString()
     public static final String NAME = "HelmDefault"
-    public static final Integer REVISION = 1
+    public static final Integer REVISION = 2
 
     @Autowired
     private ClusterProvider clusterProvider
@@ -61,16 +61,15 @@ class HelmComponentDestroyHandler implements ComponentDestroyHandler {
         def command
         def kubeFile = null
         if (StringUtils.isNotEmpty(token) && StringUtils.isNotEmpty(apiserver)) {
-            command = String.format(
-                    "/app/helm uninstall %s --kube-token=%s --kube-apiserver=%s " +
-                            "--kube-ca-file=/run/secrets/kubernetes.io/serviceaccount/ca.crt -n %s",
-                    name, token, apiserver, namespace
-            )
+            command = new String[]{"/app/helm", "uninstall", name, String.format("--kube-token=%s", token),
+                    String.format("--kube-apiserver=%s", apiserver),
+                    "--kube-ca-file=/run/secrets/kubernetes.io/serviceaccount/ca.crt",
+                    "-n", namespace}
         } else if (StringUtils.isNotEmpty(kube)) {
             kubeFile = Files.createTempFile("kubeconfig", ".json").toFile();
             FileUtils.writeStringToFile(kubeFile, kube, StandardCharsets.UTF_8)
-            command = String.format(
-                    "/app/helm uninstall %s --kubeconfig %s -n %s", name, kubeFile.getAbsolutePath(), namespace)
+            command = new String[]{"/app/helm", "uninstall", name, "--kubeconfig", kubeFile.getAbsolutePath(),
+                    "-n", namespace}
         } else {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                     String.format("cannot find cluster authorization info|clusterId=%s", cluster))

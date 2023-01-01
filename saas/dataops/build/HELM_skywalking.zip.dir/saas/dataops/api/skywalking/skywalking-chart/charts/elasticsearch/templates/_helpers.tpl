@@ -27,6 +27,18 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 {{- end -}}
 
+{{/*
+Generate certificates
+*/}}
+{{- define "elasticsearch.gen-certs" -}}
+{{- $altNames := list ( printf "%s.%s" (include "elasticsearch.name" .) .Release.Namespace ) ( printf "%s.%s.svc" (include "elasticsearch.name" .) .Release.Namespace ) -}}
+{{- $ca := genCA "elasticsearch-ca" 365 -}}
+{{- $cert := genSignedCert ( include "elasticsearch.name" . ) nil $altNames 365 $ca -}}
+tls.crt: {{ $cert.Cert | toString | b64enc }}
+tls.key: {{ $cert.Key | toString | b64enc }}
+ca.crt: {{ $ca.Cert | toString | b64enc }}
+{{- end -}}
+
 {{- define "elasticsearch.masterService" -}}
 {{- if empty .Values.masterService -}}
 {{- if empty .Values.fullnameOverride -}}
@@ -45,7 +57,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 
 {{- define "elasticsearch.endpoints" -}}
 {{- $replicas := int (toString (.Values.replicas)) }}
-{{- $uname := printf "%s-%s" .Values.clusterName .Values.nodeGroup }}
+{{- $uname := (include "elasticsearch.uname" .) }}
   {{- range $i, $e := untilStep 0 $replicas 1 -}}
 {{ $uname }}-{{ $i }},
   {{- end -}}
@@ -65,23 +77,8 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
-Return the appropriate apiVersion for statefulset.
+Use the fullname if the serviceAccount value is not set
 */}}
-{{- define "elasticsearch.statefulset.apiVersion" -}}
-{{- if semverCompare "<1.9-0" .Capabilities.KubeVersion.GitVersion -}}
-{{- print "apps/v1beta2" -}}
-{{- else -}}
-{{- print "apps/v1" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return the appropriate apiVersion for ingress.
-*/}}
-{{- define "elasticsearch.ingress.apiVersion" -}}
-{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-{{- print "extensions/v1beta1" -}}
-{{- else -}}
-{{- print "networking.k8s.io/v1beta1" -}}
-{{- end -}}
+{{- define "elasticsearch.serviceAccount" -}}
+{{- .Values.rbac.serviceAccountName | default (include "elasticsearch.uname" .) -}}
 {{- end -}}

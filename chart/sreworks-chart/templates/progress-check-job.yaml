@@ -15,7 +15,7 @@ spec:
       containers:
       - image: {{ template "images.progressCheck" . }}
         name: job
-        imagePullPolicy: Always
+        imagePullPolicy: {{ .Values.global.images.imagePullPolicy }}
         envFrom:
           - configMapRef:
               name: init-configmap

@@ -12,7 +12,11 @@ import { Icon as LegacyIcon } from '@ant-design/compatible'
 import * as icons from '@ant-design/icons'
 antd['Icon'] = LegacyIcon
 let commonRenders = {}
-const commonRenderContext = require.context('./', true, /^\.\/common\/((?!\/)[\s\S])+\/[\s\S]\.js$/)
+const commonRenderContext = require.context(
+  './',
+  true,
+  /^\.\/common\/((?!\/)[\s\S])+\/((?!\/)[\s\S])+\.(js)$/,
+)
 commonRenderContext.keys().forEach((key) => {
   //获取每个挂件包,以包名为key注册到内置组件映射挂件对象上
   let name = key.split('/')[2]

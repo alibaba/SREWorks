@@ -36,15 +36,15 @@ let properties = {
  */
 // 本地开发环境配置
 const development = {
-  baseUrl: 'http://dev.sreworks.net/',
-  apiEndpoint: 'http://dev.sreworks.net/',
-  gateway: 'http://dev.sreworks.net/',
+  baseUrl: '',
+  apiEndpoint: '',
+  gateway: '',
 }
 // 日常环境配置项
 const daily = {
-  baseUrl: 'http://dev.sreworks.net/',
-  apiEndpoint: 'http://dev.sreworks.net/',
-  gateway: 'http://dev.sreworks.net/',
+  baseUrl: '',
+  apiEndpoint: '',
+  gateway: '',
 }
 // mocks 环境配置
 const mocks = {
@@ -110,6 +110,5 @@ if (properties.apiType === 'local') {
 //导出给组件库使用
 window.__TESLA_COMPONENT_LIB_CONFIG = properties
 window.__SREWORKS_COMPONENT_LIB_CONFIG = properties
-window.PROPERTY = properties
 
 export default properties

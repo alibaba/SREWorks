@@ -13,10 +13,7 @@ import com.alibaba.tesla.appmanager.common.enums.DeployAppStateEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
-import com.alibaba.tesla.appmanager.common.util.ObjectUtil;
-import com.alibaba.tesla.appmanager.common.util.PackageUtil;
-import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
-import com.alibaba.tesla.appmanager.common.util.VersionUtil;
+import com.alibaba.tesla.appmanager.common.util.*;
 import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConfigQueryCondition;
 import com.alibaba.tesla.appmanager.deployconfig.repository.domain.DeployConfigDO;
 import com.alibaba.tesla.appmanager.deployconfig.service.DeployConfigService;
@@ -46,6 +43,7 @@ import com.alibaba.tesla.appmanager.server.repository.AppPackageTagRepository;
 import com.alibaba.tesla.appmanager.server.repository.CustomAddonMetaRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.*;
 import com.alibaba.tesla.appmanager.server.repository.domain.*;
+import com.alibaba.tesla.appmanager.server.service.appcomponent.AppComponentService;
 import com.alibaba.tesla.appmanager.server.service.apppackage.AppPackageService;
 import com.alibaba.tesla.appmanager.server.service.componentpackage.ComponentPackageService;
 import com.alibaba.tesla.appmanager.server.service.deploy.DeployAppService;
@@ -79,12 +77,14 @@ public class AppPackageServiceImpl implements AppPackageService {
     private final PackageProperties packageProperties;
     private final Storage storage;
     private final DeployConfigService deployConfigService;
+    private final AppComponentService appComponentService;
 
     public AppPackageServiceImpl(
             AppPackageRepository appPackageRepository, AppPackageTagRepository appPackageTagRepository,
             AppPackageComponentRelRepository relRepository, ComponentPackageService componentPackageService,
             CustomAddonMetaRepository customAddonMetaRepository, DeployAppService deployAppService,
-            PackageProperties packageProperties, Storage storage, DeployConfigService deployConfigService) {
+            PackageProperties packageProperties, Storage storage, DeployConfigService deployConfigService,
+            AppComponentService appComponentService) {
         this.appPackageRepository = appPackageRepository;
         this.appPackageTagRepository = appPackageTagRepository;
         this.relRepository = relRepository;
@@ -94,6 +94,7 @@ public class AppPackageServiceImpl implements AppPackageService {
         this.packageProperties = packageProperties;
         this.storage = storage;
         this.deployConfigService = deployConfigService;
+        this.appComponentService = appComponentService;
     }
 
     /**
@@ -258,8 +259,18 @@ public class AppPackageServiceImpl implements AppPackageService {
                 .disableComponentFetching(req.isComponentPackageConfigurationFirst())
                 .isolateNamespaceId(req.getIsolateNamespaceId())
                 .isolateStageId(req.getIsolateStageId())
+                .appComponents(appComponentService
+                        .getFullComponentRelations(
+                                req.getAppId(), req.getIsolateNamespaceId(), req.getIsolateStageId()))
                 .build());
         DeployAppSchema schema = systemRes.getSchema();
+        log.info("before merge app component packages, the current application schema from system has generated|" +
+                "schema={}", JSONObject.toJSONString(schema));
+
+        // 如果存在单元 ID 配置，那么 merge 进去
+        if (StringUtils.isNotEmpty(req.getUnitId())) {
+            schema.getMetadata().getAnnotations().setUnitId(req.getUnitId());
+        }
 
         // merge 当前应用包下所有组件包的配置数据
         List<AppPackageComponentRelDO> rels = relRepository.selectByCondition(
@@ -281,21 +292,30 @@ public class AppPackageServiceImpl implements AppPackageService {
                         .pageSize(DefaultConstant.UNLIMITED_PAGE_SIZE)
                         .build());
         mergeApplicationConfiguration(req, schema, componentPackages.getItems());
-
-        // 如果存在单元 ID 配置，那么 merge 进去
-        if (StringUtils.isNotEmpty(req.getUnitId())) {
-            schema.getMetadata().getAnnotations().setUnitId(req.getUnitId());
-            List<DeployAppSchema.SpecComponent> components = schema.getSpec().getComponents();
-            for (DeployAppSchema.SpecComponent component : components) {
-                component.getScopes()
-                        .add(DeployAppSchema.SpecComponentScope.builder().scopeRef(
-                                        DeployAppSchema.SpecComponentScopeRef.builder().kind(DefaultConstant.UNIT).name(req.getUnitId()).build())
-                                .build());
-            }
+        
+        // 检查是否有 components 被完成组装，如果没有的话，说明本次生成 Yaml 请求无效
+        if (schema.getSpec().getComponents().size() == 0
+                && (schema.getSpec().getWorkflow() == null || schema.getSpec().getWorkflow().getSteps().size() == 0)) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("the current application does not have permission to access the environment|" +
+                                    "appId=%s|unitId=%s|clusterId=%s|namespaceId=%s|stageId=%s|isolateNamespaceId=%s|" +
+                                    "isolateStageId=%s",
+                            appId, req.getUnitId(), req.getClusterId(), req.getNamespaceId(), req.getStageId(),
+                            req.getIsolateNamespaceId(), req.getIsolateStageId()));
         }
 
+        // 检查是否有 components 被完成组装，如果没有的话，说明本次生成 Yaml 请求无效
+        if (schema.getSpec().getComponents().size() == 0) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    String.format("the current application does not have permission to access the environment|" +
+                                    "appId=%s|unitId=%s|clusterId=%s|namespaceId=%s|stageId=%s|isolateNamespaceId=%s|" +
+                                    "isolateStageId=%s",
+                            appId, req.getUnitId(), req.getClusterId(), req.getNamespaceId(), req.getStageId(),
+                            req.getIsolateNamespaceId(), req.getIsolateStageId()));
+        }
+        
         return ApplicationConfigurationGenerateRes.builder()
-                .yaml(SchemaUtil.toYamlMapStr(schema))
+                .yaml(SchemaUtil.toYamlStr(schema, DeployAppSchema.class))
                 .build();
     }
 
@@ -333,6 +353,11 @@ public class AppPackageServiceImpl implements AppPackageService {
                     hitRevisionSet.add(component.getRevisionName());
                     break;
                 }
+            }
+
+            // 如果非 SREWorks 环境，那么直接跳过下列填充操作，不需要
+            if (!EnvUtil.isSreworks()) {
+                continue;
             }
 
             // 搜索不到的时候，将包中包含的配置填入进去

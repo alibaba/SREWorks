@@ -2,7 +2,7 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 15.9.0+20221117083958705957
+    annotations.appmanager.oam.dev/version: 16.1.8+20221228030440769397
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
     appId: cluster
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 15.9.0+20221117083958705957
+        annotations.appmanager.oam.dev/version: 16.1.8+20221228030440769397
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -42,8 +42,9 @@ spec:
     spec:
       kind: Deployment
       replicas: 1
+      name: ''
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/cluster-clustermanage-clustermanage:1668674398986
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/cluster-clustermanage-clustermanage:1672196680474
         name: clustermanage
       env:
         COOKIE_DOMAIN: '{{ Global.COOKIE_DOMAIN }}'
@@ -63,7 +64,7 @@ spec:
         AUTHPROXY_ENDPOINT: '{{ Global.AUTHPROXY_ENDPOINT }}'
         DB_PASSWORD: '{{ Global.DB_PASSWORD }}'
       initContainers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/cluster-clustermanage-db-migration:1668674398986
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/cluster-clustermanage-db-migration:1672196680474
         name: db-migration
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/build/cluster-clustermanage-init-cluster:1668674398986
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/cluster-clustermanage-init-cluster:1672196680474
         name: init-cluster

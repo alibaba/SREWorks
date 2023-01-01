@@ -1,10 +1,10 @@
 PREFIX := helm-es-migration
 
 data:
-	helm upgrade --wait --timeout=600 --install --values ./data.yml $(PREFIX)-data ../../
+	helm upgrade --wait --timeout=$(TIMEOUT) --install --values data.yaml $(PREFIX)-data ../../
 
 master:
-	helm upgrade --wait --timeout=600 --install --values ./master.yml $(PREFIX)-master ../../
+	helm upgrade --wait --timeout=$(TIMEOUT) --install --values master.yaml $(PREFIX)-master ../../
 
 client:
-	helm upgrade --wait --timeout=600 --install --values ./client.yml $(PREFIX)-client ../../
+	helm upgrade --wait --timeout=$(TIMEOUT) --install --values client.yaml $(PREFIX)-client ../../

@@ -1,8 +1,13 @@
 package com.alibaba.tesla.appmanager.deployconfig.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.api.provider.AppComponentProvider;
+import com.alibaba.tesla.appmanager.api.provider.HelmMetaProvider;
+import com.alibaba.tesla.appmanager.api.provider.K8sMicroServiceMetaProvider;
+import com.alibaba.tesla.appmanager.api.provider.ProductReleaseProvider;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
+import com.alibaba.tesla.appmanager.common.service.GitService;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.deployconfig.repository.DeployConfigHistoryRepository;
 import com.alibaba.tesla.appmanager.deployconfig.repository.DeployConfigRepository;
@@ -46,13 +51,17 @@ public class TestServiceDeployConfigApplyTemplate {
     @Mock
     private DeployConfigHistoryRepository deployConfigHistoryRepository;
 
+    @Mock
+    private GitService gitService;
+
     private DeployConfigService deployConfigService;
 
     @Before
     public void before() {
         deployConfigService = Mockito.spy(new DeployConfigServiceImpl(
                 deployConfigRepository,
-                deployConfigHistoryRepository
+                deployConfigHistoryRepository,
+                gitService
         ));
     }
 
@@ -106,7 +115,7 @@ public class TestServiceDeployConfigApplyTemplate {
                         .enabled(true)
                         .build());
         log.info("testK8sMicroservice: {}", JSONObject.toJSONString(res));
-        Assertions.assertThat(res.getItems().size()).isEqualTo(2);
+        Assertions.assertThat(res.getItems().size()).isEqualTo(4);
         assertThat(res.getItems().get(0).getApiVersion()).isEqualTo(API_VERSION);
         assertThat(res.getItems().get(0).getAppId()).isEqualTo(APP_ID);
         assertThat(res.getItems().get(0).getEnvId()).isEqualTo("");
@@ -184,7 +193,7 @@ public class TestServiceDeployConfigApplyTemplate {
                         .enabled(true)
                         .build());
         log.info("testK8sMicroservice: {}", JSONObject.toJSONString(res));
-        Assertions.assertThat(res.getItems().size()).isEqualTo(2);
+        Assertions.assertThat(res.getItems().size()).isEqualTo(4);
         assertThat(res.getItems().get(0).getApiVersion()).isEqualTo(API_VERSION);
         assertThat(res.getItems().get(0).getAppId()).isEqualTo(APP_ID);
         assertThat(res.getItems().get(0).getEnvId()).isEqualTo("");

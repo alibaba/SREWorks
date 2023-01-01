@@ -11,13 +11,17 @@ import com.alibaba.tesla.appmanager.common.util.StringUtil;
 import com.alibaba.tesla.appmanager.domain.dto.ContainerObjectDTO;
 import com.alibaba.tesla.appmanager.domain.req.git.GitCloneReq;
 import com.alibaba.tesla.appmanager.domain.req.git.GitFetchFileReq;
+import com.alibaba.tesla.appmanager.domain.req.git.GitUpdateFileReq;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -67,7 +71,7 @@ public class GitServiceImpl implements GitService {
                 if (request.isKeepGitFiles()) {
                     cloneCommand = new String[]{"git", "clone", "--recursive", "-b", request.getBranch(), repo, tmpDir.toString()};
                 } else {
-                    cloneCommand = new String[]{"git", "clone", "--recursive", "-b", request.getBranch(), "--depth", "1", repo,  tmpDir.toString()};
+                    cloneCommand = new String[]{"git", "clone", "--recursive", "-b", request.getBranch(), "--depth", "1", repo, tmpDir.toString()};
                 }
             }
             logContent.append(String.format("run command: %s\n", cloneCommand));
@@ -75,31 +79,31 @@ public class GitServiceImpl implements GitService {
 
             // 如果指定了特定的 commit，那么切换到对应的 commit
             if (!StringUtils.isEmpty(request.getCommit())) {
-                String resetCommitCommand = String.format("cd %s; git reset --hard %s", tmpDir, request.getCommit());
+                String[] resetCommitCommand = new String[]{"git", "reset", "--hard", request.getCommit()};
                 logContent.append(String.format("run command: %s\n", resetCommitCommand));
-                logContent.append(CommandUtil.runLocalCommand(resetCommitCommand));
+                logContent.append(CommandUtil.runLocalCommand(resetCommitCommand, tmpDir.toFile()));
             }
 
             // 删除 .git 临时文件
             if (!request.isKeepGitFiles()) {
-                String rmInternalDirCommand = String.format("rm -rf %s/.git*", tmpDir);
+                String[] rmInternalDirCommand = new String[]{"rm", "-rf", String.format("%s/.git*", tmpDir)};
                 logContent.append(String.format("run command: %s\n", rmInternalDirCommand));
-                logContent.append(CommandUtil.runLocalCommand(rmInternalDirCommand));
+                logContent.append(CommandUtil.runLocalCommand(CommandUtil.getBashCommand(rmInternalDirCommand)));
             }
 
             // 存在 repoPath 的时候，需要将 repoPath 对应的目录拷贝到 dir 实际对应的目录中
             if (StringUtils.isNotEmpty(request.getRepoPath())) {
                 Path fromdir;
                 Path todir;
-                if(request.getRepoPath().startsWith("/")){
+                if (request.getRepoPath().startsWith("/")) {
                     fromdir = tmpDir.resolve(request.getRepoPath().substring(1));
-                }else{
+                } else {
                     fromdir = tmpDir.resolve(request.getRepoPath());
                 }
-                if(StringUtils.isNotEmpty(request.getRewriteRepoPath())){
+                if (StringUtils.isNotEmpty(request.getRewriteRepoPath())) {
                     todir = dir.resolve(request.getRewriteRepoPath());
                     FileUtils.moveDirectory(fromdir.toFile(), todir.toFile());
-                }else{
+                } else {
                     todir = dir.resolve(request.getRepoPath()).getParent();
                     FileUtils.moveDirectoryToDirectory(fromdir.toFile(), todir.toFile(), true);
                 }
@@ -137,10 +141,15 @@ public class GitServiceImpl implements GitService {
                     .ciToken(request.getCiToken())
                     .build());
 
-            String command = String.format("cd %s; git clone -b %s --no-checkout --depth=1 --no-tags %s .; git restore " +
-                "--staged %s; git checkout %s", tmpDir.toString(), branch, repo, filepath, filepath);
-            logContent.append(String.format("run command: %s\n", command));
-            logContent.append(CommandUtil.runLocalCommand(command));
+            String[] cloneCommand = new String[]{"git", "clone", "-b", branch, "--no-checkout", "--depth=1", "--no-tags", repo, "."};
+            String[] restoreCommand = new String[]{"git", "restore", "--staged", filepath};
+            String[] checkoutCommand = new String[]{"git", "checkout", filepath};
+            logContent.append(String.format("run clone command: %s\n", cloneCommand));
+            logContent.append(CommandUtil.runLocalCommand(cloneCommand, tmpDir.toFile()));
+            logContent.append(String.format("run restore command: %s\n", restoreCommand));
+            logContent.append(CommandUtil.runLocalCommand(restoreCommand, tmpDir.toFile()));
+            logContent.append(String.format("run checkout command: %s\n", checkoutCommand));
+            logContent.append(CommandUtil.runLocalCommand(checkoutCommand, tmpDir.toFile()));
 
             return new String(Files.readAllBytes(Paths.get(tmpDir.toString(), filepath)));
         } catch (IOException e) {
@@ -156,6 +165,43 @@ public class GitServiceImpl implements GitService {
     }
 
     /**
+     * 更新远端 Git 仓库中的指定文件内容
+     *
+     * @param logContent 日志 StringBuilder
+     * @param request    更新文件请求
+     */
+    @Override
+    public void updateFile(StringBuilder logContent, GitUpdateFileReq request) {
+        Path cloneDir = request.getCloneDir();
+        String filePath = request.getFilePath();
+        String fileContent = request.getFileContent();
+        try {
+            File targetFile = Paths.get(cloneDir.toString(), filePath).toFile();
+            FileUtils.writeStringToFile(targetFile, fileContent, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new AppException(AppErrorCode.GIT_ERROR,
+                    String.format("cannot write file to git directory|appId=%s|filePath=%s|exception=%s",
+                            request.getAppId(), request.getFilePath(), ExceptionUtils.getStackTrace(e)));
+        }
+        String[] addCommand = new String[]{"git", "add", filePath};
+        String[] commitCommand = new String[]{
+                "git",
+                "-c",
+                String.format("user.name=%s", request.getGitUserName()),
+                "-c",
+                String.format("user.email=%s", request.getGitUserEmail()),
+                "commit",
+                "-m",
+                String.format("baseline file for %s app modified by %s", request.getAppId(), request.getOperator())
+        };
+        String[] pushCommand = new String[]{"git", "push", "origin", request.getGitRemoteBranch()};
+
+        logContent.append(CommandUtil.runLocalCommand(addCommand, cloneDir.toFile()));
+        logContent.append(CommandUtil.runLocalCommand(commitCommand, cloneDir.toFile()));
+        logContent.append(CommandUtil.runLocalCommand(pushCommand, cloneDir.toFile()));
+    }
+
+    /**
      * 切换分支
      *
      * @param logContent 日志 StringBuilder
@@ -164,8 +210,8 @@ public class GitServiceImpl implements GitService {
      */
     @Override
     public void checkoutBranch(StringBuilder logContent, String branch, Path dir) {
-        String command = String.format("cd %s; git checkout %s", dir, branch);
-        logContent.append(CommandUtil.runLocalCommand(command));
+        String[] command = new String[]{"git", "checkout", branch};
+        logContent.append(CommandUtil.runLocalCommand(command, dir.toFile()));
     }
 
     /**

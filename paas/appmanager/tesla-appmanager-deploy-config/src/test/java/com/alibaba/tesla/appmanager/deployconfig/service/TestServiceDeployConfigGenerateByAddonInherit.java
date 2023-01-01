@@ -1,8 +1,10 @@
 package com.alibaba.tesla.appmanager.deployconfig.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.api.provider.ProductReleaseProvider;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
+import com.alibaba.tesla.appmanager.common.service.GitService;
 import com.alibaba.tesla.appmanager.deployconfig.repository.DeployConfigHistoryRepository;
 import com.alibaba.tesla.appmanager.deployconfig.repository.DeployConfigRepository;
 import com.alibaba.tesla.appmanager.deployconfig.repository.condition.DeployConfigQueryCondition;
@@ -52,13 +54,17 @@ public class TestServiceDeployConfigGenerateByAddonInherit {
     @Mock
     private DeployConfigHistoryRepository deployConfigHistoryRepository;
 
+    @Mock
+    private GitService gitService;
+
     private DeployConfigService deployConfigService;
 
     @Before
     public void before() {
         deployConfigService = Mockito.spy(new DeployConfigServiceImpl(
                 deployConfigRepository,
-                deployConfigHistoryRepository
+                deployConfigHistoryRepository,
+                gitService
         ));
     }
 

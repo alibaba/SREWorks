@@ -15,6 +15,7 @@ import com.alibaba.tesla.appmanager.domain.dto.DeployAppDTO;
 import com.alibaba.tesla.appmanager.domain.req.UpdateWorkflowSnapshotReq;
 import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppGetAttrReq;
 import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppGetReq;
+import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
 import com.alibaba.tesla.appmanager.workflow.action.WorkflowTaskStateAction;
 import com.alibaba.tesla.appmanager.workflow.event.WorkflowTaskEvent;
 import com.alibaba.tesla.appmanager.workflow.event.loader.WorkflowTaskStateActionLoadedEvent;
@@ -35,6 +36,7 @@ import com.jayway.jsonpath.JsonPath;
 import org.springframework.stereotype.Service;
 
 import javax.ws.rs.HEAD;
+import java.util.List;
 
 @Slf4j
 @Service("WaitingWorkflowTaskStateAction")
@@ -260,7 +262,8 @@ public class WaitingWorkflowTaskStateAction implements WorkflowTaskStateAction, 
     private void enrichContextByDeliverParameterValues(WorkflowTaskDO task) {
         Long deployAppId = task.getDeployAppId();
         String taskOutputs = task.getTaskOutputs();
-        JSONArray outputs = JSONObject.parseArray(taskOutputs);
+        List<DeployAppSchema.WorkflowStepOutput> outputs = JSONObject
+                .parseArray(taskOutputs, DeployAppSchema.WorkflowStepOutput.class);
         JSONObject deliverValue = new JSONObject();
         String logSuffix = String.format("workflowInstanceId=%d|workflowTaskId=%d|deployAppId=%d",
                 task.getWorkflowInstanceId(), task.getId(), deployAppId);
@@ -268,9 +271,9 @@ public class WaitingWorkflowTaskStateAction implements WorkflowTaskStateAction, 
         JSONObject context = workflowSnapshotService.getContext(task.getWorkflowInstanceId(), task.getId());
         DocumentContext contextStr = JsonPath.parse(JSONObject.toJSONString(context));
         for (int i = 0; i < outputs.size(); i++) {
-            JSONObject output = outputs.getJSONObject(i);
-            deliverValue.put(output.getString("name"),
-                    contextStr.read(DefaultConstant.JSONPATH_PREFIX + output.getString("valueFrom")));
+            DeployAppSchema.WorkflowStepOutput output = outputs.get(i);
+            deliverValue.put(output.getName(),
+                    contextStr.read(DefaultConstant.JSONPATH_PREFIX + output.getValueFrom()));
         }
 
         // 覆写 workflow task 的 context 并重新写回数据库

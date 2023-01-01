@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.deployconfig.repository.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeployConfigDO {
+public class DeployConfigDO implements Serializable {
     /**
      * ID
      */

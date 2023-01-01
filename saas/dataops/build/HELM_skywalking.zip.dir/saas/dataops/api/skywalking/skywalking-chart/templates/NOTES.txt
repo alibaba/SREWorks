@@ -46,7 +46,7 @@ Get the UI URL by running these commands:
   kubectl port-forward svc/{{ include "skywalking.ui.fullname" . }} 8080:{{ .Values.ui.service.externalPort }} --namespace {{ .Release.Namespace }}
 {{- end }}
 
-{{- if.Values.elasticsearch.enabled }}
+{{- if .Values.elasticsearch.enabled }}
 {{- if .Values.elasticsearch.persistence.enabled }}
 {{- else }}
 #################################################################################

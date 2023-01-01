@@ -8,7 +8,7 @@ This chart bootstraps a [Apache SkyWalking](https://skywalking.apache.org/) depl
 
 ## Prerequisites
 
- - Kubernetes 1.9.6+ 
+ - Kubernetes 1.9.6+
  - PV dynamic provisioning support on the underlying infrastructure (StorageClass)
  - Helm 3
 
@@ -45,7 +45,6 @@ The following table lists the configurable parameters of the Skywalking chart an
 | `imagePullSecrets`                                           | Image pull secrets                                                                               | `[]`                                 |
 | `oap.name`                                                   | OAP deployment name                                                                              | `oap`                                |
 | `oap.dynamicConfigEnabled`                                     | Enable oap dynamic configuration through k8s configmap                                           | `false`                              |
-| `oap.initEs`                                                 | Need to initial ElasticSearch                                                                    | `true`                              |
 | `oap.image.repository`                                       | OAP container image name                                                                         | `skywalking.docker.scarf.sh/apache/skywalking-oap-server`       |
 | `oap.image.tag`                                              | OAP container image tag                                                                          | `6.1.0`                              |
 | `oap.image.pullPolicy`                                       | OAP container image pull policy                                                                  | `IfNotPresent`                       |
@@ -81,9 +80,9 @@ The following table lists the configurable parameters of the Skywalking chart an
 | `ui.service.loadBalancerIP`                                  | Load Balancer IP address                                                                         | `nil`                                |
 | `ui.service.annotations`                                     | Kubernetes service annotations                                                                   | `{}`                                 |
 | `ui.service.loadBalancerSourceRanges`                        | Limit load balancer source IPs to list of CIDRs (where available))                               | `[]`                                 |
-| `esInit.nodeAffinity`                                        | ES init job node affinity policy                                                                 | `{}`                                 |
-| `esInit.nodeSelector`                                        | ES init job labels for master pod assignment                                                     | `{}`                                 |
-| `esInit.tolerations`                                         | ES init job tolerations                                                                          | `[]`                                 |
+| `oapInit.nodeAffinity`                                       | OAP init job node affinity policy                                                                | `{}`                                 |
+| `oapInit.nodeSelector`                                       | OAP init job labels for master pod assignment                                                    | `{}`                                 |
+| `oapInit.tolerations`                                        | OAP init job tolerations                                                                         | `[]`                                 |
 | `elasticsearch.enabled`                                      | Spin up a new elasticsearch cluster for SkyWalking                                               | `true`                               |
 | `elasticsearch.clusterName`                 | This will be used as the Elasticsearch [cluster.name](https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster.name.html) and should be unique per cluster in the namespace                                                                                                                                 | `elasticsearch`                                                                                                           |
 | `elasticsearch.nodeGroup`                   | This is the name that will be used for each group of nodes in the cluster. The name will be `clusterName-nodeGroup-X`                                                                                                                                                                                                      | `master`                                                                                                                  |
@@ -218,7 +217,7 @@ ui:
 
 Envoy ALS(access log service) provides fully logs about RPC routed, including HTTP and TCP.
 
-If you want to open envoy ALS, you can do this by modifying values.yaml. 
+If you want to open envoy ALS, you can do this by modifying values.yaml.
 
 ```yaml
 oap:

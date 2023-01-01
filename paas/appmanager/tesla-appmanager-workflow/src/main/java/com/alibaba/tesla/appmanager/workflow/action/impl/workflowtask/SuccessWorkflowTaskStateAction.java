@@ -43,7 +43,7 @@ public class SuccessWorkflowTaskStateAction implements WorkflowTaskStateAction, 
 
         // 触发当前 Workflow Task 对应的 Workflow Instance 中下一个 Workflow Task 的运行
         WorkflowInstanceDO instance = workflowInstanceService.get(task.getWorkflowInstanceId(), true);
-        workflowInstanceService.triggerNextPendingTask(instance, task.getId());
+        workflowInstanceService.triggerRestPendingTasks(instance, task);
         log.info("trigger workflow instance next task success|workflowInstanceId={}|previousTaskId={}",
                 task.getId(), task.getId());
     }

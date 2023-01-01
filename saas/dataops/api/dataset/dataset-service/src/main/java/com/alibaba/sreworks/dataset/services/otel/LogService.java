@@ -31,7 +31,7 @@ public class LogService extends AbstractSkywalkingService {
     TraceService traceService;
 
     public JSONObject getServiceLogs(String serviceName, String traceId, List<String> keywordsInclude, List<String> keywordsExclude, Long startTimestamp, Long endTimestamp, Integer pageNum, Integer pageSize) throws Exception {
-        JSONObject service = traceService.getTracingService(serviceName, startTimestamp, endTimestamp);
+        JSONObject service = traceService.getTracingService(serviceName);
         JSONObject logDatas = new JSONObject();
 
         if (!CollectionUtils.isEmpty(service)) {
@@ -48,7 +48,7 @@ public class LogService extends AbstractSkywalkingService {
             JSONObject paging = new JSONObject();
             paging.put("pageNum", pageNum);
             paging.put("pageSize", pageSize);
-            paging.put("needTotal", true);
+//            paging.put("needTotal", true);
 
             condition.put("paging", paging);
             condition.put("serviceId", service.getString("key"));

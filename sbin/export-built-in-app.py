@@ -10,6 +10,7 @@ import zipfile
 from tempfile import NamedTemporaryFile
 import shutil
 import yaml
+import copy
 try:
     import urllib.request              
 except ImportError:
@@ -63,7 +64,7 @@ def values_tpl_replace(launchYAML, patchYAML):
     if patchYAML != None:
         for component in patchYAML.get("components", []):
             component["parameterValueMaps"] = {}
-            for v in component["parameterValues"]:
+            for v in component.get("parameterValues", []):
                 component["parameterValueMaps"][v["name"]] = v["value"]
             patchComponents[component["revisionName"]] = component
 
@@ -126,6 +127,31 @@ def values_tpl_replace(launchYAML, patchYAML):
                         "value": v,
                     })
                
+            if patchComponents[component["revisionName"]].get("traits") != None:
+                if "traits" not in component: component["traits"] = []
+                component["traits"] += patchComponents[component["revisionName"]]["traits"]
+            
+
+
+def only_dup_filter(launchYAML, patchYAML):
+
+    patchComponents = {}
+    for c in patchYAML["components"]:
+        patchComponents[c["revisionName"]] = c
+
+    for component in launchYAML["spec"]["components"]:
+        if patchComponents.get(component["revisionName"]) != None:
+           patchTraits = patchComponents[component["revisionName"]].get("traits",[])
+           if "traits" not in component:
+               component["traits"] = []
+           traits = {}
+           for trait in component["traits"]:
+               traits[trait["name"]] = trait
+           for trait in patchTraits:
+               traits[trait["name"]] = trait
+
+           component["traits"] = list(filter(lambda t: t.get("spec") is not None, list(traits.values()))) 
+
 
 def only_frontend_filter(launchYAML):
 
@@ -163,7 +189,6 @@ def only_backend_filter(launchYAML):
 
     launchYAML["spec"]["components"] = newComponents
     
-
 
 
 def frontend_dev_replace(launchYAML, devYAML):
@@ -290,6 +315,15 @@ for buildIn in builtInList:
     f = open(loalPath + '/launch.yaml.tpl', 'w')
     f.write(yaml.safe_dump(launchYAML, width=float("inf")))
     f.close()
+
+    for d in buildIn.get("duplicateYAML",[]):
+        if d.get("source") == "launch.yaml.tpl":
+            dupYAML = copy.deepcopy(launchYAML)
+            if patchYAML.get(d["target"]) != None:
+                only_dup_filter(dupYAML, patchYAML.get(d["target"]))
+            f = open(loalPath + '/' + d["target"], 'w')
+            f.write(yaml.safe_dump(dupYAML, width=float("inf")))
+            f.close()
 
     backendLaunchYAML = json.loads(json.dumps(launchYAML))
     only_backend_filter(backendLaunchYAML)

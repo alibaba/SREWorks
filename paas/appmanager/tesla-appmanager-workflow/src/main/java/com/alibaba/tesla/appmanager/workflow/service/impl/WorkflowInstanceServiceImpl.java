@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.workflow.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.constants.WorkflowConstant;
@@ -11,17 +12,17 @@ import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
-import com.alibaba.tesla.appmanager.domain.dto.WorkflowInstanceDTO;
+import com.alibaba.tesla.appmanager.domain.container.WorkflowGraphNodeId;
 import com.alibaba.tesla.appmanager.domain.option.WorkflowInstanceOption;
 import com.alibaba.tesla.appmanager.domain.req.UpdateWorkflowSnapshotReq;
 import com.alibaba.tesla.appmanager.domain.res.workflow.WorkflowInstanceOperationRes;
 import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
+import com.alibaba.tesla.appmanager.domain.schema.WorkflowGraph;
 import com.alibaba.tesla.appmanager.workflow.event.WorkflowInstanceEvent;
 import com.alibaba.tesla.appmanager.workflow.event.WorkflowTaskEvent;
 import com.alibaba.tesla.appmanager.workflow.repository.WorkflowInstanceRepository;
 import com.alibaba.tesla.appmanager.workflow.repository.WorkflowTaskRepository;
 import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowInstanceQueryCondition;
-import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowSnapshotQueryCondition;
 import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowTaskQueryCondition;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowSnapshotDO;
@@ -42,6 +43,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -131,11 +133,13 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
         String configurationSha256 = DigestUtils.sha256Hex(configuration);
         DeployAppSchema configurationSchema = SchemaUtil.toSchema(DeployAppSchema.class, configuration);
         enrichConfigurationSchema(configurationSchema);
+        WorkflowGraph workflowGraph = WorkflowGraph.valueOf(configurationSchema, options);
         String category = options.getCategory();
         String creator = options.getCreator();
         if (StringUtils.isEmpty(category)) {
             category = DefaultConstant.WORKFLOW_CATEGORY;
         }
+        String workflowGraphStr = JSONObject.toJSONString(workflowGraph);
         WorkflowInstanceDO record = WorkflowInstanceDO.builder()
                 .appId(appId)
                 .category(category)
@@ -144,12 +148,14 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
                 .workflowSha256(configurationSha256)
                 .workflowOptions(JSONObject.toJSONString(options))
                 .workflowCreator(options.getCreator())
+                .workflowGraph(workflowGraphStr)
                 .clientHost(workflowNetworkUtil.getClientHost())
                 .build();
         workflowInstanceRepository.insert(record);
         Long workflowInstanceId = record.getId();
-        log.info("action=createWorkflowInstance|workflowInstanceId={}|appId={}|creator={}|sha256={}|configuration={}",
-                workflowInstanceId, appId, creator, configurationSha256, configuration);
+        log.info("action=createWorkflowInstance|workflowInstanceId={}|appId={}|creator={}|sha256={}|graph={}|" +
+                        "configuration={}", workflowInstanceId, appId, creator, configurationSha256, workflowGraphStr,
+                configuration);
 
         // 事件发送
         WorkflowInstanceEvent event = new WorkflowInstanceEvent(this, WorkflowInstanceEventEnum.START, record);
@@ -174,56 +180,133 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
     }
 
     /**
-     * 触发指定 Workflow 实例的下一个内部任务的执行
+     * 触发指定 Workflow 实例的后续任务执行
      * <p>
      * 该方法用于 WorkflowInstanceTask 在以 SUCCESS 完成时触发下一个 Task 的执行，并更新 Workflow 实例状态
      *
-     * @param instance       Workflow 实例
-     * @param workflowTaskId 当前 Workflow Instance 下已经执行成功的最后一个 workflowTaskId
+     * @param instance Workflow 实例
+     * @param task     当前执行成功的 Task 实例
      */
     @Override
-    public void triggerNextPendingTask(WorkflowInstanceDO instance, Long workflowTaskId) {
-        WorkflowTaskDO nextPendingTask = workflowTaskRepository.nextPendingTask(instance.getId(), workflowTaskId);
-
-        // 当没有新的 PENDING 任务时，说明已经执行完成
-        if (nextPendingTask == null) {
+    public void triggerRestPendingTasks(WorkflowInstanceDO instance, WorkflowTaskDO task) {
+        // 当没有新的未完成任务时，说明已经执行完成
+        List<WorkflowTaskDO> notFinishedTasks = workflowTaskRepository.notFinishedTasks(instance.getId());
+        if (notFinishedTasks.size() == 0) {
             log.info("all workflow instance tasks has finished running, trigger PROCESS_FINISHED event|" +
-                    "workflowInstanceId={}|lastTaskId={}", instance.getId(), workflowTaskId);
+                    "workflowInstanceId={}", instance.getId());
             publisher.publishEvent(new WorkflowInstanceEvent(this,
                     WorkflowInstanceEventEnum.PROCESS_FINISHED, instance));
             return;
         }
 
-        // 否则执行获取到的 nextPendingTask，并在触发执行前先行写入当前的 workflow snapshot
-        WorkflowSnapshotQueryCondition condition = WorkflowSnapshotQueryCondition.builder()
-                .instanceId(nextPendingTask.getWorkflowInstanceId())
-                .taskId(workflowTaskId)
-                .build();
-        Pagination<WorkflowSnapshotDO> snapshots = workflowSnapshotService.list(condition);
-        if (snapshots.getItems().size() != 1) {
-            throw new AppException(AppErrorCode.UNKNOWN_ERROR,
-                    String.format("system error, expected 1 snapshot found|workflowInstanceId=%d|workflowTaskId=%d|" +
-                                    "size=%d", nextPendingTask.getWorkflowInstanceId(), workflowTaskId,
-                            snapshots.getItems().size()));
+        // 对于当前所有运行完毕且 SUCCESS 的点，在图中进行点的删除，并最后得到入度为 0 的点的列表 (即准备运行的点)
+        WorkflowGraph graph = JSONObject.parseObject(instance.getWorkflowGraph(), WorkflowGraph.class);
+        List<WorkflowTaskDO> successTasks = workflowTaskRepository.selectByCondition(
+                WorkflowTaskQueryCondition.builder()
+                        .instanceId(instance.getId())
+                        .taskStatus(WorkflowTaskStateEnum.SUCCESS.toString())
+                        .build());
+        successTasks.stream()
+                .map(item -> (new WorkflowGraphNodeId(item.getTaskType(), item.getTaskName()).toString()))
+                .forEach(graph::removeNodeInDegree);
+        List<String> zeroDegreeNodes = graph.getZeroDegreeNodes();
+        log.info("prepare to trigger rest not finished tasks|workflowInstanceId={}|workflowTaskId={}|" +
+                "zeroDegreeNodes={}", instance.getId(), task.getId(), JSONArray.toJSONString(zeroDegreeNodes));
+        List<WorkflowTaskDO> executeTasks = new ArrayList<>();
+        for (String node : zeroDegreeNodes) {
+            WorkflowGraphNodeId nodeId = WorkflowGraphNodeId.valueOf(node);
+            if (nodeId == null) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS, "null zero degree nodes found");
+            }
+            boolean found = false;
+            String foundStatus = "";
+            for (WorkflowTaskDO item : notFinishedTasks) {
+                if (item.getTaskType().equals(nodeId.getType())
+                        && item.getTaskName().equals(nodeId.getName())
+                        && item.getTaskStatus().equals(WorkflowTaskStateEnum.PENDING.toString())) {
+                    found = true;
+                    foundStatus = item.getTaskStatus();
+                    executeTasks.add(item);
+                }
+            }
+            if (!found) {
+                log.info("the workflow task is not in PENDING status, skip execution|workflowInstanceId={}|" +
+                                "workflowTaskId={}|node={}|status={}", instance.getId(), task.getId(),
+                        node, foundStatus);
+            }
         }
-        WorkflowSnapshotDO snapshot = snapshots.getItems().get(0);
-        String snapshotContextStr = snapshot.getSnapshotContext();
-        if (StringUtils.isEmpty(snapshotContextStr)) {
-            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                    String.format("empty snapshot context found|workflowInstanceId=%d|workflowTaskId=%d",
-                            nextPendingTask.getWorkflowInstanceId(), workflowTaskId));
+        if (executeTasks.size() == 0) {
+            log.info("no more PENDING tasks found, skip execution|workflowInstanceId={}|workflowTaskId={}|" +
+                    "zeroDegreeNodes={}", instance.getId(), task.getId(), JSONArray.toJSONString(zeroDegreeNodes));
+            return;
         }
-        JSONObject snapshotContext = JSONObject.parseObject(snapshotContextStr);
-        workflowSnapshotService.update(UpdateWorkflowSnapshotReq.builder()
-                .workflowInstanceId(nextPendingTask.getWorkflowInstanceId())
-                .workflowTaskId(nextPendingTask.getId())
+
+        // 对于准备执行的所有 PENDING Task，进行快照汇聚，并触发 START 事件执行
+        for (WorkflowTaskDO executeTask : executeTasks) {
+            String nodeId = (new WorkflowGraphNodeId(executeTask.getTaskType(), executeTask.getTaskName())).toString();
+            List<String> reverseEdges = graph.getReverseEdges().get(nodeId);
+            if (reverseEdges == null || reverseEdges.size() == 0) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                        String.format("cannot find reverse edges by node id|nodeId=%s", nodeId));
+            }
+
+            // 获取下一步要运行节点的当前初始化 Context，并合并上游所有 SUCCESS 节点的 Context 到自身
+            WorkflowSnapshotDO snapshotDO = workflowSnapshotService.get(instance.getId(), executeTask.getId());
+            if (snapshotDO == null) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                        String.format("cannot update merged snapshot context because we cannot find the snapshot by " +
+                                        "condition|workflowInstanceId=%d|workflowTaskId=%d|executeTaskId=%d",
+                                instance.getId(), task.getId(), executeTask.getId()));
+            }
+            JSONObject snapshotContext = JSONObject.parseObject(snapshotDO.getSnapshotContext());
+            for (String parentNodeIdStr : reverseEdges) {
+                WorkflowGraphNodeId parentNodeId = WorkflowGraphNodeId.valueOf(parentNodeIdStr);
+                if (parentNodeId == null) {
+                    throw new AppException(AppErrorCode.INVALID_USER_ARGS, "null reverse nodes found");
+                }
+                boolean found = false;
+                for (WorkflowTaskDO item : successTasks) {
+                    if (item.getTaskType().equals(parentNodeId.getType())
+                            && item.getTaskName().equals(parentNodeId.getName())) {
+                        found = true;
+                        WorkflowSnapshotDO prevSnapshotDO = workflowSnapshotService.get(instance.getId(), item.getId());
+                        if (prevSnapshotDO == null || StringUtils.isEmpty(prevSnapshotDO.getSnapshotContext())) {
+                            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                    String.format("cannot get workflow snapshot by condition|workflowInstanceId=%d|" +
+                                            "workflowTaskId=%d", instance.getId(), item.getId()));
+                        }
+                        JSONObject currentSnapshotContext = JSONObject.parseObject(prevSnapshotDO.getSnapshotContext());
+                        snapshotContext.putAll(currentSnapshotContext);
+                        log.info("found snapshot context by reverse edges, merged|workflowInstanceId={}|" +
+                                "workflowTaskId={}|executeTaskId={}|executeParentTaskId={}|parentSnapshotContext={}",
+                                instance.getId(), task.getId(), executeTask.getId(), item.getId(),
+                                prevSnapshotDO.getSnapshotContext());
+                    }
+                }
+                if (!found) {
+                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                            String.format("cannot find parent node in workflow task db|workflowInstanceId=%d|" +
+                                    "workflowTaskId=%d|executeTaskId=%d|parentNodeId=%s", instance.getId(),
+                                    task.getId(), executeTask.getId(), parentNodeIdStr));
+                }
+            }
+            log.info("snapshot context has merged|workflowInstanceId={}|workflowTaskId={}|executeTaskId={}|" +
+                            "context={}", instance.getId(), task.getId(), executeTask.getId(),
+                    JSONObject.toJSONString(snapshotContext));
+
+            // 更新 snapshot 到准备执行的任务 task 中
+            workflowSnapshotService.update(UpdateWorkflowSnapshotReq.builder()
+                .workflowInstanceId(instance.getId())
+                .workflowTaskId(executeTask.getId())
                 .context(snapshotContext)
                 .build());
-        log.info("found the next workflow task to run, and the snapshot context has set|workflowInstanceId={}|" +
-                        "currentTaskId={}|nextTaskId={}|appId={}|taskType={}|taskStage={}|context={}",
-                instance.getId(), workflowTaskId, nextPendingTask.getId(), nextPendingTask.getAppId(),
-                nextPendingTask.getTaskType(), nextPendingTask.getTaskStage(), snapshotContextStr);
-        publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.START, nextPendingTask));
+            log.info("found the next workflow task to run, trigger START|workflowInstanceId={}|" +
+                            "currentTaskId={}|nextTaskId={}|appId={}|taskType={}|taskName={}|taskStage={}|context={}",
+                    instance.getId(), task.getId(), executeTask.getId(), executeTask.getAppId(),
+                    executeTask.getTaskType(), executeTask.getTaskName(), executeTask.getTaskStage(),
+                    JSONObject.toJSONString(snapshotContext));
+            publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.START, executeTask));
+        }
     }
 
     /**
@@ -238,8 +321,7 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
         log.info("the current workflow instance is triggered by a failure event|workflowInstanceId={}|appId={}|" +
                         "category={}|errorMessage={}", instance.getId(), instance.getAppId(), instance.getCategory(),
                 errorMessage);
-        publisher.publishEvent(new WorkflowInstanceEvent(this,
-                WorkflowInstanceEventEnum.PROCESS_FAILED, instance));
+        publisher.publishEvent(new WorkflowInstanceEvent(this, WorkflowInstanceEventEnum.PROCESS_FAILED, instance));
     }
 
     /**
@@ -501,8 +583,8 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
                     || WorkflowTaskStateEnum.WAITING_SUSPEND.equals(status)) {
                 publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.RESUME, task));
                 log.info("the RESUME event has sent to workflow task|workflowInstanceId={}|workflowTaskId={}|" +
-                                "taskType={}|appId={}|previousStatus={}", workflowInstanceId,
-                        task.getId(), task.getTaskType(), appId, status);
+                                "taskType={}|taskName={}|appId={}|previousStatus={}", workflowInstanceId,
+                        task.getId(), task.getTaskType(), task.getTaskName(), appId, status);
             }
         }
         return true;
@@ -579,11 +661,27 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
             DeployAppSchema.Workflow defaultWorkflow = DeployAppSchema.Workflow.builder()
                     .steps(List.of(DeployAppSchema.WorkflowStep.builder()
                             .type(WorkflowConstant.DEFAULT_WORKFLOW_TYPE)
+                            .name(WorkflowConstant.DEFAULT_WORKFLOW_TYPE)
                             .stage(WorkflowConstant.DEFAULT_WORKFLOW_STAGE.toString())
+                            .inputs(new ArrayList<>())
+                            .outputs(new ArrayList<>())
                             .properties(new JSONObject())
                             .build()))
                     .build();
             configurationSchema.getSpec().setWorkflow(defaultWorkflow);
+        }
+
+        // 如果 taskName 不存在的话，补充 taskName 到每个 workflow steps 中
+        for (int i = 0; i < workflow.getSteps().size(); i++) {
+            DeployAppSchema.WorkflowStep step = workflow.getSteps().get(i);
+            String type = step.getType();
+            if (StringUtils.isEmpty(type)) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS, "empty type in workflow steps");
+            }
+            String name = step.getName();
+            if (StringUtils.isEmpty(name)) {
+                step.setName(String.format("%s-%d", type, i));
+            }
         }
     }
 

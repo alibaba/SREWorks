@@ -50,4 +50,5 @@ RUN mkdir -p logs \
 
 
 EXPOSE 8848
+RUN chmod +x bin/start.sh
 ENTRYPOINT ["bin/start.sh"]

@@ -2,8 +2,8 @@
  * @version: 2.0.0
  * @Author: deeham.ww
  * @Date: 2022-12-02 11:18:47
- * @LastEditors: deeham.ww
- * @LastEditTime: 2022-12-02 14:20:15
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-12-10 15:52:13
  */
 import Loading from './components/Loading'
 import AceViewer from './components/AceViewer'
@@ -32,6 +32,7 @@ import SelectedTable from './components/SelectedTable'
 import SRECron from './components/SRECron'
 import TIcon from './components/TIcon'
 import IconSelector from './components/IconSelector'
+import Property from './Property'
 
 export {
   Loading,
@@ -61,4 +62,5 @@ export {
   TIcon,
   NewJsonEditor,
   IconSelector,
+  Property,
 }

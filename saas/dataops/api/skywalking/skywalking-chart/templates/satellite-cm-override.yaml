@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-{{- if (.Files.Glob "files/conf.d/satellite/**") }}
+{{- if .Values.satellite.config }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -22,9 +22,16 @@ metadata:
     app: {{ template "skywalking.name" . }}
     release: {{ .Release.Name }}
     component: {{ .Values.satellite.name }}
-binaryData:
-  {{ range $path, $bytes := .Files.Glob "files/conf.d/satellite/**" }}
-  {{- $path | replace "files/conf.d/satellite/" "" | b64enc | replace "=" "-" | indent 2 }}: |
-  {{ $.Files.Get $path | b64enc | indent 4 }}
-  {{ end }}
+data:
+{{- range $path, $config := .Values.satellite.config }}
+ {{- if typeIs "string" $config }}
+ {{ $path }}: |
+{{ $config | indent 4 }}
+ {{- else }}
+  {{- range $subpath, $subconfig := $config }}
+ {{ print $path "-" $subpath }}: |
+{{ $subconfig | indent 4 }}
+  {{- end }}
+ {{- end }}
+{{- end }}
 {{ end }}

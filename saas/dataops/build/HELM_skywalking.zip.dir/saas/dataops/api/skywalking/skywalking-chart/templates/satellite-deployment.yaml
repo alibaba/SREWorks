@@ -116,11 +116,17 @@ spec:
         {{- end }}
 
         volumeMounts:
-          {{- if (.Files.Glob "files/conf.d/satellite/**") }}
-          {{ range $path, $bytes := .Files.Glob "files/conf.d/satellite/**" }}
+          {{- range $path, $config := .Values.satellite.config }}
+          {{- if typeIs "string" $config }}
           - name: skywalking-satellite-override
-            mountPath: {{ print "/skywalking/configs/" ($path | replace "files/conf.d/satellite/" "") }}
-            subPath: {{ $path | replace "files/conf.d/satellite/" "" | b64enc | replace "=" "-" }}
+            mountPath: /skywalking/config/{{ $path }}
+            subPath: {{ $path }}
+          {{- else }}
+          {{- range $subpath, $oalContent := $config }}
+          - name: skywalking-satellite-override
+            mountPath: /skywalking/config/{{ $path }}/{{ $subpath }}
+            subPath: {{ print $path "-" $subpath }}
+          {{- end }}
           {{- end }}
           {{- end }}
 

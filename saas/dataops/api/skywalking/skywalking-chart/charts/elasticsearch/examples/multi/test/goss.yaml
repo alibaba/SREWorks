@@ -5,5 +5,5 @@ http:
     body:
       - 'green'
       - '"cluster_name":"multi"'
-      - '"number_of_nodes":6'
+      - '"number_of_nodes":9'
       - '"number_of_data_nodes":3'

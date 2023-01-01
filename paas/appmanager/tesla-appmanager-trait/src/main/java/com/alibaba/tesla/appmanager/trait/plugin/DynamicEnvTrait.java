@@ -40,9 +40,9 @@ public class DynamicEnvTrait extends BaseTrait {
         try {
             // 导出自定义环境变量文件
             envFile = Files.createTempFile("env", ".json").toFile();
-            String command = String.format("abmcli -o json deployment env list --cluster %s > %s",
-                cluster, envFile.getAbsolutePath());
-            String output = CommandUtil.runLocalCommand(command);
+            String[] command = new String[]{"abmcli", "-o", "json", "deployment", "env", "list",
+                    "--cluster", cluster, ">", envFile.getAbsolutePath()};
+            String output = CommandUtil.runLocalCommand(CommandUtil.getBashCommand(command));
             String envFileStr = new String(Files.readAllBytes(envFile.toPath()), StandardCharsets.UTF_8);
             log.info("get dynamic env success|command={}|output={}|envFile={}", command, output, envFileStr);
 

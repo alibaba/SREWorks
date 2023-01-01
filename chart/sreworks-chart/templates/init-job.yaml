@@ -22,7 +22,7 @@ spec:
         name: job
         command: ["sh"]
         args: ["/app/core.sh"]
-        imagePullPolicy: Always
+        imagePullPolicy: {{ .Values.global.images.imagePullPolicy }}
         #args: ["/app/sleep.sh"]
         workingDir: /root
         envFrom:
@@ -75,7 +75,7 @@ spec:
         name: job
         command: ["sh"]
         #args: ["/app/sleep.sh"]
-        imagePullPolicy: Always
+        imagePullPolicy: {{ $.Values.global.images.imagePullPolicy }}
         args: ["/app/saas-{{.}}.sh"]
         workingDir: /root
         envFrom:

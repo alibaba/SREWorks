@@ -31,7 +31,7 @@ spec:
 
             '
         logstashPipeline:
-          logstash.conf: "input {\n  elasticsearch {\n    hosts => \"prod-dataops-elasticsearch-master.sreworks-dataops:9200\"\n    user => \"elastic\"\n    password => \"sreworkses123.\"\n    index => \"metricbeat\"\n    query => '{\"query\":{\"bool\":{\"must\":[{\"range\":{\"@timestamp\":{\"gte\":\"now-1m/m\",\"lt\":\"now/m\"}}},{\"query_string\":{\"query\":\"metricset.name:json\"}},{\"exists\":{\"field\":\"http\"}}]}},\"sort\":[\"service.address\"]}'\n    schedule => \"* * * * *\"\n    scroll => \"5m\"\n    size => 10000\n  }\n}\noutput {\n  kafka {\n    bootstrap_servers => \"sreworks-kafka.sreworks.svc.cluster.local:9092\"\n    codec => json\n    topic_id => \"sreworks-telemetry-metric\"\n  }\n}\n"
+          logstash.conf: "input {\n  elasticsearch {\n    hosts => \"prod-dataops-elasticsearch-master.sreworks-dataops:9200\"\n    user => \"elastic\"\n    password => \"sreworkses123.\"\n    index => \"metricbeat\"\n    query => '{\"query\":{\"bool\":{\"must\":[{\"range\":{\"@timestamp\":{\"gte\":\"now-1m/m\",\"lt\":\"now/m\"}}},{\"query_string\":{\"query\":\"metricset.name:json\"}},{\"exists\":{\"field\":\"http\"}}]}},\"sort\":[\"service.address\"]}'\n    schedule => \"* * * * *\"\n    scroll => \"5m\"\n    size => 10000\n  }\n}\noutput {\n  kafka {\n    bootstrap_servers => \"prod-dataops-kafka.sreworks-dataops.svc.cluster.local:9092\"\n    codec => json\n    topic_id => \"sreworks-telemetry-metric\"\n  }\n}\n"
         service:
           loadBalancerIP: ''
           ports:

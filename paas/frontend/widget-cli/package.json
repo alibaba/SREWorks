@@ -1,12 +1,13 @@
 {
   "name": "@sreworks/widget-cli",
-  "version": "0.0.0-beta",
+  "version": "1.0.0",
   "license": "Apache-2.0",
   "description": "",
   "repository": "",
   "keywords": [
     "SREWorks",
     "sre",
+    "widget",
     "remote-components"
   ],
   "engines": {
@@ -30,7 +31,8 @@
     "create": "node ./bin/react-scripts.js create",
     "create-vue": "node ./bin/react-scripts.js create-vue",
     "alipb": "tnpm publish --registry=https://registry.npm.alibaba-inc.com/",
-    "pb": "npm publish --registry=https://registry.npmjs.org/ --access public"
+    "pb": "npm publish --registry=https://registry.npmjs.org/ --access public",
+    "lint": "prettier --write ."
   },
   "dependencies": {
     "fs-extra": "7.0.0",

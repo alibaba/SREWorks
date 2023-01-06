@@ -45,7 +45,7 @@ subjects:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: local-path-provisioner
+  name: sreworks-local-path-provisioner
 spec:
   replicas: 1
   selector:

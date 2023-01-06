@@ -17,8 +17,15 @@
 - Intranet source code construction and deployment
 - Application/Plugin market
 
-## SREWorks v1.3 
+## SREWorks v1.3 (2022/11/16 Released)
 
 - Plugin mechanism enhancements
 - Official website homepage online
 - Builtin Application push to Application market
+
+## SREWorks v1.4
+- Frontend engineering adopts monorepo for code refactoring
+- Improvement of offline image deployment plan
+
+
+- 

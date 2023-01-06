@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { JSXRender } from '@sreworks/components'
 import './index.less'
 import Property from '../../Property'
-let properties = Property.getProperties()
 
+let properties = Property.getProperties()
 export default class SwitchCard extends Component {
   render() {
     let { widgetConfig = {} } = this.props

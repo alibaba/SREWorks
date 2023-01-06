@@ -3,6 +3,7 @@ import { Upload, message } from 'antd'
 import React, { PureComponent } from 'react'
 import Property from '../../../Property'
 let properties = Property.getProperties()
+
 export default class FileUpload extends PureComponent {
   constructor(props) {
     super(props)

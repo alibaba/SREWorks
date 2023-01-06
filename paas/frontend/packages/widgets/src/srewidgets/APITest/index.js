@@ -4,6 +4,7 @@ import { httpClient } from '@sreworks/shared-utils'
 import { NewJsonEditor } from '@sreworks/components'
 import { CardWrapper } from '@sreworks/components'
 import Property from '../../Property'
+
 let properties = Property.getProperties()
 import _ from 'lodash'
 let timer = null // 计时器

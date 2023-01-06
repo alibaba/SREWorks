@@ -1,7 +1,7 @@
 import { httpClient, util, cacheRepository } from '@sreworks/shared-utils'
 import Property from '../Property'
-let properties = Property.getProperties()
 
+let properties = Property.getProperties()
 const newPrefix = 'gateway/v2/foundation/frontend-service/frontend'
 const opsPrefix = 'gateway/v2/common/productops/frontend'
 

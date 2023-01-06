@@ -1,1 +1,0 @@
-# @sreworks/widget-cli

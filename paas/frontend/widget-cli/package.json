@@ -31,8 +31,7 @@
     "create": "node ./bin/react-scripts.js create",
     "create-vue": "node ./bin/react-scripts.js create-vue",
     "alipb": "tnpm publish --registry=https://registry.npm.alibaba-inc.com/",
-    "pb": "npm publish --registry=https://registry.npmjs.org/ --access public",
-    "lint": "prettier --write ."
+    "pb": "npm publish --registry=https://registry.npmjs.org/ --access public"
   },
   "dependencies": {
     "fs-extra": "7.0.0",

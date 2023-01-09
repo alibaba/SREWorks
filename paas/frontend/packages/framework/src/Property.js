@@ -42,4 +42,5 @@ Property.getInstance = (function () {
     return instance
   }
 })()
-export default Property.getInstance()
+let properties = Property.getInstance()
+export default properties

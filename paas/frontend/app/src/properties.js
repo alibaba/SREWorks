@@ -110,5 +110,6 @@ if (properties.apiType === 'local') {
 //导出给组件库使用
 window.__TESLA_COMPONENT_LIB_CONFIG = properties
 window.__SREWORKS_COMPONENT_LIB_CONFIG = properties
+window.PROPERTY = properties
 
 export default properties

@@ -5901,24 +5901,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@sreworks/widget-cli@workspace:packages/widget-cli":
-  version: 0.0.0-use.local
-  resolution: "@sreworks/widget-cli@workspace:packages/widget-cli"
-  dependencies:
-    "@babel/cli": 7.18.10
-    "@babel/core": 7.18.13
-    "@babel/preset-env": 7.18.10
-    babel-jest: 29.0.1
-    chalk: ~4.1.2
-    commander: ^9.4.0
-    enquirer: ^2.3.6
-    handlebars: ^4.7.7
-    jest: 29.0.1
-  bin:
-    widget-cli: bin/widget-cli.js
-  languageName: unknown
-  linkType: soft
-
 "@sreworks/widgets@^0.0.0-alpha.1, @sreworks/widgets@workspace:packages/widgets":
   version: 0.0.0-use.local
   resolution: "@sreworks/widgets@workspace:packages/widgets"
@@ -11619,7 +11601,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^4.0.0, chalk@npm:^4.1.0, chalk@npm:^4.1.1, chalk@npm:~4.1.2":
+"chalk@npm:^4.0.0, chalk@npm:^4.1.0, chalk@npm:^4.1.1":
   version: 4.1.2
   resolution: "chalk@npm:4.1.2"
   dependencies:
@@ -12147,7 +12129,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^9.3.0, commander@npm:^9.4.0":
+"commander@npm:^9.3.0":
   version: 9.4.0
   resolution: "commander@npm:9.4.0"
   checksum: a322de584a6ccd1ea83c24f6a660e52d16ffbe2613fcfbb8d2cc68bc9dec637492456d754fe8bb5b039ad843ed8e04fb0b107e581a75f62cde9e1a0ab1546e09
@@ -14212,7 +14194,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"enquirer@npm:^2.3.6, enquirer@npm:~2.3.6":
+"enquirer@npm:~2.3.6":
   version: 2.3.6
   resolution: "enquirer@npm:2.3.6"
   dependencies:

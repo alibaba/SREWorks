@@ -32,7 +32,7 @@ class HelmComponentDestroyHandler implements ComponentDestroyHandler {
      */
     public static final String KIND = DynamicScriptKindEnum.COMPONENT_DESTROY.toString()
     public static final String NAME = "HelmDefault"
-    public static final Integer REVISION = 2
+    public static final Integer REVISION = 3
 
     @Autowired
     private ClusterProvider clusterProvider
@@ -75,7 +75,7 @@ class HelmComponentDestroyHandler implements ComponentDestroyHandler {
                     String.format("cannot find cluster authorization info|clusterId=%s", cluster))
         }
         try {
-            CommandUtil.runLocalCommand(command)
+            CommandUtil.runLocalCommand(CommandUtil.getBashCommand(command))
             log.info("execute helm uninstall succeed|command={}|name={}|request={}",
                     command, name, JSONObject.toJSONString(request))
         } catch (Exception e) {

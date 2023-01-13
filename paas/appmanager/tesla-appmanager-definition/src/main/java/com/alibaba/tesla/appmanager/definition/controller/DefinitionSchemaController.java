@@ -8,6 +8,7 @@ import com.alibaba.tesla.common.base.TeslaBaseResult;
 import com.alibaba.tesla.web.controller.BaseController;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +38,8 @@ public class DefinitionSchemaController extends BaseController {
 
     // 获取 Schema 列表
     @GetMapping("")
-    public TeslaBaseResult list(@ModelAttribute DefinitionSchemaQueryReq request) {
+    public TeslaBaseResult list(
+            @ParameterObject @ModelAttribute DefinitionSchemaQueryReq request) {
         Pagination<DefinitionSchemaDTO> results = definitionSchemaProvider.list(request, "SYSTEM");
         return buildSucceedResult(results);
     }

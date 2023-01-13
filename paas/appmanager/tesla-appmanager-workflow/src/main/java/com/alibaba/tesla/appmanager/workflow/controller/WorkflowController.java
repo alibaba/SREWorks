@@ -4,6 +4,7 @@ import com.alibaba.tesla.appmanager.api.provider.WorkflowInstanceProvider;
 import com.alibaba.tesla.appmanager.api.provider.WorkflowTaskProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
+import com.alibaba.tesla.appmanager.common.enums.WorkflowExecuteModeEnum;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.WorkflowInstanceDTO;
 import com.alibaba.tesla.appmanager.domain.dto.WorkflowTaskDTO;
@@ -11,11 +12,13 @@ import com.alibaba.tesla.appmanager.domain.option.WorkflowInstanceOption;
 import com.alibaba.tesla.appmanager.domain.req.workflow.*;
 import com.alibaba.tesla.appmanager.domain.res.workflow.WorkflowInstanceOperationRes;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
+import com.google.common.base.Enums;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -43,10 +46,16 @@ public class WorkflowController extends AppManagerBaseController {
     public TeslaBaseResult launch(
             @RequestParam("appId") String appId,
             @RequestParam(value = "category", required = false, defaultValue = "") String category,
+            @RequestParam(value = "mode", required = false, defaultValue = "STEP_BY_STEP") String mode,
             @RequestBody String body, OAuth2Authentication auth) {
+        WorkflowExecuteModeEnum modeEnum = Enums.getIfPresent(WorkflowExecuteModeEnum.class, mode).orNull();
+        if (modeEnum == null) {
+            modeEnum = WorkflowExecuteModeEnum.STEP_BY_STEP;
+        }
         WorkflowInstanceOption options = WorkflowInstanceOption.builder()
                 .category(category)
                 .creator(getOperator(auth))
+                .mode(modeEnum)
                 .build();
         try {
             WorkflowInstanceDTO response = workflowInstanceProvider.launch(appId, body, options);
@@ -61,7 +70,7 @@ public class WorkflowController extends AppManagerBaseController {
     @GetMapping
     @ResponseBody
     public TeslaBaseResult list(
-            @ModelAttribute WorkflowInstanceListReq request, OAuth2Authentication auth
+            @ParameterObject @ModelAttribute WorkflowInstanceListReq request, OAuth2Authentication auth
     ) throws Exception {
         Pagination<WorkflowInstanceDTO> response = workflowInstanceProvider.list(request);
         return buildSucceedResult(response);
@@ -142,7 +151,7 @@ public class WorkflowController extends AppManagerBaseController {
     @ResponseBody
     public TeslaBaseResult listTask(
             @PathVariable("instanceId") Long instanceId,
-            @ModelAttribute WorkflowTaskListReq request, OAuth2Authentication auth
+            @ParameterObject @ModelAttribute WorkflowTaskListReq request, OAuth2Authentication auth
     ) throws Exception {
         request.setInstanceId(instanceId);
         Pagination<WorkflowTaskDTO> response = workflowTaskProvider.list(request);

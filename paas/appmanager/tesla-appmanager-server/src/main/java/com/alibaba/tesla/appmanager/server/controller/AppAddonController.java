@@ -20,6 +20,7 @@ import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
@@ -59,7 +60,7 @@ public class AppAddonController extends AppManagerBaseController {
     public TeslaBaseResult list(
             @PathVariable String appId,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
-            @ModelAttribute AppAddonQueryReq request) throws Exception {
+            @ParameterObject @ModelAttribute AppAddonQueryReq request) throws Exception {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         request.setNamespaceId(container.getNamespaceId());
         request.setStageId(container.getStageId());

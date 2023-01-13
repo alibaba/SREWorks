@@ -95,8 +95,7 @@ public class WorkflowGraph implements Serializable {
         synchronized (lock) {
             List<String> outs = edges.get(nodeId);
             if (outs == null) {
-                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                        String.format("invalid nodeId to remove degress|nodeId=%s", nodeId));
+                return;
             }
             outs.forEach(out -> {
                 int current = degree.get(out);

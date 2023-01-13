@@ -306,6 +306,32 @@ public class AppMetaProviderImpl implements AppMetaProvider {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "invalid parameter mode " + request.getMode());
         }
         appOptionService.updateOptions(appId, options, mode);
+
+        // 默认开启前端
+        if (!EnvUtil.isSreworks()) {
+            try {
+                JSONObject body = new JSONObject();
+                body.put("admins", new JSONArray());
+                body.put("appId", appId);
+                body.put("options", new JSONObject());
+                body.put("templateName", "blank_app");
+                body.put("version", 0);
+                body.put("environments", new JSONArray());
+                body.getJSONArray("environments").add("default,pre");
+                JSONObject headers = new JSONObject();
+                headers.put("X-BizTenant", "alibaba");
+                headers.put("X-EmpId", operator);
+                headers.put("X-Biz-App", String.format("%s,default,pre", appId));
+                String bodyStr = JSONObject.toJSONString(body);
+                String response = RequestUtil.post("http://productops.internal.tesla.alibaba-inc.com/apps/init",
+                        new JSONObject(), bodyStr, headers);
+                log.info("create app init response|operator={}|appId={}|body={}|headers={}|response={}",
+                        operator, appId, bodyStr, JSONObject.toJSONString(headers), response);
+            } catch (Exception e) {
+                log.warn("init frontend failed, skip|appId={}|exception={}", appId, ExceptionUtils.getStackTrace(e));
+            }
+        }
+
         return get(appId, operator);
     }
 

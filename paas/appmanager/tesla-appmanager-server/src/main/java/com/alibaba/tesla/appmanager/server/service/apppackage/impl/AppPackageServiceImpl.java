@@ -204,14 +204,24 @@ public class AppPackageServiceImpl implements AppPackageService {
         }
 
         // 不重置版本号的时候，需要看当前系统是否已经导入过相同版本
-        AppPackageDO appPackageInDatabase = appPackageRepository.getByCondition(
-                AppPackageQueryCondition.builder()
-                        .appId(appId)
-                        .packageVersion(actualPackageVersion)
-                        .withBlobs(true)
-                        .build());
+        AppPackageQueryCondition appPackageCondition = AppPackageQueryCondition.builder()
+                .appId(appId)
+                .packageVersion(actualPackageVersion)
+                .withBlobs(true)
+                .build();
+        AppPackageDO appPackageInDatabase = appPackageRepository.getByCondition(appPackageCondition);
         if (appPackageInDatabase == null) {
-            appPackageRepository.insert(item);
+            try {
+                appPackageRepository.insert(item);
+            } catch (Exception e) {
+                if (!e.getMessage().contains("Duplicate entry")) {
+                    throw e;
+                } else {
+                    log.info("duplicate app package insert, skip|condition={}",
+                            JSONObject.toJSONString(appPackageCondition));
+                    item = appPackageRepository.getByCondition(appPackageCondition);
+                }
+            }
             return item;
         }
         if (!force) {

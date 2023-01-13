@@ -195,4 +195,32 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowSnapshotDO">
+    update am_workflow_snapshot
+    <set>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="workflowInstanceId != null">
+        workflow_instance_id = #{workflowInstanceId,jdbcType=BIGINT},
+      </if>
+      <if test="workflowTaskId != null">
+        workflow_task_id = #{workflowTaskId,jdbcType=BIGINT},
+      </if>
+      <if test="snapshotContext != null">
+        snapshot_context = #{snapshotContext,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="snapshotTask != null">
+        snapshot_task = #{snapshotTask,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="snapshotWorkflow != null">
+        snapshot_workflow = #{snapshotWorkflow,jdbcType=LONGVARCHAR},
+      </if>
+      lock_version = lock_version + 1,
+    </set>
+    where id = #{id,jdbcType=BIGINT} AND lock_version = #{lockVersion,jdbcType=INTEGER}
+  </update>
 </mapper>

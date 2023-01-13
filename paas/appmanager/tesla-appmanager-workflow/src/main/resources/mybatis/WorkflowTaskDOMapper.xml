@@ -96,6 +96,11 @@
     task_name, task_stage, task_status, deploy_app_id, lock_version, deploy_app_unit_id, 
     deploy_app_namespace_id, deploy_app_stage_id, deploy_workflow_instance_id
   </sql>
+  <sql id="Join_Base_Column_List">
+    T.id, T.gmt_create, T.gmt_modified, T.workflow_instance_id, T.app_id, T.gmt_start, T.gmt_end, T.task_type,
+    T.task_name, T.task_stage, T.task_status, T.deploy_app_id, T.lock_version, T.deploy_app_unit_id,
+    T.deploy_app_namespace_id, T.deploy_app_stage_id, T.deploy_workflow_instance_id
+  </sql>
   <sql id="Blob_Column_List">
     <!--@mbg.generated-->
     task_properties, task_error_message, task_outputs, task_inputs
@@ -414,8 +419,8 @@
 
   <select id="listRunningRemoteTask" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
-    from am_workflow_task
-    where deploy_app_unit_id is not null and deploy_app_unit_id != '' and task_status = 'WAITING'
+    <include refid="Join_Base_Column_List" />
+    from am_workflow_task T join am_workflow_instance I on T.workflow_instance_id = I.id
+    where T.deploy_app_unit_id is not null and T.deploy_app_unit_id != '' and T.task_status = 'WAITING' and I.client_host = #{clientHost,jdbcType=VARCHAR}
   </select>
 </mapper>

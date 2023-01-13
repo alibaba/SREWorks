@@ -45,7 +45,7 @@ class CustomStatusGenericResource implements ComponentCustomStatusHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 8
+    public static final Integer REVISION = 11
 
     @Override
     RtComponentInstanceGetStatusRes getStatus(
@@ -68,23 +68,35 @@ class CustomStatusGenericResource implements ComponentCustomStatusHandler {
             if (definition == null) {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS, "cannot find definition in resource")
             }
-            def context = new CustomResourceDefinitionContext.Builder()
-                    .withName(definition.getString("name"))
-                    .withGroup(definition.getString("group"))
-                    .withVersion(definition.getString("version"))
-                    .withPlural(definition.getString("plural"))
-                    .withScope(definition.getString("scope"))
-                    .build()
-            if (StringUtils.isAnyEmpty(context.getName(), context.getGroup(), context.getVersion(),
-                    context.getPlural(), context.getScope())) {
-                throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                        String.format("invalid definition in resource|resource=%s", JSONObject.toJSONString(resource)))
+            def coreName = null
+            def context = null
+            if (StringUtils.isEmpty(definition.getString("group"))) {
+                coreName = definition.getString("name")
+                if (StringUtils.isEmpty(coreName)) {
+                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                            String.format("invalid definition in resource, empty name|resource=%s",
+                                    JSONObject.toJSONString(resource)))
+                }
+            } else {
+                context = new CustomResourceDefinitionContext.Builder()
+                        .withName(definition.getString("name"))
+                        .withGroup(definition.getString("group"))
+                        .withVersion(definition.getString("version"))
+                        .withPlural(definition.getString("plural"))
+                        .withScope(definition.getString("scope"))
+                        .build()
+                if (StringUtils.isAnyEmpty(context.getName(), context.getGroup(), context.getVersion(),
+                        context.getPlural(), context.getScope())) {
+                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                            String.format("invalid definition in resource|resource=%s",
+                                    JSONObject.toJSONString(resource)))
+                }
             }
             def namespace = resource.getString("namespace")
             def name = resource.getString("name")
             def alias = resource.getString("alias")
             def conditions = resource.getJSONArray("conditions")
-            if (StringUtils.isAnyEmpty(namespace, name, alias) || conditions == null || conditions.size() == 0) {
+            if (StringUtils.isAnyEmpty(namespace, name, alias) || conditions == null) {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                         String.format("invalid resource configuration in options|resource=%s",
                                 JSONObject.toJSONString(resource)))
@@ -98,7 +110,20 @@ class CustomStatusGenericResource implements ComponentCustomStatusHandler {
                             String.format("invalid condition in resources|condition=%s",
                                     JSONObject.toJSONString(condition)))
                 }
-                def obj = client.customResource(context).inNamespace(namespace).withName(name).get()
+                def obj = null
+                if (coreName == null) {
+                    obj = client.customResource(context).inNamespace(namespace).withName(name).get()
+                } else {
+                    switch (coreName) {
+                        case "services":
+                            obj = client.services().inNamespace(namespace).withName(name).get()
+                            break
+                        default:
+                            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                                    String.format("cannot recognize name in definition|resource=%s",
+                                            JSONObject.toJSONString(resource)))
+                    }
+                }
                 if (obj == null) {
                     return RtComponentInstanceGetStatusRes.builder()
                             .status(ComponentInstanceStatusEnum.WARNING.toString())
@@ -170,7 +195,6 @@ class CustomStatusGenericResource implements ComponentCustomStatusHandler {
 
     private static JSONObject removeUselessResourceFields(Object data) {
         def target = JSONObject.parseObject(JSONObject.toJSONString(data))
-        target.remove("metadata")
         return target
     }
 }

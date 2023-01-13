@@ -137,7 +137,7 @@ public class WorkflowSnapshotServiceImpl implements WorkflowSnapshotService {
             JSONObject dbContext = JSONObject.parseObject(dbContextStr);
             dbContext.putAll(context);
             snapshot.setSnapshotContext(JSONObject.toJSONString(dbContext));
-            int count = workflowSnapshotRepository.updateByCondition(snapshot, condition);
+            int count = workflowSnapshotRepository.updateByPrimaryKey(snapshot);
             if (count != 1) {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                         String.format("cannot update workflow snapshot when put user custom context|count=%d|record=%s",
@@ -181,7 +181,7 @@ public class WorkflowSnapshotServiceImpl implements WorkflowSnapshotService {
                 record.setSnapshotTask(SchemaUtil.toYamlMapStr(request.getConfiguration()));
             }
             record.setSnapshotWorkflow(null);
-            workflowSnapshotRepository.updateByCondition(record, condition);
+            workflowSnapshotRepository.updateByPrimaryKey(record);
         }
         return get(record.getId());
     }

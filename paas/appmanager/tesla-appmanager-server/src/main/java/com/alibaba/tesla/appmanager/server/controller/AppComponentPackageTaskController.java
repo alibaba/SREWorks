@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableMap;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -45,7 +46,7 @@ public class AppComponentPackageTaskController extends AppManagerBaseController 
     @ResponseBody
     public TeslaBaseResult list(
             @PathVariable String appId,
-            @ModelAttribute ComponentPackageTaskListQueryReq request,
+            @ParameterObject @ModelAttribute ComponentPackageTaskListQueryReq request,
             OAuth2Authentication auth) {
         return buildSucceedResult(componentPackageProvider.listTask(request, getOperator(auth)));
     }

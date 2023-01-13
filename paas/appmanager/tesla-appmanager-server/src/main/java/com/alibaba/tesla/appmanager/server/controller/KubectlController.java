@@ -6,6 +6,7 @@ import com.alibaba.tesla.appmanager.kubernetes.sevice.kubectl.KubectlService;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.validation.BindingResult;
@@ -26,7 +27,9 @@ public class KubectlController extends AppManagerBaseController {
     private KubectlService kubectlService;
 
     @GetMapping("namespaces")
-    public TeslaBaseResult namespaces(@ModelAttribute KubectlListNamespaceReq req, OAuth2Authentication auth) {
+    public TeslaBaseResult namespaces(
+            @ParameterObject @ModelAttribute KubectlListNamespaceReq req,
+            OAuth2Authentication auth) {
         return buildSucceedResult(kubectlService.listNamespace(req, getOperator(auth)));
     }
 
@@ -76,7 +79,7 @@ public class KubectlController extends AppManagerBaseController {
             @PathVariable(value = "cluster") String cluster,
             @PathVariable(value = "namespace") String namespace,
             @PathVariable(value = "jobName") String jobName,
-            @ModelAttribute KubectlDeleteJobReq params,
+            @ParameterObject @ModelAttribute KubectlDeleteJobReq params,
             OAuth2Authentication auth) {
         KubectlDeleteJobReq request = KubectlDeleteJobReq.builder()
                 .clusterId(cluster)

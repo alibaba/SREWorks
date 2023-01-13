@@ -86,11 +86,12 @@ public class WorkflowTaskRepositoryImpl implements WorkflowTaskRepository {
     /**
      * 列出当前所有正在运行中的远程 workflow task
      *
+     * @param clientHost 主机
      * @return List or WorkflowTaskDO
      */
     @Override
-    public List<WorkflowTaskDO> listRunningRemoteTask() {
-        return mapper.listRunningRemoteTask();
+    public List<WorkflowTaskDO> listRunningRemoteTask(String clientHost) {
+        return mapper.listRunningRemoteTask(clientHost);
     }
 
     private WorkflowTaskDOExample buildExample(WorkflowTaskQueryCondition condition) {

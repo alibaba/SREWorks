@@ -62,7 +62,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 42
+    public static final Integer REVISION = 46
 
     /**
      * CRD Context
@@ -374,17 +374,17 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
         // 加载 Docker 镜像
         def loadCmd = new ArrayList<>(commandPrefixArray)
         loadCmd.addAll(Arrays.asList("load", "-i", imagePath))
-        CommandUtil.runLocalCommand(loadCmd.toArray(new String[0]), Paths.get(packageDir).toFile())
+        CommandUtil.runLocalCommand(CommandUtil.getBashCommand(loadCmd.toArray(new String[0]), Paths.get(packageDir).toFile()))
 
         // 重新 tag 镜像，增加 UUID
         def tagCmd = new ArrayList<>(commandPrefixArray)
         tagCmd.addAll(Arrays.asList("tag", sha256, newImage))
-        CommandUtil.runLocalCommand(tagCmd.toArray(new String[0]))
+        CommandUtil.runLocalCommand(CommandUtil.getBashCommand(tagCmd.toArray(new String[0])))
 
         // 推送到环境仓库
         def pushCmd = new ArrayList<>(commandPrefixArray)
         pushCmd.addAll(Arrays.asList("push", newImage))
-        CommandUtil.runLocalCommand(pushCmd.toArray(new String[0]))
+        CommandUtil.runLocalCommand(CommandUtil.getBashCommand(pushCmd.toArray(new String[0])))
     }
 
     /**
@@ -393,6 +393,8 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
      * @param componentSchema ComponentSchema 对象
      */
     private void apply(LaunchDeployComponentHandlerReq request, ComponentSchema componentSchema) {
+        def deployAppId = request.getDeployAppId()
+        def deployComponentId = request.getDeployComponentId()
         def userCustomName = ((JSONObject) componentSchema.getSpec().getWorkload().getSpec()).getString("name")
         def appId = request.getAppId()
         def componentName = request.getComponentName()
@@ -400,6 +402,9 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
         def namespace = request.getNamespaceId()
         def stageId = request.getStageId()
         def name = getMetaName(appId, componentName, stageId)
+        def logSuffix = String.format("deployAppId=%d|deployComponentId=%d|clusterId=%s|namespaceId=%s|stageId=%s|" +
+                "name=%s|appId=%s|componentName=%s", deployAppId, deployComponentId,
+                cluster, namespace, stageId, name, appId, componentName)
 
         // 将所有 spec.env 转换为字符串
         def workload = componentSchema.getSpec().getWorkload()
@@ -455,8 +460,8 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
                 def currentCr = client.customResource(CRD_CONTEXT).get(namespace, name)
                 if (currentCr == null || currentCr.size() == 0) {
                     def result = client.customResource(CRD_CONTEXT).create(namespace, resource)
-                    log.info("cr yaml has created in kubernetes|cluster={}|namespace={}|stageId={}|name={}|cr={}|" +
-                            "result={}", cluster, namespace, stageId, name, cr, JSONObject.toJSONString(result))
+                    log.info("cr yaml has created in kubernetes|{}|cr={}|result={}", logSuffix, cr,
+                            JSONObject.toJSONString(result))
                 } else {
                     def current = new JSONObject(currentCr)
                     def labels = resource.getJSONObject("metadata").getJSONObject("labels")
@@ -471,21 +476,41 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
                     }
                     current.put("spec", resource.getJSONObject("spec"))
                     def result = client.customResource(CRD_CONTEXT).edit(namespace, name, current)
-                    log.info("cr yaml has updated in kubernetes|cluster={}|namespace={}|stageId={}|name={}|cr={}|" +
-                            "result={}", cluster, namespace, stageId, name, cr, JSONObject.toJSONString(result))
+                    log.info("cr yaml has updated in kubernetes|{}|cr={}|" +
+                            "result={}", logSuffix, cr, JSONObject.toJSONString(result))
                 }
             } catch (KubernetesClientException e) {
                 if (e.getCode() == 404) {
                     def result = client.customResource(CRD_CONTEXT).create(namespace, resource)
-                    log.info("cr yaml has created in kubernetes|cluster={}|namespace={}|stageId={}|name={}|cr={}|" +
-                            "result={}", cluster, namespace, stageId, name, cr, JSONObject.toJSONString(result))
+                    log.info("cr yaml has created in kubernetes|{}|cr={}|result={}", logSuffix, cr,
+                            JSONObject.toJSONString(result))
                 } else {
-                    throw e;
+                    throw e
+                }
+            }
+
+            // 等待 CR 状态变为 Progressing ，如果超过 1min 未改变，那么仍然置为成功 (历史兼容)
+            for (int i = 0; i < 12; i++) {
+                try {
+                    Thread.sleep(5 * 1000)
+                    def result = client.customResource(CRD_CONTEXT).get(namespace, name)
+                    if (result == null || result.get("status") == null) {
+                        continue
+                    }
+                    def statusStr = JSONObject.toJSONString(result.get("status"))
+                    def status = JSONObject.parseObject(statusStr).getString("condition")
+                    if (status != "Available") {
+                        log.info("cr status has changed to {}, break apply waiting|{}", status, logSuffix)
+                        break
+                    }
+                } catch (Exception e) {
+                    log.info("found exception while waiting the cr status changes, continue waiting|{}|exception={}",
+                            logSuffix, ExceptionUtils.getStackTrace(e))
                 }
             }
         } catch (Exception e) {
-            log.error("apply cr yaml to kubernetes failed|cluster={}|namespace={}|stageId={}|" +
-                    "exception={}|cr={}", cluster, namespace, stageId, ExceptionUtils.getStackTrace(e), cr)
+            log.error("apply cr yaml to kubernetes failed|{}|" +
+                    "exception={}|cr={}", logSuffix, ExceptionUtils.getStackTrace(e), cr)
             throw e
         }
     }

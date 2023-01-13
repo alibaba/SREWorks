@@ -66,11 +66,12 @@ public class WorkflowTaskProviderImpl implements WorkflowTaskProvider {
     /**
      * 列出当前所有正在运行中的远程 workflow task
      *
+     * @param clientHost 主机
      * @return List or WorkflowTaskDTO
      */
     @Override
-    public List<WorkflowTaskDTO> listRunningRemoteTask() {
-        return workflowTaskService.listRunningRemoteTask().stream()
+    public List<WorkflowTaskDTO> listRunningRemoteTask(String clientHost) {
+        return workflowTaskService.listRunningRemoteTask(clientHost).stream()
                 .map(item -> convert.to(item))
                 .collect(Collectors.toList());
     }

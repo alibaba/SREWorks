@@ -9,6 +9,7 @@ import com.alibaba.tesla.appmanager.domain.req.rtcomponentinstance.RtComponentIn
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +35,7 @@ public class RtComponentInstanceController extends AppManagerBaseController {
 
     @GetMapping("")
     public TeslaBaseResult list(
-            @ModelAttribute RtComponentInstanceQueryReq request,
+            @ParameterObject @ModelAttribute RtComponentInstanceQueryReq request,
             HttpServletRequest r, OAuth2Authentication auth) {
         if (request.getPageSize() > DefaultConstant.MAX_PAGE_SIZE) {
             return buildClientErrorResult(String.format("maximum pageSize is %d", DefaultConstant.MAX_PAGE_SIZE));

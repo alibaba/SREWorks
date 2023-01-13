@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -62,7 +63,7 @@ public class ApplicationConfigurationController extends AppManagerBaseController
     @Operation(summary = "查询全局部署信息详情")
     @GetMapping
     public TeslaBaseResult get(
-            @ModelAttribute DeployConfigGenerateReq request,
+            @ParameterObject @ModelAttribute DeployConfigGenerateReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
         if (StringUtils.isEmpty(request.getApiVersion())) {
@@ -113,7 +114,7 @@ public class ApplicationConfigurationController extends AppManagerBaseController
     @Operation(summary = "查询指定类型的部署信息列表")
     @GetMapping("types/{type}")
     public TeslaBaseResult listByType(
-            @ModelAttribute DeployConfigListReq request,
+            @ParameterObject @ModelAttribute DeployConfigListReq request,
             @PathVariable String type,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
@@ -142,7 +143,7 @@ public class ApplicationConfigurationController extends AppManagerBaseController
     @DeleteMapping("types/{type}")
     public TeslaBaseResult deleteByType(
             @PathVariable String type,
-            @ModelAttribute DeployConfigDeleteReq request,
+            @ParameterObject @ModelAttribute DeployConfigDeleteReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
         if (StringUtils.isEmpty(request.getApiVersion())) {
@@ -167,7 +168,7 @@ public class ApplicationConfigurationController extends AppManagerBaseController
     @Operation(summary = "查询多种类型的部署信息列表")
     @GetMapping("types")
     public TeslaBaseResult listByType(
-            @ModelAttribute DeployConfigListReq request,
+            @ParameterObject @ModelAttribute DeployConfigListReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
         if (StringUtils.isEmpty(request.getApiVersion())) {

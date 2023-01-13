@@ -19,7 +19,7 @@ public class CleanDockerImageJob {
     @SchedulerLock(name = "cleanDockerImage")
     public void execute() {
         String[] command = new String[]{"docker", "image", "prune", "-a", "--force", "--filter", "\"until=168h\""};
-        String output = CommandUtil.runLocalCommand(command);
+        String output = CommandUtil.runLocalCommand(CommandUtil.getBashCommand(command));
         log.info("docker images have pruned, output={}", output);
     }
 }

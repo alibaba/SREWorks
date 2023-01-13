@@ -24,6 +24,7 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -76,8 +77,26 @@ public class DeployAppWaitComponentNode extends AbstractLocalNodeBase {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS, "name/fieldPath are required in dataOutputs");
             }
             Object value;
+
+            // Jinja 一次渲染
             if (fieldPath.contains("{{")) {
                 value = jinjava.render(fieldPath, workload);
+
+                // 如果渲染后的 value 是 spec. 开头的，那么需要尝试进行 jsonpath 解析，此处替换为 fieldPath
+                if (((String) value).startsWith("spec.")) {
+                    String renderedFieldPath = jinjava.render(fieldPath, workload);
+                    log.info("find jinja template in dataOutput fieldPath, render it|fieldPath={}|" +
+                                    "renderedFieldPath={}|deployAppId={}|nodeId={}",
+                            fieldPath, renderedFieldPath, deployAppId, nodeId);
+                    try {
+                        DocumentContext workloadContext = JsonPath.parse(JSONObject.toJSONString(workload));
+                        value = workloadContext.read(DefaultConstant.JSONPATH_PREFIX + renderedFieldPath);
+                    } catch (Exception e) {
+                        log.error("cannot use jinja path to read data from workload|fieldPath={}|" +
+                                        "renderedFieldPath={}|deployAppId={}|nodeId={}|exception={}", fieldPath,
+                                renderedFieldPath, deployAppId, nodeId, ExceptionUtils.getStackTrace(e));
+                    }
+                }
             } else {
                 // JSONPath 寻址方式
                 if (!fieldPath.startsWith("spec.")) {

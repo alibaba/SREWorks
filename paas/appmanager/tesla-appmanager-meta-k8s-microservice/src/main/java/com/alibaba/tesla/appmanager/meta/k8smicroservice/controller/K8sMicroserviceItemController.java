@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.Yaml;
@@ -62,7 +63,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
     @GetMapping
     public TeslaBaseResult list(
             @PathVariable String appId,
-            @ModelAttribute K8sMicroServiceMetaQueryReq request,
+            @ParameterObject @ModelAttribute K8sMicroServiceMetaQueryReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();

@@ -18,4 +18,6 @@ public interface WorkflowSnapshotRepository {
     WorkflowSnapshotDO getByCondition(WorkflowSnapshotQueryCondition condition);
 
     int updateByCondition(WorkflowSnapshotDO record, WorkflowSnapshotQueryCondition condition);
+
+    int updateByPrimaryKey(WorkflowSnapshotDO record);
 }

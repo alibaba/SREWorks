@@ -340,6 +340,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
         Object nameOb = JsonUtil.recursiveGetParameter(container,
                 Collections.singletonList("name"));
         String containerName = nameOb != null ? nameOb.toString() : "default";
+        log.info("action=renderBuildPod || Start render container:{}, build yaml:{}", containerName, container);
 
         // 渲染 dockerfileTpl
         // 1. 下载 repo
@@ -347,7 +348,8 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
 
         Object repoPathPara = JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "repoPath"));
         String repoPath = repoPathPara == null ? null : repoPathPara.toString();
-        String buildAbsolutePath = VOLUME_PATH + relativePath + containerName + "/";
+        String containerPath = VOLUME_PATH + relativePath + containerName + "/";
+        String buildAbsolutePath = containerPath;
         if (!StringUtils.isEmpty(repoPath)) {
             if (repoPath.endsWith("/")) {
                 buildAbsolutePath = buildAbsolutePath + repoPath;
@@ -380,18 +382,20 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
         // 4. 打包成tar.gz （不打包 markdown 文件）
         String compressTarName = dockerFileName + ".tar.gz";
         // String tarCommand = String.format("cd %s; tar zcvf %s -C %s .[!.]* *", buildAbsolutePath, buildAbsolutePath + compressTarName, buildAbsolutePath);
-        String[] tarCommand = new String[]{"tar", "zcvf", buildAbsolutePath + compressTarName, "-C", buildAbsolutePath, ".[!.]*", "*"};
+        String[] createCompressTar = new String[]{"touch", containerPath + compressTarName};
+        CommandUtil.runLocalCommand(CommandUtil.getBashCommand(createCompressTar), Paths.get(buildAbsolutePath).toFile());
+        String[] tarCommand = new String[]{"tar", "zcvf", containerPath + compressTarName, "."};
         CommandUtil.runLocalCommand(CommandUtil.getBashCommand(tarCommand), Paths.get(buildAbsolutePath).toFile());
 
         String bucketName = packageProperties.getBucketName();
         String remotePath = PackageUtil
                 .buildKanikoBuildRemotePath(taskDO.getAppId(), taskDO.getComponentType(), taskDO.getComponentName(), containerName,
                         taskDO.getPackageVersion());
-        storage.putObject(bucketName, remotePath, buildAbsolutePath + compressTarName);
+        storage.putObject(bucketName, remotePath, containerPath + compressTarName);
         remoteObjectSet.add(remotePath);
         StorageFile storageFile = new StorageFile(bucketName, remotePath);
         log.info("kaniko build package has uploaded to storage||componentPackageTaskId={}||bucketName={}||" +
-                "remotePath={}||localPath={}", taskDO.getId(), bucketName, remotePath, buildAbsolutePath + compressTarName);
+                "remotePath={}||localPath={}", taskDO.getId(), bucketName, remotePath, containerPath + compressTarName);
 
         // 5. 渲染 kaniko pod
         JSONObject parameters = new JSONObject();

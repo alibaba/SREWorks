@@ -65,11 +65,19 @@ public class AppPackageTagServiceImpl implements AppPackageTagService {
 
         // 删除并重建
         delete(AppPackageTagQueryCondition.builder().appPackageId(appPackageId).build());
-        tags.forEach(tag -> appPackageTagRepository.insert(AppPackageTagDO.builder()
-                .appId(appId)
-                .tag(tag)
-                .appPackageId(appPackageId)
-                .build()));
+        tags.forEach(tag -> {
+            try {
+                appPackageTagRepository.insert(AppPackageTagDO.builder()
+                        .appId(appId)
+                        .tag(tag)
+                        .appPackageId(appPackageId)
+                        .build());
+            } catch (Exception e) {
+                if (!e.getMessage().contains("Duplicate entry")) {
+                    throw e;
+                }
+            }
+        });
         return 0;
     }
 

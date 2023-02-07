@@ -24,6 +24,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -107,7 +108,9 @@ public class AppController extends AppManagerBaseController {
     @Operation(summary = "删除应用")
     @DeleteMapping(value = "/{appId}")
     public TeslaBaseResult delete(
-            @PathVariable String appId, @ModelAttribute AppMetaDeleteReq request, OAuth2Authentication auth) {
+            @PathVariable String appId,
+            @ParameterObject @ModelAttribute AppMetaDeleteReq request,
+            OAuth2Authentication auth) {
         if (StringUtils.isEmpty(appId)) {
             return buildSucceedResult(Boolean.TRUE);
         }
@@ -140,7 +143,7 @@ public class AppController extends AppManagerBaseController {
     @GetMapping(value = "/{appId}/application-configurations")
     public TeslaBaseResult getApplicationConfigurations(
             @PathVariable String appId,
-            @ModelAttribute DeployConfigGenerateReq request,
+            @ParameterObject @ModelAttribute DeployConfigGenerateReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
         if (StringUtils.isEmpty(request.getApiVersion())) {
@@ -164,7 +167,7 @@ public class AppController extends AppManagerBaseController {
     @DeleteMapping(value = "/{appId}/application-configurations")
     public TeslaBaseResult deleteApplicationConfigurations(
             @PathVariable String appId,
-            @ModelAttribute DeployConfigDeleteReq request,
+            @ParameterObject @ModelAttribute DeployConfigDeleteReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
         if (StringUtils.isEmpty(request.getApiVersion())) {

@@ -16,6 +16,7 @@ import com.alibaba.tesla.appmanager.server.service.unit.UnitService;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -111,7 +112,8 @@ public class UnitController extends AppManagerBaseController {
     }
 
     @GetMapping
-    public TeslaBaseResult queryByCondition(@Valid @ModelAttribute UnitQueryReq request, OAuth2Authentication auth) {
+    public TeslaBaseResult queryByCondition(
+            @ParameterObject @Valid @ModelAttribute UnitQueryReq request, OAuth2Authentication auth) {
         Pagination<UnitDTO> units = unitProvider.queryByCondition(request);
         String initValue = "";
         if (units.getItems().size() > 0) {

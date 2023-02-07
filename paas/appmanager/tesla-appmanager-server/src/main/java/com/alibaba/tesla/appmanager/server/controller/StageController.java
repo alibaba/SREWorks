@@ -11,6 +11,7 @@ import com.alibaba.tesla.appmanager.domain.req.stage.StageUpdateReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.validation.BindingResult;
@@ -35,8 +36,9 @@ public class StageController extends AppManagerBaseController {
     private StageProvider stageProvider;
 
     @GetMapping("stages")
-    public TeslaBaseResult list(@ModelAttribute StageQueryReq request,
-                                HttpServletRequest r, OAuth2Authentication auth) {
+    public TeslaBaseResult list(
+            @ParameterObject @ModelAttribute StageQueryReq request,
+            HttpServletRequest r, OAuth2Authentication auth) {
         Pagination<StageDTO> result = stageProvider.list(request);
         return buildSucceedResult(result);
     }
@@ -44,7 +46,7 @@ public class StageController extends AppManagerBaseController {
     @GetMapping("namespaces/{namespaceId}/stages")
     public TeslaBaseResult listInNamespace(
             @PathVariable("namespaceId") @NotEmpty String namespaceId,
-            @ModelAttribute StageQueryReq request,
+            @ParameterObject @ModelAttribute StageQueryReq request,
             HttpServletRequest r, OAuth2Authentication auth) {
         Pagination<StageDTO> result = stageProvider.list(namespaceId, request);
         return buildSucceedResult(result);

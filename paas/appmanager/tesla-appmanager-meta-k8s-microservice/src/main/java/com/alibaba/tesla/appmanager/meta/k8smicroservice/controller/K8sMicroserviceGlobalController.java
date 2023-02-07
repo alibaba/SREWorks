@@ -6,6 +6,7 @@ import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQueryReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -36,7 +37,8 @@ public class K8sMicroserviceGlobalController extends AppManagerBaseController {
      * @apiParam (GET Parameters) {Number} pageSize 每页大小
      */
     @GetMapping
-    public TeslaBaseResult list(@ModelAttribute K8sMicroServiceMetaQueryReq request) {
+    public TeslaBaseResult list(
+            @ParameterObject @ModelAttribute K8sMicroServiceMetaQueryReq request) {
         request.setWithBlobs(true);
         return buildSucceedResult(metaProvider.list(request));
     }

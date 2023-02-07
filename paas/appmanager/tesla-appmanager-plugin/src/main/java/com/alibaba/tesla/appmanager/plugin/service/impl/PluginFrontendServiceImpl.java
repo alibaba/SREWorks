@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -85,7 +86,8 @@ public class PluginFrontendServiceImpl implements PluginFrontendService {
             String filePath = file.getPath();
             String config;
             try {
-                config = new String(Files.readAllBytes(Paths.get(pluginDir.toFile().toString(), filePath)));
+                config = new String(Files.readAllBytes(Paths.get(pluginDir.toFile().toString(), filePath)),
+                        StandardCharsets.UTF_8);
             } catch (IOException e) {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                         "cannot read frontend plugin resource from local plugin zip", e);

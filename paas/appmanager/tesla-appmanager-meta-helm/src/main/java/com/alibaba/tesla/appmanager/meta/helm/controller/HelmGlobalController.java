@@ -7,6 +7,7 @@ import com.alibaba.tesla.appmanager.domain.req.helm.HelmMetaQueryReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ public class HelmGlobalController extends AppManagerBaseController {
      */
     @GetMapping
     public TeslaBaseResult list(
-            @ModelAttribute HelmMetaQueryReq request,
+            @ParameterObject @ModelAttribute HelmMetaQueryReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();

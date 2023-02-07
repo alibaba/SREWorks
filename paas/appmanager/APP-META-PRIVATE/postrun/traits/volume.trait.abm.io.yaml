@@ -3,7 +3,6 @@ kind: TraitDefinition
 metadata:
   name: volume.trait.abm.io
 spec:
-  className: com.alibaba.tesla.appmanager.trait.plugin.VolumeTrait
   runtime: pre
   appliesToWorkloads:
     - "*"

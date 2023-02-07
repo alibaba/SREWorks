@@ -122,7 +122,7 @@
   <sql id="Join_Column_List">
     A.id, A.gmt_create, A.gmt_modified, A.component_instance_id, A.app_instance_id, A.app_id, A.component_type,
     A.component_name, A.cluster_id, A.namespace_id, A.stage_id, A.version, A.`status`, A.watch_kind,
-    A.times, A.conditions, A.lock_version
+    A.times, A.conditions, A.component_schema, A.lock_version
   </sql>
   <select id="selectByExample" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.RtComponentInstanceDOExample" resultMap="BaseResultMap">
     <!--@mbg.generated-->

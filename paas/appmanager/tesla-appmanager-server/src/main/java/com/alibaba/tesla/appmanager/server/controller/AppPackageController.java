@@ -18,6 +18,7 @@ import com.alibaba.tesla.appmanager.server.service.apppackage.AppPackageTagServi
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -71,7 +72,8 @@ public class AppPackageController extends AppManagerBaseController {
      */
     @GetMapping
     public TeslaBaseResult list(
-            @PathVariable String appId, @ModelAttribute AppPackageQueryReq request,
+            @PathVariable String appId,
+            @ParameterObject @ModelAttribute AppPackageQueryReq request,
             OAuth2Authentication auth) {
         request.setAppId(appId);
         return buildSucceedResult(appPackageProvider.list(request, getOperator(auth)));
@@ -123,7 +125,7 @@ public class AppPackageController extends AppManagerBaseController {
     public TeslaBaseResult launchYaml(
             @PathVariable String appId,
             @PathVariable Long appPackageId,
-            @ModelAttribute AppPackageGetLaunchYamlReq request,
+            @ParameterObject @ModelAttribute AppPackageGetLaunchYamlReq request,
             @RequestHeader(value = "X-Biz-App") String headerBizApp,
             OAuth2Authentication auth) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
@@ -158,7 +160,7 @@ public class AppPackageController extends AppManagerBaseController {
     @ResponseBody
     public TeslaBaseResult importPackage(
             @PathVariable String appId,
-            @Valid @ModelAttribute AppPackageImportReq request,
+            @ParameterObject @Valid @ModelAttribute AppPackageImportReq request,
             RequestEntity<InputStream> entity,
             OAuth2Authentication auth) {
         request.setAppId(appId.replace("..", ""));

@@ -33,7 +33,8 @@ public interface WorkflowTaskDOMapper {
     /**
      * 列出当前所有正在运行中的远程 workflow task
      *
+     * @param clientHost 主机
      * @return List or WorkflowTaskDO
      */
-    List<WorkflowTaskDO> listRunningRemoteTask();
+    List<WorkflowTaskDO> listRunningRemoteTask(@Param("clientHost") String clientHost);
 }

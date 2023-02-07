@@ -55,7 +55,7 @@ class JobComponentDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 17
+    public static final Integer REVISION = 18
 
     /**
      * CRD Context
@@ -215,17 +215,17 @@ class JobComponentDeployHandler implements DeployComponentHandler {
         // 加载 Docker 镜像
         def loadCmd = new ArrayList<>(commandPrefixArray)
         loadCmd.addAll(Arrays.asList("load", "-i", imagePath))
-        CommandUtil.runLocalCommand(loadCmd.toArray(new String[0]), Paths.get(packageDir).toFile())
+        CommandUtil.runLocalCommand(CommandUtil.getBashCommand(loadCmd.toArray(new String[0]), Paths.get(packageDir).toFile()))
 
         // 重新 tag 镜像，增加 UUID
         def tagCmd = new ArrayList<String>(commandPrefixArray)
         tagCmd.addAll(Arrays.asList("tag", sha256, newImage))
-        CommandUtil.runLocalCommand(tagCmd.toArray(new String[0]))
+        CommandUtil.runLocalCommand(CommandUtil.getBashCommand(tagCmd.toArray(new String[0])))
 
         // 推送到环境仓库
         def pushCmd = new ArrayList<>(commandPrefixArray)
         pushCmd.addAll(Arrays.asList("push", newImage))
-        CommandUtil.runLocalCommand(pushCmd.toArray(new String[0]))
+        CommandUtil.runLocalCommand(CommandUtil.getBashCommand(pushCmd.toArray(new String[0])))
     }
 
     /**

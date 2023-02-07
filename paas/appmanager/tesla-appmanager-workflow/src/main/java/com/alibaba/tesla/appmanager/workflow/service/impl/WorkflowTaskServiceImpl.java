@@ -117,11 +117,12 @@ public class WorkflowTaskServiceImpl implements WorkflowTaskService {
     /**
      * 列出当前所有正在运行中的远程 workflow task
      *
+     * @param clientHost 主机
      * @return List or WorkflowTaskDO
      */
     @Override
-    public List<WorkflowTaskDO> listRunningRemoteTask() {
-        return workflowTaskRepository.listRunningRemoteTask();
+    public List<WorkflowTaskDO> listRunningRemoteTask(String clientHost) {
+        return workflowTaskRepository.listRunningRemoteTask(clientHost);
     }
 
     /**

@@ -4,8 +4,8 @@ import com.alibaba.tesla.appmanager.api.provider.WorkflowTaskProvider;
 import com.alibaba.tesla.appmanager.common.enums.WorkflowTaskEventEnum;
 import com.alibaba.tesla.appmanager.domain.dto.WorkflowTaskDTO;
 import com.alibaba.tesla.appmanager.workflow.event.WorkflowTaskEvent;
+import com.alibaba.tesla.appmanager.workflow.util.WorkflowNetworkUtil;
 import lombok.extern.slf4j.Slf4j;
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -28,15 +28,20 @@ public class WorkflowRemoteDeployAppRefreshJob {
     @Autowired
     private WorkflowTaskProvider workflowTaskProvider;
 
-    @Scheduled(cron = "${appmanager.cron-job.workflow-remote-deploy-app-refresh}")
-    @SchedulerLock(name = "workflowRemoteDeployAppRefreshJob", lockAtLeastFor = "19s")
+    @Autowired
+    private WorkflowNetworkUtil workflowNetworkUtil;
+
+    @Scheduled(cron = "0/10 * * * * *")
     public void execute() {
-        List<WorkflowTaskDTO> tasks = workflowTaskProvider.listRunningRemoteTask();
+        String clientHost = workflowNetworkUtil.getClientHost();
+        List<WorkflowTaskDTO> tasks = workflowTaskProvider.listRunningRemoteTask(clientHost);
         if (tasks.size() == 0) {
+            log.info("cannot find any remote workflow tasks by client host {}, skip", clientHost);
             return;
         }
 
-        log.info("found {} running remote workflow tasks, prepare to trigger...", tasks.size());
+        log.info("found {} running remote workflow tasks by client host {}, prepare to trigger...",
+                tasks.size(), clientHost);
         for (WorkflowTaskDTO task : tasks) {
             long deployAppId = task.getDeployAppId();
             String unitId = task.getDeployAppUnitId();

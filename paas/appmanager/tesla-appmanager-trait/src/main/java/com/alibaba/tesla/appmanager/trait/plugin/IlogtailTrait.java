@@ -56,6 +56,10 @@ public class IlogtailTrait extends BaseTrait {
             "            \"value\": \"%s\"\n" +
             "        },\n" +
             "        {\n" +
+            "            \"name\": \"max_read_buffer_size\",\n" +
+            "            \"value\": \"4194304\"\n" +
+            "        },\n" +
+            "        {\n" +
             "            \"name\": \"SIGMA_IGNORE_RESOURCE\",\n" +
             "            \"value\": \"true\"\n" +
             "        },\n" +

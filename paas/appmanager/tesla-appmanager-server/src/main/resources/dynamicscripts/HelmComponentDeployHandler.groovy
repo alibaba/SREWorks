@@ -58,7 +58,7 @@ class HelmComponentDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 52
+    public static final Integer REVISION = 53
 
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
     private static final String ANNOTATIONS_COMPONENT_INSTANCE_ID = "annotations.appmanager.oam.dev/componentInstanceId"
@@ -193,7 +193,7 @@ class HelmComponentDeployHandler implements DeployComponentHandler {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,
                     String.format("cannot find cluster authorization info|clusterId=%s", cluster))
         }
-        def stdout = CommandUtil.runLocalCommand(command)
+        def stdout = CommandUtil.runLocalCommand(CommandUtil.getBashCommand(command))
         if (kubeFile != null) {
             def path = kubeFile.getAbsoluteFile()
             if (!kubeFile.delete()) {
@@ -289,7 +289,7 @@ class HelmComponentDeployHandler implements DeployComponentHandler {
             }
         }
         try {
-            def output = CommandUtil.runLocalCommand(command)
+            def output = CommandUtil.runLocalCommand(CommandUtil.getBashCommand(command))
             log.info("action=runHelmCommand|command={}|output={}", command, output)
         } catch (AppException e) {
             if (e.getErrorMessage().contains("cannot re-use a name")) {
@@ -304,7 +304,7 @@ class HelmComponentDeployHandler implements DeployComponentHandler {
                             String.format("--kube-apiserver=%s", apiserver),
                             "--kube-ca-file=/run/secrets/kubernetes.io/serviceaccount/ca.crt"}
                 }
-                def output = CommandUtil.runLocalCommand(command)
+                def output = CommandUtil.runLocalCommand(CommandUtil.getBashCommand(command))
                 log.info("action=runHelmCommand|command={}|output={}", command, output)
             } else {
                 throw e

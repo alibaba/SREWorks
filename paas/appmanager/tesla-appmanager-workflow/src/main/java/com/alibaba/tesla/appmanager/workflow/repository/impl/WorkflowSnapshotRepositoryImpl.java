@@ -60,6 +60,11 @@ public class WorkflowSnapshotRepositoryImpl implements WorkflowSnapshotRepositor
         return mapper.updateByExampleSelective(updateDate(record), buildExample(condition));
     }
 
+    @Override
+    public int updateByPrimaryKey(WorkflowSnapshotDO record) {
+        return mapper.updateByPrimaryKeySelective(updateDate(record));
+    }
+
     private WorkflowSnapshotDOExample buildExample(WorkflowSnapshotQueryCondition condition) {
         WorkflowSnapshotDOExample example = new WorkflowSnapshotDOExample();
         WorkflowSnapshotDOExample.Criteria criteria = example.createCriteria();

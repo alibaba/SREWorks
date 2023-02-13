@@ -247,10 +247,10 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
         // SREWorks: repo object 创建 Gitlab repo
         if (dto.getRepoObject() != null) {
             RepoDTO repo = dto.getRepoObject();
-            if (!ShellUtil.check(repo.getRepo(), repo.getCiAccount(), repo.getCiToken())) {
-                if(StringUtils.equals(repo.getRepo(), System.getenv("SOURCE_REPO"))) {
-                    log.info("internal-repo={}, pass", repo.getRepo());
-                }else if (StringUtils.isNotEmpty(dto.getRepoObject().getRepoTemplateUrl())) {
+            if(StringUtils.equals(repo.getRepo(), System.getenv("SOURCE_REPO"))) {
+                log.info("internal-repo={}, pass", repo.getRepo());
+            }else if (!ShellUtil.check(repo.getRepo(), repo.getCiAccount(), repo.getCiToken())) {
+                if (StringUtils.isNotEmpty(dto.getRepoObject().getRepoTemplateUrl())) {
                     autoCreateRepo(dto);
                 } else {
                     // 如果没有设置模板且 Project 不存在，则直接创建 Project

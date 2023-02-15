@@ -134,7 +134,7 @@ public class MarketController extends AppManagerBaseController {
 
     @PostMapping(value = "publish")
     @ResponseBody
-    public TeslaBaseResult publish(@RequestBody MarketPublishReq request, OAuth2Authentication auth) throws IOException {
+    public TeslaBaseResult publish(@RequestBody MarketPublishReq request, OAuth2Authentication auth) throws Exception {
 
         /**
          * 根据appPackageId找到包
@@ -254,7 +254,7 @@ public class MarketController extends AppManagerBaseController {
     @PostMapping(value = "download")
     @ResponseBody
     public TeslaBaseResult download(
-            @RequestBody MarketAppDownloadReq request, OAuth2Authentication auth) throws IOException {
+            @RequestBody MarketAppDownloadReq request, OAuth2Authentication auth) throws Exception {
         String downloadUrl;
         String remoteUrl = request.getRemoteUrl().replace("..", "");
         String packageUrl = request.getPackageUrl().replace("..", "");
@@ -290,7 +290,7 @@ public class MarketController extends AppManagerBaseController {
         }
 
         File localPackageFile = Files.createTempFile("market", ".zip").toFile();
-        NetworkUtil.download(downloadUrl, localPackageFile.getAbsolutePath());
+        NetworkUtil.safeDownload(downloadUrl, localPackageFile.getAbsolutePath());
 
         InputStream marketPackageStream = new FileInputStream(localPackageFile);
 

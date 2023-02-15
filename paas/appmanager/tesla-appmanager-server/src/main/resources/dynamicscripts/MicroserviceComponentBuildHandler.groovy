@@ -57,7 +57,7 @@ class MicroserviceComponentBuildHandler implements BuildComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 20
+    public static final Integer REVISION = 22
 
     private static final String TEMPLATE_MICROSERVICE_FILENAME = "default_microservice_%s.tpl"
     private static final String DEFAULT_MICROSERVICE_TYPE = "Deployment"

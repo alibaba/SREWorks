@@ -258,7 +258,7 @@ public class MarketProviderImpl implements MarketProvider {
     }
 
     @Override
-    public String uploadPackage(MarketEndpointDTO marketEndpoint, MarketPackageDTO marketPackage) throws IOException {
+    public String uploadPackage(MarketEndpointDTO marketEndpoint, MarketPackageDTO marketPackage) throws Exception {
         String applicationRemotePath = "applications/" + marketPackage.getAppId();
         String relativeRemotePath = applicationRemotePath + "/" + marketPackage.getPackageVersion() + ".zip";
         String fullRemotePath = marketEndpoint.getRemotePackagePath() + "/" + relativeRemotePath;
@@ -307,7 +307,7 @@ public class MarketProviderImpl implements MarketProvider {
                 if(marketPackage.getAppOptions().getString("logoImg") != null && marketPackage.getAppOptions().getString("logoImg").startsWith("/gateway/minio/")) {
                     String logoLocalUrl = marketPackage.getAppOptions().getString("logoImg").replace("/gateway/minio/", "http://sreworks-minio:9000/");
                     File logoTempFile = Files.createTempFile("logo", null).toFile();
-                    NetworkUtil.download(logoLocalUrl, logoTempFile.getAbsolutePath());
+                    NetworkUtil.safeDownload(logoLocalUrl, logoTempFile.getAbsolutePath());
                     String logoRemoteUrl = marketEndpoint.getRemotePackagePath() + "/" + applicationRemotePath + "/logo";
                     client.putObject(marketEndpoint.getRemoteBucket(), logoRemoteUrl, logoTempFile.getAbsolutePath());
                     client.setObjectAclPublic(marketEndpoint.getRemoteBucket(), logoRemoteUrl);

@@ -89,6 +89,8 @@ public class AppOptionConstant {
                 put("aoneId", AppOptionTypeEnum.INTEGER);
                 // Aone Name
                 put("aoneName", AppOptionTypeEnum.STRING);
+                // 有损变更通知组
+                put("lossyNoticeGroup", AppOptionTypeEnum.STRING);
                 // 兼容：流程平台配置
                 put("flowIntid", AppOptionTypeEnum.STRING);
                 put("flowIntInfo", AppOptionTypeEnum.STRING);

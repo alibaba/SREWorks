@@ -62,7 +62,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 46
+    public static final Integer REVISION = 48
 
     /**
      * CRD Context

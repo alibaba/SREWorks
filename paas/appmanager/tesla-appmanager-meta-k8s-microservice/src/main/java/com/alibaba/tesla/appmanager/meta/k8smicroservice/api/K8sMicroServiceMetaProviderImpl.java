@@ -247,7 +247,9 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
         // SREWorks: repo object 创建 Gitlab repo
         if (dto.getRepoObject() != null) {
             RepoDTO repo = dto.getRepoObject();
-            if (!ShellUtil.check(repo.getRepo(), repo.getCiAccount(), repo.getCiToken())) {
+            if(StringUtils.equals(repo.getRepo(), System.getenv("SOURCE_REPO"))) {
+                log.info("internal-repo={}, pass", repo.getRepo());
+            }else if (!ShellUtil.check(repo.getRepo(), repo.getCiAccount(), repo.getCiToken())) {
                 if (StringUtils.isNotEmpty(dto.getRepoObject().getRepoTemplateUrl())) {
                     autoCreateRepo(dto);
                 } else {
@@ -258,7 +260,7 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
             }
         }
 
-        // 非 SREworks: 检查并创建相关 repo
+        // 非 SREWorks: 检查并创建相关 repo
         if (CollectionUtils.isNotEmpty(dto.getContainerObjectList())) {
             gitService.createRepoList(dto.getContainerObjectList());
         }

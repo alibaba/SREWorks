@@ -89,7 +89,7 @@ public class DeployAppTraitNode extends AbstractLocalNodeBase {
         componentTrait.setTrait(DeployAppHelper.renderDeployAppTrait(parameters, componentTrait.getTrait()));
 
         // 获取关联的 ComponentSchema 及 Trait
-        JSONObject traitSpec = DeployAppHelper.renderJsonObject(parameters, componentTrait.getTrait().getSpec());
+        JSONObject traitSpec = componentTrait.getTrait().getSpec();
         ComponentSchema componentSchema;
         Date start = new Date();
         try {

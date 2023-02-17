@@ -1,6 +1,7 @@
 package com.alibaba.tesla.appmanager.domain.dto;
 
 import com.alibaba.tesla.appmanager.common.enums.RepoTypeEnum;
+import com.alibaba.tesla.appmanager.common.util.SecurityUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,7 +37,6 @@ public class RepoDTO {
      */
     private String repoDomain;
 
-
     /**
      * 仓库分组
      */
@@ -66,4 +66,20 @@ public class RepoDTO {
      * dockerfile路径
      */
     private String dockerfilePath;
+
+    /**
+     * 检查参数合法性
+     */
+    public void checkParameters() {
+        SecurityUtil.checkInput(repo);
+        SecurityUtil.checkInput(ciToken);
+        SecurityUtil.checkInput(ciAccount);
+        SecurityUtil.checkInput(repoDomain);
+        SecurityUtil.checkInput(repoGroup);
+        SecurityUtil.checkInput(repoProject);
+        SecurityUtil.checkInput(repoTemplate);
+        SecurityUtil.checkInput(repoTemplateUrl);
+        SecurityUtil.checkInput(repoPath);
+        SecurityUtil.checkInput(dockerfilePath);
+    }
 }

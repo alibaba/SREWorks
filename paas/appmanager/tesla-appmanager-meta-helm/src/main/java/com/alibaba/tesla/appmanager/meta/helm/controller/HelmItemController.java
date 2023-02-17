@@ -86,6 +86,7 @@ public class HelmItemController extends AppManagerBaseController {
             @PathVariable String appId,
             @RequestBody HelmMetaCreateReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
+        request.checkParameters();
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();
@@ -110,6 +111,7 @@ public class HelmItemController extends AppManagerBaseController {
             @PathVariable Long id,
             @RequestBody HelmMetaUpdateReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
+        request.checkParameters();
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();

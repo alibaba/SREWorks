@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.domain.dto;
 
 import com.alibaba.tesla.appmanager.common.enums.ContainerTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.RepoTypeEnum;
+import com.alibaba.tesla.appmanager.common.util.SecurityUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -122,5 +123,23 @@ public class ContainerObjectDTO {
         int repoGroupIndex = repo.lastIndexOf("/", appNameIndex - 1);
         this.repoGroup = repo.substring(repoGroupIndex + 1, appNameIndex);
         this.repoDomain = repo.substring(0, repoGroupIndex);
+    }
+
+    /**
+     * 检查参数合法性
+     */
+    public void checkParameters() {
+        SecurityUtil.checkInput(name);
+        SecurityUtil.checkInput(repo);
+        SecurityUtil.checkInput(ciToken);
+        SecurityUtil.checkInput(ciAccount);
+        SecurityUtil.checkInput(repoDomain);
+        SecurityUtil.checkInput(repoGroup);
+        SecurityUtil.checkInput(repoPath);
+        SecurityUtil.checkInput(appName);
+        SecurityUtil.checkInput(branch);
+        SecurityUtil.checkInput(dockerfileTemplate);
+        SecurityUtil.checkInput(language);
+        SecurityUtil.checkInput(serviceType);
     }
 }

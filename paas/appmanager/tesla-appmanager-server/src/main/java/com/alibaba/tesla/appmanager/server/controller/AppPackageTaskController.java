@@ -72,6 +72,7 @@ public class AppPackageTaskController extends AppManagerBaseController {
             @RequestBody AppPackageTaskCreateReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
+        request.checkParameters();
         if (CollectionUtils.isEmpty(request.getTags())) {
             return buildClientErrorResult("tags is required");
         }
@@ -151,6 +152,7 @@ public class AppPackageTaskController extends AppManagerBaseController {
             @RequestBody AppPackageTaskCreateReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
+        request.checkParameters();
         if (CollectionUtils.isEmpty(request.getTags())) {
             return buildClientErrorResult("tags is required");
         }

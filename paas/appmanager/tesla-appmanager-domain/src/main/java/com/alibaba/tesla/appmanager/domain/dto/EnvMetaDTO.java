@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.domain.dto;
 
+import com.alibaba.tesla.appmanager.common.util.SecurityUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,4 +29,12 @@ public class EnvMetaDTO {
      * 默认值
      */
     private String defaultValue;
+
+    /**
+     * 检查参数合法性
+     */
+    public void checkParameters() {
+        SecurityUtil.checkInput(name);
+        SecurityUtil.checkInput(defaultValue);
+    }
 }

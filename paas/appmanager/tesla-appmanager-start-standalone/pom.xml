@@ -26,7 +26,6 @@
             <groupId>com.alibaba.tesla</groupId>
             <artifactId>tesla-appmanager-server</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

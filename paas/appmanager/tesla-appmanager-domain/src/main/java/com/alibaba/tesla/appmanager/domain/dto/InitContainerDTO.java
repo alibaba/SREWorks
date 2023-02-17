@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.domain.dto;
 
+import com.alibaba.tesla.appmanager.common.util.SecurityUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,5 +42,15 @@ public class InitContainerDTO {
 
     public String createContainerName() {
         return name;
+    }
+
+    /**
+     * 检查参数合法性
+     */
+    public void checkParameters() {
+        SecurityUtil.checkInput(name);
+        SecurityUtil.checkInput(type);
+        SecurityUtil.checkInput(dockerfilePath);
+        SecurityUtil.checkInput(repoPath);
     }
 }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.enums.PackageTypeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.common.util.SecurityUtil;
 import lombok.Data;
 import org.springframework.util.CollectionUtils;
 
@@ -75,5 +76,16 @@ public class HelmMetaUpdateReq {
         if (!CollectionUtils.isEmpty(helmExt)) {
             // TODO 必填KEY的检查
         }
+    }
+
+    /**
+     * 检查参数合法性
+     */
+    public void checkParameters() {
+        SecurityUtil.checkInput(appId);
+        SecurityUtil.checkInput(namespaceId);
+        SecurityUtil.checkInput(stageId);
+        SecurityUtil.checkInput(helmPackageId);
+        SecurityUtil.checkInput(name);
     }
 }

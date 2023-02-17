@@ -1,9 +1,11 @@
 package com.alibaba.tesla.appmanager.domain.req.apppackage;
 
+import com.alibaba.tesla.appmanager.common.util.SecurityUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -57,4 +59,21 @@ public class AppPackageTaskCreateReq {
      * 是否包含开发态内容
      */
     private boolean develop;
+
+    /**
+     * 检查参数合法性
+     */
+    public void checkParameters() {
+        SecurityUtil.checkInput(appId);
+        SecurityUtil.checkInput(namespaceId);
+        SecurityUtil.checkInput(stageId);
+        SecurityUtil.checkInput(version);
+        if (!CollectionUtils.isEmpty(tags)) {
+            tags.forEach(item -> SecurityUtil.checkInput(item));
+        }
+        if (!CollectionUtils.isEmpty(components)) {
+            components.forEach(item -> item.checkParameters());
+        }
+    }
+
 }

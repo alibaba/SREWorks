@@ -62,7 +62,13 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 48
+    public static final Integer REVISION = 49
+
+    /**
+     * Label Keys
+     */
+    private static final String LABEL_APP_ID = "labels.appmanager.oam.dev/appId"
+    private static final String LABEL_COMPATIBLE_APP_ID = "appId"
 
     /**
      * CRD Context
@@ -440,6 +446,8 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
         if (StringUtils.isNotEmpty(userCustomName)) {
             name = getMetaName(userCustomName, componentName, stageId)
             workload.getMetadata().setName(name)
+            ((JSONObject) workload.getMetadata().getLabels()).put(LABEL_APP_ID, userCustomName)
+            ((JSONObject) workload.getMetadata().getLabels()).put(LABEL_COMPATIBLE_APP_ID, userCustomName)
         }
 
         // 将全部的 PLACEHOLDER 进行渲染

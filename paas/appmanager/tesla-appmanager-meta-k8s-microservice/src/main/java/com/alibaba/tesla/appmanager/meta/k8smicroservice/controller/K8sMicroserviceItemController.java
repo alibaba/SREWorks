@@ -9,6 +9,7 @@ import com.alibaba.tesla.appmanager.common.enums.ContainerTypeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
+import com.alibaba.tesla.appmanager.common.util.SecurityUtil;
 import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.dto.ContainerObjectDTO;
 import com.alibaba.tesla.appmanager.domain.dto.K8sMicroServiceMetaDTO;
@@ -92,6 +93,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
             @PathVariable String appId,
             @RequestBody K8sMicroServiceMetaUpdateReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
+        request.checkParameters();
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();
@@ -116,6 +118,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
             @PathVariable String appId,
             @RequestBody K8sMicroServiceMetaQuickUpdateReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
+        request.checkParameters();
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();
@@ -137,6 +140,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
             @PathVariable String appId,
             @RequestBody K8sMicroServiceMetaQuickUpdateReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
+        request.checkParameters();
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();
@@ -219,6 +223,7 @@ public class K8sMicroserviceItemController extends AppManagerBaseController {
             @PathVariable Long id,
             @RequestBody K8sMicroServiceMetaUpdateReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
+        request.checkParameters();
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();

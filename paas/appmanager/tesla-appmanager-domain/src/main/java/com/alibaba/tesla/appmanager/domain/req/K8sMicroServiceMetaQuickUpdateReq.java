@@ -1,8 +1,10 @@
 package com.alibaba.tesla.appmanager.domain.req;
 
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
+import com.alibaba.tesla.appmanager.common.util.SecurityUtil;
 import com.alibaba.tesla.appmanager.domain.dto.*;
 import lombok.Data;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -110,4 +112,41 @@ public class K8sMicroServiceMetaQuickUpdateReq {
      * 归属发布版本 ID
      */
     private String releaseId;
+
+    /**
+     * 检查参数合法性
+     */
+    public void checkParameters() {
+        SecurityUtil.checkInput(appId);
+        SecurityUtil.checkInput(namespaceId);
+        SecurityUtil.checkInput(stageId);
+        SecurityUtil.checkInput(microServiceId);
+        SecurityUtil.checkInput(name);
+        SecurityUtil.checkInput(componentType);
+        SecurityUtil.checkInput(arch);
+        SecurityUtil.checkInput(kind);
+        if (!CollectionUtils.isEmpty(envList)) {
+            envList.forEach(item -> item.checkParameters());
+        }
+        if (!CollectionUtils.isEmpty(containerObjectList)) {
+            containerObjectList.forEach(item -> item.checkParameters());
+        }
+        if (!CollectionUtils.isEmpty(initContainerList)) {
+            initContainerList.forEach(item -> item.checkParameters());
+        }
+        if (!CollectionUtils.isEmpty(envKeyList)) {
+            envKeyList.forEach(item -> SecurityUtil.checkInput(item));
+        }
+        if (repoObject != null) {
+            repoObject.checkParameters();
+        }
+        if (imagePushObject != null) {
+            imagePushObject.checkParameters();
+        }
+        if (launchObject != null) {
+            launchObject.checkParameters();
+        }
+        SecurityUtil.checkInput(productId);
+        SecurityUtil.checkInput(releaseId);
+    }
 }

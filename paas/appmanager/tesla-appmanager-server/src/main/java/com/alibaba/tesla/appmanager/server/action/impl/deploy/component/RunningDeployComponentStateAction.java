@@ -6,6 +6,7 @@ import com.alibaba.tesla.appmanager.common.constants.AppFlowParamKey;
 import com.alibaba.tesla.appmanager.common.enums.*;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.common.util.ConditionUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.container.DeployAppRevisionName;
 import com.alibaba.tesla.appmanager.domain.req.deploy.GetDeployComponentHandlerReq;
@@ -126,6 +127,14 @@ public class RunningDeployComponentStateAction implements DeployComponentStateAc
                     .message(String.format("deploy components failed|errorMessage=%s", ExceptionUtils.getStackTrace(e)))
                     .build();
         }
+
+        // 更新当前部署组件的状态到数据库中
+        JSONArray status = new JSONArray();
+        status.addAll(ConditionUtil.singleCondition("DEPLOY_COMPONENT_STATUS",
+                response.getStatus().toString(), response.getMessage() != null ? response.getMessage() : "", ""));
+        deployComponentService.updateAttr(subOrder.getId(),
+                DeployComponentAttrTypeEnum.STATUS, JSONArray.toJSONString(status));
+
         switch (response.getStatus()) {
             case SUCCESS:
                 log.info("component has reached success state|deployAppId={}|deployComponentId={}|" +

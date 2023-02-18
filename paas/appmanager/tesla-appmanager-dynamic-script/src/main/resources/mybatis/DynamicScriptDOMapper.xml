@@ -10,6 +10,7 @@
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
     <result column="kind" jdbcType="VARCHAR" property="kind" />
+    <result column="env_id" jdbcType="VARCHAR" property="envId" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.alibaba.tesla.appmanager.dynamicscript.repository.domain.DynamicScriptDO">
     <!--@mbg.generated-->
@@ -78,7 +79,7 @@
   </sql>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, `name`, current_revision, gmt_create, gmt_modified, kind
+    id, `name`, current_revision, gmt_create, gmt_modified, kind, env_id
   </sql>
   <sql id="Blob_Column_List">
     <!--@mbg.generated-->
@@ -136,11 +137,11 @@
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.alibaba.tesla.appmanager.dynamicscript.repository.domain.DynamicScriptDO" useGeneratedKeys="true">
     <!--@mbg.generated-->
     insert into am_dynamic_script (`name`, current_revision, gmt_create, 
-      gmt_modified, kind, code
-      )
+      gmt_modified, kind, env_id, 
+      code)
     values (#{name,jdbcType=VARCHAR}, #{currentRevision,jdbcType=INTEGER}, #{gmtCreate,jdbcType=TIMESTAMP}, 
-      #{gmtModified,jdbcType=TIMESTAMP}, #{kind,jdbcType=VARCHAR}, #{code,jdbcType=LONGVARCHAR}
-      )
+      #{gmtModified,jdbcType=TIMESTAMP}, #{kind,jdbcType=VARCHAR}, #{envId,jdbcType=VARCHAR}, 
+      #{code,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.alibaba.tesla.appmanager.dynamicscript.repository.domain.DynamicScriptDO" useGeneratedKeys="true">
     <!--@mbg.generated-->
@@ -161,6 +162,9 @@
       <if test="kind != null">
         kind,
       </if>
+      <if test="envId != null">
+        env_id,
+      </if>
       <if test="code != null">
         code,
       </if>
@@ -180,6 +184,9 @@
       </if>
       <if test="kind != null">
         #{kind,jdbcType=VARCHAR},
+      </if>
+      <if test="envId != null">
+        #{envId,jdbcType=VARCHAR},
       </if>
       <if test="code != null">
         #{code,jdbcType=LONGVARCHAR},
@@ -215,6 +222,9 @@
       <if test="record.kind != null">
         kind = #{record.kind,jdbcType=VARCHAR},
       </if>
+      <if test="record.envId != null">
+        env_id = #{record.envId,jdbcType=VARCHAR},
+      </if>
       <if test="record.code != null">
         code = #{record.code,jdbcType=LONGVARCHAR},
       </if>
@@ -232,6 +242,7 @@
       gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
       kind = #{record.kind,jdbcType=VARCHAR},
+      env_id = #{record.envId,jdbcType=VARCHAR},
       code = #{record.code,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -245,7 +256,8 @@
       current_revision = #{record.currentRevision,jdbcType=INTEGER},
       gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
-      kind = #{record.kind,jdbcType=VARCHAR}
+      kind = #{record.kind,jdbcType=VARCHAR},
+      env_id = #{record.envId,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -269,6 +281,9 @@
       <if test="kind != null">
         kind = #{kind,jdbcType=VARCHAR},
       </if>
+      <if test="envId != null">
+        env_id = #{envId,jdbcType=VARCHAR},
+      </if>
       <if test="code != null">
         code = #{code,jdbcType=LONGVARCHAR},
       </if>
@@ -283,6 +298,7 @@
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
       kind = #{kind,jdbcType=VARCHAR},
+      env_id = #{envId,jdbcType=VARCHAR},
       code = #{code,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -293,7 +309,8 @@
       current_revision = #{currentRevision,jdbcType=INTEGER},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
-      kind = #{kind,jdbcType=VARCHAR}
+      kind = #{kind,jdbcType=VARCHAR},
+      env_id = #{envId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

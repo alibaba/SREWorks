@@ -45,5 +45,10 @@ public enum DeployComponentAttrTypeEnum {
     /**
      * Owner Reference
      */
-    OWNER_REFERENCES;
+    OWNER_REFERENCES,
+
+    /**
+     * 最后状态
+     */
+    STATUS;
 }

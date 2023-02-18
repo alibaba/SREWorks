@@ -68,6 +68,10 @@ public class DeployAppEventListener implements ApplicationListener<DeployAppEven
 
         // 状态转移
         order.setDeployStatus(nextStatus.toString());
+        if (order.getGmtStart() == null || order.getGmtStart().getTime() == 0L) {
+            order.setGmtStart(DateUtil.now());
+        }
+        order.setGmtEnd(DateUtil.now());
         String logSuffix = String.format("|deployAppId=%d|fromStatus=%s|toStatus=%s",
                 deployAppId, status, nextStatus);
         try {

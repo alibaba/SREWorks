@@ -59,6 +59,8 @@ public enum WorkflowTaskStateEnum {
                     return RUNNING;
                 } else if (WorkflowTaskEventEnum.OP_TERMINATE.equals(event)) {
                     return TERMINATED;
+                } else if (WorkflowTaskEventEnum.UNKNOWN_ERROR.equals(event)) {
+                    return EXCEPTION;
                 }
                 break;
             case RUNNING:
@@ -70,7 +72,7 @@ public enum WorkflowTaskStateEnum {
                     return WAITING;
                 } else if (WorkflowTaskEventEnum.PROCESS_FAILED.equals(event)) {
                     return FAILURE;
-                } else if (WorkflowTaskEventEnum.PROCESS_UNKNOWN_ERROR.equals(event)) {
+                } else if (WorkflowTaskEventEnum.UNKNOWN_ERROR.equals(event)) {
                     return EXCEPTION;
                 } else if (WorkflowTaskEventEnum.PROCESS_SUSPEND.equals(event)) {
                     return WAITING_SUSPEND;
@@ -81,6 +83,8 @@ public enum WorkflowTaskStateEnum {
                     return RUNNING;
                 } else if (WorkflowTaskEventEnum.OP_TERMINATE.equals(event)) {
                     return TERMINATED;
+                } else if (WorkflowTaskEventEnum.UNKNOWN_ERROR.equals(event)) {
+                    return EXCEPTION;
                 }
                 break;
             case WAITING:
@@ -92,7 +96,7 @@ public enum WorkflowTaskStateEnum {
                     return SUCCESS;
                 } else if (WorkflowTaskEventEnum.WAITING_FAILED.equals(event)) {
                     return FAILURE;
-                } else if (WorkflowTaskEventEnum.WAITING_UNKNOWN_ERROR.equals(event)) {
+                } else if (WorkflowTaskEventEnum.UNKNOWN_ERROR.equals(event)) {
                     return EXCEPTION;
                 } else if (WorkflowTaskEventEnum.TRIGGER_UPDATE.equals(event)) {
                     return WAITING;
@@ -103,6 +107,8 @@ public enum WorkflowTaskStateEnum {
                     return WAITING;
                 } else if (WorkflowTaskEventEnum.OP_TERMINATE.equals(event)) {
                     return TERMINATED;
+                } else if (WorkflowTaskEventEnum.UNKNOWN_ERROR.equals(event)) {
+                    return EXCEPTION;
                 }
                 break;
             case SUCCESS:

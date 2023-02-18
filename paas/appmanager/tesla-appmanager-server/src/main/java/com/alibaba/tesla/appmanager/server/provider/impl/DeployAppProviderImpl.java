@@ -8,6 +8,7 @@ import com.alibaba.tesla.appmanager.common.enums.*;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
+import com.alibaba.tesla.appmanager.common.util.ConditionUtil;
 import com.alibaba.tesla.appmanager.common.util.JsonUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.dto.*;
@@ -48,6 +49,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -193,6 +195,39 @@ public class DeployAppProviderImpl implements DeployAppProvider {
                 .deployStatus(deployComponentBO.getSubOrder().getDeployStatus())
                 .deployErrorMessage(deployComponentBO.getSubOrder().getDeployErrorMessage())
                 .attrMap(deployComponentBO.getAttrMap())
+                .build();
+    }
+
+    /**
+     * 查询指定 Component 部署单的当前状态
+     *
+     * @param request  请求数据
+     * @param operator 操作人
+     * @return DeployComponentStatusDTO 对象
+     */
+    @Override
+    public DeployComponentStatusDTO getComponentStatus(DeployAppGetComponentStatusReq request, String operator) {
+        Long deployComponentId = request.getDeployComponentId();
+        String attr = deployComponentService
+                .getAttr(deployComponentId, DeployComponentAttrTypeEnum.STATUS);
+        JSONArray status = new JSONArray();
+        if (attr == null) {
+            status.add(ConditionUtil.singleCondition("GET_COMPONENT_STATUS_ATTR", "Failed", "Not exists", ""));
+            return DeployComponentStatusDTO.builder()
+                    .deployComponentId(deployComponentId)
+                    .status(status)
+                    .build();
+        }
+
+        try {
+            status.addAll(JSONArray.parseArray(attr));
+        } catch (Exception e) {
+            status.add(ConditionUtil.singleCondition("PARSE_COMPONENT_STATUS_ATTR", "Failed",
+                    ExceptionUtils.getStackTrace(e), ""));
+        }
+        return DeployComponentStatusDTO.builder()
+                .deployComponentId(deployComponentId)
+                .status(status)
                 .build();
     }
 

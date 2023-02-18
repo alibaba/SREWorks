@@ -130,8 +130,7 @@ public class WaitingWorkflowTaskStateAction implements WorkflowTaskStateAction, 
                             deployApp.getId(), deployApp.getDeployStatus(), deployApp.getDeployErrorMessage());
                     task.setTaskStatus(WorkflowTaskStateEnum.EXCEPTION.toString());
                     task.setTaskErrorMessage(deployApp.getDeployErrorMessage());
-                    publisher.publishEvent(new WorkflowTaskEvent(this,
-                            WorkflowTaskEventEnum.WAITING_UNKNOWN_ERROR, task));
+                    publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.UNKNOWN_ERROR, task));
                     break;
                 default:
                     // 不需要触发事件，会由 DeployApp 侧自行在终态时再次触发
@@ -187,8 +186,7 @@ public class WaitingWorkflowTaskStateAction implements WorkflowTaskStateAction, 
                             deployWorkflowInstance.getWorkflowErrorMessage());
                     task.setTaskStatus(WorkflowTaskStateEnum.EXCEPTION.toString());
                     task.setTaskErrorMessage(deployWorkflowInstance.getWorkflowErrorMessage());
-                    publisher.publishEvent(new WorkflowTaskEvent(this,
-                            WorkflowTaskEventEnum.WAITING_UNKNOWN_ERROR, task));
+                    publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.UNKNOWN_ERROR, task));
                     break;
                 default:
                     // 不需要触发事件，会由 Workflow 侧自行在终态时再次触发

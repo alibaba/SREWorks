@@ -4,6 +4,7 @@ import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.DeployAppAttrDTO;
 import com.alibaba.tesla.appmanager.domain.dto.DeployAppDTO;
 import com.alibaba.tesla.appmanager.domain.dto.DeployComponentAttrDTO;
+import com.alibaba.tesla.appmanager.domain.dto.DeployComponentStatusDTO;
 import com.alibaba.tesla.appmanager.domain.req.deploy.*;
 import com.alibaba.tesla.appmanager.domain.res.deploy.DeployAppPackageLaunchRes;
 
@@ -49,6 +50,15 @@ public interface DeployAppProvider {
      * @return DeployComponentAttrDTO 对象
      */
     DeployComponentAttrDTO getComponentAttr(DeployAppGetComponentAttrReq request, String operator);
+
+    /**
+     * 查询指定 Component 部署单的当前状态
+     *
+     * @param request  请求数据
+     * @param operator 操作人
+     * @return DeployComponentStatusDTO 对象
+     */
+    DeployComponentStatusDTO getComponentStatus(DeployAppGetComponentStatusReq request, String operator);
 
     /**
      * 发起一次 AppPackage 层面的部署

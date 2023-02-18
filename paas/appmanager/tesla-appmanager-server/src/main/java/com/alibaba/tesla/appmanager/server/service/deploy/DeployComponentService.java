@@ -1,6 +1,7 @@
 package com.alibaba.tesla.appmanager.server.service.deploy;
 
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentAttrTypeEnum;
+import com.alibaba.tesla.appmanager.domain.dto.DeployComponentAttrDTO;
 import com.alibaba.tesla.appmanager.server.repository.condition.DeployComponentQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.DeployComponentDO;
 import com.alibaba.tesla.appmanager.server.service.deploy.business.DeployComponentBO;
@@ -40,6 +41,15 @@ public interface DeployComponentService {
      * @param attrMap  属性字典
      */
     void create(DeployComponentDO subOrder, Map<DeployComponentAttrTypeEnum, String> attrMap);
+
+    /**
+     * 获取指定部署工单的指定属性内容
+     *
+     * @param deployComponentId 部署 Component 工单 ID
+     * @param attrType          属性类型
+     * @return 属性对象
+     */
+    String getAttr(Long deployComponentId, DeployComponentAttrTypeEnum attrType);
 
     /**
      * 更新指定部署工单的指定属性内容

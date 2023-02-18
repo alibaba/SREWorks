@@ -7,6 +7,7 @@ import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.DeployAppAttrDTO;
 import com.alibaba.tesla.appmanager.domain.dto.DeployAppDTO;
 import com.alibaba.tesla.appmanager.domain.dto.DeployComponentAttrDTO;
+import com.alibaba.tesla.appmanager.domain.dto.DeployComponentStatusDTO;
 import com.alibaba.tesla.appmanager.domain.req.deploy.*;
 import com.alibaba.tesla.appmanager.domain.res.deploy.DeployAppPackageLaunchRes;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
@@ -139,6 +140,21 @@ public class DeploymentController extends AppManagerBaseController {
                 .deployComponentId(deployComponentId)
                 .build();
         DeployComponentAttrDTO response = deployAppProvider.getComponentAttr(request, getOperator(auth));
+        return buildSucceedResult(response);
+    }
+
+    @Operation(summary = "查询部署单下指定组件的当前状态信息")
+    @GetMapping("{deployAppId}/components/{deployComponentId}/status")
+    @ResponseBody
+    public TeslaBaseResult getComponentStatus(
+            @PathVariable("deployAppId") Long deployAppId,
+            @PathVariable("deployComponentId") Long deployComponentId,
+            OAuth2Authentication auth
+    ) {
+        DeployAppGetComponentStatusReq request = DeployAppGetComponentStatusReq.builder()
+                .deployComponentId(deployComponentId)
+                .build();
+        DeployComponentStatusDTO response = deployAppProvider.getComponentStatus(request, getOperator(auth));
         return buildSucceedResult(response);
     }
 

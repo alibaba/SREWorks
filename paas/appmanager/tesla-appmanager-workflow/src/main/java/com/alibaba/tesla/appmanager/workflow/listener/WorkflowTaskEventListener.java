@@ -8,12 +8,15 @@ import com.alibaba.tesla.appmanager.common.util.DateUtil;
 import com.alibaba.tesla.appmanager.workflow.action.WorkflowTaskStateAction;
 import com.alibaba.tesla.appmanager.workflow.action.WorkflowTaskStateActionManager;
 import com.alibaba.tesla.appmanager.workflow.event.WorkflowTaskEvent;
+import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO;
+import com.alibaba.tesla.appmanager.workflow.service.WorkflowInstanceService;
 import com.alibaba.tesla.appmanager.workflow.service.WorkflowTaskService;
 import com.google.common.base.Enums;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -32,6 +35,9 @@ public class WorkflowTaskEventListener implements ApplicationListener<WorkflowTa
 
     @Autowired
     private WorkflowTaskService workflowTaskService;
+
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     /**
      * 处理 App 部署单事件
@@ -65,6 +71,10 @@ public class WorkflowTaskEventListener implements ApplicationListener<WorkflowTa
         String logSuffix = String.format("|workflowTaskId=%d|fromStatus=%s|toStatus=%s|errorMessage=%s",
                 workflowTaskId, status, nextStatus, event.getTask().getTaskErrorMessage());
         task.setTaskStatus(nextStatus.toString());
+        if (task.getGmtStart() == null || task.getGmtStart().getTime() == 0L) {
+            task.setGmtStart(DateUtil.now());
+        }
+        task.setGmtEnd(DateUtil.now());
         // maybe "", it's ok
         if (event.getTask().getTaskErrorMessage() != null) {
             task.setTaskErrorMessage(event.getTask().getTaskErrorMessage());
@@ -97,29 +107,29 @@ public class WorkflowTaskEventListener implements ApplicationListener<WorkflowTa
 
         // 运行目标 State 的动作
         WorkflowTaskStateAction instance = workflowTaskStateActionManager.getInstance(nextStatus.toString());
+        task = workflowTaskService.get(workflowTaskId, true);
         try {
-            task = workflowTaskService.get(workflowTaskId, true);
             instance.run(task);
         } catch (AppException e) {
             if (AppErrorCode.LOCKER_VERSION_EXPIRED.equals(e.getErrorCode())) {
                 log.info(logPre + "locker version expired, skip" + logSuffix);
                 return;
             }
-            markAsException(workflowTaskId, nextStatus, ExceptionUtils.getStackTrace(e));
+            triggerException(task, e.getErrorMessage());
         } catch (Exception e) {
-            markAsException(workflowTaskId, nextStatus, ExceptionUtils.getStackTrace(e));
+            triggerException(task, ExceptionUtils.getStackTrace(e));
         }
     }
 
-    private void markAsException(Long workflowTaskId, WorkflowTaskStateEnum fromStatus, String errorMessage) {
-        WorkflowTaskDO workflow;
-        workflow = workflowTaskService.get(workflowTaskId, false);
-        workflow.setTaskStatus(WorkflowTaskStateEnum.EXCEPTION.toString());
-        workflow.setTaskErrorMessage(errorMessage);
-        workflow.setGmtEnd(DateUtil.now());
-        workflowTaskService.update(workflow);
-        log.warn("action=event.app.ERROR|message=status has changed|workflowTaskId={}|fromStatus={}|" +
-                        "toStatus={}|exception={}", workflowTaskId, fromStatus.toString(),
-                WorkflowTaskStateEnum.EXCEPTION, errorMessage);
+    /**
+     * 触发 Exception 异常，并写入异常信息
+     *
+     * @param task         任务对象
+     * @param errorMessage 错误信息
+     */
+    private void triggerException(WorkflowTaskDO task, String errorMessage) {
+        task.setTaskStatus(WorkflowTaskStateEnum.EXCEPTION.toString());
+        task.setTaskErrorMessage(errorMessage);
+        publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.UNKNOWN_ERROR, task));
     }
 }

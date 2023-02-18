@@ -4,6 +4,7 @@ import com.alibaba.tesla.appmanager.common.enums.DeployComponentEventEnum;
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentStateEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.common.util.DateUtil;
 import com.alibaba.tesla.appmanager.server.action.DeployComponentStateAction;
 import com.alibaba.tesla.appmanager.server.action.DeployComponentStateActionManager;
 import com.alibaba.tesla.appmanager.server.event.deploy.DeployComponentEvent;
@@ -74,6 +75,10 @@ public class DeployComponentEventListener implements ApplicationListener<DeployC
 
         // 状态转移
         order.setDeployStatus(nextStatus.toString());
+        if (order.getGmtStart() == null || order.getGmtStart().getTime() == 0L) {
+            order.setGmtStart(DateUtil.now());
+        }
+        order.setGmtEnd(DateUtil.now());
         String logSuffix = String.format("|deployAppId=%d|deployComponentId=%d|fromStatus=%s|toStatus=%s",
                 deployAppId, deployComponentId, status, nextStatus);
         try {
@@ -108,6 +113,7 @@ public class DeployComponentEventListener implements ApplicationListener<DeployC
         order = deployComponentService.get(deployComponentId, false).getSubOrder();
         order.setDeployStatus(DeployComponentStateEnum.EXCEPTION.toString());
         order.setDeployErrorMessage(errorMessage);
+        order.setGmtEnd(DateUtil.now());
         deployComponentService.update(order);
         log.warn("action=event.component.ERROR|message=status has changed|deployAppId={}|deployComponentId={}|" +
                         "fromStatus={}|toStatus={}|exception={}", deployAppId, deployComponentId, fromStatus.toString(),

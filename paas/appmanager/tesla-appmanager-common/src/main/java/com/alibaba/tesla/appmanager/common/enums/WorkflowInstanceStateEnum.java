@@ -60,6 +60,8 @@ public enum WorkflowInstanceStateEnum {
                     return PREPROCESSING;
                 } else if (WorkflowInstanceEventEnum.OP_TERMINATE.equals(event)) {
                     return TERMINATED;
+                } else if (WorkflowInstanceEventEnum.UNKNOWN_ERROR.equals(event)) {
+                    return EXCEPTION;
                 }
                 break;
             case PREPROCESSING:
@@ -67,6 +69,8 @@ public enum WorkflowInstanceStateEnum {
                     return TERMINATED;
                 } else if (WorkflowInstanceEventEnum.PREPROCESS_FINISHED.equals(event)) {
                     return RUNNING;
+                } else if (WorkflowInstanceEventEnum.UNKNOWN_ERROR.equals(event)) {
+                    return EXCEPTION;
                 }
                 break;
             case RUNNING:
@@ -78,7 +82,7 @@ public enum WorkflowInstanceStateEnum {
                     return SUCCESS;
                 } else if (WorkflowInstanceEventEnum.PROCESS_FAILED.equals(event)) {
                     return FAILURE;
-                } else if (WorkflowInstanceEventEnum.PROCESS_UNKNOWN_ERROR.equals(event)) {
+                } else if (WorkflowInstanceEventEnum.UNKNOWN_ERROR.equals(event)) {
                     return EXCEPTION;
                 }
                 break;
@@ -91,7 +95,7 @@ public enum WorkflowInstanceStateEnum {
                     return SUCCESS;
                 } else if (WorkflowInstanceEventEnum.PROCESS_FAILED.equals(event)) {
                     return FAILURE;
-                } else if (WorkflowInstanceEventEnum.PROCESS_UNKNOWN_ERROR.equals(event)) {
+                } else if (WorkflowInstanceEventEnum.UNKNOWN_ERROR.equals(event)) {
                     return EXCEPTION;
                 }
                 break;
@@ -113,7 +117,7 @@ public enum WorkflowInstanceStateEnum {
                     return SUCCESS;
                 } else if (WorkflowInstanceEventEnum.PROCESS_FAILED.equals(event)) {
                     return FAILURE;
-                } else if (WorkflowInstanceEventEnum.PROCESS_UNKNOWN_ERROR.equals(event)) {
+                } else if (WorkflowInstanceEventEnum.UNKNOWN_ERROR.equals(event)) {
                     return EXCEPTION;
                 }
                 break;

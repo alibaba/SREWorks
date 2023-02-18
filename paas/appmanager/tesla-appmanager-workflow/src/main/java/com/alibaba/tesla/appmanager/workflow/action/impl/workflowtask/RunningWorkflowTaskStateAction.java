@@ -94,7 +94,7 @@ public class RunningWorkflowTaskStateAction implements WorkflowTaskStateAction, 
                 publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.PROCESS_FAILED, res));
                 break;
             case EXCEPTION:
-                publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.PROCESS_UNKNOWN_ERROR, res));
+                publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.UNKNOWN_ERROR, res));
                 break;
             case TERMINATED:
                 publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.OP_TERMINATE, res));

@@ -17,13 +17,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DynamicScriptDTO {
-
     private Long id;
-
-    /**
-     * 类型
-     */
-    private String kind;
 
     /**
      * 标识名称
@@ -44,6 +38,16 @@ public class DynamicScriptDTO {
      * 最后修改时间
      */
     private Date gmtModified;
+
+    /**
+     * 类型
+     */
+    private String kind;
+
+    /**
+     * 环境 ID
+     */
+    private String envId;
 
     /**
      * 代码

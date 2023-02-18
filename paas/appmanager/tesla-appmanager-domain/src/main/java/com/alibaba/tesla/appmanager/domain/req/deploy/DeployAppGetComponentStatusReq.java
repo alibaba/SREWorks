@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * 查询指定 ComponentPackage 的部署单的属性
+ * 查询指定 ComponentPackage 的部署单运行状态
  *
  * @author yaoxing.gyx@alibaba-inc.com
  */
@@ -16,9 +16,9 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeployAppGetComponentAttrReq implements Serializable {
+public class DeployAppGetComponentStatusReq implements Serializable {
 
-    private static final long serialVersionUID = 3256022989002584168L;
+    private static final long serialVersionUID = -4954722479950470132L;
 
     private Long deployComponentId;
 }

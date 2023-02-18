@@ -40,7 +40,7 @@ public enum WorkflowInstanceEventEnum {
     /**
      * 处理过程中产生未知错误
      */
-    PROCESS_UNKNOWN_ERROR,
+    UNKNOWN_ERROR,
 
     /**
      * 终止

@@ -123,6 +123,29 @@ public class DeployComponentServiceImpl implements DeployComponentService {
     }
 
     /**
+     * 获取指定部署工单的指定属性内容
+     *
+     * @param deployComponentId 部署 Component 工单 ID
+     * @param attrType          属性类型
+     * @return 属性对象
+     */
+    @Override
+    public String getAttr(Long deployComponentId, DeployComponentAttrTypeEnum attrType) {
+        DeployComponentAttrQueryCondition condition = DeployComponentAttrQueryCondition.builder()
+                .deployComponentId(deployComponentId)
+                .attrType(attrType.toString())
+                .build();
+        List<DeployComponentAttrDO> attrList = deployComponentAttrRepository.selectByCondition(condition);
+        assert attrList.size() <= 1;
+
+        if (attrList.size() == 0) {
+            return null;
+        } else {
+            return attrList.get(0).getAttrValue();
+        }
+    }
+
+    /**
      * 更新指定部署工单的指定属性内容
      *
      * @param deployComponentId 部署 Component 工单 ID

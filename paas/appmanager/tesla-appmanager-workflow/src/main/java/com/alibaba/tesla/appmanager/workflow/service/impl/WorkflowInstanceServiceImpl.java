@@ -11,6 +11,7 @@ import com.alibaba.tesla.appmanager.common.enums.WorkflowTaskStateEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
+import com.alibaba.tesla.appmanager.common.util.DateUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.container.WorkflowGraphNodeId;
 import com.alibaba.tesla.appmanager.domain.option.WorkflowInstanceOption;
@@ -149,6 +150,7 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
                 .workflowOptions(JSONObject.toJSONString(options))
                 .workflowCreator(options.getCreator())
                 .workflowGraph(workflowGraphStr)
+                .gmtStart(DateUtil.now())
                 .clientHost(workflowNetworkUtil.getClientHost())
                 .build();
         workflowInstanceRepository.insert(record);
@@ -337,7 +339,7 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService {
                         "category={}|errorMessage={}", instance.getId(), instance.getAppId(), instance.getCategory(),
                 errorMessage);
         publisher.publishEvent(new WorkflowInstanceEvent(this,
-                WorkflowInstanceEventEnum.PROCESS_UNKNOWN_ERROR, instance));
+                WorkflowInstanceEventEnum.UNKNOWN_ERROR, instance));
     }
 
     /**

@@ -134,9 +134,6 @@ public class K8sMicroServiceMetaUpdateReq {
         if (!CollectionUtils.isEmpty(initContainerList)) {
             initContainerList.forEach(item -> item.checkParameters());
         }
-        if (!CollectionUtils.isEmpty(envKeyList)) {
-            envKeyList.forEach(item -> SecurityUtil.checkInput(item));
-        }
         if (repoObject != null) {
             repoObject.checkParameters();
         }

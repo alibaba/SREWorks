@@ -13,6 +13,7 @@ import io.fabric8.kubernetes.client.dsl.base.CustomResourceDefinitionContext
 import io.fabric8.kubernetes.client.informers.ResourceEventHandler
 import io.fabric8.kubernetes.client.informers.SharedInformerFactory
 import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,7 +32,7 @@ class MicroserviceComponentWatchKubernetesInformerHandler implements ComponentWa
      */
     public static final String KIND = "COMPONENT_WATCH_KUBERNETES_INFORMER"
     public static final String NAME = "MicroserviceInformerRegister"
-    public static final Integer REVISION = 24
+    public static final Integer REVISION = 28
 
     /**
      * Microservice CRD Context
@@ -43,7 +44,7 @@ class MicroserviceComponentWatchKubernetesInformerHandler implements ComponentWa
             .withPlural("microservices")
             .withScope("Namespaced")
             .build()
-    private static final long RESYNC_PERIOD_IN_MILLIS = 60 * 1000L
+    private static final long RESYNC_PERIOD_IN_MILLIS = 300 * 1000L
 
     /**
      * 当前 Groovy 对应的 Component 类型
@@ -173,19 +174,28 @@ class MicroserviceComponentWatchKubernetesInformerHandler implements ComponentWa
                 }
 
                 // 上报状态
-                componentInstanceService.report(ReportRtComponentInstanceStatusReq.builder()
-                        .componentInstanceId(componentInstanceId)
-                        .appInstanceName(appInstanceName)
-                        .clusterId(clusterId)
-                        .namespaceId(cr.getMetadata().getNamespace())
-                        .stageId(stageId)
-                        .appId(appId)
-                        .componentType(COMPONENT_TYPE)
-                        .componentName(componentName)
-                        .version(version)
-                        .status(finalStatus.toString())
-                        .conditions(finalConditions)
-                        .build())
+                try {
+                    componentInstanceService.report(ReportRtComponentInstanceStatusReq.builder()
+                            .componentInstanceId(componentInstanceId)
+                            .appInstanceName(appInstanceName)
+                            .clusterId(clusterId)
+                            .namespaceId(cr.getMetadata().getNamespace())
+                            .stageId(stageId)
+                            .appId(appId)
+                            .componentType(COMPONENT_TYPE)
+                            .componentName(componentName)
+                            .version(version)
+                            .status(finalStatus.toString())
+                            .conditions(finalConditions)
+                            .build())
+                } catch (Exception e) {
+                    log.warn("found exception when report to component instance|componentInstanceId={}|" +
+                            "appInstanceName={}|clusterId={}|namespaceId={}|stageId={}|appId={}|componentType={}|" +
+                            "componentName={}|version={}|status={}|conditions={}|exception={}", componentInstanceId,
+                            appInstanceName, clusterId, cr.getMetadata().getNamespace(), stageId, appId, COMPONENT_TYPE,
+                            componentName, version, finalStatus.toString(), JSONObject.toJSONString(finalConditions),
+                            ExceptionUtils.getStackTrace(e))
+                }
             }
         })
     }

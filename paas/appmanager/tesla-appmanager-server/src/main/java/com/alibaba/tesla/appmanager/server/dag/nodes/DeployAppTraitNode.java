@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.server.dag.nodes;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.constants.AppFlowParamKey;
 import com.alibaba.tesla.appmanager.common.constants.AppFlowVariableKey;
@@ -7,6 +8,7 @@ import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.*;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.common.util.ConditionUtil;
 import com.alibaba.tesla.appmanager.common.util.DateUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.container.DeployAppRevisionName;
@@ -152,9 +154,10 @@ public class DeployAppTraitNode extends AbstractLocalNodeBase {
                 trait.execute();
                 traitSpec = trait.getSpec();
             }
+            String costTime = DateUtil.costTime(startTimestamp);
             log.info("trait {} has finished running|deployAppId={}|nodeId={}|dagInstId={}|cost={}|" +
-                            "afterRunningSpec={}", traitName, deployAppId, nodeId, dagInstId,
-                    DateUtil.costTime(startTimestamp), JSONObject.toJSONString(traitSpec));
+                            "afterRunningSpec={}", traitName, deployAppId, nodeId, dagInstId, costTime,
+                    JSONObject.toJSONString(traitSpec));
 
             // 如果是前置 trait，那么重新 put 对应的 component schema 到 global params 中进行覆盖
             if (componentTrait.getTrait().getRuntime().equals("pre")) {
@@ -179,6 +182,10 @@ public class DeployAppTraitNode extends AbstractLocalNodeBase {
                     .build();
             Map<DeployComponentAttrTypeEnum, String> attrMap = new HashMap<>();
             attrMap.put(DeployComponentAttrTypeEnum.TRAIT_SCHEMA, SchemaUtil.toYamlMapStr(traitSpec));
+            JSONArray statusAttr = ConditionUtil.singleCondition("RunTraitSuccess", "True",
+                    String.format("cost %s", costTime), "");
+            statusAttr.addAll(ConditionUtil.singleCondition("GetTraitSpec", "True", traitSpec.toJSONString(), ""));
+            attrMap.put(DeployComponentAttrTypeEnum.STATUS, statusAttr.toJSONString());
             if (traitComponentWorkload == null) {
                 attrMap.put(DeployComponentAttrTypeEnum.TRAIT_COMPONENT_WORKLOAD, "");
             } else {

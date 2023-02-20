@@ -94,15 +94,11 @@ public class ApplicationContextLoadedEventListener implements ApplicationListene
     @Autowired
     private DynamicScriptService dynamicScriptService;
 
-    @Autowired
-    private InformerManager informerManager;
-
     @Override
     public void onApplicationEvent(ApplicationContextLoadedEvent event) {
         try {
             initDefaultScripts();
             groovyHandlerFactory.refresh();
-            informerManager.init();
         } catch (Exception e) {
             throw new AppException(AppErrorCode.UNKNOWN_ERROR, "cannot init groovy handler factory", e);
         }

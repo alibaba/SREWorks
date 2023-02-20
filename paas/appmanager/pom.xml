@@ -7,7 +7,7 @@
     <groupId>com.alibaba.tesla</groupId>
     <artifactId>tesla-appmanager</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.6-SNAPSHOT</version>
+    <version>1.0.7-SNAPSHOT</version>
     <modules>
         <module>tesla-appmanager-api</module>
         <module>tesla-appmanager-common</module>
@@ -102,6 +102,9 @@
         <assertj-core.version>3.22.0</assertj-core.version>
         <snakeyaml.version>1.30</snakeyaml.version>
         <semver4j.version>3.1.0</semver4j.version>
+
+        <!-- jenkins -->
+        <jenkins-client.version>0.3.8</jenkins-client.version>
     </properties>
 
     <dependencyManagement>
@@ -439,6 +442,13 @@
                 <groupId>org.gitlab4j</groupId>
                 <artifactId>gitlab4j-api</artifactId>
                 <version>5.0.1</version>
+            </dependency>
+
+            <!-- jenkins -->
+            <dependency>
+                <groupId>com.offbytwo.jenkins</groupId>
+                <artifactId>jenkins-client</artifactId>
+                <version>${jenkins-client.version}</version>
             </dependency>
 
             <!-- shedlock -->

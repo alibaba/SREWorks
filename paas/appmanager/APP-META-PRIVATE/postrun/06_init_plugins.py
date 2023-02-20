@@ -27,7 +27,7 @@ CLIENT_ID = os.getenv("APPMANAGER_CLIENT_ID")
 CLIENT_SECRET = os.getenv("APPMANAGER_CLIENT_SECRET")
 USERNAME = os.getenv("APPMANAGER_ACCESS_ID")
 PASSWORD = os.getenv("APPMANAGER_ACCESS_SECRET")
-PLUGINS_PACKAGE_PATH = "/app/plugins/"
+PLUGINS_PACKAGE_PATH = "/app/plugins/plugins-start-standalone/src/main/resources"
 DEFINITION = "/definition.yaml"
 
 

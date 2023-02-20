@@ -2,10 +2,11 @@ package com.alibaba.tesla.appmanager.dynamicscript.repository.mapper;
 
 import com.alibaba.tesla.appmanager.dynamicscript.repository.domain.DynamicScriptHistoryDO;
 import com.alibaba.tesla.appmanager.dynamicscript.repository.domain.DynamicScriptHistoryDOExample;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface DynamicScriptHistoryDOMapper {

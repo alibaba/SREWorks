@@ -30,12 +30,12 @@ class JobComponentWatchKubernetesInformerHandler implements ComponentWatchKubern
      */
     public static final String KIND = "COMPONENT_WATCH_KUBERNETES_INFORMER"
     public static final String NAME = "JobInformerRegister"
-    public static final Integer REVISION = 8
+    public static final Integer REVISION = 11
 
     /**
      * RESYNC 间隔时间
      */
-    private static final long RESYNC_PERIOD_IN_MILLIS = 60 * 1000L
+    private static final long RESYNC_PERIOD_IN_MILLIS = 300 * 1000L
 
     /**
      * 当前 Groovy 对应的 Component 类型

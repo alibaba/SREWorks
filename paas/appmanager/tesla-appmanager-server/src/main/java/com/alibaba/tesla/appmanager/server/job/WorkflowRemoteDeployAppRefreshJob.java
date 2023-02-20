@@ -36,7 +36,7 @@ public class WorkflowRemoteDeployAppRefreshJob {
         String clientHost = workflowNetworkUtil.getClientHost();
         List<WorkflowTaskDTO> tasks = workflowTaskProvider.listRunningRemoteTask(clientHost);
         if (tasks.size() == 0) {
-            log.info("cannot find any remote workflow tasks by client host {}, skip", clientHost);
+            log.debug("cannot find any remote workflow tasks by client host {}, skip", clientHost);
             return;
         }
 

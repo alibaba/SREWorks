@@ -85,7 +85,7 @@ redis:
     disableCommands: 
       - FLUSHDB
     persistence:
-      size: 20Gi
+      enabled: false
     
   image:
     registry: sreworks-registry.cn-beijing.cr.aliyuncs.com

@@ -90,7 +90,12 @@ public enum AppErrorCode {
     /**
      * DB 异常
      */
-    DB_ERROR(10015, "DB_ERROR");
+    DB_ERROR(10015, "DB_ERROR"),
+
+    /**
+     * 安全错误
+     */
+    SECURITY_ERROR(10016, "SECURITY_ERROR");
 
     private final int code;
     private final String description;

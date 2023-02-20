@@ -7,6 +7,7 @@ import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.dto.DeployAppAttrDTO;
 import com.alibaba.tesla.appmanager.domain.dto.DeployAppDTO;
 import com.alibaba.tesla.appmanager.domain.dto.DeployComponentAttrDTO;
+import com.alibaba.tesla.appmanager.domain.dto.DeployComponentStatusDTO;
 import com.alibaba.tesla.appmanager.domain.req.deploy.*;
 import com.alibaba.tesla.appmanager.domain.res.deploy.DeployAppPackageLaunchRes;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +41,7 @@ public class DeploymentController extends AppManagerBaseController {
     @PostMapping(value = "/launch")
     @ResponseBody
     public TeslaBaseResult launch(
-            @Valid @ModelAttribute DeployAppLaunchReq request,
+            @ParameterObject @Valid @ModelAttribute DeployAppLaunchReq request,
             @RequestBody String body, OAuth2Authentication auth
     ) {
         request.setConfiguration(body);
@@ -70,7 +72,8 @@ public class DeploymentController extends AppManagerBaseController {
     @GetMapping
     @ResponseBody
     public TeslaBaseResult list(
-            @ModelAttribute DeployAppListReq request, OAuth2Authentication auth
+            @ParameterObject @ModelAttribute DeployAppListReq request,
+            OAuth2Authentication auth
     ) throws Exception {
         Pagination<DeployAppDTO> response = deployAppProvider.list(request, getOperator(auth));
         return buildSucceedResult(response);
@@ -137,6 +140,21 @@ public class DeploymentController extends AppManagerBaseController {
                 .deployComponentId(deployComponentId)
                 .build();
         DeployComponentAttrDTO response = deployAppProvider.getComponentAttr(request, getOperator(auth));
+        return buildSucceedResult(response);
+    }
+
+    @Operation(summary = "查询部署单下指定组件的当前状态信息")
+    @GetMapping("{deployAppId}/components/{deployComponentId}/status")
+    @ResponseBody
+    public TeslaBaseResult getComponentStatus(
+            @PathVariable("deployAppId") Long deployAppId,
+            @PathVariable("deployComponentId") Long deployComponentId,
+            OAuth2Authentication auth
+    ) {
+        DeployAppGetComponentStatusReq request = DeployAppGetComponentStatusReq.builder()
+                .deployComponentId(deployComponentId)
+                .build();
+        DeployComponentStatusDTO response = deployAppProvider.getComponentStatus(request, getOperator(auth));
         return buildSucceedResult(response);
     }
 

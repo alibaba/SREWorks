@@ -7,7 +7,7 @@
     <groupId>com.alibaba.tesla</groupId>
     <artifactId>tesla-appmanager</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.0.6-SNAPSHOT</version>
     <modules>
         <module>tesla-appmanager-api</module>
         <module>tesla-appmanager-common</module>
@@ -29,6 +29,7 @@
         <module>tesla-appmanager-workflow</module>
         <module>tesla-appmanager-market</module>
         <module>tesla-appmanager-storage</module>
+        <module>tesla-appmanager-encryption</module>
     </modules>
 
     <name>tesla-appmanager</name>
@@ -91,6 +92,9 @@
 
         <!-- SLS -->
         <aliyun-sdk-sls.version>0.6.71</aliyun-sdk-sls.version>
+
+        <!-- private encryption -->
+        <jnr-unixsocket.version>0.38.8</jnr-unixsocket.version>
 
         <!-- plugin -->
         <mybatis-generator.version>1.3.7</mybatis-generator.version>
@@ -196,6 +200,11 @@
             <dependency>
                 <groupId>com.alibaba.tesla</groupId>
                 <artifactId>tesla-appmanager-storage</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.tesla</groupId>
+                <artifactId>tesla-appmanager-encryption</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -616,6 +625,13 @@
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
                 <version>${snakeyaml.version}</version>
+            </dependency>
+
+            <!-- private encryption -->
+            <dependency>
+                <groupId>com.github.jnr</groupId>
+                <artifactId>jnr-unixsocket</artifactId>
+                <version>${jnr-unixsocket.version}</version>
             </dependency>
 
             <!-- test -->

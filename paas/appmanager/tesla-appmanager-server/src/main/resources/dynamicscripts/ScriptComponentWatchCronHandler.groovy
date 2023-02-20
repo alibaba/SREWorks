@@ -20,6 +20,7 @@ import com.alibaba.tesla.appmanager.server.service.deploy.DeployAppService
 import com.alibaba.tesla.appmanager.server.service.deploy.DeployComponentService
 import lombok.extern.slf4j.Slf4j
 import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,7 +40,7 @@ class ScriptComponentWatchCronHandler implements ComponentWatchCronHandler {
      */
     public static final String KIND = DynamicScriptKindEnum.COMPONENT_WATCH_CRON.toString()
     public static final String NAME = "ScriptComponentCron"
-    public static final Integer REVISION = 5
+    public static final Integer REVISION = 6
 
     @Autowired
     private DeployAppService deployAppService
@@ -128,6 +129,14 @@ class ScriptComponentWatchCronHandler implements ComponentWatchCronHandler {
         def client = kubernetesClientFactory.getByKubeConfig(base64Kubeconfig)
         def handler = groovyHandlerFactory.get(ComponentCustomStatusHandler.class,
                 DynamicScriptKindEnum.CUSTOM_STATUS.toString(), scriptName)
-        return handler.getStatus(request, client, options)
+        try {
+            return handler.getStatus(request, client, options)
+        } catch (Exception e) {
+            return RtComponentInstanceGetStatusRes.builder()
+                    .status(ComponentInstanceStatusEnum.UNKNOWN.toString())
+                    .conditions(ConditionUtil.singleCondition("GetStatusInScript", "False",
+                            ExceptionUtils.getStackTrace(e), ""))
+                    .build()
+        }
     }
 }

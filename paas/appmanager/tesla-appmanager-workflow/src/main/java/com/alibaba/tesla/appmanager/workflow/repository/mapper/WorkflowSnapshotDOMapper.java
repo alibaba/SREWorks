@@ -17,4 +17,6 @@ public interface WorkflowSnapshotDOMapper {
     List<WorkflowSnapshotDO> selectByExample(WorkflowSnapshotDOExample example);
 
     int updateByExampleSelective(@Param("record") WorkflowSnapshotDO record, @Param("example") WorkflowSnapshotDOExample example);
+
+    int updateByPrimaryKeySelective(WorkflowSnapshotDO record);
 }

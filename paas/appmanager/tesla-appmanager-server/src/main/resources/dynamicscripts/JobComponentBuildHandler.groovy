@@ -56,7 +56,7 @@ class JobComponentBuildHandler implements BuildComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 16
+    public static final Integer REVISION = 18
 
     private static final String TEMPLATE_JOB_FILENAME = "default_job.tpl"
 

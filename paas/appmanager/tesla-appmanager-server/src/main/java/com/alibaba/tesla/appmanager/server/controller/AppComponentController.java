@@ -15,6 +15,7 @@ import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,7 @@ public class AppComponentController extends AppManagerBaseController {
     public TeslaBaseResult list(
             @PathVariable String appId,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
-            @ModelAttribute AppComponentQueryReq req,
+            @ParameterObject @ModelAttribute AppComponentQueryReq req,
             OAuth2Authentication auth) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         req.setAppId(appId);

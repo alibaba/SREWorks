@@ -38,7 +38,7 @@ public interface MarketProvider {
     /**
      * 上传市场包
      */
-    String uploadPackage(MarketEndpointDTO marketEndpoint, MarketPackageDTO marketPackage) throws IOException;
+    String uploadPackage(MarketEndpointDTO marketEndpoint, MarketPackageDTO marketPackage) throws Exception;
 }
 
 

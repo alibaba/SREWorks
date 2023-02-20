@@ -176,7 +176,6 @@ public class DeployAppCreateComponentNode extends AbstractLocalNodeBase {
         String componentInstanceId = componentInstance.getComponentInstanceId();
 
         // 生成 component 部署记录
-        Date now = new Date();
         DeployComponentDO record = DeployComponentDO.builder()
                 .deployId(deployAppId)
                 .deployType(DeployComponentTypeEnum.COMPONENT.toString())
@@ -185,7 +184,6 @@ public class DeployAppCreateComponentNode extends AbstractLocalNodeBase {
                 .clusterId(clusterId)
                 .namespaceId(namespaceId)
                 .stageId(stageId)
-                .gmtStart(now)
                 .deployStatus(DeployComponentStateEnum.CREATED.toString())
                 .deployCreator(globalVariable.getString(AppFlowVariableKey.CREATOR))
                 .build();

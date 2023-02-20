@@ -14,6 +14,7 @@ import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ public class RtAppInstanceController extends AppManagerBaseController {
 
     @GetMapping("")
     public TeslaBaseResult list(
-            @ModelAttribute RtAppInstanceQueryReq request,
+            @ParameterObject @ModelAttribute RtAppInstanceQueryReq request,
             HttpServletRequest r, OAuth2Authentication auth) {
         if (StringUtils.isEmpty(request.getClusterId())) {
             request.setClusterId(null);
@@ -89,7 +90,7 @@ public class RtAppInstanceController extends AppManagerBaseController {
     @GetMapping("{appInstanceId}/histories")
     public TeslaBaseResult listHistory(
             @PathVariable("appInstanceId") String appInstanceId,
-            @ModelAttribute RtAppInstanceHistoryQueryReq request,
+            @ParameterObject @ModelAttribute RtAppInstanceHistoryQueryReq request,
             HttpServletRequest r, OAuth2Authentication auth) {
         request.setAppInstanceId(appInstanceId);
         Pagination<RtAppInstanceHistoryDTO> result = rtAppInstanceProvider.queryAppInstanceHistoryByCondition(request);
@@ -112,7 +113,7 @@ public class RtAppInstanceController extends AppManagerBaseController {
     public TeslaBaseResult listHistory(
             @PathVariable("appInstanceId") String appInstanceId,
             @PathVariable("componentInstanceId") String componentInstanceId,
-            @ModelAttribute RtComponentInstanceHistoryQueryReq request,
+            @ParameterObject @ModelAttribute RtComponentInstanceHistoryQueryReq request,
             HttpServletRequest r, OAuth2Authentication auth) {
         request.setComponentInstanceId(componentInstanceId);
         Pagination<RtComponentInstanceHistoryDTO> result = rtAppInstanceProvider

@@ -242,6 +242,9 @@ public class AppPackageProviderImpl implements AppPackageProvider {
                 .resetVersion(req.getResetVersion())
                 .packageCreator(req.getPackageCreator())
                 .build());
+        if (item == null) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "cannot import app package, null response");
+        }
 
         // 启动 DAG 进行解包
         JSONObject variables = new JSONObject();
@@ -272,7 +275,7 @@ public class AppPackageProviderImpl implements AppPackageProvider {
             }
             if (dagInstStatus.equals(DagInstStatus.EXCEPTION) || dagInstStatus.equals(DagInstStatus.STOPPED)) {
                 throw new AppException(AppErrorCode.UNKNOWN_ERROR,
-                        String.format("unpack failed, dagInst=%s", JSONObject.toJSONString(dagInst)));
+                        String.format("unpack failed|dagInst=%s|", JSONObject.toJSONString(dagInst)));
             }
             return get(AppPackageQueryReq.builder().id(item.getId()).build(), operator);
         }

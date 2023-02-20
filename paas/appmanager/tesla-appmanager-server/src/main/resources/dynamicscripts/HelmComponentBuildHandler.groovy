@@ -51,7 +51,7 @@ class HelmComponentBuildHandler implements BuildComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 41
+    public static final Integer REVISION = 42
 
     private static final String KEY_HELM_CHART = "helm_chart"
 
@@ -125,7 +125,7 @@ class HelmComponentBuildHandler implements BuildComponentHandler {
         } else if (StringUtils.isNotEmpty(repoUrl)) {
             if (chartDownload) {
                 def cmd = new String[]{"helm", "pull", "--repo", repoUrl, chartName, "--version", chartVersion, "-d", packageDir.toFile().getAbsolutePath()}
-                String ret = CommandUtil.runLocalCommand(cmd)
+                String ret = CommandUtil.runLocalCommand(CommandUtil.getBashCommand(cmd))
                 logContent.append(String.format("helm pull|cmd=%s|ret=%s\n", cmd, ret))
             }
         } else {

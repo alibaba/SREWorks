@@ -11,6 +11,7 @@ import com.alibaba.tesla.web.controller.BaseController;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -91,7 +92,7 @@ public class TraitController extends BaseController {
      * }
      */
     @GetMapping("")
-    public TeslaBaseResult query(@ModelAttribute TraitQueryReq request) {
+    public TeslaBaseResult query(@ParameterObject @ModelAttribute TraitQueryReq request) {
         return buildSucceedResult(trait.list(request, "SYSTEM"));
     }
 

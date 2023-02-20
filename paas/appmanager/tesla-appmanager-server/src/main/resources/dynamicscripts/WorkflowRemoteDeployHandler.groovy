@@ -44,7 +44,7 @@ class WorkflowRemoteDeployHandler implements WorkflowHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 5
+    public static final Integer REVISION = 8
 
     @Autowired
     private UnitService unitService

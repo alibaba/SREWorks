@@ -35,7 +35,7 @@ public enum WorkflowTaskEventEnum {
     /**
      * 处理过程中产生未知错误
      */
-    PROCESS_UNKNOWN_ERROR,
+    UNKNOWN_ERROR,
 
     /**
      * 处理过程中进入休眠状态
@@ -51,11 +51,6 @@ public enum WorkflowTaskEventEnum {
      * 等待过程失败
      */
     WAITING_FAILED,
-
-    /**
-     * 等待过程出现未知错误
-     */
-    WAITING_UNKNOWN_ERROR,
 
     /**
      * 终止

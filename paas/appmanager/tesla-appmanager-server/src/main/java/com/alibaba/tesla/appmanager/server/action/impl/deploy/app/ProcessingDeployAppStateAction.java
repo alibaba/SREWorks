@@ -249,7 +249,7 @@ public class ProcessingDeployAppStateAction implements DeployAppStateAction, App
                                 "trait runtime field can be only in pre/post");
                 }
             }
-            component.getDependencies().forEach(dependency -> {
+            for (DeployAppSchema.Dependency dependency : component.getDependencies()) {
                 String source = componentMapping.get(dependency.getComponent());
                 DeployAppSchema.SpecComponent specSource = specComponentMapping.get(dependency.getComponent());
                 if (source == null || specSource == null) {
@@ -267,18 +267,18 @@ public class ProcessingDeployAppStateAction implements DeployAppStateAction, App
                         .build());
 
                 // 额外将所有的 source 的所有 runtime post 的 trait 连边到当前的 mirror 节点
-//                for (int i = 0; i < specSource.getTraits().size(); i++) {
-//                    DeployAppSchema.SpecComponentTrait trait = specSource.getTraits().get(i);
-//                    if (TraitRuntimeConstant.RUNTIME_POST.equals(trait.getRuntime())) {
-//                        String traitId = trait.getUniqueId(componentRevision);
-//                        edges.add(DagCreateEdge.builder()
-//                                .sourceNodeId(traitId)
-//                                .targetNodeId(mirrorComponentId)
-//                                .expression(condition)
-//                                .build());
-//                    }
-//                }
-            });
+                for (int i = 0; i < specSource.getTraits().size(); i++) {
+                    DeployAppSchema.SpecComponentTrait trait = specSource.getTraits().get(i);
+                    if (TraitRuntimeConstant.RUNTIME_POST.equals(trait.getRuntime())) {
+                        String traitId = trait.getUniqueId(DeployAppRevisionName.valueOf(specSource.getRevisionName()));
+                        edges.add(DagCreateEdge.builder()
+                                .sourceNodeId(traitId)
+                                .targetNodeId(mirrorComponentId)
+                                .expression(condition)
+                                .build());
+                    }
+                }
+            }
         });
         String dagName = String.format("%d_%s_%s_%d", deployAppId, configuration.getMetadata().getName(),
                 configuration.getMetadata().getAnnotations().getAppPackageVersion(), System.currentTimeMillis());

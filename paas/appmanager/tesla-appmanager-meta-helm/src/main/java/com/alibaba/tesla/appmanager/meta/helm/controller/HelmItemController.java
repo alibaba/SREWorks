@@ -10,6 +10,7 @@ import com.alibaba.tesla.appmanager.domain.req.helm.HelmMetaUpdateReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,7 +57,7 @@ public class HelmItemController extends AppManagerBaseController {
     @GetMapping
     public TeslaBaseResult list(
             @PathVariable String appId,
-            @ModelAttribute HelmMetaQueryReq request,
+            @ParameterObject @ModelAttribute HelmMetaQueryReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
@@ -85,6 +86,7 @@ public class HelmItemController extends AppManagerBaseController {
             @PathVariable String appId,
             @RequestBody HelmMetaCreateReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
+        request.checkParameters();
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();
@@ -109,6 +111,7 @@ public class HelmItemController extends AppManagerBaseController {
             @PathVariable Long id,
             @RequestBody HelmMetaUpdateReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) {
+        request.checkParameters();
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();

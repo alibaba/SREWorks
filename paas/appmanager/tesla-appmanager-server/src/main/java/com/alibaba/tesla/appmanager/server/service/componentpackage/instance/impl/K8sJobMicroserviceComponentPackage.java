@@ -353,12 +353,13 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
 
         // 渲染 dockerfileTpl
         // 1. 下载 repo
-        RetryUtil.getRetryClient().execute(retryContext -> gitClone(VOLUME_PATH + relativePath + containerName, container));
+        String gitRepPath = VOLUME_PATH + relativePath + containerName + "/git";
+        RetryUtil.getRetryClient().execute(retryContext -> gitClone(gitRepPath, container));
 
         Object repoPathPara = JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "repoPath"));
         String repoPath = repoPathPara == null ? null : repoPathPara.toString();
         String containerPath = VOLUME_PATH + relativePath + containerName + "/";
-        String buildAbsolutePath = containerPath;
+        String buildAbsolutePath = gitRepPath + "/";
         if (!StringUtils.isEmpty(repoPath)) {
             if (repoPath.endsWith("/")) {
                 buildAbsolutePath = buildAbsolutePath + repoPath;
@@ -392,7 +393,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
         String compressTarName = dockerFileName + ".tar.gz";
 //        String tarCommand = String.format("cd %s; tar zcvf %s -C %s .[!.]* *", buildAbsolutePath, buildAbsolutePath + compressTarName, buildAbsolutePath);
         String[] createCompressTar = new String[]{"touch", containerPath + compressTarName};
-        CommandUtil.runLocalCommand(CommandUtil.getBashCommand(createCompressTar), Paths.get(buildAbsolutePath).toFile());
+        CommandUtil.runLocalCommand(CommandUtil.getBashCommand(createCompressTar), Paths.get(containerPath).toFile());
         String[] tarCommand = new String[]{"tar", "zcvf", containerPath + compressTarName, "."};
         CommandUtil.runLocalCommand(CommandUtil.getBashCommand(tarCommand), Paths.get(buildAbsolutePath).toFile());
 

@@ -25,6 +25,7 @@ import com.google.common.base.Enums;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -71,6 +72,7 @@ public class AppPackageTaskController extends AppManagerBaseController {
             @RequestBody AppPackageTaskCreateReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
+        request.checkParameters();
         if (CollectionUtils.isEmpty(request.getTags())) {
             return buildClientErrorResult("tags is required");
         }
@@ -112,7 +114,8 @@ public class AppPackageTaskController extends AppManagerBaseController {
      */
     @GetMapping("/app-package-tasks")
     @ResponseBody
-    public TeslaBaseResult listCompatible(@ModelAttribute AppPackageTaskQueryReq request, OAuth2Authentication auth) {
+    public TeslaBaseResult listCompatible(
+            @ParameterObject @ModelAttribute AppPackageTaskQueryReq request, OAuth2Authentication auth) {
         return buildSucceedResult(appPackageTaskProvider.list(
                 AppPackageTaskQueryReq.builder().appId(request.getAppId()).build(),
                 getOperator(auth), true));
@@ -149,6 +152,7 @@ public class AppPackageTaskController extends AppManagerBaseController {
             @RequestBody AppPackageTaskCreateReq request,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
+        request.checkParameters();
         if (CollectionUtils.isEmpty(request.getTags())) {
             return buildClientErrorResult("tags is required");
         }

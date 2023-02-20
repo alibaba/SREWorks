@@ -81,7 +81,7 @@ for builtIn in builtInList:
 resultImages = list(images)
 resultImages.sort()
 
-for image in images:
+for image in resultImages:
     #if not image.startswith(REGISTRY):
     #    continue
     print(image)

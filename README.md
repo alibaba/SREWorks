@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="paas/sw-frontend/src/publicMedia/sreworks-logo.png" width="120">
+  <img src="/paas/frontend/app/src/assets/icons/sreworks-logo.png" width="120">
 </p>
 <h1 align="center"> SREWorks </h1>
 <p align="center"><b> Cloud Native DataOps & AIOps Platform </b></p>
@@ -53,11 +53,11 @@ We'd love to accept your patches and contributions to SREWorks. Please refer to 
 
 - Wechat Chat Group (*Chinese*): Broker wechat to add you into the user group.
 
-<img src="/paas/sw-frontend/src/publicMedia/weixin.jpg" width="100" />
+<img src="/paas/frontend/app/src/assets/icons/weixin.jpg" width="100" />
 
 - Dingtalk Chat Group (*Chinese*): 35853026
 
-<img src="/paas/sw-frontend/src/publicMedia/ding.jpg" width="100" />
+<img src="/paas/frontend/app/src/assets/icons/ding.jpg" width="100" />
 
 ## Code of Conduct
 

@@ -9,6 +9,7 @@ import com.alibaba.tesla.appmanager.domain.req.namespace.NamespaceUpdateReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.validation.BindingResult;
@@ -34,7 +35,7 @@ public class NamespaceController extends AppManagerBaseController {
 
     @GetMapping
     public TeslaBaseResult queryByCondition(
-            @Valid @ModelAttribute NamespaceQueryReq request,
+            @ParameterObject @Valid @ModelAttribute NamespaceQueryReq request,
             BindingResult validator, HttpServletRequest r, OAuth2Authentication auth) {
         if (validator.hasErrors()) {
             return buildValidationResult(validator);

@@ -158,10 +158,8 @@ public class PvcTrait extends BaseTrait {
                     .getJSONObject("template")
                     .getJSONObject("spec");
             containers = advancedStatefulSetSpec.getJSONArray(type + "s");
-        } else if ("StatefulSet".equals(workloadSpec.getString("kind"))) {
-            containers = workloadSpec.getJSONArray(type + "s");
         } else {
-            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "not supported");
+            containers = workloadSpec.getJSONArray(type + "s");
         }
         for (int i = 0; i < containers.size(); i++) {
             JSONObject container = containers.getJSONObject(i);
@@ -194,7 +192,20 @@ public class PvcTrait extends BaseTrait {
             advancedStatefulSet.putIfAbsent("volumeClaimTemplates", new JSONArray());
             volumeClaimTemplates = advancedStatefulSet.getJSONArray("volumeClaimTemplates");
         } else {
-            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "not supported");
+            workloadSpec.putIfAbsent("volumeClaimTemplates", new JSONArray());
+            volumeClaimTemplates = workloadSpec.getJSONArray("volumeClaimTemplates");
+        }
+
+        // 针对专有云新增部分公共 labels
+        String cloudType = System.getenv("CLOUD_TYPE");
+        if ("ApsaraStack".equals(cloudType) || "ApsaraStackAgility".equals(cloudType)) {
+            updateData.getJSONObject("metadata").putIfAbsent("labels", new JSONObject());
+            updateData.getJSONObject("metadata").getJSONObject("labels")
+                    .put("metadata.alibabacloud.com/productdeploy", "abm");
+            updateData.getJSONObject("metadata").getJSONObject("labels")
+                    .put("metadata.alibabacloud.com/appname", "apsara-bigdata-manager");
+            updateData.getJSONObject("metadata").getJSONObject("labels")
+                    .put("metadata.alibabacloud.com/appinstance", System.getenv("APP_INSTANCE"));
         }
         volumeClaimTemplates.add(updateData);
     }
@@ -222,7 +233,8 @@ public class PvcTrait extends BaseTrait {
             advancedStatefulSetSpec.putIfAbsent("volumes", new JSONArray());
             volumes = advancedStatefulSetSpec.getJSONArray("volumes");
         } else {
-            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "not supported");
+            workloadSpec.putIfAbsent("volumes", new JSONArray());
+            volumes = workloadSpec.getJSONArray("volumes");
         }
         volumes.add(volume);
     }

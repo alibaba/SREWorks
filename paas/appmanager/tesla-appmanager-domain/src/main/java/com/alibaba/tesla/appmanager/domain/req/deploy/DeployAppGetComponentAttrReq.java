@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * 查询指定 ComponentPackage 的部署单运行状态
+ * 查询指定 ComponentPackage 的部署单的属性
  *
  * @author yaoxing.gyx@alibaba-inc.com
  */

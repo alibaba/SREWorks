@@ -3,6 +3,7 @@ package com.alibaba.tesla.appmanager.common.util;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.zeroturnaround.exec.ProcessExecutor;
 import org.zeroturnaround.exec.ProcessResult;
 import org.zeroturnaround.exec.stop.DestroyProcessStopper;
@@ -70,7 +71,8 @@ public class CommandUtil {
             return output;
         } catch (IOException | InterruptedException | TimeoutException e) {
             throw new AppException(AppErrorCode.COMMAND_ERROR,
-                    String.format("action=runLocalCommand|command=%s", String.join(" ", commands)), e);
+                    String.format("action=runLocalCommand|command=%s|exception=%s",
+                            String.join(" ", commands), ExceptionUtils.getStackTrace(e)));
         }
     }
 

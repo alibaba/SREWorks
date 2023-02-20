@@ -2,12 +2,14 @@ package com.alibaba.tesla.appmanager.domain.req.apppackage;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
+import com.alibaba.tesla.appmanager.common.util.SecurityUtil;
 import com.alibaba.tesla.appmanager.domain.dto.ParamBinderDTO;
 import com.alibaba.tesla.appmanager.domain.dto.TraitBinderDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -79,4 +81,21 @@ public class ComponentBinder {
      * Options
      */
     private JSONObject options = new JSONObject();
+
+    /**
+     * 检查参数合法性
+     */
+    public void checkParameters() {
+        SecurityUtil.checkInput(componentType);
+        SecurityUtil.checkInput(componentName);
+        SecurityUtil.checkInput(category);
+        SecurityUtil.checkInput(version);
+        SecurityUtil.checkInput(branch);
+        if (!CollectionUtils.isEmpty(paramBinderList)) {
+            paramBinderList.forEach(item -> item.checkParameters());
+        }
+        if (!CollectionUtils.isEmpty(traitBinderList)) {
+            traitBinderList.forEach(item -> item.checkParameters());
+        }
+    }
 }

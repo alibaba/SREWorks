@@ -33,9 +33,10 @@ public interface WorkflowTaskProvider {
     /**
      * 列出当前所有正在运行中的远程 workflow task
      *
+     * @param clientHost 主机
      * @return List or WorkflowTaskDTO
      */
-    List<WorkflowTaskDTO> listRunningRemoteTask();
+    List<WorkflowTaskDTO> listRunningRemoteTask(String clientHost);
 
     /**
      * 更新指定的 Workflow 任务实例

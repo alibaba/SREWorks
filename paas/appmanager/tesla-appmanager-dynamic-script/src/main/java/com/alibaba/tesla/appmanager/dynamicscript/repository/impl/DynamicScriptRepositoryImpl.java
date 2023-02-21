@@ -78,6 +78,7 @@ public class DynamicScriptRepositoryImpl implements DynamicScriptRepository {
         if (StringUtils.isNotBlank(condition.getName())) {
             criteria.andNameEqualTo(condition.getName());
         }
+        criteria.andEnvIdEqualTo(condition.getEnvId());
         return example;
     }
 

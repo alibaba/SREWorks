@@ -124,4 +124,7 @@ public class DefaultConstant {
      * DB 尝试重试最大次数
      */
     public static final Integer DB_RETRY_MAX_TIMES = 100;
+
+
+    public static final String ENV_ABM_CLUSTER = "ABM_CLUSTER";
 }

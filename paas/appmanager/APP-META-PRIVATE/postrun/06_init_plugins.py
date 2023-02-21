@@ -100,16 +100,20 @@ def apply_all_plugins():
         logger.error("cannot find appmanager client auth info, skip")
         r = requests
 
-    # 加载所有的components
+    # 加载所有的component
     apply_plugins(r, "components")
     # 加载所有的trait
     apply_plugins(r, "traits")
 
 
 def apply_plugins(r, plugins_type):
-    plugin_type_path = PLUGINS_PACKAGE_PATH + plugins_type
-    plugin_type_dir = os.listdir(plugin_type_path)
-    # 遍历当前类型所有plugins
+    plugin_type_path = os.path.join(PLUGINS_PACKAGE_PATH, plugins_type)
+    try:
+        plugin_type_dir = os.listdir(plugin_type_path)
+    except Exception as e:
+        logger.warning("plugin_type_dir:%s is non existent: error: %s" % (plugin_type_path, e.__str__()))
+        return
+    # 遍历当前类型所有的plugin
     for plugin in plugin_type_dir:
         plugin_path = os.path.join(plugin_type_path, plugin)
         plugin_dir = os.listdir(plugin_path)

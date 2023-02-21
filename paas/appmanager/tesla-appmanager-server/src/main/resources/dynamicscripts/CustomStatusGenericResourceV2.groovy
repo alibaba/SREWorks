@@ -11,6 +11,7 @@ import com.alibaba.tesla.appmanager.domain.req.rtcomponentinstance.RtComponentIn
 import com.alibaba.tesla.appmanager.domain.res.rtcomponentinstance.RtComponentInstanceGetStatusRes
 import com.alibaba.tesla.appmanager.server.dynamicscript.handler.ComponentCustomStatusHandler
 import io.fabric8.kubernetes.client.DefaultKubernetesClient
+import io.fabric8.kubernetes.client.dsl.base.CustomResourceDefinitionContext
 import org.apache.commons.lang.exception.ExceptionUtils
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
@@ -38,7 +39,18 @@ class CustomStatusGenericResourceV2 implements ComponentCustomStatusHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 3
+    public static final Integer REVISION = 6
+
+    /**
+     * OpenKruise DaemonSet
+     */
+    private static final CustomResourceDefinitionContext OPENKRUISE_DAEMONSET = new CustomResourceDefinitionContext.Builder()
+            .withName("daemonsets.apps.kruise.io")
+            .withGroup("apps.kruise.io")
+            .withVersion("v1alpha1")
+            .withPlural("daemonsets")
+            .withScope("Namespaced")
+            .build()
 
     @Override
     RtComponentInstanceGetStatusRes getStatus(
@@ -93,6 +105,13 @@ class CustomStatusGenericResourceV2 implements ComponentCustomStatusHandler {
                     break
                 case "daemonsets":
                     def res = checkDaemonSet(request, client, options, namespace,
+                            includes, excludes, checkResult, resourceOptions)
+                    if (res != null) {
+                        return res
+                    }
+                    break
+                case "daemonsets.apps.kruise.io":
+                    def res = checkOpenKruiseDaemonSet(request, client, options, namespace,
                             includes, excludes, checkResult, resourceOptions)
                     if (res != null) {
                         return res
@@ -234,19 +253,16 @@ class CustomStatusGenericResourceV2 implements ComponentCustomStatusHandler {
             // 判定当前是否进入终态
             def replicas = deploy.getStatus().getReplicas()
             def readyReplicas = deploy.getStatus().getReadyReplicas()
+            def updateReplicas = deploy.getStatus().getUpdatedReplicas()
             def statusStr = JSONObject.toJSONString(deploy.getStatus())
-            if (readyReplicas == replicas) {
-                for (def condition : deploy.getStatus().getConditions()) {
-                    if (condition.getType() == "Available" && condition.getStatus() == "True") {
-                        log.info("the deployment {} is in final state, skip|status={}|{}",
-                                deployName, statusStr, logSuffix)
-                        checkResult.putIfAbsent(namespace, new JSONObject())
-                        checkResult.getJSONObject(namespace).putIfAbsent(deployName, new JSONObject())
-                        checkResult.getJSONObject(namespace).getJSONObject(deployName)
-                                .put("status", JSONObject.parseObject(statusStr))
-                        continue
-                    }
-                }
+            if (readyReplicas == replicas && updateReplicas == replicas) {
+                log.info("the deployment {} is in final state, skipd|status={}|{}",
+                        deployName, statusStr, logSuffix)
+                checkResult.putIfAbsent(namespace, new JSONObject())
+                checkResult.getJSONObject(namespace).putIfAbsent(deployName, new JSONObject())
+                checkResult.getJSONObject(namespace).getJSONObject(deployName)
+                        .put("status", JSONObject.parseObject(statusStr))
+                continue
             }
 
             // 返回未到终态信息
@@ -340,6 +356,149 @@ class CustomStatusGenericResourceV2 implements ComponentCustomStatusHandler {
             int desiredNumberScheduled = daemonset.getStatus().getDesiredNumberScheduled()
             int currentNumberScheduled = daemonset.getStatus().getCurrentNumberScheduled()
             def numberReady = daemonset.getStatus().getNumberReady()
+            if (desiredNumberScheduled == currentNumberScheduled && currentNumberScheduled == numberReady) {
+                log.info("the daemonset {} is in final state, skip|status={}|{}",
+                        daemonsetName, statusStr, logSuffix)
+                checkResult.putIfAbsent(namespace, new JSONObject())
+                checkResult.getJSONObject(namespace).putIfAbsent(daemonsetName, new JSONObject())
+                checkResult.getJSONObject(namespace).getJSONObject(daemonsetName)
+                        .put("status", JSONObject.parseObject(statusStr))
+                continue
+            }
+
+            // 如果满足最小可用数量，也可以认为终态
+            if (unavailableNumber != -1 && desiredNumberScheduled - numberReady <= unavailableNumber) {
+                log.info("the daemonset {} is in final state (unavailableNumber), skip|status={}|{}",
+                        daemonsetName, statusStr, logSuffix)
+                checkResult.putIfAbsent(namespace, new JSONObject())
+                checkResult.getJSONObject(namespace).putIfAbsent(daemonsetName, new JSONObject())
+                checkResult.getJSONObject(namespace).getJSONObject(daemonsetName)
+                        .put("status", JSONObject.parseObject(statusStr))
+                checkResult.getJSONObject(namespace).getJSONObject(daemonsetName)
+                        .put("userSetUnavailableNumber", unavailableNumber)
+                continue
+            }
+
+            // 如果满足最小可用百分比，也可以认为终态
+            if (unavailablePercentage != -1) {
+                def percentage = (double) (desiredNumberScheduled - numberReady) / desiredNumberScheduled * 100
+                if (percentage <= (double) unavailablePercentage) {
+                    log.info("the daemonset {} is in final state (unavailablePercentage), skip|status={}|{}",
+                            daemonsetName, statusStr, logSuffix)
+                    checkResult.putIfAbsent(namespace, new JSONObject())
+                    checkResult.getJSONObject(namespace).putIfAbsent(daemonsetName, new JSONObject())
+                    checkResult.getJSONObject(namespace).getJSONObject(daemonsetName)
+                            .put("status", JSONObject.parseObject(statusStr))
+                    checkResult.getJSONObject(namespace).getJSONObject(daemonsetName)
+                            .put("userSetUnavailablePercentage", unavailablePercentage)
+                    continue
+                }
+            }
+
+            // 返回未到终态信息
+            return RtComponentInstanceGetStatusRes.builder()
+                    .status(ComponentInstanceStatusEnum.WARNING.toString())
+                    .conditions(ConditionUtil.singleCondition("CheckDaemonSetStatus", "False",
+                            String.format("daemonset not in final state|namespace=%s|" +
+                                    "name=%s|status=%s|%s", namespace, daemonsetName, statusStr, logSuffix), ""))
+                    .build()
+        }
+
+        // 如果 includes 包含内容，且没有全部产出 daemonset，那么仍然认为不到终态
+        for (def includeItem : includes) {
+            if (!includeUsedSet.contains(includeItem)) {
+                return RtComponentInstanceGetStatusRes.builder()
+                        .status(ComponentInstanceStatusEnum.WARNING.toString())
+                        .conditions(ConditionUtil.singleCondition("CheckDaemonSetExists", "False",
+                                String.format("daemonset not exists|namespace=%s|" +
+                                        "name=%s|%s", namespace, includeItem, logSuffix), ""))
+                        .build()
+            }
+        }
+        return null
+    }
+
+    /**
+     * 检测 DaemonSet 的状态
+     * @return 如果为 null 说明检测通过；否则说明检测不通过，需要直接返回该状态
+     */
+    private RtComponentInstanceGetStatusRes checkOpenKruiseDaemonSet(
+            RtComponentInstanceGetStatusReq request, DefaultKubernetesClient client, JSONObject options,
+            String namespace, List<String> includes, List<String> excludes, JSONObject checkResult,
+            JSONObject resourceOptions) {
+        def logSuffix = String.format("clusterId=%s|namespaceId=%s|stageId=%s|appId=%s|componentType=%s|" +
+                "componentName=%s|version=%s", request.getClusterId(), request.getNamespaceId(), request.getStageId(),
+                request.getAppId(), request.getComponentType(), request.getComponentName(), request.getVersion())
+
+        // 初始化不可用参数配置 (-1 代表不使用该参数)
+        def unavailablePercentage = -1
+        def unavailableNumber = -1
+        if (resourceOptions == null) {
+            unavailableNumber = 0
+        } else {
+            if (resourceOptions.getInteger("unavailablePercentage") != null) {
+                unavailablePercentage = resourceOptions.getInteger("unavailablePercentage")
+                if (unavailablePercentage < 0 || unavailablePercentage > 100) {
+                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                            "invalid unavailablePercentage in daemonsets watch config")
+                }
+            }
+            if (resourceOptions.getInteger("unavailableNumber") != null) {
+                unavailableNumber = resourceOptions.getInteger("unavailableNumber")
+                if (unavailableNumber < 0) {
+                    throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                            "invalid unavailableNumber in daemonsets watch config")
+                }
+            }
+        }
+
+        // 获取集群中的 daemonsets
+        def includeUsedSet = new HashSet()
+        def daemonsets
+        try {
+            daemonsets = client.customResource(OPENKRUISE_DAEMONSET).inNamespace(namespace).list()
+        } catch (Exception e) {
+            return RtComponentInstanceGetStatusRes.builder()
+                    .status(ComponentInstanceStatusEnum.WARNING.toString())
+                    .conditions(ConditionUtil.singleCondition(
+                            "CheckDaemonSetStatus", "False",
+                            String.format("list daemonset(kruise) in namespace failed|namespace=%s|%s|exception=%s",
+                                    namespace, logSuffix, ExceptionUtils.getStackTrace(e)),
+                            ""))
+                    .build()
+        }
+
+        // 对每一个 daemonsets 进行检测
+        def items = daemonsets.get("items") as ArrayList
+        for (def item : items) {
+            def daemonset = JSONObject.parseObject(JSONObject.toJSONString(item))
+            def metadata = daemonset.getJSONObject("metadata")
+            if (metadata == null || StringUtils.isEmpty(metadata.getString("name"))) {
+                return RtComponentInstanceGetStatusRes.builder()
+                        .status(ComponentInstanceStatusEnum.WARNING.toString())
+                        .conditions(ConditionUtil.singleCondition(
+                                "CheckDaemonSetMetadata", "False",
+                                String.format("get daemonset(kruise) metadata in namespace failed|" +
+                                        "namespace=%s|%s|item=%s", namespace, logSuffix, daemonset.toJSONString()),
+                                ""))
+                        .build()
+            }
+            def daemonsetName = metadata.getString("name")
+            if (excludes.contains(daemonsetName)) {
+                log.info("the daemonset {} is in the exclusion configuration, skip|{}", daemonsetName, logSuffix)
+                continue
+            }
+            if (includes.size() > 0 && !includes.contains(daemonsetName)) {
+                log.info("the daemonset {} is not in the include configuration, skip|{}", daemonsetName, logSuffix)
+                continue
+            }
+            includeUsedSet.add(daemonsetName)
+
+            // 判定当前是否进入终态
+            def statusStr = JSONObject.toJSONString(daemonset.getJSONObject("status"))
+            int desiredNumberScheduled = daemonset.getJSONObject("status").getInteger("desiredNumberScheduled")
+            int currentNumberScheduled = daemonset.getJSONObject("status").getInteger("currentNumberScheduled")
+            def numberReady = daemonset.getJSONObject("status").getInteger("numberReady")
             if (desiredNumberScheduled == currentNumberScheduled && currentNumberScheduled == numberReady) {
                 log.info("the daemonset {} is in final state, skip|status={}|{}",
                         daemonsetName, statusStr, logSuffix)

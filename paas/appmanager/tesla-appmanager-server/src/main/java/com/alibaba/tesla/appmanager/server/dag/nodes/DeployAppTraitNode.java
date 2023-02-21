@@ -133,6 +133,8 @@ public class DeployAppTraitNode extends AbstractLocalNodeBase {
                 ownerReference = "";
             }
 
+            Map<DeployComponentAttrTypeEnum, String> attrMap = new HashMap<>();
+            attrMap.put(DeployComponentAttrTypeEnum.TRAIT_SCHEMA_ORIGINAL, SchemaUtil.toYamlMapStr(traitSpec));
             if (traitHandler != null) {
                 log.info("prepare to run trait {}|deployAppId={}|nodeId={}|dagInstId={}|spec={}",
                         traitName, deployAppId, nodeId, dagInstId, JSONObject.toJSONString(traitSpec));
@@ -180,11 +182,11 @@ public class DeployAppTraitNode extends AbstractLocalNodeBase {
                     .deployStatus(DeployComponentStateEnum.SUCCESS.toString())
                     .deployCreator(globalVariable.getString(AppFlowVariableKey.CREATOR))
                     .build();
-            Map<DeployComponentAttrTypeEnum, String> attrMap = new HashMap<>();
             attrMap.put(DeployComponentAttrTypeEnum.TRAIT_SCHEMA, SchemaUtil.toYamlMapStr(traitSpec));
             JSONArray statusAttr = ConditionUtil.singleCondition("RunTraitSuccess", "True",
                     String.format("cost %s", costTime), "");
-            statusAttr.addAll(ConditionUtil.singleCondition("GetTraitSpec", "True", traitSpec.toJSONString(), ""));
+            statusAttr.addAll(ConditionUtil.singleCondition("GetTraitSpec", "True",
+                    traitSpec != null ? traitSpec.toJSONString() : "", ""));
             attrMap.put(DeployComponentAttrTypeEnum.STATUS, statusAttr.toJSONString());
             if (traitComponentWorkload == null) {
                 attrMap.put(DeployComponentAttrTypeEnum.TRAIT_COMPONENT_WORKLOAD, "");

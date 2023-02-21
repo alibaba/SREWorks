@@ -1,7 +1,9 @@
 package com.alibaba.tesla.appmanager.dynamicscript.service.impl;
 
+import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.common.util.EnvUtil;
 import com.alibaba.tesla.appmanager.dynamicscript.repository.DynamicScriptHistoryRepository;
 import com.alibaba.tesla.appmanager.dynamicscript.repository.DynamicScriptRepository;
 import com.alibaba.tesla.appmanager.dynamicscript.repository.condition.DynamicScriptQueryCondition;
@@ -39,6 +41,7 @@ public class DynamicScriptServiceImpl implements DynamicScriptService {
      */
     @Override
     public DynamicScriptDO get(DynamicScriptQueryCondition condition) {
+        condition.setEnvId(EnvUtil.currentClusterEnvId());
         return dynamicScriptRepository.getByCondition(condition);
     }
 
@@ -50,6 +53,7 @@ public class DynamicScriptServiceImpl implements DynamicScriptService {
      */
     @Override
     public List<DynamicScriptDO> list(DynamicScriptQueryCondition condition) {
+        condition.setEnvId(EnvUtil.currentClusterEnvId());
         return dynamicScriptRepository.selectByCondition(condition);
     }
 
@@ -61,6 +65,7 @@ public class DynamicScriptServiceImpl implements DynamicScriptService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void removeScript(DynamicScriptQueryCondition condition) {
+        condition.setEnvId(EnvUtil.currentClusterEnvId());
         if (StringUtils.isAnyEmpty(condition.getKind(), condition.getName())) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "must provide kind/name parameters");
         }
@@ -85,6 +90,7 @@ public class DynamicScriptServiceImpl implements DynamicScriptService {
     public void initScript(DynamicScriptQueryCondition condition, Integer revision, String code) {
         String kind = condition.getKind();
         String name = condition.getName();
+        String envId = EnvUtil.currentClusterEnvId();
         DynamicScriptDO script = get(condition);
         if (script != null && script.getCurrentRevision() >= revision) {
             log.info("no need to update dynamic script|kind={}|name={}|revision={}", kind, name, revision);
@@ -93,6 +99,7 @@ public class DynamicScriptServiceImpl implements DynamicScriptService {
             dynamicScriptRepository.insert(DynamicScriptDO.builder()
                     .kind(kind)
                     .name(name)
+                    .envId(envId)
                     .currentRevision(revision)
                     .code(code)
                     .build());
@@ -108,6 +115,7 @@ public class DynamicScriptServiceImpl implements DynamicScriptService {
         dynamicScriptHistoryRepository.insert(DynamicScriptHistoryDO.builder()
                 .kind(kind)
                 .name(name)
+                .envId(envId)
                 .revision(revision)
                 .code(code)
                 .build());

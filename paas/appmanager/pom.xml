@@ -7,7 +7,7 @@
     <groupId>com.alibaba.tesla</groupId>
     <artifactId>tesla-appmanager</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.7-SNAPSHOT</version>
+    <version>1.0.8-SNAPSHOT</version>
     <modules>
         <module>tesla-appmanager-api</module>
         <module>tesla-appmanager-common</module>
@@ -429,6 +429,13 @@
                 <groupId>com.zaxxer</groupId>
                 <artifactId>HikariCP</artifactId>
                 <version>${hikaricp.version}</version>
+            </dependency>
+
+            <!-- rms -->
+            <dependency>
+                <groupId>com.aliyun.inner</groupId>
+                <artifactId>tesla_k8s20221228</artifactId>
+                <version>0.0.7</version>
             </dependency>
 
             <!-- zt-exec -->

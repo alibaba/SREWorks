@@ -38,7 +38,7 @@ class TraitServiceAccountPatch implements TraitHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 0
+    public static final Integer REVISION = 1
 
     @Autowired
     private KubernetesClientFactory kubernetesClientFactory
@@ -48,7 +48,7 @@ class TraitServiceAccountPatch implements TraitHandler {
      */
     private static final CustomResourceDefinitionContext CRD_CONTEXT = new CustomResourceDefinitionContext.Builder()
             .withName("serviceaccounts")
-            .withGroup("core")
+            .withGroup("")
             .withVersion("v1")
             .withPlural("serviceaccounts")
             .withScope("Namespaced")

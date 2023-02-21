@@ -27,4 +27,9 @@ public class DynamicScriptQueryCondition extends BaseCondition {
      * 标识名称
      */
     private String name;
+
+    /**
+     * 环境 ID
+     */
+    private String envId;
 }

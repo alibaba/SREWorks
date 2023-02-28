@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Tag } from 'antd'
+import { Tag, Tooltip, Button, Modal } from 'antd'
 import _ from 'lodash'
 
 function AntdTags(props) {
@@ -16,7 +16,15 @@ function AntdTags(props) {
     '#388E8E',
     '#1874CD',
   ]
-  let { value, paramsFormat = {}, isRandomColor = false, color, autoTheme = false } = props
+  let {
+    value,
+    paramsFormat = {},
+    isRandomColor = false,
+    color,
+    autoTheme = false,
+    tooltipConfig = false,
+    modalConfig,
+  } = props
   if (_.isString(value)) {
     tags = value.split(',')
   } else if (_.isArray(value)) {
@@ -32,6 +40,61 @@ function AntdTags(props) {
   }
   if (autoTheme) {
     color = colors[Math.floor(Math.random() * colors.length)]
+  }
+  if (tooltipConfig) {
+    return (
+      <span>
+        {tags.map((item, r) => (
+          <Tooltip title={item.text || item}>
+            <Tag
+              style={{
+                textOverflow: 'ellipsis',
+                maxWidth: tooltipConfig.maxLength,
+                overflow: 'hidden',
+              }}
+              color={isRandomColor ? colors[r % 10] : color || item.color}
+              key={r}
+            >
+              {item.text || item}
+            </Tag>
+          </Tooltip>
+        ))}
+      </span>
+    )
+  }
+  if (modalConfig) {
+    return (
+      <Button
+        type="link"
+        onClick={() =>
+          Modal.info({
+            title: '',
+            icon: '',
+            bodyStyle: {
+              height: 420,
+              overflowX: 'scroll',
+              overflowY: 'scroll',
+            },
+            width: 720,
+            content: (
+              <div>
+                {tags.map((item, r) => (
+                  <Tag
+                    style={{ marginTop: 10 }}
+                    color={isRandomColor ? colors[r % 10] : color || item.color}
+                    key={r}
+                  >
+                    {item.text || item}
+                  </Tag>
+                ))}
+              </div>
+            ),
+          })
+        }
+      >
+        {tags.length}
+      </Button>
+    )
   }
   return (
     <span>

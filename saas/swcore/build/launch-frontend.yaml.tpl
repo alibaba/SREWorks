@@ -64,14 +64,10 @@ spec:
     value: '{{ env.APPMANAGER_REDIS_HOST }}'
   - name: REDIS_PORT
     value: '{{ env.APPMANAGER_REDIS_PORT }}'
-  - name: REDIS_PASSWORD
-    value: '{{ env.APPMANAGER_REDIS_PASSWORD }}'
   - name: REDIS_HOST
     value: '{{ env.APPMANAGER_REDIS_HOST }}'
   - name: REDIS_PORT
     value: '{{ env.APPMANAGER_REDIS_PORT }}'
-  - name: REDIS_PASSWORD
-    value: '{{ env.APPMANAGER_REDIS_PASSWORD }}'
   policies: []
   workflow:
     steps: []

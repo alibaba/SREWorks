@@ -52,7 +52,7 @@ class HelmV1Beta1ComponentBuildHandler implements BuildComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 60
+    public static final Integer REVISION = 62
 
     private static final String KEY_HELM_CHART = "helm_chart"
 
@@ -119,12 +119,13 @@ class HelmV1Beta1ComponentBuildHandler implements BuildComponentHandler {
 
             Path tmpDir = Files.createTempDirectory("helm_download_tmp_");
 
-            String cmd = String.format("/app/helm pull --repo %s %s --version %s --untar -d %s",
-                    options.getString("chartUrl"),
-                    options.getString("chartName"),
-                    options.getString("chartVersion"),
-                    tmpDir.toFile().getAbsolutePath()
-            )
+            String[] cmd = new String[]{
+                    "/app/helm", "pull",
+                    "--repo", options.getString("chartUrl"), options.getString("chartName"),
+                    "--version", options.getString("chartVersion"),
+                    "--untar", "-d", tmpDir.toFile().getAbsolutePath()
+            }
+
             String ret = CommandUtil.runLocalCommand(cmd)
             logContent.append(String.format("helm pull|cmd=%s|ret=%s\n", cmd, ret))
 

@@ -4,7 +4,7 @@ metadata:
   name: helm.component.sreworks.io/v1beta1
   annotations:
     definition.oam.dev/description: "The package manager for Kubernetes"
-    definition.oam.dev/version: "1.5.5"
+    definition.oam.dev/version: "1.5.8"
     definition.oam.dev/tags: "a=b,c=d"
 spec:
   workload:

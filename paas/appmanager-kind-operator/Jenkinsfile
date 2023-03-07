@@ -1,0 +1,38 @@
+import groovy.json.JsonOutput
+
+def PROJECT_NAME = (env.JOB_NAME.tokenize('/') as String[])[0]
+def BRANCH = env.BRANCH_NAME
+def REPO = scm.getUserRemoteConfigs()[0].getUrl()
+
+pipeline {
+    options {
+        disableConcurrentBuilds()
+    }
+    parameters {
+        string(name: 'X86_IMAGE_PREFIX', defaultValue: 'reg.docker.alibaba-inc.com/sw/paas-appmanager-operator', description: '')
+    }
+    environment {
+        VERSION = "${env.BUILD_ID}-${env.GIT_COMMIT}"
+    }
+    triggers {
+        pollSCM('* * * * *')
+    }
+    agent { label 'JP' }
+    stages {
+        stage("Clone Repo") {
+            steps {
+                git credentialsId: "$GIT_CREDENTIAL",
+                    url: REPO,
+                    branch: BRANCH
+            }
+        }
+        stage("X86 - Build & Push Images") {
+            steps {
+                script {
+                    sh "bash -c 'IMG=${params.X86_IMAGE_PREFIX}:$BRANCH make docker-build'"
+                    sh "bash -c 'docker push ${params.X86_IMAGE_PREFIX}:$BRANCH'"
+                }
+            }
+        }
+    }
+}

@@ -58,20 +58,20 @@ func (r *MicroserviceReconciler) constructForStatefulSet(raw *appmanagerabmiov1.
 
 func (r *MicroserviceReconciler) ReconcileMicroserviceStatefulSet(
 	ctx context.Context, req ctrl.Request, microservice *appmanagerabmiov1.Microservice,
-	targetRevision string) error {
+	targetRevision string) (bool, error) {
 
 	log := r.Log.WithValues("microservice", req.NamespacedName)
 
 	var statefulSetList appsv1.StatefulSetList
 	if err := helper.ListChildren(r, ctx, &statefulSetList, &req, helper.StatefulsetOwnerKey); err != nil {
 		log.Error(err, "list children failed")
-		return nil
+		return false, err
 	}
 
 	// 当进行 kind 变换的时候，删除所有非当前类型的其他资源
 	if err := helper.RemoveUselessKindResource(r.Client, ctx, &req, helper.StatefulsetOwnerKey); err != nil {
 		log.Error(err, "remove useless kind resource failed")
-		return nil
+		return false, err
 	}
 
 	itemCount := len(statefulSetList.Items)
@@ -92,7 +92,7 @@ func (r *MicroserviceReconciler) ReconcileMicroserviceStatefulSet(
 		}
 	}
 	if deleted {
-		return nil
+		return true, nil
 	}
 
 	// 已经全部删除或不存在可用 StatefulSet 了
@@ -100,12 +100,12 @@ func (r *MicroserviceReconciler) ReconcileMicroserviceStatefulSet(
 		statefulset, err := r.constructForStatefulSet(microservice)
 		if err != nil {
 			log.Error(err, "unable to construct statefulset in kubernetes context")
-			return err
+			return false, err
 		}
 		if err := r.Create(ctx, statefulset); err != nil {
 			log.Error(err, "unable to create statefulset in kubernetes context",
 				"statefulset", statefulset)
-			return err
+			return false, err
 		}
 		log.V(1).Info("created statefulset for appmanager microservice",
 			"statefulset", statefulset)
@@ -113,33 +113,36 @@ func (r *MicroserviceReconciler) ReconcileMicroserviceStatefulSet(
 		// 更新状态
 		microservice.Status.Condition = appmanagerabmiov1.MicroserviceProgressing
 		if err := r.Status().Update(ctx, microservice); err != nil {
-			return err
+			return false, err
 		}
 		log.V(1).Info(fmt.Sprintf("update microservice %s status to %s",
 			microservice.Name, appmanagerabmiov1.MicroserviceProgressing))
-		return nil
+		return true, nil
 	}
 
 	// 计算状态
 	finalCondition := appmanagerabmiov1.MicroserviceUnknown
 	for i := range statefulSetList.Items {
 		current := &statefulSetList.Items[i]
-		if current.Status.ReadyReplicas < *microservice.Spec.Replicas {
+		if len(current.Status.CurrentRevision) == 0 ||
+			len(current.Status.UpdateRevision) == 0 ||
+			current.Status.CurrentRevision != current.Status.UpdateRevision ||
+			current.Status.ReadyReplicas != current.Status.Replicas {
 			finalCondition = appmanagerabmiov1.MicroserviceProgressing
-		} else if current.Status.ReadyReplicas == *microservice.Spec.Replicas {
-			finalCondition = appmanagerabmiov1.MicroserviceAvailable
 		} else {
-			log.Error(nil, "unknown readyReplicas number", "current", current)
+			finalCondition = appmanagerabmiov1.MicroserviceAvailable
 		}
 	}
 
 	// 更新当前 microservice 的状态
+	changed := false
 	if microservice.Status.Condition != finalCondition {
+		changed = true
 		microservice.Status.Condition = finalCondition
 		if err := r.Status().Update(ctx, microservice); err != nil {
-			return err
+			return false, err
 		}
 		log.V(1).Info(fmt.Sprintf("update microservice %s status to %s", microservice.Name, finalCondition))
 	}
-	return nil
+	return changed, nil
 }

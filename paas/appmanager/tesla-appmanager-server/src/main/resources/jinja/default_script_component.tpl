@@ -42,3 +42,4 @@ spec:
       scriptName: ""
       options: {}
       dataOutputs: {}
+      waitTimeoutSeconds: 0

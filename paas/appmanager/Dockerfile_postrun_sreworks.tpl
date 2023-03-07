@@ -1,4 +1,5 @@
 FROM sw-postrun:latest
+COPY ../../plugins /app/plugins
 COPY ./APP-META-PRIVATE/postrun /app/postrun
 ENV SREWORKS_INIT "enable"
 RUN sed -i 's/dl-cdn.alpinelinux.org/${APK_REPO_DOMAIN}/g' /etc/apk/repositories

@@ -1,0 +1,1 @@
+ALTER TABLE `tc_dag_inst_node_std` ADD COLUMN `init_global_params` LONGTEXT NULL AFTER `global_params`;

@@ -62,13 +62,18 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 49
+    public static final Integer REVISION = 52
 
     /**
      * Label Keys
      */
     private static final String LABEL_APP_ID = "labels.appmanager.oam.dev/appId"
     private static final String LABEL_COMPATIBLE_APP_ID = "appId"
+
+    /**
+     * 云类型
+     */
+    private final String ENV = System.getenv("CLOUD_TYPE")
 
     /**
      * CRD Context
@@ -212,7 +217,17 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
         def cluster = request.getClusterId()
         def namespace = request.getNamespaceId()
         def client = kubernetesClientFactory.get(cluster)
-        def result = client.customResource(CRD_CONTEXT).get(namespace, name)
+        def result = null
+        try {
+            result = client.customResource(CRD_CONTEXT).get(namespace, name)
+        } catch (Exception e) {
+            log.warn("exception when get microservice from kubernetes server|namespace={}|name={}|exception={}",
+                    namespace, name, ExceptionUtils.getStackTrace(e))
+            return GetDeployComponentHandlerRes.builder()
+                    .status(DeployComponentStateEnum.RUNNING)
+                    .message(JSONObject.toJSONString(result))
+                    .build()
+        }
         if (result == null) {
             return GetDeployComponentHandlerRes.builder()
                     .status(DeployComponentStateEnum.FAILURE)
@@ -249,7 +264,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
                         finalStatus = DeployComponentStateEnum.FAILURE
                     } else if (reconcileSuccessStatus != "True") {
                         log.error("microservice cr reconcile status is False|status={}", statusStr)
-                        finalStatus = DeployComponentStateEnum.FAILURE
+                        finalStatus = DeployComponentStateEnum.RUNNING
                     } else if (System.currentTimeMillis() -
                             (new DateTime(lastTransitionTime).toInstant().getMillis()) > 5 * 1000) {
                         finalStatus = DeployComponentStateEnum.SUCCESS
@@ -263,7 +278,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
                 }
                 break
             case "Failure":
-                finalStatus = DeployComponentStateEnum.FAILURE
+                finalStatus = DeployComponentStateEnum.RUNNING
                 break
             default:
                 finalStatus = DeployComponentStateEnum.RUNNING

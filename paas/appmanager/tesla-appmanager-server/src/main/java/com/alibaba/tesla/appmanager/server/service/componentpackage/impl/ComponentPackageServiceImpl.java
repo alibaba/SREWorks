@@ -195,6 +195,8 @@ public class ComponentPackageServiceImpl implements ComponentPackageService {
                                 "packageVersion={}", item.getAppId(), item.getComponentType(), item.getComponentName(),
                         packageVersion);
                 return item;
+            } else {
+                records = componentPackageRepository.selectByCondition(condition);
             }
         }
         if (!force) {

@@ -346,11 +346,17 @@ public class K8sMicroServiceMetaDtoConvert extends BaseDtoConvert<K8sMicroServic
      */
     private static List<ContainerObjectDTO> buildContainerObjectList(
             String microServiceId, RepoDTO repoDTO, List<InitContainerDTO> initContainerList) {
+        String repoBranch;
+        if (repoDTO.getRepoBranch() != null) {
+            repoBranch = repoDTO.getRepoBranch();
+        }else{
+            repoBranch = DefaultConstant.DEFAULT_REPO_BRANCH;
+        }
         List<ContainerObjectDTO> containerObjectDTOList = new ArrayList<>();
         ContainerObjectDTO container = ContainerObjectDTO.builder()
                 .containerType(ContainerTypeEnum.CONTAINER)
                 .appName(microServiceId)
-                .branch(DefaultConstant.DEFAULT_REPO_BRANCH)
+                .branch(repoBranch)
                 .name(microServiceId)
                 .repo(repoDTO.getRepo())
                 .repoDomain(repoDTO.getRepoDomain())
@@ -374,7 +380,7 @@ public class K8sMicroServiceMetaDtoConvert extends BaseDtoConvert<K8sMicroServic
                 ContainerObjectDTO initContainer = ContainerObjectDTO.builder()
                         .containerType(ContainerTypeEnum.INIT_CONTAINER)
                         .appName(microServiceId)
-                        .branch(DefaultConstant.DEFAULT_REPO_BRANCH)
+                        .branch(repoBranch)
                         .name(initContainerDTO.createContainerName())
                         .repo(repoDTO.getRepo())
                         .repoDomain(repoDTO.getRepoDomain())

@@ -87,7 +87,6 @@ def apply(r, plugin, plugin_version, version, plugin_zip_path):
     response_json = response.json()
     if response_json.get("code") != 200:
         message = "operate plugin to appmanager failed, url=%s, response=%s" % (url, response.text)
-        logger.error(message)
         raise Exception(message)
     else:
         logger.info("operate plugin to appmanager success, url=%s" % url)
@@ -129,8 +128,8 @@ def apply_plugins(r, plugins_type):
                 zipDir(plugin_version_path, plugin_zip_path)
                 apply(r, plugin, plugin_version, version, plugin_zip_path)
             except Exception as e:
-                logger.error("apply plugin to appmanager failed name=%s skip e=%s" % (plugin + plugin_version, e.__str__()))
-
+                message = "apply plugin to appmanager failed name=%s skip e=%s" % (plugin + plugin_version, e.__str__())
+                raise Exception(message)
 
 def zipDir(dirpath, outFullName):
     """

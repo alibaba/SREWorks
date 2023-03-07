@@ -1,3 +1,4 @@
-*.zip
-*.swp
-.idea/*
+*~
+*.iml
+.idea
+plugins-start-standalone/target

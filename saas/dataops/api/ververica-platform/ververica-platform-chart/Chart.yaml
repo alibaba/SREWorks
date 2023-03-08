@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 2.6.1
+appVersion: 2.8.2
 description: Ververica Platform is the enterprise stream processing platform by the
   original creators of Apache Flink®.
 home: https://www.ververica.com/
@@ -12,4 +12,4 @@ maintainers:
 - email: platform@ververica.com
   name: Ververica Support
 name: ververica-platform
-version: 5.2.1
+version: 5.4.2

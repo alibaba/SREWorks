@@ -41,14 +41,33 @@ Create a Secret entry for a blob storage credentials value if the provider secti
     {{- $value := index (index $config $provider) $key -}}
     {{- if $value -}}
       {{ if and (eq $provider "hdfs") (eq $key "keytab") }}
-        {{/*
+        {{- /*
         Because hdfs.keytab is binary content, we let users directly configure the content after Base64 encoding, so b64enc will not be used here
-        */}}
+        */ -}}
         {{- printf "%s.%s: %s" $provider $key ($value) -}}
       {{else}}
         {{- printf "%s.%s: %s" $provider $key (b64enc $value) -}}
       {{end}}
     {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+Create a Secret entry for a SAML credentials.
+*/}}
+{{- define "vvp.saml.creds.secret.value" -}}
+  {{- $config := required "Missing param 'config'" .config -}}
+  {{- $key := required "Missing param 'key'" .key -}}
+  {{- $value := index $config $key -}}
+  {{- if $value -}}
+    {{ if (eq $key "certificate") }}
+      {{- /*
+      The keys are used as filenames when mounting the secret, so we add a file ending
+      */ -}}
+      {{- printf "certificate.crt: %s" (b64enc $value) -}}
+    {{ else }}
+      {{- printf "%s: %s" $key (b64enc $value) -}}
+    {{ end }}
   {{- end -}}
 {{- end -}}
 

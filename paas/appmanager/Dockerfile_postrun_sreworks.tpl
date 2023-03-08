@@ -1,6 +1,6 @@
 FROM sw-postrun:latest
-COPY ../../plugins /app/plugins
-COPY ./APP-META-PRIVATE/postrun /app/postrun
+COPY ./plugins /app/plugins
+COPY ./paas/appmanager/APP-META-PRIVATE/postrun /app/postrun
 ENV SREWORKS_INIT "enable"
 RUN sed -i 's/dl-cdn.alpinelinux.org/${APK_REPO_DOMAIN}/g' /etc/apk/repositories
 RUN pip config set global.index-url ${PYTHON_PIP} && pip config set global.trusted-host ${PYTHON_PIP_DOMAIN}

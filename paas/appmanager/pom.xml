@@ -61,7 +61,7 @@
 
         <!-- tesla -->
         <tesla.spring.boot.version>2.1.9</tesla.spring.boot.version>
-        <task-flow-service.version>1.2.2</task-flow-service.version>
+        <task-flow-service.version>1.2.3</task-flow-service.version>
 
         <!-- other -->
         <knife4j-springdoc-ui.version>3.0.3</knife4j-springdoc-ui.version>

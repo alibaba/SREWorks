@@ -222,7 +222,13 @@ const DefaultHeader = ({
       })
     }
     return (
-      <Menu mode="horizontal" id="abm-menu" defaultSelectedKeys={keys} selectedKeys={keys}>
+      <Menu
+        theme="dark"
+        mode="horizontal"
+        id="abm-menu"
+        defaultSelectedKeys={keys}
+        selectedKeys={keys}
+      >
         {moduleData
           .filter(
             (md) =>

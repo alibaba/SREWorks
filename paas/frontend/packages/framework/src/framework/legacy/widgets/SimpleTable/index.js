@@ -626,7 +626,7 @@ class SimpleTable extends React.Component {
           nodeId={nodeId}
           rowData={record}
           widgetParams={record}
-          widgetData={expandedData?_.get(record,expandedData):null}
+          widgetData={expandedData ? _.get(record, expandedData) : null}
         />
       )
     }

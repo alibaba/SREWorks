@@ -42,7 +42,7 @@ class TraitIngress implements TraitHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 10
+    public static final Integer REVISION = 11
 
     @Autowired
     private KubernetesClientFactory clientFactory
@@ -78,10 +78,9 @@ class TraitIngress implements TraitHandler {
         String clusterId = request.getComponent().getClusterId()
         String host = request.getSpec().getString("host")
         String path = request.getSpec().getString("path") ? request.getSpec().getString("path") : "/"
-        String serviceName = request.getSpec().getString("serviceName")
+        String serviceName = request.getSpec().getString("serviceName") ? request.getSpec().getString("serviceName") : name
         Integer servicePort = request.getSpec().getInteger("servicePort") ? request.getSpec().getInteger("servicePort") : 80
-        String ingressName = request.getSpec().getString("name") ? \
-            request.getSpec().getString("name") : name + "-" + request.getSpec().getString("serviceName")
+        String ingressName = request.getSpec().getString("name") ? request.getSpec().getString("name") : name
 
         /**
          * 2. generate ingress and apply to k8s cluster
@@ -94,7 +93,7 @@ class TraitIngress implements TraitHandler {
                 .build()
     }
 
-    private void applyIngress(
+    private static void applyIngress(
             String clusterId, String namespace,
             String ingressName, String host, String path, String serviceName, Integer servicePort,
             String ownerReference){

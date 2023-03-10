@@ -4,7 +4,7 @@ metadata:
   name: ingress.trait.sreworks.io/v1beta1
   annotations:
     definition.oam.dev/description: "The Kubernetes Ingress"
-    definition.oam.dev/version: "1.1.0"
+    definition.oam.dev/version: "1.1.1"
     definition.oam.dev/tags: "key=value"
 spec:
   appliesToWorkloads:

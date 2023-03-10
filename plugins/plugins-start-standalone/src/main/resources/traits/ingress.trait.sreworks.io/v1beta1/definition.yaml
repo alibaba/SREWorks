@@ -1,0 +1,26 @@
+apiVersion: core.oam.dev/v1beta1
+kind: TraitDefinition
+metadata:
+  name: ingress.trait.sreworks.io/v1beta1
+  annotations:
+    definition.oam.dev/description: "The Kubernetes Ingress"
+    definition.oam.dev/version: "1.1.0"
+    definition.oam.dev/tags: "key=value"
+spec:
+  appliesToWorkloads:
+    - helm.component.sreworks.io/v1beta1
+  schematic:
+    groovy:
+      files:
+        - kind: TRAIT
+          path: dynamicscripts/TraitIngress.groovy
+          name: "ingress.trait.sreworks.io/v1beta1"
+          properties:
+            runtime: post
+            definitionSchema:
+              name: "ingress.trait.schema.sreworks.io"
+              jsonSchema: {}
+    frontend:
+      files:
+        - kind: DEPLOY
+          path: frontends/deploy.json

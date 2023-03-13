@@ -1,5 +1,6 @@
 package dynamicscripts
 
+import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import com.alibaba.tesla.appmanager.autoconfig.PackageProperties
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant
@@ -59,7 +60,7 @@ class DefaultBuildInternalAddonDevelopmentMetaHandler implements BuildComponentH
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 10
+    public static final Integer REVISION = 16
 
     private static final String TEMPLATE_INTERNAL_ADDON_DEVELOPMENTMETA_FILENAME = "default_internal_addon_developmentmeta.tpl"
     private static final String EXPORT_OPTION_FILE = "option.json"
@@ -118,7 +119,13 @@ class DefaultBuildInternalAddonDevelopmentMetaHandler implements BuildComponentH
                         .withBlobs(true)
                         .build())
         if (!k8sMicroservicePagination.isEmpty()) {
-            buildData.put("microservices", k8sMicroservicePagination.getItems())
+            JSONArray microservices = k8sMicroservicePagination.getItems()
+            for (int i = 0; i < microservices.size(); i++) {
+                JSONObject item = microservices.getJSONObject(i)
+                item.remove("id")
+                item.put("export", true)
+            }
+            buildData.put("microservices", microservices)
         }
 
         // helm

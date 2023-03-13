@@ -46,7 +46,8 @@ data:
             envsubst < /root/saas/swcore/build/launch-nodeport.yaml.tpl > /root/saas/swcore/launch.yaml
         fi
         
-        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id=${CORE_APP_ID} --filepath /root/saas/swcore/build.zip --print-only-app-package-id=true --reset-version=true)
+        #result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id=${CORE_APP_ID} --filepath /root/saas/swcore/build.zip --print-only-app-package-id=true --reset-version=true)
+        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id=${CORE_APP_ID} --filepath /root/saas/swcore/build.zip --print-only-app-package-id=true)
         /root/swcli --config /swcli/swcli.yaml deployment launch --wait-max-seconds 400 --app-id=${CORE_APP_ID} --stage=prod --namespace=${NAMESPACE_ID} --path /root/saas/swcore/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
 
 
@@ -270,7 +271,8 @@ data:
  
     sh /app/core-action-service-check.sh
       
-    result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id $1 --filepath $2 --print-only-app-package-id=true --reset-version=true)
+    #result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id $1 --filepath $2 --print-only-app-package-id=true --reset-version=true)
+    result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id $1 --filepath $2 --print-only-app-package-id=true)
 
     /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id $1 --path $3 --app-package-id $result --arch x86 --wait=true --cluster master
     /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id $1 --path $4 --app-package-id $result --arch x86 --wait=true --cluster master

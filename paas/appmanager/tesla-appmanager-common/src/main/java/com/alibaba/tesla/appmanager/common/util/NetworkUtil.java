@@ -211,8 +211,8 @@ public class NetworkUtil {
         URL url = new URL(remoteUrl);
         String targetIp = InetAddress.getByName(url.getHost()).getHostAddress();
         if (isInnerIp(targetIp) == false) {
-            String safeTargetUrl = remoteUrl.replace(url.getHost(), targetIp);
-            download(safeTargetUrl, localPath);
+//            String safeTargetUrl = remoteUrl.replace(url.getHost(), targetIp);
+            download(remoteUrl, localPath);
         } else {
             throw new AppException(AppErrorCode.NETWORK_ERROR,
                     String.format("Unable to Download internal file from %s to %s", remoteUrl, localPath));

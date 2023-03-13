@@ -155,6 +155,12 @@ class DefaultBuildInternalAddonDevelopmentMetaHandler implements BuildComponentH
                 item.put("export", true)
             }
         }
+        if(dataObject.getJSONArray("helms")){
+            for(JSONObject item: dataObject.getJSONArray("helms")){
+                item.remove("id")
+                item.put("export", true)
+            }
+        }
         FileUtils.writeStringToFile(exportPath.toFile(), dataObject.toJSONString(), Charset.defaultCharset())
 
         // 创建 meta.yaml 元信息存储到 packageDir 顶层目录中

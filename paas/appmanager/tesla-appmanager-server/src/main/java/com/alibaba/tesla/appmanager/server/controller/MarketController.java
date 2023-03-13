@@ -297,8 +297,8 @@ public class MarketController extends AppManagerBaseController {
         AppPackageImportReq appPackageImportReq = AppPackageImportReq.builder()
                 .appId(request.getAppId())
                 .packageCreator(getOperator(auth))
-                .force(false)
-                .resetVersion(true)
+                .force(true)
+                .resetVersion(false)
                 .build();
         AppPackageDTO appPackageInfo = appPackageProvider
                 .importPackage(appPackageImportReq, marketPackageStream, getOperator(auth));

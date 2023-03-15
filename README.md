@@ -32,7 +32,7 @@ Alibaba Cloud Big Data SRE team has been working hard to practice the "DataOps a
 
 There are many excellent open-source O & M platforms that reflect cloud-native scenarios in the traditional IT O&M field. There are currently no systematic O & M solutions available. With the rise of the cloud-native era, the Alibaba Cloud Big Data SRE team will open-source its O & M platform, SREWorks, in the hopes of providing O & M engineers with an out-of-the-box experience.
 
-![image.png](paas/sw-frontend/docs/docs/pictures/1663627633334-32214451-31cf-4e1a-b0a3-3cc3047ab842.jpeg.png)
+![image.png](paas/frontend/docs/docs/pictures/1663627633334-32214451-31cf-4e1a-b0a3-3cc3047ab842.jpeg.png)
 
 ## Getting Started
 

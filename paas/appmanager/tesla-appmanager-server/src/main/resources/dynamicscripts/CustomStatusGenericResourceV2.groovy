@@ -175,8 +175,9 @@ class CustomStatusGenericResourceV2 implements ComponentCustomStatusHandler {
             def updateRevision = sts.getStatus().getUpdateRevision()
             def replicas = sts.getStatus().getReplicas()
             def readyReplicas = sts.getStatus().getReadyReplicas()
+            def targetReplicas = sts.getSpec().getReplicas()
             def statusStr = JSONObject.toJSONString(sts.getStatus())
-            if (currentRevision == updateRevision && readyReplicas == replicas) {
+            if (currentRevision == updateRevision && readyReplicas == replicas && targetReplicas == replicas) {
                 log.info("the sts {} is in final state, skip|status={}|{}",
                         stsName, statusStr, logSuffix)
                 checkResult.putIfAbsent(namespace, new JSONObject())

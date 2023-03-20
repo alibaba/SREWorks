@@ -57,6 +57,8 @@ public class ApplicationContextLoadedEventListener implements ApplicationListene
             "/dynamicscripts/TraitNodeSelector.groovy",
             "/dynamicscripts/TraitSecret.groovy",
             "/dynamicscripts/TraitStop.groovy",
+            "/dynamicscripts/TraitTopologySpreadConstraints.groovy",
+            "/dynamicscripts/TraitAffinity.groovy",
             "/dynamicscripts/MicroserviceComponentBuildHandler.groovy",
             "/dynamicscripts/MicroserviceComponentDeployHandler.groovy",
             "/dynamicscripts/MicroserviceComponentHandler.groovy",

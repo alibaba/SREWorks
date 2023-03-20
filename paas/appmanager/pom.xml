@@ -30,6 +30,7 @@
         <module>tesla-appmanager-market</module>
         <module>tesla-appmanager-storage</module>
         <module>tesla-appmanager-encryption</module>
+        <module>plugin-api</module>
     </modules>
 
     <name>tesla-appmanager</name>

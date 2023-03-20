@@ -11,13 +11,13 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
- * Node Selector Trait
+ * Affinity Trait
  *
  * @author yaoxing.gyx@alibaba-inc.com
  */
-class TraitNodeSelector implements TraitHandler {
+class TraitAffinity implements TraitHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(TraitNodeSelector.class)
+    private static final Logger log = LoggerFactory.getLogger(TraitAffinity.class)
 
     /**
      * 当前内置 Handler 类型
@@ -27,12 +27,17 @@ class TraitNodeSelector implements TraitHandler {
     /**
      * 当前内置 Handler 名称
      */
-    public static final String NAME = "nodeSelector.trait.abm.io"
+    public static final String NAME = "affinity.trait.abm.io"
 
     /**
      * 当前内置 Handler 版本
      */
     public static final Integer REVISION = 1
+
+    /**
+     * 固定 Key
+     */
+    private static final String KEY = "affinity"
 
     /**
      * Trait 业务侧逻辑执行
@@ -43,12 +48,13 @@ class TraitNodeSelector implements TraitHandler {
     @Override
     TraitExecuteRes execute(TraitExecuteReq request) {
         def spec = request.getSpec()
-        def nodeSelector = spec.getJSONObject("nodeSelector")
-        if (nodeSelector == null) {
-            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "empty nodeSelector trait spec")
+        def affinity = spec.getJSONObject(KEY)
+        if (affinity == null || affinity.size() == 0) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "empty affinity trait spec")
         }
 
         JSONObject workloadSpec = (JSONObject) request.getRef().getSpec()
+        String workloadMetaStr = JSONObject.toJSONString(request.getRef().getMetadata())
 
         // 适配 cloneset 及 advancedstatefulset 类型，最后是兼容历史的类新，直接置到 workload spec 顶部
         if (workloadSpec.get("cloneSet") != null) {
@@ -56,33 +62,33 @@ class TraitNodeSelector implements TraitHandler {
                     .getJSONObject("cloneSet")
                     .getJSONObject("template")
                     .getJSONObject("spec")
-            if (cloneSetSpec.get("nodeSelector") == null) {
-                cloneSetSpec.put("nodeSelector", nodeSelector)
-                log.info("nodeSelector {} has applied to workload {}|kind=cloneSet|append=false",
-                        nodeSelector.toJSONString(), JSONObject.toJSONString(request.getRef().getMetadata()))
+            if (cloneSetSpec.get(KEY) == null) {
+                cloneSetSpec.put(KEY, affinity)
+                log.info("affinity {} has applied to workload {}|kind=cloneSet|append=false",
+                        affinity.toJSONString(), workloadMetaStr)
             } else {
-                cloneSetSpec.getJSONObject("nodeSelector").putAll(nodeSelector)
-                log.info("nodeSelector {} has applied to workload {}|kind=cloneSet|append=true",
-                        nodeSelector.toJSONString(), JSONObject.toJSONString(request.getRef().getMetadata()))
+                cloneSetSpec.getJSONObject(KEY).putAll(affinity)
+                log.info("affinity {} has applied to workload {}|kind=cloneSet|append=true",
+                        affinity.toJSONString(), workloadMetaStr)
             }
         } else if (workloadSpec.get("advancedStatefulSet") != null) {
             JSONObject advancedStatefulSetSpec = workloadSpec
                     .getJSONObject("advancedStatefulSet")
                     .getJSONObject("template")
                     .getJSONObject("spec")
-            if (advancedStatefulSetSpec.get("nodeSelector") == null) {
-                advancedStatefulSetSpec.put("nodeSelector", nodeSelector)
-                log.info("nodeSelector {} has applied to workload {}|kind=advancedStatefulSet|append=false",
-                        nodeSelector.toJSONString(), JSONObject.toJSONString(request.getRef().getMetadata()))
+            if (advancedStatefulSetSpec.get(KEY) == null) {
+                advancedStatefulSetSpec.put(KEY, affinity)
+                log.info("affinity {} has applied to workload {}|kind=advancedStatefulSet|append=false",
+                        affinity.toJSONString(), workloadMetaStr)
             } else {
-                advancedStatefulSetSpec.getJSONObject("nodeSelector").putAll(nodeSelector)
-                log.info("nodeSelector {} has applied to workload {}|kind=advancedStatefulSet|append=true",
-                        nodeSelector.toJSONString(), JSONObject.toJSONString(request.getRef().getMetadata()))
+                advancedStatefulSetSpec.getJSONObject(KEY).putAll(affinity)
+                log.info("affinity {} has applied to workload {}|kind=advancedStatefulSet|append=true",
+                        affinity.toJSONString(), workloadMetaStr)
             }
         } else {
-            workloadSpec.put("nodeSelector", nodeSelector)
-            log.info("nodeSelector {} has applied to workload {}|kind=compatible|append=false",
-                    nodeSelector.toJSONString(), JSONObject.toJSONString(request.getRef().getMetadata()))
+            workloadSpec.put(KEY, affinity)
+            log.info("affinity {} has applied to workload {}|kind=compatible|append=false",
+                    affinity.toJSONString(), workloadMetaStr)
         }
         return TraitExecuteRes.builder()
                 .spec(spec)

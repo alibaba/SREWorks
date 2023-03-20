@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 @EnableConfigurationProperties({
         AppNacosProperties.class,
         PackageProperties.class,
-        RedisProperties.class,
         ClusterProperties.class,
         SystemProperties.class,
         AuthProperties.class,

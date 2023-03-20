@@ -36,7 +36,6 @@ import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
-
 /**
  * 默认 DevelopmentMeta Internal Addon Groovy Handler
  *
@@ -59,7 +58,7 @@ class DefaultBuildInternalAddonDevelopmentMetaHandler implements BuildComponentH
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 10
+    public static final Integer REVISION = 23
 
     private static final String TEMPLATE_INTERNAL_ADDON_DEVELOPMENTMETA_FILENAME = "default_internal_addon_developmentmeta.tpl"
     private static final String EXPORT_OPTION_FILE = "option.json"
@@ -107,6 +106,7 @@ class DefaultBuildInternalAddonDevelopmentMetaHandler implements BuildComponentH
 
         // 准备参数并导出数据
         def buildData = new JSONObject();
+        buildData.put("REVISION", REVISION)
 
         // microservice
         buildData.put("microservices", null)
@@ -148,7 +148,20 @@ class DefaultBuildInternalAddonDevelopmentMetaHandler implements BuildComponentH
 
         def data = buildData.toJSONString()
         log.info("development meta export {}", data)
-        FileUtils.writeStringToFile(exportPath.toFile(), data, Charset.defaultCharset())
+        def JSONObject dataObject =  JSONObject.parse(data)
+        if(dataObject.getJSONArray("microservices")){
+            for(JSONObject item: dataObject.getJSONArray("microservices")){
+                item.remove("id")
+                item.put("export", true)
+            }
+        }
+        if(dataObject.getJSONArray("helms")){
+            for(JSONObject item: dataObject.getJSONArray("helms")){
+                item.remove("id")
+                item.put("export", true)
+            }
+        }
+        FileUtils.writeStringToFile(exportPath.toFile(), dataObject.toJSONString(), Charset.defaultCharset())
 
         // 创建 meta.yaml 元信息存储到 packageDir 顶层目录中
         def jinjava = JinjaFactory.getJinjava()

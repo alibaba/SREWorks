@@ -59,7 +59,7 @@ public class RedissonConfig {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS, "invalid redis host & port in standalone mode");
             }
             config.useSingleServer()
-                    .setAddress(String.format("%s:%d", redisHost, redisPort))
+                    .setAddress(String.format("redis://%s:%d", redisHost, redisPort))
                     .setDatabase(redisDatabase)
                     .setPassword(StringUtils.isNotEmpty(redisPassword) ? redisPassword : null);
         }

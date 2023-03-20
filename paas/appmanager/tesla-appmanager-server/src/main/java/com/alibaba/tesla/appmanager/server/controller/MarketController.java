@@ -259,7 +259,7 @@ public class MarketController extends AppManagerBaseController {
         String remoteUrl = request.getRemoteUrl().replace("..", "");
         String packageUrl = request.getPackageUrl().replace("..", "");
         // 从 applications/app/1.2.0+20230313075542341561.zip 字符串中提取版本号 1.2.0+20230313075542341561
-        String packageVersion = packageUrl.substring(0, packageUrl.lastIndexOf("/") + 1).split(".")[0];
+        String packageVersion = packageUrl.substring(packageUrl.lastIndexOf("/") + 1).replace(".zip", "");
         if (StringUtils.startsWith(remoteUrl, "oss://")) {
             downloadUrl = "https://" + Paths.get(remoteUrl.replace("oss://", ""),
                     URLEncoder.encode(packageUrl, StandardCharsets.UTF_8));

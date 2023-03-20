@@ -43,12 +43,15 @@ public abstract class AbstractSkywalkingService {
     }
 
     protected String buildGetAllServicesGraphQL() {
-        String graphQL = "query queryServices($duration: Duration!,$keyword: String!) {\n" +
-                "    services: getAllServices(duration: $duration, group: $keyword) {\n" +
-                "      key: id\n" +
-                "      label: name\n" +
-                "      group\n" +
-                "    }\n" +
+        String graphQL = "query queryServices($layer: String!) {\n" +
+                "  services: listServices(layer: $layer) {\n" +
+                "    id\n" +
+                "    value: name\n" +
+                "    label: name\n" +
+                "    group\n" +
+                "    layers\n" +
+                "    normal\n" +
+                "  }\n" +
                 "  }";
         return graphQL;
     }
@@ -64,7 +67,6 @@ public abstract class AbstractSkywalkingService {
                 "      isError\n" +
                 "      traceIds\n" +
                 "    }\n" +
-                "    total\n" +
                 "  }}";
         return graphQL;
     }
@@ -129,7 +131,6 @@ public abstract class AbstractSkywalkingService {
                 "            value\n" +
                 "          }\n" +
                 "        }\n" +
-                "        total\n" +
                 "    }}";
         return graphQL;
     }

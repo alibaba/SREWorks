@@ -1,0 +1,4 @@
+*~
+*.iml
+.idea
+plugins-start-standalone/target

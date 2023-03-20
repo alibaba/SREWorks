@@ -23,8 +23,6 @@ public class AppModifyParam extends AppParam {
 
     private String name;
 
-    private String description;
-
     private String annotationsYaml;
 
     private String labelsYaml;

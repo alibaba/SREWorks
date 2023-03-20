@@ -1,0 +1,3 @@
+FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/sw-migrate:v1.4
+COPY ./sql /sql
+

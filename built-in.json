@@ -51,4 +51,16 @@
 },{
   "appId": "system",
   "packagePath": "saas/system/build" 
+},{
+  "appId": "dataops",
+  "packagePath": "saas/dataops/build", 
+  "patch": "saas/dataops/api/patch.yaml"
+},{
+   "appId": "flycore",
+   "packagePath": "saas/swcore/build",
+   "patch": "saas/swcore/api/core/patch.yaml",
+   "duplicateYAML":[{
+       "source": "launch.yaml.tpl",
+       "target": "launch-nodeport.yaml.tpl"
+   }]
 }]

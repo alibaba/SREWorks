@@ -137,11 +137,14 @@ public class AppController extends BaseController {
 
     @ApiOperation(value = "修改")
     @RequestMapping(value = "modify", method = RequestMethod.POST)
-    public TeslaBaseResult modify(Long id, @RequestBody AppModifyParam param) throws JsonProcessingException {
+    public TeslaBaseResult modify(Long id, @RequestBody AppModifyParam param) throws Exception {
         saveActionService.save(getUserEmployeeId(), "app", id, "修改应用");
         App app = appRepository.findFirstById(id);
         param.patchApp(app, getUserEmployeeId());
         appRepository.saveAndFlush(app);
+        if (app.getDisplay() == 2) {
+            appmanagerService.update(app);
+        }
         teamUserRepository.updateGmtAccessByTeamIdAndUser(app.getTeamId(), getUserEmployeeId());
         JSONObject result = new JSONObject();
         result.put("appDefId", app.getId());
@@ -171,6 +174,7 @@ public class AppController extends BaseController {
         JSONObject ret = appRepository.findFirstById(id).toJsonObject();
         RegularUtil.gmt2Date(ret);
         ret.put("detailDict", JSONObject.parseObject(ret.getString("detail")));
+        ret.put("options", JSONObject.parseObject(ret.getString("detail")).getJSONObject("options"));
         return buildSucceedResult(ret);
     }
 
@@ -183,6 +187,7 @@ public class AppController extends BaseController {
         RegularUtil.gmt2Date(list);
         list.forEach(x -> x.put("detailDict", JSONObject.parseObject(x.getString("detail"))));
         list.forEach(x -> x.put("appId", x.getString("name")));
+        list.forEach(x -> x.put("options", JSONObject.parseObject(x.getString("detail")).getJSONObject("options")));
         return buildSucceedResult(list);
     }
 
@@ -210,11 +215,9 @@ public class AppController extends BaseController {
         flyadminAuthproxyUserService.patchNickName(ret, getUserEmployeeId(), "creator");
         RegularUtil.gmt2Date(ret);
         ret.put("detailDict", JSONObject.parseObject(ret.getString("detail")));
-//        ret.put("appPackageCount", appPackageRepository.countByAppIdAndStatus(id, "SUCCESS"));
-//        ret.put("appInstanceCount", appInstanceRepository.countByAppId(id));
-
         ret.put("appComponentCount", appmanagerComponentService.count(appId, getUserEmployeeId()));
         ret.put("appPackageCount", appmanagerPackageService.count(appId, getUserEmployeeId()));
+        ret.put("options", JSONObject.parseObject(ret.getString("detail")).getJSONObject("options"));
         ret.put("appInstanceCount", 0);
         return buildSucceedResult(ret);
     }

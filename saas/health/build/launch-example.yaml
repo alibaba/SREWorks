@@ -22,7 +22,7 @@ spec:
     - name: Global.DATA_DB_PASSWORD
       value: cb56b5is5e21_c359b42223
     - name: Global.KAFKA_ENDPOINT
-      value: sreworks-kafka.sreworks:9092
+      value: prod-dataops-kafka.sreworks-dataops:9092
     - name: Global.DATA_DB_NAME
       value: sw_saas_health
     - name: Global.DATA_DB_HOST
@@ -93,6 +93,58 @@ spec:
       name: Global.ACCOUNT_SUPER_CLIENT_ID
     - fieldPath: '{{ spec.env.ACCOUNT_SUPER_CLIENT_SECRET }}'
       name: Global.ACCOUNT_SUPER_CLIENT_SECRET
+    - fieldPath: '{{ spec.env.DATA_ES_PASSWORD }}'
+      name: Global.DATA_ES_PASSWORD
+    - fieldPath: '{{ spec.env.DATA_ES_USER }}'
+      name: Global.DATA_ES_USER
+    - fieldPath: '{{ spec.env.DATA_ES_HOST }}'
+      name: Global.DATA_ES_HOST
+    - fieldPath: '{{ spec.env.DATA_ES_PORT }}'
+      name: Global.DATA_ES_PORT
+    - fieldPath: '{{ spec.env.DATA_PROM_HOST }}'
+      name: Global.DATA_PROM_HOST
+    - fieldPath: '{{ spec.env.DATA_PROM_PORT }}'
+      name: Global.DATA_PROM_PORT
+    - fieldPath: '{{ spec.env.DATA_DB_PORT }}'
+      name: Global.DATA_DB_PORT
+    - fieldPath: '{{ spec.env.DATA_DB_HOST }}'
+      name: Global.DATA_DB_HOST
+    - fieldPath: '{{ spec.env.DATA_DB_USER }}'
+      name: Global.DATA_DB_USER
+    - fieldPath: '{{ spec.env.DATA_DB_PASSWORD }}'
+      name: Global.DATA_DB_PASSWORD
+    - fieldPath: '{{ spec.env.KAFKA_ENDPOINT }}'
+      name: Global.KAFKA_ENDPOINT
+    - fieldPath: '{{ spec.env.MINIO_ENDPOINT }}'
+      name: Global.MINIO_ENDPOINT
+    - fieldPath: '{{ spec.env.MINIO_ACCESS_KEY }}'
+      name: Global.MINIO_ACCESS_KEY
+    - fieldPath: '{{ spec.env.MINIO_SECRET_KEY }}'
+      name: Global.MINIO_SECRET_KEY
+    - fieldPath: '{{ spec.env.HOME_URL }}'
+      name: Global.HOME_URL
+    - fieldPath: '{{ spec.env.REDIS_ENDPOINT }}'
+      name: Global.REDIS_ENDPOINT
+    - fieldPath: '{{ spec.env.APPMANAGER_REDIS_PORT }}'
+      name: Global.APPMANAGER_REDIS_PORT
+    - fieldPath: '{{ spec.env.REDIS_PASSWORD }}'
+      name: Global.REDIS_PASSWORD
+    - fieldPath: '{{ spec.env.APPMANAGER_JWT_SECRET_KEY }}'
+      name: Global.APPMANAGER_JWT_SECRET_KEY
+    - fieldPath: '{{ spec.env.PLATFORM_NAME }}'
+      name: Global.PLATFORM_NAME
+    - fieldPath: '{{ spec.env.PLATFORM_LOGO }}'
+      name: Global.PLATFORM_LOGO
+    - fieldPath: '{{ spec.env.K8S_NAMESPACE }}'
+      name: Global.K8S_NAMESPACE
+    - fieldPath: '{{ spec.env.ENDPOINT_PAAS_MINIO }}'
+      name: Global.ENDPOINT_PAAS_MINIO
+    - fieldPath: '{{ spec.env.ZOOKEEPER_ENDPOINT }}'
+      name: Global.ZOOKEEPER_ENDPOINT
+    - fieldPath: '{{ spec.env.ACCOUNT_SUPER_SECRET_KEY }}'
+      name: Global.ACCOUNT_SUPER_SECRET_KEY
+    - fieldPath: '{{ spec.env.ADMIN_INIT_PASSWORD }}'
+      name: Global.ADMIN_INIT_PASSWORD
     dependencies: []
     namespaceId: ''
     parameterValues:
@@ -116,6 +168,32 @@ spec:
       - STORAGE_CLASS
       - ACCOUNT_SUPER_CLIENT_ID
       - ACCOUNT_SUPER_CLIENT_SECRET
+      - DATA_ES_PASSWORD
+      - DATA_ES_USER
+      - DATA_ES_HOST
+      - DATA_ES_PORT
+      - DATA_PROM_HOST
+      - DATA_PROM_PORT
+      - DATA_DB_HOST
+      - DATA_DB_PORT
+      - DATA_DB_USER
+      - DATA_DB_PASSWORD
+      - KAFKA_ENDPOINT
+      - MINIO_ENDPOINT
+      - MINIO_ACCESS_KEY
+      - MINIO_SECRET_KEY
+      - HOME_URL
+      - REDIS_ENDPOINT
+      - APPMANAGER_REDIS_PORT
+      - REDIS_PASSWORD
+      - APPMANAGER_JWT_SECRET_KEY
+      - PLATFORM_NAME
+      - PLATFORM_LOGO
+      - K8S_NAMESPACE
+      - ENDPOINT_PAAS_MINIO
+      - ZOOKEEPER_ENDPOINT
+      - ACCOUNT_SUPER_SECRET_KEY
+      - ADMIN_INIT_PASSWORD
     revisionName: RESOURCE_ADDON|system-env@system-env|1.0
     scopes: []
     stageId: ''
@@ -129,6 +207,8 @@ spec:
     value: ''
   - name: STAGE_ID
     value: ''
+  - name: APP_ID
+    value: health
   policies: []
   workflow:
     steps: []

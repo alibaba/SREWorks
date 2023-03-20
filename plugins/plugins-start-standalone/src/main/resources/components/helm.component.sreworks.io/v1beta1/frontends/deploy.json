@@ -1,0 +1,9 @@
+{
+    "parameters": [{
+        "type": 78,
+        "name": "values",
+        "label": "values.json",
+        "tooltip": "helm install -f 指定的变量文件",
+        "toFieldPath": "spec.values"
+    }]
+}

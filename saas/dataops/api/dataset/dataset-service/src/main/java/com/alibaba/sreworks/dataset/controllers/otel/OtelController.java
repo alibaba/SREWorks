@@ -44,14 +44,8 @@ public class OtelController extends BaseController {
 
     @ApiOperation(value = "查询追踪服务实例(trace)")
     @RequestMapping(value = "/getTracingService", method = RequestMethod.GET)
-    public TeslaBaseResult getTracingService(@RequestParam(name = "serviceName")String serviceName,
-                                            @RequestParam(name = "sTimestamp", required = false)Long sTimestamp,
-                                            @RequestParam(name = "eTimestamp", required = false)Long eTimestamp) throws Exception {
-
-        sTimestamp = sTimestamp == null ? Tools.getDeltaTimestamp(-1) : sTimestamp;
-        eTimestamp = eTimestamp == null ? new Date().getTime() : eTimestamp;
-
-        return buildSucceedResult(traceService.getTracingService(serviceName, sTimestamp, eTimestamp));
+    public TeslaBaseResult getTracingService(@RequestParam(name = "serviceName")String serviceName) throws Exception {
+        return buildSucceedResult(traceService.getTracingService(serviceName));
     }
 
     @ApiOperation(value = "查询服务追踪列表(trace)")
@@ -61,6 +55,8 @@ public class OtelController extends BaseController {
                                             @RequestParam(name = "orderType", required = false)String orderType,
                                             @RequestParam(name = "sTimestamp", required = false)Long sTimestamp,
                                             @RequestParam(name = "eTimestamp", required = false)Long eTimestamp,
+                                            @RequestParam(name = "minTraceDuration", required = false)Long minTraceDuration,
+                                            @RequestParam(name = "maxTraceDuration", required = false)Long maxTraceDuration,
                                             @RequestParam(name = "pageNum", required = false)Integer page,
                                             @RequestParam(name = "pageSize", required = false)Integer pageSize) throws Exception {
 
@@ -70,7 +66,11 @@ public class OtelController extends BaseController {
         page = page == null ? DEFAULT_PAGE_NUM : page;
         pageSize = pageSize == null ? DEFAULT_PAGE_SIZE : pageSize;
 
-        return buildSucceedResult(traceService.getServiceTraces(serviceName, traceState, orderType, sTimestamp, eTimestamp, page, pageSize));
+        minTraceDuration = minTraceDuration == null ? 0 : minTraceDuration;
+        maxTraceDuration = maxTraceDuration == null ? 0 : maxTraceDuration;
+
+        return buildSucceedResult(traceService.getServiceTraces(serviceName, traceState, orderType, sTimestamp,
+                eTimestamp, minTraceDuration, maxTraceDuration, page, pageSize));
     }
 
     @ApiOperation(value = "根据ID查询追踪数据(trace)")

@@ -25,6 +25,8 @@ spec:
     value: ''
   - name: STAGE_ID
     value: ''
+  - name: APP_ID
+    value: template
   policies: []
   workflow:
     steps: []

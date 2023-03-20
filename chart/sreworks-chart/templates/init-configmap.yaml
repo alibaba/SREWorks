@@ -9,7 +9,7 @@ apiVersion: v1
 data:
 
   IMAGE_PUSH_REGISTRY: {{ .Values.appmanager.server.docker.registry }}/{{ .Values.appmanager.server.docker.namespace }}
-  
+  IMAGE_REGISTRY: {{ .Values.global.images.registry }} 
 
   APK_REPO_DOMAIN: {{ .Values.global.artifacts.apkRepoDomain }} 
   MAVEN_IMAGE: {{ .Values.global.artifacts.mavenImage }}
@@ -69,7 +69,7 @@ data:
   ZOOKEEPER_ENDPOINT: {{ .Release.Name }}-zookeeper
   ENDPOINT_PAAS_MINIO: {{ template "minio.endpoint" . }}
   APPMANAGER_ENDPOINT: {{ .Release.Name }}-appmanager
-  KAFKA_ENDPOINT: {{ .Release.Name }}-kafka.{{ .Release.Namespace }}
+  KAFKA_ENDPOINT: prod-dataops-kafka.sreworks-dataops
   AUTHPROXY_ENDPOINT: {{ .Values.core.stageId }}-{{ .Values.core.appId }}-paas-authproxy
   REDIS_ENDPOINT: {{ .Release.Name }}-redis-master.{{ .Release.Namespace }}
   REDIS_PASSWORD: {{ .Values.appmanagerbase.redis.password | quote }}
@@ -113,6 +113,8 @@ data:
   DATA_ES_PORT: {{ .Values.saas.dataops.esPort | quote }}
   DATA_ES_USER: {{ .Values.saas.dataops.esUser | quote }}
   DATA_ES_PASSWORD: {{ .Values.saas.dataops.esPassword | quote }}
+  DATAOPS_FILEBEAT_ENABLE: {{ .Values.saas.dataops.filebeatEnable | quote}}
+  DATAOPS_METRICBEAT_ENABLE: {{ .Values.saas.dataops.metricbeatEnable | quote}}
 
   DATA_PROM_HOST: {{ .Values.saas.dataops.prometheusHost | quote }}
   DATA_PROM_PORT: {{ .Values.saas.dataops.prometheusPort | quote }}

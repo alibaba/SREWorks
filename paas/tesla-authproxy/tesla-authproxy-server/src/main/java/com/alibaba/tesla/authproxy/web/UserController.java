@@ -392,13 +392,24 @@ public class UserController extends BaseController {
     }
 
     private void setAliyunLanguageCookie(HttpServletResponse response, String aliyunLanguage) {
-        String topDomain = authProperties.getCookieDomain();
+        String topDomain;
+        if(StringUtils.isNotEmpty(authProperties.getCookieDomain())){
+            topDomain = authProperties.getCookieDomain();
+        }else{
+            topDomain = null;
+        }
         String[] langs = aliyunLanguage.split("_");
         if (langs.length != 2) {
             log.error("Aliyun language cookie value not valid, do nothing {}", aliyunLanguage);
             return;
         }
-        CookieUtil.setCookie(response, Constants.ALIYUN_COOKIE_LANG, langs[0], 0, topDomain);
-        CookieUtil.setCookie(response, Constants.ALIYUN_COOKIE_TERRITORY, langs[1], 0, topDomain);
+        if(topDomain != null){
+            CookieUtil.setCookie(response, Constants.ALIYUN_COOKIE_LANG, langs[0], 0, topDomain);
+            CookieUtil.setCookie(response, Constants.ALIYUN_COOKIE_TERRITORY, langs[1], 0, topDomain);
+        }else{
+            CookieUtil.setCookie(response, Constants.ALIYUN_COOKIE_LANG, langs[0], 0);
+            CookieUtil.setCookie(response, Constants.ALIYUN_COOKIE_TERRITORY, langs[1], 0);
+        }
+
     }
 }

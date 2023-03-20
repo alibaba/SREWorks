@@ -13,7 +13,7 @@ minio:
     type: ClusterIP
   image:
     registry: sreworks-registry.cn-beijing.cr.aliyuncs.com
-    repository: mirror/minio
+    repository: hub/minio
     tag: v1.0
   
   persistence:
@@ -64,7 +64,7 @@ mysql:
 
   image:
     registry: sreworks-registry.cn-beijing.cr.aliyuncs.com
-    repository: mirror/mysql
+    repository: hub/mysql
     tag: v1.0
 
   auth:
@@ -85,11 +85,11 @@ redis:
     disableCommands: 
       - FLUSHDB
     persistence:
-      size: 20Gi
+      enabled: false
     
   image:
     registry: sreworks-registry.cn-beijing.cr.aliyuncs.com
-    repository: mirror/redis
+    repository: hub/redis
     tag: v1.0
   
 
@@ -98,7 +98,7 @@ zookeeper:
 
   image:
     registry: sreworks-registry.cn-beijing.cr.aliyuncs.com
-    repository: mirror/zookeeper
+    repository: hub/zookeeper
     tag: v1.0
  
   persistence:
@@ -110,8 +110,13 @@ ingressNginx:
 kruise:
   enabled: true
 
+  manager:
+    image:		
+      repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/kruise-manager		
+      tag: v1.0.1
+
 kafka:
-  enabled: true
+  enabled: false
 
   persistence:
     size: 20Gi
@@ -128,7 +133,7 @@ kafka:
 
 
 openebs:
-  enabled: true
+  enabled: false
   localprovisioner:
     deviceClass:
       enabled: false

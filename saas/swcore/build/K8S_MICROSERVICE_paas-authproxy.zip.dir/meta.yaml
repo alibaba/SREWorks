@@ -1,0 +1,75 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: Component
+metadata:
+  annotations:
+    annotations.appmanager.oam.dev/version: 9.2.8+20230310061757721846
+  labels:
+    labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+    appId: flycore
+    labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+    componentName: paas-authproxy
+    labels.appmanager.oam.dev/appId: flycore
+    labels.appmanager.oam.dev/componentName: paas-authproxy
+    stageId: PLACEHOLDER_STAGE_ID
+  name: microservice-flycore-paas-authproxy
+spec:
+  images: []
+  workload:
+    apiVersion: apps.abm.io/v1
+    dataOutputs: []
+    kind: Microservice
+    metadata:
+      annotations:
+        annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
+        annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
+        annotations.appmanager.oam.dev/version: 9.2.8+20230310061757721846
+        annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+      labels:
+        labels.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
+        labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
+        labels.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
+        appId: flycore
+        labels.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
+        labels.appmanager.oam.dev/stageId: PLACEHOLDER_STAGE_ID
+        componentName: paas-authproxy
+        labels.appmanager.oam.dev/appId: flycore
+        labels.appmanager.oam.dev/componentName: paas-authproxy
+        stageId: PLACEHOLDER_STAGE_ID
+      name: PLACEHOLDER_NAME
+      namespace: PLACEHOLDER_NAMESPACE_ID
+    spec:
+      kind: Deployment
+      replicas: 1
+      name: ''
+      containers:
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-authproxy-paas-authproxy:1678429077162
+        name: paas-authproxy
+      env:
+        REDIS_HOST: '{{ Global.REDIS_HOST }}'
+        REDIS_DB: '{{ Global.REDIS_DB }}'
+        DATABASE_LOGIN_INTERCEPTOR_CLASS_NAME: '{{ Global.DATABASE_LOGIN_INTERCEPTOR_CLASS_NAME }}'
+        ACCOUNT_SUPER_SECRET_KEY: '{{ Global.ACCOUNT_SUPER_SECRET_KEY }}'
+        DB_PORT: '{{ Global.DB_PORT }}'
+        DB_USER: '{{ Global.DB_USER }}'
+        NETWORK_PROTOCOL: '{{ Global.NETWORK_PROTOCOL }}'
+        ADMIN_INIT_PASSWORD: '{{ Global.ADMIN_INIT_PASSWORD }}'
+        DB_NAME: '{{ Global.DB_NAME }}'
+        DATABASE_AUTH_SERVICE_MGR_CLASS_NAME: '{{ Global.DATABASE_AUTH_SERVICE_MGR_CLASS_NAME }}'
+        DB_HOST: '{{ Global.DB_HOST }}'
+        ACCOUNT_SUPER_ACCESS_KEY: '{{ Global.ACCOUNT_SUPER_ACCESS_KEY }}'
+        ZOOKEEPER_ENDPOINT: '{{ Global.ZOOKEEPER_ENDPOINT }}'
+        ACCOUNT_SUPER_PK: '{{ Global.ACCOUNT_SUPER_PK }}'
+        ACCOUNT_SUPER_ID: '{{ Global.ACCOUNT_SUPER_ID }}'
+        REDIS_PORT: '{{ Global.REDIS_PORT }}'
+        ACCOUNT_SUPER_CLIENT_SECRET: '{{ Global.ACCOUNT_SUPER_CLIENT_SECRET }}'
+        REDIS_PASSWORD: '{{ Global.REDIS_PASSWORD }}'
+        ACCOUNT_SUPER_ACCESS_ID: '{{ Global.ACCOUNT_SUPER_ACCESS_ID }}'
+        URL_PAAS_HOME: '{{ Global.URL_PAAS_HOME }}'
+        DNS_PAAS_HOME: '{{ Global.DNS_PAAS_HOME }}'
+        OAUTH2_JWT_SECRET_KEY: '{{ Global.OAUTH2_JWT_SECRET_KEY }}'
+        DB_PASSWORD: '{{ Global.DB_PASSWORD }}'
+      initContainers:
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-authproxy-db-migration:1678429077162
+        name: db-migration

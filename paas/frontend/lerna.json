@@ -1,0 +1,14 @@
+{
+  "command": {
+    "publish": {
+      "graphType": "all",
+      "conventionalCommits": true
+    },
+    "version": {
+      "message": "chore(release): publish"
+    }
+  },
+  "version": "independent",
+  "npmClient": "yarn",
+  "useWorkspaces": true
+}

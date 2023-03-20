@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="paas/sw-frontend/src/publicMedia/sreworks-logo.png" width="120">
+  <img src="/paas/frontend/app/src/assets/icons/sreworks-logo.png" width="120">
 </p>
 <h1 align="center"> SREWorks </h1>
 <p align="center"><b> Cloud Native DataOps & AIOps Platform </b></p>
@@ -32,7 +32,7 @@ Alibaba Cloud Big Data SRE team has been working hard to practice the "DataOps a
 
 There are many excellent open-source O & M platforms that reflect cloud-native scenarios in the traditional IT O&M field. There are currently no systematic O & M solutions available. With the rise of the cloud-native era, the Alibaba Cloud Big Data SRE team will open-source its O & M platform, SREWorks, in the hopes of providing O & M engineers with an out-of-the-box experience.
 
-![image.png](paas/sw-frontend/docs/docs/pictures/1663627633334-32214451-31cf-4e1a-b0a3-3cc3047ab842.jpeg.png)
+![image.png](paas/frontend/docs/docs/pictures/1663627633334-32214451-31cf-4e1a-b0a3-3cc3047ab842.jpeg.png)
 
 ## Getting Started
 
@@ -53,11 +53,11 @@ We'd love to accept your patches and contributions to SREWorks. Please refer to 
 
 - Wechat Chat Group (*Chinese*): Broker wechat to add you into the user group.
 
-<img src="/paas/sw-frontend/src/publicMedia/weixin.jpg" width="100" />
+<img src="/paas/frontend/app/src/assets/icons/weixin.jpg" width="100" />
 
 - Dingtalk Chat Group (*Chinese*): 35853026
 
-<img src="/paas/sw-frontend/src/publicMedia/ding.jpg" width="100" />
+<img src="/paas/frontend/app/src/assets/icons/ding.jpg" width="100" />
 
 ## Code of Conduct
 

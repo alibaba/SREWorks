@@ -35,8 +35,10 @@ func NewCicdServer(endpoint string, appmanagerServer *appmanagerv1.AppManagerSer
 
 // SyncImage 用于将指定镜像同步到指定环境中，返回 UUID
 func (s *CicdServer) SyncImage(env, image string) (string, error) {
-	targetUrl := fmt.Sprintf("v2/SyncDockerImage/%s/%s", env, image)
-	response, err := s.sendRequest(targetUrl)
+	targetUrl := fmt.Sprintf("v2/NewSyncImage/%s", env)
+	response, err := s.sendRequest(targetUrl, map[string]string{
+		"image": image,
+	})
 	if err != nil {
 		return "", err
 	}
@@ -59,7 +61,7 @@ func (s *CicdServer) SyncImage(env, image string) (string, error) {
 // }
 func (s *CicdServer) QuerySyncImageTask(env, uuid string) (*jsonvalue.V, error) {
 	targetUrl := fmt.Sprintf("v2/GetSyncImagesStatus/%s/%s", env, uuid)
-	response, err := s.sendRequest(targetUrl)
+	response, err := s.sendRequest(targetUrl, map[string]string{})
 	if err != nil {
 		return nil, err
 	}
@@ -145,14 +147,17 @@ func (s *CicdServer) SyncAppPackageImages(arch, appId string, appPackageId int64
 				continue
 			}
 
+			transformImageName := strings.Replace(imageName, "abm-private-arm", "abm-private-x86", -1)
+			log.Info().Msgf("transform image name from %s to %s", imageName, transformImageName)
 			replaceImages.Append(jsonvalue.NewObject(map[string]interface{}{
-				"image": imageName,
+				"image": transformImageName,
 				"actualImage": fmt.Sprintf("%s/%s:%s", registryEndpoint,
 					imageName[strings.Index(imageName, "/")+1:strings.LastIndex(imageName, ":")], sha256),
 			})).InTheEnd()
 			log.Info().Msgf("prepare to sync image %s with sha256 %s", imageName, sha256)
 			cicdImage := fmt.Sprintf("%s:%s",
 				imageName[strings.Index(imageName, "/")+1:strings.LastIndex(imageName, ":")], sha256)
+			cicdImage = "reg.docker.alibaba-inc.com/" + cicdImage
 
 			log.Info().Msgf("cicd image parameter is %s", cicdImage)
 
@@ -215,7 +220,7 @@ func (s *CicdServer) SyncAppPackageImages(arch, appId string, appPackageId int64
 }
 
 // sendRequest 发送请求到 cicd server，并返回输出内容
-func (s *CicdServer) sendRequest(targetUrl string) (*jsonvalue.V, error) {
+func (s *CicdServer) sendRequest(targetUrl string, params map[string]string) (*jsonvalue.V, error) {
 	fullUrl, err := url.Parse(s.endpoint)
 	if err != nil {
 		return nil, err
@@ -225,7 +230,11 @@ func (s *CicdServer) sendRequest(targetUrl string) (*jsonvalue.V, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	q := request.URL.Query()
+	for key, value := range params {
+		q.Add(key, value)
+	}
+	request.URL.RawQuery = q.Encode()
 	log.Debug().Str("url", fullUrl.String()).Msgf("send request to cicd")
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {

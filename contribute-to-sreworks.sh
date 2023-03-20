@@ -50,7 +50,7 @@ if [ $? -eq 0 ]; then
 else
     cp -r ./ /tmp/tmp_sw_project/
     rm -rf /tmp/tmp_sw_project/.git
-    rm -rf /tmp/tmp_sw_project/node_modules/
+    find /tmp/tmp_sw_project/ -type d -name "node_modules" | xargs rm -rf
 fi
 
 mv /tmp/tmp_sw_project ${SW_ROOT}/${TARGET_PATH}/../

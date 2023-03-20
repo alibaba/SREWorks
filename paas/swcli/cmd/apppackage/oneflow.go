@@ -22,6 +22,7 @@ func initOneflowCommand() {
 	oneflowCommand.Flags().String("stage", "", "stage")
 	oneflowCommand.Flags().String("app-instance-name", "", "app instance name")
 	oneflowCommand.Flags().BoolP("disable-dir-check", "", false, "disable directory check")
+	oneflowCommand.Flags().IntP("wait-max-seconds", "", 900, "max wait seconds until finished")
 	oneflowCommand.MarkFlagRequired("app-id")
 	oneflowCommand.MarkFlagRequired("tags")
 	oneflowCommand.MarkFlagRequired("path")
@@ -36,6 +37,7 @@ func initOneflowCommand() {
 	viper.BindPFlag("app-package.oneflow.stage", oneflowCommand.Flags().Lookup("stage"))
 	viper.BindPFlag("app-package.oneflow.app-instance-name", oneflowCommand.Flags().Lookup("app-instance-name"))
 	viper.BindPFlag("app-package.oneflow.disable-dir-check", oneflowCommand.Flags().Lookup("disable-dir-check"))
+	viper.BindPFlag("app-package.oneflow.wait-max-seconds", oneflowCommand.Flags().Lookup("wait-max-seconds"))
 }
 
 var oneflowCommand = &cobra.Command{
@@ -51,6 +53,7 @@ var oneflowCommand = &cobra.Command{
 		stage := viper.GetString("app-package.oneflow.stage")
 		appInstanceName := viper.GetString("app-package.oneflow.app-instance-name")
 		disableDirCheck := viper.GetBool("app-package.oneflow.disable-dir-check")
+		waitMaxSeconds := viper.GetInt("app-package.oneflow.wait-max-seconds")
 
 		// 检查当前的 appId 是否和当前目录保持一致
 		currentDir, err := os.Getwd()
@@ -93,7 +96,7 @@ var oneflowCommand = &cobra.Command{
 		cobra.CheckErr(err)
 
 		// 发起部署流程
-		response, err = server.Launch(appId, appPackageId, launchPath, arch, cluster, namespace, stage, appInstanceName, true)
+		response, err = server.Launch(appId, appPackageId, launchPath, arch, cluster, namespace, stage, appInstanceName, true, waitMaxSeconds)
 		if response != nil {
 			lib.SwPrint(response.MustMarshal())
 			deployStatus, err := response.GetString("deployStatus")

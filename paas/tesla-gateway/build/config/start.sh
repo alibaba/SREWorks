@@ -8,6 +8,5 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
-#sleep 1000000
 python ./run.py
 

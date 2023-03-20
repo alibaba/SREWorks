@@ -24,7 +24,7 @@ public class DagInstFixedRateSchedule {
     @Autowired
     private TaskFlowDispatchService taskFlowDispatchService;
 
-    @Scheduled(fixedRate = 600000)
+    @Scheduled(fixedRate = 10000)
     public void execute() {
         Date date = new Date(System.currentTimeMillis() - 7 * 86400 * 1000);
         dagInstClearService.clearDataBefore(date);

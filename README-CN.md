@@ -10,7 +10,7 @@
 
 <p align="center">
    <a href="https://www.yuque.com/sreworks-doc/docs" target="_blank">产品文档</a> 
-   <a href="https://sreworks.opensource.alibaba.com/" target="_blank">开源官网</a> 
+   <a href="https://sreworks.cn/" target="_blank">开源官网</a> 
    <a href="https://gitee.com/sreworks/sreworks" target="_blank">国内代码库</a> 
 </p>
 
@@ -39,7 +39,7 @@ SREWorks 作为阿里云大数据SRE团队对SRE理念的工程实践，专注�
 
 回归到运维领域的需求，无论上层产品和业务形态怎么变化，运维本质上解决的还是“质量、成本、效率、安全”相关需求。SREWorks 用一个运维 SaaS 应用界面来支撑上述需求，同时以“数智”思想为内核驱动 SaaS 能力，具体包括交付、监测、管理、控制、运营、服务六部分。
 
-![image.png](paas/sw-frontend/docs/docs/pictures/1666944785433-f3417e59-35be-420c-9f11-fae88b4f7e30.jpeg.png)
+![image.png](paas/frontend/docs/docs/pictures/1666944785433-f3417e59-35be-420c-9f11-fae88b4f7e30.jpeg.png)
 
 
 ## 入门指南

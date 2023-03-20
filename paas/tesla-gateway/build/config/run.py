@@ -6,6 +6,8 @@ import json
 import hashlib
 import time
 
+RETRY_TIMES = 5
+
 def read_routes():
     with open('default_route.json') as f:
         return json.loads(f.read())
@@ -82,7 +84,7 @@ def import_default_route():
     routes = read_routes()
     print(gen_auth_headers())
     for route in routes:
-        for i in range(3):
+        for i in range(RETRY_TIMES):
             try:
                 if check_route_exist(route['routeId']):
                     update_route(route)
@@ -91,7 +93,8 @@ def import_default_route():
                     insert_route(route)
                     break
             except RuntimeError as e:
-                if i >= 2:
+                time.sleep(1)
+                if i >= RETRY_TIMES - 1:
                     raise e
                 else:
                     print(e)

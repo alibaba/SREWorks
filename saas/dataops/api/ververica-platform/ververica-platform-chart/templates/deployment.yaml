@@ -35,6 +35,9 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/blobstoragesecret: {{ include (print $.Template.BasePath "/secret-blob-storage-credentials.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       serviceAccountName: {{ .Values.rbac.create | ternary (include "fullname" .) (.Values.rbac.serviceAccountName | quote) }}
       {{- with .Values.priorityClassName }}
@@ -161,6 +164,9 @@ spec:
           - name: blob-storage-creds
             mountPath: /vvp/secrets/blob-storage-creds
             readOnly: true
+          - name: saml-creds
+            mountPath: /vvp/secrets/saml-creds
+            readOnly: true
           - name: data
             mountPath: /vvp/data
             subPath: {{ .Values.persistentVolume.subPath | quote }}
@@ -192,6 +198,13 @@ spec:
           {{- if .Values.blobStorageCredentials }}
           secret:
             secretName: {{ (empty .Values.blobStorageCredentials.existingSecret) | ternary (printf "%s-blob-storage-credentials" (include "fullname" .)) (.Values.blobStorageCredentials.existingSecret | quote) }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        - name: saml-creds
+          {{- if .Values.samlCredentials }}
+          secret:
+            secretName: {{ (empty .Values.samlCredentials.existingSecret) | ternary (printf "%s-saml-credentials" (include "fullname" .)) (.Values.samlCredentials.existingSecret | quote) }}
           {{- else }}
           emptyDir: {}
           {{- end }}

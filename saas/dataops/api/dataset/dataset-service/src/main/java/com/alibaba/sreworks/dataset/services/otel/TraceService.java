@@ -39,18 +39,16 @@ public class TraceService extends AbstractSkywalkingService {
     @Autowired
     SkywalkingOperator skywalkingOperator;
 
-    public List<JSONObject> getAllTracingServices(Long startTimestamp, Long endTimestamp) throws Exception {
+    public List<JSONObject> getAllTracingServices() throws Exception {
         JSONObject variables = new JSONObject();
-        JSONObject duration = getDurationCondition(startTimestamp, endTimestamp, DURATION_MINUTE_STEP);
-        variables.put("duration", duration);
-        variables.put("keyword", "");
+        variables.put("layer", "GENERAL");
 
         JSONObject data = skywalkingOperator.executeGraphQL(buildGetAllServicesGraphQL(), variables);
         return data.getJSONArray("services").toJavaList(JSONObject.class);
     }
 
-    public JSONObject getTracingService(String serviceName, Long startTimestamp, Long endTimestamp) throws Exception {
-        List<JSONObject> services = getAllTracingServices(startTimestamp, endTimestamp);
+    public JSONObject getTracingService(String serviceName) throws Exception {
+        List<JSONObject> services = getAllTracingServices();
         JSONObject tracingService = new JSONObject();
         if (!CollectionUtils.isEmpty(services)) {
             Optional<JSONObject> optional = services.stream().filter(service -> service.getString("label").equals(serviceName)).findAny();
@@ -61,7 +59,9 @@ public class TraceService extends AbstractSkywalkingService {
         return tracingService;
     }
 
-    public JSONObject getServiceTraces(String serviceName, String traceState, String orderType, Long startTimestamp, Long endTimestamp, Integer pageNum, Integer pageSize) throws Exception {
+    public JSONObject getServiceTraces(String serviceName, String traceState, String orderType, Long startTimestamp,
+                                       Long endTimestamp, Long minTraceDuration, Long maxTraceDuration, Integer pageNum,
+                                       Integer pageSize) throws Exception {
         traceState = StringUtils.isEmpty(traceState) ? TRACE_STATE_ALL : traceState;
         Preconditions.checkArgument(TRACE_STATES.contains(traceState), String.format("状态参数traceState[%s]非法, 支持状态[%s]", traceState, TRACE_STATES));
 
@@ -69,7 +69,7 @@ public class TraceService extends AbstractSkywalkingService {
         Preconditions.checkArgument(ORDER_TYPES.contains(orderType), String.format("排序参数orderType[%s]非法, 支持类型[%s]", traceState, ORDER_TYPES));
 
 
-        JSONObject service = getTracingService(serviceName, startTimestamp, endTimestamp);
+        JSONObject service = getTracingService(serviceName);
         JSONObject traceDatas = new JSONObject();
         if (!CollectionUtils.isEmpty(service)) {
             JSONObject queryDuration = getDurationCondition(startTimestamp, endTimestamp, DURATION_MINUTE_STEP);
@@ -77,7 +77,6 @@ public class TraceService extends AbstractSkywalkingService {
             JSONObject paging = new JSONObject();
             paging.put("pageNum", pageNum);
             paging.put("pageSize", pageSize);
-            paging.put("needTotal", true);
 
             JSONObject condition = new JSONObject();
             condition.put("paging", paging);
@@ -85,6 +84,8 @@ public class TraceService extends AbstractSkywalkingService {
             condition.put("queryOrder", orderType);
             condition.put("traceState", traceState);
             condition.put("serviceId", service.getString("key"));
+            condition.put("minTraceDuration", minTraceDuration);
+            condition.put("maxTraceDuration", maxTraceDuration);
 
             JSONObject variables = new JSONObject();
             variables.put("condition", condition);

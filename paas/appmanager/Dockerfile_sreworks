@@ -13,8 +13,8 @@ ARG APP_NAME=tesla-appmanager
 # Copy Jars
 COPY --from=build /app/${APP_NAME}-start-standalone/target/${APP_NAME}.jar /app/${APP_NAME}-standalone.jar
 COPY --from=build /app/${APP_NAME}-start-standalone/target/${APP_NAME}/BOOT-INF/classes/application-docker.properties /app/config/application-docker.properties
-COPY --from=build /app/${APP_NAME}-start-standalone/target/${APP_NAME}/BOOT-INF/classes/application-sentinel.properties /app/config/application-sentinel.properties
-COPY --from=build /app/${APP_NAME}-start-standalone/target/${APP_NAME}/BOOT-INF/classes/application-standalone.properties /app/config/application-standalone.properties
+COPY --from=build /app/${APP_NAME}-start-standalone/target/${APP_NAME}/BOOT-INF/classes/application-redis-sentinel.properties /app/config/application-redis-sentinel.properties
+COPY --from=build /app/${APP_NAME}-start-standalone/target/${APP_NAME}/BOOT-INF/classes/application-redis-standalone.properties /app/config/application-redis-standalone.properties
 # Copy Resources
 COPY --from=build /app/${APP_NAME}-start-standalone/target/classes/dynamicscripts /app/dynamicscripts
 COPY --from=build /app/${APP_NAME}-start-standalone/target/classes/jinja /app/jinja

@@ -12,6 +12,8 @@ WORKDIR /root
 # Copy Jars
 COPY --from=build /app/tesla-appmanager-start-standalone/target/tesla-appmanager.jar /app/tesla-appmanager-standalone.jar
 COPY --from=build /app/tesla-appmanager-start-standalone/target/tesla-appmanager/BOOT-INF/classes/application-docker.properties /app/config/application.properties
+COPY --from=build /app/tesla-appmanager-start-standalone/target/tesla-appmanager/BOOT-INF/classes/application-redis-sentinel.properties /app/config/application-redis-sentinel.properties
+COPY --from=build /app/tesla-appmanager-start-standalone/target/tesla-appmanager/BOOT-INF/classes/application-redis-standalone.properties /app/config/application-redis-standalone.properties
 # Copy Resources
 COPY --from=build /app/tesla-appmanager-start-standalone/target/classes/dynamicscripts /app/dynamicscripts
 COPY --from=build /app/tesla-appmanager-start-standalone/target/classes/jinja /app/jinja

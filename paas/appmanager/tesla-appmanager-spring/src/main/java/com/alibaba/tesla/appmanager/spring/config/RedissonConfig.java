@@ -10,6 +10,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Redission 配置
  *
@@ -49,9 +54,10 @@ public class RedissonConfig {
         Config config = new Config();
 
         if (StringUtils.isNotEmpty(redisSentinelMaster) && StringUtils.isNotEmpty(redisSentinelNodes)) {
+            List<String> nodes = Arrays.asList(redisSentinelNodes.split(","));
             config.useSentinelServers()
                     .setMasterName(redisSentinelMaster)
-                    .addSentinelAddress(redisSentinelNodes.split(","))
+                    .addSentinelAddress(nodes.stream().map(item -> "redis://" + item).toArray(String[]::new))
                     .setDatabase(redisDatabase)
                     .setPassword(StringUtils.isNotEmpty(redisSentinelPassword) ? redisSentinelPassword : null);
         } else {

@@ -1,0 +1,8 @@
+{
+
+    "sources":[{
+        "type": "git"
+    },{
+        "type": "team-git"
+    }]
+}

@@ -2,7 +2,7 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 9.2.4+20230310061757562716
+    annotations.appmanager.oam.dev/version: 9.2.6+20230313090727741978
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
     appId: flycore
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 9.2.4+20230310061757562716
+        annotations.appmanager.oam.dev/version: 9.2.6+20230313090727741978
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -44,7 +44,7 @@ spec:
       replicas: 1
       name: ''
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-gateway-paas-gateway:1678429077162
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-gateway-paas-gateway:1678698447239
         name: paas-gateway
       env:
         REDIS_HOST: '{{ Global.REDIS_HOST }}'

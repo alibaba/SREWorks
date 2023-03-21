@@ -1,0 +1,96 @@
+{
+
+    "builds":[{
+        "type": "kaniko",
+        "name": "Kaniko",
+        "parameters":[
+            {
+                "type": 3,
+                "name": "imagePushRegistryValue",
+                "label": "推送镜像仓库",
+                "api": "gateway/sreworks/teammanage/teamRegistry/valueSelector?teamId=$(teamId)",
+                "defModel": {
+                    "remote": true
+                },
+                "effectHandler": "function effectHandler(nodeParams,formValues){if(formValues['config--imagePushRegistryValue']){var info=JSON.parse(formValues['config--imagePushRegistryValue']);console.log(info);return {'config--imagePushRegistry':info.url};}else{console.log(formValues);return {}}}"
+            },{
+                "type": 1,
+                "name": "imagePushRegistry",
+                "label": "容器镜像仓库地址"
+            },
+            {
+                "type": 85,
+                "name": "containers",
+                "label": "主容器",
+                "defModel": {
+                    "enableRemove": true,
+                    "pagination": false,
+                    "enableAdd": true,
+                    "enableEdit": true,
+                    "columns": [
+                        {
+                            "editProps": {
+                                "name": "name",
+                                "label": "",
+                                "type": 1,
+                                "required": false,
+                                "inputTip": "container name"
+                            },
+                            "dataIndex": "name",
+                            "title": "名称",
+                            "key": "name"
+                        },
+                        {
+                            "editProps": {
+                                "name": "dockerfile",
+                                "label": "",
+                                "type": 1,
+                                "required": false,
+                                "inputTip": "可用于构建的Dockerfile文件"
+                            },
+                            "dataIndex": "dockerfile",
+                            "title": "Dockerfile路径",
+                            "key": "dockerfile"
+                        }
+                    ]
+                }
+            },{
+                "type": 85,
+                "name": "initContainers",
+                "label": "初始化容器",
+                "defModel": {
+                    "enableRemove": true,
+                    "pagination": false,
+                    "enableAdd": true,
+                    "enableEdit": true,
+                    "columns": [
+                        {
+                            "editProps": {
+                                "name": "name",
+                                "label": "",
+                                "type": 1,
+                                "required": false,
+                                "inputTip": "container name"
+                            },
+                            "dataIndex": "name",
+                            "title": "名称",
+                            "key": "name"
+                        },
+                        {
+                            "editProps": {
+                                "name": "dockerfile",
+                                "label": "",
+                                "type": 1,
+                                "required": false,
+                                "inputTip": "可用于构建的Dockerfile文件"
+                            },
+                            "dataIndex": "dockerfile",
+                            "title": "Dockerfile路径",
+                            "key": "dockerfile"
+                        }
+                    ]
+                }
+            }
+        ]
+    }]
+}

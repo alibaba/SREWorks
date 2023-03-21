@@ -1,0 +1,41 @@
+{
+    "parameters": [{
+        "type": 85,
+        "name": "envs",
+        "label": "环境变量",
+        "tooltip": "启动容器时携带的环境变量参数",
+        "defModel": {
+            "enableRemove": true,
+            "pagination": false,
+            "enableAdd": true,
+            "enableEdit": true,
+            "columns": [
+                {
+                    "editProps": {
+                        "name": "key",
+                        "label": "",
+                        "type": 1,
+                        "required": false,
+                        "inputTip": "key"
+                    },
+                    "dataIndex": "key",
+                    "title": "键",
+                    "key": "key"
+                },
+                {
+                    "editProps": {
+                        "name": "value",
+                        "label": "",
+                        "type": 1,
+                        "required": false,
+                        "inputTip": "value"
+                    },
+                    "dataIndex": "value",
+                    "title": "默认值",
+                    "key": "value"
+                }
+            ]
+        },
+        "toFieldPath": "spec.envs"
+    }]
+}

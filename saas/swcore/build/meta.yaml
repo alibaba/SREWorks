@@ -9,7 +9,7 @@ componentPackages:
     metadata:
       name: microservice-flycore-paas-frontend
       annotations:
-        annotations.appmanager.oam.dev/version: "9.2.2+20230310061757296714"
+        annotations.appmanager.oam.dev/version: "9.2.4+20230313090727141052"
       labels:
         labels.appmanager.oam.dev/appId: "flycore"
         labels.appmanager.oam.dev/componentName: "paas-frontend"
@@ -39,7 +39,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "9.2.2+20230310061757296714"
+            annotations.appmanager.oam.dev/version: "9.2.4+20230313090727141052"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -80,15 +80,15 @@ componentPackages:
             CORE_APP_ID: "{{ Global.CORE_APP_ID }}"
           initContainers:
           - name: "authproxy-init"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-frontend-authproxy-init:1678429077158"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-frontend-authproxy-init:1678698447231"
           - name: "route-config"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-frontend-route-config:1678429077158"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-frontend-route-config:1678698447231"
           containers:
           - name: "paas-frontend"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-frontend-paas-frontend:1678429077158"
-  packageMd5: c5c7b62a41bdbef515876b32d47a1c9d
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-frontend-paas-frontend:1678698447231"
+  packageMd5: 898f9600e74ebc5c52387777097586ab
   packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"app/Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"paas/frontend","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"paas-frontend"}],"env":["ENDPOINT_PAAS_GATEWAY","ENDPOINT_PAAS_APPMANAGER","NETWORK_PROTOCOL","ENV_TYPE","DNS_PAAS_HOME","DB_NAME_AUTHPROXY","DB_PORT","DB_NAME","DEFAULT_AMDIN_AVATOR","DB_HOST","URL_PAAS_HOME","LOGIN_URL","ENDPOINT_PAAS_AUTHPROXY","DB_USER","PLATFORM_NAME","DB_PASSWORD","PLATFORM_LOGO","K8S_NAMESPACE","NAMESPACE_DATAOPS","ACCOUNT_SUPER_ID","ACCOUNT_SUPER_ACCESS_ID","ACCOUNT_SUPER_SECRET_KEY","ENDPOINT_PAAS_MINIO","ACCOUNT_SUPER_CLIENT_SECRET","ACCOUNT_SUPER_CLIENT_ID","ACCOUNT_SUPER_ACCESS_KEY","ACCOUNT_SUPER_PK","POSTRUN_WAIT_TIME","CORE_STAGE_ID","CORE_APP_ID"],"initContainers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile_postrun","ciAccount":"public","ciToken":"public","repoPath":"paas/tesla-authproxy","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"authproxy-init"},{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile_route_config","ciAccount":"public","ciToken":"public","repoPath":"paas/tesla-gateway","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"route-config"}],"componentConfiguration":"revisionName: K8S_MICROSERVICE|paas-frontend|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 80\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n- name: Global.ENDPOINT_PAAS_GATEWAY\n  value: prod-flycore-paas-gateway\n- name: Global.ENDPOINT_PAAS_APPMANAGER\n  value: sreworks-appmanager\n- name: Global.NETWORK_PROTOCOL\n  value: http\n- name: Global.ENV_TYPE\n  value: Standalone\n- name: Global.DNS_PAAS_HOME\n  value: ''{{Global.COOKIE_DOMAIN}}''\n- name: Global.DB_NAME_AUTHPROXY\n  value: abm_paas_authproxy\n- name: Global.DB_NAME\n  value: abm_paas_authproxy\n- name: Global.DEFAULT_AMDIN_AVATOR\n  value: /static/icons/aliyun.png\n- name: Global.URL_PAAS_HOME\n  value: ''{{Global.HOME_URL}}''\n- name: Global.LOGIN_URL\n  value: fake-login-url\n- name: Global.ENDPOINT_PAAS_AUTHPROXY\n  value: prod-flycore-paas-authproxy\n- name: Global.NAMESPACE_DATAOPS\n  value: sreworks-dataops\n- name: Global.ACCOUNT_SUPER_ID\n  value: admin\n- name: Global.ACCOUNT_SUPER_ACCESS_ID\n  value: test-access-id\n- name: Global.ACCOUNT_SUPER_ACCESS_KEY\n  value: test-access-key\n- name: Global.ACCOUNT_SUPER_PK\n  value: ''999999999''\n- name: Global.POSTRUN_WAIT_TIME\n  value: 5s\n- name: Global.CORE_STAGE_ID\n  value: prod\n- name: Global.CORE_APP_ID\n  value: flycore\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 9.2.2+20230310061757296714
+  packageVersion: 9.2.4+20230313090727141052
   relativePath: K8S_MICROSERVICE_paas-frontend.zip
 - componentName: paas-gateway
   componentType: K8S_MICROSERVICE
@@ -99,7 +99,7 @@ componentPackages:
     metadata:
       name: microservice-flycore-paas-gateway
       annotations:
-        annotations.appmanager.oam.dev/version: "9.2.4+20230310061757562716"
+        annotations.appmanager.oam.dev/version: "9.2.6+20230313090727741978"
       labels:
         labels.appmanager.oam.dev/appId: "flycore"
         labels.appmanager.oam.dev/componentName: "paas-gateway"
@@ -129,7 +129,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "9.2.4+20230310061757562716"
+            annotations.appmanager.oam.dev/version: "9.2.6+20230313090727741978"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -156,10 +156,10 @@ componentPackages:
             AUTH_ADMIN_TOKEN: "{{ Global.AUTH_ADMIN_TOKEN }}"
           containers:
           - name: "paas-gateway"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-gateway-paas-gateway:1678429077162"
-  packageMd5: 3ffee628fd0ed617b54604d5d4f89994
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-gateway-paas-gateway:1678698447239"
+  packageMd5: f31131088b630ed4acaa409a674a126d
   packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile_paas","ciAccount":"public","ciToken":"public","repoPath":"paas/tesla-gateway","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"paas-gateway"}],"env":["DB_HOST","DB_PASSWORD","NACOS_NAMESPACE","DB_PORT","REDIS_HOST","REDIS_PORT","REDIS_PASSWORD","NACOS_ENDPOINT","MANAGER_SERVER_PORT","STORE_NACOS_GROUP","STORE_NACOS_DATA_ID","REDIS_DB","ENDPOINT_PAAS_AUTHPROXY","AUTH_JWT_SECRET","STORE_NACOS_DATA_ID","AUTH_ADMIN_TOKEN"],"componentConfiguration":"revisionName: K8S_MICROSERVICE|paas-gateway|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 7001\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n- name: Global.NACOS_NAMESPACE\n  value: ad2d92c6-1a21-47ac-9da8-203fcbed9146\n- name: Global.REDIS_HOST\n  value: ''{{Global.REDIS_ENDPOINT}}''\n- name: Global.REDIS_PORT\n  value: ''{{Global.APPMANAGER_REDIS_PORT}}''\n- name: Global.NACOS_ENDPOINT\n  value: prod-flycore-paas-nacos:8848\n- name: Global.MANAGER_SERVER_PORT\n  value: ''7002''\n- name: Global.STORE_NACOS_GROUP\n  value: DEFAULT_GROUP\n- name: Global.STORE_NACOS_DATA_ID\n  value: abm-paas-gateway.route.config_default_default\n- name: Global.REDIS_DB\n  value: ''0''\n- name: Global.ENDPOINT_PAAS_AUTHPROXY\n  value: prod-flycore-paas-authproxy\n- name: Global.AUTH_JWT_SECRET\n  value: ''{{Global.APPMANAGER_JWT_SECRET_KEY}}''\n- name: Global.AUTH_ADMIN_TOKEN\n  value: ''{{Global.APPMANAGER_JWT_SECRET_KEY}}''\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 9.2.4+20230310061757562716
+  packageVersion: 9.2.6+20230313090727741978
   relativePath: K8S_MICROSERVICE_paas-gateway.zip
 - componentName: paas-action
   componentType: K8S_MICROSERVICE
@@ -170,7 +170,7 @@ componentPackages:
     metadata:
       name: microservice-flycore-paas-action
       annotations:
-        annotations.appmanager.oam.dev/version: "9.2.5+20230310061757531102"
+        annotations.appmanager.oam.dev/version: "9.2.7+20230313090727990486"
       labels:
         labels.appmanager.oam.dev/appId: "flycore"
         labels.appmanager.oam.dev/componentName: "paas-action"
@@ -200,7 +200,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "9.2.5+20230310061757531102"
+            annotations.appmanager.oam.dev/version: "9.2.7+20230313090727990486"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -219,13 +219,13 @@ componentPackages:
             DB_USER: "{{ Global.DB_USER }}"
           initContainers:
           - name: "db-migration"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-action-db-migration:1678429077164"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-action-db-migration:1678698447242"
           containers:
           - name: "paas-action"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-action-paas-action:1678429077164"
-  packageMd5: 9eb25b5df31a6e5dabb78b24f8866da4
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-action-paas-action:1678698447242"
+  packageMd5: 35c32d3f08a500112646cd3d550aea46
   packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"paas/action","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"paas-action"}],"env":["ENDPOINT_PAAS_HOME","ENDPOINT_PAAS_TKGONE","URL_PAAS_HOME","DB_HOST","DB_NAME","DB_PASSWORD","DB_PORT","DB_USER"],"initContainers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile-db-migration","ciAccount":"public","ciToken":"public","repoPath":"paas/action","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"db-migration"}],"componentConfiguration":"revisionName: K8S_MICROSERVICE|paas-action|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 7001\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n- name: Global.ENDPOINT_PAAS_HOME\n  value: prod-flycore-paas-frontend\n- name: Global.ENDPOINT_PAAS_TKGONE\n  value: prod-flycore-paas-tkgone\n- name: Global.URL_PAAS_HOME\n  value: ''{{Global.HOME_URL}}''\n- name: Global.DB_NAME\n  value: abm_paas_action\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 9.2.5+20230310061757531102
+  packageVersion: 9.2.7+20230313090727990486
   relativePath: K8S_MICROSERVICE_paas-action.zip
 - componentName: paas-nacos
   componentType: K8S_MICROSERVICE
@@ -236,7 +236,7 @@ componentPackages:
     metadata:
       name: microservice-flycore-paas-nacos
       annotations:
-        annotations.appmanager.oam.dev/version: "9.2.7+20230310061757568436"
+        annotations.appmanager.oam.dev/version: "9.2.9+20230313090727395804"
       labels:
         labels.appmanager.oam.dev/appId: "flycore"
         labels.appmanager.oam.dev/componentName: "paas-nacos"
@@ -266,7 +266,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "9.2.7+20230310061757568436"
+            annotations.appmanager.oam.dev/version: "9.2.9+20230313090727395804"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -282,13 +282,13 @@ componentPackages:
             DB_NAME: "{{ Global.DB_NAME }}"
           initContainers:
           - name: "db-migration"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-nacos-db-migration:1678429077162"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-nacos-db-migration:1678698447243"
           containers:
           - name: "paas-nacos"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-nacos-paas-nacos:1678429077162"
-  packageMd5: 0e2283a5528f9f316c6229eca6d00bf4
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-nacos-paas-nacos:1678698447243"
+  packageMd5: 8511414b7aaa8f77314cd1d00722e2ab
   packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"paas/nacos","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"paas-nacos"}],"env":["DB_HOST","DB_PORT","DB_USER","DB_PASSWORD","DB_NAME"],"initContainers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile-db-migration","ciAccount":"public","ciToken":"public","repoPath":"paas/nacos","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"db-migration"}],"componentConfiguration":"revisionName: K8S_MICROSERVICE|paas-nacos|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: ''8848''\n      targetPort: 8848\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n- name: Global.DB_NAME\n  value: abm_paas_nacos\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 9.2.7+20230310061757568436
+  packageVersion: 9.2.9+20230313090727395804
   relativePath: K8S_MICROSERVICE_paas-nacos.zip
 - componentName: paas-authproxy
   componentType: K8S_MICROSERVICE
@@ -299,7 +299,7 @@ componentPackages:
     metadata:
       name: microservice-flycore-paas-authproxy
       annotations:
-        annotations.appmanager.oam.dev/version: "9.2.8+20230310061757721846"
+        annotations.appmanager.oam.dev/version: "9.3.0+20230313090727913535"
       labels:
         labels.appmanager.oam.dev/appId: "flycore"
         labels.appmanager.oam.dev/componentName: "paas-authproxy"
@@ -329,7 +329,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "9.2.8+20230310061757721846"
+            annotations.appmanager.oam.dev/version: "9.3.0+20230313090727913535"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -364,13 +364,13 @@ componentPackages:
             OAUTH2_JWT_SECRET_KEY: "{{ Global.OAUTH2_JWT_SECRET_KEY }}"
           initContainers:
           - name: "db-migration"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-authproxy-db-migration:1678429077162"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-authproxy-db-migration:1678698447239"
           containers:
           - name: "paas-authproxy"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-authproxy-paas-authproxy:1678429077162"
-  packageMd5: bacf2fc197269749d07c8cc92accbb09
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/flycore-paas-authproxy-paas-authproxy:1678698447239"
+  packageMd5: 545e216633c250cd3389ee8b92edb8f6
   packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"paas/tesla-authproxy","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"paas-authproxy"}],"env":["DB_NAME","DB_HOST","DB_PASSWORD","DB_PORT","DB_USER","REDIS_HOST","REDIS_PORT","REDIS_PASSWORD","REDIS_DB","ZOOKEEPER_ENDPOINT","DATABASE_AUTH_SERVICE_MGR_CLASS_NAME","DATABASE_LOGIN_INTERCEPTOR_CLASS_NAME","ACCOUNT_SUPER_PK","ACCOUNT_SUPER_ACCESS_KEY","ACCOUNT_SUPER_PK","ACCOUNT_SUPER_CLIENT_SECRET","ACCOUNT_SUPER_SECRET_KEY","ACCOUNT_SUPER_ACCESS_ID","ACCOUNT_SUPER_ID","DNS_PAAS_HOME","NETWORK_PROTOCOL","URL_PAAS_HOME","ADMIN_INIT_PASSWORD","OAUTH2_JWT_SECRET_KEY"],"initContainers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile-db-migration","ciAccount":"public","ciToken":"public","repoPath":"paas/tesla-authproxy","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"db-migration"}],"componentConfiguration":"revisionName: K8S_MICROSERVICE|paas-authproxy|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 7001\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n- name: Global.DB_NAME\n  value: abm_paas_authproxy\n- name: Global.REDIS_HOST\n  value: ''{{Global.REDIS_ENDPOINT}}''\n- name: Global.REDIS_PORT\n  value: ''{{Global.APPMANAGER_REDIS_PORT}}''\n- name: Global.REDIS_DB\n  value: ''0''\n- name: Global.DATABASE_AUTH_SERVICE_MGR_CLASS_NAME\n  value: com.alibaba.tesla.authproxy.service.impl.DataBaseAuthServiceManager\n- name: Global.DATABASE_LOGIN_INTERCEPTOR_CLASS_NAME\n  value: com.alibaba.tesla.authproxy.interceptor.DataBaseLoginInterceptor\n- name: Global.ACCOUNT_SUPER_ACCESS_KEY\n  value: test-access-key\n- name: Global.ACCOUNT_SUPER_PK\n  value: ''999999999''\n- name: Global.ACCOUNT_SUPER_ACCESS_ID\n  value: test-access-id\n- name: Global.ACCOUNT_SUPER_ID\n  value: admin\n- name: Global.DNS_PAAS_HOME\n  value: ''{{Global.COOKIE_DOMAIN}}''\n- name: Global.NETWORK_PROTOCOL\n  value: http\n- name: Global.URL_PAAS_HOME\n  value: ''{{Global.HOME_URL}}''\n- name: Global.OAUTH2_JWT_SECRET_KEY\n  value: ''{{Global.APPMANAGER_JWT_SECRET_KEY}}''\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 9.2.8+20230310061757721846
+  packageVersion: 9.3.0+20230313090727913535
   relativePath: K8S_MICROSERVICE_paas-authproxy.zip
 - componentName: system-env@system-env
   componentType: RESOURCE_ADDON
@@ -413,9 +413,9 @@ componentPackages:
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec: {}
-  packageMd5: a53dbb9e242e7aa04caef544e675e676
+  packageMd5: fba51f59e143b857b4539b393f22dbb5
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"componentConfiguration":"clusterId: ''''\ndataInputs: []\ndataOutputs:\n- fieldPath: ''{{ spec.env.DB_HOST }}''\n  name: Global.DB_HOST\n- fieldPath: ''{{ spec.env.DB_PASSWORD }}''\n  name: Global.DB_PASSWORD\n- fieldPath: ''{{ spec.env.DB_PORT }}''\n  name: Global.DB_PORT\n- fieldPath: ''{{ spec.env.DB_USER }}''\n  name: Global.DB_USER\n- fieldPath: ''{{ spec.env.APPMANAGER_ACCESS_ID }}''\n  name: Global.APPMANAGER_USERNAME\n- fieldPath: ''{{ spec.env.APPMANAGER_ACCESS_SECRET }}''\n  name: Global.APPMANAGER_PASSWORD\n- fieldPath: ''{{ spec.env.APPMANAGER_CLIENT_ID }}''\n  name: Global.APPMANAGER_CLIENT_ID\n- fieldPath: ''{{ spec.env.APPMANAGER_CLIENT_SECRET }}''\n  name: Global.APPMANAGER_CLIENT_SECRET\n- fieldPath: ''{{ spec.env.COOKIE_DOMAIN }}''\n  name: Global.COOKIE_DOMAIN\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ACCESS_KEY }}''\n  name: Global.APPMANAGER_PACKAGE_ACCESS_KEY\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_SECRET_KEY }}''\n  name: Global.APPMANAGER_PACKAGE_SECRET_KEY\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL }}''\n  name: Global.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT }}''\n  name: Global.APPMANAGER_PACKAGE_ENDPOINT\n- fieldPath: ''{{ spec.env.STORAGE_CLASS }}''\n  name: Global.STORAGE_CLASS\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_CLIENT_ID }}''\n  name: Global.ACCOUNT_SUPER_CLIENT_ID\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_CLIENT_SECRET }}''\n  name: Global.ACCOUNT_SUPER_CLIENT_SECRET\n- fieldPath: ''{{ spec.env.DATA_ES_PASSWORD }}''\n  name: Global.DATA_ES_PASSWORD\n- fieldPath: ''{{ spec.env.DATA_ES_USER }}''\n  name: Global.DATA_ES_USER\n- fieldPath: ''{{ spec.env.DATA_ES_HOST }}''\n  name: Global.DATA_ES_HOST\n- fieldPath: ''{{ spec.env.DATA_ES_PORT }}''\n  name: Global.DATA_ES_PORT\n- fieldPath: ''{{ spec.env.DATA_PROM_HOST }}''\n  name: Global.DATA_PROM_HOST\n- fieldPath: ''{{ spec.env.DATA_PROM_PORT }}''\n  name: Global.DATA_PROM_PORT\n- fieldPath: ''{{ spec.env.DATA_DB_PORT }}''\n  name: Global.DATA_DB_PORT\n- fieldPath: ''{{ spec.env.DATA_DB_HOST }}''\n  name: Global.DATA_DB_HOST\n- fieldPath: ''{{ spec.env.DATA_DB_USER }}''\n  name: Global.DATA_DB_USER\n- fieldPath: ''{{ spec.env.DATA_DB_PASSWORD }}''\n  name: Global.DATA_DB_PASSWORD\n- fieldPath: ''{{ spec.env.KAFKA_ENDPOINT }}''\n  name: Global.KAFKA_ENDPOINT\n- fieldPath: ''{{ spec.env.MINIO_ENDPOINT }}''\n  name: Global.MINIO_ENDPOINT\n- fieldPath: ''{{ spec.env.MINIO_ACCESS_KEY }}''\n  name: Global.MINIO_ACCESS_KEY\n- fieldPath: ''{{ spec.env.MINIO_SECRET_KEY }}''\n  name: Global.MINIO_SECRET_KEY\n- fieldPath: ''{{ spec.env.HOME_URL }}''\n  name: Global.HOME_URL\n- fieldPath: ''{{ spec.env.REDIS_ENDPOINT }}''\n  name: Global.REDIS_ENDPOINT\n- fieldPath: ''{{ spec.env.APPMANAGER_REDIS_PORT }}''\n  name: Global.APPMANAGER_REDIS_PORT\n- fieldPath: ''{{ spec.env.REDIS_PASSWORD }}''\n  name: Global.REDIS_PASSWORD\n- fieldPath: ''{{ spec.env.APPMANAGER_JWT_SECRET_KEY }}''\n  name: Global.APPMANAGER_JWT_SECRET_KEY\n- fieldPath: ''{{ spec.env.PLATFORM_NAME }}''\n  name: Global.PLATFORM_NAME\n- fieldPath: ''{{ spec.env.PLATFORM_LOGO }}''\n  name: Global.PLATFORM_LOGO\n- fieldPath: ''{{ spec.env.K8S_NAMESPACE }}''\n  name: Global.K8S_NAMESPACE\n- fieldPath: ''{{ spec.env.ENDPOINT_PAAS_MINIO }}''\n  name: Global.ENDPOINT_PAAS_MINIO\n- fieldPath: ''{{ spec.env.ZOOKEEPER_ENDPOINT }}''\n  name: Global.ZOOKEEPER_ENDPOINT\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_SECRET_KEY }}''\n  name: Global.ACCOUNT_SUPER_SECRET_KEY\n- fieldPath: ''{{ spec.env.ADMIN_INIT_PASSWORD }}''\n  name: Global.ADMIN_INIT_PASSWORD\ndependencies: []\nnamespaceId: ''''\nparameterValues:\n- name: keys\n  toFieldPaths:\n  - spec.keys\n  value:\n  - DB_HOST\n  - DB_PASSWORD\n  - DB_PORT\n  - DB_USER\n  - APPMANAGER_ACCESS_ID\n  - APPMANAGER_ACCESS_SECRET\n  - APPMANAGER_CLIENT_ID\n  - APPMANAGER_CLIENT_SECRET\n  - COOKIE_DOMAIN\n  - APPMANAGER_PACKAGE_ACCESS_KEY\n  - APPMANAGER_PACKAGE_SECRET_KEY\n  - APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL\n  - APPMANAGER_PACKAGE_ENDPOINT\n  - STORAGE_CLASS\n  - ACCOUNT_SUPER_CLIENT_ID\n  - ACCOUNT_SUPER_CLIENT_SECRET\n  - DATA_ES_PASSWORD\n  - DATA_ES_USER\n  - DATA_ES_HOST\n  - DATA_ES_PORT\n  - DATA_PROM_HOST\n  - DATA_PROM_PORT\n  - DATA_DB_HOST\n  - DATA_DB_PORT\n  - DATA_DB_USER\n  - DATA_DB_PASSWORD\n  - KAFKA_ENDPOINT\n  - MINIO_ENDPOINT\n  - MINIO_ACCESS_KEY\n  - MINIO_SECRET_KEY\n  - HOME_URL\n  - REDIS_ENDPOINT\n  - APPMANAGER_REDIS_PORT\n  - REDIS_PASSWORD\n  - APPMANAGER_JWT_SECRET_KEY\n  - PLATFORM_NAME\n  - PLATFORM_LOGO\n  - K8S_NAMESPACE\n  - ENDPOINT_PAAS_MINIO\n  - ZOOKEEPER_ENDPOINT\n  - ACCOUNT_SUPER_SECRET_KEY\n  - ADMIN_INIT_PASSWORD\nrevisionName: RESOURCE_ADDON|system-env@system-env|1.0\nscopes: []\nstageId: ''''\ntraits: []\n","binderTraits":[]}'
-  packageVersion: 1.2.2+20230310061757672265
+  packageVersion: 1.2.4+20230313090727789343
   relativePath: RESOURCE_ADDON_system-env@system-env.zip
 - componentName: developmentmeta
   componentType: INTERNAL_ADDON
@@ -426,7 +426,7 @@ componentPackages:
     metadata:
       name: internal-addon-flycore-developmentmeta
       annotations:
-        annotations.appmanager.oam.dev/version: "1.3.0+20230310061757340319"
+        annotations.appmanager.oam.dev/version: "1.3.2+20230313090727353115"
       labels:
         labels.appmanager.oam.dev/appId: "flycore"
         labels.appmanager.oam.dev/componentName: "developmentmeta"
@@ -456,14 +456,14 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "1.3.0+20230310061757340319"
+            annotations.appmanager.oam.dev/version: "1.3.2+20230313090727353115"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec: {}
-  packageMd5: 5cec21d93749558db1ba8d15abbeae0e
+  packageMd5: bb28b0ad1ff6bde3b74fb8e66acfacf2
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
-  packageVersion: 1.3.0+20230310061757340319
+  packageVersion: 1.3.2+20230313090727353115
   relativePath: INTERNAL_ADDON_developmentmeta.zip
 - componentName: appmeta
   componentType: INTERNAL_ADDON
@@ -474,7 +474,7 @@ componentPackages:
     metadata:
       name: internal-addon-flycore-appmeta
       annotations:
-        annotations.appmanager.oam.dev/version: "1.3.0+20230310061757569900"
+        annotations.appmanager.oam.dev/version: "1.3.2+20230313090727915626"
       labels:
         labels.appmanager.oam.dev/appId: "flycore"
         labels.appmanager.oam.dev/componentName: "appmeta"
@@ -504,19 +504,19 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "1.3.0+20230310061757569900"
+            annotations.appmanager.oam.dev/version: "1.3.2+20230313090727915626"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec:
           overwriteIsDevelopment: false
           overwriteBuiltIn: false
-  packageMd5: de7e33361e7144bba3f3c2d8d8b4402a
+  packageMd5: 35e4b82a8c0c5fd82c2c01c32ae60235
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
-  packageVersion: 1.3.0+20230310061757569900
+  packageVersion: 1.3.2+20230313090727915626
   relativePath: INTERNAL_ADDON_appmeta.zip
 packageCreator: '999999999'
-packageVersion: 1.2.0+20230310063201474778
+packageVersion: 1.2.1+20230313092144480589
 tags:
 - release=sreworks/x86_64
 - on-sale

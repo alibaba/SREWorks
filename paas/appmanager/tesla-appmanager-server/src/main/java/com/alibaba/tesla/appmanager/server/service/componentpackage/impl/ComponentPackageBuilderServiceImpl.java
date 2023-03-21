@@ -14,6 +14,7 @@ import com.alibaba.tesla.appmanager.domain.core.StorageFile;
 import com.alibaba.tesla.appmanager.domain.req.componentpackage.BuildComponentHandlerReq;
 import com.alibaba.tesla.appmanager.domain.res.componentpackage.LaunchBuildComponentHandlerRes;
 import com.alibaba.tesla.appmanager.dynamicscript.core.GroovyHandlerFactory;
+import com.alibaba.tesla.appmanager.server.assembly.ComponentPackageTaskDtoConvert;
 import com.alibaba.tesla.appmanager.server.event.componentpackage.SucceedComponentPackageTaskEvent;
 import com.alibaba.tesla.appmanager.server.repository.ComponentPackageRepository;
 import com.alibaba.tesla.appmanager.server.repository.ComponentPackageTaskRepository;
@@ -60,6 +61,8 @@ public class ComponentPackageBuilderServiceImpl implements ComponentPackageBuild
     private ApplicationEventPublisher publisher;
     @Autowired
     private GroovyHandlerFactory groovyHandlerFactory;
+    @Autowired
+    private ComponentPackageTaskDtoConvert componentPackageTaskDtoConvert;
 
     /**
      * 构建一个实体 Component Package
@@ -175,6 +178,7 @@ public class ComponentPackageBuilderServiceImpl implements ComponentPackageBuild
         }
         String componentName = taskDO.getComponentName();
         BuildComponentHandlerReq componentHandlerReq = BuildComponentHandlerReq.builder()
+                .taskDTO(componentPackageTaskDtoConvert.to(taskDO))
                 .appId(taskDO.getAppId())
                 .namespaceId(taskDO.getNamespaceId())
                 .stageId(taskDO.getStageId())

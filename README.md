@@ -36,8 +36,8 @@ There are many excellent open-source O & M platforms that reflect cloud-native s
 
 ## Getting Started
 
-- [Quick Install](/paas/sw-frontend/docs/docs/rr5g10.md)
-- [Installation from source code](/paas/sw-frontend/docs/docs/mzz07m.md)
+- [Quick Install](/paas/frontend/docs/docs/rr5g10.md)
+- [Installation from source code](/paas/frontend/docs/docs/ek2tysaxo4d9108i.md)
 - [Document](https://www.yuque.com/sreworks-doc/docs/)
 - [Online Demo](https://wj.qq.com/s2/10565748/53da/)
 

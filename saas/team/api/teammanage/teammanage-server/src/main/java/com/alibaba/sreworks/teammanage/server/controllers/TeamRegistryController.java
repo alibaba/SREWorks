@@ -127,7 +127,7 @@ public class TeamRegistryController extends BaseController {
                         "value", JsonUtil.map(
                             "id", teamRegistry.getId(),
                             "url", teamRegistry.getUrl()
-                        )
+                        ).toJSONString()
                 )).collect(Collectors.toList())
         ));
     }

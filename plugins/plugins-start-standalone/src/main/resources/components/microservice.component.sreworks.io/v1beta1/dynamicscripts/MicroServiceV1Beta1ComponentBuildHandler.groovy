@@ -35,7 +35,7 @@ class MicroServiceV1Beta1ComponentBuildHandler implements BuildComponentHandler 
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 16
+    public static final Integer REVISION = 17
 
     private static final String TEMPLATE_MICROSERVICE_FILENAME = "default_microservice_%s.tpl"
 
@@ -104,8 +104,8 @@ class MicroServiceV1Beta1ComponentBuildHandler implements BuildComponentHandler 
                 buildOptions.put("repoPath", options.getString("repoPath"))
                 buildOptions.put("ciAccount", options.getString("ciAccount"))
                 buildOptions.put("ciToken", options.getString("ciToken"))
+                buildOptions.put("imagePushRegistry", options.getString("imagePushRegistry"))
                 buildOptions.put("dockerfileTemplate", container.getString("dockerfile"))
-                buildOptions.put("imagePushRegistry", container.getString("imagePushRegistry"))
                 compatibleOptionsContainer.put("name", container.getString("name"))
                 compatibleOptionsContainer.put("build", buildOptions)
                 compatibleOptionsContainers.add(compatibleOptionsContainer)

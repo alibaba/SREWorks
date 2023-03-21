@@ -24,6 +24,7 @@ import com.alibaba.tesla.appmanager.server.repository.domain.AppAddonDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.AppMetaDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.RtAppInstanceDO;
 import com.alibaba.tesla.appmanager.server.service.appaddon.AppAddonService;
+import com.alibaba.tesla.appmanager.server.service.appcomponent.AppComponentService;
 import com.alibaba.tesla.appmanager.server.service.appmeta.AppMetaService;
 import com.alibaba.tesla.appmanager.server.service.appoption.AppOptionService;
 import com.alibaba.tesla.appmanager.server.service.apppackage.AppPackageService;
@@ -87,6 +88,9 @@ public class AppMetaProviderImpl implements AppMetaProvider {
 
     @Autowired
     private RtAppInstanceService rtAppInstanceService;
+
+    @Autowired
+    private AppComponentService appComponentService;
 
     /**
      * 查询应用元信息
@@ -197,6 +201,9 @@ public class AppMetaProviderImpl implements AppMetaProvider {
         deleteAppMeta(appId);
         log.info("action=appMetaProvider|deleteAppMeta SUCCESS|appId={}", appId);
 
+        deleteAppComponent(appId);
+        log.info("action=appMetaProvider|deleteAppComponent SUCCESS|appId={}", appId);
+
         deleteAppAddon(appId);
         log.info("action=appMetaProvider|deleteAppAddon SUCCESS|appId={}", appId);
 
@@ -248,6 +255,13 @@ public class AppMetaProviderImpl implements AppMetaProvider {
                 .addonId(item.getAddonId())
                 .addonName(item.getName())
                 .build()));
+    }
+
+    private void deleteAppComponent(String appId) {
+        AppComponentQueryCondition condition = AppComponentQueryCondition.builder()
+                .appId(appId)
+                .build();
+        appComponentService.delete(condition);
     }
 
     private void deleteK8sMicroServiceMeta(String appId) {

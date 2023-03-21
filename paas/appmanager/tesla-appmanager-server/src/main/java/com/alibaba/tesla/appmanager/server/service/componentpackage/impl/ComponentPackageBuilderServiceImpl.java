@@ -200,7 +200,9 @@ public class ComponentPackageBuilderServiceImpl implements ComponentPackageBuild
             } else {
                 res = handler.launch(componentHandlerReq);
             }
-            storeAndPublish(taskDO, res);
+            if (res != null) {
+                storeAndPublish(taskDO, res);
+            }
         }
     }
 

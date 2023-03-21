@@ -116,4 +116,19 @@ public class TeamRegistryController extends BaseController {
             )).collect(Collectors.toList())
         ));
     }
+
+    @ApiOperation(value = "valueSelector")
+    @RequestMapping(value = "valueSelector", method = RequestMethod.GET)
+    public TeslaBaseResult valueSelector(Long teamId) {
+        List<TeamRegistry> teamRegistryList = teamRegistryRepository.findAllByTeamId(teamId);
+        return buildSucceedResult(JsonUtil.map(
+                "options", teamRegistryList.stream().map(teamRegistry -> JsonUtil.map(
+                        "label", teamRegistry.getName(),
+                        "value", JsonUtil.map(
+                            "id", teamRegistry.getId(),
+                            "url", teamRegistry.getUrl()
+                        )
+                )).collect(Collectors.toList())
+        ));
+    }
 }

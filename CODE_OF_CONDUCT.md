@@ -40,10 +40,10 @@ Project maintainers who do not follow or enforce the Code of Conduct in good fai
 
 ## Attribution
 
-This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 1.4, available at [https://contributor-covenant.org/version/1/4][version]
-
-[homepage]: https://contributor-covenant.org
-[version]: https://contributor-covenant.org/version/1/4/
+本行为准则改编自[Contributor Covenant] [主页] 1.4 版，可在[ https://contributor-covenant.org/version/1/4] [version ]
+uu的
+[主页]： https://contributor-covenant.orguui
+[版本]： https:  //contributor-covenant.org/version/1/4/
 
 
 

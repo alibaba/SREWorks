@@ -24,7 +24,6 @@ import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -191,9 +190,6 @@ public class AppPackageTaskController extends AppManagerBaseController {
                         .isDevelop(request.isDevelop())
                         .build();
                 if (ComponentTypeEnum.K8S_MICROSERVICE.toString().equals(componentType)) {
-                    if (StringUtils.isEmpty(componentBinder.getBranch())) {
-                        componentBinder.setBranch(DefaultConstant.DEFAULT_REPO_BRANCH);
-                    }
                     List<ComponentPackageVersionItemDTO> componentVersionList = componentPackageProvider
                             .latestVersions(
                                     ComponentPackageLatestVersionListReq.builder()
@@ -207,9 +203,7 @@ public class AppPackageTaskController extends AppManagerBaseController {
                     }
                     componentBinder.setVersion(componentVersionList.get(0).getName());
                 } else if (ComponentTypeEnum.HELM.toString().equals(componentType)) {
-                    if (StringUtils.isEmpty(componentBinder.getBranch())) {
-                        componentBinder.setBranch(DefaultConstant.DEFAULT_REPO_BRANCH);
-                    }
+                    componentBinder.setBranch(DefaultConstant.DEFAULT_REPO_BRANCH);
                     List<ComponentPackageVersionItemDTO> componentVersionList = componentPackageProvider
                             .latestVersions(
                                     ComponentPackageLatestVersionListReq.builder()

@@ -1,10 +1,12 @@
 package com.alibaba.tesla.appmanager.server.service.apppackage;
 
+import com.alibaba.tesla.appmanager.common.enums.ComponentPackageTaskStateEnum;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppPackageTaskInQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppPackageTaskQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.AppPackageTaskDO;
+import com.alibaba.tesla.appmanager.server.repository.domain.ComponentPackageTaskDO;
 
 import java.util.List;
 
@@ -57,4 +59,19 @@ public interface AppPackageTaskService {
      */
     String getComponentNextVersion(
             String appId, String componentType, String componentName, String fullVersion);
+
+    /**
+     * 更新指定的组件包任务对象到指定状态
+     *
+     * @param taskDO 组件包任务对象
+     * @param state  目标指定状态
+     */
+    void updateComponentTaskStatus(ComponentPackageTaskDO taskDO, ComponentPackageTaskStateEnum state);
+
+    /**
+     * 刷新指定的应用包任务
+     *
+     * @param appPackageTaskDO 应用包任务
+     */
+    void freshAppPackageTask(AppPackageTaskDO appPackageTaskDO);
 }

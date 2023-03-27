@@ -193,7 +193,8 @@ public class ProcessingDeployAppStateAction implements DeployAppStateAction, App
             List<DeployAppSchema.DataInput> componentDataInputs = component.getDataInputs();
             // 所有的入边全部连接到 mirror component 上
             addEdgeByDataInputs(providerMapping, edges, mirrorComponentId, componentDataInputs);
-            String lastTraitId = null;
+            String lastPreTraitId = null;
+            String lastPostTraitId = null;
             Set<String> traitUsedSet = new HashSet<>();
             for (int i = 0; i < component.getTraits().size(); i++) {
                 DeployAppSchema.SpecComponentTrait trait = component.getTraits().get(i);
@@ -227,22 +228,31 @@ public class ProcessingDeployAppStateAction implements DeployAppStateAction, App
                                 .expression(DEFAULT_EDGE_EXPRESSION)
                                 .build());
                         // 如果不是第一个 pre 的 trait，那么从上一个 pre trait 到自身连一条边，确保 pre trait 按序执行
-                        if (!StringUtils.isEmpty(lastTraitId)) {
+                        if (!StringUtils.isEmpty(lastPreTraitId)) {
                             edges.add(DagCreateEdge.builder()
-                                    .sourceNodeId(lastTraitId)
+                                    .sourceNodeId(lastPreTraitId)
                                     .targetNodeId(traitId)
                                     .expression(DEFAULT_EDGE_EXPRESSION)
                                     .build());
                         }
-                        lastTraitId = traitId;
+                        lastPreTraitId = traitId;
                         break;
                     case TraitRuntimeConstant.RUNTIME_POST:
-                        // post trait 只需要 self -> trait 建立一条边
+                        // post trait 需要 self -> trait 建立一条边
                         edges.add(DagCreateEdge.builder()
                                 .sourceNodeId(componentId)
                                 .targetNodeId(traitId)
                                 .expression(DEFAULT_EDGE_EXPRESSION)
                                 .build());
+                        // 如果不是第一个 post 的 trait，那么从上一个 post trait 到自身连一条边，确保 post trait 按序执行
+                        if (!StringUtils.isEmpty(lastPostTraitId)) {
+                            edges.add(DagCreateEdge.builder()
+                                    .sourceNodeId(lastPostTraitId)
+                                    .targetNodeId(traitId)
+                                    .expression(DEFAULT_EDGE_EXPRESSION)
+                                    .build());
+                        }
+                        lastPostTraitId = traitId;
                         break;
                     default:
                         throw new AppException(AppErrorCode.INVALID_USER_ARGS,

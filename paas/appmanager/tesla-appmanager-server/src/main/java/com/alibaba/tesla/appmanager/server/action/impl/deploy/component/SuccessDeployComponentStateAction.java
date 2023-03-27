@@ -1,8 +1,10 @@
 package com.alibaba.tesla.appmanager.server.action.impl.deploy.component;
 
+import com.alibaba.tesla.appmanager.common.constants.RedisKeyConstant;
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentAttrTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentEventEnum;
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentStateEnum;
+import com.alibaba.tesla.appmanager.common.util.StreamLogHelper;
 import com.alibaba.tesla.appmanager.domain.container.DeployAppRevisionName;
 import com.alibaba.tesla.appmanager.server.action.DeployComponentStateAction;
 import com.alibaba.tesla.appmanager.server.event.deploy.DeployComponentEvent;
@@ -21,7 +23,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -48,6 +49,9 @@ public class SuccessDeployComponentStateAction implements DeployComponentStateAc
 
     @Autowired
     private RtComponentInstanceService componentInstanceService;
+
+    @Autowired
+    private StreamLogHelper streamLogHelper;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -91,6 +95,9 @@ public class SuccessDeployComponentStateAction implements DeployComponentStateAc
         counter.increment();
         log.info("deploy component has reached success state|deployAppId={}|deployComponentId={}|cost={}",
                 subOrder.getDeployId(), subOrder.getId(), cost);
+        String streamKey = String.format("%s_%s", RedisKeyConstant.DEPLOY_TASK_LOG, subOrder.getId());
+        streamLogHelper.clean(streamKey, String.format("deploy component has reached success state|deployAppId=%s|deployComponentId=%s|cost=%s",
+                subOrder.getDeployId(), subOrder.getId(), cost));
         publisher.publishEvent(new DeployComponentEvent(this, DeployComponentEventEnum.TRIGGER_UPDATE, subOrder.getId()));
     }
 }

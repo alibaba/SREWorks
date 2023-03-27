@@ -57,9 +57,10 @@ public class RedissonConfig {
             List<String> nodes = Arrays.asList(redisSentinelNodes.split(","));
             config.useSentinelServers()
                     .setMasterName(redisSentinelMaster)
+                    .setPassword(redisPassword)
                     .addSentinelAddress(nodes.stream().map(item -> "redis://" + item).toArray(String[]::new))
                     .setDatabase(redisDatabase)
-                    .setPassword(StringUtils.isNotEmpty(redisSentinelPassword) ? redisSentinelPassword : null);
+                    .setSentinelPassword(StringUtils.isNotEmpty(redisSentinelPassword) ? redisSentinelPassword : null);
         } else {
             if (StringUtils.isEmpty(redisHost) || redisPort <= 0) {
                 throw new AppException(AppErrorCode.INVALID_USER_ARGS, "invalid redis host & port in standalone mode");

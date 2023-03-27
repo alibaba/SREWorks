@@ -265,18 +265,18 @@ public class PluginServiceImpl implements PluginService {
         StorageFile storageFile = uploadPluginHistoryToStorage(pluginKind, pluginName,
                 pluginVersion, pluginZipFile, force);
 
-        // 写入 DB 记录
-        PluginDefinitionDO record = update(definitionSchema, pluginKind, pluginName, pluginVersion,
-                pluginDescription, pluginTags, storageFile);
-
         // 清理现场
         try {
+            FileUtils.forceDelete(pluginDir.toFile());
             FileUtils.forceDelete(pluginZipFile.toFile());
         } catch (Exception e) {
             log.error("delete temp plugin zip file failed|pluginZipFile={}|exception={}",
                     pluginZipFile, ExceptionUtils.getStackTrace(e));
         }
-        return record;
+
+        // 写入 DB 记录
+        return update(definitionSchema, pluginKind, pluginName, pluginVersion,
+                pluginDescription, pluginTags, storageFile);
     }
 
     /**

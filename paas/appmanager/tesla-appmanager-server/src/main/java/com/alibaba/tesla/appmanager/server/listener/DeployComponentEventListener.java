@@ -1,10 +1,12 @@
 package com.alibaba.tesla.appmanager.server.listener;
 
+import com.alibaba.tesla.appmanager.common.constants.RedisKeyConstant;
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentEventEnum;
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentStateEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.DateUtil;
+import com.alibaba.tesla.appmanager.common.util.StreamLogHelper;
 import com.alibaba.tesla.appmanager.server.action.DeployComponentStateAction;
 import com.alibaba.tesla.appmanager.server.action.DeployComponentStateActionManager;
 import com.alibaba.tesla.appmanager.server.event.deploy.DeployComponentEvent;
@@ -37,6 +39,9 @@ public class DeployComponentEventListener implements ApplicationListener<DeployC
 
     @Autowired
     private ApplicationEventPublisher publisher;
+
+    @Autowired
+    private StreamLogHelper streamLogHelper;
 
     /**
      * 处理 Component 部署单事件
@@ -118,6 +123,10 @@ public class DeployComponentEventListener implements ApplicationListener<DeployC
         log.warn("action=event.component.ERROR|message=status has changed|deployAppId={}|deployComponentId={}|" +
                         "fromStatus={}|toStatus={}|exception={}", deployAppId, deployComponentId, fromStatus.toString(),
                 DeployComponentStateEnum.EXCEPTION, errorMessage);
+        String streamKey = String.format("%s_%s", RedisKeyConstant.DEPLOY_TASK_LOG, deployComponentId);
+        streamLogHelper.clean(streamKey, String.format("action=event.component.ERROR|message=status has changed|deployAppId=%s|deployComponentId=%s|" +
+                        "fromStatus=%s|toStatus=%s|exception=%s", deployAppId, deployComponentId, fromStatus,
+                DeployComponentStateEnum.EXCEPTION, errorMessage));
         publisher.publishEvent(new DeployComponentEvent(this, DeployComponentEventEnum.TRIGGER_UPDATE, order.getId()));
     }
 }

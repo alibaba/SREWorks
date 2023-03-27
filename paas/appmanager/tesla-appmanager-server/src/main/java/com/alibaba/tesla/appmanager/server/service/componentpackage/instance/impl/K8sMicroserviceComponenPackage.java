@@ -483,7 +483,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
         }
         String branch = String.valueOf(JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "branch")));
         String[] gitCloneCommand = new String[]{"git", "clone", "-b", branch, gitHttpRep, localDir};
-        CommandUtil.runLocalCommand(gitCloneCommand, null);
+        CommandUtil.runLocalCommand(gitCloneCommand);
         Object commit = JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "commit"));
         if (commit != null) {
             String[] resetCommit = new String[]{"git", "reset", "--hard", String.valueOf(commit)};

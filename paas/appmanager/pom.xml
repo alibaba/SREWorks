@@ -82,7 +82,7 @@
         <aspectj.aspectjweaver.version>1.9.8</aspectj.aspectjweaver.version>
         <janino.version>3.1.6</janino.version>
         <fabric8.version>5.8.1</fabric8.version>
-        <redission.version>3.17.3</redission.version>
+        <redission.version>3.20.0</redission.version>
         <jjwt.version>0.9.1</jjwt.version>
 
         <!--k8s-->

@@ -75,7 +75,7 @@ public class GitServiceImpl implements GitService {
                 }
             }
             logContent.append(String.format("run command: %s\n", cloneCommand));
-            logContent.append(CommandUtil.runLocalCommand(cloneCommand, null));
+            logContent.append(CommandUtil.runLocalCommand(cloneCommand));
 
             // 如果指定了特定的 commit，那么切换到对应的 commit
             if (!StringUtils.isEmpty(request.getCommit())) {

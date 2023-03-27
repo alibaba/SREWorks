@@ -1,2 +1,2 @@
-FROM registry.cn-hangzhou.aliyuncs.com/alisre/sw-migrate:latest
+FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/sreworks/sw-migrate:latest
 COPY ./APP-META-PRIVATE/db /sql

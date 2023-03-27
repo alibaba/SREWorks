@@ -98,7 +98,7 @@ class HelmV1Beta1ComponentBuildHandler implements BuildComponentHandler {
             // 无来源
             log.info("sourceType: empty")
             throw new AppException(AppErrorCode.UNKNOWN_ERROR, "sourceType: empty not support", e)
-        }else if("git" == request.getOptions().getString("sourceType")){
+        }else if("git" == request.getOptions().getString("sourceType") || "team-git" == request.getOptions().getString("sourceType") ){
             // git代码仓库
             log.info("sourceType: git")
 

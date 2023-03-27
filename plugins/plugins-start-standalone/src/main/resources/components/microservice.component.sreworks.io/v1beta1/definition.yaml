@@ -1,0 +1,51 @@
+apiVersion: core.oam.dev/v1beta1
+kind: ComponentDefinition
+metadata:
+  name: microservice.component.sreworks.io/v1beta1
+  annotations:
+    definition.oam.dev/description: "The microservice for Kubernetes"
+    definition.oam.dev/version: "1.3.0"
+    definition.oam.dev/tags: "a=b,c=d"
+spec:
+  workload:
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+  schematic:
+    groovy:
+      files:
+        - kind: COMPONENT
+          name: microservice.component.sreworks.io/v1beta1
+          path: dynamicscripts/MicroServiceV1Beta1ComponentHandler.groovy
+        - kind: COMPONENT_BUILD
+          name: microservice.component.sreworks.io/v1beta1
+          path: dynamicscripts/MicroServiceV1Beta1ComponentBuildHandler.groovy
+        - kind: COMPONENT_DEPLOY
+          name: microservice.component.sreworks.io/v1beta1
+          path: dynamicscripts/MicroServiceV1Beta1ComponentDeployHandler.groovy
+        - kind: COMPONENT_DESTROY
+          name: microservice.component.sreworks.io/v1beta1
+          path: dynamicscripts/MicroServiceV1Beta1ComponentDestroyHandler.groovy
+    frontend:
+      files:
+        - kind: DEPLOY
+          path: frontends/deploy.json
+        - kind: CREATE-SOURCE
+          path: frontends/source.json
+        - kind: UPDATE-SOURCE
+          path: frontends/source.json
+        - kind: CREATE-BUILD
+          path: frontends/build.json
+        - kind: UPDATE-BUILD
+          path: frontends/build.json
+    resources:
+      files:
+        - kind: YAML
+          path: resources/hello.yaml
+    dataInterfaces:
+      outputs:
+        - name: mysql-svc
+          valueFrom: spec.xxx.xxx
+      inputs:
+        - from: mysql-svc
+          parameterKey: xxxxx

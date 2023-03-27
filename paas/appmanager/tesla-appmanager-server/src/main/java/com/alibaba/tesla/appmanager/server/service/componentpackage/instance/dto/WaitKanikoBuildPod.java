@@ -27,6 +27,7 @@ public class WaitKanikoBuildPod {
     private Set<String> failedPods;
     private StringBuffer logBuffer;
     private Integer accessError;
+    private Boolean isFailed;
 
     public WaitKanikoBuildPod() {
         runningPods = new HashSet<>();
@@ -34,6 +35,7 @@ public class WaitKanikoBuildPod {
         failedPods = new HashSet<>();
         logBuffer = new StringBuffer();
         accessError = 0;
+        isFailed = false;
     }
 
     public void changeStatus(String pod, PodStatusPhaseEnum status, String logContent) {
@@ -46,6 +48,7 @@ public class WaitKanikoBuildPod {
                 break;
             }
             case Failed: {
+                isFailed = true;
                 runningPods.remove(pod);
                 failedPods.add(pod);
                 logBuffer.append(logContent);
@@ -81,11 +84,7 @@ public class WaitKanikoBuildPod {
     }
 
     public boolean haveFailed() {
-        if (!CollectionUtils.isEmpty(failedPods)) {
-            return true;
-        } else {
-            return false;
-        }
+        return isFailed;
     }
 
     public Set<String> getAllPods() {

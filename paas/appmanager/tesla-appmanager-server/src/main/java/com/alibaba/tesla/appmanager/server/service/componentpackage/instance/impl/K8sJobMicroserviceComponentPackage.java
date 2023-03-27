@@ -271,43 +271,50 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
             if (waitePod == null) {
                 continue;
             } else {
-                if (waitePod.haveFailed()) {
-                    setTaskFailed(taskId);
-                } else if (waitePod.haveSucceed()) {
-                    setTaskSucceed(taskId);
-                } else {
-                    if (CollectionUtils.isEmpty(waitePod.getRunningPods())) {
-                        continue;
-                    }
-                    HashSet<String> runningPods = new HashSet<>(waitePod.getRunningPods());
-                    for (String runningPod : runningPods) {
-                        try {
-                            V1Pod v1Pod = api.readNamespacedPodStatus(runningPod, systemProperties.getK8sNamespace(), null);
-                            String podLog = null;
-                            try {
-                                podLog = api.readNamespacedPodLog(runningPod, systemProperties.getK8sNamespace(),
-                                    null, null, null, null, null, null, null, null, null);
-                            } catch (ApiException e) {
-                                log.warn("action=checkTaskStatus|| Can not read pod log, pod:{}", runningPod, e);
-                                podLog = String.format("Read pod log failed! Exception:%s", ExceptionUtil.getStackTrace(e));
-                            }
-                            if (PodStatusPhaseEnum.Failed.name().equalsIgnoreCase(v1Pod.getStatus().getPhase())) {
-                                waitePod.changeStatus(runningPod, PodStatusPhaseEnum.Failed, BuildUtil.genLogContent(runningPod, podLog));
-                            } else if (PodStatusPhaseEnum.Succeeded.name().equalsIgnoreCase(v1Pod.getStatus().getPhase())) {
-                                waitePod.changeStatus(runningPod, PodStatusPhaseEnum.Succeeded, BuildUtil.genLogContent(runningPod, podLog));
-                            }
-                        } catch (ApiException e) {
-                            log.warn("action=checkTaskStatus|| can not read pod:{} status!", runningPod, e);
-                            waitePod.addAccessError();
-                            if (waitePod.getAccessError() >= 10) {
-                                String message = String.format("\nCan not read pod:%s status! \nException:%s", runningPod, ExceptionUtil.getStackTrace(e));
-                                waitePod.appendLog(BuildUtil.genLogContent(runningPod, message));
-                                setTaskFailed(taskId);
-                            }
-                            break;
+                try {
+                    if (waitePod.haveFailed()) {
+                        setTaskFailed(taskId);
+                    } else if (waitePod.haveSucceed()) {
+                        setTaskSucceed(taskId);
+                    } else {
+                        if (CollectionUtils.isEmpty(waitePod.getRunningPods())) {
+                            continue;
                         }
-                    }
+                        HashSet<String> runningPods = new HashSet<>(waitePod.getRunningPods());
+                        for (String runningPod : runningPods) {
+                            try {
+                                V1Pod v1Pod = api.readNamespacedPodStatus(runningPod, systemProperties.getK8sNamespace(), null);
+                                String podLog = null;
+                                try {
+                                    podLog = api.readNamespacedPodLog(runningPod, systemProperties.getK8sNamespace(),
+                                        null, null, null, null, null, null, null, null, null);
+                                } catch (ApiException e) {
+                                    log.warn("action=checkTaskStatus|| Can not read pod log, pod:{}", runningPod, e);
+                                    podLog = String.format("Read pod log failed! Exception:%s", ExceptionUtil.getStackTrace(e));
+                                }
+                                if (PodStatusPhaseEnum.Failed.name().equalsIgnoreCase(v1Pod.getStatus().getPhase())) {
+                                    waitePod.changeStatus(runningPod, PodStatusPhaseEnum.Failed, BuildUtil.genLogContent(runningPod, podLog));
+                                } else if (PodStatusPhaseEnum.Succeeded.name().equalsIgnoreCase(v1Pod.getStatus().getPhase())) {
+                                    waitePod.changeStatus(runningPod, PodStatusPhaseEnum.Succeeded, BuildUtil.genLogContent(runningPod, podLog));
+                                }
+                            } catch (ApiException e) {
+                                log.warn("action=checkTaskStatus|| can not read pod:{} status!", runningPod, e);
+                                waitePod.addAccessError();
+                                if (waitePod.getAccessError() >= 10) {
+                                    String message = String.format("\nCan not read pod:%s status! \nException:%s", runningPod, ExceptionUtil.getStackTrace(e));
+                                    waitePod.appendLog(BuildUtil.genLogContent(runningPod, message));
+                                    setTaskFailed(taskId);
+                                }
+                                break;
+                            }
+                        }
 
+                    }
+                } catch (Exception e) {
+                    log.error("action=checkTaskStatus|| Check task status have error!", e);
+                    String logContent = String.format("action=checkTaskStatus|| Check task status have error! Exception:%s", ExceptionUtil.getStackTrace(e));
+                    waitePod.appendLog(logContent);
+                    waitePod.setIsFailed(true);
                 }
             }
         }
@@ -545,7 +552,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
             if (file.getName().endsWith(".tar")) {
                 return false;
             }
-            if (file.getName().equalsIgnoreCase("meta.yaml")) {
+            if ("meta.yaml".equalsIgnoreCase(file.getName())) {
                 return false;
             }
             return true;

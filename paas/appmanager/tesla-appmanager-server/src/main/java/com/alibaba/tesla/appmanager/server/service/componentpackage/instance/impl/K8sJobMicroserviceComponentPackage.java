@@ -1,39 +1,16 @@
 package com.alibaba.tesla.appmanager.server.service.componentpackage.instance.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.annotation.PostConstruct;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.autoconfig.ImageBuilderProperties;
 import com.alibaba.tesla.appmanager.autoconfig.PackageProperties;
 import com.alibaba.tesla.appmanager.autoconfig.SystemProperties;
+import com.alibaba.tesla.appmanager.common.constants.RedisKeyConstant;
 import com.alibaba.tesla.appmanager.common.enums.AppPackageTaskStatusEnum;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
-import com.alibaba.tesla.appmanager.common.util.CommandUtil;
-import com.alibaba.tesla.appmanager.common.util.ExceptionUtil;
-import com.alibaba.tesla.appmanager.common.util.FileUtil;
-import com.alibaba.tesla.appmanager.common.util.JsonUtil;
-import com.alibaba.tesla.appmanager.common.util.KanikoBuildCheckUtil;
-import com.alibaba.tesla.appmanager.common.util.PackageUtil;
-import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
-import com.alibaba.tesla.appmanager.common.util.StringUtil;
+import com.alibaba.tesla.appmanager.common.util.*;
 import com.alibaba.tesla.appmanager.domain.core.StorageFile;
 import com.alibaba.tesla.appmanager.server.event.componentpackage.FailedComponentPackageTaskEvent;
 import com.alibaba.tesla.appmanager.server.event.componentpackage.SucceedComponentPackageTaskEvent;
@@ -50,8 +27,8 @@ import com.alibaba.tesla.appmanager.server.service.componentpackage.instance.dto
 import com.alibaba.tesla.appmanager.server.service.componentpackage.instance.util.BuildUtil;
 import com.alibaba.tesla.appmanager.server.service.componentpackage.instance.util.RetryUtil;
 import com.alibaba.tesla.appmanager.server.storage.Storage;
-
 import com.hubspot.jinjava.Jinjava;
+import io.kubernetes.client.PodLogs;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1Pod;
@@ -71,6 +48,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import javax.annotation.PostConstruct;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @ClassName: K8sJobMicroserviceComponentPackage
@@ -110,6 +94,9 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
     private ComponentPackageTaskRepository componentPackageTaskRepository;
     @Autowired
     private Storage storage;
+
+    @Autowired
+    private StreamLogHelper streamLogHelper;
 
     /**
      * 初始化，注册自身
@@ -162,7 +149,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
             } catch (Exception e) {
                 log.error("action=renderBuildPod|| can not build {} container image,Message:{} Exception:{}", container.getString("name"), e.getMessage(), e.getCause());
                 String logContent = String.format("\n====container:%s====\ncan not render container package, Exception:%s",
-                    container.getString("name"), ExceptionUtil.getStackTrace(e));
+                        container.getString("name"), ExceptionUtil.getStackTrace(e));
                 taskRemoteObjectMap.put(taskDO.getId(), remoteObjectSet);
                 setRenderFailed(taskDO.getId(), logContent);
                 return;
@@ -173,10 +160,11 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
         //4. start apply pod yaml
         log.info("action=start apply kaniko pod|| podList:{}", remoteObjectSet);
         WaitKanikoBuildPod waitPod = new WaitKanikoBuildPod();
+        List<V1Pod> buildingPodList = new LinkedList<>();
         for (V1Pod v1Pod : waitBuildPodList) {
-            waitPod.addRunning( v1Pod.getMetadata().getName());
+            waitPod.addRunning(v1Pod.getMetadata().getName());
             try {
-                api.createNamespacedPod(systemProperties.getK8sNamespace(), v1Pod, null, null, null);
+                buildingPodList.add(api.createNamespacedPod(systemProperties.getK8sNamespace(), v1Pod, null, null, null));
             } catch (Exception e) {
                 log.error("action=createPod|| can not apply pod yaml:{}, Message:{} Exception:{}", v1Pod.toString(), e.getMessage(), e.getCause());
                 String logContent = BuildUtil.genLogContent(v1Pod.getMetadata().getName(), ExceptionUtil.getStackTrace(e));
@@ -187,11 +175,28 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
         //5. insert check status task, after 20s check status!
         Thread.sleep(60000);
         waitTaskMap.put(taskDO.getId(), waitPod);
+
+        //6. stream log
+        String streamKey = String.format("%s_%s_%s_%s_%s", RedisKeyConstant.COMPONENT_PACKAGE_TASK_LOG,
+                taskDO.getAppId(), taskDO.getComponentType(), taskDO.getComponentName(), taskDO.getVersion());
+        try {
+            for (V1Pod v1Pod : buildingPodList) {
+                PodLogs logs = new PodLogs();
+                V1Pod pod = api.readNamespacedPod(v1Pod.getMetadata().getName(), systemProperties.getK8sNamespace(), null, null, null);
+                InputStream is = logs.streamNamespacedPodLog(pod);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                for (String line; (line = reader.readLine()) != null; ) {
+                    streamLogHelper.info(streamKey, line);
+                }
+            }
+        } finally {
+            streamLogHelper.clean(streamKey);
+        }
     }
 
     private void setRenderFailed(Long taskId, String message) {
         ComponentPackageTaskDO taskDO = componentPackageTaskRepository.getByCondition(
-            ComponentPackageTaskQueryCondition.builder().id(taskId).build());
+                ComponentPackageTaskQueryCondition.builder().id(taskId).build());
         if (taskDO.getTaskStatus().equalsIgnoreCase(AppPackageTaskStatusEnum.FAILURE.name())) {
             return;
         }
@@ -204,7 +209,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
     private void setTaskFailed(Long taskId) {
         WaitKanikoBuildPod waitPod = waitTaskMap.remove(taskId);
         ComponentPackageTaskDO taskDO = componentPackageTaskRepository.getByCondition(
-            ComponentPackageTaskQueryCondition.builder().id(taskId).build());
+                ComponentPackageTaskQueryCondition.builder().id(taskId).build());
         if (taskDO.getTaskStatus().equalsIgnoreCase(AppPackageTaskStatusEnum.FAILURE.name())) {
             return;
         }
@@ -219,7 +224,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
         for (String pod : waitPod.getAllPods()) {
             try {
                 api.deleteNamespacedPod(pod, systemProperties.getK8sNamespace(), null,
-                    null, null, null, null, null);
+                        null, null, null, null, null);
             } catch (ApiException e) {
                 log.warn("action=cleanPods||clean pod:{} error:{}", pod, e.getResponseBody());
             }
@@ -238,7 +243,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
         try {
             packageComponentZip(taskId);
         } catch (IOException e) {
-            log.error("action=setTaskSucceed || Can not pack component package!",e);
+            log.error("action=setTaskSucceed || Can not pack component package!", e);
             String message = String.format("Can not pack component package, Exception:%s", ExceptionUtil.getStackTrace(e));
             WaitKanikoBuildPod waitPod = waitTaskMap.get(taskId);
             waitPod.appendLog(message);
@@ -247,7 +252,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
         }
         WaitKanikoBuildPod waitPod = waitTaskMap.remove(taskId);
         ComponentPackageTaskDO taskDO = componentPackageTaskRepository.getByCondition(
-            ComponentPackageTaskQueryCondition.builder().id(taskId).build());
+                ComponentPackageTaskQueryCondition.builder().id(taskId).build());
         taskDO.setTaskLog(waitPod.getLog());
         componentPackageTaskRepository.updateByCondition(taskDO, ComponentPackageTaskQueryCondition.builder().id(taskDO.getId()).build());
         publisher.publishEvent(new SucceedComponentPackageTaskEvent(this, taskId));
@@ -255,7 +260,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
         cleanRecord(taskId);
     }
 
-    @Scheduled(fixedDelay = 20*1000)
+    @Scheduled(fixedDelay = 20 * 1000)
     private void checkTaskStatus() {
         HashSet<Long> taskIds = new HashSet<>(waitTaskMap.keySet());
         if (CollectionUtils.isEmpty(taskIds)) {
@@ -263,7 +268,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
         }
         for (Long taskId : taskIds) {
             WaitKanikoBuildPod waitePod = waitTaskMap.get(taskId);
-            if (waitePod==null) {
+            if (waitePod == null) {
                 continue;
             } else {
                 if (waitePod.haveFailed()) {
@@ -279,7 +284,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
                         try {
                             V1Pod v1Pod = api.readNamespacedPodStatus(runningPod, systemProperties.getK8sNamespace(), null);
                             String podLog = api.readNamespacedPodLog(runningPod, systemProperties.getK8sNamespace(),
-                                null, null, null, null, null, null, null, null, null);
+                                    null, null, null, null, null, null, null, null, null);
                             if (PodStatusPhaseEnum.Failed.name().equalsIgnoreCase(v1Pod.getStatus().getPhase())) {
                                 waitePod.changeStatus(runningPod, PodStatusPhaseEnum.Failed, BuildUtil.genLogContent(runningPod, podLog));
                             } else if (PodStatusPhaseEnum.Succeeded.name().equalsIgnoreCase(v1Pod.getStatus().getPhase())) {
@@ -288,7 +293,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
                         } catch (ApiException e) {
                             log.warn("action=checkTaskStatus|| can not read pod:{} status!", runningPod, e);
                             waitePod.addAccessError();
-                            if (waitePod.getAccessError()>=10) {
+                            if (waitePod.getAccessError() >= 10) {
                                 String message = String.format("\nCan not read pod:%s status! \nException:%s", runningPod, ExceptionUtil.getStackTrace(e));
                                 waitePod.appendLog(BuildUtil.genLogContent(runningPod, message));
                                 setTaskFailed(taskId);
@@ -344,7 +349,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
     }
 
     private V1Pod renderBuildPod(CoreV1Api api, JSONObject container, String podTpl,
-                            ComponentPackageTaskDO taskDO, String relativePath, long tag, Set<String> remoteObjectSet)
+                                 ComponentPackageTaskDO taskDO, String relativePath, long tag, Set<String> remoteObjectSet)
             throws Exception {
         Object nameOb = JsonUtil.recursiveGetParameter(container,
                 Collections.singletonList("name"));
@@ -375,7 +380,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
             dockerFileName = tplName.substring(0, tplName.length() - 4);
         }
         if (tplName.contains("/")) {
-            dockerFileName = dockerFileName.substring(tplName.lastIndexOf("/")+1);
+            dockerFileName = dockerFileName.substring(tplName.lastIndexOf("/") + 1);
         }
         File dockerTemplateFile = new File(buildAbsolutePath + tplName);
         if (!dockerTemplateFile.exists()) {
@@ -583,7 +588,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
     public void genComponentPackageRecord(ComponentPackageDO componentPackageDO, Long taskId) {
         componentPackageRepository.insert(componentPackageDO);
         ComponentPackageTaskDO taskDO = componentPackageTaskRepository.getByCondition(
-            ComponentPackageTaskQueryCondition.builder().id(taskId).build());
+                ComponentPackageTaskQueryCondition.builder().id(taskId).build());
         taskDO.setComponentPackageId(componentPackageDO.getId());
         componentPackageTaskRepository.updateByCondition(taskDO, ComponentPackageTaskQueryCondition.builder().id(taskDO.getId()).build());
     }

@@ -56,7 +56,7 @@ class JobComponentBuildHandler implements BuildComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 18
+    public static final Integer REVISION = 19
 
     private static final String TEMPLATE_JOB_FILENAME = "default_job.tpl"
 
@@ -207,6 +207,7 @@ class JobComponentBuildHandler implements BuildComponentHandler {
         def response = imageBuilderService.build(ImageBuilderCreateReq.builder()
                 .arch(arch)
                 .appId(request.getAppId())
+                .componentType(request.getComponentType())
                 .componentName(request.getComponentName())
                 .basename(container.getString("name"))
                 .useExistImage(build.getString("useExistImage"))
@@ -228,6 +229,7 @@ class JobComponentBuildHandler implements BuildComponentHandler {
                 .args(JSON.parseObject(
                         build.getJSONObject("args").toString(),
                         new TypeReference<Map<String, String>>() {}))
+                .version(request.getVersion())
                 .build())
         def result = response.get()
         def imageName = result.getImageName()

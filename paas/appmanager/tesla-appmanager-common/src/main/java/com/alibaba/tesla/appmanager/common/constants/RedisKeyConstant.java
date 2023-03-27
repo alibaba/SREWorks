@@ -16,4 +16,10 @@ public final class RedisKeyConstant {
      * 应用配置前缀
      */
     public static final String APP_OPTION = "APP_OPTION_";
+
+
+    public static final String COMPONENT_PACKAGE_TASK_LOG = "COMPONENT_PACKAGE_TASK_LOG";
+    public static final String WORKFLOW_TASK_LOG = "WORKFLOW_TASK_LOG";
+    public static final String DEPLOY_TASK_LOG = "DEPLOY_TASK_LOG";
+    public static final String STREAM_LOG_KEY = "msg";
 }

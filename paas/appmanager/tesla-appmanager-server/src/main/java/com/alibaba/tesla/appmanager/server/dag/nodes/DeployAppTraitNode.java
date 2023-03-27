@@ -48,6 +48,8 @@ import java.util.*;
 @Slf4j
 public class DeployAppTraitNode extends AbstractLocalNodeBase {
 
+    public static Integer runTimeout = 3600;
+
     private static final Long UNKNOWN_VALUE = -1L;
 
     @Override

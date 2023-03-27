@@ -63,6 +63,11 @@ public class ImageBuilderCreateReq implements Serializable {
     private String appId;
 
     /**
+     * 组件类型
+     */
+    private String componentType;
+
+    /**
      * 组件名称
      */
     private String componentName;
@@ -116,4 +121,9 @@ public class ImageBuilderCreateReq implements Serializable {
      * Dockerfile 构建参数字典
      */
     private Map<String, String> args = new HashMap<>();
+
+    /**
+     * version
+     */
+    private String version;
 }

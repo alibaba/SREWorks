@@ -4,16 +4,17 @@ import com.alibaba.tesla.appmanager.common.enums.ComponentPackageTaskStateEnum;
 import com.alibaba.tesla.appmanager.server.action.ComponentPackageTaskStateAction;
 import com.alibaba.tesla.appmanager.server.event.loader.ComponentPackageTaskStateActionLoadedEvent;
 import com.alibaba.tesla.appmanager.server.repository.ComponentPackageTaskRepository;
+import com.alibaba.tesla.appmanager.server.repository.condition.AppPackageTaskQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.condition.ComponentPackageTaskQueryCondition;
+import com.alibaba.tesla.appmanager.server.repository.domain.AppPackageTaskDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.ComponentPackageTaskDO;
+import com.alibaba.tesla.appmanager.server.service.apppackage.AppPackageTaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 
 /**
  * Component Package State 处理 Action - SUCCESS
@@ -33,7 +34,7 @@ public class SuccessComponentPackageTaskStateAction implements ComponentPackageT
     private ApplicationEventPublisher publisher;
 
     @Autowired
-    private ComponentPackageTaskRepository componentPackageTaskRepository;
+    private AppPackageTaskService appPackageTaskService;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -48,15 +49,7 @@ public class SuccessComponentPackageTaskStateAction implements ComponentPackageT
      */
     @Override
     public void run(ComponentPackageTaskDO task) {
-        updateComponentTaskStatus(task);
+        appPackageTaskService.updateComponentTaskStatus(task, STATE);
         log.info("reached success state|componentPackageTaskId={}", task.getId());
-    }
-
-    private void updateComponentTaskStatus(ComponentPackageTaskDO taskDO) {
-        String oldStautus = taskDO.getTaskStatus();
-        // 状态转移
-        taskDO.setTaskStatus(STATE.toString());
-        componentPackageTaskRepository.updateByCondition(taskDO, ComponentPackageTaskQueryCondition.builder().id(taskDO.getId()).build());
-        log.info("actionName=RunningComponentPackageTask||status transitioned from {} to {}", oldStautus, STATE.toString());
     }
 }

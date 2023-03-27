@@ -264,8 +264,14 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
                     for (String runningPod : runningPods) {
                         try {
                             V1Pod v1Pod = api.readNamespacedPodStatus(runningPod, systemProperties.getK8sNamespace(), null);
-                            String podLog = api.readNamespacedPodLog(runningPod, systemProperties.getK8sNamespace(),
-                                null, null, null, null, null, null, null, null, null);
+                            String podLog = null;
+                            try {
+                                podLog = api.readNamespacedPodLog(runningPod, systemProperties.getK8sNamespace(),
+                                    null, null, null, null, null, null, null, null, null);
+                            } catch (ApiException e) {
+                                log.warn("action=checkTaskStatus|| Can not read pod log, pod:{}", runningPod, e);
+                                podLog = String.format("Read pod log failed! Exception:%s", ExceptionUtil.getStackTrace(e));
+                            }
                             if (PodStatusPhaseEnum.Failed.name().equalsIgnoreCase(v1Pod.getStatus().getPhase())) {
                                 waitePod.changeStatus(runningPod, PodStatusPhaseEnum.Failed, BuildUtil.genLogContent(runningPod, podLog));
                             } else if (PodStatusPhaseEnum.Succeeded.name().equalsIgnoreCase(v1Pod.getStatus().getPhase())) {

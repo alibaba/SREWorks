@@ -1,0 +1,27 @@
+apiVersion: core.oam.dev/v1beta1
+kind: TraitDefinition
+metadata:
+  name: service.trait.sreworks.io/v1beta1
+  annotations:
+    definition.oam.dev/description: "The Kubernetes NodePort Service"
+    definition.oam.dev/version: "1.0.1"
+    definition.oam.dev/tags: "key=value"
+spec:
+  appliesToWorkloads:
+    - helm.component.sreworks.io/v1beta1
+    - microservice.component.sreworks.io/v1beta1
+  schematic:
+    groovy:
+      files:
+        - kind: TRAIT
+          path: dynamicscripts/TraitService.groovy
+          name: "service.trait.sreworks.io/v1beta1"
+          properties:
+            runtime: post
+            definitionSchema:
+              name: "service.trait.schema.sreworks.io"
+              jsonSchema: {}
+    frontend:
+      files:
+        - kind: DEPLOY
+          path: frontends/deploy.json

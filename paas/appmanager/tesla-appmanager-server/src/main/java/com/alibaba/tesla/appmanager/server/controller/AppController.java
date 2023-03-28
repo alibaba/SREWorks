@@ -9,6 +9,7 @@ import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.dto.AppMetaDTO;
+import com.alibaba.tesla.appmanager.domain.dto.DeployConfigDTO;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaCreateReq;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaQueryReq;
@@ -16,6 +17,7 @@ import com.alibaba.tesla.appmanager.domain.req.AppMetaUpdateReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigApplyTemplateReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigGenerateReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigListReq;
 import com.alibaba.tesla.appmanager.domain.res.appmeta.AppGetVersionRes;
 import com.alibaba.tesla.appmanager.domain.res.apppackage.ApplicationConfigurationGenerateRes;
 import com.alibaba.tesla.appmanager.domain.res.deployconfig.DeployConfigGenerateRes;
@@ -121,6 +123,24 @@ public class AppController extends AppManagerBaseController {
 
         request.setAppId(appId);
         boolean result = appMetaProvider.delete(request, getOperator(auth));
+        if (request.getRemoveAllDeployConfigs()) {
+            DeployConfigListReq deployConfigRequest = DeployConfigListReq.builder()
+                    .appId(request.getAppId())
+                    .build();
+            Pagination<DeployConfigDTO> deployConfigs = deployConfigProvider.list(deployConfigRequest);
+            for (DeployConfigDTO deployConfigDTO : deployConfigs.getItems()) {
+                deployConfigProvider.delete(
+                        DeployConfigDeleteReq.builder()
+                            .appId(deployConfigDTO.getAppId())
+                            .apiVersion(deployConfigDTO.getApiVersion())
+                            .typeId(deployConfigDTO.getTypeId())
+                            .envId(deployConfigDTO.getEnvId())
+                            .isolateNamespaceId(deployConfigDTO.getNamespaceId())
+                            .isolateStageId(deployConfigDTO.getStageId())
+                            .build()
+                );
+            }
+        }
         return buildSucceedResult(result);
     }
 

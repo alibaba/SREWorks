@@ -19,4 +19,9 @@ public class AppMetaDeleteReq {
      * 删除所有应用实例
      */
     private Boolean removeAllInstances = false;
+
+    /**
+     * 删除相关的deployConfig
+     */
+    private Boolean removeAllDeployConfigs = false;
 }

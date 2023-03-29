@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="paas/sw-frontend/src/publicMedia/sreworks-logo.png" width="120">
+  <img src="/paas/frontend/app/src/assets/icons/sreworks-logo.png" width="120">
 </p>
 <h1 align="center"> SREWorks </h1>
 <p align="center"><b> 云原生数智运维平台 </b></p>
@@ -50,21 +50,17 @@ SREWorks 作为阿里云大数据SRE团队对SRE理念的工程实践，专注�
 
 ## 路线图
 
-[版本记录](/paas/sw-frontend/docs/documents/ogxnmx.md)
-
-## 贡献
-
-[如何参与SREWorks开源](/paas/sw-frontned/docs/documents/yc64sk.md)
+[版本记录](/paas/frontend/docs/docs/ogxnmx.md)
 
 ## 联系我们
 
 - 微信群: SREWorks小助手会发送群聊邀请
 
-<img src="/paas/sw-frontend/src/publicMedia/weixin.jpg" width="100" />
+<img src="/paas/frontend/app/src/assets/icons/weixin.jpg" width="100" />
 
 - 钉钉群: 35853026
 
-<img src="/paas/sw-frontend/src/publicMedia/ding.jpg" width="100" />
+<img src="/paas/frontend/app/src/assets/icons/ding.jpg" width="100" />
 
 
 

@@ -13,7 +13,7 @@ import Filter from './filter'
 import Action from './action'
 import Block from './block'
 import ToolBar from './toolbar'
-import { JSXRender } from '@sreworks/components'
+import { JSXRender, ErrorBoundary } from '@sreworks/components'
 
 import './index.less'
 
@@ -234,7 +234,7 @@ export default class WidgetCard extends React.Component {
       )
     }
     if (this.wrapperType === Constants.CARD_WRAPPER_NONE) {
-      return cardContent
+      return <ErrorBoundary>{cardContent}</ErrorBoundary>
     }
     let margin =
       mode === Constants.WIDGET_MODE_EDIT
@@ -363,7 +363,7 @@ export default class WidgetCard extends React.Component {
           ? ['abm_frontend_widget_component_wrapper', 'transparent-panel']
           : ['abm_frontend_widget_component_wrapper']
       return (
-        <div>
+        <ErrorBoundary>
           <section
             style={{
               display: 'flex',
@@ -418,60 +418,62 @@ export default class WidgetCard extends React.Component {
               </div>
             )}
           </div>
-        </div>
+        </ErrorBoundary>
       )
     }
     if (widgetModel.hasToolbar() || foldEnable || hiddenEnable || title) {
       headerExist = true
     }
     return (
-      <Card
-        size="small"
-        style={widgetModel.config.style || {}}
-        bordered={cardBorder}
-        className="abm_frontend_widget_component_wrapper"
-        bodyStyle={{
-          overflow: widgetModel.config.gridPos ? 'auto' : 'none',
-          height: cardHeight === 'auto' ? 'auto' : calcHeight - (toolbarItem ? 46 : 42),
-          padding: 8,
-          backgroundColor: backgroundColor ? backgroundColor : undefined,
-          display: fold ? 'none' : undefined,
-        }}
-        headStyle={{
-          backgroundColor: headerColor
-            ? headerColor === 'theme'
-              ? 'var(--PrimaryColor)'
-              : headerColor
-            : undefined,
-        }}
-        title={
-          headerExist && (
-            <div className="card-title-wrapper">
-              {this.wrapperType !== Constants.CARD_WRAPPER_ADVANCED && title && (
-                <div className="card-wrapper-title-prefix" />
-              )}
-              <div style={{ display: 'flex' }}>
-                {title && (
-                  <h2
-                    style={{
-                      margin: 'auto',
-                      paddingLeft: '10px',
-                      fontSize: 14,
-                      marginRight: title ? '12px' : '0px',
-                    }}
-                  >
-                    <JSXRender jsx={title || ''} />
-                  </h2>
+      <ErrorBoundary>
+        <Card
+          size="small"
+          style={widgetModel.config.style || {}}
+          bordered={cardBorder}
+          className="abm_frontend_widget_component_wrapper"
+          bodyStyle={{
+            overflow: widgetModel.config.gridPos ? 'auto' : 'none',
+            height: cardHeight === 'auto' ? 'auto' : calcHeight - (toolbarItem ? 46 : 42),
+            padding: 8,
+            backgroundColor: backgroundColor ? backgroundColor : undefined,
+            display: fold ? 'none' : undefined,
+          }}
+          headStyle={{
+            backgroundColor: headerColor
+              ? headerColor === 'theme'
+                ? 'var(--PrimaryColor)'
+                : headerColor
+              : undefined,
+          }}
+          title={
+            headerExist && (
+              <div className="card-title-wrapper">
+                {this.wrapperType !== Constants.CARD_WRAPPER_ADVANCED && title && (
+                  <div className="card-wrapper-title-prefix" />
                 )}
-                {toolbarLeft}
+                <div style={{ display: 'flex' }}>
+                  {title && (
+                    <h2
+                      style={{
+                        margin: 'auto',
+                        paddingLeft: '10px',
+                        fontSize: 14,
+                        marginRight: title ? '12px' : '0px',
+                      }}
+                    >
+                      <JSXRender jsx={title || ''} />
+                    </h2>
+                  )}
+                  {toolbarLeft}
+                </div>
               </div>
-            </div>
-          )
-        }
-        extra={headerExist ? toolbarRight : null}
-      >
-        {cardContent}
-      </Card>
+            )
+          }
+          extra={headerExist ? toolbarRight : null}
+        >
+          {cardContent}
+        </Card>
+      </ErrorBoundary>
     )
   }
 }

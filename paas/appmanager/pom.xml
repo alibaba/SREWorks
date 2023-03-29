@@ -7,7 +7,7 @@
     <groupId>com.alibaba.tesla</groupId>
     <artifactId>tesla-appmanager</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.6-SNAPSHOT</version>
+    <version>1.0.8-SNAPSHOT</version>
     <modules>
         <module>tesla-appmanager-api</module>
         <module>tesla-appmanager-common</module>
@@ -30,6 +30,7 @@
         <module>tesla-appmanager-market</module>
         <module>tesla-appmanager-storage</module>
         <module>tesla-appmanager-encryption</module>
+        <module>plugin-api</module>
     </modules>
 
     <name>tesla-appmanager</name>
@@ -61,7 +62,7 @@
 
         <!-- tesla -->
         <tesla.spring.boot.version>2.1.9</tesla.spring.boot.version>
-        <task-flow-service.version>1.1.0</task-flow-service.version>
+        <task-flow-service.version>1.2.3</task-flow-service.version>
 
         <!-- other -->
         <knife4j-springdoc-ui.version>3.0.3</knife4j-springdoc-ui.version>
@@ -81,7 +82,7 @@
         <aspectj.aspectjweaver.version>1.9.8</aspectj.aspectjweaver.version>
         <janino.version>3.1.6</janino.version>
         <fabric8.version>5.8.1</fabric8.version>
-        <redission.version>3.17.3</redission.version>
+        <redission.version>3.20.0</redission.version>
         <jjwt.version>0.9.1</jjwt.version>
 
         <!--k8s-->
@@ -102,6 +103,9 @@
         <assertj-core.version>3.22.0</assertj-core.version>
         <snakeyaml.version>1.30</snakeyaml.version>
         <semver4j.version>3.1.0</semver4j.version>
+
+        <!-- jenkins -->
+        <jenkins-client.version>0.3.8</jenkins-client.version>
     </properties>
 
     <dependencyManagement>
@@ -428,6 +432,13 @@
                 <version>${hikaricp.version}</version>
             </dependency>
 
+            <!-- rms -->
+            <dependency>
+                <groupId>com.aliyun.inner</groupId>
+                <artifactId>tesla_k8s20221228</artifactId>
+                <version>0.0.7</version>
+            </dependency>
+
             <!-- zt-exec -->
             <dependency>
                 <groupId>org.zeroturnaround</groupId>
@@ -439,6 +450,13 @@
                 <groupId>org.gitlab4j</groupId>
                 <artifactId>gitlab4j-api</artifactId>
                 <version>5.0.1</version>
+            </dependency>
+
+            <!-- jenkins -->
+            <dependency>
+                <groupId>com.offbytwo.jenkins</groupId>
+                <artifactId>jenkins-client</artifactId>
+                <version>${jenkins-client.version}</version>
             </dependency>
 
             <!-- shedlock -->

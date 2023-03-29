@@ -7,6 +7,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.zeroturnaround.exec.ProcessExecutor;
 import org.zeroturnaround.exec.ProcessResult;
 import org.zeroturnaround.exec.stop.DestroyProcessStopper;
+import org.zeroturnaround.exec.stream.LogOutputStream;
 import org.zeroturnaround.exec.stream.slf4j.Slf4jStream;
 
 import java.io.File;
@@ -26,6 +27,26 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 public class CommandUtil {
 
+    public static String runLocalCommand(String[] commands) {
+        return runLocalCommand(commands, new HashMap<>(), null, null);
+    }
+
+    public static String runLocalCommand(String[] commands, File pwd) {
+        return runLocalCommand(commands, new HashMap<>(), pwd, null);
+    }
+
+    public static String runLocalCommand(String[] commands, LogOutputStream logOutputStream) {
+        return runLocalCommand(commands, new HashMap<>(), null, logOutputStream);
+    }
+
+    public static String runLocalCommand(String[] commands, File pwd, LogOutputStream logOutputStream) {
+        return runLocalCommand(commands, new HashMap<>(), pwd, logOutputStream);
+    }
+
+    public static String runLocalCommand(String[] commands, Map<String, String> envMap, File pwd) {
+        return runLocalCommand(commands, new HashMap<>(), pwd, null);
+    }
+
     /**
      * 在本机运行命令，并返回运行结果
      *
@@ -33,7 +54,7 @@ public class CommandUtil {
      * @param envMap   环境变量字典
      * @return 命令执行结果
      */
-    public static String runLocalCommand(String[] commands, Map<String, String> envMap, File pwd) {
+    public static String runLocalCommand(String[] commands, Map<String, String> envMap, File pwd, LogOutputStream logOutputStream) {
         // 前置安全过滤
         List<String> safeCommands = new ArrayList<>();
         for (String command : commands) {
@@ -55,6 +76,9 @@ public class CommandUtil {
                     .stopper(DestroyProcessStopper.INSTANCE)
                     .readOutput(true);
 
+            if (logOutputStream != null) {
+                process.redirectOutput(logOutputStream);
+            }
             if (pwd != null) {
                 process.directory(pwd);
             }
@@ -76,13 +100,6 @@ public class CommandUtil {
         }
     }
 
-    public static String runLocalCommand(String[] commands, File pwd) {
-        return runLocalCommand(commands, new HashMap<>(), pwd);
-    }
-
-    public static String runLocalCommand(String[] commands) {
-        return runLocalCommand(commands, new HashMap<>(), null);
-    }
 
     /**
      * 将需要执行的命令转换为 bash 执行 (一般用于通配符及重定向等)

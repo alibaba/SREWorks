@@ -82,11 +82,20 @@ public class LoginController extends BaseController {
         param.cleanSelf();
 
         //每次点击登录先清理cookie
-        String topDomain = CookieUtil.getCookieDomain(request, authProperties.getCookieDomain());
-        CookieUtil.cleanDomainCookie(request, response, Constants.COOKIE_DATABASE_LOGIN_TOKEN, topDomain, "/");
-        CookieUtil.cleanDomainCookie(request, response, Constants.COOKIE_DATABASE_LOGIN_USER_ID, topDomain, "/");
-        CookieUtil.cleanDomainCookie(request, response, Constants.COOKIE_LANG, topDomain, "/");
-        CookieUtil.cleanDomainCookie(request, response, Constants.COOKIE_COUNTRY, topDomain, "/");
+        String topDomain;
+        if(StringUtil.isEmpty(authProperties.getCookieDomain())){
+            topDomain = CookieUtil.getCookieDomain(request, authProperties.getCookieDomain());
+            CookieUtil.cleanDomainCookie(request, response, Constants.COOKIE_DATABASE_LOGIN_TOKEN, topDomain, "/");
+            CookieUtil.cleanDomainCookie(request, response, Constants.COOKIE_DATABASE_LOGIN_USER_ID, topDomain, "/");
+            CookieUtil.cleanDomainCookie(request, response, Constants.COOKIE_LANG, topDomain, "/");
+            CookieUtil.cleanDomainCookie(request, response, Constants.COOKIE_COUNTRY, topDomain, "/");
+        }else{
+            topDomain = null;
+            CookieUtil.cleanLoginCookie(request, response, Constants.COOKIE_DATABASE_LOGIN_TOKEN);
+            CookieUtil.cleanLoginCookie(request, response, Constants.COOKIE_DATABASE_LOGIN_USER_ID);
+            CookieUtil.cleanLoginCookie(request, response, Constants.COOKIE_LANG);
+            CookieUtil.cleanLoginCookie(request, response, Constants.COOKIE_COUNTRY);
+        }
 
         // 根据提供的参数进行登录
         UserDO userDo = teslaUserService.getUserByLoginNameAndPwd(param.getLoginName(), param.getPassword());

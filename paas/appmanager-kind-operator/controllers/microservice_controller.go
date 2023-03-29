@@ -37,11 +37,11 @@ var log = ctrl.Log.WithName(controllerName)
 // +kubebuilder:rbac:groups=core,resources=services,verbs=get;list;watch;create;update;patch;delete
 
 func (r *MicroserviceReconciler) manageOperatorLogic(context context.Context, req ctrl.Request,
-	instance *appmanagerabmiov1.Microservice) error {
+	instance *appmanagerabmiov1.Microservice) (bool, error) {
 
 	targetRevision, err := helper.GetRevision(&instance.ObjectMeta)
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	// Reconcile
@@ -55,7 +55,7 @@ func (r *MicroserviceReconciler) manageOperatorLogic(context context.Context, re
 	case appmanagerabmiov1.KIND_ADVANCEDSTATEFULSET:
 		return r.ReconcileMicroserviceAdvancedStatefulSet(context, req, instance, targetRevision)
 	default:
-		return errors.New(fmt.Sprintf("not valid microservice kind, detail=%+v", instance))
+		return false, errors.New(fmt.Sprintf("not valid microservice kind, detail=%+v", instance))
 	}
 }
 
@@ -153,11 +153,13 @@ func (r *MicroserviceReconciler) Reconcile(context context.Context, req ctrl.Req
 	}
 	log.Info("check initialization finished")
 
-	if err = r.manageOperatorLogic(context, req, instance); err != nil {
+	changed, err := r.manageOperatorLogic(context, req, instance)
+	if err != nil {
 		return r.ManageError(context, instance, err)
+	} else {
+		log.Info("cr operator logic has finished")
+		return r.ManageSuccess(context, instance, changed)
 	}
-	log.Info("cr operator logic has finished")
-	return r.ManageSuccess(context, instance)
 }
 
 func (r *MicroserviceReconciler) SetupWithManager(mgr ctrl.Manager) error {

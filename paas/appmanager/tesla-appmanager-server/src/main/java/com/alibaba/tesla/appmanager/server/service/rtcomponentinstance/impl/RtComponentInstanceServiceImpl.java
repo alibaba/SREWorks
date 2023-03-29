@@ -186,7 +186,7 @@ public class RtComponentInstanceServiceImpl implements RtComponentInstanceServic
             log.debug("report request has processed|condition={}", JSONObject.toJSONString(condition));
         }
 
-        log.info("action=componentInstanceStatusReport|component instance status has reported|appInstanceId={}|" +
+        log.info("action=componentInstanceStatusReportRaw|component instance status has reported|appInstanceId={}|" +
                         "componentInstanceId={}|appId={}|clusterId={}|namespaceId={}|componentName={}|status={}",
                 record.getAppInstanceId(), componentInstanceId, record.getAppId(),
                 record.getClusterId(), record.getNamespaceId(), record.getComponentName(), record.getStatus());
@@ -212,95 +212,45 @@ public class RtComponentInstanceServiceImpl implements RtComponentInstanceServic
         if (records.size() > 1) {
             throw new AppException(AppErrorCode.UNKNOWN_ERROR,
                     String.format("multiple realtime component instances found|condition=%s", conditionStr));
-        }
-
-        // 检查 app instance 是否存在
-        String appInstanceId = InstanceIdUtil.genAppInstanceId(request.getAppId(), request.getClusterId(),
-                request.getNamespaceId(), request.getStageId());
-        RtAppInstanceDO appInstance = rtAppInstanceService.get(RtAppInstanceQueryCondition.builder()
-                .appId(request.getAppId())
-                .clusterId(request.getClusterId())
-                .namespaceId(request.getNamespaceId())
-                .stageId(request.getStageId())
-                .build());
-        if (appInstance == null) {
-            String errorMessage = String.format("action=componentInstanceStatusReport|cannot find app instance by " +
-                            "component instance query condition|appInstanceId=%s|componentInstanceId=%s|appId=%s|" +
-                            "clusterId=%s|namespaceId=%s|componentName=%s|status=%s",
-                    appInstanceId, componentInstanceId,
-                    request.getAppId(), request.getClusterId(), request.getNamespaceId(), request.getComponentName(),
-                    request.getStatus());
-            if (ignoreError) {
-                log.warn(errorMessage);
-                return;
-            } else {
-                throw new AppException(AppErrorCode.UNKNOWN_ERROR, errorMessage);
-            }
+        } else if (records.size() == 0) {
+            log.error("invalid component instance status report, no related records found in database|request={}",
+                    JSONObject.toJSONString(request));
+            return;
         }
 
         // 获取 component type 对象实例
-        if (records.size() == 1) {
-            RtComponentInstanceDO record = records.get(0);
-            record.setAppInstanceId(appInstanceId);
-            record.setAppId(request.getAppId());
-            record.setComponentType(request.getComponentType());
-            record.setComponentName(request.getComponentName());
-            record.setVersion(request.getVersion());
-            record.setClusterId(request.getClusterId());
-            record.setNamespaceId(request.getNamespaceId());
-            record.setStageId(request.getStageId());
-            record.setVersion(request.getVersion());
-            record.setStatus(request.getStatus());
-            record.setWatchKind(getWatchKind(request.getComponentType()));
-            record.setTimes(record.getTimes());
-            record.setConditions(JSONObject.toJSONString(request.getConditions()));
-            int updated = repository.updateByCondition(record, condition);
-            if (updated == 0) {
-                if (ignoreError) {
-                    log.debug("report request has ignored because of lock version|condition={}", conditionStr);
-                } else {
-                    throw new AppException(AppErrorCode.LOCKER_VERSION_EXPIRED,
-                            String.format("report request has ignored because of lock version|condition=%s",
-                                    conditionStr));
-                }
+        RtComponentInstanceDO record = records.get(0);
+        // 此处不覆盖 appId 内容，避免有自定义 appId 的情况
+        record.setComponentType(request.getComponentType());
+        record.setComponentName(request.getComponentName());
+        record.setVersion(request.getVersion());
+        record.setClusterId(request.getClusterId());
+        record.setNamespaceId(request.getNamespaceId());
+        record.setStageId(request.getStageId());
+        record.setVersion(request.getVersion());
+        record.setStatus(request.getStatus());
+        record.setWatchKind(getWatchKind(request.getComponentType()));
+        record.setTimes(record.getTimes());
+        record.setConditions(JSONObject.toJSONString(request.getConditions()));
+        int updated = repository.updateByCondition(record, condition);
+        if (updated == 0) {
+            if (ignoreError) {
+                log.debug("report request has ignored because of lock version|condition={}", conditionStr);
             } else {
-                log.debug("report request has processed|condition={}", conditionStr);
+                throw new AppException(AppErrorCode.LOCKER_VERSION_EXPIRED,
+                        String.format("report request has ignored because of lock version|condition=%s",
+                                conditionStr));
             }
         } else {
-            RtComponentInstanceDO record = RtComponentInstanceDO.builder()
-                    .componentInstanceId(componentInstanceId)
-                    .appInstanceId(appInstanceId)
-                    .appId(request.getAppId())
-                    .componentType(request.getComponentType())
-                    .componentName(request.getComponentName())
-                    .clusterId(request.getClusterId())
-                    .namespaceId(request.getNamespaceId())
-                    .stageId(request.getStageId())
-                    .version(request.getVersion())
-                    .status(request.getStatus())
-                    .watchKind(getWatchKind(request.getComponentType()))
-                    .times(0L)
-                    .conditions(JSONObject.toJSONString(request.getConditions()))
-                    .build();
-            try {
-                repository.insert(record);
-            } catch (Exception e) {
-                if (ignoreError) {
-                    log.info("report request has ignored because of race condition|condition={}", conditionStr);
-                } else {
-                    throw new AppException(AppErrorCode.LOCKER_VERSION_EXPIRED,
-                            String.format("report request has ignored becuase of race condition|condition=%s",
-                                    conditionStr));
-                }
-            }
+            log.debug("report request has processed|condition={}", conditionStr);
         }
         log.info("action=componentInstanceStatusReport|component instance status has reported|appInstanceId={}|" +
                         "componentInstanceId={}|appId={}|clusterId={}|namespaceId={}|componentName={}|status={}",
-                appInstanceId, componentInstanceId, request.getAppId(),
+                record.getAppInstanceId(), componentInstanceId, record.getAppId(),
                 request.getClusterId(), request.getNamespaceId(), request.getComponentName(), request.getStatus());
 
         // 触发 app instance 层面的状态更新
-        rtAppInstanceService.asyncTriggerStatusUpdate(appInstanceId);
+        rtAppInstanceService.asyncTriggerStatusUpdate(record.getAppInstanceId());
     }
 
     /**

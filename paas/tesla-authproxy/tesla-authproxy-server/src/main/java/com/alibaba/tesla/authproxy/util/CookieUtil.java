@@ -1,6 +1,7 @@
 package com.alibaba.tesla.authproxy.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -126,7 +127,7 @@ public class CookieUtil {
         cookie.setMaxAge(maxAge == 0 ? 24 * 60 * 60 : maxAge);
         cookie.setPath("/");
         cookie.setHttpOnly(false);
-        if (!LOCAL_DOMAIN.equals(domain)) {
+        if (StringUtils.isNoneEmpty(domain) && !LOCAL_DOMAIN.equals(domain)) {
             cookie.setDomain(domain);
         }
         response.addCookie(cookie);

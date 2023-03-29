@@ -58,20 +58,20 @@ func (r *MicroserviceReconciler) constructForDeployment(raw *appmanagerabmiov1.M
 
 func (r *MicroserviceReconciler) ReconcileMicroserviceDeployment(
 	ctx context.Context, req ctrl.Request, microservice *appmanagerabmiov1.Microservice,
-	targetRevision string) error {
+	targetRevision string) (bool, error) {
 
 	log := r.Log.WithValues("microservice", req.NamespacedName)
 
 	var deploymentList appsv1.DeploymentList
 	if err := helper.ListChildren(r, ctx, &deploymentList, &req, helper.DeploymentOwnerKey); err != nil {
 		log.Error(err, "list children failed")
-		return nil
+		return false, err
 	}
 
 	// 当进行 kind 变换的时候，删除所有非当前类型的其他资源
 	if err := helper.RemoveUselessKindResource(r.Client, ctx, &req, helper.DeploymentOwnerKey); err != nil {
 		log.Error(err, "remove useless kind resource failed")
-		return nil
+		return false, err
 	}
 
 	itemCount := len(deploymentList.Items)
@@ -92,7 +92,7 @@ func (r *MicroserviceReconciler) ReconcileMicroserviceDeployment(
 		}
 	}
 	if deleted {
-		return nil
+		return true, nil
 	}
 
 	// 已经全部删除或不存在可用 Deployment 了
@@ -100,23 +100,23 @@ func (r *MicroserviceReconciler) ReconcileMicroserviceDeployment(
 		deployment, err := r.constructForDeployment(microservice)
 		if err != nil {
 			log.Error(err, "unable to construct deployment in kubernetes context")
-			return err
+			return false, err
 		}
 		if err := r.Create(ctx, deployment); err != nil {
 			log.Error(err, "unable to create deployment in kubernetes context",
 				"deployment", deployment)
-			return err
+			return false, err
 		}
 		log.V(1).Info("created deployment for appmanager microservice", "deployment", deployment)
 
 		// 更新状态
 		microservice.Status.Condition = appmanagerabmiov1.MicroserviceProgressing
 		if err := r.Status().Update(ctx, microservice); err != nil {
-			return err
+			return false, err
 		}
 		log.V(1).Info(fmt.Sprintf("update microservice %s status to %s",
 			microservice.Name, appmanagerabmiov1.MicroserviceProgressing))
-		return nil
+		return true, nil
 	}
 
 	// 检查当前状态
@@ -140,12 +140,14 @@ func (r *MicroserviceReconciler) ReconcileMicroserviceDeployment(
 	}
 
 	// 更新当前 microservice 的状态
+	changed := false
 	if microservice.Status.Condition != finalCondition {
+		changed = true
 		microservice.Status.Condition = finalCondition
 		if err := r.Status().Update(ctx, microservice); err != nil {
-			return err
+			return false, err
 		}
 		log.V(1).Info(fmt.Sprintf("update microservice %s status to %s", microservice.Name, finalCondition))
 	}
-	return nil
+	return changed, nil
 }

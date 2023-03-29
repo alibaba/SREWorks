@@ -1,6 +1,7 @@
 package com.alibaba.tesla.appmanager.domain.req.componentpackage;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.domain.dto.ComponentPackageTaskDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BuildComponentHandlerReq {
+
+    /**
+     * 组件包任务 DTO
+     */
+    private ComponentPackageTaskDTO taskDTO;
 
     /**
      * 应用 ID

@@ -484,6 +484,76 @@ public class DynamicScriptHistoryDOExample {
             addCriterion("gmt_modified not between", value1, value2, "gmtModified");
             return (Criteria) this;
         }
+
+        public Criteria andEnvIdIsNull() {
+            addCriterion("env_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvIdIsNotNull() {
+            addCriterion("env_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvIdEqualTo(String value) {
+            addCriterion("env_id =", value, "envId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvIdNotEqualTo(String value) {
+            addCriterion("env_id <>", value, "envId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvIdGreaterThan(String value) {
+            addCriterion("env_id >", value, "envId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvIdGreaterThanOrEqualTo(String value) {
+            addCriterion("env_id >=", value, "envId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvIdLessThan(String value) {
+            addCriterion("env_id <", value, "envId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvIdLessThanOrEqualTo(String value) {
+            addCriterion("env_id <=", value, "envId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvIdLike(String value) {
+            addCriterion("env_id like", value, "envId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvIdNotLike(String value) {
+            addCriterion("env_id not like", value, "envId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvIdIn(List<String> values) {
+            addCriterion("env_id in", values, "envId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvIdNotIn(List<String> values) {
+            addCriterion("env_id not in", values, "envId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvIdBetween(String value1, String value2) {
+            addCriterion("env_id between", value1, value2, "envId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvIdNotBetween(String value1, String value2) {
+            addCriterion("env_id not between", value1, value2, "envId");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

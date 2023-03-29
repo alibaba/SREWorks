@@ -121,7 +121,6 @@ public class RequestsUtil {
                 jsonObject = JSONObject.parseObject(responseBodyString);
             } catch (Exception ignored) {
             }
-            log.info(JSONObject.toJSONString(jsonObject));
             if (jsonObject.getLongValue("code") >= 300) {
                 throw new IOException(String.format(
                     "response is not successful: %s; retBody: %s", response.toString(), getString()

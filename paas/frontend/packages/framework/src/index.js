@@ -1,3 +1,11 @@
+import jsYaml from "js-yaml";
+import _ from 'lodash';
+
+window.__FRAMEWORK_EXT_LIB={
+    jsYaml:jsYaml,
+    lodash:_,
+};
+
 export { default as ParameterMappingBuilder } from './components/ParameterMappingBuilder'
 export { default as ParameterDefiner } from './components/ParameterMappingBuilder/ParameterDefiner'
 export { default as Workbench } from './designer/workbench'

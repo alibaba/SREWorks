@@ -32,7 +32,7 @@ class TraitNodeSelector implements TraitHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 0
+    public static final Integer REVISION = 1
 
     /**
      * Trait 业务侧逻辑执行
@@ -59,7 +59,7 @@ class TraitNodeSelector implements TraitHandler {
             if (cloneSetSpec.get("nodeSelector") == null) {
                 cloneSetSpec.put("nodeSelector", nodeSelector)
                 log.info("nodeSelector {} has applied to workload {}|kind=cloneSet|append=false",
-                        nodeSelector.toJSONString(), JSONObject.toJSONString(getWorkloadRef().getMetadata()))
+                        nodeSelector.toJSONString(), JSONObject.toJSONString(request.getRef().getMetadata()))
             } else {
                 cloneSetSpec.getJSONObject("nodeSelector").putAll(nodeSelector)
                 log.info("nodeSelector {} has applied to workload {}|kind=cloneSet|append=true",

@@ -1,0 +1,50 @@
+{
+    "parameters": [{
+        "type": 1,
+        "name": "nodePort",
+        "label": "对外端口(30000~32767)",
+        "toFieldPath": "spec.nodePort"
+    },{
+        "type": 1,
+        "name": "backendPort",
+        "label": "后端服务端口",
+        "toFieldPath": "spec.backendPort"
+    },{
+        "type": 85,
+        "name": "selector",
+        "label": "后端选择器(selector)",
+        "defModel": {
+            "enableRemove": true,
+            "pagination": false,
+            "enableAdd": true,
+            "enableEdit": true,
+            "columns": [
+                {
+                    "editProps": {
+                        "name": "key",
+                        "label": "",
+                        "type": 1,
+                        "required": false,
+                        "inputTip": "key"
+                    },
+                    "dataIndex": "key",
+                    "title": "键",
+                    "key": "key"
+                },
+                {
+                    "editProps": {
+                        "name": "value",
+                        "label": "",
+                        "type": 1,
+                        "required": false,
+                        "inputTip": "value"
+                    },
+                    "dataIndex": "value",
+                    "title": "值",
+                    "key": "value"
+                }
+            ]
+        },
+        "toFieldPath": "spec.selector"
+    }]
+}

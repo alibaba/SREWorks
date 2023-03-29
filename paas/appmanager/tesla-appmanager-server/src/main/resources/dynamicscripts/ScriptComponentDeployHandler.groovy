@@ -51,7 +51,7 @@ class ScriptComponentDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 4
+    public static final Integer REVISION = 6
 
     /**
      * 上报状态常量
@@ -62,7 +62,7 @@ class ScriptComponentDeployHandler implements DeployComponentHandler {
     /**
      * 等待部署超时时间
      */
-    private static final Integer WAIT_TIMEOUT_SECONDS = 900
+    private static final long WAIT_TIMEOUT_SECONDS = 1200L
 
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
     private static final String ANNOTATIONS_COMPONENT_INSTANCE_ID = "annotations.appmanager.oam.dev/componentInstanceId"
@@ -147,7 +147,7 @@ class ScriptComponentDeployHandler implements DeployComponentHandler {
         def logSuffix = String.format("appId=%s|clusterId=%s|namespaceId=%s|stageId=%s|componentType=%s|" +
                 "componentName=%s", appId, clusterId, namespaceId, stageId, componentType, componentName)
 
-        def deployComponent = deployComponentService.get(request.getDeployComponentId(), false)
+        def deployComponent = deployComponentService.get(request.getDeployComponentId(), true)
         def componentInstance = rtComponentInstanceService.get(RtComponentInstanceQueryCondition.builder()
                 .appId(appId)
                 .clusterId(clusterId)
@@ -171,9 +171,16 @@ class ScriptComponentDeployHandler implements DeployComponentHandler {
                     .message(String.format("cannot convert null component instance status|%s", logSuffix))
                     .build()
         }
+        def componentSchema = SchemaUtil.toSchema(ComponentSchema.class, deployComponent.getAttrMap()
+                .get(DeployComponentAttrTypeEnum.COMPONENT_SCHEMA.toString()))
+        long waitTimeoutSeconds = ((JSONObject) componentSchema.getSpec().getWorkload().getSpec())
+                .getLongValue("waitTimeoutSeconds")
+        if (waitTimeoutSeconds <= 0) {
+            waitTimeoutSeconds = WAIT_TIMEOUT_SECONDS
+        }
 
         // 判断是否超时
-        def borderDatetime = LocalDateTime.now().minusSeconds(WAIT_TIMEOUT_SECONDS)
+        def borderDatetime = LocalDateTime.now().minusSeconds(waitTimeoutSeconds)
         def createDatetime = LocalDateTime
                 .ofInstant(deployComponent.getSubOrder().getGmtCreate().toInstant(), ZoneId.systemDefault())
         if (createDatetime < borderDatetime) {
@@ -209,9 +216,6 @@ class ScriptComponentDeployHandler implements DeployComponentHandler {
         }
 
         // 获取 conditions 中的 dataOutput (如果有的话)
-        deployComponent = deployComponentService.get(request.getDeployComponentId(), true)
-        def componentSchema = SchemaUtil.toSchema(ComponentSchema.class, deployComponent.getAttrMap()
-                .get(DeployComponentAttrTypeEnum.COMPONENT_SCHEMA.toString()))
         def conditions = componentInstance.getConditions()
         if (StringUtils.isEmpty(conditions)) {
             return GetDeployComponentHandlerRes.builder()
@@ -220,7 +224,8 @@ class ScriptComponentDeployHandler implements DeployComponentHandler {
                     .build()
         }
         def conditionsArray = JSONArray.parseArray(conditions)
-        def message = String.format("the status of %s is %s now", componentName, componentInstanceStatus.toString())
+        def message = String.format("the status of %s is %s now|statusDetail=%s",
+                componentName, componentInstanceStatus.toString(), componentInstance.getConditions())
         for (JSONObject condition : conditionsArray.toJavaList(JSONObject.class)) {
             if (ConditionUtil.TYPE_DATA_OUTPUTS != condition.getString("type")) {
                 continue

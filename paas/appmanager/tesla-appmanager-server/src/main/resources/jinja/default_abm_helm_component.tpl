@@ -43,4 +43,7 @@ spec:
       values: {}
       valuesTemplateFilename: ""
       ignoreCreateNamespace: false
+      dryrun: false
+      dryrunResult: ""
+      applyCrd: false
       rollout: {}

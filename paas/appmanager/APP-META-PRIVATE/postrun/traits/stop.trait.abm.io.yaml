@@ -1,0 +1,10 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: TraitDefinition
+metadata:
+  name: stop.trait.abm.io
+spec:
+  runtime: pre
+  appliesToWorkloads:
+    - "*"
+  definitionRef:
+    name: stop.schema.abm.io

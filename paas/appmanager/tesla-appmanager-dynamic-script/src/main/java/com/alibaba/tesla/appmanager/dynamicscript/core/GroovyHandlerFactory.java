@@ -6,6 +6,7 @@ import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.common.util.EnvUtil;
 import com.alibaba.tesla.appmanager.dynamicscript.repository.condition.DynamicScriptQueryCondition;
 import com.alibaba.tesla.appmanager.dynamicscript.repository.domain.DynamicScriptDO;
 import com.alibaba.tesla.appmanager.dynamicscript.service.DynamicScriptService;
@@ -16,6 +17,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -319,7 +321,7 @@ public class GroovyHandlerFactory {
         } catch (Exception e) {
             throw new AppException(AppErrorCode.USER_CONFIG_ERROR,
                     String.format("parse class from database failed in groovy loading progress|" +
-                            "kind=%s|name=%s", kind, name), e);
+                            "kind=%s|name=%s|exception=%s", kind, name, ExceptionUtils.getStackTrace(e)), e);
         }
     }
 

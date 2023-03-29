@@ -27,7 +27,7 @@ CLIENT_ID = os.getenv("APPMANAGER_CLIENT_ID")
 CLIENT_SECRET = os.getenv("APPMANAGER_CLIENT_SECRET")
 USERNAME = os.getenv("APPMANAGER_ACCESS_ID")
 PASSWORD = os.getenv("APPMANAGER_ACCESS_SECRET")
-PLUGINS_PACKAGE_PATH = "/app/plugins/"
+PLUGINS_PACKAGE_PATH = "/app/plugins/plugins-start-standalone/src/main/resources"
 DEFINITION = "/definition.yaml"
 
 
@@ -87,7 +87,6 @@ def apply(r, plugin, plugin_version, version, plugin_zip_path):
     response_json = response.json()
     if response_json.get("code") != 200:
         message = "operate plugin to appmanager failed, url=%s, response=%s" % (url, response.text)
-        logger.error(message)
         raise Exception(message)
     else:
         logger.info("operate plugin to appmanager success, url=%s" % url)
@@ -100,16 +99,20 @@ def apply_all_plugins():
         logger.error("cannot find appmanager client auth info, skip")
         r = requests
 
-    # 加载所有的components
+    # 加载所有的component
     apply_plugins(r, "components")
     # 加载所有的trait
     apply_plugins(r, "traits")
 
 
 def apply_plugins(r, plugins_type):
-    plugin_type_path = PLUGINS_PACKAGE_PATH + plugins_type
-    plugin_type_dir = os.listdir(plugin_type_path)
-    # 遍历当前类型所有plugins
+    plugin_type_path = os.path.join(PLUGINS_PACKAGE_PATH, plugins_type)
+    try:
+        plugin_type_dir = os.listdir(plugin_type_path)
+    except Exception as e:
+        logger.warning("plugin_type_dir:%s is non existent: error: %s" % (plugin_type_path, e.__str__()))
+        return
+    # 遍历当前类型所有的plugin
     for plugin in plugin_type_dir:
         plugin_path = os.path.join(plugin_type_path, plugin)
         plugin_dir = os.listdir(plugin_path)
@@ -125,8 +128,8 @@ def apply_plugins(r, plugins_type):
                 zipDir(plugin_version_path, plugin_zip_path)
                 apply(r, plugin, plugin_version, version, plugin_zip_path)
             except Exception as e:
-                logger.error("apply plugin to appmanager failed name=%s skip e=%s" % (plugin + plugin_version, e.__str__()))
-
+                message = "apply plugin to appmanager failed name=%s skip e=%s" % (plugin + plugin_version, e.__str__())
+                raise Exception(message)
 
 def zipDir(dirpath, outFullName):
     """

@@ -252,39 +252,53 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
             if (waitePod==null) {
                 continue;
             } else {
-                if (waitePod.haveFailed()) {
-                    setTaskFailed(taskId);
-                } else if (waitePod.haveSucceed()) {
-                    setTaskSucceed(taskId);
-                } else {
-                    if (CollectionUtils.isEmpty(waitePod.getRunningPods())) {
-                        continue;
-                    }
-                    HashSet<String> runningPods = new HashSet<>(waitePod.getRunningPods());
-                    for (String runningPod : runningPods) {
-                        try {
-                            V1Pod v1Pod = api.readNamespacedPodStatus(runningPod, systemProperties.getK8sNamespace(), null);
-                            String podLog = api.readNamespacedPodLog(runningPod, systemProperties.getK8sNamespace(),
-                                null, null, null, null, null, null, null, null, null);
-                            if (PodStatusPhaseEnum.Failed.name().equalsIgnoreCase(v1Pod.getStatus().getPhase())) {
-                                waitePod.changeStatus(runningPod, PodStatusPhaseEnum.Failed, BuildUtil.genLogContent(runningPod, podLog));
-                            } else if (PodStatusPhaseEnum.Succeeded.name().equalsIgnoreCase(v1Pod.getStatus().getPhase())) {
-                                waitePod.changeStatus(runningPod, PodStatusPhaseEnum.Succeeded, BuildUtil.genLogContent(runningPod, podLog));
-                            }
-                        } catch (ApiException e) {
-                            log.warn("action=checkTaskStatus|| can not read pod:{} status!", runningPod, e);
-                            waitePod.addAccessError();
-                            if (waitePod.getAccessError()>=10) {
-                                String message = String.format("\nCan not read pod:%s status! \nException:%s", runningPod, ExceptionUtil.getStackTrace(e));
-                                waitePod.appendLog(BuildUtil.genLogContent(runningPod, message));
-                                setTaskFailed(taskId);
-                            }
-                            break;
+                try {
+                    if (waitePod.haveFailed()) {
+                        setTaskFailed(taskId);
+                    } else if (waitePod.haveSucceed()) {
+                        setTaskSucceed(taskId);
+                    } else {
+                        if (CollectionUtils.isEmpty(waitePod.getRunningPods())) {
+                            continue;
                         }
-                    }
+                        HashSet<String> runningPods = new HashSet<>(waitePod.getRunningPods());
+                        for (String runningPod : runningPods) {
+                            try {
+                                V1Pod v1Pod = api.readNamespacedPodStatus(runningPod, systemProperties.getK8sNamespace(), null);
+                                String podLog = null;
+                                try {
+                                    podLog = api.readNamespacedPodLog(runningPod, systemProperties.getK8sNamespace(),
+                                        null, null, null, null, null, null, null, null, null);
+                                } catch (ApiException e) {
+                                    log.warn("action=checkTaskStatus|| Can not read pod log, pod:{}", runningPod, e);
+                                    podLog = String.format("Read pod log failed! Exception:%s", ExceptionUtil.getStackTrace(e));
+                                }
+                                if (PodStatusPhaseEnum.Failed.name().equalsIgnoreCase(v1Pod.getStatus().getPhase())) {
+                                    waitePod.changeStatus(runningPod, PodStatusPhaseEnum.Failed, BuildUtil.genLogContent(runningPod, podLog));
+                                } else if (PodStatusPhaseEnum.Succeeded.name().equalsIgnoreCase(v1Pod.getStatus().getPhase())) {
+                                    waitePod.changeStatus(runningPod, PodStatusPhaseEnum.Succeeded, BuildUtil.genLogContent(runningPod, podLog));
+                                }
+                            } catch (ApiException e) {
+                                log.warn("action=checkTaskStatus|| can not read pod:{} status!", runningPod, e);
+                                waitePod.addAccessError();
+                                if (waitePod.getAccessError()>=10) {
+                                    String message = String.format("\nCan not read pod:%s status! \nException:%s", runningPod, ExceptionUtil.getStackTrace(e));
+                                    waitePod.appendLog(BuildUtil.genLogContent(runningPod, message));
+                                    setTaskFailed(taskId);
+                                }
+                                break;
+                            }
+                        }
 
+                    }
+                } catch (Exception e) {
+                    log.error("action=checkTaskStatus|| Check task status have error!", e);
+                    String logContent = String.format("action=checkTaskStatus|| Check task status have error! Exception:%s", ExceptionUtil.getStackTrace(e));
+                    waitePod.appendLog(logContent);
+                    waitePod.setIsFailed(true);
                 }
             }
+
         }
     }
 
@@ -483,7 +497,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
         }
         String branch = String.valueOf(JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "branch")));
         String[] gitCloneCommand = new String[]{"git", "clone", "-b", branch, gitHttpRep, localDir};
-        CommandUtil.runLocalCommand(gitCloneCommand, null);
+        CommandUtil.runLocalCommand(gitCloneCommand);
         Object commit = JsonUtil.recursiveGetParameter(container, Arrays.asList("build", "commit"));
         if (commit != null) {
             String[] resetCommit = new String[]{"git", "reset", "--hard", String.valueOf(commit)};
@@ -528,7 +542,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
             if (file.getName().endsWith(".tar")) {
                 return false;
             }
-            if (file.getName().equalsIgnoreCase("meta.yaml")) {
+            if ("meta.yaml".equalsIgnoreCase(file.getName())) {
                 return false;
             }
             return true;
@@ -537,7 +551,7 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
             zip.addFolder(new File(targetFileDir), zipParameters);
         } catch (ZipException e) {
             log.error("action=packageComponentZip|| fail to addFolder to zip!||message={}, Exception={}", e.getMessage(), e.getCause());
-            throw new AppException(AppErrorCode.USER_CONFIG_ERROR, "actionName=SuccessComponentPackageTaskStateAction|| Can not create zip file:" + targetFileDir, e.getMessage(), e.getCause());
+            throw new AppException(AppErrorCode.USER_CONFIG_ERROR, "actionName=packageComponentZip|| Can not create zip file:" + targetFileDir, e.getMessage(), e.getCause());
         }
 
         String targetFileMd5 = StringUtil.getMd5Checksum(zipFilePath);

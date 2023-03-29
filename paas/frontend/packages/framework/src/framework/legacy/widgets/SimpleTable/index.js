@@ -479,6 +479,7 @@ class SimpleTable extends React.Component {
         size = 'small',
         bordered = false,
         rowColorMapping,
+        expandedData,
       } = mode.config
     if (outputs && checkbox !== false && checkbox !== 'false' && outputs.length) {
       let rowSelection = {}
@@ -625,6 +626,7 @@ class SimpleTable extends React.Component {
           nodeId={nodeId}
           rowData={record}
           widgetParams={record}
+          widgetData={expandedData ? _.get(record, expandedData) : null}
         />
       )
     }

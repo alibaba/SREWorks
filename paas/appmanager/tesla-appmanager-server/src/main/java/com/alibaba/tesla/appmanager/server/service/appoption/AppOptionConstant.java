@@ -53,6 +53,11 @@ public class AppOptionConstant {
     public static final String APP_IS_SHOW_IN_NAV = "isShowInNav";
 
     /**
+     * 触发器 Token
+     */
+    public static final String TRIGGER_TOKEN = "triggerToken";
+
+    /**
      * 应用配置 Key 类型映射字典
      */
     public static final Map<String, AppOptionTypeEnum> VALUE_TYPE_MAP =
@@ -94,6 +99,8 @@ public class AppOptionConstant {
                 // 兼容：流程平台配置
                 put("flowIntid", AppOptionTypeEnum.STRING);
                 put("flowIntInfo", AppOptionTypeEnum.STRING);
+                // 触发器 Token
+                put(TRIGGER_TOKEN, AppOptionTypeEnum.STRING);
                 // BU Code
                 put("buCode", AppOptionTypeEnum.STRING);
                 // SOURCE

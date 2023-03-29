@@ -1,0 +1,21 @@
+{
+  "title": {
+    "message": "SREWorks",
+    "description": "The title in the navbar"
+  },
+  "item.label.FAQ":{
+    "message": "常见问题"
+  },
+  "item.label.Demo":{
+    "message": "在线体验"
+  },
+  "item.label.Column":{
+    "message": "专栏"
+  },
+  "item.label.Blog":{
+    "message": "博客"
+  },
+  "item.label.English":{
+    "message": "简体中文"
+  }
+}

@@ -6,6 +6,7 @@ import com.alibaba.tesla.appmanager.common.enums.ComponentPackageTaskStateEnum;
 import com.alibaba.tesla.appmanager.domain.req.componentpackage.BuildComponentHandlerReq;
 import com.alibaba.tesla.appmanager.domain.res.componentpackage.LaunchBuildComponentHandlerRes;
 import com.alibaba.tesla.appmanager.server.action.ComponentPackageTaskStateAction;
+import com.alibaba.tesla.appmanager.server.assembly.ComponentPackageTaskDtoConvert;
 import com.alibaba.tesla.appmanager.server.event.componentpackage.FailedComponentPackageTaskEvent;
 import com.alibaba.tesla.appmanager.server.event.componentpackage.SucceedComponentPackageTaskEvent;
 import com.alibaba.tesla.appmanager.server.event.loader.ComponentPackageTaskStateActionLoadedEvent;
@@ -53,6 +54,9 @@ public class RunningComponentPackageTaskStateAction implements ComponentPackageT
 
     @Autowired
     private SystemProperties systemProperties;
+
+    @Autowired
+    private ComponentPackageTaskDtoConvert componentPackageTaskDtoConvert;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -108,6 +112,7 @@ public class RunningComponentPackageTaskStateAction implements ComponentPackageT
         LaunchBuildComponentHandlerRes componentPackageInfo;
         try {
             componentPackageInfo = componentPackageBuilderService.build(BuildComponentHandlerReq.builder()
+                    .taskDTO(componentPackageTaskDtoConvert.to(taskDO))
                     .appId(taskDO.getAppId())
                     .namespaceId(taskDO.getNamespaceId())
                     .stageId(taskDO.getStageId())

@@ -13,15 +13,18 @@ import com.alibaba.tesla.appmanager.server.repository.condition.ClusterQueryCond
 import com.alibaba.tesla.appmanager.server.repository.domain.ClusterDO;
 import com.alibaba.tesla.appmanager.server.service.cluster.ClusterService;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
+import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.informers.SharedInformerFactory;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -61,7 +64,6 @@ public class InformerManager {
      * 启动时进行当前 DB 中全量集群的第一次注册工作 (同时进行定时刷新)
      */
     @Scheduled(cron = "${appmanager.cron-job.informer-manager-refresh}")
-    @SchedulerLock(name = "informerManagerFactoryRefresh")
     public void init() throws IOException {
         Pagination<ClusterDO> clusters = clusterService.list(ClusterQueryCondition.builder()
                 .clusterType(ClusterTypeEnum.KUBERNETES.toString())
@@ -116,12 +118,32 @@ public class InformerManager {
             ComponentWatchKubernetesInformerHandler informerHandler
                     = (ComponentWatchKubernetesInformerHandler) handler.getGroovyHandler();
             String restrictNamespace = informerHandler.restrictNamespace();
-            informerHandler.register(clusterId, restrictNamespace, client, informer);
-            log.info("ComponentWatchKubernetesInformerHandler has registered|clusterId={}|restrictNamespace={}|" +
-                    "kind={}|name={}", clusterId, restrictNamespace, kind, handler.getName());
+            try {
+                if (StringUtils.isNotEmpty(restrictNamespace)) {
+                    String[] restrictNamespaceArr = restrictNamespace.split(",");
+                    for (String item : restrictNamespaceArr) {
+                        informerHandler.register(clusterId, item, client, informer);
+                        log.info("register namespace informer|clusterId={}|namespaceId={}|kind={}|name={}",
+                                clusterId, item, kind, handler.getName());
+                    }
+                } else {
+                    informerHandler.register(clusterId, restrictNamespace, client, informer);
+                    log.info("register cluster informer|clusterId={}|kind={}|name={}",
+                            clusterId, kind, handler.getName());
+                }
+            } catch (Exception e) {
+                log.error("unknown error when registered informer|cluster={}|exception={}",
+                        clusterId, ExceptionUtils.getStackTrace(e));
+            }
         }
-        informer.addSharedInformerEventListener(e -> log.error("informer exception occurred|exception={}",
-                ExceptionUtils.getStackTrace(e)));
+        informer.addSharedInformerEventListener(e -> {
+            if (StringUtils.isNotEmpty(e.getMessage()) && e.getMessage().contains("Forbidden")) {
+                log.error("add shared informer event listener failed, forbidden, skip|cluster={}", clusterId);
+            } else {
+                log.error("informer exception occurred|cluster={}|exception={}",
+                        clusterId, ExceptionUtils.getStackTrace(e));
+            }
+        });
         informer.startAllRegisteredInformers();
         log.info("informers have started in cluster {}", clusterId);
     }

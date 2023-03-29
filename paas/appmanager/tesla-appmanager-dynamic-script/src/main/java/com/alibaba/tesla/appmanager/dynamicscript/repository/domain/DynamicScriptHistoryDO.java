@@ -3,13 +3,17 @@ package com.alibaba.tesla.appmanager.dynamicscript.repository.domain;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 动态脚本表_历史
  */
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,6 +41,11 @@ public class DynamicScriptHistoryDO {
      * 最后修改时间
      */
     private Date gmtModified;
+
+    /**
+     * 环境 ID
+     */
+    private String envId;
 
     /**
      * 代码

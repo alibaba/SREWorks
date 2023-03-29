@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.alibaba.tesla</groupId>
         <artifactId>tesla-appmanager</artifactId>
-        <version>1.0.6-SNAPSHOT</version>
+        <version>1.0.8-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -153,6 +153,12 @@
             <artifactId>jackson-annotations</artifactId>
         </dependency>
 
+        <!-- jenkins -->
+        <dependency>
+            <groupId>com.offbytwo.jenkins</groupId>
+            <artifactId>jenkins-client</artifactId>
+        </dependency>
+
         <!-- fastjson -->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -240,6 +246,23 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>2.11.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.websocket</groupId>
+            <artifactId>javax.websocket-api</artifactId>
+            <version>1.1</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- test -->

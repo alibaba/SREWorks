@@ -79,8 +79,6 @@ spec:
       value: '{{Global.REDIS_ENDPOINT}}'
     - name: Global.REDIS_PORT
       value: '{{Global.APPMANAGER_REDIS_PORT}}'
-    - name: Global.REDIS_PASSWORD
-      value: '{{Global.REDIS_PASSWORD}}'
     - name: Global.NACOS_ENDPOINT
       value: prod-flycore-paas-nacos:8848
     - name: Global.MANAGER_SERVER_PORT
@@ -179,8 +177,6 @@ spec:
       value: '{{Global.REDIS_ENDPOINT}}'
     - name: Global.REDIS_PORT
       value: '{{Global.APPMANAGER_REDIS_PORT}}'
-    - name: Global.REDIS_PASSWORD
-      value: '{{Global.REDIS_PASSWORD}}'
     - name: Global.REDIS_DB
       value: '0'
     - name: Global.DATABASE_AUTH_SERVICE_MGR_CLASS_NAME

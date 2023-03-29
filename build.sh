@@ -174,7 +174,7 @@ target_appmanager_postrun(){
         echo "-- build appmanager postrun --" >&2
         TMP_DOCKERFILE="/tmp/${RANDOM}.dockerfile"
         envsubst < $SW_ROOT/paas/appmanager/Dockerfile_postrun_sreworks.tpl > ${TMP_DOCKERFILE}
-        docker build -t sw-paas-appmanager-postrun:$tag -f ${TMP_DOCKERFILE} $SW_ROOT/paas/appmanager
+        docker build -t sw-paas-appmanager-postrun:$tag -f ${TMP_DOCKERFILE} $SW_ROOT
         docker tag sw-paas-appmanager-postrun:$tag sw-paas-appmanager-postrun:latest
     fi
     if [ -n "$PUSH_REPO" ]; then

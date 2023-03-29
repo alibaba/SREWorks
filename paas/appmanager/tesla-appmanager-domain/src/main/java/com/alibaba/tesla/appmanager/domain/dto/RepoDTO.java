@@ -63,6 +63,11 @@ public class RepoDTO {
     private String repoPath;
 
     /**
+     * 仓库代码分支
+     */
+    private String repoBranch;
+
+    /**
      * dockerfile路径
      */
     private String dockerfilePath;
@@ -81,5 +86,6 @@ public class RepoDTO {
         SecurityUtil.checkInput(repoTemplateUrl);
         SecurityUtil.checkInput(repoPath);
         SecurityUtil.checkInput(dockerfilePath);
+        SecurityUtil.checkInput(repoBranch);
     }
 }

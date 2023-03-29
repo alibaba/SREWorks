@@ -1,5 +1,7 @@
 package com.alibaba.tesla.appmanager.common.enums;
 
+import javax.ws.rs.OPTIONS;
+
 /**
  * 部署工单 Component 扩展属性类型 Enum
  *
@@ -16,6 +18,11 @@ public enum DeployComponentAttrTypeEnum {
      * 部署过程中的 TraitSchema 数据 (YAML)
      */
     TRAIT_SCHEMA,
+
+    /**
+     * 原始 TraitSchema 数据 (YAML)
+     */
+    TRAIT_SCHEMA_ORIGINAL,
 
     /**
      * Trait 绑定的 Component 的 Workload 内容 (YAML)

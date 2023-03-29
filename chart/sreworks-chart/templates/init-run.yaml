@@ -16,8 +16,6 @@ data:
     #fi
     #cd sreworks-flycore
 
-    sh /app/upload-plugins.sh
-
     cd /root/saas/swcore/api/core/
 
     export NAMESPACE_ID=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
@@ -48,7 +46,8 @@ data:
             envsubst < /root/saas/swcore/build/launch-nodeport.yaml.tpl > /root/saas/swcore/launch.yaml
         fi
         
-        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id=${CORE_APP_ID} --filepath /root/saas/swcore/build.zip --print-only-app-package-id=true --reset-version=true)
+        #result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id=${CORE_APP_ID} --filepath /root/saas/swcore/build.zip --print-only-app-package-id=true --reset-version=true)
+        result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id=${CORE_APP_ID} --filepath /root/saas/swcore/build.zip --print-only-app-package-id=true)
         /root/swcli --config /swcli/swcli.yaml deployment launch --wait-max-seconds 400 --app-id=${CORE_APP_ID} --stage=prod --namespace=${NAMESPACE_ID} --path /root/saas/swcore/launch.yaml --app-package-id $result --arch x86 --wait=true --cluster master
 
 
@@ -272,7 +271,8 @@ data:
  
     sh /app/core-action-service-check.sh
       
-    result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id $1 --filepath $2 --print-only-app-package-id=true --reset-version=true)
+    #result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id $1 --filepath $2 --print-only-app-package-id=true --reset-version=true)
+    result=$(/root/swcli --config /swcli/swcli.yaml app-package import --app-id $1 --filepath $2 --print-only-app-package-id=true)
 
     /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage prod --app-id $1 --path $3 --app-package-id $result --arch x86 --wait=true --cluster master
     /root/swcli --config /swcli/swcli.yaml deployment launch  --namespace ${NAMESPACE_ID} --stage dev --app-id $1 --path $4 --app-package-id $result --arch x86 --wait=true --cluster master
@@ -788,24 +788,6 @@ data:
     print("NO UPDATE")
     sys.exit(0)
 
-  upload-plugins.sh: |
-    set -x
-
-    cat /root/plugins/auto-install.list | while read line
-    do
-        python3 /root/plugins/pack.py -f /root/plugins/$line -t /tmp/plugin
-
-        /root/swcli plugin upload --config /swcli/swcli.yaml --filepath="/tmp/plugin.zip" --overwrite=true
-        rm /tmp/plugin.zip
-
-        version=$(cat /root/plugins/${line}/definition.yaml |grep 'definition.oam.dev/version'|awk '{print $NF}'|awk -F '"' '{print $2}')
-        name=$(echo $line| awk -F '/' '{print $2"/"$3}')
-        echo $version
-        echo $name
-        /root/swcli plugin operate --config /swcli/swcli.yaml --name=$name --version=$version --operation=enable
-    done
-
-    echo "all the plugins upload to the appmanager"
 
   saas-sleep.sh: |
     sleep 999999999999

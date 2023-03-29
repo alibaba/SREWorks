@@ -56,6 +56,9 @@ public class ApplicationContextLoadedEventListener implements ApplicationListene
             "/dynamicscripts/TraitSystemEnv.groovy",
             "/dynamicscripts/TraitNodeSelector.groovy",
             "/dynamicscripts/TraitSecret.groovy",
+            "/dynamicscripts/TraitStop.groovy",
+            "/dynamicscripts/TraitTopologySpreadConstraints.groovy",
+            "/dynamicscripts/TraitAffinity.groovy",
             "/dynamicscripts/MicroserviceComponentBuildHandler.groovy",
             "/dynamicscripts/MicroserviceComponentDeployHandler.groovy",
             "/dynamicscripts/MicroserviceComponentHandler.groovy",
@@ -94,15 +97,11 @@ public class ApplicationContextLoadedEventListener implements ApplicationListene
     @Autowired
     private DynamicScriptService dynamicScriptService;
 
-    @Autowired
-    private InformerManager informerManager;
-
     @Override
     public void onApplicationEvent(ApplicationContextLoadedEvent event) {
         try {
             initDefaultScripts();
             groovyHandlerFactory.refresh();
-            informerManager.init();
         } catch (Exception e) {
             throw new AppException(AppErrorCode.UNKNOWN_ERROR, "cannot init groovy handler factory", e);
         }

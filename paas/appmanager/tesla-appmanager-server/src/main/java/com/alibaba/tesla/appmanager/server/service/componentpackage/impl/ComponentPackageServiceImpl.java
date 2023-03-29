@@ -21,6 +21,7 @@ import com.alibaba.tesla.appmanager.server.service.componentpackage.ComponentPac
 import com.alibaba.tesla.appmanager.server.storage.Storage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -179,11 +180,24 @@ public class ComponentPackageServiceImpl implements ComponentPackageService {
                 .build();
         List<ComponentPackageDO> records = componentPackageRepository.selectByCondition(condition);
         if (records.size() == 0) {
-            componentPackageRepository.insert(item);
-            log.info("insert component package into database|appId={}|componentType={}|componentName={}|" +
-                            "packageVersion={}", item.getAppId(), item.getComponentType(), item.getComponentName(),
-                    packageVersion);
-            return item;
+            boolean insertFinished = true;
+            try {
+                componentPackageRepository.insert(item);
+            } catch (Exception e) {
+                if (StringUtils.isNotEmpty(e.getMessage()) && e.getMessage().contains("Duplicate entry")) {
+                    insertFinished = false;
+                } else {
+                    throw e;
+                }
+            }
+            if (insertFinished) {
+                log.info("insert component package into database|appId={}|componentType={}|componentName={}|" +
+                                "packageVersion={}", item.getAppId(), item.getComponentType(), item.getComponentName(),
+                        packageVersion);
+                return item;
+            } else {
+                records = componentPackageRepository.selectByCondition(condition);
+            }
         }
         if (!force) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS,

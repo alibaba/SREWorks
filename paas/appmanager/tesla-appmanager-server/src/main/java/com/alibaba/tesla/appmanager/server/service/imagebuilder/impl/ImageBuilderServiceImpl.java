@@ -2,11 +2,13 @@ package com.alibaba.tesla.appmanager.server.service.imagebuilder.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.autoconfig.ImageBuilderProperties;
+import com.alibaba.tesla.appmanager.common.constants.RedisKeyConstant;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.service.GitService;
 import com.alibaba.tesla.appmanager.common.util.CommandUtil;
 import com.alibaba.tesla.appmanager.common.util.ImageUtil;
+import com.alibaba.tesla.appmanager.common.util.StreamLogHelper;
 import com.alibaba.tesla.appmanager.domain.req.git.GitCloneReq;
 import com.alibaba.tesla.appmanager.domain.req.imagebuilder.ImageBuilderCreateReq;
 import com.alibaba.tesla.appmanager.domain.res.imagebuilder.ImageBuilderCreateRes;
@@ -19,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.concurrent.ConcurrentUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.zeroturnaround.exec.stream.LogOutputStream;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -28,7 +31,6 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -51,6 +53,9 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
     @Autowired
     private GitService gitService;
 
+    @Autowired
+    private StreamLogHelper streamLogHelper;
+
     /**
      * 镜像构建
      *
@@ -70,6 +75,8 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
      * @return Future 返回结果
      */
     private ImageBuilderCreateRes processor(ImageBuilderCreateReq request) {
+        String streamKey = String.format("%s_%s_%s_%s_%s", RedisKeyConstant.COMPONENT_PACKAGE_TASK_LOG,
+                request.getAppId(), request.getComponentType(), request.getComponentName(), request.getVersion());
         StringBuilder logContent = new StringBuilder();
         Path cloneDir, imageDir;
         try {
@@ -81,55 +88,59 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
             throw new AppException(AppErrorCode.UNKNOWN_ERROR, "cannot create temp directory", e);
         }
 
-        // 如果自行提供 image，直接返回
-        if (StringUtils.isNotEmpty(request.getUseExistImage())) {
-            String sha256 = getDockerImageSha256(logContent, request.getUseExistImage(), request.getArch());
+        try {
+            // 如果自行提供 image，直接返回
+            if (StringUtils.isNotEmpty(request.getUseExistImage())) {
+                String sha256 = getDockerImageSha256(logContent, request.getUseExistImage(), request.getArch(), streamKey);
+                return ImageBuilderCreateRes.builder()
+                        .imageName(request.getUseExistImage())
+                        .sha256(sha256)
+                        .logContent(logContent.toString())
+                        .imageDir(imageDir.toString())
+                        .imagePath("")
+                        .build();
+            }
+
+            // 设置 image 名称
+            String imageName = getImageName(request);
+
+            // Clone 仓库
+            gitService.cloneRepo(logContent, GitCloneReq.builder()
+                    .repo(request.getRepo())
+                    .branch(request.getBranch())
+                    .commit(request.getCommit())
+                    .repoPath(request.getRepoPath())
+                    .ciAccount(request.getCiAccount())
+                    .ciToken(request.getCiToken())
+                    .keepGitFiles(request.isKeepGitFiles())
+                    .build(), cloneDir);
+
+            // 渲染 Dockerfile
+            Path dockerfile;
+            try {
+                dockerfile = renderDockerfile(logContent, request, cloneDir);
+            } catch (IOException e) {
+                throw new AppException(AppErrorCode.INVALID_USER_ARGS, "cannot render dockerfile template", e);
+            }
+
+            // 构建镜像
+            String imagePath = dockerBuild(logContent, request, cloneDir, imageDir, imageName, dockerfile, streamKey);
+            try {
+                FileUtils.deleteDirectory(cloneDir.toFile());
+            } catch (Exception ignored) {
+                log.warn("cannot delete directory after docker build|directory={}", cloneDir);
+            }
+            String sha256 = getDockerImageSha256(logContent, imageName, request.getArch(), streamKey);
             return ImageBuilderCreateRes.builder()
-                    .imageName(request.getUseExistImage())
+                    .imageName(imageName)
                     .sha256(sha256)
                     .logContent(logContent.toString())
                     .imageDir(imageDir.toString())
-                    .imagePath("")
+                    .imagePath(imagePath)
                     .build();
+        } finally {
+            streamLogHelper.clean(streamKey);
         }
-
-        // 设置 image 名称
-        String imageName = getImageName(request);
-
-        // Clone 仓库
-        gitService.cloneRepo(logContent, GitCloneReq.builder()
-                .repo(request.getRepo())
-                .branch(request.getBranch())
-                .commit(request.getCommit())
-                .repoPath(request.getRepoPath())
-                .ciAccount(request.getCiAccount())
-                .ciToken(request.getCiToken())
-                .keepGitFiles(request.isKeepGitFiles())
-                .build(), cloneDir);
-
-        // 渲染 Dockerfile
-        Path dockerfile;
-        try {
-            dockerfile = renderDockerfile(logContent, request, cloneDir);
-        } catch (IOException e) {
-            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "cannot render dockerfile template", e);
-        }
-
-        // 构建镜像
-        String imagePath = dockerBuild(logContent, request, cloneDir, imageDir, imageName, dockerfile);
-        try {
-            FileUtils.deleteDirectory(cloneDir.toFile());
-        } catch (Exception ignored) {
-            log.warn("cannot delete directory after docker build|directory={}", cloneDir);
-        }
-        String sha256 = getDockerImageSha256(logContent, imageName, request.getArch());
-        return ImageBuilderCreateRes.builder()
-                .imageName(imageName)
-                .sha256(sha256)
-                .logContent(logContent.toString())
-                .imageDir(imageDir.toString())
-                .imagePath(imagePath)
-                .build();
     }
 
     /**
@@ -137,10 +148,10 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
      *
      * @param logContent 日志内容
      * @param imageName  镜像名称
-     * @param arch Arch (x86/arm/sw6b) 可为空
+     * @param arch       Arch (x86/arm/sw6b) 可为空
      * @return sha256
      */
-    private String getDockerImageSha256(StringBuilder logContent, String imageName, String arch) {
+    private String getDockerImageSha256(StringBuilder logContent, String imageName, String arch, String streamKey) {
         String remoteDaemon = imageBuilderProperties.getRemoteDaemon();
         String armRemoteDaemon = imageBuilderProperties.getArmRemoteDaemon();
         String dockerBin = imageBuilderProperties.getDockerBin();
@@ -161,7 +172,13 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
             // 计算 SHA256
             String[] calcCommand = new String[]{sudoCommand, dockerBin, dockerTarget, "images", "--no-trunc", "--quiet", imageName};
             logContent.append(String.format("run command: %s\n", String.join(" ", calcCommand)));
-            String result = CommandUtil.runLocalCommand(CommandUtil.getBashCommand(calcCommand));
+            streamLogHelper.info(streamKey, String.format("run command: %s\n", String.join(" ", calcCommand)));
+            String result = CommandUtil.runLocalCommand(CommandUtil.getBashCommand(calcCommand), new LogOutputStream() {
+                @Override
+                protected void processLine(String line) {
+                    streamLogHelper.info(streamKey, line, log);
+                }
+            });
             logContent.append(result);
 
             // 从 fullname 中提取
@@ -171,12 +188,24 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
         } else {
             String[] pullCommand = new String[]{sudoCommand, dockerBin, dockerTarget, "pull", imageName};
             logContent.append(String.format("run command: %s\n", String.join(" ", pullCommand)));
-            logContent.append(CommandUtil.runLocalCommand(CommandUtil.getBashCommand(pullCommand)));
+            String result = CommandUtil.runLocalCommand(CommandUtil.getBashCommand(pullCommand), new LogOutputStream() {
+                @Override
+                protected void processLine(String line) {
+                    streamLogHelper.info(streamKey, line, log);
+                }
+            });
+            logContent.append(result);
 
             // 计算 SHA256
             String[] calcCommand = new String[]{sudoCommand, dockerBin, dockerTarget, "inspect", "--format='{{index .RepoDigests 0}}'", imageName};
             logContent.append(String.format("run command: %s\n", String.join(" ", calcCommand)));
-            String result = CommandUtil.runLocalCommand(CommandUtil.getBashCommand(calcCommand));
+            streamLogHelper.info(streamKey, String.format("run command: %s\n", String.join(" ", calcCommand)));
+            result = CommandUtil.runLocalCommand(CommandUtil.getBashCommand(calcCommand), new LogOutputStream() {
+                @Override
+                protected void processLine(String line) {
+                    streamLogHelper.info(streamKey, line, log);
+                }
+            });
             logContent.append(result);
 
             // 从 fullname 中提取
@@ -199,7 +228,7 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
      */
     private String dockerBuild(
             StringBuilder logContent, ImageBuilderCreateReq request, Path cloneDir, Path imageDir,
-            String imageName, Path dockerfile) {
+            String imageName, Path dockerfile, String streamKey) {
         List<String> buildArgs = new ArrayList<>();
         if (request.getArgs() != null && request.getArgs().size() > 0) {
             for (Map.Entry<String, String> entry : request.getArgs().entrySet()) {
@@ -245,14 +274,28 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
         }
         String[] bashBuildCommand = CommandUtil.getBashCommand(buildCommand.toArray(new String[0]));
         logContent.append(String.format("run command: %s\n", String.join(" ", bashBuildCommand)));
-        logContent.append(CommandUtil.runLocalCommand(bashBuildCommand, Paths.get(localDir).toFile()));
+        streamLogHelper.info(streamKey, String.format("run command: %s\n", String.join(" ", bashBuildCommand)));
+        String result = CommandUtil.runLocalCommand(bashBuildCommand, Paths.get(localDir).toFile(), new LogOutputStream() {
+            @Override
+            protected void processLine(String line) {
+                streamLogHelper.info(streamKey, line, log);
+            }
+        });
+        logContent.append(result);
 
         // 镜像上传或镜像导出
         if (request.isImagePush()) {
             String[] pushCommand = CommandUtil.getBashCommand(new String[]{
                     sudoCommand, dockerBin, dockerTarget, "push", imageName});
             logContent.append(String.format("run command: %s\n", String.join(" ", pushCommand)));
-            logContent.append(CommandUtil.runLocalCommand(pushCommand));
+            streamLogHelper.info(streamKey, String.format("run command: %s\n", String.join(" ", bashBuildCommand)));
+            result = CommandUtil.runLocalCommand(pushCommand, new LogOutputStream() {
+                @Override
+                protected void processLine(String line) {
+                    streamLogHelper.info(streamKey, line, log);
+                }
+            });
+            logContent.append(result);
             return "";
         } else {
             String imagePath = Paths
@@ -262,7 +305,14 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
             String[] exportCommand = CommandUtil.getBashCommand(
                     new String[]{sudoCommand, dockerBin, dockerTarget, "save", imageName, ">", imagePath});
             logContent.append(String.format("run command: %s\n", String.join(" ", exportCommand)));
-            logContent.append(CommandUtil.runLocalCommand(CommandUtil.getBashCommand(exportCommand)));
+            streamLogHelper.info(streamKey, String.format("run command: %s\n", String.join(" ", exportCommand)));
+            result = CommandUtil.runLocalCommand(CommandUtil.getBashCommand(exportCommand), new LogOutputStream() {
+                @Override
+                protected void processLine(String line) {
+                    streamLogHelper.info(streamKey, line, log);
+                }
+            });
+            logContent.append(result);
             return imagePath;
         }
     }

@@ -10,6 +10,7 @@
     <result column="revision" jdbcType="INTEGER" property="revision" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="env_id" jdbcType="VARCHAR" property="envId" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.alibaba.tesla.appmanager.dynamicscript.repository.domain.DynamicScriptHistoryDO">
     <!--@mbg.generated-->
@@ -78,7 +79,7 @@
   </sql>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, kind, `name`, revision, gmt_create, gmt_modified
+    id, kind, `name`, revision, gmt_create, gmt_modified, env_id
   </sql>
   <sql id="Blob_Column_List">
     <!--@mbg.generated-->
@@ -97,7 +98,9 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    order by id desc
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
   </select>
   <select id="selectByExample" parameterType="com.alibaba.tesla.appmanager.dynamicscript.repository.domain.DynamicScriptHistoryDOExample" resultMap="BaseResultMap">
     <!--@mbg.generated-->
@@ -110,7 +113,9 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    order by id desc
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
     <!--@mbg.generated-->
@@ -136,11 +141,11 @@
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.alibaba.tesla.appmanager.dynamicscript.repository.domain.DynamicScriptHistoryDO" useGeneratedKeys="true">
     <!--@mbg.generated-->
     insert into am_dynamic_script_history (kind, `name`, revision, 
-      gmt_create, gmt_modified, code
-      )
+      gmt_create, gmt_modified, env_id, 
+      code)
     values (#{kind,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER}, 
-      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{code,jdbcType=LONGVARCHAR}
-      )
+      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{envId,jdbcType=VARCHAR}, 
+      #{code,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.alibaba.tesla.appmanager.dynamicscript.repository.domain.DynamicScriptHistoryDO" useGeneratedKeys="true">
     <!--@mbg.generated-->
@@ -161,6 +166,9 @@
       <if test="gmtModified != null">
         gmt_modified,
       </if>
+      <if test="envId != null">
+        env_id,
+      </if>
       <if test="code != null">
         code,
       </if>
@@ -180,6 +188,9 @@
       </if>
       <if test="gmtModified != null">
         #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="envId != null">
+        #{envId,jdbcType=VARCHAR},
       </if>
       <if test="code != null">
         #{code,jdbcType=LONGVARCHAR},
@@ -215,6 +226,9 @@
       <if test="record.gmtModified != null">
         gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.envId != null">
+        env_id = #{record.envId,jdbcType=VARCHAR},
+      </if>
       <if test="record.code != null">
         code = #{record.code,jdbcType=LONGVARCHAR},
       </if>
@@ -232,6 +246,7 @@
       revision = #{record.revision,jdbcType=INTEGER},
       gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
+      env_id = #{record.envId,jdbcType=VARCHAR},
       code = #{record.code,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -245,7 +260,8 @@
       `name` = #{record.name,jdbcType=VARCHAR},
       revision = #{record.revision,jdbcType=INTEGER},
       gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP}
+      gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
+      env_id = #{record.envId,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -269,6 +285,9 @@
       <if test="gmtModified != null">
         gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
       </if>
+      <if test="envId != null">
+        env_id = #{envId,jdbcType=VARCHAR},
+      </if>
       <if test="code != null">
         code = #{code,jdbcType=LONGVARCHAR},
       </if>
@@ -283,6 +302,7 @@
       revision = #{revision,jdbcType=INTEGER},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      env_id = #{envId,jdbcType=VARCHAR},
       code = #{code,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -293,7 +313,8 @@
       `name` = #{name,jdbcType=VARCHAR},
       revision = #{revision,jdbcType=INTEGER},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      env_id = #{envId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

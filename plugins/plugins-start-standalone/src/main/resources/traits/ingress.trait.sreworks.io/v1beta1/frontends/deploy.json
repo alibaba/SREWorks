@@ -1,0 +1,19 @@
+{
+    "parameters": [{
+        "type": 1,
+        "name": "host",
+        "label": "域名",
+        "toFieldPath": "spec.host"
+    },{
+        "type": 1,
+        "name": "serviceName",
+        "label": "后端服务",
+        "toFieldPath": "spec.serviceName"
+    },{
+        "type": 1,
+        "name": "servicePort",
+        "label": "后端服务端口",
+        "initValue": "80",
+        "toFieldPath": "spec.servicePort"
+    }]
+}

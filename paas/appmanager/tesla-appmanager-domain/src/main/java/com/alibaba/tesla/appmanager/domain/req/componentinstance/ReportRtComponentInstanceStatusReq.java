@@ -47,7 +47,10 @@ public class ReportRtComponentInstanceStatusReq implements Serializable {
 
     /**
      * 应用 ID
+     *
+     * @deprecated 因 appId 可能二次覆盖，放弃传入
      */
+    @Deprecated
     private String appId;
 
     /**

@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.common.util;
 
+import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -84,5 +85,18 @@ public class EnvUtil {
             }
         }
         return result;
+    }
+
+    /**
+     * 获取当前的集群环境 ID
+     *
+     * @return null or 实际的 ID
+     */
+    public static String currentClusterEnvId() {
+        String envId = System.getenv(DefaultConstant.ENV_ABM_CLUSTER);
+        if (StringUtils.isEmpty(envId)) {
+            return null;
+        }
+        return envId;
     }
 }

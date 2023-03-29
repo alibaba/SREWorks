@@ -201,4 +201,26 @@ public class TraitController extends BaseController {
         trait.reconcile(name, payload);
         return buildSucceedResult(DefaultConstant.EMPTY_OBJ);
     }
+    /**
+     * @api {post} /traits/:name/:version/reconcile Kubernetes Reconcile Callback API
+     * @apiName PostTraitReconcile
+     * @apiGroup Trait API
+     *
+     * @apiParam (Path Parameters) {String} name Trait 名称
+     *
+     * @apiSuccessExample 示例返回
+     * {
+     *     "code": 200,
+     *     "message": "SUCCESS",
+     *     "data": {}
+     * }
+     */
+    // 获取指定的 Trait
+    @PostMapping("/{name:.+}/{version:.+}/reconcile")
+    @ResponseBody
+    public TeslaBaseResult reconcile(@PathVariable("name") String name, @PathVariable("version") String version, @RequestBody String request) {
+        JSONObject payload = JSONObject.parseObject(request);
+        trait.reconcile(name + "/" + version, payload);
+        return buildSucceedResult(DefaultConstant.EMPTY_OBJ);
+    }
 }

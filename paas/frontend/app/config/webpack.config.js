@@ -3,7 +3,7 @@
  * @Author: deeham.ww
  * @Date: 2022-11-16 11:32:36
  * @LastEditors: deeham.ww
- * @LastEditTime: 2022-12-01 15:36:59
+ * @LastEditTime: 2023-02-28 14:01:01
  */
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -42,7 +42,7 @@ module.exports = {
     port: 8080,
     proxy: {
       '/gateway': {
-        target: 'http://dev.sreworks.net/',
+        target: '',
         changeOrigin: true,
         cookieDomainRewrite: 'localhost',
       },

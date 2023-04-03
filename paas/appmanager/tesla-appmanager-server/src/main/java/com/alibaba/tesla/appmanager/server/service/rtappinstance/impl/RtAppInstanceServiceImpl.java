@@ -255,13 +255,23 @@ public class RtAppInstanceServiceImpl implements RtAppInstanceService {
         record.setLatestVersion(latestVersion);
         record.setVisit(visit);
         record.setStatus(finalStatus.toString());
+
+        // 获取最新的 deploy app 记录 ID
+        long maxDeployAppId = 0;
+        for (RtComponentInstanceDO componentInstance : componentInstances) {
+            maxDeployAppId = Math.max(maxDeployAppId, componentInstance.getDeployAppId());
+        }
+        record.setDeployAppId(maxDeployAppId);
+        
         int updated = rtAppInstanceRepository.updateByCondition(record, appInstanceCondition);
         if (updated == 0) {
-            log.warn("update app instance failed|appInstanceId={}|visit={}|latestVersion={}|upgrade={}|finalStatus={}",
-                    appInstanceId, visit, latestVersion, upgrade, finalStatus);
+            log.warn("update app instance failed|appInstanceId={}|visit={}|latestVersion={}|upgrade={}|" +
+                            "finalStatus={}|deployAppId={}", appInstanceId, visit, latestVersion, upgrade,
+                    finalStatus, maxDeployAppId);
         } else {
-            log.info("update app instance success|appInstanceId={}|visit={}|latestVersion={}|upgrade={}|finalStatus={}",
-                    appInstanceId, visit, latestVersion, upgrade, finalStatus);
+            log.info("update app instance success|appInstanceId={}|visit={}|latestVersion={}|upgrade={}|" +
+                            "finalStatus={}|deployAppId={}", appInstanceId, visit, latestVersion, upgrade,
+                    finalStatus, maxDeployAppId);
         }
     }
 
@@ -353,7 +363,7 @@ public class RtAppInstanceServiceImpl implements RtAppInstanceService {
         List<RtComponentInstanceDO> componentInstances = rtComponentInstanceRepository.selectByCondition(
                 RtComponentInstanceQueryCondition.builder().appInstanceId(appInstanceId).build());
         log.info("prepare to delete app instance|appInstanceId={}|appId={}|clusterId={}|namespaceId={}|" +
-                "stageId={}|componentInstanceSize={}", appInstanceId, appId, clusterId, namespaceId, stageId,
+                        "stageId={}|componentInstanceSize={}", appInstanceId, appId, clusterId, namespaceId, stageId,
                 componentInstances.size());
 
         // 删除 application
@@ -464,7 +474,7 @@ public class RtAppInstanceServiceImpl implements RtAppInstanceService {
                     }
                 } catch (Exception e) {
                     log.error("cannot update app instance record|newAppInstanceId={}|newVersion={}|" +
-                            "newAppInstanceName={}|newOwnerReference={}|condition={}|record={}|exception={}",
+                                    "newAppInstanceName={}|newOwnerReference={}|condition={}|record={}|exception={}",
                             appInstanceId, version, appInstanceName, ownerReferenceStr,
                             JSONObject.toJSONString(condition), JSONObject.toJSONString(record),
                             ExceptionUtils.getStackTrace(e));

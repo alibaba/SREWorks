@@ -322,7 +322,7 @@ public class AppPackageTaskServiceImpl implements AppPackageTaskService {
             }
         }
 
-        log.info("action=appPackageFreshJob|freshAppPackageTask|appPackageTaskId={}|componentCount={}|unStartCount={}|"
+        log.debug("action=appPackageFreshJob|freshAppPackageTask|appPackageTaskId={}|componentCount={}|unStartCount={}|"
                         + "runningCount={}|failedCount={}|successCount={}", appPackageTaskDO.getId(), componentCount,
                 unStartCount, runningCount, failedCount, successCount);
 

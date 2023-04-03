@@ -21,6 +21,7 @@
         <result column="app_instance_name" jdbcType="VARCHAR" property="appInstanceName"/>
         <result column="owner_reference" jdbcType="LONGVARCHAR" property="ownerReference"/>
         <result column="parent_owner_reference" jdbcType="LONGVARCHAR" property="parentOwnerReference"/>
+        <result column="deploy_app_id" jdbcType="BIGINT" property="deployAppId"/>
     </resultMap>
     <sql id="Example_Where_Clause">
         <!--@mbg.generated-->
@@ -118,7 +119,7 @@
         <!--@mbg.generated-->
         id, gmt_create, gmt_modified, app_instance_id, app_id, cluster_id, version, `status`,
         lock_version, visit, upgrade, latest_version, namespace_id, stage_id, app_instance_name,
-        owner_reference, parent_owner_reference
+        owner_reference, parent_owner_reference, deploy_app_id
     </sql>
     <sql id="Join_Column_List">
         A.id,
@@ -136,6 +137,7 @@
         A.namespace_id,
         A.stage_id,
         A.app_instance_name,
+        A.deploy_app_id,
         A.owner_reference,
         A.parent_owner_reference
     </sql>
@@ -230,6 +232,9 @@
             <if test="parentOwnerReference != null">
                 parent_owner_reference,
             </if>
+            <if test="deployAppId != null">
+                deploy_app_id,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="gmtCreate != null">
@@ -279,6 +284,9 @@
             </if>
             <if test="parentOwnerReference != null">
                 #{parentOwnerReference,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="deployAppId != null">
+                #{deployAppId,jdbcType=BIGINT},
             </if>
         </trim>
     </insert>
@@ -342,6 +350,9 @@
             </if>
             <if test="record.parentOwnerReference != null">
                 parent_owner_reference = #{record.parentOwnerReference,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="record.deployAppId != null">
+                deploy_app_id = #{record.deployAppId,jdbcType=BIGINT},
             </if>
             lock_version = lock_version + 1,
         </set>

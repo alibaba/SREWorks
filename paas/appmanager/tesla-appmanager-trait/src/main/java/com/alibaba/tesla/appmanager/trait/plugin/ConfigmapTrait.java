@@ -108,12 +108,16 @@ public class ConfigmapTrait extends BaseTrait {
          * 3. get configmaps and apply to k8s cluster
          */
         JSONObject configmaps = getSpec().getJSONObject("configmaps");
-        log.info("start to apply configmap in configmap trait {}", configmaps.toJSONString());
-        for (Map.Entry<String, Object> item : configmaps.entrySet()) {
-            String configmapName = item.getKey();
-            Object configmapData = item.getValue();
-            JSONObject configmap = generateConfigmap(namespace, configmapName, configmapData, labels, annotations);
-            applyConfigmap(client, configmap, labels, annotations);
+        if (configmaps == null) {
+            log.info("skip apply configmap in configmap trait");
+        } else {
+            log.info("start to apply configmap in configmap trait {}", configmaps.toJSONString());
+            for (Map.Entry<String, Object> item : configmaps.entrySet()) {
+                String configmapName = item.getKey();
+                Object configmapData = item.getValue();
+                JSONObject configmap = generateConfigmap(namespace, configmapName, configmapData, labels, annotations);
+                applyConfigmap(client, configmap, labels, annotations);
+            }
         }
 
 
@@ -150,6 +154,8 @@ public class ConfigmapTrait extends BaseTrait {
                     updateContainers("initContainer", target.getString("initContainer"), "envFrom", updateDatas);
                 } else if (target.getString("container") != null) {
                     updateContainers("container", target.getString("container"), "envFrom", updateDatas);
+                } else if (target.getString("job") != null) {
+                    updateJob("job", target.getString("job"), "envFrom", updateDatas);
                 } else {
                     String errorMessage = String.format("not found container or initContainer %s", target.toJSONString());
                     throw new AppException(AppErrorCode.INVALID_USER_ARGS, errorMessage);
@@ -197,6 +203,8 @@ public class ConfigmapTrait extends BaseTrait {
                     updateContainers("initContainer", target.getString("initContainer"), "volumeMounts", updateDatas);
                 } else if (target.getString("container") != null) {
                     updateContainers("container", target.getString("container"), "volumeMounts", updateDatas);
+                } else if (target.getString("job") != null) {
+                    updateJob("job", target.getString("job"), "volumeMounts", updateDatas);
                 } else {
                     String errorMessage = String.format("not found container or initContainer %s", target.toJSONString());
                     throw new AppException(AppErrorCode.INVALID_USER_ARGS, errorMessage);
@@ -231,6 +239,8 @@ public class ConfigmapTrait extends BaseTrait {
                     updateContainers("initContainer", target.getString("initContainer"), "env", updateEnvs);
                 } else if (target.getString("container") != null) {
                     updateContainers("container", target.getString("container"), "env", updateEnvs);
+                } else if (target.getString("job") != null) {
+                    updateJob("job", target.getString("job"), "env", updateEnvs);
                 } else {
                     String errorMessage = String.format("not found container or initContainer %s", target.toJSONString());
                     throw new AppException(AppErrorCode.INVALID_USER_ARGS, errorMessage);
@@ -278,11 +288,40 @@ public class ConfigmapTrait extends BaseTrait {
             container.putIfAbsent(targetKey, new JSONArray());
             JSONArray target = container.getJSONArray(targetKey);
             for (int j = 0; j < updateDatas.size(); j++) {
-                JSONObject updateData = updateDatas.getJSONObject(i);
+                JSONObject updateData = updateDatas.getJSONObject(j);
                 log.info("update container {} {}", target.toJSONString(), updateData.toJSONString());
                 target.add(updateData);
             }
         }
+        log.info("configmap trait parent workload after update {}", workloadSpec.toJSONString());
+    }
+
+    /**
+     * update to job
+     *
+     * @param type
+     * @param name
+     * @param targetKey
+     * @param updateDatas
+     */
+    private void updateJob(String type, String name, String targetKey, JSONArray updateDatas) {
+        JSONObject workloadSpec = (JSONObject) getWorkloadRef().getSpec();
+        log.info("configmap trait parent workload {}", workloadSpec.toJSONString());
+
+        JSONObject job = workloadSpec.getJSONObject("job");
+        if (!Objects.equals(job.getString("name"), name)) {
+            log.info("job name not match {} {}", job.getString("name"), name);
+            return;
+        }
+
+        job.putIfAbsent(targetKey, new JSONArray());
+        JSONArray target = job.getJSONArray(targetKey);
+        for (int j = 0; j < updateDatas.size(); j++) {
+            JSONObject updateData = updateDatas.getJSONObject(j);
+            log.info("update job {} {}", target.toJSONString(), updateData.toJSONString());
+            target.add(updateData);
+        }
+
         log.info("configmap trait parent workload after update {}", workloadSpec.toJSONString());
     }
 

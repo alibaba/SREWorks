@@ -1,16 +1,20 @@
 package com.alibaba.tesla.appmanager.server.controller;
 
 import com.alibaba.tesla.appmanager.api.provider.AppComponentProvider;
+import com.alibaba.tesla.appmanager.api.provider.DeployConfigProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.dto.AppComponentDTO;
+import com.alibaba.tesla.appmanager.domain.dto.DeployConfigDTO;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentCreateReq;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentUpdateReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigListReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,6 +37,9 @@ public class AppComponentController extends AppManagerBaseController {
 
     @Autowired
     private AppComponentProvider appComponentProvider;
+
+    @Autowired
+    private DeployConfigProvider deployConfigProvider;
 
     @GetMapping
     @Operation(summary = "获取应用关联的组件列表")
@@ -122,6 +129,46 @@ public class AppComponentController extends AppManagerBaseController {
                 .id(appComponentId)
                 .build();
         appComponentProvider.delete(request, operator);
+
+        // 删除组件之后，将其相关的deployConfig也都一并清理
+        for (DeployConfigDTO deployConfigDTO : deployConfigProvider.list(DeployConfigListReq.builder()
+                .appId(appId)
+                .typeIdPrefix(String.format(
+                        "Type:traits::ComponentType:%s::ComponentName:%s",
+                        record.getComponentType(), record.getComponentName()
+                ))
+                .build()).getItems()) {
+            deployConfigProvider.delete(
+                    DeployConfigDeleteReq.builder()
+                            .appId(deployConfigDTO.getAppId())
+                            .apiVersion(deployConfigDTO.getApiVersion())
+                            .typeId(deployConfigDTO.getTypeId())
+                            .envId(deployConfigDTO.getEnvId())
+                            .isolateNamespaceId(deployConfigDTO.getNamespaceId())
+                            .isolateStageId(deployConfigDTO.getStageId())
+                            .build()
+            );
+        }
+
+        for (DeployConfigDTO deployConfigDTO : deployConfigProvider.list(DeployConfigListReq.builder()
+                .appId(appId)
+                .typeId(String.format(
+                        "Type:components::ComponentType:%s::ComponentName:%s",
+                        record.getComponentType(), record.getComponentName()
+                ))
+                .build()).getItems()) {
+            deployConfigProvider.delete(
+                    DeployConfigDeleteReq.builder()
+                            .appId(deployConfigDTO.getAppId())
+                            .apiVersion(deployConfigDTO.getApiVersion())
+                            .typeId(deployConfigDTO.getTypeId())
+                            .envId(deployConfigDTO.getEnvId())
+                            .isolateNamespaceId(deployConfigDTO.getNamespaceId())
+                            .isolateStageId(deployConfigDTO.getStageId())
+                            .build()
+            );
+        }
+
         return buildSucceedResult(DefaultConstant.EMPTY_OBJ);
     }
 }

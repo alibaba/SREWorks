@@ -98,4 +98,14 @@ public class RtComponentInstanceDTO {
      * 当前组件的 ComponentSchema YAML 存储
      */
     private String componentSchema;
+
+    /**
+     * 关联的应用部署单 ID
+     */
+    private Long deployAppId;
+
+    /**
+     * 关联的组件部署单 ID
+     */
+    private Long deployComponentId;
 }

@@ -9,6 +9,7 @@ import com.alibaba.tesla.appmanager.common.util.NetworkUtil;
 import com.alibaba.tesla.appmanager.domain.core.StorageFile;
 import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppGetReq;
 import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppLaunchReq;
+import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppTerminateReq;
 import com.alibaba.tesla.appmanager.server.repository.UnitRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppPackageQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.condition.UnitQueryCondition;
@@ -170,6 +171,38 @@ public class UnitServiceImpl implements UnitService {
             Request.Builder requestBuilder = new Request.Builder().url(finalUrl).get();
             JSONObject response = NetworkUtil.sendRequest(httpClient, requestBuilder, authToken);
             return response.getJSONObject("data");
+        } catch (Exception e) {
+            throw new AppException(AppErrorCode.NETWORK_ERROR,
+                    String.format("cannot send request to unit|unitId=%s|url=%s|exception=%s",
+                            unitId, finalUrl, ExceptionUtils.getStackTrace(e)));
+        }
+    }
+
+    /**
+     * 终止单元环境中的部署流程
+     *
+     * @param unitId  单元 ID
+     * @param request 终止请求
+     */
+    @Override
+    public void terminateDeployment(String unitId, DeployAppTerminateReq request) {
+        // 获取目标单元信息
+        UnitDO unit = get(UnitQueryCondition.builder().unitId(unitId).build());
+        if (unit == null) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "the unit you provided does not exists");
+        }
+        OkHttpClient httpClient = UnitHttpHelper.getHttpClient(unit);
+        String authToken = UnitHttpHelper.getAuthToken(unit, httpClient);
+
+        // 发起部署请求
+        String urlPrefix = NetworkUtil.concatenateStr(unit.getEndpoint(),
+                String.format("deployments/%d/terminate", request.getDeployAppId()));
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(urlPrefix)).newBuilder();
+        HttpUrl finalUrl = urlBuilder.build();
+        try {
+            RequestBody body = RequestBody.create(null, new byte[]{});
+            Request.Builder requestBuilder = new Request.Builder().url(finalUrl).post(body);
+            NetworkUtil.sendRequest(httpClient, requestBuilder, authToken);
         } catch (Exception e) {
             throw new AppException(AppErrorCode.NETWORK_ERROR,
                     String.format("cannot send request to unit|unitId=%s|url=%s|exception=%s",

@@ -41,6 +41,8 @@ public class RtComponentInstanceDtoConvert extends BaseDtoConvert<RtComponentIns
         result.setStatus(componentInstanceDO.getStatus());
         result.setWatchKind(componentInstanceDO.getWatchKind());
         result.setTimes(componentInstanceDO.getTimes());
+        result.setDeployAppId(componentInstanceDO.getDeployAppId());
+        result.setDeployComponentId(componentInstanceDO.getDeployComponentId());
         if (StringUtils.isNotEmpty(componentInstanceDO.getConditions())) {
             result.setConditions(JSONArray.parseArray(componentInstanceDO.getConditions()));
         }

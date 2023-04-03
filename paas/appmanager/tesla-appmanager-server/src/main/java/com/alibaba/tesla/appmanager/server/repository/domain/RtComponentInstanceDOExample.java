@@ -1314,6 +1314,126 @@ public class RtComponentInstanceDOExample {
             addCriterion("lock_version not between", value1, value2, "lockVersion");
             return (Criteria) this;
         }
+
+        public Criteria andDeployAppIdIsNull() {
+            addCriterion("deploy_app_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdIsNotNull() {
+            addCriterion("deploy_app_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdEqualTo(Long value) {
+            addCriterion("deploy_app_id =", value, "deployAppId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdNotEqualTo(Long value) {
+            addCriterion("deploy_app_id <>", value, "deployAppId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdGreaterThan(Long value) {
+            addCriterion("deploy_app_id >", value, "deployAppId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("deploy_app_id >=", value, "deployAppId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdLessThan(Long value) {
+            addCriterion("deploy_app_id <", value, "deployAppId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdLessThanOrEqualTo(Long value) {
+            addCriterion("deploy_app_id <=", value, "deployAppId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdIn(List<Long> values) {
+            addCriterion("deploy_app_id in", values, "deployAppId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdNotIn(List<Long> values) {
+            addCriterion("deploy_app_id not in", values, "deployAppId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdBetween(Long value1, Long value2) {
+            addCriterion("deploy_app_id between", value1, value2, "deployAppId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdNotBetween(Long value1, Long value2) {
+            addCriterion("deploy_app_id not between", value1, value2, "deployAppId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployComponentIdIsNull() {
+            addCriterion("deploy_component_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployComponentIdIsNotNull() {
+            addCriterion("deploy_component_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployComponentIdEqualTo(Long value) {
+            addCriterion("deploy_component_id =", value, "deployComponentId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployComponentIdNotEqualTo(Long value) {
+            addCriterion("deploy_component_id <>", value, "deployComponentId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployComponentIdGreaterThan(Long value) {
+            addCriterion("deploy_component_id >", value, "deployComponentId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployComponentIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("deploy_component_id >=", value, "deployComponentId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployComponentIdLessThan(Long value) {
+            addCriterion("deploy_component_id <", value, "deployComponentId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployComponentIdLessThanOrEqualTo(Long value) {
+            addCriterion("deploy_component_id <=", value, "deployComponentId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployComponentIdIn(List<Long> values) {
+            addCriterion("deploy_component_id in", values, "deployComponentId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployComponentIdNotIn(List<Long> values) {
+            addCriterion("deploy_component_id not in", values, "deployComponentId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployComponentIdBetween(Long value1, Long value2) {
+            addCriterion("deploy_component_id between", value1, value2, "deployComponentId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployComponentIdNotBetween(Long value1, Long value2) {
+            addCriterion("deploy_component_id not between", value1, value2, "deployComponentId");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

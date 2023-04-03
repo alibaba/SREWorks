@@ -9,7 +9,7 @@ import com.alibaba.tesla.appmanager.domain.dto.*;
 import com.alibaba.tesla.appmanager.domain.req.rtappinstance.RtAppInstanceHistoryQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.rtappinstance.RtAppInstanceQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.rtappinstance.RtComponentInstanceHistoryQueryReq;
-import com.alibaba.tesla.appmanager.server.job.OrphanComponentInstanceJob;
+//import com.alibaba.tesla.appmanager.server.job.OrphanComponentInstanceJob;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +35,8 @@ public class RtAppInstanceController extends AppManagerBaseController {
     @Autowired
     private RtAppInstanceProvider rtAppInstanceProvider;
 
-    @Autowired
-    private OrphanComponentInstanceJob orphanComponentInstanceJob;
+//    @Autowired
+//    private OrphanComponentInstanceJob orphanComponentInstanceJob;
 
     @GetMapping("")
     public TeslaBaseResult list(
@@ -121,9 +121,9 @@ public class RtAppInstanceController extends AppManagerBaseController {
         return buildSucceedResult(result);
     }
 
-    @PostMapping("/retryOrphanComponents")
-    public TeslaBaseResult orphanComponents() {
-        orphanComponentInstanceJob.run();
-        return buildSucceedResult(DefaultConstant.EMPTY_OBJ);
-    }
+//    @PostMapping("/retryOrphanComponents")
+//    public TeslaBaseResult orphanComponents() {
+//        orphanComponentInstanceJob.run();
+//        return buildSucceedResult(DefaultConstant.EMPTY_OBJ);
+//    }
 }

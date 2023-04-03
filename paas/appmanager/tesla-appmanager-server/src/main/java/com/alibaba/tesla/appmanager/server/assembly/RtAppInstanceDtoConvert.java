@@ -82,6 +82,7 @@ public class RtAppInstanceDtoConvert extends BaseDtoConvert<RtAppInstanceDTO, Rt
                         .nameCn(appNameCn)
                         .navLink(appNavLink)
                         .build())
+                .deployAppId(appInstance.getDeployAppId())
                 .gmtCreate(appInstance.getGmtCreate())
                 .gmtModified(appInstance.getGmtModified())
                 .build();

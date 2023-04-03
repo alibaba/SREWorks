@@ -78,14 +78,16 @@ public class SuccessDeployComponentStateAction implements DeployComponentStateAc
         String namespaceId = subOrder.getNamespaceId();
         String stageId = subOrder.getStageId();
         String componentSchemaYamlStr = attrMap.get(DeployComponentAttrTypeEnum.COMPONENT_SCHEMA.toString());
-        componentInstanceService.reportComponentSchema(RtComponentInstanceQueryCondition.builder()
+        RtComponentInstanceQueryCondition reportCondition = RtComponentInstanceQueryCondition.builder()
                 .appId(appId)
                 .componentType(componentType)
                 .componentName(componentName)
                 .clusterId(clusterId)
                 .namespaceId(namespaceId)
                 .stageId(stageId)
-                .build(), componentSchemaYamlStr);
+                .build();
+        componentInstanceService.reportComponentSchema(reportCondition, subOrder.getDeployId(),
+                subOrder.getId(), componentSchemaYamlStr);
 
         // 计算消耗时间
         String cost = subOrder.costTime();

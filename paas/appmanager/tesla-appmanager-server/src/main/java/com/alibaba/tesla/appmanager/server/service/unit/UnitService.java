@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppGetReq;
 import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppLaunchReq;
+import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppTerminateReq;
 import com.alibaba.tesla.appmanager.server.repository.condition.UnitQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.UnitDO;
 
@@ -41,11 +42,19 @@ public interface UnitService {
     /**
      * 查询单元环境部署详情
      *
-     * @param unitId 但愿 ID
+     * @param unitId 单元 ID
      * @param getReq 查询请求
      * @return
      */
     JSONObject getDeployment(String unitId, DeployAppGetReq getReq);
+
+    /**
+     * 终止单元环境中的部署流程
+     *
+     * @param unitId  单元 ID
+     * @param request 终止请求
+     */
+    void terminateDeployment(String unitId, DeployAppTerminateReq request);
 
     /**
      * 通用单元 HTTP 请求转发

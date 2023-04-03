@@ -1234,6 +1234,66 @@ public class RtAppInstanceDOExample {
             addCriterion("parent_owner_reference not between", value1, value2, "parentOwnerReference");
             return (Criteria) this;
         }
+
+        public Criteria andDeployAppIdIsNull() {
+            addCriterion("deploy_app_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdIsNotNull() {
+            addCriterion("deploy_app_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdEqualTo(Long value) {
+            addCriterion("deploy_app_id =", value, "deployAppId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdNotEqualTo(Long value) {
+            addCriterion("deploy_app_id <>", value, "deployAppId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdGreaterThan(Long value) {
+            addCriterion("deploy_app_id >", value, "deployAppId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("deploy_app_id >=", value, "deployAppId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdLessThan(Long value) {
+            addCriterion("deploy_app_id <", value, "deployAppId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdLessThanOrEqualTo(Long value) {
+            addCriterion("deploy_app_id <=", value, "deployAppId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdIn(List<Long> values) {
+            addCriterion("deploy_app_id in", values, "deployAppId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdNotIn(List<Long> values) {
+            addCriterion("deploy_app_id not in", values, "deployAppId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdBetween(Long value1, Long value2) {
+            addCriterion("deploy_app_id between", value1, value2, "deployAppId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeployAppIdNotBetween(Long value1, Long value2) {
+            addCriterion("deploy_app_id not between", value1, value2, "deployAppId");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

@@ -159,6 +159,8 @@ public class RtComponentInstanceServiceImpl implements RtComponentInstanceServic
             }
 
             record.setComponentSchema(componentSchemaYamlStr);
+            record.setDeployAppId(deployAppId);
+            record.setDeployComponentId(deployComponentId);
             int updated = repository.updateByCondition(record, condition);
             if (updated == 0) {
                 log.warn("lock failed when reports component schema to realtime component instance, prepare to retry|" +

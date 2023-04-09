@@ -9,7 +9,7 @@ componentPackages:
     metadata:
       name: microservice-template-productopsv2
       annotations:
-        annotations.appmanager.oam.dev/version: "2.2.1+20221228001443744939"
+        annotations.appmanager.oam.dev/version: "2.2.3+20230409144643449784"
       labels:
         labels.appmanager.oam.dev/appId: "template"
         labels.appmanager.oam.dev/componentName: "productopsv2"
@@ -39,15 +39,15 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "2.2.1+20221228001443744939"
+            annotations.appmanager.oam.dev/version: "2.2.3+20230409144643449784"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec:
           targetEndpoint: ''
-  packageMd5: f233da100b51ea9e683572826985c896
+  packageMd5: af478d911535dba35a708770f4cd91bb
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"componentConfiguration":"clusterId: ''''\ndataInputs: []\ndataOutputs: []\ndependencies: []\nnamespaceId: ''''\nparameterValues: []\nrevisionName: INTERNAL_ADDON|productopsv2|_\nscopes: []\nstageId: ''''\ntraits: []\n","isDevelop":true,"binderTraits":[]}'
-  packageVersion: 2.2.1+20221228001443744939
+  packageVersion: 2.2.3+20230409144643449784
   relativePath: INTERNAL_ADDON_productopsv2.zip
 - componentName: developmentmeta
   componentType: INTERNAL_ADDON
@@ -58,7 +58,7 @@ componentPackages:
     metadata:
       name: internal-addon-template-developmentmeta
       annotations:
-        annotations.appmanager.oam.dev/version: "2.2.1+20221228001443325777"
+        annotations.appmanager.oam.dev/version: "2.2.3+20230409144643237932"
       labels:
         labels.appmanager.oam.dev/appId: "template"
         labels.appmanager.oam.dev/componentName: "developmentmeta"
@@ -88,14 +88,14 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "2.2.1+20221228001443325777"
+            annotations.appmanager.oam.dev/version: "2.2.3+20230409144643237932"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec: {}
-  packageMd5: a87fd25832e5d8d34a0a8a9bec558110
+  packageMd5: 0ef81f1077ddb8cd011580fa29756a00
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
-  packageVersion: 2.2.1+20221228001443325777
+  packageVersion: 2.2.3+20230409144643237932
   relativePath: INTERNAL_ADDON_developmentmeta.zip
 - componentName: appmeta
   componentType: INTERNAL_ADDON
@@ -106,7 +106,7 @@ componentPackages:
     metadata:
       name: internal-addon-template-appmeta
       annotations:
-        annotations.appmanager.oam.dev/version: "2.2.1+20221228001443783096"
+        annotations.appmanager.oam.dev/version: "2.2.3+20230409144643912571"
       labels:
         labels.appmanager.oam.dev/appId: "template"
         labels.appmanager.oam.dev/componentName: "appmeta"
@@ -136,19 +136,19 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "2.2.1+20221228001443783096"
+            annotations.appmanager.oam.dev/version: "2.2.3+20230409144643912571"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec:
           overwriteIsDevelopment: false
           overwriteBuiltIn: false
-  packageMd5: 74d412c62487cf190afa57d6171576fa
+  packageMd5: ba16c23b2a219bb60f1fe605e4f4e031
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
-  packageVersion: 2.2.1+20221228001443783096
+  packageVersion: 2.2.3+20230409144643912571
   relativePath: INTERNAL_ADDON_appmeta.zip
 packageCreator: '999999999'
-packageVersion: 1.0.2+20221228001746809815
+packageVersion: 1.0.4+20230409144707207528
 tags:
 - release=sreworks/x86_64
 - on-sale

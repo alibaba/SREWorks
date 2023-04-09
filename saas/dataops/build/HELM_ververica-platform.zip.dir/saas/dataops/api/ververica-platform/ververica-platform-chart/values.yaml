@@ -12,43 +12,43 @@
 vvp:
   # Flink version information shipped to the customer
   flinkVersionMetadata:
-    - flinkVersion: 1.12.7
-      imageTag: 1.12.7-stream1-scala_2.12-java8
-      labels:
-        scalaVersion: 2.12
-        java: 8
-      defaultFor:
-        - 1.12
-        - 1.12.7
-    - flinkVersion: 1.12.7
-      imageTag: 1.12.7-stream1-scala_2.12-java11
-      labels:
-        scalaVersion: 2.12
-        java: 11
-    - flinkVersion: 1.13.5
-      imageTag: 1.13.5-stream1-scala_2.12-java8
+    - flinkVersion: 1.13.6
+      imageTag: 1.13.6-stream1-scala_2.12-java8
       labels:
         scalaVersion: 2.12
         java: 8
       defaultFor:
         - 1.13
-        - 1.13.5
-    - flinkVersion: 1.13.5
-      imageTag: 1.13.5-stream1-scala_2.12-java11
+        - 1.13.6
+    - flinkVersion: 1.13.6
+      imageTag: 1.13.6-stream1-scala_2.12-java11
       labels:
         scalaVersion: 2.12
         java: 11
-    - flinkVersion: 1.14.2
-      imageTag: 1.14.2-stream1-scala_2.12-java8
+    - flinkVersion: 1.14.6
+      imageTag: 1.14.6-stream2-scala_2.12-java8
       labels:
         scalaVersion: 2.12
         java: 8
       defaultFor:
         - 1.14
-        - 1.14.2
+        - 1.14.6
+    - flinkVersion: 1.14.6
+      imageTag: 1.14.6-stream2-scala_2.12-java11
+      labels:
+        scalaVersion: 2.12
+        java: 11
+    - flinkVersion: 1.15.2
+      imageTag: 1.15.2-stream4-scala_2.12-java8
+      labels:
+        scalaVersion: 2.12
+        java: 8
       useForSqlDeployments: true
-    - flinkVersion: 1.14.2
-      imageTag: 1.14.2-stream1-scala_2.12-java11
+      defaultFor:
+        - 1.15
+        - 1.15.2
+    - flinkVersion: 1.15.2
+      imageTag: 1.15.2-stream4-scala_2.12-java11
       labels:
         scalaVersion: 2.12
         java: 11
@@ -61,13 +61,21 @@ vvp:
   ##
   ## This registry will be used for all image references in Ververica Platform, including the
   ## platform components themselves as well as Flink, unless overridden in a more specific config.
-  registry: registry.ververica.com/v2.6
+  registry: registry.ververica.com/v2.8
 
   ## Authentication configuration.
   auth:
     ## When disabled, all users are unauthenticated and have administrator privileges. Not
     ## recommended for production deployments.
     enabled: false
+
+    ## SAML configuration
+    #saml:
+      #groupsAttribute: groups
+      #registrationId: registration-id
+      #entityId: entity-id
+      #ssoServiceLocation: sso-service-location
+      #certificateLocation: certificate-location-in-container
 
     ## A list of users and groups that have administrator privileges.
     ## - `user:user@example.com` matches the user `user@example.com`
@@ -139,7 +147,7 @@ vvp:
     ## Defaults to the registry specified under `vvp.registry`.
     #registry:
     repository: vvp-result-fetcher-service
-    tag: 2.6.1
+    tag: 2.8.2
     ## Kubernetes resource configurations for the result-fetcher-service to execute ad-hoc SQL queries.
     #resources:
     #  limits:
@@ -148,6 +156,18 @@ vvp:
     #  requests:
     #    cpu: 100m
     #    memory: 300Mi
+
+##
+## SAML credentials
+##
+#samlCredentials:
+  ## Use an existing Kubernetes secret instead of providing credentials in this file. The keys
+  ## within the secret must be named as shown below.
+  ##
+  #existingSecret: secret-name
+
+  #certificate: |-
+    #certificate-file-from-identity-provider
 
 ##
 ## Blob storage credentials
@@ -208,7 +228,7 @@ appmanager:
   image:
     ## Defaults to the registry specified under `vvp.registry` plus "/vvp-appmanager".
     #repository:
-    tag: 2.6.1
+    tag: 2.8.2
     pullPolicy: Always
 
   resources:
@@ -219,7 +239,7 @@ appmanager:
       cpu: 250m
       memory: 1Gi
 
-  artifactFetcherTag: 2.6.1
+  artifactFetcherTag: 2.8.2
 
 ##
 ## Container configuration for the gateway component
@@ -228,7 +248,7 @@ gateway:
   image:
     ## Defaults to the registry specified under `vvp.registry` plus "/vvp-gateway".
     #repository:
-    tag: 2.6.1
+    tag: 2.8.2
     pullPolicy: Always
 
   resources:
@@ -246,7 +266,7 @@ ui:
   image:
     ## Defaults to the registry specified under `vvp.registry` plus "/vvp-ui".
     #repository:
-    tag: 2.6.1
+    tag: 2.8.2
     pullPolicy: Always
 
   resources:
@@ -359,6 +379,11 @@ affinity: {}
 ## Priority class name for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
 priorityClassName: ""
+
+## Annotations for the Ververica Platform pod
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: {}
 
 ## Labels for the Ververica Platform deployment
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels

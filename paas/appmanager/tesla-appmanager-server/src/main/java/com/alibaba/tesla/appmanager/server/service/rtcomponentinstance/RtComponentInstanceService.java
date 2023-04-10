@@ -28,8 +28,12 @@ public interface RtComponentInstanceService {
      *
      * @param condition              组件实例定位条件
      * @param componentSchemaYamlStr 需要上报的 ComponentSchema YAML 内容
+     * @param deployAppId            当前对应的应用部署单 ID
+     * @param deployComponentId      当前对应的组件部署单 ID
      */
-    void reportComponentSchema(RtComponentInstanceQueryCondition condition, String componentSchemaYamlStr);
+    void reportComponentSchema(
+            RtComponentInstanceQueryCondition condition, Long deployAppId,
+            Long deployComponentId, String componentSchemaYamlStr);
 
     /**
      * 上报原始数据

@@ -22,6 +22,8 @@
     <result column="conditions" jdbcType="LONGVARCHAR" property="conditions" />
     <result column="component_schema" jdbcType="LONGVARCHAR" property="componentSchema" />
     <result column="lock_version" jdbcType="INTEGER" property="lockVersion" />
+    <result column="deploy_app_id" jdbcType="BIGINT" property="deployAppId" />
+    <result column="deploy_component_id" jdbcType="BIGINT" property="deployComponentId" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <!--@mbg.generated-->
@@ -117,12 +119,12 @@
     <!--@mbg.generated-->
     id, gmt_create, gmt_modified, component_instance_id, app_instance_id, app_id, component_type, 
     component_name, cluster_id, namespace_id, stage_id, version, `status`, watch_kind, 
-    times, conditions, component_schema, lock_version
+    times, conditions, component_schema, lock_version, deploy_app_id, deploy_component_id
   </sql>
   <sql id="Join_Column_List">
     A.id, A.gmt_create, A.gmt_modified, A.component_instance_id, A.app_instance_id, A.app_id, A.component_type,
     A.component_name, A.cluster_id, A.namespace_id, A.stage_id, A.version, A.`status`, A.watch_kind,
-    A.times, A.conditions, A.component_schema, A.lock_version
+    A.times, A.conditions, A.component_schema, A.lock_version, A.deploy_app_id, A.deploy_component_id
   </sql>
   <select id="selectByExample" parameterType="com.alibaba.tesla.appmanager.server.repository.domain.RtComponentInstanceDOExample" resultMap="BaseResultMap">
     <!--@mbg.generated-->
@@ -211,6 +213,12 @@
       <if test="lockVersion != null">
         lock_version,
       </if>
+      <if test="deployAppId != null">
+        deploy_app_id,
+      </if>
+      <if test="deployComponentId != null">
+        deploy_component_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="gmtCreate != null">
@@ -263,6 +271,12 @@
       </if>
       <if test="lockVersion != null">
         #{lockVersion,jdbcType=INTEGER},
+      </if>
+      <if test="deployAppId != null">
+        #{deployAppId,jdbcType=BIGINT},
+      </if>
+      <if test="deployComponentId != null">
+        #{deployComponentId,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -326,6 +340,12 @@
       </if>
       <if test="record.componentSchema != null">
         component_schema = #{record.componentSchema,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.deployAppId != null">
+        deploy_app_id = #{record.deployAppId,jdbcType=BIGINT},
+      </if>
+      <if test="record.deployComponentId != null">
+        deploy_component_id = #{record.deployComponentId,jdbcType=BIGINT},
       </if>
       lock_version = lock_version + 1,
     </set>

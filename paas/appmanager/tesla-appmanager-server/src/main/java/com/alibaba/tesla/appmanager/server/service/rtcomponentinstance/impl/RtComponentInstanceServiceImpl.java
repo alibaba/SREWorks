@@ -16,13 +16,10 @@ import com.alibaba.tesla.appmanager.server.dynamicscript.handler.ComponentHandle
 import com.alibaba.tesla.appmanager.server.repository.RtComponentInstanceHistoryRepository;
 import com.alibaba.tesla.appmanager.server.repository.RtComponentInstanceRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.DeployComponentQueryCondition;
-import com.alibaba.tesla.appmanager.server.repository.condition.RtAppInstanceQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.condition.RtComponentInstanceHistoryQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.condition.RtComponentInstanceQueryCondition;
-import com.alibaba.tesla.appmanager.server.repository.domain.RtAppInstanceDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.RtComponentInstanceDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.RtComponentInstanceHistoryDO;
-import com.alibaba.tesla.appmanager.server.service.deploy.DeployAppService;
 import com.alibaba.tesla.appmanager.server.service.deploy.DeployComponentService;
 import com.alibaba.tesla.appmanager.server.service.deploy.business.DeployComponentBO;
 import com.alibaba.tesla.appmanager.server.service.rtappinstance.RtAppInstanceService;
@@ -98,7 +95,7 @@ public class RtComponentInstanceServiceImpl implements RtComponentInstanceServic
                         .clusterId(clusterId)
                         .namespaceId(namespaceId)
                         .stageId(stageId)
-                        .build(), "");
+                        .build(), 0L, 0L, "");
                 logs.add(String.format("refresh component schema successfully|%s", logSuffix));
                 continue;
             }
@@ -115,14 +112,16 @@ public class RtComponentInstanceServiceImpl implements RtComponentInstanceServic
             }
 
             // 刷新 component schema yaml
-            reportComponentSchema(RtComponentInstanceQueryCondition.builder()
+            RtComponentInstanceQueryCondition reportCondition = RtComponentInstanceQueryCondition.builder()
                     .appId(appId)
                     .componentType(componentType)
                     .componentName(componentName)
                     .clusterId(clusterId)
                     .namespaceId(namespaceId)
                     .stageId(stageId)
-                    .build(), componentSchemaYamlStr);
+                    .build();
+            reportComponentSchema(reportCondition, deployComponent.getSubOrder().getDeployId(),
+                    deployComponent.getSubOrder().getId(), componentSchemaYamlStr);
             logs.add(String.format("refresh component schema successfully|%s", logSuffix));
         }
         return logs;
@@ -133,9 +132,13 @@ public class RtComponentInstanceServiceImpl implements RtComponentInstanceServic
      *
      * @param condition              组件实例定位条件
      * @param componentSchemaYamlStr 需要上报的 ComponentSchema YAML 内容
+     * @param deployAppId            当前对应的应用部署单 ID
+     * @param deployComponentId      当前对应的组件部署单 ID
      */
     @Override
-    public void reportComponentSchema(RtComponentInstanceQueryCondition condition, String componentSchemaYamlStr) {
+    public void reportComponentSchema(
+            RtComponentInstanceQueryCondition condition, Long deployAppId,
+            Long deployComponentId, String componentSchemaYamlStr) {
         String appId = condition.getAppId();
         String componentType = condition.getComponentType();
         String componentName = condition.getComponentName();
@@ -156,6 +159,8 @@ public class RtComponentInstanceServiceImpl implements RtComponentInstanceServic
             }
 
             record.setComponentSchema(componentSchemaYamlStr);
+            record.setDeployAppId(deployAppId);
+            record.setDeployComponentId(deployComponentId);
             int updated = repository.updateByCondition(record, condition);
             if (updated == 0) {
                 log.warn("lock failed when reports component schema to realtime component instance, prepare to retry|" +
@@ -163,6 +168,8 @@ public class RtComponentInstanceServiceImpl implements RtComponentInstanceServic
                 continue;
             }
             log.info("reports component schema to realtime component instance successfully|{}", logSuffix);
+            // 触发 app instance 层面的状态更新
+            rtAppInstanceService.asyncTriggerStatusUpdate(record.getAppInstanceId());
             break;
         }
     }

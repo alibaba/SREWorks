@@ -104,4 +104,14 @@ public class RtComponentInstanceDO {
      * 锁版本
      */
     private Integer lockVersion;
+
+    /**
+     * 关联的应用部署单 ID
+     */
+    private Long deployAppId;
+
+    /**
+     * 关联的组件部署单 ID
+     */
+    private Long deployComponentId;
 }

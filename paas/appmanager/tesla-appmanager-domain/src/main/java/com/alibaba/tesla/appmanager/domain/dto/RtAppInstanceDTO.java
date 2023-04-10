@@ -106,6 +106,11 @@ public class RtAppInstanceDTO {
     private Options options;
 
     /**
+     * 关联的应用部署单 ID
+     */
+    private Long deployAppId;
+
+    /**
      * 应用信息
      */
     @Data

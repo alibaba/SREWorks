@@ -35,7 +35,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
  */
 @Slf4j
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = TestApplication.class)
+@SpringBootTest(classes = TestApplication.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @SpringBootConfiguration
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class TestWorkflowRolloutE2E {

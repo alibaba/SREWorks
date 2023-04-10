@@ -95,4 +95,9 @@ public class RtAppInstanceDO {
      * Parent Owner Reference
      */
     private String parentOwnerReference;
+
+    /**
+     * 关联的应用部署单 ID
+     */
+    private Long deployAppId;
 }

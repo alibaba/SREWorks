@@ -22,7 +22,7 @@ public class VvpService {
     JobApplicationProperties applicationProperties;
 
     public List<FlinkConnectorDTO> listConnector(Boolean isSource, Boolean isSink, String type) throws Exception {
-        String connectorUrl = "http://prod-dataops-ververica-platform-ververica-platform.sreworks-dataops/sql/v1beta1/namespaces/default/connectors";
+        String connectorUrl = String.format("%s/sql/v1beta1/namespaces/default/connectors", applicationProperties.getFlinkVvpEndpoint());
         HttpResponse<String> response = Requests.get(connectorUrl, null, null);
         JSONObject connectors = JSONObject.parseObject(response.body());
 

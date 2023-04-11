@@ -2,17 +2,8 @@ package com.alibaba.sreworks.job.master.controllers;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.sreworks.job.master.domain.DO.SreworksJob;
-import com.alibaba.sreworks.job.master.domain.DTO.ElasticJobInstanceDTO;
-import com.alibaba.sreworks.job.master.domain.DTO.FlinkConnectorDTO;
-import com.alibaba.sreworks.job.master.domain.DTO.SreworksJobDTO;
-import com.alibaba.sreworks.job.master.domain.DTO.SreworksStreamJobDTO;
-import com.alibaba.sreworks.job.master.domain.repository.SreworksJobRepository;
-import com.alibaba.sreworks.job.master.jobscene.JobSceneService;
-import com.alibaba.sreworks.job.master.jobschedule.JobScheduleService;
-import com.alibaba.sreworks.job.master.jobtrigger.JobTriggerService;
+import com.alibaba.sreworks.job.master.domain.DTO.*;
 import com.alibaba.sreworks.job.master.params.*;
-import com.alibaba.sreworks.job.master.services.JobService;
 import com.alibaba.sreworks.job.master.services.StreamJobService;
 import com.alibaba.sreworks.job.master.services.VvpService;
 import com.alibaba.sreworks.job.utils.JsonUtil;
@@ -22,15 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.alibaba.sreworks.job.utils.PageUtil.pageable;
 
@@ -52,9 +37,6 @@ public class StreamJobController extends BaseController {
     public TeslaBaseResult create(@RequestBody StreamJobCreateParam param) throws Exception {
         param.setCreator(getUserEmployeeId());
         param.setOperator(getUserEmployeeId());
-        if (param.getAppId() == null) {
-            param.setAppId(getAppId());
-        }
         if (param.getTags() == null) {
             param.setTags(new JSONArray());
         }
@@ -67,6 +49,72 @@ public class StreamJobController extends BaseController {
         return buildSucceedResult(streamJobService.create(param));
     }
 
+    @RequestMapping(value = "{id}/source", method = RequestMethod.POST)
+    public TeslaBaseResult addSource(@PathVariable("id") Long streamJobId, @RequestBody StreamJobSourceCreateParam param) throws Exception {
+        SreworksStreamJobDTO job = streamJobService.get(streamJobId);
+        if(job == null){
+            return buildClientErrorResult("streamJob not found");
+        }
+        param.setCreator(getUserEmployeeId());
+        param.setOperator(getUserEmployeeId());
+        return buildSucceedResult(streamJobService.addSource(streamJobId, job.getAppId(), param));
+    }
+
+    @RequestMapping(value = "{id}/block/{blockId}", method = RequestMethod.DELETE)
+    public TeslaBaseResult deleteBlock(@PathVariable("id") Long streamJobId, @PathVariable("blockId") Long streamJobBlockId) throws Exception {
+        SreworksStreamJobDTO job = streamJobService.get(streamJobId);
+        if(job == null){
+            return buildClientErrorResult("streamJob not found");
+        }
+        streamJobService.deleteBlock(streamJobBlockId);
+        return buildSucceedResult(JsonUtil.map(
+            "streamJobId", streamJobId,
+                "blockId", streamJobBlockId
+        ));
+    }
+
+    @RequestMapping(value = "{id}/sink", method = RequestMethod.POST)
+    public TeslaBaseResult addSink(@PathVariable("id") Long streamJobId, @RequestBody StreamJobSinkCreateParam param) throws Exception {
+        SreworksStreamJobDTO job = streamJobService.get(streamJobId);
+        if(job == null){
+            return buildClientErrorResult("streamJob not found");
+        }
+        param.setCreator(getUserEmployeeId());
+        param.setOperator(getUserEmployeeId());
+        return buildSucceedResult(streamJobService.addSink(streamJobId, job.getAppId(), param));
+    }
+
+    @RequestMapping(value = "{id}/python", method = RequestMethod.POST)
+    public TeslaBaseResult addPython(@PathVariable("id") Long streamJobId, @RequestBody StreamJobPythonCreateParam param) throws Exception {
+        SreworksStreamJobDTO job = streamJobService.get(streamJobId);
+        if(job == null){
+            return buildClientErrorResult("streamJob not found");
+        }
+        param.setCreator(getUserEmployeeId());
+        param.setOperator(getUserEmployeeId());
+        return buildSucceedResult(streamJobService.addPython(streamJobId, job.getAppId(), param));
+    }
+
+    @RequestMapping(value = "{id}/blocks", method = RequestMethod.GET)
+    public TeslaBaseResult getBlocks(@PathVariable("id") Long streamJobId) throws Exception {
+        SreworksStreamJobDTO job = streamJobService.get(streamJobId);
+        if(job == null){
+            return buildClientErrorResult("streamJob not found");
+        }
+        return buildSucceedResult(streamJobService.listBlockByStreamJobId(streamJobId));
+    }
+
+    @RequestMapping(value = "{id}/preview", method = RequestMethod.GET)
+    public TeslaBaseResult getPreview(@PathVariable("id") Long streamJobId) throws Exception {
+        SreworksStreamJobDTO job = streamJobService.get(streamJobId);
+        if(job == null){
+            return buildClientErrorResult("streamJob not found");
+        }
+        return buildSucceedResult(JsonUtil.map(
+        "content", streamJobService.generateScript(streamJobId)
+        ));
+    }
+
     @RequestMapping(value = "gets", method = RequestMethod.GET)
     public TeslaBaseResult gets(Integer page, Integer pageSize) throws Exception {
         Page<SreworksStreamJobDTO> jobList = streamJobService.gets(pageable(page, pageSize));
@@ -74,7 +122,7 @@ public class StreamJobController extends BaseController {
         "page", jobList.getNumber(),
             "pageSize", jobList.getSize(),
             "total", jobList.getTotalElements(),
-                "items", jobList.getContent()
+            "items", jobList.getContent()
         ));
 
     }

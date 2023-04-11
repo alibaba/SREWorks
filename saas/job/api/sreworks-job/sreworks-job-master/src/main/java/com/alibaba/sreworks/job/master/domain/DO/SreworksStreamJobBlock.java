@@ -9,9 +9,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
-/**
- * @author jinghua.yjh
- */
 @Slf4j
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -19,7 +16,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SreworksStreamJobPython {
+public class SreworksStreamJobBlock {
 
     @Id
     @GeneratedValue
@@ -47,6 +44,10 @@ public class SreworksStreamJobPython {
     private String name;
 
     @Column(columnDefinition = "longtext")
-    private String script;
+    private String data;
+
+    @Column
+    private String blockType;
+
 
 }

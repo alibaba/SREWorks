@@ -94,4 +94,8 @@ public enum DeployComponentStateEnum {
         }
         return null;
     }
+
+    public boolean isFinalState() {
+        return this.equals(SUCCESS) || this.equals(FAILURE) || this.equals(EXCEPTION) || this.equals(WAIT_FOR_OP);
+    }
 }

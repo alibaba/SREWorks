@@ -30,6 +30,10 @@
             <groupId>com.alibaba.tesla</groupId>
             <artifactId>tesla-appmanager-domain</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba.tesla</groupId>
+            <artifactId>tesla-appmanager-storage</artifactId>
+        </dependency>
 
         <!-- test -->
         <dependency>

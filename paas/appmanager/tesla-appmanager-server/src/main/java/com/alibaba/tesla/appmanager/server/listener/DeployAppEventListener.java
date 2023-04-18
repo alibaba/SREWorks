@@ -71,7 +71,9 @@ public class DeployAppEventListener implements ApplicationListener<DeployAppEven
         if (order.getGmtStart() == null || order.getGmtStart().getTime() == 0L) {
             order.setGmtStart(DateUtil.now());
         }
-        order.setGmtEnd(DateUtil.now());
+        if (nextStatus.isFinalState()) {
+            order.setGmtEnd(DateUtil.now());
+        }
         String logSuffix = String.format("|deployAppId=%d|fromStatus=%s|toStatus=%s",
                 deployAppId, status, nextStatus);
         try {

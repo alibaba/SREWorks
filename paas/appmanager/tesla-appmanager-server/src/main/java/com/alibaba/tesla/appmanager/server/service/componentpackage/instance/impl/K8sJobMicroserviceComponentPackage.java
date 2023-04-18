@@ -10,6 +10,7 @@ import com.alibaba.tesla.appmanager.common.enums.AppPackageTaskStatusEnum;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.common.service.StreamLogService;
 import com.alibaba.tesla.appmanager.common.util.*;
 import com.alibaba.tesla.appmanager.domain.core.StorageFile;
 import com.alibaba.tesla.appmanager.server.event.componentpackage.FailedComponentPackageTaskEvent;
@@ -96,7 +97,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
     private Storage storage;
 
     @Autowired
-    private StreamLogHelper streamLogHelper;
+    private StreamLogService streamLogService;
 
     /**
      * 初始化，注册自身
@@ -186,11 +187,11 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
                 InputStream is = logs.streamNamespacedPodLog(pod);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is));
                 for (String line; (line = reader.readLine()) != null; ) {
-                    streamLogHelper.info(streamKey, line);
+                    streamLogService.info(streamKey, line);
                 }
             }
         } finally {
-            streamLogHelper.clean(streamKey);
+            streamLogService.clean(streamKey, true);
         }
     }
 
@@ -287,7 +288,7 @@ public class K8sJobMicroserviceComponentPackage implements ComponentPackageBase 
                                 String podLog = null;
                                 try {
                                     podLog = api.readNamespacedPodLog(runningPod, systemProperties.getK8sNamespace(),
-                                        null, null, null, null, null, null, null, null, null);
+                                            null, null, null, null, null, null, null, null, null);
                                 } catch (ApiException e) {
                                     log.warn("action=checkTaskStatus|| Can not read pod log, pod:{}", runningPod, e);
                                     podLog = String.format("Read pod log failed! Exception:%s", ExceptionUtil.getStackTrace(e));

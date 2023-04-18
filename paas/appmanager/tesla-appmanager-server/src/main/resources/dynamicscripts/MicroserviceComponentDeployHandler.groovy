@@ -9,12 +9,8 @@ import com.alibaba.tesla.appmanager.common.enums.DeployComponentStateEnum
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode
 import com.alibaba.tesla.appmanager.common.exception.AppException
-import com.alibaba.tesla.appmanager.common.util.CommandUtil
-import com.alibaba.tesla.appmanager.common.util.ImageUtil
-import com.alibaba.tesla.appmanager.common.util.NetworkUtil
-import com.alibaba.tesla.appmanager.common.util.SchemaUtil
-import com.alibaba.tesla.appmanager.common.util.StreamLogHelper
-import com.alibaba.tesla.appmanager.common.util.ZipUtil
+import com.alibaba.tesla.appmanager.common.service.StreamLogService
+import com.alibaba.tesla.appmanager.common.util.*
 import com.alibaba.tesla.appmanager.domain.req.deploy.GetDeployComponentHandlerReq
 import com.alibaba.tesla.appmanager.domain.req.deploy.LaunchDeployComponentHandlerReq
 import com.alibaba.tesla.appmanager.domain.res.deploy.GetDeployComponentHandlerRes
@@ -65,7 +61,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 54
+    public static final Integer REVISION = 55
 
     /**
      * Label Keys
@@ -96,7 +92,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
     private SystemProperties systemProperties
 
     @Autowired
-    private StreamLogHelper streamLogHelper
+    private StreamLogService streamLogService;
 
     /**
      * 部署组件过程
@@ -107,7 +103,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
     LaunchDeployComponentHandlerRes launch(LaunchDeployComponentHandlerReq request) {
         def streamKey = String.format("%s_%s", RedisKeyConstant.DEPLOY_TASK_LOG,
                 request.getDeployComponentId())
-        streamLogHelper.info(streamKey, String.format("default deploy launch request|%s", JSONObject.toJSONString(request)), log)
+        streamLogService.info(streamKey, String.format("default deploy launch request|%s", JSONObject.toJSONString(request)), log)
         def packageDir = getPackageDir(request)
         def componentSchema = request.getComponentSchema()
 
@@ -126,7 +122,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
                             def client = kubernetesClientFactory.get(cluster)
                             def namespaceObj = client.namespaces().withName(namespace).get()
                             if (namespaceObj == null) {
-                                streamLogHelper.info(streamKey,
+                                streamLogService.info(streamKey,
                                         String.format("find autocreate flag in request, create namespace %s in cluster %s",
                                                 namespace, cluster), log)
                                 def ns = new NamespaceBuilder()
@@ -141,7 +137,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
                                         throw e
                                     }
                                 }
-                                streamLogHelper.info(streamKey,
+                                streamLogService.info(streamKey,
                                         String.format("namespace %s in cluster %s has createds",
                                                 namespace, cluster), log)
                             } else {
@@ -162,7 +158,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
                             def client = kubernetesClientFactory.get(cluster)
                             def resourceQuotaObj = client.resourceQuotas().inNamespace(namespace).withName(name).get()
                             if (resourceQuotaObj == null) {
-                                streamLogHelper.info(streamKey,
+                                streamLogService.info(streamKey,
                                         String.format("find resource quota in namespace scope, create resource quota %s in \" +\n" +
                                                 "                                            \"namespace %s",
                                                 name, namespace), log)
@@ -185,7 +181,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
                                         throw e
                                     }
                                 }
-                                streamLogHelper.info(streamKey,
+                                streamLogService.info(streamKey,
                                         String.format("resource quota %s in namespace %s has created",
                                                 name, namespace), log)
                             } else {
@@ -209,7 +205,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
         LaunchDeployComponentHandlerRes res = LaunchDeployComponentHandlerRes.builder()
                 .componentSchema(componentSchema)
                 .build()
-        streamLogHelper.info(streamKey,
+        streamLogService.info(streamKey,
                 String.format("default deploy launch res|%s",JSONObject.toJSONString(res)), log)
         return res
     }
@@ -413,33 +409,33 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
         // 加载 Docker 镜像
         def loadCmd = new ArrayList<>(commandPrefixArray)
         loadCmd.addAll(Arrays.asList("load", "-i", imagePath))
-        streamLogHelper.info(streamKey, String.format("run command: %s\n", String.join(" ", loadCmd)), log)
-        CommandUtil.runLocalCommand(CommandUtil.getBashCommand(loadCmd.toArray(new String[0]), Paths.get(packageDir).toFile()), new LogOutputStream() {
+        streamLogService.info(streamKey, String.format("run command: %s\n", String.join(" ", loadCmd)), log)
+        CommandUtil.runLocalCommand(CommandUtil.getBashCommand(loadCmd.toArray(new String[0])), Paths.get(packageDir).toFile(), new LogOutputStream() {
             @Override
             protected void processLine(String line) {
-                streamLogHelper.info(streamKey, line, log)
+                streamLogService.info(streamKey, line, log)
             }
         })
 
         // 重新 tag 镜像，增加 UUID
         def tagCmd = new ArrayList<>(commandPrefixArray)
         tagCmd.addAll(Arrays.asList("tag", sha256, newImage))
-        streamLogHelper.info(streamKey, String.format("run command: %s\n", String.join(" ", tagCmd)), log)
+        streamLogService.info(streamKey, String.format("run command: %s\n", String.join(" ", tagCmd)), log)
         CommandUtil.runLocalCommand(CommandUtil.getBashCommand(tagCmd.toArray(new String[0])), new LogOutputStream() {
             @Override
             protected void processLine(String line) {
-                streamLogHelper.info(streamKey, line, log)
+                streamLogService.info(streamKey, line, log)
             }
         })
 
         // 推送到环境仓库
         def pushCmd = new ArrayList<>(commandPrefixArray)
         pushCmd.addAll(Arrays.asList("push", newImage))
-        streamLogHelper.info(streamKey, String.format("run command: %s\n", String.join(" ", pushCmd)), log)
+        streamLogService.info(streamKey, String.format("run command: %s\n", String.join(" ", pushCmd)), log)
         CommandUtil.runLocalCommand(CommandUtil.getBashCommand(pushCmd.toArray(new String[0])), new LogOutputStream() {
             @Override
             protected void processLine(String line) {
-                streamLogHelper.info(streamKey, line, log)
+                streamLogService.info(streamKey, line, log)
             }
         })
     }
@@ -520,7 +516,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
                 def currentCr = client.customResource(CRD_CONTEXT).get(namespace, name)
                 if (currentCr == null || currentCr.size() == 0) {
                     def result = client.customResource(CRD_CONTEXT).create(namespace, resource)
-                    streamLogHelper.info(streamKey, String.format("cr yaml has created in kubernetes|%s|cr=%s|result=%s", logSuffix, cr,
+                    streamLogService.info(streamKey, String.format("cr yaml has created in kubernetes|%s|cr=%s|result=%s", logSuffix, cr,
                             JSONObject.toJSONString(result)), log)
                 } else {
                     def current = new JSONObject(currentCr)
@@ -536,12 +532,12 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
                     }
                     current.put("spec", resource.getJSONObject("spec"))
                     def result = client.customResource(CRD_CONTEXT).edit(namespace, name, current)
-                    streamLogHelper.info(streamKey, String.format("cr yaml has updated in kubernetes|%s|cr=%s", logSuffix, cr), log)
+                    streamLogService.info(streamKey, String.format("cr yaml has updated in kubernetes|%s|cr=%s", logSuffix, cr), log)
                 }
             } catch (KubernetesClientException e) {
                 if (e.getCode() == 404) {
                     def result = client.customResource(CRD_CONTEXT).create(namespace, resource)
-                    streamLogHelper.info(streamKey, String.format("cr yaml has created in kubernetes|%s|cr=%s", logSuffix, cr), log)
+                    streamLogService.info(streamKey, String.format("cr yaml has created in kubernetes|%s|cr=%s", logSuffix, cr), log)
                 } else {
                     throw e
                 }
@@ -558,16 +554,16 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
                     def statusStr = JSONObject.toJSONString(result.get("status"))
                     def status = JSONObject.parseObject(statusStr).getString("condition")
                     if (status != "Available") {
-                        streamLogHelper.info(streamKey, String.format("cr status has changed to %s, break apply waiting", status), log)
+                        streamLogService.info(streamKey, String.format("cr status has changed to %s, break apply waiting", status), log)
                         break
                     }
                 } catch (Exception e) {
-                    streamLogHelper.info(streamKey, String.format("found exception while waiting the cr status changes, continue waiting|exception=%s",
+                    streamLogService.info(streamKey, String.format("found exception while waiting the cr status changes, continue waiting|exception=%s",
                             ExceptionUtils.getStackTrace(e)), log)
                 }
             }
         } catch (Exception e) {
-            streamLogHelper.info(streamKey, String.format("apply cr yaml to kubernetes failed|" +
+            streamLogService.info(streamKey, String.format("apply cr yaml to kubernetes failed|" +
                     "exception=%s|cr=%s", ExceptionUtils.getStackTrace(e)), log)
             throw e
         }

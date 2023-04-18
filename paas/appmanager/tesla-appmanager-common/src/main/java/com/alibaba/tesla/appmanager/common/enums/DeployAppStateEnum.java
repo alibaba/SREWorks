@@ -158,7 +158,11 @@ public enum DeployAppStateEnum {
         return null;
     }
 
-    public Boolean isError(){
+    public boolean isError(){
         return this.equals(FAILURE) || this.equals(EXCEPTION) || this.equals(WAIT_FOR_OP);
+    }
+
+    public boolean isFinalState() {
+        return this.equals(SUCCESS) || this.equals(FAILURE) || this.equals(EXCEPTION) || this.equals(WAIT_FOR_OP);
     }
 }

@@ -15,6 +15,7 @@ import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -126,6 +127,36 @@ public class TraitController extends BaseController {
     }
 
     /**
+     * @api {get} /traits/:name/:version 获取指定的 Trait (带版本)
+     * @apiName GetTrait
+     * @apiGroup Trait API
+     *
+     * @apiParam (Path Parameters) {String} name Trait 名称
+     *
+     * @apiSuccessExample 示例返回
+     * {
+     *     "code": 200,
+     *     "message": "SUCCESS",
+     *     "data": {
+     *         "name": "applyStsSecret.flyadmin.alibaba.com",
+     *         "className": "com.alibaba.tesla.appmanager.trait.plugin.ApplyStsSecretTrait",
+     *         "definitionRef": "applyStsSecret.abmchart.schema.abm.io",
+     *         "traitDefinition": null,
+     *         "label": "Apply StsSecret Trait"
+     *     }
+     * }
+     */
+    // 获取指定的 Trait (带 version)
+    @GetMapping("/{name:.+}/{version:.+}")
+    @ResponseBody
+    public TeslaBaseResult getWithVersion(@PathVariable("name") String name, @PathVariable("version") String version) {
+        String actualName = String.join("/", Arrays.asList(name, version));
+        TraitQueryReq req = TraitQueryReq.builder().name(actualName).build();
+        TraitDTO response = trait.get(req, "SYSTEM");
+        return buildSucceedResult(response);
+    }
+
+    /**
      * @api {delete} /traits/:name 删除指定的 Trait
      * @apiName DeleteTrait
      * @apiGroup Trait API
@@ -144,6 +175,30 @@ public class TraitController extends BaseController {
     @ResponseBody
     public TeslaBaseResult delete(@PathVariable("name") String name) {
         TraitQueryReq req = TraitQueryReq.builder().name(name).build();
+        int response = trait.delete(req, "SYSTEM");
+        return buildSucceedResult(response);
+    }
+
+    /**
+     * @api {delete} /traits/:name/:version 删除指定的 Trait (带版本)
+     * @apiName DeleteTrait
+     * @apiGroup Trait API
+     *
+     * @apiParam (Path Parameters) {String} name Trait 名称
+     *
+     * @apiSuccessExample 示例返回
+     * {
+     *     "code": 200,
+     *     "message": "SUCCESS",
+     *     "data": 1
+     * }
+     */
+    // 删除指定的 Trait (带版本)
+    @DeleteMapping("/{name:.+}/{version:.+}")
+    @ResponseBody
+    public TeslaBaseResult deleteWithVersion(@PathVariable("name") String name, @PathVariable("version") String version) {
+        String actualName = String.join("/", Arrays.asList(name, version));
+        TraitQueryReq req = TraitQueryReq.builder().name(actualName).build();
         int response = trait.delete(req, "SYSTEM");
         return buildSucceedResult(response);
     }

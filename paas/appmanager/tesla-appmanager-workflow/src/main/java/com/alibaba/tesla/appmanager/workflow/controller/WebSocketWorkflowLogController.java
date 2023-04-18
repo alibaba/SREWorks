@@ -2,9 +2,11 @@ package com.alibaba.tesla.appmanager.workflow.controller;
 
 import com.alibaba.tesla.appmanager.api.provider.WorkflowTaskProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
+import com.alibaba.tesla.appmanager.autoconfig.PackageProperties;
 import com.alibaba.tesla.appmanager.common.constants.RedisKeyConstant;
 import com.alibaba.tesla.appmanager.common.enums.WorkflowTaskStateEnum;
 import com.alibaba.tesla.appmanager.domain.dto.WorkflowTaskDTO;
+import com.alibaba.tesla.appmanager.server.storage.Storage;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 import static com.alibaba.tesla.appmanager.common.constants.RedisKeyConstant.STREAM_LOG_KEY;
@@ -33,6 +36,10 @@ public class WebSocketWorkflowLogController extends AppManagerBaseController {
 
     private static StreamMessageListenerContainer streamMessageListenerContainer;
 
+    private static Storage storage;
+
+    private static PackageProperties packageProperties;
+
     @Autowired
     public void setComponentPackageProvider(WorkflowTaskProvider workflowTaskProvider) {
         WebSocketWorkflowLogController.workflowTaskProvider = workflowTaskProvider;
@@ -43,22 +50,29 @@ public class WebSocketWorkflowLogController extends AppManagerBaseController {
         WebSocketWorkflowLogController.streamMessageListenerContainer = streamMessageListenerContainer;
     }
 
+    @Autowired
+    public void setStorage(Storage storage) {
+        WebSocketWorkflowLogController.storage = storage;
+    }
+
+    @Autowired
+    public void setPackageProperties(PackageProperties packageProperties) {
+        WebSocketWorkflowLogController.packageProperties = packageProperties;
+    }
 
     @OnOpen
     public void onOpen(@PathParam("taskId") Long taskId, Session session) throws IOException {
         log.info("new ws connection: {}", taskId);
 
         WorkflowTaskDTO response = workflowTaskProvider.get(taskId, true);
+        String streamKey = String.format("%s_%s", RedisKeyConstant.WORKFLOW_TASK_LOG,
+                response.getId());
         String status = response.getTaskStatus();
-        String taskLog = response.getTaskErrorMessage();
-        if (taskLog == null) {
-            taskLog = "";
-        }
         if (status.equals(WorkflowTaskStateEnum.PENDING.toString())
                 || status.equals(WorkflowTaskStateEnum.RUNNING.toString())
-                || status.equals(WorkflowTaskStateEnum.WAITING.toString())) {
-            String streamKey = String.format("%s_%s", RedisKeyConstant.WORKFLOW_TASK_LOG,
-                    response.getId());
+                || status.equals(WorkflowTaskStateEnum.WAITING.toString())
+                || status.equals(WorkflowTaskStateEnum.WAITING_SUSPEND.toString())) {
+
             streamMessageListenerContainer.receive(StreamOffset.fromStart(streamKey),
                     message -> {
                         Object stream = message.getStream();
@@ -72,7 +86,10 @@ public class WebSocketWorkflowLogController extends AppManagerBaseController {
                         }
                     });
         } else {
-            session.getBasicRemote().sendText(taskLog);
+            String date = new SimpleDateFormat("yyyyMMdd").format(response.getGmtCreate());
+            String bucketName = packageProperties.getBucketName();
+            String objectName = String.format("stream_log/%s/%s.txt", date, streamKey);
+            session.getBasicRemote().sendText(storage.getObjectContent(bucketName,objectName));
         }
     }
 

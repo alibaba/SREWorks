@@ -42,7 +42,7 @@ class TraitIngress implements TraitHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 11
+    public static final Integer REVISION = 12
 
     @Autowired
     private KubernetesClientFactory clientFactory
@@ -129,18 +129,10 @@ class TraitIngress implements TraitHandler {
 
         // 创建 Metadata 对象
         ObjectMeta metadata
-        if(ownerReference == null) {
-            metadata = new ObjectMetaBuilder()
-                    .withName(ingressName)
-                    .withNamespace(namespace)
-                    .build();
-        }else{
-            metadata = new ObjectMetaBuilder()
-                    .withName(ingressName)
-                    .withNamespace(namespace)
-                    .withOwnerReferences(mapper.readValue(ownerReference, OwnerReference.class))
-                    .build();
-        }
+        metadata = new ObjectMetaBuilder()
+                .withName(ingressName)
+                .withNamespace(namespace)
+                .build();
 
         IngressSpec ingressSpec = new IngressSpecBuilder()
                 .addNewRule()

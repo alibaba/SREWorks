@@ -65,6 +65,9 @@ type MicroserviceSpec struct {
 	// 污点设置 (已废弃)
 	Tolerations []corev1.Toleration `json:"tolerations,omitempty"`
 
+	// NodeSelector
+	NodeSelector map[string]string `json:"nodeSelector,omitempty"`
+
 	// Service 配置 (已废弃)
 	Service corev1.ServiceSpec `json:"service,omitempty"`
 

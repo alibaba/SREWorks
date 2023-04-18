@@ -1,0 +1,40 @@
+{
+    "parameters": [{
+        "type": 85,
+        "name": "nodeSelector",
+        "label": "节点选择器(nodeSelector)",
+        "defModel": {
+            "enableRemove": true,
+            "pagination": false,
+            "enableAdd": true,
+            "enableEdit": true,
+            "columns": [
+                {
+                    "editProps": {
+                        "name": "key",
+                        "label": "",
+                        "type": 1,
+                        "required": false,
+                        "inputTip": "key"
+                    },
+                    "dataIndex": "key",
+                    "title": "键",
+                    "key": "key"
+                },
+                {
+                    "editProps": {
+                        "name": "value",
+                        "label": "",
+                        "type": 1,
+                        "required": false,
+                        "inputTip": "value"
+                    },
+                    "dataIndex": "value",
+                    "title": "值",
+                    "key": "value"
+                }
+            ]
+        },
+        "toFieldPath": "spec.selector"
+    }]
+}

@@ -6,9 +6,9 @@ import com.alibaba.tesla.appmanager.common.constants.RedisKeyConstant;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.service.GitService;
+import com.alibaba.tesla.appmanager.common.service.StreamLogService;
 import com.alibaba.tesla.appmanager.common.util.CommandUtil;
 import com.alibaba.tesla.appmanager.common.util.ImageUtil;
-import com.alibaba.tesla.appmanager.common.util.StreamLogHelper;
 import com.alibaba.tesla.appmanager.domain.req.git.GitCloneReq;
 import com.alibaba.tesla.appmanager.domain.req.imagebuilder.ImageBuilderCreateReq;
 import com.alibaba.tesla.appmanager.domain.res.imagebuilder.ImageBuilderCreateRes;
@@ -54,7 +54,7 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
     private GitService gitService;
 
     @Autowired
-    private StreamLogHelper streamLogHelper;
+    private StreamLogService streamLogService;
 
     /**
      * 镜像构建
@@ -139,7 +139,7 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
                     .imagePath(imagePath)
                     .build();
         } finally {
-            streamLogHelper.clean(streamKey);
+            streamLogService.clean(streamKey,true);
         }
     }
 
@@ -172,11 +172,11 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
             // 计算 SHA256
             String[] calcCommand = new String[]{sudoCommand, dockerBin, dockerTarget, "images", "--no-trunc", "--quiet", imageName};
             logContent.append(String.format("run command: %s\n", String.join(" ", calcCommand)));
-            streamLogHelper.info(streamKey, String.format("run command: %s\n", String.join(" ", calcCommand)));
+            streamLogService.info(streamKey, String.format("run command: %s\n", String.join(" ", calcCommand)));
             String result = CommandUtil.runLocalCommand(CommandUtil.getBashCommand(calcCommand), new LogOutputStream() {
                 @Override
                 protected void processLine(String line) {
-                    streamLogHelper.info(streamKey, line, log);
+                    streamLogService.info(streamKey, line, log);
                 }
             });
             logContent.append(result);
@@ -191,7 +191,7 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
             String result = CommandUtil.runLocalCommand(CommandUtil.getBashCommand(pullCommand), new LogOutputStream() {
                 @Override
                 protected void processLine(String line) {
-                    streamLogHelper.info(streamKey, line, log);
+                    streamLogService.info(streamKey, line, log);
                 }
             });
             logContent.append(result);
@@ -199,11 +199,11 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
             // 计算 SHA256
             String[] calcCommand = new String[]{sudoCommand, dockerBin, dockerTarget, "inspect", "--format='{{index .RepoDigests 0}}'", imageName};
             logContent.append(String.format("run command: %s\n", String.join(" ", calcCommand)));
-            streamLogHelper.info(streamKey, String.format("run command: %s\n", String.join(" ", calcCommand)));
+            streamLogService.info(streamKey, String.format("run command: %s\n", String.join(" ", calcCommand)));
             result = CommandUtil.runLocalCommand(CommandUtil.getBashCommand(calcCommand), new LogOutputStream() {
                 @Override
                 protected void processLine(String line) {
-                    streamLogHelper.info(streamKey, line, log);
+                    streamLogService.info(streamKey, line, log);
                 }
             });
             logContent.append(result);
@@ -274,11 +274,11 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
         }
         String[] bashBuildCommand = CommandUtil.getBashCommand(buildCommand.toArray(new String[0]));
         logContent.append(String.format("run command: %s\n", String.join(" ", bashBuildCommand)));
-        streamLogHelper.info(streamKey, String.format("run command: %s\n", String.join(" ", bashBuildCommand)));
+        streamLogService.info(streamKey, String.format("run command: %s\n", String.join(" ", bashBuildCommand)));
         String result = CommandUtil.runLocalCommand(bashBuildCommand, Paths.get(localDir).toFile(), new LogOutputStream() {
             @Override
             protected void processLine(String line) {
-                streamLogHelper.info(streamKey, line, log);
+                streamLogService.info(streamKey, line, log);
             }
         });
         logContent.append(result);
@@ -288,11 +288,11 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
             String[] pushCommand = CommandUtil.getBashCommand(new String[]{
                     sudoCommand, dockerBin, dockerTarget, "push", imageName});
             logContent.append(String.format("run command: %s\n", String.join(" ", pushCommand)));
-            streamLogHelper.info(streamKey, String.format("run command: %s\n", String.join(" ", bashBuildCommand)));
+            streamLogService.info(streamKey, String.format("run command: %s\n", String.join(" ", bashBuildCommand)));
             result = CommandUtil.runLocalCommand(pushCommand, new LogOutputStream() {
                 @Override
                 protected void processLine(String line) {
-                    streamLogHelper.info(streamKey, line, log);
+                    streamLogService.info(streamKey, line, log);
                 }
             });
             logContent.append(result);
@@ -305,11 +305,11 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
             String[] exportCommand = CommandUtil.getBashCommand(
                     new String[]{sudoCommand, dockerBin, dockerTarget, "save", imageName, ">", imagePath});
             logContent.append(String.format("run command: %s\n", String.join(" ", exportCommand)));
-            streamLogHelper.info(streamKey, String.format("run command: %s\n", String.join(" ", exportCommand)));
-            result = CommandUtil.runLocalCommand(CommandUtil.getBashCommand(exportCommand), new LogOutputStream() {
+            streamLogService.info(streamKey, String.format("run command: %s\n", String.join(" ", exportCommand)));
+            result = CommandUtil.runLocalCommand(exportCommand, new LogOutputStream() {
                 @Override
                 protected void processLine(String line) {
-                    streamLogHelper.info(streamKey, line, log);
+                    streamLogService.info(streamKey, line, log);
                 }
             });
             logContent.append(result);

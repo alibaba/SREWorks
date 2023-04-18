@@ -4,7 +4,7 @@ import com.alibaba.tesla.appmanager.common.constants.RedisKeyConstant;
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentAttrTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentEventEnum;
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentStateEnum;
-import com.alibaba.tesla.appmanager.common.util.StreamLogHelper;
+import com.alibaba.tesla.appmanager.common.service.StreamLogService;
 import com.alibaba.tesla.appmanager.domain.container.DeployAppRevisionName;
 import com.alibaba.tesla.appmanager.server.action.DeployComponentStateAction;
 import com.alibaba.tesla.appmanager.server.event.deploy.DeployComponentEvent;
@@ -51,7 +51,7 @@ public class SuccessDeployComponentStateAction implements DeployComponentStateAc
     private RtComponentInstanceService componentInstanceService;
 
     @Autowired
-    private StreamLogHelper streamLogHelper;
+    private StreamLogService streamLogService;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -98,8 +98,8 @@ public class SuccessDeployComponentStateAction implements DeployComponentStateAc
         log.info("deploy component has reached success state|deployAppId={}|deployComponentId={}|cost={}",
                 subOrder.getDeployId(), subOrder.getId(), cost);
         String streamKey = String.format("%s_%s", RedisKeyConstant.DEPLOY_TASK_LOG, subOrder.getId());
-        streamLogHelper.clean(streamKey, String.format("deploy component has reached success state|deployAppId=%s|deployComponentId=%s|cost=%s",
-                subOrder.getDeployId(), subOrder.getId(), cost));
+        streamLogService.clean(streamKey, String.format("deploy component has reached success state|deployAppId=%s|deployComponentId=%s|cost=%s",
+                subOrder.getDeployId(), subOrder.getId(), cost),true);
         publisher.publishEvent(new DeployComponentEvent(this, DeployComponentEventEnum.TRIGGER_UPDATE, subOrder.getId()));
     }
 }

@@ -43,6 +43,11 @@
             <artifactId>tesla-appmanager-dynamic-script</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.alibaba.tesla</groupId>
+            <artifactId>tesla-appmanager-storage</artifactId>
+        </dependency>
+
 
         <dependency>
             <groupId>org.projectlombok</groupId>

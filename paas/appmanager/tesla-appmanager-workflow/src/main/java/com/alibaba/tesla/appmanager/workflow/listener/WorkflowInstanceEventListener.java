@@ -71,7 +71,9 @@ public class WorkflowInstanceEventListener implements ApplicationListener<Workfl
 
         // 状态转移
         workflow.setWorkflowStatus(nextStatus.toString());
-        workflow.setGmtEnd(DateUtil.now());
+        if (nextStatus.isFinalState()) {
+            workflow.setGmtEnd(DateUtil.now());
+        }
         // maybe "", it's ok
         if (event.getInstance().getWorkflowErrorMessage() != null) {
             workflow.setWorkflowErrorMessage(event.getInstance().getWorkflowErrorMessage());

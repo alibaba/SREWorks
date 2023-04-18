@@ -74,7 +74,9 @@ public class WorkflowTaskEventListener implements ApplicationListener<WorkflowTa
         if (task.getGmtStart() == null || task.getGmtStart().getTime() == 0L) {
             task.setGmtStart(DateUtil.now());
         }
-        task.setGmtEnd(DateUtil.now());
+        if (nextStatus.isFinalState()) {
+            task.setGmtEnd(DateUtil.now());
+        }
         // maybe "", it's ok
         if (event.getTask().getTaskErrorMessage() != null) {
             task.setTaskErrorMessage(event.getTask().getTaskErrorMessage());

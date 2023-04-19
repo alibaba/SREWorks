@@ -35,6 +35,6 @@
                 }
             ]
         },
-        "toFieldPath": "spec.selector"
+        "toFieldPath": "spec.nodeSelector"
     }]
 }

@@ -4,7 +4,7 @@ metadata:
   name: node-selector.trait.sreworks.io/v1beta1
   annotations:
     definition.oam.dev/description: "The Node Selector"
-    definition.oam.dev/version: "1.0.1"
+    definition.oam.dev/version: "1.0.3"
     definition.oam.dev/tags: "key=value"
 spec:
   appliesToWorkloads:
@@ -16,7 +16,7 @@ spec:
           path: dynamicscripts/TraitNodeSelectorCommon.groovy
           name: "node-selector.trait.sreworks.io/v1beta1"
           properties:
-            runtime: post
+            runtime: pre
             definitionSchema:
               name: "node-selector.trait.schema.sreworks.io"
               jsonSchema: {}

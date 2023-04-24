@@ -52,12 +52,9 @@ class DefaultDeployInternalAddonAppBindingHandler implements DeployComponentHand
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 3
+    public static final Integer REVISION = 4
 
     private static final String EXPORT_FILE = "_jiongsi_filename_.json"
-    private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
-    private static final String ANNOTATIONS_COMPONENT_INSTANCE_ID = "annotations.appmanager.oam.dev/componentInstanceId"
-    private static final String ANNOTATIONS_APP_INSTANCE_NAME = "annotations.appmanager.oam.dev/appInstanceName"
 
     @Autowired
     private SystemProperties systemProperties
@@ -79,25 +76,6 @@ class DefaultDeployInternalAddonAppBindingHandler implements DeployComponentHand
         // 准备参数并导入 __JIONGSI_DATA__
         def content = FileUtils.readFileToString(exportPath.toFile(), Charset.defaultCharset())
 
-        // 上报状态
-        def annotations = (JSONObject) componentSchema.getSpec().getWorkload().getMetadata().getAnnotations()
-        def version = (String) annotations.getOrDefault(ANNOTATIONS_VERSION, "")
-        def componentInstanceId = (String) annotations.getOrDefault(ANNOTATIONS_COMPONENT_INSTANCE_ID, "")
-        def appInstanceName = (String) annotations.getOrDefault(ANNOTATIONS_APP_INSTANCE_NAME, "")
-        componentInstanceService.report(ReportRtComponentInstanceStatusReq.builder()
-                .componentInstanceId(componentInstanceId)
-                .appInstanceName(appInstanceName)
-                .clusterId(request.getClusterId())
-                .namespaceId(request.getNamespaceId())
-                .stageId(request.getStageId())
-                .appId(request.getAppId())
-                .componentType(request.getComponentType())
-                .componentName(request.getComponentName())
-                .version(version)
-                .status(ComponentInstanceStatusEnum.COMPLETED.toString())
-                .conditions(new ArrayList<>())
-                .build())
-
         // 资源清理
         try {
             FileUtils.deleteDirectory(packageDir.toFile())
@@ -106,6 +84,7 @@ class DefaultDeployInternalAddonAppBindingHandler implements DeployComponentHand
         }
         LaunchDeployComponentHandlerRes res = LaunchDeployComponentHandlerRes.builder()
                 .componentSchema(componentSchema)
+                .status(ComponentInstanceStatusEnum.COMPLETED.toString())
                 .build()
         return res
     }

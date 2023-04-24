@@ -25,4 +25,9 @@ public class LaunchDeployComponentHandlerRes implements Serializable {
      * 部署后的 ComponentSchema 对象
      */
     private ComponentSchema componentSchema;
+
+    /**
+     * 发起部署之后的组件状态
+     */
+    private String status;
 }

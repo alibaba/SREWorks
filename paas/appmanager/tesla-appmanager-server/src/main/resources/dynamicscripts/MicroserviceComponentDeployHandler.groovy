@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import com.alibaba.tesla.appmanager.autoconfig.SystemProperties
 import com.alibaba.tesla.appmanager.common.constants.RedisKeyConstant
+import com.alibaba.tesla.appmanager.common.enums.ComponentInstanceStatusEnum
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentAttrTypeEnum
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentStateEnum
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum
@@ -61,7 +62,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 56
+    public static final Integer REVISION = 57
 
     /**
      * Label Keys
@@ -204,6 +205,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
         }
         LaunchDeployComponentHandlerRes res = LaunchDeployComponentHandlerRes.builder()
                 .componentSchema(componentSchema)
+                .status(ComponentInstanceStatusEnum.UPDATING.toString())
                 .build()
         streamLogService.info(streamKey,
                 String.format("default deploy launch res|%s",JSONObject.toJSONString(res)), log)

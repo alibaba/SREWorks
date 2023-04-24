@@ -22,6 +22,12 @@ public class DeployAppLaunchReq implements Serializable {
     private static final long serialVersionUID = 3256022989002584168L;
 
     /**
+     * Body 文本解析类型
+     */
+    public static final String BODY_TYPE_YAML = "yaml";
+    public static final String BODY_TYPE_JSON = "json";
+
+    /**
      * 应用包 ID
      */
     private Long appPackageId = 0L;
@@ -45,4 +51,9 @@ public class DeployAppLaunchReq implements Serializable {
      * 覆盖参数对象 (内部使用)
      */
     private JSONObject overwriteParameters;
+
+    /**
+     * body 文本解析类型 (yaml/json)
+     */
+    private String bodyType = BODY_TYPE_YAML;
 }

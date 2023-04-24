@@ -2,7 +2,7 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 12.0.3+20230419055355194983
+    annotations.appmanager.oam.dev/version: 12.0.4+20230424101045436608
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
     appId: app
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 12.0.3+20230419055355194983
+        annotations.appmanager.oam.dev/version: 12.0.4+20230424101045436608
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -44,7 +44,7 @@ spec:
       replicas: 1
       name: ''
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/app-app-app:1681883635166
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/app-app-app:1682331045806
         name: app
       env:
         COOKIE_DOMAIN: '{{ Global.COOKIE_DOMAIN }}'
@@ -64,5 +64,5 @@ spec:
         AUTHPROXY_ENDPOINT: '{{ Global.AUTHPROXY_ENDPOINT }}'
         DB_PASSWORD: '{{ Global.DB_PASSWORD }}'
       initContainers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/app-app-db-migration:1681883635166
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/app-app-db-migration:1682331045806
         name: db-migration

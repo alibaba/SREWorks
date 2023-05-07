@@ -1,8 +1,5 @@
 package com.alibaba.sreworks.job.master.domain.DO;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.sreworks.job.utils.StringUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,12 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
-/**
- * @author jinghua.yjh
- */
 @Slf4j
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -24,7 +16,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SreworksStreamJob {
+public class SreworksStreamJobRuntime {
 
     @Id
     @GeneratedValue
@@ -43,27 +35,15 @@ public class SreworksStreamJob {
     private String operator;
 
     @Column
-    private String appId;
-
-    @Column
     private String name;
 
-    @Column
-    private String alias;
-
-    @Column
-    private Long executionPoolId;
+    @Column(columnDefinition = "longtext")
+    private String settings;
 
     @Column(columnDefinition = "longtext")
     private String tags;
 
     @Column(columnDefinition = "longtext")
     private String description;
-
-    @Column(columnDefinition = "longtext")
-    private String options;
-
-    @Column
-    private String jobType;
 
 }

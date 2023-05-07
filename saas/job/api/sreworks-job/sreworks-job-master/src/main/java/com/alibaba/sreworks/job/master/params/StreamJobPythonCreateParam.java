@@ -34,7 +34,7 @@ public class StreamJobPythonCreateParam {
             .blockType("python")
              .data(JsonUtil.map(
                 "options", getOptions(),
-                       "content", getScriptName()
+                       "content", getScriptContent()
              ).toJSONString())
             .operator(getOperator())
             .appId(appId)

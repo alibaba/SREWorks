@@ -2,6 +2,7 @@ from pyflink.common.typeinfo import Types
 from pyflink.datastream import StreamExecutionEnvironment
 from pyflink.table import StreamTableEnvironment
 from pyflink.common import Row
+from pyflink.table.expressions import col
 
 
 env = StreamExecutionEnvironment.get_execution_environment()

@@ -145,6 +145,49 @@ public class StreamJobController extends BaseController {
         return buildSucceedResult(streamJobService.addSource(streamJobId, job.getAppId(), param));
     }
 
+    @RequestMapping(value = "{id}/source/{blockId}", method = RequestMethod.PUT)
+    public TeslaBaseResult updateSource(
+            @PathVariable("id") Long streamJobId,
+            @PathVariable("blockId") Long blockId,
+            @RequestBody StreamJobSourceCreateParam param
+    ) throws Exception {
+        SreworksStreamJobDTO job = streamJobService.get(streamJobId);
+        if(job == null){
+            return buildClientErrorResult("streamJob not found");
+        }
+        SreworksStreamJobSourceDTO source = streamJobService.getSource(blockId);
+        source = streamJobService.updateSource(source, param);
+        return buildSucceedResult(source);
+    }
+
+    @RequestMapping(value = "{id}/python/{blockId}", method = RequestMethod.PUT)
+    public TeslaBaseResult updatePython(
+            @PathVariable("id") Long streamJobId,
+            @PathVariable("blockId") Long blockId,
+            @RequestBody StreamJobPythonCreateParam param
+    ) throws Exception {
+        SreworksStreamJobDTO job = streamJobService.get(streamJobId);
+        if(job == null){
+            return buildClientErrorResult("streamJob not found");
+        }
+        SreworksStreamJobPythonDTO python = streamJobService.getPython(blockId);
+        return buildSucceedResult(streamJobService.updatePython(python, param));
+    }
+
+    @RequestMapping(value = "{id}/sink/{blockId}", method = RequestMethod.PUT)
+    public TeslaBaseResult updateSink(
+            @PathVariable("id") Long streamJobId,
+            @PathVariable("blockId") Long blockId,
+            @RequestBody StreamJobSinkCreateParam param
+    ) throws Exception {
+        SreworksStreamJobDTO job = streamJobService.get(streamJobId);
+        if(job == null){
+            return buildClientErrorResult("streamJob not found");
+        }
+        SreworksStreamJobSinkDTO sink = streamJobService.getSink(blockId);
+        return buildSucceedResult(streamJobService.updateSink(sink, param));
+    }
+
     @RequestMapping(value = "{id}/block/{blockId}", method = RequestMethod.DELETE)
     public TeslaBaseResult deleteBlock(@PathVariable("id") Long streamJobId, @PathVariable("blockId") Long streamJobBlockId) throws Exception {
         SreworksStreamJobDTO job = streamJobService.get(streamJobId);
@@ -186,7 +229,7 @@ public class StreamJobController extends BaseController {
         if(job == null){
             return buildClientErrorResult("streamJob not found");
         }
-        return buildSucceedResult(streamJobService.pythonTemplate());
+        return buildSucceedResult(streamJobService.pythonTemplate(streamJobId));
     }
 
     @RequestMapping(value = "{id}/blocks", method = RequestMethod.GET)
@@ -223,14 +266,18 @@ public class StreamJobController extends BaseController {
                 streamJobService.generateScript(streamJobId, job.getOptions().getString("template"))
         );
 
+        JSONObject deployment = streamJobService.generateDeploymentByStreamJob(job);
+
         // 启动flink job
+        JSONObject response = vvpService.deployment(
+                JsonUtil.map(
+                "displayName",
+                        streamJobService.getDeploymentName(streamJobId)
+                ),
+                deployment.getJSONObject("spec")
+        );
 
-
-        return buildSucceedResult(result);
-
-//        return buildSucceedResult(JsonUtil.map(
-//                "content", streamJobService.generateScript(streamJobId)
-//        ));
+        return buildSucceedResult(response);
     }
 
     @RequestMapping(value = "gets", method = RequestMethod.GET)

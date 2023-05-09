@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.DoubleStream.builder;
+
 @Slf4j
 @Service
 public class StreamJobService {
@@ -53,8 +55,44 @@ public class StreamJobService {
         return new SreworksStreamJobDTO(job);
     }
 
-    public String pythonTemplate(){
-        String templateContent = StringUtil.readResourceFile("python-default.py");
+    public String pythonTemplate(Long streamJobId) throws Exception {
+        List<SreworksStreamJobBlockDTO> blocks = listBlockByStreamJobId(streamJobId);
+        JSONObject sourceBlock = null;
+        JSONObject sinkBlock = null;
+        String templateContent;
+        for (SreworksStreamJobBlockDTO block : blocks) {
+            if(StringUtils.equals(block.getBlockType(), "source") && sourceBlock == null){
+                sourceBlock = block.getData();
+                sourceBlock.put("name", block.getName());
+            }else if(StringUtils.equals(block.getBlockType(), "sink") && sinkBlock == null){
+                sinkBlock = block.getData();
+                sinkBlock.put("name", block.getName());
+            }
+        }
+
+        if(sourceBlock != null && sinkBlock != null){
+            templateContent = "";
+            templateContent += "t_env.from_path('" + sourceBlock.getString("name") + "').select(\n";
+            JSONArray columns = sourceBlock.getJSONArray("columns");
+            if(columns != null){
+                for (int i = 0; i < columns.size(); i++) {
+                    JSONObject column = columns.getJSONObject(i);
+                    String columnName = column.getString("columnName");
+                    if (columnName != null){
+                        templateContent += "    col('" + columnName + "')";
+                        if (i == columns.size() - 1){
+                            templateContent += "\n";
+                        } else {
+                            templateContent += ",\n";
+                        }
+                    }
+                }
+            }
+            templateContent += ").execute_insert('" + sinkBlock.getString("name") +  "').print()\n";
+        }else{
+            templateContent = StringUtil.readResourceFile("python-default.py");
+        }
+
         return templateContent;
     }
 
@@ -75,7 +113,8 @@ public class StreamJobService {
                                 )
                         ),
                         "parallelism", 1,
-                        "numberOfTaskManagers", 1
+                        "numberOfTaskManagers", 1,
+                        "pythonRuntimeId", 2
                 )
         );
         job.setOptions(options.toJSONString());
@@ -99,6 +138,56 @@ public class StreamJobService {
                 .jobType(jobDTO.getJobType())
                 .build();
     }
+
+    private SreworksStreamJobBlock convertDO(SreworksStreamJobSourceDTO source){
+        return SreworksStreamJobBlock.builder()
+                .id(source.getId())
+                .gmtCreate(source.getGmtCreate())
+                .gmtModified(source.getGmtModified())
+                .streamJobId(source.getStreamJobId())
+                .appId(source.getAppId())
+                .name(source.getName())
+                .blockType("source")
+                .data(JsonUtil.map(
+                "options", source.getOptions(),
+                      "columns", source.getColumns(),
+                        "sourceType", source.getSourceType()
+                ).toJSONString())
+                .build();
+    }
+
+    private SreworksStreamJobBlock convertDO(SreworksStreamJobPythonDTO python){
+        return SreworksStreamJobBlock.builder()
+                .id(python.getId())
+                .gmtCreate(python.getGmtCreate())
+                .gmtModified(python.getGmtModified())
+                .streamJobId(python.getStreamJobId())
+                .appId(python.getAppId())
+                .name(python.getName())
+                .blockType("python")
+                .data(JsonUtil.map(
+                        "content", python.getContent()
+                ).toJSONString())
+                .build();
+    }
+
+    private SreworksStreamJobBlock convertDO(SreworksStreamJobSinkDTO sink){
+        return SreworksStreamJobBlock.builder()
+                .id(sink.getId())
+                .gmtCreate(sink.getGmtCreate())
+                .gmtModified(sink.getGmtModified())
+                .streamJobId(sink.getStreamJobId())
+                .appId(sink.getAppId())
+                .name(sink.getName())
+                .blockType("sink")
+                .data(JsonUtil.map(
+                        "options", sink.getOptions(),
+                        "columns", sink.getColumns(),
+                        "sinkType", sink.getSinkType()
+                ).toJSONString())
+                .build();
+    }
+
 
     public SreworksStreamJobDTO updateSettings(SreworksStreamJobDTO job, JSONObject settings) throws Exception {
         JSONObject options = job.getOptions();
@@ -229,6 +318,7 @@ public class StreamJobService {
                     ).toString()
             );
         }
+        templateContent = "# "+ getScriptName(streamJobId) + "\n" + templateContent;
 
         return templateContent;
     }
@@ -346,16 +436,54 @@ public class StreamJobService {
         return new SreworksStreamJobSourceDTO(jobSource);
     }
 
+    public SreworksStreamJobSourceDTO getSource(Long blockId){
+        SreworksStreamJobBlock block = sreworksStreamJobBlockRepository.findFirstById(blockId);
+        return new SreworksStreamJobSourceDTO(block);
+    }
+
+    public SreworksStreamJobPythonDTO getPython(Long blockId){
+        SreworksStreamJobBlock block = sreworksStreamJobBlockRepository.findFirstById(blockId);
+        return new SreworksStreamJobPythonDTO(block);
+    }
+
+    public SreworksStreamJobSinkDTO getSink(Long blockId){
+        SreworksStreamJobBlock block = sreworksStreamJobBlockRepository.findFirstById(blockId);
+        return new SreworksStreamJobSinkDTO(block);
+    }
+
+    public SreworksStreamJobSourceDTO updateSource(SreworksStreamJobSourceDTO source, StreamJobSourceCreateParam param){
+        source.setColumns(param.getColumns());
+        source.setOptions(param.getOptions());
+        SreworksStreamJobBlock block = convertDO(source);
+        block = sreworksStreamJobBlockRepository.saveAndFlush(block);
+        return new SreworksStreamJobSourceDTO(block);
+    }
+
+    public SreworksStreamJobPythonDTO updatePython(SreworksStreamJobPythonDTO python, StreamJobPythonCreateParam param){
+        python.setContent(param.getScriptContent());
+        SreworksStreamJobBlock block = convertDO(python);
+        block = sreworksStreamJobBlockRepository.saveAndFlush(block);
+        return new SreworksStreamJobPythonDTO(block);
+    }
+
+    public SreworksStreamJobPythonDTO updateSink(SreworksStreamJobSinkDTO sink, StreamJobSinkCreateParam param){
+        sink.setColumns(param.getColumns());
+        sink.setOptions(param.getOptions());
+        SreworksStreamJobBlock block = convertDO(sink);
+        block = sreworksStreamJobBlockRepository.saveAndFlush(block);
+        return new SreworksStreamJobPythonDTO(block);
+    }
+
     public SreworksStreamJobSinkDTO addSink(Long streamJobId, String appId, StreamJobSinkCreateParam param) throws Exception {
         SreworksStreamJobBlock jobSink = param.init(streamJobId, appId);
         jobSink = sreworksStreamJobBlockRepository.saveAndFlush(jobSink);
         return new SreworksStreamJobSinkDTO(jobSink);
     }
 
-    public SreworksStreamJobSinkDTO addPython(Long streamJobId, String appId, StreamJobPythonCreateParam param) throws Exception {
+    public SreworksStreamJobPythonDTO addPython(Long streamJobId, String appId, StreamJobPythonCreateParam param) throws Exception {
         SreworksStreamJobBlock jobPython = param.init(streamJobId, appId);
         jobPython = sreworksStreamJobBlockRepository.saveAndFlush(jobPython);
-        return new SreworksStreamJobSinkDTO(jobPython);
+        return new SreworksStreamJobPythonDTO(jobPython);
     }
 
     public List<SreworksStreamJobBlockDTO> listBlockByStreamJobId(Long streamJobId) throws Exception {

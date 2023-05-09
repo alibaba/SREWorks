@@ -36,7 +36,7 @@ public class SreworksStreamJobBlockDTO {
 
     private JSONObject data;
 
-
+    private String digest;
 
     public SreworksStreamJobBlockDTO(SreworksStreamJobBlock jobBlock) {
         id = jobBlock.getId();
@@ -47,12 +47,16 @@ public class SreworksStreamJobBlockDTO {
         name = jobBlock.getName();
         blockType = jobBlock.getBlockType();
         data = JSONObject.parseObject(jobBlock.getData());
+        digest = "";
         if (StringUtils.equals(blockType, "source") && data.getString("sourceType") != null) {
             blockTypeDisplay = "输入源:" + data.getString("sourceType");
+            digest = data.getJSONArray("columns").size() + "个字段";
         } else if (StringUtils.equals(blockType, "sink") && data.getString("sinkType") != null) {
             blockTypeDisplay = "输出:" + data.getString("sinkType");
+            digest = data.getJSONArray("columns").size() + "个字段";
         } else if (StringUtils.equals(blockType, "python")){
             blockTypeDisplay = "Python处理";
+            digest = data.getString("content").split("\n").length + "行代码";
         } else {
             blockTypeDisplay = blockType;
         }

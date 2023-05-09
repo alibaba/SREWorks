@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor
-public class SreworksStreamJobSourceDTO {
+public class SreworksStreamJobPythonDTO {
 
     private Long id;
 
@@ -24,19 +24,13 @@ public class SreworksStreamJobSourceDTO {
     private String creator;
 
     private String operator;
-
     private String appId;
-
     private String name;
 
-    private JSONArray options;
-
-    private JSONArray columns;
-
-    private  String sourceType;
+    private String content;
 
 
-    public SreworksStreamJobSourceDTO(SreworksStreamJobBlock jobBlock) {
+    public SreworksStreamJobPythonDTO(SreworksStreamJobBlock jobBlock) {
         id = jobBlock.getId();
         gmtCreate = jobBlock.getGmtCreate();
         gmtModified = jobBlock.getGmtModified();
@@ -44,9 +38,7 @@ public class SreworksStreamJobSourceDTO {
         appId = jobBlock.getAppId();
         name = jobBlock.getName();
         JSONObject data = JSONObject.parseObject(jobBlock.getData());
-        options = data.getJSONArray("options");
-        columns = data.getJSONArray("columns");
-        sourceType = data.getString("sourceType");
+        content = data.getString("content");
     }
 
 }

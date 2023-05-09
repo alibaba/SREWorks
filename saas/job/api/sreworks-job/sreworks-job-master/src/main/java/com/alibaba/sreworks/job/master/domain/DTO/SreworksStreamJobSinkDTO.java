@@ -33,6 +33,7 @@ public class SreworksStreamJobSinkDTO {
 
     private JSONArray columns;
 
+    private  String sinkType;
 
     public SreworksStreamJobSinkDTO(SreworksStreamJobBlock jobBlock) {
         id = jobBlock.getId();
@@ -44,6 +45,7 @@ public class SreworksStreamJobSinkDTO {
         JSONObject data = JSONObject.parseObject(jobBlock.getData());
         options = data.getJSONArray("options");
         columns = data.getJSONArray("columns");
+        sinkType = data.getString("sinkType");
     }
 
 }

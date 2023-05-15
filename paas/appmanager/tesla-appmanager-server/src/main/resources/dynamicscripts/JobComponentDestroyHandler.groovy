@@ -1,6 +1,6 @@
 package dynamicscripts
 
-import com.alibaba.fastjson.JSONObject
+
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode
 import com.alibaba.tesla.appmanager.common.exception.AppException

@@ -35,7 +35,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.Map;
 
 /**
@@ -165,6 +164,7 @@ public class RunningDeployComponentStateAction implements DeployComponentStateAc
                         this, DeployComponentEventEnum.TRIGGER_UPDATE, subOrder.getId()));
                 break;
             case FAILURE:
+            case TERMINATED:
             case EXCEPTION:
             case WAIT_FOR_OP:
                 log.warn("component deployment failed|deployAppId={}|deployComponentId={}|request={}|response={}",

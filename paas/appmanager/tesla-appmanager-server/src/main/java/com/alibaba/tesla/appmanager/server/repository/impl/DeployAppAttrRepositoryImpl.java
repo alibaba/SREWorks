@@ -1,6 +1,5 @@
 package com.alibaba.tesla.appmanager.server.repository.impl;
 
-import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.util.DateUtil;
 import com.alibaba.tesla.appmanager.server.repository.DeployAppAttrRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.DeployAppAttrQueryCondition;

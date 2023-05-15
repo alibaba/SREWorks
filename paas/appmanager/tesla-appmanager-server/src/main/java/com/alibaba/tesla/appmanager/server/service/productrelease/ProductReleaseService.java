@@ -1,7 +1,6 @@
 package com.alibaba.tesla.appmanager.server.service.productrelease;
 
 import com.alibaba.tesla.appmanager.common.enums.ProductReleaseTaskStatusEnum;
-import com.alibaba.tesla.appmanager.domain.dto.ProductDTO;
 import com.alibaba.tesla.appmanager.domain.req.productrelease.*;
 import com.alibaba.tesla.appmanager.domain.res.productrelease.CheckProductReleaseTaskRes;
 import com.alibaba.tesla.appmanager.domain.res.productrelease.CreateProductReleaseTaskRes;

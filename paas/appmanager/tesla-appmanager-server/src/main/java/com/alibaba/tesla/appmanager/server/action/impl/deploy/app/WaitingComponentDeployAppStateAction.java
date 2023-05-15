@@ -3,7 +3,7 @@ package com.alibaba.tesla.appmanager.server.action.impl.deploy.app;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.AppPackageProvider;
-import com.alibaba.tesla.appmanager.common.channel.enums.DeployAppPackageConstant;
+import com.alibaba.tesla.appmanager.common.constants.DeployAppPackageConstant;
 import com.alibaba.tesla.appmanager.common.enums.*;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
@@ -33,7 +33,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

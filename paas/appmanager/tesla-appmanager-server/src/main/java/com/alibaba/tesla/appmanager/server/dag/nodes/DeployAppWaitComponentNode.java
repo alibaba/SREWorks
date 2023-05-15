@@ -170,6 +170,7 @@ public class DeployAppWaitComponentNode extends AbstractLocalNodeBase {
             switch (status) {
                 case EXCEPTION:
                 case FAILURE:
+                case TERMINATED:
                 case WAIT_FOR_OP:
                     throw new AppException(AppErrorCode.DEPLOY_ERROR,
                             String.format("deploy component %s failed|status=%s|errorMessage=%s",

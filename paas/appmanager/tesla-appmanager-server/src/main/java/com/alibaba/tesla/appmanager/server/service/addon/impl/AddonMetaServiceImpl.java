@@ -1,6 +1,5 @@
 package com.alibaba.tesla.appmanager.server.service.addon.impl;
 
-import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.server.repository.AddonMetaRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.AddonMetaQueryCondition;

@@ -49,7 +49,6 @@ import com.alibaba.tesla.appmanager.server.service.componentpackage.ComponentPac
 import com.alibaba.tesla.appmanager.server.service.deploy.DeployAppService;
 import com.alibaba.tesla.appmanager.server.service.deploy.business.DeployAppBO;
 import com.alibaba.tesla.appmanager.server.storage.Storage;
-import com.google.common.base.Enums;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;

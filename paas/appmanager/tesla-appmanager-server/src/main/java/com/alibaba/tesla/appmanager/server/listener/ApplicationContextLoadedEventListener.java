@@ -7,7 +7,6 @@ import com.alibaba.tesla.appmanager.dynamicscript.core.GroovyHandlerFactory;
 import com.alibaba.tesla.appmanager.dynamicscript.repository.condition.DynamicScriptQueryCondition;
 import com.alibaba.tesla.appmanager.dynamicscript.service.DynamicScriptService;
 import com.alibaba.tesla.appmanager.dynamicscript.util.GroovyUtil;
-import com.alibaba.tesla.appmanager.server.service.informer.InformerManager;
 import com.alibaba.tesla.appmanager.spring.event.ApplicationContextLoadedEvent;
 import groovy.lang.GroovyClassLoader;
 import lombok.extern.slf4j.Slf4j;

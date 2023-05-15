@@ -1,10 +1,5 @@
 package com.alibaba.tesla.appmanager.deployconfig.service;
 
-import com.alibaba.tesla.appmanager.api.provider.AppComponentProvider;
-import com.alibaba.tesla.appmanager.api.provider.HelmMetaProvider;
-import com.alibaba.tesla.appmanager.api.provider.K8sMicroServiceMetaProvider;
-import com.alibaba.tesla.appmanager.api.provider.ProductReleaseProvider;
-import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.service.GitService;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.deployconfig.repository.DeployConfigHistoryRepository;

@@ -6,7 +6,6 @@ import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.SecurityUtil;
 import lombok.Data;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Objects;
 
@@ -73,7 +72,7 @@ public class HelmMetaUpdateReq {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "id 缺失");
         }
 
-        if (!CollectionUtils.isEmpty(helmExt)) {
+        if (helmExt != null && helmExt.size() > 0) {
             // TODO 必填KEY的检查
         }
     }

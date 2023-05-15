@@ -7,7 +7,6 @@ import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.SecurityUtil;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Objects;
 
@@ -81,7 +80,7 @@ public class HelmMetaCreateReq {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "packageType 缺失");
         }
 
-        if (CollectionUtils.isEmpty(helmExt)) {
+        if (helmExt == null || helmExt.size() == 0) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "helmExt 缺失");
         } else {
             // TODO 必填KEY的检查

@@ -13,10 +13,8 @@ import com.alibaba.tesla.appmanager.server.repository.condition.ClusterQueryCond
 import com.alibaba.tesla.appmanager.server.repository.domain.ClusterDO;
 import com.alibaba.tesla.appmanager.server.service.cluster.ClusterService;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
-import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.informers.SharedInformerFactory;
 import lombok.extern.slf4j.Slf4j;
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -24,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;

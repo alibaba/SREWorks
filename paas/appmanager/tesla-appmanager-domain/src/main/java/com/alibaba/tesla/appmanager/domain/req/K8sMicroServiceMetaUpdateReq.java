@@ -1,10 +1,8 @@
 package com.alibaba.tesla.appmanager.domain.req;
 
-import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.util.SecurityUtil;
 import com.alibaba.tesla.appmanager.domain.dto.*;
 import lombok.Data;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -125,13 +123,13 @@ public class K8sMicroServiceMetaUpdateReq {
         SecurityUtil.checkInput(componentType);
         SecurityUtil.checkInput(arch);
         SecurityUtil.checkInput(kind);
-        if (!CollectionUtils.isEmpty(envList)) {
+        if (envList != null && envList.size() > 0) {
             envList.forEach(item -> item.checkParameters());
         }
-        if (!CollectionUtils.isEmpty(containerObjectList)) {
+        if (containerObjectList != null && containerObjectList.size() > 0) {
             containerObjectList.forEach(item -> item.checkParameters());
         }
-        if (!CollectionUtils.isEmpty(initContainerList)) {
+        if (initContainerList != null && initContainerList.size() > 0) {
             initContainerList.forEach(item -> item.checkParameters());
         }
         if (repoObject != null) {

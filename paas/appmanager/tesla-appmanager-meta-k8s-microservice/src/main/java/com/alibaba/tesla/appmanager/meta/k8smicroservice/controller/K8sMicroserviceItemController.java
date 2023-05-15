@@ -9,7 +9,6 @@ import com.alibaba.tesla.appmanager.common.enums.ContainerTypeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
-import com.alibaba.tesla.appmanager.common.util.SecurityUtil;
 import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.dto.ContainerObjectDTO;
 import com.alibaba.tesla.appmanager.domain.dto.K8sMicroServiceMetaDTO;

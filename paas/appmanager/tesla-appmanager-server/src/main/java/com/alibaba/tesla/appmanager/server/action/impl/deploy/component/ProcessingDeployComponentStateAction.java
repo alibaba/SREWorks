@@ -30,7 +30,6 @@ import com.alibaba.tesla.appmanager.server.service.deploy.handler.DeployComponen
 import com.alibaba.tesla.appmanager.server.service.rtcomponentinstance.RtComponentInstanceService;
 import com.alibaba.tesla.appmanager.server.storage.Storage;
 import com.alibaba.tesla.dag.services.DagInstService;
-import com.google.common.base.Enums;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;

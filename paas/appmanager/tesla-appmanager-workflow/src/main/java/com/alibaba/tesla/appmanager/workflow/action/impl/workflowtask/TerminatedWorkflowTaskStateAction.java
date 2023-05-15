@@ -1,12 +1,8 @@
 package com.alibaba.tesla.appmanager.workflow.action.impl.workflowtask;
 
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.DeployAppProvider;
 import com.alibaba.tesla.appmanager.api.provider.UnitProvider;
-import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.WorkflowTaskStateEnum;
-import com.alibaba.tesla.appmanager.domain.dto.DeployAppDTO;
-import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppGetReq;
 import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppTerminateReq;
 import com.alibaba.tesla.appmanager.workflow.action.WorkflowTaskStateAction;
 import com.alibaba.tesla.appmanager.workflow.event.loader.WorkflowTaskStateActionLoadedEvent;

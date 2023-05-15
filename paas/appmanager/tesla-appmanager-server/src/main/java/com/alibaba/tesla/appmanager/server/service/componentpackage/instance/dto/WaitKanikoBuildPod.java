@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.server.service.componentpackage.instance.dto;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,6 +29,7 @@ public class WaitKanikoBuildPod {
     private StringBuffer logBuffer;
     private Integer accessError;
     private Boolean isFailed;
+    private Date start;
 
     public WaitKanikoBuildPod() {
         runningPods = new HashSet<>();
@@ -36,6 +38,7 @@ public class WaitKanikoBuildPod {
         logBuffer = new StringBuffer();
         accessError = 0;
         isFailed = false;
+        start = new Date();
     }
 
     public void changeStatus(String pod, PodStatusPhaseEnum status, String logContent) {

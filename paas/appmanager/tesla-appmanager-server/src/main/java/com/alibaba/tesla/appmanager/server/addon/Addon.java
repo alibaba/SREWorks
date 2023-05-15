@@ -1,6 +1,5 @@
 package com.alibaba.tesla.appmanager.server.addon;
 
-import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.domain.schema.ComponentSchema;
 import com.alibaba.tesla.appmanager.server.addon.req.ApplyAddonInstanceReq;
 import com.alibaba.tesla.appmanager.server.addon.req.CheckAddonInstanceExpiredReq;

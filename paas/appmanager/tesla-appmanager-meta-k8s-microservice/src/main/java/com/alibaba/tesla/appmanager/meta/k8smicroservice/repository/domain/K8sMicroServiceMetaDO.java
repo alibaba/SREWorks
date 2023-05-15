@@ -1,6 +1,5 @@
 package com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.domain;
 
-import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

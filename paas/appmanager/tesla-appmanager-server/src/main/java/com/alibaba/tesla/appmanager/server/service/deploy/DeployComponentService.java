@@ -1,7 +1,6 @@
 package com.alibaba.tesla.appmanager.server.service.deploy;
 
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentAttrTypeEnum;
-import com.alibaba.tesla.appmanager.domain.dto.DeployComponentAttrDTO;
 import com.alibaba.tesla.appmanager.server.repository.condition.DeployComponentQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.DeployComponentDO;
 import com.alibaba.tesla.appmanager.server.service.deploy.business.DeployComponentBO;

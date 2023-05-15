@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -68,10 +67,10 @@ public class AppPackageTaskCreateReq {
         SecurityUtil.checkInput(namespaceId);
         SecurityUtil.checkInput(stageId);
         SecurityUtil.checkInput(version);
-        if (!CollectionUtils.isEmpty(tags)) {
+        if (tags != null && tags.size() > 0) {
             tags.forEach(item -> SecurityUtil.checkInput(item));
         }
-        if (!CollectionUtils.isEmpty(components)) {
+        if (components != null && components.size() > 0) {
             components.forEach(item -> item.checkParameters());
         }
     }

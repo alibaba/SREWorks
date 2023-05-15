@@ -4,7 +4,6 @@ import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
-import com.google.common.base.Enums;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

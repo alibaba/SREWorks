@@ -1,6 +1,5 @@
 package com.alibaba.tesla.appmanager.dynamicscript.service.impl;
 
-import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.EnvUtil;

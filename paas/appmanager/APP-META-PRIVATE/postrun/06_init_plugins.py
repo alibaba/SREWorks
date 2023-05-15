@@ -72,8 +72,9 @@ def apply(r, plugin, plugin_version, version, plugin_zip_path):
         message = "upload plugin to appmanager failed, name=%s, response=%s" % (plugin, response.text)
         logger.warning(message)
         if "the plugin has been successfully registered and enabled" in response.text:
-            return
-        raise Exception(message)
+            logger.info("the plugin has been successfully registered and enabled %s" % plugin)
+        else:
+            raise Exception(message)
     else:
         logger.info("upload plugin to appmanager success, name=%s" % plugin)
     payload = json.dumps({

@@ -1,13 +1,9 @@
 package com.alibaba.tesla.appmanager.server.service.deploy.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.tesla.appmanager.common.enums.DeployAppEventEnum;
-import com.alibaba.tesla.appmanager.common.enums.DeployAppStateEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
-import com.alibaba.tesla.appmanager.common.util.DateUtil;
-import com.alibaba.tesla.appmanager.server.event.deploy.DeployAppEvent;
 import com.alibaba.tesla.appmanager.server.repository.DeployAppAttrRepository;
 import com.alibaba.tesla.appmanager.server.repository.DeployAppRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.DeployAppAttrQueryCondition;

@@ -24,7 +24,6 @@ import com.alibaba.tesla.appmanager.server.repository.condition.RtAppInstanceHis
 import com.alibaba.tesla.appmanager.server.repository.condition.RtAppInstanceQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.condition.RtComponentInstanceQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.*;
-import com.alibaba.tesla.appmanager.server.service.appmeta.AppMetaService;
 import com.alibaba.tesla.appmanager.server.service.appoption.AppOptionConstant;
 import com.alibaba.tesla.appmanager.server.service.appoption.AppOptionService;
 import com.alibaba.tesla.appmanager.server.service.apppackage.AppPackageService;

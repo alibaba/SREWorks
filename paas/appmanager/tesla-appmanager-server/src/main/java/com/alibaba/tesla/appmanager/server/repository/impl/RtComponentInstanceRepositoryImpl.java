@@ -2,17 +2,14 @@ package com.alibaba.tesla.appmanager.server.repository.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.autoconfig.SystemProperties;
-import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.DateUtil;
 import com.alibaba.tesla.appmanager.server.repository.RtComponentInstanceHistoryRepository;
 import com.alibaba.tesla.appmanager.server.repository.RtComponentInstanceRepository;
-import com.alibaba.tesla.appmanager.server.repository.condition.RtComponentInstanceHistoryQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.condition.RtComponentInstanceQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.RtComponentInstanceDO;
 import com.alibaba.tesla.appmanager.server.repository.domain.RtComponentInstanceDOExample;
-import com.alibaba.tesla.appmanager.server.repository.domain.RtComponentInstanceHistoryDO;
 import com.alibaba.tesla.appmanager.server.repository.mapper.RtComponentInstanceDOMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;

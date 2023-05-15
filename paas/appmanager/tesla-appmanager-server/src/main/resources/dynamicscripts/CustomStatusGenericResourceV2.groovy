@@ -39,7 +39,7 @@ class CustomStatusGenericResourceV2 implements ComponentCustomStatusHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 6
+    public static final Integer REVISION = 8
 
     /**
      * OpenKruise DaemonSet
@@ -49,6 +49,17 @@ class CustomStatusGenericResourceV2 implements ComponentCustomStatusHandler {
             .withGroup("apps.kruise.io")
             .withVersion("v1alpha1")
             .withPlural("daemonsets")
+            .withScope("Namespaced")
+            .build()
+
+    /**
+     * OpenKruise StatefulSet
+     */
+    private static final CustomResourceDefinitionContext OPENKRUISE_STATEFULSET = new CustomResourceDefinitionContext.Builder()
+            .withName("statefulsets.apps.kruise.io")
+            .withGroup("apps.kruise.io")
+            .withVersion("v1alpha1")
+            .withPlural("statefulsets")
             .withScope("Namespaced")
             .build()
 
@@ -113,6 +124,12 @@ class CustomStatusGenericResourceV2 implements ComponentCustomStatusHandler {
                 case "daemonsets.apps.kruise.io":
                     def res = checkOpenKruiseDaemonSet(request, client, options, namespace,
                             includes, excludes, checkResult, resourceOptions)
+                    if (res != null) {
+                        return res
+                    }
+                    break
+                case "statefulsets.apps.kruise.io":
+                    def res = checkOpenKruiseStatusfulSet(request, client, options, namespace, includes, excludes, checkResult)
                     if (res != null) {
                         return res
                     }
@@ -201,6 +218,93 @@ class CustomStatusGenericResourceV2 implements ComponentCustomStatusHandler {
                 return RtComponentInstanceGetStatusRes.builder()
                         .status(ComponentInstanceStatusEnum.WARNING.toString())
                         .conditions(ConditionUtil.singleCondition("CheckStatefulSetExists", "False",
+                                String.format("sts not exists|namespace=%s|" +
+                                        "name=%s|%s", namespace, includeItem, logSuffix), ""))
+                        .build()
+            }
+        }
+        return null
+    }
+
+    /**
+     * 检测 OpenKruise StatefulSet 的状态
+     * @return 如果为 null 说明检测通过；否则说明检测不通过，需要直接返回该状态
+     */
+    private RtComponentInstanceGetStatusRes checkOpenKruiseStatusfulSet(
+            RtComponentInstanceGetStatusReq request, DefaultKubernetesClient client, JSONObject options,
+            String namespace, List<String> includes, List<String> excludes, JSONObject checkResult) {
+        def logSuffix = String.format("clusterId=%s|namespaceId=%s|stageId=%s|appId=%s|componentType=%s|" +
+                "componentName=%s|version=%s", request.getClusterId(), request.getNamespaceId(), request.getStageId(),
+                request.getAppId(), request.getComponentType(), request.getComponentName(), request.getVersion())
+
+        def includeUsedSet = new HashSet()
+        def statefulsets
+        try {
+            statefulsets = client.customResource(OPENKRUISE_STATEFULSET).inNamespace(namespace).list()
+        } catch (Exception e) {
+            return RtComponentInstanceGetStatusRes.builder()
+                    .status(ComponentInstanceStatusEnum.WARNING.toString())
+                    .conditions(ConditionUtil.singleCondition(
+                            "CheckOpenKruiseStatefulSetStatus", "False",
+                            String.format("list sts in namespace failed|namespace=%s|%s|exception=%s",
+                                    namespace, logSuffix, ExceptionUtils.getStackTrace(e)),
+                            ""))
+                    .build()
+        }
+
+        // 对每一个 daemonsets 进行检测
+        def items = statefulsets.get("items") as ArrayList
+        for (def item : items) {
+            def sts = JSONObject.parseObject(JSONObject.toJSONString(item))
+            def metadata = sts.getJSONObject("metadata")
+            def stsName = metadata.getString("name")
+            if (excludes.contains(stsName)) {
+                log.info("the sts {} is in the exclusion configuration, skip|{}", stsName, logSuffix)
+                continue
+            }
+            if (includes.size() > 0 && !includes.contains(stsName)) {
+                log.info("the sts {} is not in the include configuration, skip|{}", stsName, logSuffix)
+                continue
+            }
+            includeUsedSet.add(stsName)
+
+            // 如果只有 0 个 replicas，那么默认放行
+            if (sts.getJSONObject("status").getInteger("replicas") == 0) {
+                log.info("the replicas of sts {} is 0, skip|{}", stsName, logSuffix)
+                continue
+            }
+
+            // 判定当前是否进入终态
+            def currentRevision = sts.getJSONObject("status").getString("currentRevision")
+            def updateRevision = sts.getJSONObject("status").getString("updateRevision")
+            def replicas = sts.getJSONObject("status").getInteger("replicas")
+            def readyReplicas = sts.getJSONObject("status").getInteger("readyReplicas")
+            def targetReplicas = sts.getJSONObject("spec").getInteger("replicas")
+            def statusStr = JSONObject.toJSONString(sts.getJSONObject("status"))
+            if (currentRevision == updateRevision && readyReplicas == replicas && targetReplicas == replicas) {
+                log.info("the sts {} is in final state, skip|status={}|{}",
+                        stsName, statusStr, logSuffix)
+                checkResult.putIfAbsent(namespace, new JSONObject())
+                checkResult.getJSONObject(namespace).putIfAbsent(stsName, new JSONObject())
+                checkResult.getJSONObject(namespace).getJSONObject(stsName).put("status", JSONObject.parseObject(statusStr))
+                continue
+            }
+
+            // 返回未到终态信息
+            return RtComponentInstanceGetStatusRes.builder()
+                    .status(ComponentInstanceStatusEnum.WARNING.toString())
+                    .conditions(ConditionUtil.singleCondition("CheckOpenKruiseStatefulSetStatus", "False",
+                            String.format("sts not in final state|namespace=%s|" +
+                                    "name=%s|status=%s|%s", namespace, stsName, statusStr, logSuffix), ""))
+                    .build()
+        }
+
+        // 如果 includes 包含内容，且没有全部产出 sts，那么仍然认为不到终态
+        for (def includeItem : includes) {
+            if (!includeUsedSet.contains(includeItem)) {
+                return RtComponentInstanceGetStatusRes.builder()
+                        .status(ComponentInstanceStatusEnum.WARNING.toString())
+                        .conditions(ConditionUtil.singleCondition("CheckOpenKruiseStatefulSetExists", "False",
                                 String.format("sts not exists|namespace=%s|" +
                                         "name=%s|%s", namespace, includeItem, logSuffix), ""))
                         .build()

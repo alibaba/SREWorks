@@ -1,7 +1,6 @@
 package com.alibaba.tesla.appmanager.domain.req.apppackage;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.util.SecurityUtil;
 import com.alibaba.tesla.appmanager.domain.dto.ParamBinderDTO;
 import com.alibaba.tesla.appmanager.domain.dto.TraitBinderDTO;
@@ -9,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -91,10 +89,10 @@ public class ComponentBinder {
         SecurityUtil.checkInput(category);
         SecurityUtil.checkInput(version);
         SecurityUtil.checkInput(branch);
-        if (!CollectionUtils.isEmpty(paramBinderList)) {
+        if (paramBinderList != null && paramBinderList.size() > 0) {
             paramBinderList.forEach(item -> item.checkParameters());
         }
-        if (!CollectionUtils.isEmpty(traitBinderList)) {
+        if (traitBinderList != null && traitBinderList.size() > 0) {
             traitBinderList.forEach(item -> item.checkParameters());
         }
     }

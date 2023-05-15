@@ -1,7 +1,5 @@
 package com.alibaba.tesla.appmanager.domain.builder;
 
-import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
-
 import java.util.List;
 
 public interface AppConfigComponentFluent<A extends AppConfigComponentFluent<A>> extends Fluent<A> {

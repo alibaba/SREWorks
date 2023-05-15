@@ -2,7 +2,6 @@ package com.alibaba.tesla.appmanager.meta.helm.assembly;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.assembly.BaseDtoConvert;
-import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.PackageTypeEnum;
 import com.alibaba.tesla.appmanager.domain.dto.HelmMetaDTO;
 import com.alibaba.tesla.appmanager.meta.helm.repository.domain.HelmMetaDO;

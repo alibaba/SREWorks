@@ -1,5 +1,6 @@
 package com.alibaba.tesla.appmanager.plugin.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.PluginProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
@@ -131,4 +132,32 @@ public class PluginController extends AppManagerBaseController {
                 .name(name)
                 .build()));
     }
+
+
+    @Operation(summary = "获取多个插件前端资源")
+    @GetMapping("frontend/resources")
+    public TeslaBaseResult getPluginFrontendResources(
+            @ParameterObject @ModelAttribute PluginFrontendResourcesReq request,
+            OAuth2Authentication auth) throws IOException {
+        if(request.getPlugins() != null){
+            String[] plugins = request.getPlugins().split(",");
+            JSONObject pluginFrontends = new JSONObject();
+            for (int i = 0; i < plugins.length; i++) {
+                pluginFrontends.put(
+                    plugins[i],
+                    pluginProvider.getFrontend(
+                        PluginFrontendGetReq.builder()
+                        .pluginName(plugins[i])
+                        .pluginVersion("current")
+                        .name(request.getName())
+                        .build()
+                    )
+                );
+            }
+            return buildSucceedResult(pluginFrontends);
+        }else{
+            return buildClientErrorResult("no plugin");
+        }
+    }
+
 }

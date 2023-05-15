@@ -2,17 +2,13 @@ package com.alibaba.tesla.appmanager.workflow.listener;
 
 import com.alibaba.tesla.appmanager.common.enums.WorkflowInstanceEventEnum;
 import com.alibaba.tesla.appmanager.common.enums.WorkflowInstanceStateEnum;
-import com.alibaba.tesla.appmanager.common.enums.WorkflowTaskEventEnum;
-import com.alibaba.tesla.appmanager.common.enums.WorkflowTaskStateEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.DateUtil;
 import com.alibaba.tesla.appmanager.workflow.action.WorkflowInstanceStateAction;
 import com.alibaba.tesla.appmanager.workflow.action.WorkflowInstanceStateActionManager;
 import com.alibaba.tesla.appmanager.workflow.event.WorkflowInstanceEvent;
-import com.alibaba.tesla.appmanager.workflow.event.WorkflowTaskEvent;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
-import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO;
 import com.alibaba.tesla.appmanager.workflow.service.WorkflowInstanceService;
 import com.google.common.base.Enums;
 import lombok.extern.slf4j.Slf4j;

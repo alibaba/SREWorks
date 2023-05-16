@@ -62,7 +62,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 57
+    public static final Integer REVISION = 58
 
     /**
      * Label Keys
@@ -208,7 +208,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
                 .status(ComponentInstanceStatusEnum.UPDATING.toString())
                 .build()
         streamLogService.info(streamKey,
-                String.format("default deploy launch res|%s",JSONObject.toJSONString(res)), log)
+                String.format("default deploy launch res|%s", JSONObject.toJSONString(res)), log)
         return res
     }
 
@@ -337,6 +337,7 @@ class MicroserviceComponentDeployHandler implements DeployComponentHandler {
                 singleImagePush(packageDir, image.getImage(), image.getName(), image.getSha256(), streamKey)
                 log.info("image {} has put into registry|arch={}|name={}",
                         image.getImage(), image.getArch(), image.getName())
+                streamLogService.info(streamKey, String.format("image %s has put into registry|arch=%s|name=%s", image.getImage(), image.getArch(), image.getName()))
             }
         }
     }

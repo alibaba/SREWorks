@@ -60,6 +60,15 @@ public interface DeployComponentService {
     void updateAttr(Long deployComponentId, DeployComponentAttrTypeEnum attrType, String attrValue);
 
     /**
+     * 更新指定部署工单的指定属性内容 (自由)
+     *
+     * @param deployComponentId 部署 Component 工单 ID
+     * @param attrType          属性类型
+     * @param attrValue         属性内容
+     */
+    void updateAttr(Long deployComponentId, String attrType, String attrValue);
+
+    /**
      * 更新指定部署工单的元信息
      *
      * @param subOrder 工单记录

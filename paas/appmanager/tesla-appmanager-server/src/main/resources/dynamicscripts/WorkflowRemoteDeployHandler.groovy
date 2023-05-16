@@ -47,7 +47,7 @@ class WorkflowRemoteDeployHandler implements WorkflowHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 13
+    public static final Integer REVISION = 14
 
     @Autowired
     private UnitService unitService
@@ -72,9 +72,10 @@ class WorkflowRemoteDeployHandler implements WorkflowHandler {
 
             // 如果已经由前置节点成功发起，那么直接进入等待状态
             if (context.getLongValue("deployAppId") > 0) {
-                log.info("deploy request has applied (direct)|workflowInstanceId={}|workflowTaskId={}|appId={}|" +
-                        "context={}|configuration={}", request.getInstanceId(), request.getTaskId(), request.getAppId(),
-                        JSONObject.toJSONString(context), JSONObject.toJSONString(configuration))
+                streamLogService.info(streamKey, String.format("deploy request has applied (direct)|" +
+                        "workflowInstanceId=%s|workflowTaskId=%s|appId=%s|" +
+                        "context=%s|configuration=%s", request.getInstanceId(), request.getTaskId(), request.getAppId(),
+                        JSONObject.toJSONString(context), JSONObject.toJSONString(configuration)), log)
                 return ExecuteWorkflowHandlerRes.builder()
                         .deployAppId(context.getLongValue("deployAppId"))
                         .deployAppUnitId(context.getString("unitId"))
@@ -107,9 +108,10 @@ class WorkflowRemoteDeployHandler implements WorkflowHandler {
                             .context(context)
                             .configuration(configuration)
                             .build()
-                    log.info("preapre to execute policy in workflow task|workflowInstanceId={}|workflowTaskId={}|" +
-                            "appId={}|context={}|configuration={}", request.getInstanceId(), request.getTaskId(),
-                            request.getAppId(), JSONObject.toJSONString(context), JSONObject.toJSONString(configuration))
+                    streamLogService.info(streamKey, String.format("prepare to execute policy in workflow task" +
+                            "|workflowInstanceId=%s|workflowTaskId=%s|" +
+                            "appId=%s|context=%s|configuration=%s", request.getInstanceId(), request.getTaskId(),
+                            request.getAppId(), JSONObject.toJSONString(context), JSONObject.toJSONString(configuration)), log)
                     def res = policyHandler.execute(req)
                     if (res.getContext() != null) {
                         context = res.getContext()
@@ -120,6 +122,7 @@ class WorkflowRemoteDeployHandler implements WorkflowHandler {
                     log.info("policy has exeucted in workflow task|workflowInstanceId={}|workflowTaskId={}|appId={}|" +
                             "context={}|configuration={}", request.getInstanceId(), request.getTaskId(), request.getAppId(),
                             JSONObject.toJSONString(context), JSONObject.toJSONString(configuration))
+                    streamLogService.info(streamKey, "policy has exeucted in workflow task")
                 }
             }
 
@@ -153,6 +156,7 @@ class WorkflowRemoteDeployHandler implements WorkflowHandler {
                 log.info("deploy request has applied|workflowInstanceId={}|workflowTaskId={}|appId={}|context={}|" +
                         "configuration={}", request.getInstanceId(), request.getTaskId(), request.getAppId(),
                         JSONObject.toJSONString(context), JSONObject.toJSONString(configuration))
+                streamLogService.info(streamKey, "deploy request has applied")
                 return ExecuteWorkflowHandlerRes.builder()
                         .deployAppId(deployAppId)
                         .deployAppUnitId(unitId)
@@ -170,7 +174,7 @@ class WorkflowRemoteDeployHandler implements WorkflowHandler {
             streamLogService.info(streamKey, ExceptionUtils.getStackTrace(ex))
             throw ex;
         } finally {
-            streamLogService.clean(streamKey,true);
+            streamLogService.clean(streamKey, true);
         }
     }
 }

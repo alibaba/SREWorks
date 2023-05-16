@@ -5,9 +5,11 @@ import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import com.alibaba.fastjson.TypeReference
 import com.alibaba.tesla.appmanager.autoconfig.PackageProperties
+import com.alibaba.tesla.appmanager.common.constants.RedisKeyConstant
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode
 import com.alibaba.tesla.appmanager.common.exception.AppException
+import com.alibaba.tesla.appmanager.common.service.StreamLogService
 import com.alibaba.tesla.appmanager.common.util.PackageUtil
 import com.alibaba.tesla.appmanager.common.util.StringUtil
 import com.alibaba.tesla.appmanager.common.util.ZipUtil
@@ -57,7 +59,7 @@ class MicroserviceComponentBuildHandler implements BuildComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 23
+    public static final Integer REVISION = 24
 
     private static final String TEMPLATE_MICROSERVICE_FILENAME = "default_microservice_%s.tpl"
     private static final String DEFAULT_MICROSERVICE_TYPE = "Deployment"
@@ -71,6 +73,9 @@ class MicroserviceComponentBuildHandler implements BuildComponentHandler {
     @Autowired
     private ImageBuilderService imageBuilderService
 
+    @Autowired
+    private StreamLogService streamLogService
+
     /**
      * 构建一个实体 Component Package
      *
@@ -79,6 +84,10 @@ class MicroserviceComponentBuildHandler implements BuildComponentHandler {
      */
     @Override
     LaunchBuildComponentHandlerRes launch(BuildComponentHandlerReq request) {
+        def streamKey = String.format("%s_%s_%s_%s_%s", RedisKeyConstant.COMPONENT_PACKAGE_TASK_LOG,
+                request.getAppId(), request.getComponentType(), request.getComponentName(), request.getVersion())
+        streamLogService.info(streamKey, String.format("start execute MicroserviceComponentBuildHandler|request=%s"
+                , JSONObject.toJSONString(request)))
         log.info("preparing to build component package|request={}", JSONObject.toJSONString(request))
         def appId = request.getAppId()
         def componentType = request.getComponentType()
@@ -107,7 +116,7 @@ class MicroserviceComponentBuildHandler implements BuildComponentHandler {
 
         // 扫描 package options，构建所有需要的镜像，并存储到 packageDir 中
         def logContent = new StringBuilder()
-        def imageTarList = buildImages(packageDir, request, logContent)
+        def imageTarList = buildImages(packageDir, request, logContent, streamKey)
         options.put("imageTarList", imageTarList)
         options.put("appId", appId)
         options.put("componentType", componentType)
@@ -116,6 +125,7 @@ class MicroserviceComponentBuildHandler implements BuildComponentHandler {
         log.info("all images have built|appId={}|componentType={}|componentName={}|packageVersion={}|" +
                 "imageTarList={}|options={}", appId, componentType, componentName, version,
                 JSONArray.toJSONString(imageTarList), JSONObject.toJSONString(options))
+        streamLogService.info(streamKey, "all images have built")
 
         // 创建 meta.yaml 元信息存储到 packageDir 顶层目录中
         def jinjava = new Jinjava()
@@ -129,6 +139,7 @@ class MicroserviceComponentBuildHandler implements BuildComponentHandler {
         FileUtils.writeStringToFile(metaYamlFile, metaYamlContent, StandardCharsets.UTF_8)
         log.info("meta yaml config has rendered|appId={}|componentType={}|componentName={}|packageVersion={}",
                 appId, componentType, componentName, version)
+        streamLogService.info(streamKey, "meta yaml config has rendered")
 
         // 将 packageDir 打包为 zip 文件
         String zipPath = packageDir.resolve("app_package.zip").toString()
@@ -138,6 +149,7 @@ class MicroserviceComponentBuildHandler implements BuildComponentHandler {
         log.info("zip file has generated|appId={}|componentType={}|componentName={}|packageVersion={}|" +
                 "zipPath={}|md5={}", appId, componentType, componentName, version,
                 zipPath, targetFileMd5)
+        streamLogService.info(streamKey, "zip file has generated")
 
         // 上传导出包到 Storage 中
         String bucketName = packageProperties.getBucketName()
@@ -146,12 +158,14 @@ class MicroserviceComponentBuildHandler implements BuildComponentHandler {
         storage.putObject(bucketName, remotePath, zipPath)
         log.info("component package has uploaded to storage|bucketName={}|" +
                 "remotePath={}|localPath={}", bucketName, remotePath, zipPath)
+        streamLogService.info(streamKey, "component package has uploaded to storage")
 
         // 删除临时数据 (正常流程下)
         try {
             FileUtils.deleteDirectory(packageDir.toFile())
         } catch (Exception ignored) {
             log.warn("cannot delete component package build directory|directory={}", packageDir.toString())
+            streamLogService.info(streamKey, "cannot delete component package build directory")
         }
         LaunchBuildComponentHandlerRes res = LaunchBuildComponentHandlerRes.builder()
                 .logContent(logContent.toString())
@@ -178,7 +192,8 @@ class MicroserviceComponentBuildHandler implements BuildComponentHandler {
      * @param packageOptions 构建选项
      * @return 镜像文件相对 packageDir 的路径列表
      */
-    private List<ImageTar> buildImages(Path packageDir, BuildComponentHandlerReq request, StringBuilder logContent) {
+    private List<ImageTar> buildImages(Path packageDir, BuildComponentHandlerReq request, StringBuilder logContent,
+                                       String streamKey) {
         def options = request.getOptions()
         List<ImageTar> imageTarList = new ArrayList<>()
         if (options.containsKey("arch")) {
@@ -187,14 +202,14 @@ class MicroserviceComponentBuildHandler implements BuildComponentHandler {
                 def buildObj = archObj.getJSONObject(arch)
                 def initContainers = buildObj.getJSONArray("initContainers")
                 def containers = buildObj.getJSONArray("containers")
-                imageTarList.addAll(buildContainerImage(arch, packageDir, request, initContainers, logContent))
-                imageTarList.addAll(buildContainerImage(arch, packageDir, request, containers, logContent))
+                imageTarList.addAll(buildContainerImage(arch, packageDir, request, initContainers, logContent, streamKey))
+                imageTarList.addAll(buildContainerImage(arch, packageDir, request, containers, logContent, streamKey))
             }
         } else {
             def initContainers = options.getJSONArray("initContainers")
             def containers = options.getJSONArray("containers")
-            imageTarList.addAll(buildContainerImage("", packageDir, request, initContainers, logContent))
-            imageTarList.addAll(buildContainerImage("", packageDir, request, containers, logContent))
+            imageTarList.addAll(buildContainerImage("", packageDir, request, initContainers, logContent, streamKey))
+            imageTarList.addAll(buildContainerImage("", packageDir, request, containers, logContent, streamKey))
         }
         return imageTarList
     }
@@ -209,7 +224,7 @@ class MicroserviceComponentBuildHandler implements BuildComponentHandler {
      */
     private List<ImageTar> buildContainerImage(
             String arch, Path packageDir, BuildComponentHandlerReq request,
-            JSONArray containers, StringBuilder logContent) {
+            JSONArray containers, StringBuilder logContent, String streamKey) {
         def imageTarList = new ArrayList<ImageTar>()
         for (Object obj : containers) {
             def container = (JSONObject) obj
@@ -261,12 +276,16 @@ class MicroserviceComponentBuildHandler implements BuildComponentHandler {
                         .build())
                 log.info("move image from {} to {}|arch={}|imageName={}|sha256={}",
                         imagePath, targetPath.toString(), arch, imageName, sha256)
+                streamLogService.info(streamKey, "move image...")
+
                 try {
                     FileUtils.deleteDirectory(Paths.get(result.getImageDir()).toFile())
                 } catch (Exception ignored) {
                     log.warn("cannot delete directory after docker build|directory={}", result.getImageDir())
+                    streamLogService.info(streamKey, "cannot delete directory after docker build")
                 }
                 log.info("temp docker build directory {} has deleted", result.getImageDir())
+                streamLogService.info(streamKey, "temp docker build directory has deleted")
             } else {
                 // 否则仅存储 imageName 数据到 imageTarList 中
                 imageTarList.add(ImageTar.builder()
@@ -274,7 +293,8 @@ class MicroserviceComponentBuildHandler implements BuildComponentHandler {
                         .image(imageName)
                         .sha256(sha256)
                         .build())
-                log.info("image has append into imageTarList|arch={}|imageName={}|sha256={}", arch, imageName, sha256)
+                streamLogService.info(streamKey, String.format("image has append into imageTarList|" +
+                        "arch=%s|imageName=%s|sha256=%s", arch, imageName, sha256), log)
             }
         }
         return imageTarList

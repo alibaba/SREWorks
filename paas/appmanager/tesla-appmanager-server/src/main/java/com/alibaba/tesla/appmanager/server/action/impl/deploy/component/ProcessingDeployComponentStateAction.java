@@ -267,6 +267,11 @@ public class ProcessingDeployComponentStateAction implements DeployComponentStat
                             subOrder.getId(), subOrder.getIdentifier(),
                             JSONObject.toJSONString(response.getComponentSchema()));
                 }
+                if (response.getAttrMap() != null) {
+                    for (Map.Entry<String, String> entry : response.getAttrMap().entrySet()) {
+                        deployComponentService.updateAttr(subOrder.getId(), entry.getKey(), entry.getValue());
+                    }
+                }
                 if (StringUtils.isNotEmpty(response.getStatus())) {
                     JSONObject annotations = (JSONObject) componentSchema.getSpec()
                             .getWorkload().getMetadata().getAnnotations();

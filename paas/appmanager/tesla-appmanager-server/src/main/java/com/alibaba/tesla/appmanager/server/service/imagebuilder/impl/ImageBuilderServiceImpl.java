@@ -139,7 +139,7 @@ public class ImageBuilderServiceImpl implements ImageBuilderService {
                     .imagePath(imagePath)
                     .build();
         } finally {
-            streamLogService.clean(streamKey,true);
+//            streamLogService.clean(streamKey,false);
         }
     }
 

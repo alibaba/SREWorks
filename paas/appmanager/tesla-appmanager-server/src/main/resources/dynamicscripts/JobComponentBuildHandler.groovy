@@ -5,9 +5,11 @@ import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import com.alibaba.fastjson.TypeReference
 import com.alibaba.tesla.appmanager.autoconfig.PackageProperties
+import com.alibaba.tesla.appmanager.common.constants.RedisKeyConstant
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode
 import com.alibaba.tesla.appmanager.common.exception.AppException
+import com.alibaba.tesla.appmanager.common.service.StreamLogService
 import com.alibaba.tesla.appmanager.common.util.PackageUtil
 import com.alibaba.tesla.appmanager.common.util.StringUtil
 import com.alibaba.tesla.appmanager.common.util.ZipUtil
@@ -56,7 +58,7 @@ class JobComponentBuildHandler implements BuildComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 19
+    public static final Integer REVISION = 20
 
     private static final String TEMPLATE_JOB_FILENAME = "default_job.tpl"
 
@@ -69,6 +71,9 @@ class JobComponentBuildHandler implements BuildComponentHandler {
     @Autowired
     private ImageBuilderService imageBuilderService
 
+    @Autowired
+    private StreamLogService streamLogService
+
     /**
      * 构建一个实体 Component Package
      *
@@ -77,6 +82,9 @@ class JobComponentBuildHandler implements BuildComponentHandler {
      */
     @Override
     LaunchBuildComponentHandlerRes launch(BuildComponentHandlerReq request) {
+        def streamKey = String.format("%s_%s_%s_%s_%s", RedisKeyConstant.COMPONENT_PACKAGE_TASK_LOG,
+                request.getAppId(), request.getComponentType(), request.getComponentName(), request.getVersion())
+        streamLogService.info(streamKey, String.format("start execute JobComponentBuildHandler|%s", JSONObject.toJSONString(request)))
         log.info("default build job request|{}", JSONObject.toJSONString(request))
         def appId = request.getAppId()
         def componentType = request.getComponentType()
@@ -114,6 +122,7 @@ class JobComponentBuildHandler implements BuildComponentHandler {
         log.info("all images have built|appId={}|componentType={}|componentName={}|packageVersion={}|" +
                 "imageTarList={}", appId, componentType, componentName, version,
                 JSONArray.toJSONString(imageTarList))
+        streamLogService.info(streamKey, "all images have built")
 
         // 创建 meta.yaml 元信息存储到 packageDir 顶层目录中
         def jinjava = new Jinjava()
@@ -132,6 +141,7 @@ class JobComponentBuildHandler implements BuildComponentHandler {
         log.info("zip file has generated|appId={}|componentType={}|componentName={}|packageVersion={}|" +
                 "zipPath={}|md5={}", appId, componentType, componentName, version,
                 zipPath, targetFileMd5)
+        streamLogService.info(streamKey, "zip file has generated")
 
         // 上传导出包到 Storage 中
         String bucketName = packageProperties.getBucketName()
@@ -140,6 +150,7 @@ class JobComponentBuildHandler implements BuildComponentHandler {
         storage.putObject(bucketName, remotePath, zipPath)
         log.info("component package has uploaded to storage|bucketName={}|" +
                 "remotePath={}|localPath={}", bucketName, remotePath, zipPath)
+        streamLogService.info(streamKey, "component package has uploaded to storage")
 
         // 删除临时数据 (正常流程下)
         try {
@@ -154,6 +165,7 @@ class JobComponentBuildHandler implements BuildComponentHandler {
                 .packageMd5(targetFileMd5)
                 .build()
         log.info("default build microservice res|{}", JSONObject.toJSONString(res))
+        streamLogService.info(streamKey, "execute JobComponentBuildHandler finish!")
         return res
     }
 

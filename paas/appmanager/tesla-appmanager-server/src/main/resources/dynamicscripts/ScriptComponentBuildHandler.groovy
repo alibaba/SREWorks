@@ -2,9 +2,11 @@ package dynamicscripts
 
 import com.alibaba.fastjson.JSONObject
 import com.alibaba.tesla.appmanager.autoconfig.PackageProperties
+import com.alibaba.tesla.appmanager.common.constants.RedisKeyConstant
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode
 import com.alibaba.tesla.appmanager.common.exception.AppException
+import com.alibaba.tesla.appmanager.common.service.StreamLogService
 import com.alibaba.tesla.appmanager.common.util.PackageUtil
 import com.alibaba.tesla.appmanager.common.util.StringUtil
 import com.alibaba.tesla.appmanager.common.util.ZipUtil
@@ -16,6 +18,7 @@ import com.alibaba.tesla.appmanager.server.service.componentpackage.handler.Buil
 import com.alibaba.tesla.appmanager.server.storage.Storage
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
+import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,6 +27,7 @@ import org.springframework.core.io.ClassPathResource
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
+
 /**
  * 默认 Script 组件 Groovy Handler
  *
@@ -46,7 +50,7 @@ class ScriptComponentBuildHandler implements BuildComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 1
+    public static final Integer REVISION = 2
 
     private static final String TEMPLATE_SCRIPT_FILENAME = "default_script_component.tpl"
 
@@ -56,6 +60,9 @@ class ScriptComponentBuildHandler implements BuildComponentHandler {
     @Autowired
     private Storage storage
 
+    @Autowired
+    private StreamLogService streamLogService
+
     /**
      * 构建一个实体 Component Package
      *
@@ -64,71 +71,84 @@ class ScriptComponentBuildHandler implements BuildComponentHandler {
      */
     @Override
     LaunchBuildComponentHandlerRes launch(BuildComponentHandlerReq request) {
+        def streamKey = String.format("%s_%s_%s_%s_%s", RedisKeyConstant.COMPONENT_PACKAGE_TASK_LOG,
+                request.getAppId(), request.getComponentType(), request.getComponentName(), request.getVersion())
+        streamLogService.info(streamKey, "start execute ScriptComponentBuildHandler")
         def appId = request.getAppId()
         def componentType = request.getComponentType()
         def componentName = request.getComponentName()
         def version = request.getVersion()
         def options = request.getOptions()
-
-        // 创建当前组件包的临时组装目录，用于存储 meta 信息及构建后的镜像
-        def packageDir
         try {
-            packageDir = Files.createTempDirectory("appmanager_component_package_")
-            packageDir.toFile().deleteOnExit()
-        } catch (IOException e) {
-            throw new AppException(AppErrorCode.UNKNOWN_ERROR, "cannot create temp directory", e)
-        }
-
-        // 创建 meta.yaml 元信息存储到 packageDir 顶层目录中
-        def jinjava = JinjaFactory.getJinjava()
-        def template = getTemplate(TEMPLATE_SCRIPT_FILENAME)
-        def optionsClone = (JSONObject) options.clone()
-        options.put("appId", appId)
-        options.put("componentType", componentType)
-        options.put("componentName", componentName)
-        options.put("version", version)
-        options.put("options", optionsClone)
-        def metaYamlContent = jinjava.render(template, options)
-        def metaYamlFile = Paths.get(packageDir.toString(), "meta.yaml").toFile()
-        FileUtils.writeStringToFile(metaYamlFile, metaYamlContent, StandardCharsets.UTF_8)
-        log.info("meta yaml config has rendered||appId={}||componentType={}||componentName={}||packageVersion={}",
-                appId, componentType, componentName, version)
-
-        // 将 packageDir 打包为 zip 文件
-        String zipPath = packageDir.resolve("app_package.zip").toString()
-        Files.list(packageDir).map({ p -> p.toFile() }).forEach({ item ->
-            if (item.isDirectory()) {
-                ZipUtil.zipDirectory(zipPath, item)
-            } else {
-                ZipUtil.zipFile(zipPath, item)
+            // 创建当前组件包的临时组装目录，用于存储 meta 信息及构建后的镜像
+            def packageDir
+            try {
+                packageDir = Files.createTempDirectory("appmanager_component_package_")
+                packageDir.toFile().deleteOnExit()
+            } catch (IOException e) {
+                throw new AppException(AppErrorCode.UNKNOWN_ERROR, "cannot create temp directory", e)
             }
-        })
-        def targetFileMd5 = StringUtil.getMd5Checksum(zipPath)
-        log.info("zip file has generated||appId={}||componentType={}||componentName={}||packageVersion={}||" +
-                "zipPath={}||md5={}", appId, componentType, componentName, version,
-                zipPath, targetFileMd5)
 
-        // 上传导出包到 Storage 中
-        String bucketName = packageProperties.getBucketName()
-        String remotePath = PackageUtil
-                .buildComponentPackageRemotePath(appId, componentType, componentName, version)
-        storage.putObject(bucketName, remotePath, zipPath)
-        log.info("component package has uploaded to storage||bucketName={}||" +
-                "remotePath={}||localPath={}", bucketName, remotePath, zipPath)
+            // 创建 meta.yaml 元信息存储到 packageDir 顶层目录中
+            def jinjava = JinjaFactory.getJinjava()
+            def template = getTemplate(TEMPLATE_SCRIPT_FILENAME)
+            def optionsClone = (JSONObject) options.clone()
+            options.put("appId", appId)
+            options.put("componentType", componentType)
+            options.put("componentName", componentName)
+            options.put("version", version)
+            options.put("options", optionsClone)
+            def metaYamlContent = jinjava.render(template, options)
+            def metaYamlFile = Paths.get(packageDir.toString(), "meta.yaml").toFile()
+            FileUtils.writeStringToFile(metaYamlFile, metaYamlContent, StandardCharsets.UTF_8)
+            log.info("meta yaml config has rendered||appId={}||componentType={}||componentName={}||packageVersion={}",
+                    appId, componentType, componentName, version)
+            streamLogService.info(streamKey, "meta yaml config has rendered")
 
-        // 删除临时数据 (正常流程下)
-        try {
-            FileUtils.deleteDirectory(packageDir.toFile())
-        } catch (Exception ignored) {
-            log.warn("cannot delete component package build directory||directory={}", packageDir.toString())
+            // 将 packageDir 打包为 zip 文件
+            String zipPath = packageDir.resolve("app_package.zip").toString()
+            Files.list(packageDir).map({ p -> p.toFile() }).forEach({ item ->
+                if (item.isDirectory()) {
+                    ZipUtil.zipDirectory(zipPath, item)
+                } else {
+                    ZipUtil.zipFile(zipPath, item)
+                }
+            })
+            def targetFileMd5 = StringUtil.getMd5Checksum(zipPath)
+            log.info("zip file has generated||appId={}||componentType={}||componentName={}||packageVersion={}||" +
+                    "zipPath={}||md5={}", appId, componentType, componentName, version,
+                    zipPath, targetFileMd5)
+            streamLogService.info(streamKey, "zip file has generated")
+
+            // 上传导出包到 Storage 中
+            String bucketName = packageProperties.getBucketName()
+            String remotePath = PackageUtil
+                    .buildComponentPackageRemotePath(appId, componentType, componentName, version)
+            storage.putObject(bucketName, remotePath, zipPath)
+            log.info("component package has uploaded to storage||bucketName={}||" +
+                    "remotePath={}||localPath={}", bucketName, remotePath, zipPath)
+            streamLogService.info(streamKey, "component package has uploaded to storage")
+
+            // 删除临时数据 (正常流程下)
+            try {
+                FileUtils.deleteDirectory(packageDir.toFile())
+            } catch (Exception ignored) {
+                log.warn("cannot delete component package build directory||directory={}", packageDir.toString())
+            }
+            LaunchBuildComponentHandlerRes res = LaunchBuildComponentHandlerRes.builder()
+                    .logContent("get zip file from abm chart succeed")
+                    .storageFile(new StorageFile(bucketName, remotePath))
+                    .packageMetaYaml(metaYamlContent)
+                    .packageMd5(targetFileMd5)
+                    .build()
+            return res
+        } catch (Exception ex) {
+            streamLogService.info(streamKey, ExceptionUtils.getStackTrace(ex))
+            throw ex;
+        } finally {
+            streamLogService.info(streamKey, "execute ScriptComponentBuildHandler finish!")
+            streamLogService.clean(streamKey, true);
         }
-        LaunchBuildComponentHandlerRes res = LaunchBuildComponentHandlerRes.builder()
-                .logContent("get zip file from abm chart succeed")
-                .storageFile(new StorageFile(bucketName, remotePath))
-                .packageMetaYaml(metaYamlContent)
-                .packageMd5(targetFileMd5)
-                .build()
-        return res
     }
 
     /**

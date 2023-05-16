@@ -2,12 +2,14 @@ package dynamicscripts
 
 import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
+import com.alibaba.tesla.appmanager.common.constants.RedisKeyConstant
 import com.alibaba.tesla.appmanager.common.enums.ComponentInstanceStatusEnum
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentAttrTypeEnum
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentStateEnum
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode
 import com.alibaba.tesla.appmanager.common.exception.AppException
+import com.alibaba.tesla.appmanager.common.service.StreamLogService
 import com.alibaba.tesla.appmanager.common.util.ConditionUtil
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil
 import com.alibaba.tesla.appmanager.domain.req.componentinstance.ReportRtComponentInstanceStatusReq
@@ -51,7 +53,7 @@ class ScriptComponentDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 6
+    public static final Integer REVISION = 7
 
     /**
      * 上报状态常量
@@ -77,6 +79,9 @@ class ScriptComponentDeployHandler implements DeployComponentHandler {
     @Autowired
     private DeployComponentService deployComponentService
 
+    @Autowired
+    private StreamLogService streamLogService
+
     /**
      * 部署组件过程
      *
@@ -84,6 +89,9 @@ class ScriptComponentDeployHandler implements DeployComponentHandler {
      */
     @Override
     LaunchDeployComponentHandlerRes launch(LaunchDeployComponentHandlerReq request) {
+        def streamKey = String.format("%s_%s", RedisKeyConstant.DEPLOY_TASK_LOG,
+                request.getDeployComponentId())
+        streamLogService.info(streamKey, "start execute JobComponentBuildHandler")
         def componentSchema = request.getComponentSchema()
         def annotations = (JSONObject) componentSchema.getSpec().getWorkload().getMetadata().getAnnotations()
         def version = (String) annotations.getOrDefault(ANNOTATIONS_VERSION, "")
@@ -110,6 +118,7 @@ class ScriptComponentDeployHandler implements DeployComponentHandler {
                         "componentName={}|version={}", componentInstanceId, appInstanceName, request.getClusterId(),
                 request.getNamespaceId(), request.getStageId(), request.getAppId(), request.getComponentType(),
                 request.getComponentName(), version)
+                streamLogService.info(streamKey, "report abm status component instance to UPDATING success")
                 reportSuccess = true
             } catch (AppException e) {
                 if (AppErrorCode.LOCKER_VERSION_EXPIRED == e.getErrorCode()) {

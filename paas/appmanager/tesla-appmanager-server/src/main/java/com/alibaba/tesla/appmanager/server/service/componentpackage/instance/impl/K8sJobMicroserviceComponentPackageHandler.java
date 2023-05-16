@@ -93,7 +93,7 @@ public class K8sJobMicroserviceComponentPackageHandler {
     @PostConstruct
     public void init() throws IOException {
         ApiClient client = ClientBuilder.defaultClient();
-        OkHttpClient httpClient = client.getHttpClient().newBuilder().readTimeout(3, TimeUnit.SECONDS).build();
+        OkHttpClient httpClient = client.getHttpClient().newBuilder().readTimeout(0, TimeUnit.SECONDS).build();
         client.setHttpClient(httpClient);
         api = new CoreV1Api(client);
     }

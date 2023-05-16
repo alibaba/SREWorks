@@ -62,7 +62,7 @@ public class KanikoInformerFactory implements DisposableBean {
             CoreV1Api api;
             try {
                 client = ClientBuilder.defaultClient();
-                OkHttpClient httpClient = client.getHttpClient().newBuilder().readTimeout(3, TimeUnit.SECONDS).build();
+                OkHttpClient httpClient = client.getHttpClient().newBuilder().readTimeout(0, TimeUnit.SECONDS).build();
                 client.setHttpClient(httpClient);
                 informerFactory = new SharedInformerFactory(client);
                 api = new CoreV1Api(client);

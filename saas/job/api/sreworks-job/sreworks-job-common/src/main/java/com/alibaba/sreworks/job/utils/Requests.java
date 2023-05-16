@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
@@ -61,6 +62,22 @@ public class Requests {
 
     }
 
+    public static HttpResponse<String> put(
+            String url, JSONObject headers, JSONObject params, String postBody) throws IOException, InterruptedException {
+
+        if (postBody == null) {
+            postBody = "";
+        }
+        url = addParams(url, params);
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .PUT(BodyPublishers.ofString(postBody));
+        addHeaders(builder, headers);
+        return client.send(builder.build(), BodyHandlers.ofString());
+
+    }
+
     public static HttpResponse<String> get(
         String url, JSONObject headers, JSONObject params) throws IOException, InterruptedException {
 
@@ -68,6 +85,21 @@ public class Requests {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
             .uri(URI.create(url))
             .GET();
+        addHeaders(builder, headers);
+        return client.send(builder.build(), BodyHandlers.ofString());
+
+    }
+
+    public static HttpResponse<String> patch(
+            String url, JSONObject headers, JSONObject params, String postBody) throws IOException, InterruptedException, URISyntaxException {
+
+        url = addParams(url, params);
+
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
+                .uri(new URI(url))
+                .method("PATCH", HttpRequest.BodyPublishers.ofString(postBody))
+                .header("Content-Type", "application/json");
+
         addHeaders(builder, headers);
         return client.send(builder.build(), BodyHandlers.ofString());
 

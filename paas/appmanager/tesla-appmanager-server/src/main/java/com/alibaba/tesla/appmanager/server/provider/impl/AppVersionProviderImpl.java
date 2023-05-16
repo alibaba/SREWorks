@@ -67,4 +67,12 @@ public class AppVersionProviderImpl implements AppVersionProvider {
         return appVersionDtoConvert.to(appVersionService.gets(condition));
     }
 
+    @Override
+    public void delete(String appId, String version, String operator) {
+        AppVersionQueryCondition condition = new AppVersionQueryCondition();
+        condition.setAppId(appId);
+        condition.setVersion(version);
+        appVersionService.delete(condition);
+    }
+
 }

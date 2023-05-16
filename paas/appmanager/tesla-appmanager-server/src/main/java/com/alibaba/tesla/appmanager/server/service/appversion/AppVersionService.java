@@ -12,4 +12,6 @@ public interface AppVersionService {
     List<AppVersionDO> gets(AppVersionQueryCondition condition);
 
     int create(AppVersionDO record);
+
+    int delete(AppVersionQueryCondition condition);
 }

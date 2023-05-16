@@ -37,7 +37,7 @@ public class BizAppContainer {
      */
     public static BizAppContainer valueOf(String headerBizApp) {
         // TODO: FOR SREWORKS ONLY TEMPORARY
-        if (EnvUtil.isSreworks()) {
+        if (EnvUtil.isSreworks() && !StringUtils.isEmpty(headerBizApp) && headerBizApp.startsWith("swadmin")) {
             return BizAppContainer.builder()
                     .namespaceId(EnvUtil.defaultNamespaceId())
                     .stageId(EnvUtil.defaultStageId())

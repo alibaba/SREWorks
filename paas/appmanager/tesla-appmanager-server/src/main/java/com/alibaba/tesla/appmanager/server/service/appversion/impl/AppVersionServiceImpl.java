@@ -37,4 +37,9 @@ public class AppVersionServiceImpl implements AppVersionService {
     public int create(AppVersionDO record) {
         return appVersionRepository.insert(record);
     }
+
+    @Override
+    public int delete(AppVersionQueryCondition condition) {
+        return appVersionRepository.deleteByCondition(condition);
+    }
 }

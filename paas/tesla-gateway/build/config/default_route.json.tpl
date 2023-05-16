@@ -335,5 +335,20 @@
         "routeType": "PATH",
         "serverType": "PAAS",
         "url": "http://prod-dataops-elasticsearch-master.${NAMESPACE_DATAOPS}:9200"
+    },{
+        "appId": "vvp-flink-dashboard",
+        "authCheck": false,
+        "authHeader": false,
+        "authLogin": false,
+        "enable": true,
+        "enableFunction": false,
+        "enableSwaggerDoc": false,
+        "name": "vvp-flink-dashboard",
+        "order": 2500,
+        "path": "/vvp-flink-dashboard/**",
+        "routeId": "vvp-flink-dashboard",
+        "routeType": "PATH",
+        "serverType": "PAAS",
+        "url": "http://prod-dataops-ververica-platform-ververica-platform.${NAMESPACE_DATAOPS}:80/flink-ui/v1/namespaces/default/jobs/"
     }
 ]

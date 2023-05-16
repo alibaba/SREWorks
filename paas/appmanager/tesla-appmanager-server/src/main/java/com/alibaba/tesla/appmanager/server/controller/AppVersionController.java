@@ -3,6 +3,7 @@ package com.alibaba.tesla.appmanager.server.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.AppVersionProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
+import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.domain.dto.AppVersionDTO;
 import com.alibaba.tesla.appmanager.domain.req.appversion.AppVersionCreateReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
@@ -35,8 +36,12 @@ public class AppVersionController extends AppManagerBaseController {
             @PathVariable String appId,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
-
         List<AppVersionDTO> versions = appVersionProvider.list(appId);
+        List<AppVersionDTO> globalVersions = appVersionProvider.list("");
+        for (AppVersionDTO version : globalVersions) {
+            version.setAppId(appId);
+        }
+        versions.addAll(globalVersions);
         return buildSucceedResult(versions);
     }
 
@@ -47,9 +52,20 @@ public class AppVersionController extends AppManagerBaseController {
             @PathVariable String version,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
-
         AppVersionDTO appVersion = appVersionProvider.get(appId, version);
         return buildSucceedResult(appVersion);
+    }
+
+    @DeleteMapping("{version}")
+    @Operation(summary = "删除指定应用版本")
+    public TeslaBaseResult delete(
+            @PathVariable String appId,
+            @PathVariable String version,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
+            OAuth2Authentication auth) {
+        String operator = getOperator(auth);
+        appVersionProvider.delete(appId, version, operator);
+        return buildSucceedResult(DefaultConstant.EMPTY_OBJ);
     }
 
     @PostMapping

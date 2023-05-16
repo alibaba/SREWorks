@@ -44,6 +44,23 @@ if (process.env.NODE_ENV !== 'development') {
     },
   )
 }
+//增加请求api统一地址拦截,重写header x-biz-app的字段值，用于开源版本控制
+request.interceptors.request.use(
+  function (config) {
+    let urlObj = {}
+    if (config.url.indexOf('env_id') > -1) {
+      urlObj = Qs.parse(config.url.split('?')[1])
+      let originBizArr = config.headers.common['X-Biz-App'].split(',')
+      config.headers.common['X-Biz-App'] = originBizArr[0]+','+urlObj['env_id']
+    }
+    return {
+      ...config,
+    }
+  },
+  function (error) {
+    return Promise.reject(error)
+  },
+)
 function showErrorDetails(res) {
   function syntaxHighlight(json) {
     if (typeof json !== 'string') {

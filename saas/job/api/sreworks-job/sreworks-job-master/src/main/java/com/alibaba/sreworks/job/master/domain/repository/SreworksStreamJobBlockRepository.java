@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 public interface SreworksStreamJobBlockRepository
@@ -16,5 +17,8 @@ public interface SreworksStreamJobBlockRepository
     Page<SreworksStreamJobBlock> findAll(Pageable pageable);
 
     List<SreworksStreamJobBlock> findAllByStreamJobId(Long streamJobId);
+
+    @Transactional(rollbackOn = Exception.class)
+    int deleteAllByStreamJobId(Long streamJobId);
 
 }

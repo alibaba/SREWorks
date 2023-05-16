@@ -2,6 +2,7 @@ package com.alibaba.sreworks.job.master.services;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.sreworks.job.master.common.JobTriggerType;
 import com.alibaba.sreworks.job.master.domain.DO.*;
 import com.alibaba.sreworks.job.master.domain.DTO.*;
@@ -22,9 +23,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static java.util.stream.DoubleStream.builder;
 
@@ -41,6 +49,12 @@ public class StreamJobService {
     @Autowired
     SreworksStreamJobRuntimeRepository sreworksStreamJobRuntimeRepository;
 
+    @Autowired
+    VvpService vvpService;
+
+    @Autowired
+    StreamJobBlockService streamJobBlockService;
+
     public Page<SreworksStreamJobDTO> gets(Pageable pageable) throws Exception {
         Page<SreworksStreamJob> jobs = streamJobRepository.findAll(pageable);
 
@@ -55,8 +69,12 @@ public class StreamJobService {
         return new SreworksStreamJobDTO(job);
     }
 
+    public void delete(Long streamJobId) {
+        streamJobRepository.deleteById(streamJobId);
+    }
+
     public String pythonTemplate(Long streamJobId) throws Exception {
-        List<SreworksStreamJobBlockDTO> blocks = listBlockByStreamJobId(streamJobId);
+        List<SreworksStreamJobBlockDTO> blocks = streamJobBlockService.listByStreamJobId(streamJobId);
         JSONObject sourceBlock = null;
         JSONObject sinkBlock = null;
         String templateContent;
@@ -98,6 +116,7 @@ public class StreamJobService {
 
     public SreworksStreamJobDTO create(StreamJobCreateParam param) throws Exception {
         SreworksStreamJob job = param.job();
+        job.setStatus("CANCELLED");
         String templateContent = StringUtil.readResourceFile("pyflink-template.py");
         JSONObject options = JsonUtil.map(
          "template", templateContent,
@@ -129,6 +148,7 @@ public class StreamJobService {
                 .gmtModified(System.currentTimeMillis())
                 .creator(jobDTO.getCreator())
                 .operator(jobDTO.getOperator())
+                .status(jobDTO.getStatus())
                 .appId(jobDTO.getAppId())
                 .name(jobDTO.getName())
                 .alias(jobDTO.getAlias())
@@ -138,56 +158,6 @@ public class StreamJobService {
                 .jobType(jobDTO.getJobType())
                 .build();
     }
-
-    private SreworksStreamJobBlock convertDO(SreworksStreamJobSourceDTO source){
-        return SreworksStreamJobBlock.builder()
-                .id(source.getId())
-                .gmtCreate(source.getGmtCreate())
-                .gmtModified(source.getGmtModified())
-                .streamJobId(source.getStreamJobId())
-                .appId(source.getAppId())
-                .name(source.getName())
-                .blockType("source")
-                .data(JsonUtil.map(
-                "options", source.getOptions(),
-                      "columns", source.getColumns(),
-                        "sourceType", source.getSourceType()
-                ).toJSONString())
-                .build();
-    }
-
-    private SreworksStreamJobBlock convertDO(SreworksStreamJobPythonDTO python){
-        return SreworksStreamJobBlock.builder()
-                .id(python.getId())
-                .gmtCreate(python.getGmtCreate())
-                .gmtModified(python.getGmtModified())
-                .streamJobId(python.getStreamJobId())
-                .appId(python.getAppId())
-                .name(python.getName())
-                .blockType("python")
-                .data(JsonUtil.map(
-                        "content", python.getContent()
-                ).toJSONString())
-                .build();
-    }
-
-    private SreworksStreamJobBlock convertDO(SreworksStreamJobSinkDTO sink){
-        return SreworksStreamJobBlock.builder()
-                .id(sink.getId())
-                .gmtCreate(sink.getGmtCreate())
-                .gmtModified(sink.getGmtModified())
-                .streamJobId(sink.getStreamJobId())
-                .appId(sink.getAppId())
-                .name(sink.getName())
-                .blockType("sink")
-                .data(JsonUtil.map(
-                        "options", sink.getOptions(),
-                        "columns", sink.getColumns(),
-                        "sinkType", sink.getSinkType()
-                ).toJSONString())
-                .build();
-    }
-
 
     public SreworksStreamJobDTO updateSettings(SreworksStreamJobDTO job, JSONObject settings) throws Exception {
         JSONObject options = job.getOptions();
@@ -209,8 +179,10 @@ public class StreamJobService {
         return new SreworksStreamJobDTO(updateJob);
     }
 
-    public void deleteBlock(Long streamJobBlockId) {
-        sreworksStreamJobBlockRepository.deleteById(streamJobBlockId);
+    public SreworksStreamJobDTO updateStatus(SreworksStreamJobDTO job, String status){
+        job.setStatus(status);
+        SreworksStreamJob updateJob = streamJobRepository.saveAndFlush(convertDO(job));
+        return new SreworksStreamJobDTO(updateJob);
     }
 
     private JSONArray generateTable(StringBuilder scriptContent, SreworksStreamJobBlockDTO block){
@@ -234,7 +206,7 @@ public class StreamJobService {
              *
              */
             
-        scriptContent.append("t_env.execute_sql(\"\"\"\n");
+        scriptContent.append("t_env.execute_sql(f\"\"\"\n");
         scriptContent.append("    CREATE TABLE " + block.getName() +" (\n");
         JSONArray columns = block.getData().getJSONArray("columns");
         if(columns != null){
@@ -242,8 +214,12 @@ public class StreamJobService {
                 JSONObject column = columns.getJSONObject(i);
                 String columnName = column.getString("columnName");
                 String columnType = column.getString("columnType");
-                if (columnType != null && columnName != null){
-                    scriptContent.append("      " + columnName + " " + columnType);
+                if (StringUtils.isNotBlank(columnType)){
+                    if (StringUtils.isNotBlank(columnName)){
+                        scriptContent.append("      `" + columnName + "` " + columnType);
+                    } else {
+                        scriptContent.append("      " + columnType);
+                    }
                     if (i == columns.size() - 1){
                         scriptContent.append("\n");
                     } else {
@@ -276,15 +252,15 @@ public class StreamJobService {
     }
 
     public String getScriptName(Long streamJobId) {
-        return "streamJob-" + streamJobId.toString() + ".py";
+        return "streamjob-" + streamJobId.toString() + ".py";
     }
 
     public String getDeploymentName(Long streamJobId) {
-        return "streamJob-" + streamJobId.toString();
+        return "streamjob-" + streamJobId.toString();
     }
 
     public String generateScript(Long streamJobId, String templateContent) throws Exception {
-        List<SreworksStreamJobBlockDTO>  blocks = this.listBlockByStreamJobId(streamJobId);
+        List<SreworksStreamJobBlockDTO>  blocks = streamJobBlockService.listByStreamJobId(streamJobId);
         StringBuilder sourceBlocks = new StringBuilder();
         StringBuilder sinkBlocks = new StringBuilder();
         StringBuilder pythonBlocks = new StringBuilder();
@@ -330,11 +306,32 @@ public class StreamJobService {
         JSONObject artifact = new JSONObject();
         JSONObject spec = new JSONObject();
         JSONArray additionalDependencies = new JSONArray();
+        ArrayList<String> jarFiles = new ArrayList<>();
 
         if (param.getAdditionalDependencies() != null){
             for (int i = 0; i < param.getAdditionalDependencies().size(); i++) {
                 JSONObject item = param.getAdditionalDependencies().getJSONObject(i);
-                additionalDependencies.add(storePath + item.getString("filename"));
+                String filePath = "";
+                if(item.getString("filename") != null) {
+                    filePath = storePath + item.getString("filename");
+                } else if (item.getString("url") != null) {
+                    filePath = item.getString("url");
+                }
+                if(StringUtils.isNotEmpty(filePath)) {
+                    additionalDependencies.add(filePath);
+                }
+            }
+        }
+
+        if (param.getExtAdditionalDependencies() != null) {
+            for (int i = 0; i < param.getExtAdditionalDependencies().size(); i++) {
+                JSONObject item = param.getExtAdditionalDependencies().getJSONObject(i);
+                if (item.getString("filename") != null && item.getString("filename").endsWith(".jar")) {
+                    jarFiles.add(
+                            "file:///flink/usrlib/" +
+                                    item.getString("filename").substring(item.getString("filename").lastIndexOf("/") + 1)
+                    );
+                }
             }
         }
 
@@ -348,9 +345,12 @@ public class StreamJobService {
                  "name", param.getName()
               ),
              "spec",  JsonUtil.map(
-             "template", JsonUtil.map(
+             "deploymentTargetId", null,
+                    "deploymentTargetName", "sreworksDeploymentTarget",
+                    "sessionClusterName", null,
+                    "template", JsonUtil.map(
                     "spec", spec
-                )
+                    )
             )
         );
         artifact.put("kind", "JAR");
@@ -365,7 +365,7 @@ public class StreamJobService {
         }
 
         // pyflink运行环境
-        artifact.put("jarUri", param.getJarUri());
+        artifact.put("jarUri", storePath + param.getJarUri());
 
         // Python venv 运行环境
         artifact.put("entryClass", param.getEntryClass());
@@ -378,10 +378,21 @@ public class StreamJobService {
             }
         }
 
+        // 依赖jar包
+        if(!jarFiles.isEmpty()){
+            mainArgs.append(" --jarfile " + String.join(",", jarFiles));
+        }
+
         // 主执行文件
-        mainArgs.append("--python /flink/usrlib/" + param.getPythonScriptName());
+        mainArgs.append(" --python /flink/usrlib/" + param.getPythonScriptName());
         additionalDependencies.add(storePath + param.getPythonScriptName());
 
+        // 追加execParams参数到mainArgs
+        if(param.getExecParams() != null && !param.getExecParams().isEmpty()){
+            for (Map.Entry<String, String> kv : param.getExecParams().entrySet()) {
+                mainArgs.append(" --"  + kv.getKey() + " " + kv.getValue());
+            }
+        }
         artifact.put("additionalDependencies", additionalDependencies);
         artifact.put("mainArgs", mainArgs.toString());
         return deployment;
@@ -389,26 +400,57 @@ public class StreamJobService {
 
     public JSONObject generateDeploymentByStreamJob(SreworksStreamJobDTO job) throws Exception {
         JSONObject settings = job.getOptions().getJSONObject("settings");
-        if(settings.getLong("pythonRuntimeId") != null){
-            SreworksStreamJobRuntimeDTO runtime = runtimeGetById(settings.getLong("pythonRuntimeId"));
-            StreamJobDeploymentParam deploymentParam = StreamJobDeploymentParam.builder()
-                    .name(getDeploymentName(job.getId()))
-                    .entryClass(runtime.getSettings().getString("entryClass"))
-                    .jarUri(runtime.getSettings().getString("jarUri"))
-                    .flinkVersion(runtime.getSettings().getString("flinkVersion"))
-                    .flinkImage(runtime.getSettings().getString("flinkImage"))
-                    .resources(settings.getJSONObject("resources"))
-                    .pyArchives(runtime.getSettings().getString("pyArchives"))
-                    .pyClientExecutable(runtime.getSettings().getString("pyClientExecutable"))
-                    .additionalDependencies(runtime.getSettings().getJSONArray("additionalDependencies"))
-                    .pythonScriptName(getScriptName(job.getId()))
-                    .build();
-            return generateDeployment(deploymentParam);
-        }else{
+        if(settings.getLong("pythonRuntimeId") == null) {
             return new JSONObject();
         }
-    }
+        SreworksStreamJobRuntimeDTO runtime = runtimeGetById(settings.getLong("pythonRuntimeId"));
+        JSONArray additionalDependencies = (JSONArray) runtime.getSettings().getJSONArray("additionalDependencies").clone();
+        JSONArray execParamArray = settings.getJSONArray("execParams");
 
+        Map<String, String> execParams = new HashMap<>();
+        if(execParamArray  != null){
+            for(int i = 0; i < execParamArray.size(); i++){
+                JSONObject kv = execParamArray.getJSONObject(i);
+                execParams.put(kv.getString("key"), kv.getString("value"));
+            }
+        }
+
+        // 根据当前的connector来动态增加 additionalDependencies
+        List<SreworksStreamJobBlockDTO> blocks = streamJobBlockService.listByStreamJobId(job.getId());
+        HashSet<String> connectors = new HashSet<>();
+        for (SreworksStreamJobBlockDTO block : blocks){
+            if(StringUtils.equals(block.getBlockType(), "source")) {
+                connectors.add(block.getData().getString("sourceType"));
+            }else if(StringUtils.equals(block.getBlockType(), "sink")){
+                connectors.add(block.getData().getString("sinkType"));
+            }
+        }
+        for (String connectorName : connectors) {
+            FlinkConnectorDTO connector = vvpService.getConnector(connectorName);
+            for (int i = 0; i < connector.getDependencies().size(); i++) {
+                String dependency = connector.getDependencies().getString(i).replace(
+                        "/vvp/sql/opt/connectors",
+                        "http://prod-job-job-master.sreworks/stream-job/connector/resource");
+                additionalDependencies.add(JsonUtil.map("url", dependency));
+            }
+        }
+
+        StreamJobDeploymentParam deploymentParam = StreamJobDeploymentParam.builder()
+                .name(getDeploymentName(job.getId()))
+                .entryClass(runtime.getSettings().getString("entryClass"))
+                .jarUri(runtime.getSettings().getString("jarUri"))
+                .flinkVersion(runtime.getSettings().getString("flinkVersion"))
+                .flinkImage(runtime.getSettings().getString("flinkImage"))
+                .resources(settings.getJSONObject("resources"))
+                .pyArchives(runtime.getSettings().getString("pyArchives"))
+                .pyClientExecutable(runtime.getSettings().getString("pyClientExecutable"))
+                .additionalDependencies(additionalDependencies)
+                .extAdditionalDependencies(runtime.getSettings().getJSONArray("additionalDependencies"))
+                .pythonScriptName(getScriptName(job.getId()))
+                .execParams(execParams)
+                .build();
+        return generateDeployment(deploymentParam);
+    }
 
     public SreworksStreamJobRuntimeDTO addRuntime(StreamJobRuntimeCreateParam param) throws Exception {
         SreworksStreamJobRuntime runtime = param.init();
@@ -430,73 +472,70 @@ public class StreamJobService {
         return  new SreworksStreamJobRuntimeDTO(runtime);
     }
 
-    public SreworksStreamJobSourceDTO addSource(Long streamJobId, String appId, StreamJobSourceCreateParam param) throws Exception {
-        SreworksStreamJobBlock jobSource = param.init(streamJobId, appId);
-        jobSource = sreworksStreamJobBlockRepository.saveAndFlush(jobSource);
-        return new SreworksStreamJobSourceDTO(jobSource);
+    public File exportFile(SreworksStreamJobDTO job) throws Exception {
+        /**
+         *    ├── sinks
+         *    │    ├── data_output.json
+         *    │    └── data_output2.json
+         *    ├── sources
+         *    │    └── log_input.json
+         *    ├── pythons
+         *    │    ├── test1.py
+         *    │    └── test2.py
+         *    ├── template.py
+         *    └── settings.json
+         */
+
+        Path tmpDir = Files.createTempDirectory("stream-job");
+        File zipFile = Files.createTempFile("stream-job", ".zip").toFile();
+        File sinks = new File(tmpDir.toFile(), "sinks");
+        sinks.mkdir();
+        File sources = new File(tmpDir.toFile(), "sources");
+        sources.mkdir();
+        File pythons = new File(tmpDir.toFile(), "pythons");
+        pythons.mkdir();
+        List<SreworksStreamJobBlockDTO> blocks = streamJobBlockService.listByStreamJobId(job.getId());
+        for (SreworksStreamJobBlockDTO block : blocks) {
+            if(StringUtils.equals(block.getBlockType(), "source")){
+                createAndWriteFile(sources, block.getName() + ".json", block.getData().toJSONString(SerializerFeature.PrettyFormat));
+            }else if(StringUtils.equals(block.getBlockType(), "sink")) {
+                createAndWriteFile(sinks, block.getName() + ".json", block.getData().toJSONString(SerializerFeature.PrettyFormat));
+            }else if(StringUtils.equals(block.getBlockType(), "python")) {
+                createAndWriteFile(pythons, block.getName() + ".py", block.getData().getString("content"));
+            }
+        }
+        createAndWriteFile(tmpDir.toFile(), "template.py", job.getOptions().getString("template"));
+        createAndWriteFile(
+                tmpDir.toFile(),
+                "settings.json",
+                job.getOptions().getJSONObject("settings").toJSONString(SerializerFeature.PrettyFormat)
+        );
+        zipDirectory(tmpDir, zipFile.getAbsolutePath());
+        return zipFile;
     }
 
-    public SreworksStreamJobSourceDTO getSource(Long blockId){
-        SreworksStreamJobBlock block = sreworksStreamJobBlockRepository.findFirstById(blockId);
-        return new SreworksStreamJobSourceDTO(block);
+    private static void createAndWriteFile(File folder, String fileName, String content) throws IOException {
+        File file = new File(folder, fileName);
+        FileWriter writer = new FileWriter(file);
+        writer.write(content);
+        writer.close();
     }
 
-    public SreworksStreamJobPythonDTO getPython(Long blockId){
-        SreworksStreamJobBlock block = sreworksStreamJobBlockRepository.findFirstById(blockId);
-        return new SreworksStreamJobPythonDTO(block);
-    }
-
-    public SreworksStreamJobSinkDTO getSink(Long blockId){
-        SreworksStreamJobBlock block = sreworksStreamJobBlockRepository.findFirstById(blockId);
-        return new SreworksStreamJobSinkDTO(block);
-    }
-
-    public SreworksStreamJobSourceDTO updateSource(SreworksStreamJobSourceDTO source, StreamJobSourceCreateParam param){
-        source.setColumns(param.getColumns());
-        source.setOptions(param.getOptions());
-        SreworksStreamJobBlock block = convertDO(source);
-        block = sreworksStreamJobBlockRepository.saveAndFlush(block);
-        return new SreworksStreamJobSourceDTO(block);
-    }
-
-    public SreworksStreamJobPythonDTO updatePython(SreworksStreamJobPythonDTO python, StreamJobPythonCreateParam param){
-        python.setContent(param.getScriptContent());
-        SreworksStreamJobBlock block = convertDO(python);
-        block = sreworksStreamJobBlockRepository.saveAndFlush(block);
-        return new SreworksStreamJobPythonDTO(block);
-    }
-
-    public SreworksStreamJobPythonDTO updateSink(SreworksStreamJobSinkDTO sink, StreamJobSinkCreateParam param){
-        sink.setColumns(param.getColumns());
-        sink.setOptions(param.getOptions());
-        SreworksStreamJobBlock block = convertDO(sink);
-        block = sreworksStreamJobBlockRepository.saveAndFlush(block);
-        return new SreworksStreamJobPythonDTO(block);
-    }
-
-    public SreworksStreamJobSinkDTO addSink(Long streamJobId, String appId, StreamJobSinkCreateParam param) throws Exception {
-        SreworksStreamJobBlock jobSink = param.init(streamJobId, appId);
-        jobSink = sreworksStreamJobBlockRepository.saveAndFlush(jobSink);
-        return new SreworksStreamJobSinkDTO(jobSink);
-    }
-
-    public SreworksStreamJobPythonDTO addPython(Long streamJobId, String appId, StreamJobPythonCreateParam param) throws Exception {
-        SreworksStreamJobBlock jobPython = param.init(streamJobId, appId);
-        jobPython = sreworksStreamJobBlockRepository.saveAndFlush(jobPython);
-        return new SreworksStreamJobPythonDTO(jobPython);
-    }
-
-    public List<SreworksStreamJobBlockDTO> listBlockByStreamJobId(Long streamJobId) throws Exception {
-        List<SreworksStreamJobBlock> sourceList = sreworksStreamJobBlockRepository.findAllByStreamJobId(streamJobId);
-        List<String> blockTypeOrder = Arrays.asList("source", "python", "sink");
-        Comparator<SreworksStreamJobBlock> blockTypeComparator = Comparator.comparingInt(block -> blockTypeOrder.indexOf(block.getBlockType()));
-        sourceList.sort(blockTypeComparator);
-        return sourceList.stream().map(SreworksStreamJobBlockDTO::new)
-        .collect(Collectors.toList());
-    }
-
-    public void modify(Long id, JobModifyParam param) throws Exception {
-
+    private static void zipDirectory(Path sourceDir, String zipFilePath) throws IOException {
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(Files.newOutputStream(Paths.get(zipFilePath)))) {
+            Files.walk(sourceDir)
+                    .filter(path -> !Files.isDirectory(path))
+                    .forEach(path -> {
+                        try {
+                            String relativePath = sourceDir.relativize(path).toString();
+                            zipOutputStream.putNextEntry(new ZipEntry(relativePath));
+                            Files.copy(path, zipOutputStream);
+                            zipOutputStream.closeEntry();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+        }
     }
 
 

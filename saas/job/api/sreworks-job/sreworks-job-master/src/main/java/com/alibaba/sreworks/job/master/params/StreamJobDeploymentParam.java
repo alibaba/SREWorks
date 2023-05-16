@@ -10,6 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Map;
+
 @Data
 @Slf4j
 @Builder
@@ -29,6 +31,8 @@ public class StreamJobDeploymentParam {
 
     private JSONObject resources;
 
+    private JSONArray extAdditionalDependencies;
+
     private JSONArray additionalDependencies;
 
     private String pyArchives;
@@ -36,5 +40,7 @@ public class StreamJobDeploymentParam {
     private String pyClientExecutable;
 
     private String pythonScriptName;
+
+    private Map<String, String> execParams;
 
 }

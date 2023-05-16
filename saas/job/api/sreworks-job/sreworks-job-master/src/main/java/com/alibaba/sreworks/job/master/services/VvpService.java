@@ -1,6 +1,7 @@
 package com.alibaba.sreworks.job.master.services;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.sreworks.job.master.common.JobApplicationProperties;
 import com.alibaba.sreworks.job.master.domain.DTO.FlinkConnectorDTO;
@@ -16,6 +17,7 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -47,6 +49,13 @@ public class VvpService {
         }
 
         return connectorList.map(FlinkConnectorDTO::new).collect(Collectors.toList());
+    }
+
+    public FlinkConnectorDTO getConnector(String name) throws Exception{
+        String connectorUrl = String.format("%s/sql/v1beta1/namespaces/default/connectors/%s", applicationProperties.getFlinkVvpEndpoint(), name);
+        HttpResponse<String> response = Requests.get(connectorUrl, null, null);
+        JSONObject connector = JSONObject.parseObject(response.body()).getJSONObject("connector");
+        return new FlinkConnectorDTO(connector);
     }
 
     public JSONObject uploadArtifact(String fileName, String fileContent) throws Exception {
@@ -83,13 +92,70 @@ public class VvpService {
 
     }
 
-    public JSONObject deployment(JSONObject metadata, JSONObject spec) throws Exception {
+    public JSONObject createDeployment(JSONObject metadata, JSONObject spec) throws Exception {
         String deploymentUrl = String.format("%s/api/v1/namespaces/default/deployments", applicationProperties.getFlinkVvpEndpoint());
         JSONObject payload = new JSONObject();
         payload.put("metadata", metadata);
         payload.put("spec", spec);
         HttpResponse<String> response = Requests.post(deploymentUrl, null, null, payload.toJSONString());
         return JSONObject.parseObject(response.body());
+    }
+
+    public JSONObject replaceDeployment(String name, JSONObject payload) throws Exception {
+        String deploymentUrl = String.format("%s/api/v1/namespaces/default/deployments/%s", applicationProperties.getFlinkVvpEndpoint(), name);
+        HttpResponse<String> response = Requests.put(deploymentUrl, null, null, payload.toJSONString());
+        return JSONObject.parseObject(response.body());
+    }
+
+    public JSONArray listEventsByDeploymentId(String deploymentId) throws IOException, InterruptedException {
+        String eventsUrl = String.format("%s/api/v1/namespaces/default/events?deploymentId=%s", applicationProperties.getFlinkVvpEndpoint(), deploymentId);
+        HttpResponse<String> response = Requests.get(eventsUrl, null, null);
+        return JSONObject.parseObject(response.body()).getJSONArray("items");
+    }
+
+    public String checkErrorEventByDeploymentId(String deploymentId, String startTime) throws IOException, InterruptedException{
+        JSONArray events = listEventsByDeploymentId(deploymentId);
+        Instant jobStartTime = Instant.parse(startTime);
+        String errorMessage = "";
+        for (int j = 0; j < events.size(); j++) {
+            JSONObject event =  events.getJSONObject(j);
+            JSONObject eventMetadata = event.getJSONObject("metadata");
+            String eventCreateAt = eventMetadata.getString("createdAt");
+            Instant eventTime = Instant.parse(eventCreateAt);
+            if(
+                StringUtils.isEmpty(errorMessage) &&
+                eventMetadata.getString("name").contains("FAIL") &&
+                eventTime.compareTo(jobStartTime) > 0
+            ){
+                errorMessage = "[" + eventCreateAt + "] " + event.getJSONObject("spec").getString("message");
+                break;
+            }
+        }
+        return errorMessage;
+    }
+
+    public JSONObject cancelDeployment(String name) throws Exception {
+        String deploymentUrl = String.format("%s/api/v1/namespaces/default/deployments/%s", applicationProperties.getFlinkVvpEndpoint(), name);
+        HttpResponse<String> response = Requests.patch(deploymentUrl, null, null, "{\"spec\":{\"state\":\"CANCELLED\"}}");
+        return JSONObject.parseObject(response.body());
+    }
+
+    public JSONObject deleteDeployment(String name) throws Exception {
+        String deploymentUrl = String.format("%s/api/v1/namespaces/default/deployments/%s", applicationProperties.getFlinkVvpEndpoint(), name);
+        HttpResponse<String> response = Requests.delete(deploymentUrl, null, null);
+        return JSONObject.parseObject(response.body());
+    }
+
+    public JSONObject getDeployment(String name) throws Exception {
+        String deploymentUrl = String.format("%s/api/v1/namespaces/default/deployments/%s", applicationProperties.getFlinkVvpEndpoint(), name);
+        HttpResponse<String> response = Requests.get(deploymentUrl, null, null);
+        return JSONObject.parseObject(response.body());
+    }
+
+    public JSONArray listDeployments() throws Exception{
+        String deploymentUrl = String.format("%s/api/v1/namespaces/default/deployments", applicationProperties.getFlinkVvpEndpoint());
+        HttpResponse<String> response = Requests.get(deploymentUrl, null, null);
+        return JSONArray.parseArray(response.body());
     }
 
 

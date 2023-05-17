@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 /**
  * App Version Controller
  *
@@ -36,13 +34,7 @@ public class AppVersionController extends AppManagerBaseController {
             @PathVariable String appId,
             @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
-        List<AppVersionDTO> versions = appVersionProvider.list(appId);
-        List<AppVersionDTO> globalVersions = appVersionProvider.list("");
-        for (AppVersionDTO version : globalVersions) {
-            version.setAppId(appId);
-        }
-        versions.addAll(globalVersions);
-        return buildSucceedResult(versions);
+        return buildSucceedResult(appVersionProvider.list(appId));
     }
 
     @GetMapping("{version}")

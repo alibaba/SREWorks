@@ -14,4 +14,6 @@ public interface AppVersionService {
     int create(AppVersionDO record);
 
     int delete(AppVersionQueryCondition condition);
+
+    List<AppVersionDO> getsAll(String appId);
 }

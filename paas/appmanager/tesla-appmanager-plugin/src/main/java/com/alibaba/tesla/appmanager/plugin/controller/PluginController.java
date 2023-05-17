@@ -12,6 +12,7 @@ import com.alibaba.tesla.common.base.TeslaBaseResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -139,7 +140,7 @@ public class PluginController extends AppManagerBaseController {
     public TeslaBaseResult getPluginFrontendResources(
             @ParameterObject @ModelAttribute PluginFrontendResourcesReq request,
             OAuth2Authentication auth) throws IOException {
-        if(request.getPlugins() != null){
+        if(StringUtils.isNotEmpty(request.getPlugins())){
             String[] plugins = request.getPlugins().split(",");
             JSONObject pluginFrontends = new JSONObject();
             for (int i = 0; i < plugins.length; i++) {
@@ -156,7 +157,7 @@ public class PluginController extends AppManagerBaseController {
             }
             return buildSucceedResult(pluginFrontends);
         }else{
-            return buildClientErrorResult("no plugin");
+            return buildSucceedResult(new JSONObject());
         }
     }
 

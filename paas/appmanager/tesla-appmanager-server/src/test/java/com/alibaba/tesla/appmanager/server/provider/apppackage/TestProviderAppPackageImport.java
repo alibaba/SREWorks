@@ -18,6 +18,7 @@ import com.alibaba.tesla.appmanager.server.repository.domain.AppPackageDO;
 import com.alibaba.tesla.appmanager.server.service.appmeta.AppMetaService;
 import com.alibaba.tesla.appmanager.server.service.appoption.AppOptionService;
 import com.alibaba.tesla.appmanager.server.service.apppackage.AppPackageService;
+import com.alibaba.tesla.appmanager.server.service.appversion.AppVersionService;
 import com.alibaba.tesla.appmanager.server.service.pack.dag.UnpackAppPackageFromStorageDag;
 import com.alibaba.tesla.appmanager.server.service.unit.UnitService;
 import com.alibaba.tesla.appmanager.server.storage.Storage;
@@ -84,6 +85,9 @@ public class TestProviderAppPackageImport {
     @Mock
     private UnitService unitService;
 
+    @Mock
+    private AppVersionService appVersionService;
+
     private AppPackageProvider appPackageProvider;
 
     @Before
@@ -100,7 +104,8 @@ public class TestProviderAppPackageImport {
                 dagInstService,
                 dagInstNewService,
                 storage,
-                unitService
+                unitService,
+                appVersionService
         ));
     }
 

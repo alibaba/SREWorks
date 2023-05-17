@@ -1,5 +1,6 @@
 package com.alibaba.sreworks.job.master.services;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -23,15 +24,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import static java.util.stream.DoubleStream.builder;
@@ -117,25 +117,33 @@ public class StreamJobService {
     public SreworksStreamJobDTO create(StreamJobCreateParam param) throws Exception {
         SreworksStreamJob job = param.job();
         job.setStatus("CANCELLED");
-        String templateContent = StringUtil.readResourceFile("pyflink-template.py");
-        JSONObject options = JsonUtil.map(
-         "template", templateContent,
-                "settings", JsonUtil.map(
-                "resources", JsonUtil.map(
-                        "jobmanager", JsonUtil.map(
-                               "cpu", 1,
+        JSONObject options;
+        if (StringUtils.isEmpty(job.getOptions())){
+            options = new JSONObject();
+        } else {
+            options = JSONObject.parseObject(job.getOptions());
+        }
+        if (StringUtils.isEmpty(options.getString("template"))){
+            String templateContent = StringUtil.readResourceFile("pyflink-template.py");
+            options.put("template", templateContent);
+        }
+        if (options.getJSONObject("settings") == null){
+            options.put("settings", JsonUtil.map(
+                    "resources", JsonUtil.map(
+                            "jobmanager", JsonUtil.map(
+                                    "cpu", 1,
                                     "memory","4G"
-                                ),
-                                "taskmanager", JsonUtil.map(
-                                "cpu", 1,
+                            ),
+                            "taskmanager", JsonUtil.map(
+                                    "cpu", 1,
                                     "memory","4G"
-                                )
-                        ),
-                        "parallelism", 1,
-                        "numberOfTaskManagers", 1,
-                        "pythonRuntimeId", 2
-                )
-        );
+                            )
+                    ),
+                    "parallelism", 1,
+                    "numberOfTaskManagers", 1,
+                    "pythonRuntimeId", 2
+            ));
+        }
         job.setOptions(options.toJSONString());
         job = streamJobRepository.saveAndFlush(job);
         return new SreworksStreamJobDTO(job);
@@ -497,9 +505,9 @@ public class StreamJobService {
         List<SreworksStreamJobBlockDTO> blocks = streamJobBlockService.listByStreamJobId(job.getId());
         for (SreworksStreamJobBlockDTO block : blocks) {
             if(StringUtils.equals(block.getBlockType(), "source")){
-                createAndWriteFile(sources, block.getName() + ".json", block.getData().toJSONString(SerializerFeature.PrettyFormat));
+                createAndWriteFile(sources, block.getName() + ".json", JSON.toJSONString(block.getData(), SerializerFeature.PrettyFormat, SerializerFeature.SortField));
             }else if(StringUtils.equals(block.getBlockType(), "sink")) {
-                createAndWriteFile(sinks, block.getName() + ".json", block.getData().toJSONString(SerializerFeature.PrettyFormat));
+                createAndWriteFile(sinks, block.getName() + ".json", JSON.toJSONString(block.getData(), SerializerFeature.PrettyFormat, SerializerFeature.SortField));
             }else if(StringUtils.equals(block.getBlockType(), "python")) {
                 createAndWriteFile(pythons, block.getName() + ".py", block.getData().getString("content"));
             }
@@ -508,10 +516,46 @@ public class StreamJobService {
         createAndWriteFile(
                 tmpDir.toFile(),
                 "settings.json",
-                job.getOptions().getJSONObject("settings").toJSONString(SerializerFeature.PrettyFormat)
+                JSON.toJSONString(job.getOptions().getJSONObject("settings"), SerializerFeature.PrettyFormat, SerializerFeature.SortField)
         );
         zipDirectory(tmpDir, zipFile.getAbsolutePath());
         return zipFile;
+    }
+
+    public static Path unzipFile(String zipFilePath) throws IOException {
+        Path tmpDir = Files.createTempDirectory("job");
+        String destDir = tmpDir.toString();
+        FileInputStream fis;
+        //buffer for read and write data to file
+        byte[] buffer = new byte[1024];
+        try {
+            fis = new FileInputStream(zipFilePath);
+            ZipInputStream zis = new ZipInputStream(fis);
+            ZipEntry ze = zis.getNextEntry();
+            while(ze != null){
+                String fileName = ze.getName();
+                File newFile = new File(destDir + File.separator + fileName);
+                System.out.println("Unzipping to "+newFile.getAbsolutePath());
+                //create directories for sub directories in zip
+                new File(newFile.getParent()).mkdirs();
+                FileOutputStream fos = new FileOutputStream(newFile);
+                int len;
+                while ((len = zis.read(buffer)) > 0) {
+                    fos.write(buffer, 0, len);
+                }
+                fos.close();
+                //close this ZipEntry
+                zis.closeEntry();
+                ze = zis.getNextEntry();
+            }
+            //close last ZipEntry
+            zis.closeEntry();
+            zis.close();
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return tmpDir;
     }
 
     private static void createAndWriteFile(File folder, String fileName, String content) throws IOException {

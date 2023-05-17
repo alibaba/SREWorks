@@ -80,8 +80,13 @@ public class AppPackageController extends AppManagerBaseController {
         String namespaceId = container.getNamespaceId();
         String stageId = container.getStageId();
         request.setAppId(appId);
-        request.setNamespaceId(namespaceId);
-        request.setStageId(stageId);
+        if (request.getShowAllVersions() != null && request.getShowAllVersions()) {
+            request.setNamespaceId(null);
+            request.setStageId(null);
+        } else {
+            request.setNamespaceId(namespaceId);
+            request.setStageId(stageId);
+        }
         return buildSucceedResult(appPackageProvider.list(request, getOperator(auth)));
     }
 
@@ -152,8 +157,8 @@ public class AppPackageController extends AppManagerBaseController {
                         .namespaceId(request.getNamespaceId())
                         .stageId(request.getStageId())
                         .componentPackageConfigurationFirst(request.isComponentPackageConfigurationFirst())
-                        .isolateNamespaceId(container.getNamespaceId())
-                        .isolateStageId(container.getStageId())
+                        .isolateNamespaceId(request.getIsolateNamespaceId() == null ? container.getNamespaceId() : request.getIsolateNamespaceId())
+                        .isolateStageId(request.getIsolateStageId() ==  null ? container.getStageId() : request.getIsolateStageId())
                         .build());
         return buildSucceedResult(result);
     }

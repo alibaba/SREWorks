@@ -133,8 +133,12 @@ public class ApplicationConfigurationController extends AppManagerBaseController
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "mismatched type " + type);
         }
         BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
-        request.setIsolateNamespaceId(container.getNamespaceId());
-        request.setIsolateStageId(container.getStageId());
+        if (StringUtils.isEmpty(request.getIsolateNamespaceId())) {
+            request.setIsolateNamespaceId(container.getNamespaceId());
+        }
+        if (StringUtils.isEmpty(request.getIsolateStageId())){
+            request.setIsolateStageId(container.getStageId());
+        }
         Pagination<DeployConfigDTO> result = deployConfigProvider.list(request);
         return buildSucceedResult(result);
     }

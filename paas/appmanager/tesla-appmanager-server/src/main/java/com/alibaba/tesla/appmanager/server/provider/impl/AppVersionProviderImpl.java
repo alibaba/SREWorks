@@ -62,9 +62,9 @@ public class AppVersionProviderImpl implements AppVersionProvider {
 
     @Override
     public List<AppVersionDTO> list(String appId) {
-        AppVersionQueryCondition condition = new AppVersionQueryCondition();
-        condition.setAppId(appId);
-        return appVersionDtoConvert.to(appVersionService.gets(condition));
+//        AppVersionQueryCondition condition = new AppVersionQueryCondition();
+//        condition.setAppId(appId);
+        return appVersionDtoConvert.to(appVersionService.getsAll(appId));
     }
 
     @Override

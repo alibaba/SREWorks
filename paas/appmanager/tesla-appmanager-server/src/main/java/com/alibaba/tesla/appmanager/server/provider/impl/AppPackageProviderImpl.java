@@ -28,13 +28,11 @@ import com.alibaba.tesla.appmanager.server.repository.AppPackageRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppMetaQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppPackageQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.condition.UnitQueryCondition;
-import com.alibaba.tesla.appmanager.server.repository.domain.AppMetaDO;
-import com.alibaba.tesla.appmanager.server.repository.domain.AppPackageComponentRelDO;
-import com.alibaba.tesla.appmanager.server.repository.domain.AppPackageDO;
-import com.alibaba.tesla.appmanager.server.repository.domain.UnitDO;
+import com.alibaba.tesla.appmanager.server.repository.domain.*;
 import com.alibaba.tesla.appmanager.server.service.appmeta.AppMetaService;
 import com.alibaba.tesla.appmanager.server.service.appoption.AppOptionService;
 import com.alibaba.tesla.appmanager.server.service.apppackage.AppPackageService;
+import com.alibaba.tesla.appmanager.server.service.appversion.AppVersionService;
 import com.alibaba.tesla.appmanager.server.service.pack.dag.PackAppPackageToStorageDag;
 import com.alibaba.tesla.appmanager.server.service.pack.dag.UnpackAppPackageFromStorageDag;
 import com.alibaba.tesla.appmanager.server.service.unit.UnitService;
@@ -60,9 +58,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * AppPackage 服务实现
@@ -78,6 +74,9 @@ public class AppPackageProviderImpl implements AppPackageProvider {
 
     private final AppPackageRepository appPackageRepository;
     private final AppPackageService appPackageService;
+
+    private final AppVersionService appVersionService;
+
     private final AppMetaService appMetaService;
     private final AppOptionService appOptionService;
     private final AppPackageDtoConvert appPackageDtoConvert;
@@ -91,7 +90,7 @@ public class AppPackageProviderImpl implements AppPackageProvider {
             AppPackageRepository appPackageRepository, AppPackageService appPackageService,
             AppMetaService appMetaService, AppOptionService appOptionService, AppPackageDtoConvert appPackageDtoConvert,
             AppPackageComponentRelRepository relRepository, DagInstService dagInstService,
-            DagInstNewService dagInstNewService, Storage storage, UnitService unitService) {
+            DagInstNewService dagInstNewService, Storage storage, UnitService unitService, AppVersionService appVersionService) {
         this.appPackageRepository = appPackageRepository;
         this.appPackageService = appPackageService;
         this.appMetaService = appMetaService;
@@ -102,6 +101,7 @@ public class AppPackageProviderImpl implements AppPackageProvider {
         this.dagInstNewService = dagInstNewService;
         this.storage = storage;
         this.unitService = unitService;
+        this.appVersionService = appVersionService;
     }
 
     @Override
@@ -168,7 +168,20 @@ public class AppPackageProviderImpl implements AppPackageProvider {
                 .pageSize(req.getPageSize())
                 .withBlobs(req.isWithBlobs())
                 .build();
-        return Pagination.transform(appPackageService.list(condition), appPackageDtoConvert::to);
+
+        Pagination<AppPackageDTO> appPackages = Pagination.transform(appPackageService.list(condition), appPackageDtoConvert::to);
+        List<AppVersionDO> versions = appVersionService.getsAll(req.getAppId());
+        Map<String, AppVersionDO> versionMap = new HashMap<>();
+        for (AppVersionDO version : versions) {
+            versionMap.put(version.getVersion(), version);
+        }
+        for(AppPackageDTO appPackage : appPackages.getItems()) {
+            String version = appPackage.getNamespaceId() + "," + appPackage.getStageId();
+            if (versionMap.get(version) != null){
+                appPackage.setVersionLabel(versionMap.get(version).getVersionLabel());
+            }
+        }
+        return appPackages;
     }
 
     /**

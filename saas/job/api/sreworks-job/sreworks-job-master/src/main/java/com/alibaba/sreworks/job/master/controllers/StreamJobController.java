@@ -25,10 +25,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -299,6 +303,34 @@ public class StreamJobController extends BaseController {
                 .body(resource);
     }
 
+    @RequestMapping(value = "import", method = RequestMethod.POST)
+    public TeslaBaseResult jobImport(@ModelAttribute StreamJobCreateParam param) throws Exception {
+
+        param.setCreator(getUserEmployeeId());
+        param.setOperator(getUserEmployeeId());
+        if (param.getTags() == null) {
+            param.setTags(new JSONArray());
+        }
+        if (param.getDescription() == null) {
+            param.setDescription("");
+        }
+        byte[] bytes = param.getFile().getBytes();
+        File zipFile = Files.createTempFile("stream-job", ".zip").toFile();
+        Files.write(zipFile.toPath(), bytes);
+        Path jobFiles = streamJobService.unzipFile(zipFile.getAbsolutePath());
+        JSONObject options = new JSONObject();
+        if (Files.exists(jobFiles.resolve("template.py"))){
+            String templateContent = new String(Files.readAllBytes(Paths.get(jobFiles.resolve("template.py").toFile().getAbsolutePath())));
+            options.put("template", templateContent);
+        }
+        if (Files.exists(jobFiles.resolve("settings.json"))){
+            String settingsJson = new String(Files.readAllBytes(Paths.get(jobFiles.resolve("settings.json").toFile().getAbsolutePath())));
+            options.put("settings", JSONObject.parseObject(settingsJson));
+        }
+        param.setOptions(options);
+        SreworksStreamJobDTO job = streamJobService.create(param);
+        return buildSucceedResult(job);
+    }
 
     @RequestMapping(value = "{id}/operate/start", method = RequestMethod.POST)
     public TeslaBaseResult operateStart(@PathVariable("id") Long streamJobId) throws Exception {

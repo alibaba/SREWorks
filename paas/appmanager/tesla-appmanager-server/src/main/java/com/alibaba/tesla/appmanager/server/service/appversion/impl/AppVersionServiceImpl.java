@@ -34,6 +34,20 @@ public class AppVersionServiceImpl implements AppVersionService {
     }
 
     @Override
+    public List<AppVersionDO> getsAll(String appId) {
+        AppVersionQueryCondition condition = new AppVersionQueryCondition();
+        condition.setAppId(appId);
+        List<AppVersionDO> versions = appVersionRepository.selectByCondition(condition);
+        condition.setAppId("");
+        List<AppVersionDO> globalVersions = appVersionRepository.selectByCondition(condition);
+        for(AppVersionDO version: globalVersions){
+            version.setAppId(appId);
+        }
+        versions.addAll(globalVersions);
+        return versions;
+    }
+
+    @Override
     public int create(AppVersionDO record) {
         return appVersionRepository.insert(record);
     }

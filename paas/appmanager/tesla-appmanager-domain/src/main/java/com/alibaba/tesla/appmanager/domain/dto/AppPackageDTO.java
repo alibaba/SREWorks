@@ -113,4 +113,9 @@ public class AppPackageDTO implements Serializable {
      * Tag 列表
      */
     private List<String> tags = new ArrayList<>();
+
+    /**
+     *  versionLabel
+     */
+    private String versionLabel;
 }

@@ -29,25 +29,4 @@ public interface AppVersionProvider {
     void delete(String appId, String version, String operator);
 
 
-//
-//    /**
-//     * 更新应用下的关联 Component 绑定
-//     *
-//     * @param request  更新请求
-//     * @param operator 操作人
-//     * @return 绑定后的结果
-//     */
-//    AppComponentDTO update(AppComponentUpdateReq request, String operator);
-//
-
-//    void delete(AppComponentDeleteReq request, String operator);
-//
-//    /**
-//     * 获取指定 appId 下的所有关联 Component 对象
-//     *
-//     * @param request  查询请求
-//     * @param operator 操作人
-//     * @return List of AppComponentDTO
-//     */
-//    List<AppComponentDTO> list(AppComponentQueryReq request, String operator);
 }

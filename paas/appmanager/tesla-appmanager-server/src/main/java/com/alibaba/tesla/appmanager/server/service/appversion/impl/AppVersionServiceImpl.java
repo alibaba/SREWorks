@@ -41,6 +41,7 @@ public class AppVersionServiceImpl implements AppVersionService {
         condition.setAppId("");
         List<AppVersionDO> globalVersions = appVersionRepository.selectByCondition(condition);
         for(AppVersionDO version: globalVersions){
+            version.setIsGlobal(true);
             version.setAppId(appId);
         }
         versions.addAll(globalVersions);

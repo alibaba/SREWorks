@@ -115,6 +115,8 @@ public class UnpackAppPackageFromStorageNode extends AbstractLocalNodeBase {
                             .localFilePath(zipFilePath)
                             .force(force)
                             .resetVersion(resetVersion)
+                            .namespaceId(appPackageDO.getNamespaceId())
+                            .stageId(appPackageDO.getStageId())
                             .build());
             if (componentPackageDO.getId() == null) {
                 throw new AppException(AppErrorCode.UNKNOWN_ERROR,

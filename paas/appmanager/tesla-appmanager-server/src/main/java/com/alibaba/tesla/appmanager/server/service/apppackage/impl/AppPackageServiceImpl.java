@@ -194,6 +194,8 @@ public class AppPackageServiceImpl implements AppPackageService {
                 .packageVersion(actualPackageVersion)
                 .packagePath(actualPackagePath)
                 .packageCreator(packageCreator)
+                .namespaceId(req.getNamespaceId())
+                .stageId(req.getStageId())
                 .build();
 
         // 当重置版本号时，直接插入

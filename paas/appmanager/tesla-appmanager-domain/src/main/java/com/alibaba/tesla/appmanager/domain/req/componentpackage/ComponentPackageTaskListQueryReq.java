@@ -28,4 +28,14 @@ public class ComponentPackageTaskListQueryReq extends BaseRequest {
      * component package 任务 ID 列表
      */
     private List<Long> componentPackageTaskIdList;
+
+    /**
+     * 隔离 Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * 隔离 Stage ID
+     */
+    private String stageId;
 }

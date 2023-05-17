@@ -45,7 +45,10 @@ public class BizAppContainer {
         }
 
         if (StringUtils.isEmpty(headerBizApp)) {
-            return BizAppContainer.builder().namespaceId("").stageId("").build();
+            return BizAppContainer.builder()
+                    .namespaceId(EnvUtil.defaultNamespaceId())
+                    .stageId(EnvUtil.defaultStageId())
+                    .build();
         }
         String[] array = headerBizApp.split(",", 3);
         if (array.length <= 1) {

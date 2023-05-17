@@ -430,6 +430,8 @@ public class AppPackageTaskServiceImpl implements AppPackageTaskService {
                 .appSchema(appPackageTaskDO.getPackageOptions())
                 .swapp(appPackageTaskDO.getSwapp())
                 .componentCount((long) CollectionUtils.size(componentPackageTaskDOList))
+                .namespaceId(appPackageTaskDO.getNamespaceId())
+                .stageId(appPackageTaskDO.getStageId())
                 .build();
         insertAppPackage(appPackageDO, componentPackageTaskDOList);
         return appPackageDO;

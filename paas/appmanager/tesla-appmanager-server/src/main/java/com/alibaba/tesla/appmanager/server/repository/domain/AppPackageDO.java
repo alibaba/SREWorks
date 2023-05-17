@@ -1,18 +1,20 @@
 package com.alibaba.tesla.appmanager.server.repository.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * 应用包详情表
  */
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -67,6 +69,16 @@ public class AppPackageDO {
      * VERSION
      */
     private Integer version;
+
+    /**
+     * 隔离 Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * 隔离 Stage ID
+     */
+    private String stageId;
 
     /**
      * 应用包 Schema 定义信息 (YAML)

@@ -108,6 +108,8 @@ public class AppPackageProviderImpl implements AppPackageProvider {
     @Transactional(rollbackFor = Exception.class)
     public AppPackageDTO create(AppPackageCreateReq request, String operator) {
         String appId = request.getAppId();
+        String namespaceId = request.getNamespaceId();
+        String stageId = request.getStageId();
         String version = normalizeVersion(appId, request.getVersion());
 
         // 插入数据库
@@ -117,6 +119,8 @@ public class AppPackageProviderImpl implements AppPackageProvider {
                 .packageVersion(version)
                 .componentCount((long) componentPackageIdList.size())
                 .packageCreator(operator)
+                .namespaceId(namespaceId)
+                .stageId(stageId)
                 .build();
         appPackageRepository.insert(appPackageDO);
         componentPackageIdList.forEach(componentPackageId -> relRepository.insert(AppPackageComponentRelDO.builder()
@@ -157,6 +161,8 @@ public class AppPackageProviderImpl implements AppPackageProvider {
                 .packageVersionGreaterThan(req.getPackageVersionGreaterThan())
                 .packageVersionLessThan(req.getPackageVersionLessThan())
                 .tags(req.getTagList())
+                .namespaceId(req.getNamespaceId())
+                .stageId(req.getStageId())
                 .pagination(req.isPagination())
                 .page(req.getPage())
                 .pageSize(req.getPageSize())
@@ -241,6 +247,8 @@ public class AppPackageProviderImpl implements AppPackageProvider {
                 .force(req.getForce())
                 .resetVersion(req.getResetVersion())
                 .packageCreator(req.getPackageCreator())
+                .namespaceId(req.getNamespaceId())
+                .stageId(req.getStageId())
                 .build());
         if (item == null) {
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "cannot import app package, null response");

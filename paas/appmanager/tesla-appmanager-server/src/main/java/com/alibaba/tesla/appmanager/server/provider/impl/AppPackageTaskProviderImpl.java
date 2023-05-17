@@ -108,6 +108,8 @@ public class AppPackageTaskProviderImpl implements AppPackageTaskProvider {
                 .taskStatus(AppPackageTaskStatusEnum.CREATED.toString())
                 .packageOptions(JSON.toJSONString(request))
                 .envId(systemProperties.getEnvId())
+                .namespaceId(namespaceId)
+                .stageId(stageId)
                 .swapp(swapp)
                 .build();
         appPackageTaskRepository.insert(appPackageTaskDO);
@@ -185,6 +187,8 @@ public class AppPackageTaskProviderImpl implements AppPackageTaskProvider {
                 .appId(request.getAppId())
                 .id(request.getAppPackageTaskId())
                 .withBlobs(request.isWithBlobs())
+                .namespaceId(request.getNamespaceId())
+                .stageId(request.getStageId())
                 .build();
 
         if (!request.isWithBlobs() && withTags) {
@@ -201,6 +205,8 @@ public class AppPackageTaskProviderImpl implements AppPackageTaskProvider {
         AppPackageTaskQueryCondition condition = AppPackageTaskQueryCondition.builder()
                 .id(request.getAppPackageTaskId())
                 .appId(request.getAppId())
+//                .namespaceId(request.getNamespaceId())
+//                .stageId(request.getStageId())
                 .withBlobs(request.isWithBlobs())
                 .page(DefaultConstant.DEFAULT_PAGE_NUMBER)
                 .pageSize(DefaultConstant.DEFAULT_PAGE_SIZE)

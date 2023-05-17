@@ -74,8 +74,14 @@ public class AppPackageController extends AppManagerBaseController {
     public TeslaBaseResult list(
             @PathVariable String appId,
             @ParameterObject @ModelAttribute AppPackageQueryReq request,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
         request.setAppId(appId);
+        request.setNamespaceId(namespaceId);
+        request.setStageId(stageId);
         return buildSucceedResult(appPackageProvider.list(request, getOperator(auth)));
     }
 
@@ -91,8 +97,14 @@ public class AppPackageController extends AppManagerBaseController {
     @ResponseBody
     public TeslaBaseResult create(
             @PathVariable String appId, @RequestBody AppPackageCreateReq request,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
         request.setAppId(appId);
+        request.setNamespaceId(namespaceId);
+        request.setStageId(stageId);
         AppPackageDTO appPackageDTO = appPackageProvider.create(request, getOperator(auth));
         return buildSucceedResult(appPackageDTO);
     }
@@ -161,8 +173,12 @@ public class AppPackageController extends AppManagerBaseController {
     public TeslaBaseResult importPackage(
             @PathVariable String appId,
             @ParameterObject @Valid @ModelAttribute AppPackageImportReq request,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             RequestEntity<InputStream> entity,
             OAuth2Authentication auth) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
         request.setAppId(appId.replace("..", ""));
         request.setPackageCreator(getOperator(auth));
         if (request.getForce() == null) {
@@ -171,6 +187,8 @@ public class AppPackageController extends AppManagerBaseController {
         if (request.getResetVersion() == null) {
             request.setResetVersion(false);
         }
+        request.setNamespaceId(namespaceId);
+        request.setStageId(stageId);
         AppPackageDTO appPackageDTO = appPackageProvider.importPackage(request, entity.getBody(), getOperator(auth));
         return buildSucceedResult(appPackageDTO);
     }

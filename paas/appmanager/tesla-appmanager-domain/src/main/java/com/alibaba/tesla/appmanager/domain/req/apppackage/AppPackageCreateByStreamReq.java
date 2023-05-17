@@ -24,4 +24,8 @@ public class AppPackageCreateByStreamReq {
     private boolean force;
 
     private boolean resetVersion;
+
+    private String namespaceId;
+
+    private String stageId;
 }

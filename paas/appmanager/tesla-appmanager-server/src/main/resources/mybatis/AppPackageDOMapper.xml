@@ -14,6 +14,8 @@
     <result column="package_md5" jdbcType="VARCHAR" property="packageMd5" />
     <result column="component_count" jdbcType="BIGINT" property="componentCount" />
     <result column="version" jdbcType="INTEGER" property="version" />
+    <result column="namespace_id" jdbcType="VARCHAR" property="namespaceId" />
+    <result column="stage_id" jdbcType="VARCHAR" property="stageId" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.alibaba.tesla.appmanager.server.repository.domain.AppPackageDO">
     <!--@mbg.generated-->
@@ -53,8 +55,8 @@
   </sql>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, gmt_create, gmt_modified, app_id, package_version, package_path, package_creator,
-    package_md5, component_count, version
+    id, gmt_create, gmt_modified, app_id, package_version, package_path, package_creator, 
+    package_md5, component_count, version, namespace_id, stage_id
   </sql>
   <sql id="Blob_Column_List">
     <!--@mbg.generated-->
@@ -131,6 +133,12 @@
       <if test="version != null">
         version,
       </if>
+      <if test="namespaceId != null">
+        namespace_id,
+      </if>
+      <if test="stageId != null">
+        stage_id,
+      </if>
       <if test="appSchema != null">
         app_schema,
       </if>
@@ -165,6 +173,12 @@
       </if>
       <if test="version != null">
         #{version,jdbcType=INTEGER},
+      </if>
+      <if test="namespaceId != null">
+        #{namespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="stageId != null">
+        #{stageId,jdbcType=VARCHAR},
       </if>
       <if test="appSchema != null">
         #{appSchema,jdbcType=LONGVARCHAR},
@@ -247,6 +261,12 @@
       <if test="record.swapp != null">
         swapp = #{record.swapp,jdbcType=LONGVARCHAR},
       </if>
+      <if test="record.namespaceId != null">
+        namespace_id = #{record.namespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stageId != null">
+        stage_id = #{record.stageId,jdbcType=VARCHAR},
+      </if>
       version = version + 1,
     </set>
     <if test="_parameter != null">
@@ -285,6 +305,12 @@
       </if>
       <if test="swapp != null">
         swapp = #{swapp,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="namespaceId != null">
+        namespace_id = #{namespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="stageId != null">
+        stage_id = #{stageId,jdbcType=VARCHAR},
       </if>
       version = version + 1,
     </set>

@@ -57,6 +57,7 @@ public class AppVersionController extends AppManagerBaseController {
             OAuth2Authentication auth) {
         String operator = getOperator(auth);
         appVersionProvider.delete(appId, version, operator);
+
         return buildSucceedResult(DefaultConstant.EMPTY_OBJ);
     }
 
@@ -76,40 +77,6 @@ public class AppVersionController extends AppManagerBaseController {
         return buildSucceedResult(result);
     }
 
-//    @GetMapping("{appVersion}")
-//    @Operation(summary = "获取应用关联的版本")
-//    public TeslaBaseResult get(
-//            @PathVariable String appId,
-//            @PathVariable String appVersion,
-//            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
-//            OAuth2Authentication auth) {
-//        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
-//        AppComponentDTO result = appComponentProvider.get(
-//                AppComponentQueryReq.builder().id(appComponentId).build(),
-//                getOperator(auth));
-//        if (!container.getNamespaceId().equals(result.getNamespaceId())
-//                || !container.getStageId().equals(result.getStageId())
-//                || !appId.equals(result.getAppId())) {
-//            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "mismatched appId/namespaceId/stageId");
-//        }
-//        return buildSucceedResult(result);
-//    }
-//
-//    @PutMapping("{appVersion}")
-//    @Operation(summary = "更新应用关联的版本")
-//    public TeslaBaseResult update(
-//            @PathVariable String appId,
-//            @PathVariable String appVersion,
-//            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
-//            @RequestBody AppComponentUpdateReq request,
-//            OAuth2Authentication auth) {
-//        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
-//        request.setId(appComponentId);
-//        request.setNamespaceId(container.getNamespaceId());
-//        request.setStageId(container.getStageId());
-//        AppComponentDTO result = appComponentProvider.update(request, getOperator(auth));
-//        return buildSucceedResult(result);
-//    }
 
 
 }

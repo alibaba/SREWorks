@@ -1,6 +1,7 @@
 package com.alibaba.tesla.appmanager.server.provider.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.tesla.appmanager.api.provider.AppComponentProvider;
 import com.alibaba.tesla.appmanager.api.provider.AppVersionProvider;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
@@ -30,6 +31,9 @@ public class AppVersionProviderImpl implements AppVersionProvider {
 
     @Autowired
     private AppVersionService appVersionService;
+
+    @Autowired
+    private AppComponentProvider appComponentProvider;
 
     @Override
     public AppVersionDTO get(String appId, String version) {
@@ -70,7 +74,21 @@ public class AppVersionProviderImpl implements AppVersionProvider {
         AppVersionQueryCondition condition = new AppVersionQueryCondition();
         condition.setAppId(appId);
         condition.setVersion(version);
-        appVersionService.delete(condition);
+        AppVersionDO appVersion = appVersionService.get(condition);
+        log.info("try to remove app version {} {} {}", appId, version, appVersion);
+        if(appVersion != null) {
+            appVersionService.delete(condition);
+        }
+        String[] env = version.split(",");
+        appComponentProvider.clean(appId, env[0], env[1], operator);
     }
 
+
+    @Override
+    public void clean(String appId, String operator) {
+        List<AppVersionDO> versions = appVersionService.getsAll(appId);
+        for(AppVersionDO version : versions) {
+            delete(appId, version.getVersion(), operator);
+        }
+    }
 }

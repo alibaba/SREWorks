@@ -28,5 +28,6 @@ public interface AppVersionProvider {
 
     void delete(String appId, String version, String operator);
 
+    void clean(String appId, String operator);
 
 }

@@ -9,6 +9,17 @@
 	},
 	"tabList":[
 		{
+			"tabId":"03db7957-7280-4dc9-87d6-a1b1a4d0b7c1",
+			"isImport":1,
+			"label":"03db7957-7280-4dc9-87d6-a1b1a4d0b7c1",
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"elements":"[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"5d8c70ea-144d-49fe-98fa-a8588157c9d7\",\"elements\":[{\"type\":\"TABLE\",\"config\":{\"outputs\":[],\"hasWrapper\":\"default\",\"columns\":[{\"dataIndex\":\"id\",\"label\":\"ID\"},{\"dataIndex\":\"jobType\",\"label\":\"类型\",\"render\":\"\"},{\"dataIndex\":\"name\",\"label\":\"作业标识\"},{\"dataIndex\":\"alias\",\"label\":\"作业名称\"},{\"dataIndex\":\"gmtCreate\",\"label\":\"创建时间\",\"render\":\"<common.DateTime value={row.gmtCreate} />\\t\"},{\"dataIndex\":\"statusDisplay\",\"label\":\"状态\",\"render\":\" <antd.Tooltip title=\\\"$(row.statusTip)\\\">     <a href=\\\"$(row.vvp-flink-dashboard-link)\\\" target=\\\"$(row.vvp-flink-dashboard-link-target)\\\">$(row.statusDisplay)</a>   </antd.Tooltip>\"},{\"dataIndex\":\"operator\",\"label\":\"作业\",\"render\":\"<a href=\\\"gateway/sreworks-job/stream-job/$(row.id)/export\\\" target=\\\"_blank\\\">导出</a>\"}],\"emptyText\":\"\",\"uniqueKey\":\"5bf7500f-2536-48dc-8f57-c3dd82f951c9\",\"rowColorMapping\":{\"mapping\":{\"value1\":\"green\"},\"dataIndex\":\"key\"},\"cardBorder\":true,\"paging\":true,\"wrapper\":\"default\",\"bordered\":true,\"title\":\"作业列表\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"toolbar\":{\"type\":\"button\",\"label\":\"操作\",\"actionList\":[{\"type\":\"default\",\"layout\":\"horizontal\",\"displayType\":\"drawer\",\"size\":\"default\",\"block\":\"job:BLOCK:121d138c-388f-490c-a324-4f8b14847de4\",\"label\":\"导入\"},{\"layout\":\"horizontal\",\"displayType\":\"drawer\",\"size\":\"default\",\"name\":\"__refresh__\",\"icon\":\"xx\",\"label\":\"刷新\",\"type\":\"default\"},{\"layout\":\"horizontal\",\"displayType\":\"drawer\",\"size\":\"small\",\"block\":\"job:BLOCK:0f5ca095-aece-4e0d-b105-305ea2e864d8\",\"label\":\"新建流式作业\",\"type\":\"primary\"}],\"docList\":[]},\"itemToolbar\":{\"actionList\":[{\"layout\":\"horizontal\",\"displayType\":\"drawer\",\"size\":\"large\",\"block\":\"job:BLOCK:207e61e1-33aa-493d-a5e0-a6794924a809\",\"label\":\"+输入源\",\"type\":\"default\"},{\"layout\":\"horizontal\",\"displayType\":\"drawer\",\"size\":\"large\",\"block\":\"job:BLOCK:5e340274-4520-48d6-992b-3139383c4aa8\",\"label\":\"+输出结果\",\"type\":\"default\"},{\"layout\":\"horizontal\",\"displayType\":\"drawer\",\"size\":\"default\",\"block\":\"job:BLOCK:36f6c010-93d0-4816-b39b-17ef578bfbc2\",\"label\":\"+Python处理\",\"type\":\"default\"},{\"layout\":\"horizontal\",\"displayType\":\"drawer\",\"size\":\"large\",\"icon\":\"setting\",\"block\":\"job:BLOCK:cc4041e7-ef80-4047-b5d2-ebbfde94989a\",\"label\":\"运行参数\",\"type\":\"default\",\"category\":\"\"},{\"layout\":\"horizontal\",\"displayType\":\"drawer\",\"size\":\"large\",\"icon\":\"file-text\",\"block\":\"job:BLOCK:20607fe7-4570-48ff-b900-09373b2be40d\",\"label\":\"脚本模板\",\"type\":\"default\"},{\"layout\":\"horizontal\",\"displayType\":\"drawer\",\"size\":\"large\",\"icon\":\"eye\",\"block\":\"job:BLOCK:0142a262-f9ed-409b-8321-2f02b9a4fa15\",\"label\":\"预览\",\"type\":\"default\"},{\"layout\":\"horizontal\",\"displayType\":\"drawer\",\"size\":\"default\",\"icon\":\"caret-right\",\"block\":\"job:BLOCK:8dc96f22-5daa-4f2e-98c6-016344a470b3\",\"label\":\"启动\",\"type\":\"default\",\"hiddenExp\":\"row.status === 'RUNNING'\"},{\"layout\":\"horizontal\",\"displayType\":\"drawer\",\"size\":\"default\",\"icon\":\"pause\",\"block\":\"job:BLOCK:da8c5c8b-56ae-48d9-90de-065307ad95b4\",\"label\":\"停止\",\"type\":\"default\",\"hiddenExp\":\"row.status === 'CANCELLED'\"},{\"layout\":\"horizontal\",\"displayType\":\"drawer\",\"size\":\"default\",\"icon\":\"delete\",\"block\":\"job:BLOCK:f38eaff7-8e23-41d1-be8e-8838ce18879c\",\"label\":\"删除\",\"type\":\"default\",\"hiddenExp\":\"row.status === 'RUNNING'\"}],\"label\":\"操作\",\"type\":\"link\"},\"headerColor\":\"#ffffff\",\"dependParams\":[],\"size\":\"small\",\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"gateway/sreworks-job/stream-job/gets\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  console.log(respData);\\n  return respData\\n}\",\"type\":\"API\"},\"visibleExp\":\"\",\"style\":{},\"expandedRow\":{\"name\":\"block_list\",\"type\":\"TABLE\",\"config\":{\"rowActions\":{\"layout\":\"\",\"fixed\":false,\"type\":\"link\",\"actions\":[{\"name\":\"15d999d6-8f39-487d-a9c4-8690f6fb0828\",\"label\":\"编辑\",\"btnType\":\"primary\",\"hiddenExp\":\"row.blockType !== 'source'\"},{\"name\":\"4da71b99-eba4-460e-b7b3-53f790c1ebac\",\"label\":\"编辑\",\"btnType\":\"primary\",\"hiddenExp\":\"row.blockType !== 'python'\"},{\"name\":\"cc16d660-430c-40ba-bb3b-7c30d13a4910\",\"label\":\"编辑\",\"btnType\":\"primary\",\"hiddenExp\":\"row.blockType !== 'sink'\"},{\"name\":\"ad2cf751-abf7-43e4-9a89-a6448d219521\",\"label\":\"删除\",\"btnType\":\"primary\"}]},\"columns\":[{\"dataIndex\":\"blockTypeDisplay\",\"label\":\"步骤\"},{\"dataIndex\":\"name\",\"label\":\"名称\"},{\"dataIndex\":\"digest\",\"label\":\"摘要\"},{\"dataIndex\":\"gmtCreate\",\"label\":\"创建时间\",\"render\":\"<common.DateTime value={row.gmtCreate}></common.DateTime>\"}],\"dataIndex\":\"\",\"api\":{\"paging\":false,\"url\":\"gateway/sreworks-job/stream-job/$(id)/blocks\"},\"title\":\"任务列表\"}},\"api\":{\"paging\":false,\"url\":\"\"}}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}]",
+			"name":"03db7957-7280-4dc9-87d6-a1b1a4d0b7c1",
+			"config":"{\"functionMeta\":[]}",
+			"stageId":"dev"
+		},
+		{
 			"tabId":"1202a5ae-8d84-4bb2-9026-507f4e54025d",
 			"isImport":1,
 			"label":"1202a5ae-8d84-4bb2-9026-507f4e54025d",
@@ -71,6 +82,39 @@
 			"appId":"job",
 			"elements":"[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"27dece46-8814-497c-83e7-7a20f2e7d9b5\",\"elements\":[{\"type\":\"FILTER_FORM\",\"config\":{\"outputs\":[],\"outputName\":\"\",\"uniqueKey\":\"9872668f-842e-4f72-86bb-e42090221320\",\"column\":\"3\",\"title\":\"过滤表单\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"autoSubmit\":true,\"dependParams\":[],\"showSearch\":false,\"labelSpan\":\"6\",\"scenes\":[],\"enterSubmit\":false,\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"f0d1320c-2e5c-462d-b66f-c0681a77aeb9\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"作业ID\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"id\",\"dynamic\":false,\"value\":[],\"order\":\"\"},{\"validateReg\":\"\",\"onlyKey\":\"36ccc3ca-b917-4b1a-b09f-ce865c66ad70\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"作业\",\"type\":3,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"readonly\":1,\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"/gateway/sreworks-job/job/list\",\"afterResponseHandler\":\"function afterResponse(respData){\\n    var items = [];\\n    respData.items.forEach(function(row){\\n        var alias = row.alias;\\n        if(alias === null){\\n            alias = \\\"\\\";\\n        }\\n        items.push({\\n            \\\"value\\\": row.id,\\n            \\\"label\\\": alias + \\\"(\\\" + row.name + \\\")\\\",\\n        })\\n    })\\n    return items;\\n}\",\"type\":\"API\"},\"validValue\":[],\"visibleExp\":\"\",\"name\":\"jobId\",\"dynamic\":false,\"value\":[],\"order\":1},{\"validateReg\":\"\",\"onlyKey\":\"704b2e4f-7e75-4d4c-9860-ff58aa94e46b\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"作业状态\",\"type\":4,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"readonly\":1,\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"/gateway/sreworks-job/jobInstance/listStatus\",\"afterResponseHandler\":\"function afterResponse(respData){\\n    var items = [];\\n    console.log(respData)\\n    respData.forEach(function(value){\\n        items.push({\\n            \\\"value\\\": value,\\n            \\\"label\\\": value\\n        })\\n    })\\n    console.log(items);\\n    return items;\\n}\\n\\n\",\"type\":\"API\"},\"validValue\":[],\"visibleExp\":\"\",\"name\":\"status\",\"dynamic\":false,\"value\":[],\"order\":2}]}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false},{\"spans\":\"24\",\"uniqueKey\":\"b809e9dc-39b8-4a62-aef8-56140afb964b\",\"elements\":[{\"type\":\"TABLE\",\"config\":{\"outputs\":[],\"columns\":[{\"dataIndex\":\"id\",\"label\":\"ID\"},{\"dataIndex\":\"job.name\",\"label\":\"任务标识\"},{\"dataIndex\":\"job.alias\",\"label\":\"任务名称\"},{\"dataIndex\":\"job.sceneType\",\"dict\":{\"normal\":\"普通作业\",\"alert\":\"告警分析\",\"risk\":\"风险巡检\",\"collect\":\"数据采集\",\"incident\":\"异常诊断\"},\"label\":\"场景类型\"},{\"dataIndex\":\"job.scheduleType\",\"dict\":{\"serial\":\"串行\",\"parallel\":\"并行\"},\"label\":\"调度类型\"},{\"dataIndex\":\"job.triggerType\",\"dict\":{\"cron\":\"定时\",\"normal\":\"普通\"},\"label\":\"触发器类型\"},{\"dataIndex\":\"status\",\"dict\":{\"INIT\":{\"color\":\"#FFBB00\",\"label\":\"INIT\"},\"SUCCESS\":{\"color\":\"#73d13d\",\"label\":\"SUCCESS\"},\"RUNNING\":{\"color\":\"#73d13d\",\"label\":\"RUNNING\"},\"STOP\":{\"color\":\"#bfbfbf\",\"label\":\"STOP\"},\"EXCEPTION\":{\"color\":\"#E63F00\",\"label\":\"EXCEPTION\"}},\"label\":\"状态\"},{\"dataIndex\":\"gmtCreate\",\"label\":\"启动时间\",\"render\":\"<common.DateTime value={row.gmtCreate}></common.DateTime>\"}],\"emptyText\":\"\",\"uniqueKey\":\"37a46f23-0e8d-4789-8785-a4d6855109b2\",\"cardBorder\":true,\"rowColorMapping\":{\"mapping\":{\"value1\":\"green\"},\"dataIndex\":\"index1\"},\"wrapper\":\"default\",\"paging\":true,\"bordered\":true,\"title\":\"作业历史\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"toolbar\":{\"docList\":[],\"actionList\":[],\"label\":\"操作\",\"type\":\"button\"},\"itemToolbar\":{\"actionList\":[],\"type\":\"link\"},\"dependParams\":[],\"size\":\"small\",\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"gateway/sreworks-job/jobInstance/list2?jobId=$(jobId)&status=$(status)&id=$(id)\",\"type\":\"API\"},\"api\":{\"paging\":true,\"url\":\"gateway/sreworks-job/jobInstance/list\"},\"expandedRow\":{\"name\":\"task_instance_list\",\"type\":\"TABLE\",\"config\":{\"columns\":[{\"dataIndex\":\"id\",\"label\":\"实例ID\",\"render\":\"<a href='/#/job/task/instance?id=$(row.id)'>$(row.id)</a>\"},{\"dataIndex\":\"name\",\"label\":\"任务\",\"render\":\"<span>$(row.alias)($(row.name))</span>\"},{\"dataIndex\":\"address\",\"label\":\"执行器\"},{\"dataIndex\":\"gmtCreate\",\"label\":\"启动时间\",\"render\":\"<common.DateTime value={row.gmtCreate}></common.DateTime>\"},{\"dataIndex\":\"gmtToEnd\",\"label\":\"结束时间\",\"render\":\"<common.DateTime value={row.gmtEnd}></common.DateTime>\"},{\"dataIndex\":\"status\",\"label\":\"状态\"}],\"dataIndex\":\"\",\"api\":{\"paging\":false,\"url\":\"gateway/sreworks-job/taskInstance/listByJobInstanceId?jobInstanceId=$(id)\"},\"title\":\"任务列表\"}}}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}]",
 			"name":"7ebad813-b29b-496c-8a44-ef714b9fd5e5",
+			"config":"{\"functionMeta\":[]}",
+			"stageId":"dev"
+		},
+		{
+			"tabId":"7f171e6e-2f67-4bea-b8ff-c3de03187765",
+			"isImport":1,
+			"label":"7f171e6e-2f67-4bea-b8ff-c3de03187765",
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH::qYkrArpwM",
+			"appId":"job",
+			"elements":"[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"3d7e0394-e70f-499c-99fd-4d2b804a6377\",\"elements\":[{\"type\":\"TABLE\",\"config\":{\"title\":\"表格\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"686efb78-c4a5-492f-b520-782a09690d31\",\"api\":{\"url\":\"\",\"paging\":false},\"columns\":[{\"dataIndex\":\"label\",\"filters\":[{\"text\":\"Joe\",\"value\":\"1\"},{\"text\":\"Jim\",\"value\":\"8\"},{\"text\":\"Submenu\",\"children\":[{\"text\":\"Green\",\"value\":\"Green\"},{\"text\":\"Black\",\"value\":\"Black\"}],\"value\":\"Submenu\"}],\"label\":\"label\"},{\"dataIndex\":\"value\",\"render\":\"<a href='$(row.label)'>$(row.value)</a>\",\"label\":\"value\"},{\"defaultSortOrder\":\"ascend\",\"dataIndex\":\"number\",\"label\":\"编号\"}],\"size\":\"small\"}}],\"rang\":[0,24]}]}}]",
+			"name":"7f171e6e-2f67-4bea-b8ff-c3de03187765",
+			"config":"{\"functionMeta\":[]}",
+			"stageId":"dev"
+		},
+		{
+			"tabId":"88307e50-1b42-49d3-9d2e-7a0efda8a804",
+			"isImport":1,
+			"label":"88307e50-1b42-49d3-9d2e-7a0efda8a804",
+			"nodeTypePath":"job|app|T:KbYqol7jW::UO-rz97to",
+			"appId":"job",
+			"elements":"[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"9f415533-7798-4c61-8400-de234fe3ca34\",\"elements\":[{\"type\":\"TABLE\",\"config\":{\"outputs\":[],\"hasWrapper\":\"default\",\"columns\":[{\"dataIndex\":\"filename\",\"label\":\"文件名\"},{\"dataIndex\":\"createTime\",\"label\":\"创建时间\",\"render\":\"\"}],\"uniqueKey\":\"85e217ed-6eca-48ac-a2c7-0d53981b9ad3\",\"cardBorder\":true,\"wrapper\":\"default\",\"title\":\"依赖包列表\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"headerColor\":\"#ffffff\",\"dependParams\":[],\"size\":\"small\",\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\" gateway/sreworks-job/stream-job/artifacts\",\"type\":\"API\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  console.log(respData);\\n  return respData\\n}\"},\"visibleExp\":\"\",\"style\":{},\"api\":{\"paging\":false,\"url\":\"\"},\"paging\":false,\"bordered\":true,\"rowColorMapping\":{\"dataIndex\":\"key\",\"mapping\":{\"value1\":\"green\"}},\"emptyText\":\"\",\"toolbar\":{\"type\":\"button\",\"label\":\"操作\",\"actionList\":[],\"docList\":[]}}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}]",
+			"name":"88307e50-1b42-49d3-9d2e-7a0efda8a804",
+			"config":"{\"functionMeta\":[]}",
+			"stageId":"dev"
+		},
+		{
+			"tabId":"96ee3a02-4636-4556-af9f-c37edb002a4e",
+			"isImport":1,
+			"label":"96ee3a02-4636-4556-af9f-c37edb002a4e",
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH::ZRz6MVr93",
+			"appId":"job",
+			"elements":"[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"9c5562c2-5a10-4175-ad76-6fa50fc44951\",\"elements\":[{\"type\":\"TABLE\",\"config\":{\"title\":\"表格\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"76496eff-78e2-4614-8310-4bb51749075d\",\"api\":{\"url\":\"\",\"paging\":false},\"columns\":[{\"dataIndex\":\"label\",\"filters\":[{\"text\":\"Joe\",\"value\":\"1\"},{\"text\":\"Jim\",\"value\":\"8\"},{\"text\":\"Submenu\",\"children\":[{\"text\":\"Green\",\"value\":\"Green\"},{\"text\":\"Black\",\"value\":\"Black\"}],\"value\":\"Submenu\"}],\"label\":\"label\"},{\"dataIndex\":\"value\",\"render\":\"<a href='$(row.label)'>$(row.value)</a>\",\"label\":\"value\"},{\"defaultSortOrder\":\"ascend\",\"dataIndex\":\"number\",\"label\":\"编号\"}],\"size\":\"small\"}}],\"rang\":[0,24]}]}}]",
+			"name":"96ee3a02-4636-4556-af9f-c37edb002a4e",
 			"config":"{\"functionMeta\":[]}",
 			"stageId":"dev"
 		},
@@ -139,6 +183,17 @@
 			"name":"f4514af3-4557-4f0a-9310-0c9633d7d71c",
 			"config":"{\"functionMeta\":[]}",
 			"stageId":"dev"
+		},
+		{
+			"tabId":"f998d5d2-3bcd-49df-9b7b-1bc6e1aedf09",
+			"isImport":1,
+			"label":"f998d5d2-3bcd-49df-9b7b-1bc6e1aedf09",
+			"nodeTypePath":"job|app|T:KbYqol7jW::asdxtqcFK",
+			"appId":"job",
+			"elements":"[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"b376ffc8-cb41-4805-936e-f8e482851669\",\"elements\":[{\"type\":\"TABLE\",\"config\":{\"outputs\":[],\"hasWrapper\":\"default\",\"columns\":[{\"dataIndex\":\"name\",\"filters\":[{\"text\":\"Joe\",\"value\":\"1\"},{\"text\":\"Jim\",\"value\":\"8\"},{\"children\":[{\"text\":\"Green\",\"value\":\"Green\"},{\"text\":\"Black\",\"value\":\"Black\"}],\"text\":\"Submenu\",\"value\":\"Submenu\"}],\"label\":\"名称\"},{\"dataIndex\":\"settings.flinkVersion\",\"label\":\"Flink版本\",\"render\":\"\"},{\"dataIndex\":\"settings.flinkImage\",\"label\":\"Flink运行镜像\"},{\"dataIndex\":\"settings.jarUri\",\"label\":\"PyFlink运行时\"},{\"dataIndex\":\"settings.pyArchives\",\"label\":\"Python运行环境\"},{\"dataIndex\":\"additionalDependenciesCnt\",\"label\":\"依赖资源数\"}],\"emptyText\":\"\",\"uniqueKey\":\"9a304c02-e317-488e-b650-a9cfe246afd7\",\"rowColorMapping\":{\"mapping\":{\"value1\":\"green\"},\"dataIndex\":\"key\"},\"cardBorder\":true,\"paging\":true,\"wrapper\":\"default\",\"bordered\":true,\"title\":\"运行环境列表\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"itemToolbar\":{\"actionList\":[{\"layout\":\"horizontal\",\"displayType\":\"drawer\",\"size\":\"default\",\"block\":\"job:BLOCK:63323164-f200-4915-88c2-f0b7865d97e3\",\"label\":\"查看\",\"type\":\"default\"}],\"label\":\"操作\",\"type\":\"link\"},\"toolbar\":{\"type\":\"button\",\"label\":\"操作\",\"actionList\":[],\"docList\":[]},\"headerColor\":\"#ffffff\",\"dependParams\":[],\"size\":\"small\",\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"gateway/sreworks-job/stream-job/runtimes\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  respData.items.forEach(function(item){\\n    for(var key in item.settings){\\n      item[\\\"settings_\\\" + key] = item.settings[key];\\n    }\\n    if(item.settings && item.settings.additionalDependencies){\\n      item.additionalDependenciesCnt = item.settings.additionalDependencies.length;\\n    }else{\\n      item.additionalDependenciesCnt = 0;\\n    }\\n  });\\n  console.log(respData);\\n  return respData;\\n}\",\"type\":\"API\"},\"visibleExp\":\"\",\"style\":{},\"api\":{\"paging\":false,\"url\":\"\"}}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}]",
+			"name":"f998d5d2-3bcd-49df-9b7b-1bc6e1aedf09",
+			"config":"{\"functionMeta\":[]}",
+			"stageId":"dev"
 		}
 	],
 	"nodeList":[
@@ -151,6 +206,50 @@
 			"appId":"job",
 			"category":"node",
 			"config":"{\"redirect\":{},\"nodeRoleOptionLists\":[{\"gmtModified\":1631519689,\"roleId\":\"job:guest\",\"tenantId\":\"alibaba\",\"name\":\"访客\",\"description\":\"访客\",\"gmtCreate\":1631519689}],\"isTree\":false,\"pageLayoutType\":\"FLUID\",\"keywords\":\"作业平台\",\"hidden\":true,\"icon\":\"\",\"label\":\"主页\",\"roleList\":[\"job:guest\"],\"type\":\"custom\",\"url\":\"job/home\",\"isDefault\":false,\"name\":\"home\",\"order\":0}",
+			"stageId":"dev"
+		},
+		{
+			"serviceType":"KbYqol7jW",
+			"isImport":1,
+			"parentNodeTypePath":"job|app|T:",
+			"version":"0",
+			"nodeTypePath":"job|app|T:KbYqol7jW",
+			"appId":"job",
+			"category":"node",
+			"config":"{\"redirect\":{},\"nodeRoleOptionLists\":[],\"isTree\":false,\"acceptUrlParams\":\"\",\"pageLayoutType\":\"FLUID\",\"keywords\":\"\",\"hidden\":false,\"icon\":\"\",\"label\":\"实时作业\",\"roleList\":[],\"type\":\"custom\",\"menuBarHeader\":\"\",\"url\":\"job/stream-job\",\"layout\":\"left\",\"isDefault\":false,\"name\":\"stream-job\",\"order\":3}",
+			"stageId":"dev"
+		},
+		{
+			"serviceType":"asdxtqcFK",
+			"isImport":1,
+			"parentNodeTypePath":"job|app|T:KbYqol7jW",
+			"version":"0",
+			"nodeTypePath":"job|app|T:KbYqol7jW::asdxtqcFK",
+			"appId":"job",
+			"category":"node",
+			"config":"{\"redirect\":{},\"nodeRoleOptionLists\":[],\"isTree\":false,\"acceptUrlParams\":\"\",\"pageLayoutType\":\"FLUID\",\"keywords\":\"\",\"hidden\":false,\"icon\":\"\",\"label\":\"运行环境管理\",\"roleList\":[],\"type\":\"custom\",\"url\":\"job/stream-job/runtime-env-list\",\"isDefault\":false,\"name\":\"runtime-env-list\",\"order\":0}",
+			"stageId":"dev"
+		},
+		{
+			"serviceType":"u2VAC12vH",
+			"isImport":1,
+			"parentNodeTypePath":"job|app|T:KbYqol7jW",
+			"version":"0",
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"category":"node",
+			"config":"{\"redirect\":{},\"nodeRoleOptionLists\":[],\"isTree\":false,\"acceptUrlParams\":\"\",\"pageLayoutType\":\"FLUID\",\"keywords\":\"\",\"hidden\":false,\"icon\":\"\",\"label\":\"作业列表\",\"roleList\":[],\"type\":\"custom\",\"url\":\"job/stream-job/jobs\",\"isDefault\":false,\"name\":\"jobs\",\"order\":0}",
+			"stageId":"dev"
+		},
+		{
+			"serviceType":"UO-rz97to",
+			"isImport":1,
+			"parentNodeTypePath":"job|app|T:KbYqol7jW",
+			"version":"0",
+			"nodeTypePath":"job|app|T:KbYqol7jW::UO-rz97to",
+			"appId":"job",
+			"category":"node",
+			"config":"{\"redirect\":{},\"nodeRoleOptionLists\":[],\"isTree\":false,\"acceptUrlParams\":\"\",\"pageLayoutType\":\"FLUID\",\"keywords\":\"\",\"hidden\":false,\"icon\":\"\",\"label\":\"依赖包管理\",\"roleList\":[],\"type\":\"custom\",\"url\":\"job/stream-job/artifacts-list\",\"isDefault\":false,\"name\":\"artifacts-list\",\"order\":0}",
 			"stageId":"dev"
 		},
 		{
@@ -194,7 +293,7 @@
 			"nodeTypePath":"job|app|T:Y9edsIba1",
 			"appId":"job",
 			"category":"node",
-			"config":"{\"redirect\":{},\"nodeRoleOptionLists\":[{\"gmtModified\":1631519689,\"roleId\":\"job:guest\",\"tenantId\":\"alibaba\",\"name\":\"访客\",\"description\":\"访客\",\"gmtCreate\":1631519689}],\"isTree\":false,\"pageLayoutType\":\"FLUID\",\"keywords\":\"\",\"hidden\":false,\"icon\":\"\",\"label\":\"作业\",\"roleList\":[\"job:guest\"],\"type\":\"custom\",\"menuBarHeader\":\"\",\"url\":\"job/main\",\"layout\":\"left\",\"isDefault\":false,\"name\":\"main\",\"order\":1}",
+			"config":"{\"redirect\":{},\"nodeRoleOptionLists\":[{\"gmtModified\":1631519689,\"roleId\":\"job:guest\",\"tenantId\":\"alibaba\",\"name\":\"访客\",\"description\":\"访客\",\"gmtCreate\":1631519689}],\"isTree\":false,\"pageLayoutType\":\"FLUID\",\"keywords\":\"\",\"hidden\":false,\"icon\":\"\",\"label\":\"定时作业\",\"roleList\":[\"job:guest\"],\"type\":\"custom\",\"menuBarHeader\":\"\",\"url\":\"job/main\",\"layout\":\"left\",\"isDefault\":false,\"name\":\"main\",\"order\":1}",
 			"stageId":"dev"
 		},
 		{
@@ -265,12 +364,42 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:00d97846-3881-45a2-8989-8cd0983597ff",
+			"isImport":1,
+			"appId":"job",
+			"name":"00d97846-3881-45a2-8989-8cd0983597ff",
+			"type":"BLOCK",
+			"config":"{\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"649145ae-4e19-44e5-8cb4-9bab47d9a1c1\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"title\":\"操作\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"1a2c96a7-694a-4ef9-940c-c71dcdc7a4c6\",\"parameters\":[{\"name\":\"arg-1\",\"label\":\"arg-1\",\"defaultValue\":[],\"value\":[],\"validValue\":[],\"type\":1,\"dynamic\":false,\"required\":2,\"validateType\":\"string\",\"visible\":2,\"isHidden\":2,\"readonly\":1,\"toolTip\":\"\",\"defModel\":{},\"order\":0,\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"onlyKey\":\"852e2b4e-23fe-4744-a1ba-54507ed47887\"}]}}],\"rang\":[0,24],\"chosen\":false}]}}],\"name\":\"00d97846-3881-45a2-8989-8cd0983597ff\",\"id\":\"00d97846-3881-45a2-8989-8cd0983597ff\",\"label\":\"预览\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:0142a262-f9ed-409b-8321-2f02b9a4fa15",
+			"isImport":1,
+			"appId":"job",
+			"name":"0142a262-f9ed-409b-8321-2f02b9a4fa15",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:0142a262-f9ed-409b-8321-2f02b9a4fa15\",\"isImport\":0,\"gmtModified\":1681182900606,\"lastModifier\":\"\",\"label\":\"预览\",\"gmtCreate\":1681182747626,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"241de85e-cd59-4142-bbbe-7fdf1b369fa0\",\"elements\":[{\"type\":\"JsonEditor\",\"config\":{\"outputs\":[],\"hasWrapper\":\"default\",\"uniqueKey\":\"eae61a4b-66d3-4d3c-84ab-339bb2f2f171\",\"cardBorder\":true,\"wrapper\":\"default\",\"readOnly\":true,\"langType\":\"python\",\"title\":\"脚本\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"url\":\"\",\"headerColor\":\"#ffffff\",\"dependParams\":[],\"dataSourceMeta\":{\"method\":\"GET\",\"function\":\"function getData(nodeParams){\\n\\tconsole.log(nodeParams);\\n\\treturn nodeParams.script;\\n}\",\"api\":\"gateway/sreworks-job/stream-job/$(id)/preview\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  // return {\\\"initValue\\\":{\\\"a\\\":\\\"b\\\"}};\\n  return respData.content;\\n}\",\"type\":\"FUNCTION\"},\"visibleExp\":\"\",\"style\":{},\"heightNum\":\"600\"}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false},{\"spans\":\"24\",\"uniqueKey\":\"87c7ecf3-a73b-4ffd-a8b6-1b7e73b502cc\",\"elements\":[{\"type\":\"JsonEditor\",\"config\":{\"outputs\":[],\"hasWrapper\":\"default\",\"uniqueKey\":\"8ced1c36-9573-4aa1-90ed-760820d75d08\",\"cardBorder\":true,\"wrapper\":\"default\",\"readOnly\":true,\"langType\":\"python\",\"title\":\"部署配置(Deployment)\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"url\":\"\",\"headerColor\":\"#ffffff\",\"dependParams\":[],\"dataSourceMeta\":{\"function\":\"function getData(nodeParams){\\n  var YAML = __FRAMEWORK_EXT_LIB.jsYaml;\\n\\tconsole.log(nodeParams);\\n\\treturn YAML.dump(nodeParams.deployment);\\n}\",\"type\":\"FUNCTION\"},\"heightNum\":\"600\"}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"0142a262-f9ed-409b-8321-2f02b9a4fa15\",\"id\":\"0142a262-f9ed-409b-8321-2f02b9a4fa15\",\"category\":\"PAGE\",\"config\":{\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"gateway/sreworks-job/stream-job/$(id)/preview\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  return respData\\n}\",\"type\":\"API\"},\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:04240d77-9be4-44fe-a394-6220d47b39ee",
 			"isImport":1,
 			"appId":"job",
 			"name":"04240d77-9be4-44fe-a394-6220d47b39ee",
 			"type":"BLOCK",
 			"config":"{\"elementId\":\"job:BLOCK:04240d77-9be4-44fe-a394-6220d47b39ee\",\"gmtModified\":1633190937683,\"lastModifier\":\"999999999\",\"label\":\"删除作业\",\"gmtCreate\":1633190909088,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"df77823c-8c1c-4fcd-9498-5f78a188f273\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":1,\"submitLabel\":\"删除\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"method\":\"DELETE\",\"uniqueKey\":\"5ae2ac8e-b1d4-498c-a853-bcff70fa630b\",\"label\":\"删除\",\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:{}}\\n}\",\"api\":\"/gateway/sreworks-job/job/delete?id=$(id)\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"ab5fe68e-0c6d-49fa-9e25-dfafe77b8427\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[\"$(name)\"],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"作业标识\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"name\",\"dynamic\":false,\"value\":[],\"order\":\"\",\"isHidden\":2}],\"refresh\":[\"Y\"]}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"04240d77-9be4-44fe-a394-6220d47b39ee\",\"id\":\"04240d77-9be4-44fe-a394-6220d47b39ee\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]}}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:07898937-852b-469c-b8f4-7827b6a28bbe",
+			"isImport":1,
+			"appId":"job",
+			"name":"07898937-852b-469c-b8f4-7827b6a28bbe",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:07898937-852b-469c-b8f4-7827b6a28bbe\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"aea7d353-e57a-4ee8-ae96-bc06754fe3ce\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"dependParams\":[],\"uniqueKey\":\"713c5e7d-b23c-47b4-96a0-2d6f1dde55dd\",\"title\":\"操作\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"24e91954-0b65-4592-a013-1bbb62871a2c\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"\",\"type\":70,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  console.log(formValues.sinkType);\\n  return {\\n    \\\"sinkTypeStr\\\": formValues.sinkType[0].id\\n  }\\n}\",\"required\":2,\"defModel\":{\"isSingle\":true},\"isHidden\":2,\"readonly\":1,\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"gateway/sreworks-job/stream-job/connectors\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  var resp = {\\\"options\\\":[]};\\n  respData.forEach(function(item){\\n    resp.options.push({\\n      \\\"id\\\": item.type,\\n      \\\"value\\\": item.type,\\n      \\\"name\\\": item.type,\\n      \\\"label\\\": item.type,\\n      \\\"description\\\": item.supportedFormats.join(\\\",\\\"),\\n    })\\n  });\\n  if(resp.options.length > 0){\\n    resp.initValue = [{\\n      \\\"id\\\": resp.options[0].id,\\n      \\\"value\\\": resp.options[0].value,\\n    }];\\n  }\\n  return resp;\\n}\",\"type\":\"API\",\"params\":{\"sink\":true}},\"validValue\":[],\"visibleExp\":\"\",\"name\":\"sinkType\",\"dynamic\":false,\"value\":[],\"order\":0},{\"validateReg\":\"\",\"onlyKey\":\"9e642682-4abc-4fd3-868c-24bb7e9f620c\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"sinkTypeStr\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":1,\"readonly\":2,\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"gateway/sreworks-job/stream-job/connectors\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  console.log(respData);\\n  var resp = \\\"\\\";\\n  if(respData.length > 0){\\n    resp = respData[0].type;\\n  }\\n  return resp;\\n}\",\"type\":\"API\",\"params\":{\"sink\":true}},\"validValue\":[],\"visibleExp\":\"\",\"name\":\"sinkTypeStr\",\"dynamic\":false,\"value\":[],\"order\":1}],\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"}}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"07898937-852b-469c-b8f4-7827b6a28bbe\",\"id\":\"07898937-852b-469c-b8f4-7827b6a28bbe\",\"label\":\"选择输出类型\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]},\"tags\":\"private\"}",
 			"version":"0",
 			"stageId":"dev"
 		},
@@ -295,12 +424,42 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:0a75ca5f-1fa2-4af1-a3c1-e8df0e664c0e",
+			"isImport":1,
+			"appId":"job",
+			"name":"0a75ca5f-1fa2-4af1-a3c1-e8df0e664c0e",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:0a75ca5f-1fa2-4af1-a3c1-e8df0e664c0e\",\"isImport\":0,\"gmtModified\":1680186860865,\"lastModifier\":\"\",\"label\":\"配置字段\",\"gmtCreate\":1680185543682,\"type\":\"BLOCK\",\"version\":0,\"tags\":\"private\",\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"2048f998-1a8e-43b0-b799-a6f9bb7b1c44\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"dependParams\":[],\"dataSourceMeta\":{\"function\":\"function getData(nodeParams){\\n  var res = {};\\n  if(nodeParams.data && nodeParams.data.columns){\\n    res[\\\"columns\\\"] = nodeParams.data.columns;\\n  }\\n  \\n  return res;\\n}\",\"type\":\"FUNCTION\"},\"uniqueKey\":\"c3d5bd38-9637-412e-a37b-c2ccfa01991f\",\"title\":\"操作\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"43848a2c-3008-436f-82fb-da624073acef\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"\",\"type\":85,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {\\n     \\\"columnList\\\": formValues.columns.map(function(c){\\n           return c.columnName;\\n\\t\\t}).join(\\\",\\\")\\n  }\\n}\",\"required\":1,\"defModel\":{\"enableRemove\":true,\"pagination\":false,\"columns\":[{\"editProps\":{\"name\":\"columnName\",\"label\":\"\",\"type\":1,\"required\":false,\"inputTip\":\"columnName\"},\"dataIndex\":\"columnName\",\"title\":\"字段名\",\"key\":\"columnName\"},{\"editProps\":{\"name\":\"columnType\",\"label\":\"\",\"type\":1,\"required\":false,\"inputTip\":\"columnType\"},\"dataIndex\":\"columnType\",\"title\":\"字段定义\",\"key\":\"columnType\"}],\"enableAdd\":true,\"enableEdit\":true},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"columns\",\"dynamic\":false,\"value\":[],\"order\":0},{\"validateReg\":\"\",\"onlyKey\":\"9a0de02f-1b2a-4484-863b-1624f217ad88\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":1,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"columnList\",\"dynamic\":false,\"value\":[],\"order\":1}],\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"}}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"0a75ca5f-1fa2-4af1-a3c1-e8df0e664c0e\",\"id\":\"0a75ca5f-1fa2-4af1-a3c1-e8df0e664c0e\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:0c614bc6-3c82-4688-81c1-28887f3ec660",
+			"isImport":1,
+			"appId":"job",
+			"name":"0c614bc6-3c82-4688-81c1-28887f3ec660",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:0c614bc6-3c82-4688-81c1-28887f3ec660\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"3a4c3099-85a8-4d72-bfd8-90ed8583da42\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"title\":\"操作\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"9d480269-6391-4a15-88ba-40d81533167f\",\"parameters\":[{\"name\":\"sourceName\",\"label\":\"输入源名称\",\"defaultValue\":[],\"value\":[],\"validValue\":[],\"type\":1,\"dynamic\":false,\"required\":2,\"validateType\":\"string\",\"visible\":2,\"isHidden\":2,\"readonly\":1,\"toolTip\":\"\",\"defModel\":{},\"order\":0,\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"onlyKey\":\"9b9e99c6-bbd2-47ff-9383-3cbee9f1304b\"}]}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"0c614bc6-3c82-4688-81c1-28887f3ec660\",\"id\":\"0c614bc6-3c82-4688-81c1-28887f3ec660\",\"label\":\"配置输入源名称\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:0d8ebcd2-c4d1-4877-8f60-31cf41b5061c",
 			"isImport":1,
 			"appId":"job",
 			"name":"0d8ebcd2-c4d1-4877-8f60-31cf41b5061c",
 			"type":"BLOCK",
 			"config":"{\"elementId\":\"job:BLOCK:0d8ebcd2-c4d1-4877-8f60-31cf41b5061c\",\"gmtModified\":1632920297091,\"lastModifier\":\"999999999\",\"label\":\"执行结束-标准输出\",\"gmtCreate\":1632920123427,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"729c6788-5bd4-42a6-ac59-8707b04a4cda\",\"elements\":[{\"type\":\"CustomRender\",\"config\":{\"outputs\":[],\"dependParams\":[],\"hasWrapper\":\"none\",\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"gateway/sreworks-job/taskInstance/getWithBlobs?id=$(id)\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  return respData.stdout;\\n}\",\"type\":\"API\"},\"uniqueKey\":\"ac061a1e-1ba4-4956-81d0-8f554ad3b766\",\"cardBorder\":true,\"wrapper\":\"default\",\"title\":\"New widget\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"jsxDom\":\"<pre style=\\\"white-space: pre-wrap;\\\">\\n{ widgetData }\\n</pre>\"}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"0d8ebcd2-c4d1-4877-8f60-31cf41b5061c\",\"id\":\"0d8ebcd2-c4d1-4877-8f60-31cf41b5061c\",\"category\":\"PAGE\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:0e6098ca-c589-47b8-afad-5ef48f9f3b70",
+			"isImport":1,
+			"appId":"job",
+			"name":"0e6098ca-c589-47b8-afad-5ef48f9f3b70",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:0e6098ca-c589-47b8-afad-5ef48f9f3b70\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"398fa55c-aa26-4a68-97f2-830e434fbf05\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"title\":\"操作\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"bbb6c32a-b152-47b1-9214-37f6c164504b\",\"parameters\":[{\"name\":\"settings_flinkImage\",\"label\":\"Flink容器镜像\",\"defaultValue\":[],\"value\":[],\"validValue\":[],\"type\":1,\"dynamic\":false,\"required\":1,\"validateType\":\"string\",\"visible\":2,\"isHidden\":2,\"readonly\":1,\"toolTip\":\"\",\"defModel\":{},\"order\":0,\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"onlyKey\":\"04ce307d-4ab3-43bb-bcab-1c147e987596\"},{\"name\":\"settings_flinkVersion\",\"label\":\"Flink版本\",\"defaultValue\":[],\"value\":[],\"validValue\":[],\"type\":1,\"dynamic\":false,\"required\":1,\"validateType\":\"string\",\"visible\":2,\"isHidden\":2,\"readonly\":1,\"toolTip\":\"\",\"defModel\":{},\"order\":1,\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"onlyKey\":\"cc3f4f98-6660-48a3-a553-bc1acb5b18d0\"}]}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"0e6098ca-c589-47b8-afad-5ef48f9f3b70\",\"id\":\"0e6098ca-c589-47b8-afad-5ef48f9f3b70\",\"label\":\"Flink运行时\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
 			"version":"0",
 			"stageId":"dev"
 		},
@@ -315,12 +474,42 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:0f5ca095-aece-4e0d-b105-305ea2e864d8",
+			"isImport":1,
+			"appId":"job",
+			"name":"0f5ca095-aece-4e0d-b105-305ea2e864d8",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:0f5ca095-aece-4e0d-b105-305ea2e864d8\",\"isImport\":0,\"gmtModified\":1680000152784,\"lastModifier\":\"\",\"label\":\"新建流式作业\",\"gmtCreate\":1679999965532,\"type\":\"BLOCK\",\"version\":0,\"tags\":\"private\",\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"bc0cfbbf-7498-4ad7-b2bf-3aab41348092\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":1,\"submitLabel\":\"执行\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"method\":\"POST\",\"uniqueKey\":\"4ba0dd1c-0a51-47cb-8445-364777880b9e\",\"refresh\":[\"Y\"],\"label\":\"新建流式作业\",\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\",\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues,httpClient){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:{}}\\n}\",\"api\":\"gateway/sreworks-job/stream-job/create\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"a434ea3a-b847-42ab-81b5-f35459838888\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"只能为英文或数字\",\"initApi\":\"\",\"label\":\"作业标识\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"name\",\"dynamic\":false,\"value\":[],\"order\":0},{\"validateReg\":\"\",\"onlyKey\":\"d7e16030-f245-44e6-a1ef-99548d386cc4\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"中文名称\",\"initApi\":\"\",\"label\":\"作业名称\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"alias\",\"dynamic\":false,\"value\":[],\"order\":1},{\"validateReg\":\"\",\"onlyKey\":\"70cd76de-6958-43c9-9a43-e0c9d922a30d\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":\"python\",\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"作业类型\",\"type\":14,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{\"defaultValue\":\"python\",\"options\":[{\"label\":\"Python+SQL\",\"value\":\"python\"},{\"label\":\"SQL\",\"value\":\"sql\"}]},\"isHidden\":2,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"jobType\",\"dynamic\":false,\"value\":[],\"order\":2},{\"validateReg\":\"\",\"onlyKey\":\"05ec4dea-f2ca-4357-b085-40462515b9c7\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"关联应用\",\"type\":3,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"gateway/v2/foundation/appmanager/apps?optionKey=source&optionValue=swadmin\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  let targetArr = []\\n  respData.items && respData.items.forEach(item => {\\n    let obj = {\\n      value: item['appId'],\\n      label: item['appId']\\n    }\\n    targetArr.push(obj)\\n  })\\n  return targetArr\\n}\",\"type\":\"API\"},\"validValue\":[],\"visibleExp\":\"\",\"name\":\"appId\",\"dynamic\":false,\"value\":[],\"order\":3},{\"name\":\"executionPoolId\",\"label\":\"执行Pod\",\"defaultValue\":\"python\",\"value\":[],\"validValue\":[],\"type\":3,\"dynamic\":false,\"required\":2,\"validateType\":\"string\",\"visible\":2,\"isHidden\":2,\"readonly\":2,\"toolTip\":\"\",\"defModel\":{\"defaultValue\":\"0\",\"options\":[{\"label\":\"独享\",\"value\":\"0\"}]},\"order\":4,\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"onlyKey\":\"587322fe-2fcc-4fd7-90a5-9f1ca56209f0\"}]}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"0f5ca095-aece-4e0d-b105-305ea2e864d8\",\"id\":\"0f5ca095-aece-4e0d-b105-305ea2e864d8\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:121d138c-388f-490c-a324-4f8b14847de4",
+			"isImport":1,
+			"appId":"job",
+			"name":"121d138c-388f-490c-a324-4f8b14847de4",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:121d138c-388f-490c-a324-4f8b14847de4\",\"isImport\":0,\"gmtModified\":1684189618116,\"lastModifier\":\"\",\"label\":\"实时作业导入\",\"gmtCreate\":1684189510597,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"551bad13-ecad-43ee-84da-e6c155014994\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":2,\"submitLabel\":\"执行\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"method\":\"POST\",\"uniqueKey\":\"4ba0dd1c-0a51-47cb-8445-364777880b9e\",\"refresh\":[\"Y\"],\"label\":\"新建流式作业\",\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\",\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues,httpClient){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:{}}\\n}\",\"api\":\"gateway/sreworks-job/stream-job/import\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"a434ea3a-b847-42ab-81b5-f35459838888\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"只能为英文或数字\",\"initApi\":\"\",\"label\":\"作业标识\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"name\",\"dynamic\":false,\"value\":[],\"order\":0},{\"validateReg\":\"\",\"onlyKey\":\"d7e16030-f245-44e6-a1ef-99548d386cc4\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"中文名称\",\"initApi\":\"\",\"label\":\"作业名称\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"alias\",\"dynamic\":false,\"value\":[],\"order\":1},{\"validateReg\":\"\",\"onlyKey\":\"70cd76de-6958-43c9-9a43-e0c9d922a30d\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":\"python\",\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"作业类型\",\"type\":14,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{\"defaultValue\":\"python\",\"options\":[{\"label\":\"Python+SQL\",\"value\":\"python\"},{\"label\":\"SQL\",\"value\":\"sql\"}]},\"isHidden\":2,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"jobType\",\"dynamic\":false,\"value\":[],\"order\":2},{\"validateReg\":\"\",\"onlyKey\":\"05ec4dea-f2ca-4357-b085-40462515b9c7\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"关联应用\",\"type\":3,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"gateway/v2/foundation/appmanager/apps?optionKey=source&optionValue=swadmin\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  let targetArr = []\\n  respData.items && respData.items.forEach(item => {\\n    let obj = {\\n      value: item['appId'],\\n      label: item['appId']\\n    }\\n    targetArr.push(obj)\\n  })\\n  return targetArr\\n}\",\"type\":\"API\"},\"validValue\":[],\"visibleExp\":\"\",\"name\":\"appId\",\"dynamic\":false,\"value\":[],\"order\":3},{\"validateReg\":\"\",\"onlyKey\":\"587322fe-2fcc-4fd7-90a5-9f1ca56209f0\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":\"python\",\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"执行Pod\",\"type\":3,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{\"defaultValue\":\"0\",\"options\":[{\"label\":\"独享\",\"value\":\"0\"}]},\"isHidden\":2,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"executionPoolId\",\"dynamic\":false,\"value\":[],\"order\":4},{\"validateReg\":\"\",\"onlyKey\":\"079b8282-166c-4dd3-99a6-ee05a4c95450\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"作业包\",\"type\":81,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"file\",\"dynamic\":false,\"value\":[],\"order\":5}]}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"121d138c-388f-490c-a324-4f8b14847de4\",\"id\":\"121d138c-388f-490c-a324-4f8b14847de4\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:1365c766-cda3-4da9-be56-d7ee6abdc8f2",
 			"isImport":1,
 			"appId":"job",
 			"name":"1365c766-cda3-4da9-be56-d7ee6abdc8f2",
 			"type":"BLOCK",
 			"config":"{\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"ac0be299-51cb-444c-9034-f393c63e74d6\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"title\":\"操作\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"54406064-10c9-4f93-98d9-264bbc7a4e78\"}}],\"rang\":[0,24]}]}}],\"name\":\"1365c766-cda3-4da9-be56-d7ee6abdc8f2\",\"id\":\"1365c766-cda3-4da9-be56-d7ee6abdc8f2\",\"label\":\"新建定时作业\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:15d999d6-8f39-487d-a9c4-8690f6fb0828",
+			"isImport":1,
+			"appId":"job",
+			"name":"15d999d6-8f39-487d-a9c4-8690f6fb0828",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:15d999d6-8f39-487d-a9c4-8690f6fb0828\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"2b8f4ad2-675e-4150-80c7-9ba38875fca7\",\"elements\":[{\"type\":\"STEP_ACTION\",\"config\":{\"title\":\"分步操作\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"e630adfb-32ba-4909-b2a3-e7d0d1048bc2\",\"blocks\":[\"job:BLOCK:7c767e2e-1485-4d0c-ab73-f3fd84891b1c\",\"job:BLOCK:0a75ca5f-1fa2-4af1-a3c1-e8df0e664c0e\",\"job:BLOCK:4733c394-fd55-4ad8-a135-6af99e3f9d9a\"]}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"15d999d6-8f39-487d-a9c4-8690f6fb0828\",\"id\":\"15d999d6-8f39-487d-a9c4-8690f6fb0828\",\"label\":\"编辑输入源\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
 			"version":"0",
 			"stageId":"dev"
 		},
@@ -341,6 +530,26 @@
 			"name":"1f6b0e18-8bef-417c-94dd-116d22a73071",
 			"type":"BLOCK",
 			"config":"{\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"d8d70733-e288-46e6-bf4a-00af7ae910b9\",\"elements\":[{\"type\":\"FILTER_BAR\",\"config\":{\"title\":\"过滤条\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"9d7e9e59-44f7-4165-838d-3a50d79ddc0b\",\"outputName\":\"\",\"enterSubmit\":false,\"autoSubmit\":false,\"showSearch\":true,\"scenes\":[],\"parameters\":[{\"name\":\"arg-1\",\"label\":\"arg-1\",\"defaultValue\":[],\"value\":[],\"validValue\":[],\"type\":1,\"dynamic\":false,\"required\":2,\"validateType\":\"string\",\"visible\":2,\"readonly\":1,\"toolTip\":\"\",\"defModel\":{},\"order\":\"\",\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"onlyKey\":\"27b643ea-7fd2-40b7-a9e6-a6ce465605b4\"}]}}],\"rang\":[0,24],\"chosen\":false}]}}],\"name\":\"1f6b0e18-8bef-417c-94dd-116d22a73071\",\"id\":\"1f6b0e18-8bef-417c-94dd-116d22a73071\",\"label\":\"555\",\"type\":\"BLOCK\",\"category\":\"FILTER\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:20607fe7-4570-48ff-b900-09373b2be40d",
+			"isImport":1,
+			"appId":"job",
+			"name":"20607fe7-4570-48ff-b900-09373b2be40d",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:20607fe7-4570-48ff-b900-09373b2be40d\",\"isImport\":0,\"gmtModified\":1682894771669,\"lastModifier\":\"\",\"label\":\"脚本模板\",\"gmtCreate\":1682892281181,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"849a8dc9-2f91-46a3-bcec-c7c5213cf4c2\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":1,\"submitLabel\":\"保存\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"method\":\"PUT\",\"uniqueKey\":\"ed6d4cc4-8ce3-4605-87a5-547d9c90785a\",\"refresh\":[\"Y\"],\"label\":\"脚本模板\",\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\",\"dataSourceMeta\":{\"function\":\"function getData(data){\\n   console.log(data);\\n   \\n   return {\\n     \\\"templateContent\\\": data.options.template\\n   };\\n}\",\"type\":\"FUNCTION\"},\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues,httpClient){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:{}}\\n}\",\"api\":\"gateway/sreworks-job/stream-job/$(id)/template\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"a193a93b-1355-4740-a01c-e4ae44a81b56\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"\",\"type\":83,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"templateContent\",\"dynamic\":false,\"value\":[],\"order\":0}]}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"20607fe7-4570-48ff-b900-09373b2be40d\",\"id\":\"20607fe7-4570-48ff-b900-09373b2be40d\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:207e61e1-33aa-493d-a5e0-a6794924a809",
+			"isImport":1,
+			"appId":"job",
+			"name":"207e61e1-33aa-493d-a5e0-a6794924a809",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:207e61e1-33aa-493d-a5e0-a6794924a809\",\"isImport\":0,\"gmtModified\":1680090734858,\"lastModifier\":\"\",\"label\":\"新增输入\",\"gmtCreate\":1680090632406,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"b8e2b9a0-90b9-4009-9927-c26f01aaa5dd\",\"elements\":[{\"type\":\"STEP_ACTION\",\"config\":{\"outputs\":[],\"dependParams\":[],\"blocks\":[\"job:BLOCK:0c614bc6-3c82-4688-81c1-28887f3ec660\",\"job:BLOCK:990ab57e-59f0-4705-b97c-a09a14617e85\",\"job:BLOCK:0a75ca5f-1fa2-4af1-a3c1-e8df0e664c0e\",\"job:BLOCK:3e092e2e-f9e8-41de-baf4-e85154ad9ec1\"],\"uniqueKey\":\"e3db2899-25a7-4d71-902e-9bf362f3cfe7\",\"title\":\"分步操作\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"}}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"207e61e1-33aa-493d-a5e0-a6794924a809\",\"id\":\"207e61e1-33aa-493d-a5e0-a6794924a809\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
 			"version":"0",
 			"stageId":"dev"
 		},
@@ -375,12 +584,32 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:28846a9f-b7b9-4ac3-ab15-bfc9e01546bc",
+			"isImport":1,
+			"appId":"job",
+			"name":"28846a9f-b7b9-4ac3-ab15-bfc9e01546bc",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:28846a9f-b7b9-4ac3-ab15-bfc9e01546bc\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"8226e6b0-117a-4c0c-ac6b-4f2f0a804f55\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"dependParams\":[],\"uniqueKey\":\"36e68cf8-cd3b-4e10-bafb-820ef938e2b3\",\"title\":\"操作\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"47ef7b70-1cb9-486e-8866-2c7a51727e3e\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"\",\"type\":85,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"enableRemove\":true,\"pagination\":false,\"columns\":[{\"editProps\":{\"name\":\"key\",\"label\":\"\",\"type\":1,\"required\":false,\"inputTip\":\"value\"},\"dataIndex\":\"key\",\"title\":\"变量名\",\"key\":\"key\"},{\"editProps\":{\"name\":\"value\",\"label\":\"\",\"type\":1,\"required\":false,\"inputTip\":\"value\"},\"dataIndex\":\"value\",\"title\":\"变量值\",\"key\":\"value\"}],\"enableAdd\":true,\"enableEdit\":true},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"params\",\"dynamic\":false,\"value\":[],\"order\":8}],\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"}}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"28846a9f-b7b9-4ac3-ab15-bfc9e01546bc\",\"id\":\"28846a9f-b7b9-4ac3-ab15-bfc9e01546bc\",\"label\":\"启动参数\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:2f4db41a-d68c-4c09-802e-e1d976db40e5",
 			"isImport":1,
 			"appId":"job",
 			"name":"2f4db41a-d68c-4c09-802e-e1d976db40e5",
 			"type":"BLOCK",
 			"config":"{\"elementId\":\"job:BLOCK:2f4db41a-d68c-4c09-802e-e1d976db40e5\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"5,19\",\"uniqueKey\":\"201d2321-4cbd-4705-bdd1-6be39f4dea02\",\"elements\":[{\"type\":\"QuickLink\",\"config\":{\"title\":\"New widget\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"c0c6ec59-1007-4a66-aa08-307c2d2807a3\",\"links\":[{\"icon\":\"aliyun\",\"title\":\"任务1\",\"href\":\"https://www.iconfont.cn/home/index\"},{\"title\":\"任务2\",\"href\":\"https://www.iconfont.cn/home/index\"},{\"title\":\"任务3\",\"href\":\"https://www.iconfont.cn/home/index\"}],\"hasWrapper\":\"none\",\"wrapper\":\"default\",\"cardBorder\":true}},{\"type\":\"Descriptions\",\"config\":{\"title\":\"任务详情\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"5cbb25dc-676c-435c-9a68-31460795228d\",\"formatList\":[{\"label\":\"名称\",\"span\":2,\"description\":\"描述文字\",\"dataIndex\":\"key1\",\"href\":\"http://www.baidu.com\"},{\"label\":\"值2\",\"dataIndex\":\"key2\",\"render\":\"\"},{\"label\":\"值3\",\"dataIndex\":\"key3\"},{\"label\":\"值4\",\"dataIndex\":\"key4\"}],\"bordered\":false,\"colon\":true,\"layout\":\"horizontal\",\"labelStyle\":{},\"descriptionStyle\":{\"fontSize:\":16},\"column\":{\"xxl\":4,\"xl\":3,\"lg\":3,\"md\":3,\"sm\":2,\"xs\":1},\"hasWrapper\":\"default\",\"wrapper\":\"default\",\"cardBorder\":true}}],\"rang\":[0,5,24],\"chosen\":false}]}}],\"name\":\"2f4db41a-d68c-4c09-802e-e1d976db40e5\",\"id\":\"2f4db41a-d68c-4c09-802e-e1d976db40e5\",\"label\":\"并行任务编排\",\"type\":\"BLOCK\",\"category\":\"PAGE\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:36f6c010-93d0-4816-b39b-17ef578bfbc2",
+			"isImport":1,
+			"appId":"job",
+			"name":"36f6c010-93d0-4816-b39b-17ef578bfbc2",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:36f6c010-93d0-4816-b39b-17ef578bfbc2\",\"isImport\":0,\"gmtModified\":1680090806844,\"lastModifier\":\"\",\"label\":\"新增Python处理\",\"gmtCreate\":1680090766183,\"type\":\"BLOCK\",\"version\":0,\"tags\":\"private\",\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"558afd1d-1846-4485-b2bb-060b1e62b2e8\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":1,\"submitLabel\":\"执行\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"method\":\"POST\",\"uniqueKey\":\"a771f351-a4d8-4fbe-93c8-699eb74fbfd4\",\"refresh\":[\"Y\"],\"label\":\"增加Python处理\",\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\",\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"gateway/sreworks-job/stream-job/$(id)/python/template\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  var res = {\\\"scriptContent\\\":respData};\\n  return res;\\n}\",\"type\":\"API\"},\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues,httpClient){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:{}}\\n}\",\"api\":\"gateway/sreworks-job/stream-job/$(id)/python\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"1532a2c0-3009-4809-a1cb-ef607f19f144\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"scriptName\",\"dynamic\":false,\"value\":[],\"order\":0},{\"validateReg\":\"\",\"onlyKey\":\"757c091a-231d-416d-a28f-e1303ae73df4\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"\",\"type\":83,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"scriptContent\",\"dynamic\":false,\"value\":[],\"order\":1}]}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"36f6c010-93d0-4816-b39b-17ef578bfbc2\",\"id\":\"36f6c010-93d0-4816-b39b-17ef578bfbc2\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
 			"version":"0",
 			"stageId":"dev"
 		},
@@ -395,12 +624,82 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:3a902316-c825-463e-ba23-f670011b3398",
+			"isImport":1,
+			"appId":"job",
+			"name":"3a902316-c825-463e-ba23-f670011b3398",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:3a902316-c825-463e-ba23-f670011b3398\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"e52d70dc-570f-4882-9d7a-e2884cac321c\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"title\":\"操作\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"ed177458-1c9d-4d45-b64d-f5af8d7b203c\",\"parameters\":[{\"name\":\"name\",\"label\":\"名称\",\"defaultValue\":[],\"value\":[],\"validValue\":[],\"type\":1,\"dynamic\":false,\"required\":2,\"validateType\":\"string\",\"visible\":2,\"isHidden\":2,\"readonly\":1,\"toolTip\":\"\",\"defModel\":{},\"order\":0,\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"onlyKey\":\"05daf476-b580-4e9e-bf8a-080bfeb50caf\"}]}}],\"rang\":[0,24],\"chosen\":false}]}}],\"name\":\"3a902316-c825-463e-ba23-f670011b3398\",\"id\":\"3a902316-c825-463e-ba23-f670011b3398\",\"label\":\"基础信息\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:3dc3b8aa-9e28-4a8d-aba9-1dc5520ecdae",
+			"isImport":1,
+			"appId":"job",
+			"name":"3dc3b8aa-9e28-4a8d-aba9-1dc5520ecdae",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:3dc3b8aa-9e28-4a8d-aba9-1dc5520ecdae\",\"isImport\":0,\"gmtModified\":1683062463421,\"lastModifier\":\"\",\"label\":\"PyFlink运行时\",\"gmtCreate\":1683005951367,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"1b566cea-d759-4cd0-9f82-75c7edec4fe9\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"dependParams\":[],\"uniqueKey\":\"f3245d31-4bfd-4405-98ef-5886217813e1\",\"title\":\"操作\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"f1964d09-8c8f-499f-8a4b-f8a077afa6da\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"PyFlinkJar包\",\"type\":3,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"gateway/sreworks-job/stream-job/artifacts\",\"type\":\"API\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  respData.forEach(function(item){\\n    item.label = item.filename;\\n    item.value = item.filename;\\n  });\\n  return respData;\\n}\"},\"validValue\":[],\"visibleExp\":\"\",\"name\":\"settings_jarUri\",\"dynamic\":false,\"value\":[],\"order\":0},{\"validateReg\":\"\",\"onlyKey\":\"27c24f30-9c37-4ce5-9227-419ff0a0452d\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"入口类\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"settings_entryClass\",\"dynamic\":false,\"value\":[],\"order\":1}],\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"}}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"3dc3b8aa-9e28-4a8d-aba9-1dc5520ecdae\",\"id\":\"3dc3b8aa-9e28-4a8d-aba9-1dc5520ecdae\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:3e092e2e-f9e8-41de-baf4-e85154ad9ec1",
+			"isImport":1,
+			"appId":"job",
+			"name":"3e092e2e-f9e8-41de-baf4-e85154ad9ec1",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:3e092e2e-f9e8-41de-baf4-e85154ad9ec1\",\"isImport\":0,\"gmtModified\":1680171261634,\"lastModifier\":\"\",\"label\":\"配置输入源参数\",\"gmtCreate\":1680165174414,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"958b6bbc-6793-4284-845f-f21c50cf9fa7\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":1,\"submitLabel\":\"执行\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"method\":\"POST\",\"uniqueKey\":\"e9a4fa9d-fe5c-489a-8aee-6051ad978901\",\"refresh\":[\"Y\"],\"label\":\"新增输入源\",\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\",\"dataSourceMeta\":{\"beforeRequestHandler\":\"function beforeRequest(nodeParams,){\\n  var sourceType = nodeParams.sourceType;\\n  console.log(sourceType);\\n  var sourceTypeStr = \\\"\\\";\\n  if(sourceType && sourceType.length > 0){\\n  \\tsourceTypeStr = sourceType[0].id;\\n  }\\n  return {\\n  \\t\\\"type\\\": sourceTypeStr\\n  };\\n}\",\"method\":\"GET\",\"api\":\"gateway/sreworks-job/stream-job/connector/properties\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  var resp = {\\\"options\\\": [], \\\"dependencies\\\":[]};\\n  respData.options.forEach(function(item){\\n    if(item.required){\\n      resp.options.push({\\n        \\\"key\\\": item.key,\\n        \\\"value\\\": item.defaultValue,\\n      });\\n    }\\n  });\\n  respData.dependencies.forEach(function(item){\\n    resp.dependencies.push({\\n      \\\"filename\\\": item.split(\\\"/\\\")[item.split(\\\"/\\\").length - 1]\\n    });\\n  });\\n  return resp;\\n}\",\"type\":\"API\",\"params\":{}},\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues,httpClient){\\n  var res = {};\\n  console.log(nodeParams);\\n  res.type = nodeParams.sourceTypeStr;\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:res}\\n}\",\"api\":\"gateway/sreworks-job/stream-job/$(id)/source\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"e99e667e-345d-490d-be17-56741048ec01\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"\",\"type\":85,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"enableRemove\":true,\"pagination\":false,\"columns\":[{\"editProps\":{\"name\":\"key\",\"label\":\"\",\"api\":\"gateway/sreworks-job/stream-job/connector/properties?type=$(sourceTypeStr)&columns=$(columnList)\",\"type\":3,\"required\":false,\"defModel\":{\"remote\":true},\"inputTip\":\"key\"},\"dataIndex\":\"key\",\"title\":\"配置项\",\"key\":\"key\"},{\"editProps\":{\"name\":\"value\",\"label\":\"\",\"type\":1,\"required\":false,\"inputTip\":\"value\"},\"dataIndex\":\"value\",\"title\":\"配置值\",\"key\":\"value\"}],\"enableAdd\":true,\"enableEdit\":true},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"options\",\"dynamic\":false,\"value\":[],\"order\":0},{\"name\":\"dependencies\",\"label\":\"\",\"defaultValue\":[],\"value\":[],\"validValue\":[],\"type\":85,\"dynamic\":false,\"required\":2,\"validateType\":\"string\",\"visible\":2,\"isHidden\":2,\"readonly\":1,\"toolTip\":\"\",\"defModel\":{\"enableRemove\":false,\"pagination\":false,\"columns\":[{\"dataIndex\":\"filename\",\"title\":\"自动加载依赖包\",\"key\":\"filename\"}],\"enableAdd\":false,\"enableEdit\":false},\"order\":1,\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"onlyKey\":\"fa196ed8-1143-4398-80d7-459c5972c9ff\"}]}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"3e092e2e-f9e8-41de-baf4-e85154ad9ec1\",\"id\":\"3e092e2e-f9e8-41de-baf4-e85154ad9ec1\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:4062a49f-07ea-41fd-b9ec-9b0cef9adb38",
 			"isImport":1,
 			"appId":"job",
 			"name":"4062a49f-07ea-41fd-b9ec-9b0cef9adb38",
 			"type":"BLOCK",
 			"config":"{\"elementId\":\"job:BLOCK:4062a49f-07ea-41fd-b9ec-9b0cef9adb38\",\"gmtModified\":1641825943275,\"lastModifier\":\"999999999\",\"label\":\"定时调度\",\"gmtCreate\":1641825942602,\"type\":\"BLOCK\",\"version\":0,\"tags\":\"private\",\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"64227a01-e78c-4d14-b500-5fb373b3e97f\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":1,\"submitLabel\":\"提交\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"method\":\"POST\",\"uniqueKey\":\"5a1693d1-a82a-400d-9553-6b500dd1d994\",\"label\":\"启动\",\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"gateway/sreworks-job/job/get?id=$(id)\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  respData.state = respData.triggerConf.enabled;\\n  console.log(respData);\\n  return respData;\\n}\",\"type\":\"API\"},\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues){\\n  var res = {};\\n  res.triggerType = \\\"cron\\\";\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:res}\\n}\",\"api\":\"gateway/sreworks-job/job/toggleCronJobState?id=$(id)\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"651b5bd2-79a6-4575-b3d5-75778fd7ad9b\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"定时表达式\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"columns\":[{\"dataIndex\":\"key\",\"title\":\"参数名\",\"key\":\"key\"},{\"editProps\":{\"name\":\"value\",\"label\":\"\",\"type\":1,\"required\":false,\"inputTip\":\"value\"},\"dataIndex\":\"value\",\"title\":\"参数值\",\"key\":\"value\"}],\"enableEdit\":true},\"isHidden\":2,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"triggerConf.cronExpression\",\"dynamic\":false,\"value\":[],\"order\":\"\"},{\"validateReg\":\"\",\"onlyKey\":\"a157c992-3fb2-4aa6-b72a-e78f2b5bf050\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"是否启用\",\"type\":16,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"state\",\"dynamic\":false,\"value\":[],\"order\":\"\"}],\"refresh\":[\"Y\"]}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"4062a49f-07ea-41fd-b9ec-9b0cef9adb38\",\"id\":\"4062a49f-07ea-41fd-b9ec-9b0cef9adb38\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:445bff29-78de-416b-a97e-d049f7054149",
+			"isImport":1,
+			"appId":"job",
+			"name":"445bff29-78de-416b-a97e-d049f7054149",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:445bff29-78de-416b-a97e-d049f7054149\",\"isImport\":0,\"gmtModified\":1680255037809,\"lastModifier\":\"\",\"label\":\"配置输出参数\",\"gmtCreate\":1680250704617,\"type\":\"BLOCK\",\"version\":0,\"tags\":\"private\",\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"a454e1e2-b522-4fd4-bfe5-4a78c4b153c3\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":1,\"submitLabel\":\"执行\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"method\":\"POST\",\"uniqueKey\":\"e9a4fa9d-fe5c-489a-8aee-6051ad978901\",\"refresh\":[\"Y\"],\"label\":\"新增输入源\",\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\",\"dataSourceMeta\":{\"beforeRequestHandler\":\"\",\"method\":\"GET\",\"api\":\"gateway/sreworks-job/stream-job/connector/properties\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  var resp = {\\\"options\\\": [], \\\"dependencies\\\":[]};\\n  respData.options.forEach(function(item){\\n    if(item.required){\\n      resp.options.push({\\n        \\\"key\\\": item.key,\\n        \\\"value\\\": item.defaultValue,\\n      });\\n    }\\n  });\\n  respData.dependencies.forEach(function(item){\\n    resp.dependencies.push({\\n      \\\"filename\\\": item.split(\\\"/\\\")[item.split(\\\"/\\\").length - 1]\\n    });\\n  });\\n  return resp;\\n}\",\"type\":\"API\",\"params\":{\"type\":\"$(sinkTypeStr)\"}},\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues,httpClient){\\n  var res = {};\\n  console.log(nodeParams);\\n  res.type = nodeParams.sinkTypeStr;\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:res}\\n}\",\"api\":\"gateway/sreworks-job/stream-job/$(id)/sink\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"e99e667e-345d-490d-be17-56741048ec01\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"\",\"type\":85,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"enableRemove\":true,\"pagination\":false,\"columns\":[{\"editProps\":{\"name\":\"key\",\"label\":\"\",\"api\":\"gateway/sreworks-job/stream-job/connector/properties?type=$(sinkTypeStr)&columns=$(columnList)\",\"type\":3,\"required\":false,\"defModel\":{\"remote\":true},\"inputTip\":\"key\"},\"dataIndex\":\"key\",\"title\":\"配置项\",\"key\":\"key\"},{\"editProps\":{\"name\":\"value\",\"label\":\"\",\"type\":1,\"required\":false,\"inputTip\":\"value\"},\"dataIndex\":\"value\",\"title\":\"配置值\",\"key\":\"value\"}],\"enableAdd\":true,\"enableEdit\":true},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"options\",\"dynamic\":false,\"value\":[],\"order\":0},{\"name\":\"dependencies\",\"label\":\"\",\"defaultValue\":[],\"value\":[],\"validValue\":[],\"type\":85,\"dynamic\":false,\"required\":2,\"validateType\":\"string\",\"visible\":2,\"isHidden\":2,\"readonly\":1,\"toolTip\":\"\",\"defModel\":{\"enableRemove\":false,\"pagination\":false,\"columns\":[{\"dataIndex\":\"filename\",\"title\":\"自动加载依赖包\",\"key\":\"filename\"}],\"enableAdd\":false,\"enableEdit\":false},\"order\":1,\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"onlyKey\":\"fa196ed8-1143-4398-80d7-459c5972c9ff\"}]}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"445bff29-78de-416b-a97e-d049f7054149\",\"id\":\"445bff29-78de-416b-a97e-d049f7054149\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:4733c394-fd55-4ad8-a135-6af99e3f9d9a",
+			"isImport":1,
+			"appId":"job",
+			"name":"4733c394-fd55-4ad8-a135-6af99e3f9d9a",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:4733c394-fd55-4ad8-a135-6af99e3f9d9a\",\"isImport\":0,\"gmtModified\":1683442649320,\"lastModifier\":\"\",\"label\":\"修改输入源参数\",\"gmtCreate\":1683441938946,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"5ace0bb3-3eb4-494a-ac01-bf76d3146a7a\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":1,\"submitLabel\":\"执行\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"method\":\"PUT\",\"uniqueKey\":\"d0f6b8e5-7f9a-469e-b108-97f22d4130e0\",\"refresh\":[\"Y\"],\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\",\"dataSourceMeta\":{\"function\":\"function getData(nodeParams){\\n  var res = {};\\n  if(nodeParams.data && nodeParams.data.options){\\n    res[\\\"options\\\"] = nodeParams.data.options;\\n  }\\n  \\n  return res;\\n}\",\"type\":\"FUNCTION\"},\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues,httpClient){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:{}}\\n}\",\"api\":\"gateway/sreworks-job/stream-job/$(streamJobId)/source/$(id)\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"e99e667e-345d-490d-be17-56741048ec01\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"\",\"type\":85,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"enableRemove\":true,\"pagination\":false,\"columns\":[{\"editProps\":{\"name\":\"key\",\"label\":\"\",\"api\":\"gateway/sreworks-job/stream-job/connector/properties?type=$(sourceTypeStr)&columns=$(columnList)\",\"type\":3,\"required\":false,\"defModel\":{\"remote\":true},\"inputTip\":\"key\"},\"dataIndex\":\"key\",\"title\":\"配置项\",\"key\":\"key\"},{\"editProps\":{\"name\":\"value\",\"label\":\"\",\"type\":1,\"required\":false,\"inputTip\":\"value\"},\"dataIndex\":\"value\",\"title\":\"配置值\",\"key\":\"value\"}],\"enableAdd\":true,\"enableEdit\":true},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"options\",\"dynamic\":false,\"value\":[],\"order\":0}]}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"4733c394-fd55-4ad8-a135-6af99e3f9d9a\",\"id\":\"4733c394-fd55-4ad8-a135-6af99e3f9d9a\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:4842fdc7-d542-4320-9991-fac4477e5cd2",
+			"isImport":1,
+			"appId":"job",
+			"name":"4842fdc7-d542-4320-9991-fac4477e5cd2",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:4842fdc7-d542-4320-9991-fac4477e5cd2\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"203ddc67-a444-4d89-b059-a5545e44b85d\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"title\":\"操作\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"5ba12fa3-a1d4-4cae-8b86-255d6f8335d1\",\"parameters\":[{\"name\":\"name\",\"label\":\"名称\",\"defaultValue\":[],\"value\":[],\"validValue\":[],\"type\":1,\"dynamic\":false,\"required\":1,\"validateType\":\"string\",\"visible\":2,\"isHidden\":2,\"readonly\":2,\"toolTip\":\"\",\"defModel\":{},\"order\":0,\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"onlyKey\":\"1361c038-ba26-44c6-85a6-5154221f2b2f\"}]}}],\"rang\":[0,24],\"chosen\":false}]}}],\"name\":\"4842fdc7-d542-4320-9991-fac4477e5cd2\",\"id\":\"4842fdc7-d542-4320-9991-fac4477e5cd2\",\"label\":\"基础信息查看\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:4da71b99-eba4-460e-b7b3-53f790c1ebac",
+			"isImport":1,
+			"appId":"job",
+			"name":"4da71b99-eba4-460e-b7b3-53f790c1ebac",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:4da71b99-eba4-460e-b7b3-53f790c1ebac\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"bac24d50-5c56-48a4-949d-a476adfa610d\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":1,\"submitLabel\":\"执行\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"method\":\"PUT\",\"uniqueKey\":\"a771f351-a4d8-4fbe-9318-699eb74fbfd4\",\"refresh\":[\"Y\"],\"label\":\"增加Python处理\",\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\",\"dataSourceMeta\":{\"type\":\"FUNCTION\",\"function\":\"function getData(nodeParams){\\n  var res = {};\\n  res[\\\"scriptName\\\"] = nodeParams.name;\\n  res[\\\"scriptContent\\\"] = nodeParams.data.content;\\n  return res;\\n}\"},\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues,httpClient){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:{}}\\n}\",\"api\":\"gateway/sreworks-job/stream-job/$(streamJobId)/python/$(id)\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"1532a2c0-3009-4809-a1cb-ef607f19f144\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"scriptName\",\"dynamic\":false,\"value\":[],\"order\":0},{\"validateReg\":\"\",\"onlyKey\":\"757c091a-231d-416d-a28f-e1303ae73df4\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"\",\"type\":83,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"scriptContent\",\"dynamic\":false,\"value\":[],\"order\":1}]}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"4da71b99-eba4-460e-b7b3-53f790c1ebac\",\"id\":\"4da71b99-eba4-460e-b7b3-53f790c1ebac\",\"label\":\"编辑Python处理\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
 			"version":"0",
 			"stageId":"dev"
 		},
@@ -415,12 +714,42 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:5073fc34-f87a-4543-a2e6-8af75b282174",
+			"isImport":1,
+			"appId":"job",
+			"name":"5073fc34-f87a-4543-a2e6-8af75b282174",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:5073fc34-f87a-4543-a2e6-8af75b282174\",\"isImport\":0,\"gmtModified\":1683062621900,\"lastModifier\":\"\",\"label\":\"新增运行环境\",\"gmtCreate\":1683005742607,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"3c4f8188-8238-4c30-9ecb-28327f691492\",\"elements\":[{\"type\":\"STEP_ACTION\",\"config\":{\"outputs\":[],\"dependParams\":[],\"blocks\":[\"job:BLOCK:3a902316-c825-463e-ba23-f670011b3398\",\"job:BLOCK:0e6098ca-c589-47b8-afad-5ef48f9f3b70\",\"job:BLOCK:3dc3b8aa-9e28-4a8d-aba9-1dc5520ecdae\",\"job:BLOCK:c1345617-64dc-4a6d-8fc8-3fde64fab448\",\"job:BLOCK:8c22d4d1-8a97-4eec-be61-5e25cb2ab600\",\"job:BLOCK:db8147f6-9a9a-4921-81b1-5efb8adbc38e\"],\"uniqueKey\":\"e68c559d-1613-4f59-b663-6644c588d478\",\"title\":\"分步操作\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"}}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"5073fc34-f87a-4543-a2e6-8af75b282174\",\"id\":\"5073fc34-f87a-4543-a2e6-8af75b282174\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:561fdf7a-8a14-4643-8ea3-229e393f86eb",
+			"isImport":1,
+			"appId":"job",
+			"name":"561fdf7a-8a14-4643-8ea3-229e393f86eb",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:561fdf7a-8a14-4643-8ea3-229e393f86eb\",\"isImport\":0,\"gmtModified\":1682650004685,\"lastModifier\":\"\",\"label\":\"启动参数\",\"gmtCreate\":1682647190507,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"dfbf198a-a953-4158-a0d3-2bf46b944e77\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":1,\"submitLabel\":\"执行\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"method\":\"PUT\",\"uniqueKey\":\"f1260d37-3d68-46e6-8d51-dfc535002be1\",\"label\":\"运行参数设置\",\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\",\"dataSourceMeta\":{\"function\":\"function getData(nodeParams){\\n  var execParams = nodeParams.options.settings.execParams;\\n  return {\\n    \\\"settingsExecParams\\\": execParams,\\n  };\\n}\",\"type\":\"FUNCTION\"},\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues,httpClient){\\n  \\n  console.log(nodeParams);\\n\\n  var res = {settings: nodeParams.settings};\\n  var configMapping = JSON.parse(nodeParams.configMapping);\\n\\n\\tfunction setNestedValue(dict, arr, value) {\\n\\t  if (!Array.isArray(arr)) {\\n\\t    throw new Error('Input is not an array');\\n\\t  }\\n\\t  \\n\\t  if (typeof dict !== 'object' || dict === null) {\\n\\t    throw new Error('Third parameter must be a dictionary object');\\n\\t  }\\n\\t  \\n\\t  let currentDict = dict;\\n\\t  \\n\\t  for (let i = 0; i < arr.length; i++) {\\n\\t    let key = arr[i];\\n\\t    \\n\\t    if (typeof currentDict[key] !== 'object' || currentDict[key] === null) {\\n\\t      currentDict[key] = i === arr.length - 1 ? value : {};\\n\\t    }\\n\\t    \\n\\t    currentDict = currentDict[key];\\n\\t  }\\n\\t  \\n\\t  return dict;\\n\\t}\\n\\n  for(var i in configMapping){\\n    var index = configMapping[i].split(\\\".\\\");\\n    if(nodeParams[i]){\\n      console.log(i, nodeParams[i], index); \\n      setNestedValue(res, index, nodeParams[i]);\\n    }\\n  }\\n\\n  res.settings.execParams = formValues.settingsExecParams;\\n\\n  console.log(res);\\n  \\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:res}\\n}\",\"labelSpan\":\"2\",\"api\":\"gateway/sreworks-job/stream-job/$(id)/settings\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"47ef7b70-1cb9-486e-8866-2c7a51727e3e\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"\",\"type\":85,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"enableRemove\":true,\"pagination\":false,\"columns\":[{\"editProps\":{\"name\":\"key\",\"label\":\"\",\"type\":1,\"required\":false,\"inputTip\":\"value\"},\"dataIndex\":\"key\",\"title\":\"变量名\",\"key\":\"key\"},{\"editProps\":{\"name\":\"value\",\"label\":\"\",\"type\":1,\"required\":false,\"inputTip\":\"value\"},\"dataIndex\":\"value\",\"title\":\"变量值\",\"key\":\"value\"}],\"enableAdd\":true,\"enableEdit\":true},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"settingsExecParams\",\"dynamic\":false,\"value\":[],\"order\":8}],\"refresh\":[\"Y\"]}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"561fdf7a-8a14-4643-8ea3-229e393f86eb\",\"id\":\"561fdf7a-8a14-4643-8ea3-229e393f86eb\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:5d9feaab-ed88-4e16-b4f3-602858f796d3",
 			"isImport":1,
 			"appId":"job",
 			"name":"5d9feaab-ed88-4e16-b4f3-602858f796d3",
 			"type":"BLOCK",
 			"config":"{\"elementId\":\"job:BLOCK:5d9feaab-ed88-4e16-b4f3-602858f796d3\",\"isImport\":0,\"gmtModified\":1661413419644,\"lastModifier\":\"\",\"label\":\"详情\",\"gmtCreate\":1661412876144,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"26b8b13e-ecc8-4fd2-bac5-198d0911bc4d\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":1,\"submitLabel\":\"请到数据运维平台修改\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"method\":\"POST\",\"uniqueKey\":\"6875bfa8-00b8-4916-90bc-343a56fbdd11\",\"refresh\":[],\"label\":\"作业详情\",\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\",\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues,httpClient){\\n  return {type:\\\"\\\",message:\\\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\\\",title:\\\"\\\",pass:false,transformParams:{}}\\n}\",\"api\":\"gateway/sreworks-job/job/get?id=$(id)\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"85f7dfef-7112-4c1c-9efb-89e65f4890f9\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"作业名称\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"alias\",\"dynamic\":false,\"value\":[],\"order\":\"0\"},{\"validateReg\":\"\",\"onlyKey\":\"e2deaef0-578e-4d08-bc53-75f5e9247763\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":\"normal\",\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"触发器类型\",\"type\":14,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"defaultValue\":\"normal\",\"options\":[{\"label\":\"普通作业\",\"value\":\"normal\"},{\"label\":\"定时作业\",\"value\":\"cron\"}]},\"isHidden\":2,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"triggerType\",\"dynamic\":false,\"value\":[],\"order\":\"1\"},{\"validateReg\":\"\",\"onlyKey\":\"bf214d8d-24da-41e1-8ad2-b856b08bfad3\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"触发器配置\",\"type\":28,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"formValues.triggerType === \\\"cron\\\"\",\"name\":\"cronExpression\",\"dynamic\":false,\"value\":[],\"order\":\"2\"},{\"validateReg\":\"\",\"onlyKey\":\"01301d7c-afa8-407f-bf39-6bef7a380890\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"作业标签\",\"type\":27,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"tags\",\"dynamic\":false,\"value\":[],\"order\":\"3\"},{\"validateReg\":\"\",\"onlyKey\":\"6adb1cf8-ea25-45bd-b643-125fd9e829c1\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"作业场景\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"sceneType\",\"dynamic\":false,\"value\":[],\"order\":\"4\"},{\"validateReg\":\"\",\"onlyKey\":\"68b85cc0-117b-42eb-9db3-f298664c99e8\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"参数配置\",\"type\":85,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"columns\":[{\"editProps\":{\"name\":\"key\",\"label\":\"\",\"type\":1,\"required\":false,\"inputTip\":\"value\"},\"dataIndex\":\"key\",\"title\":\"参数名\",\"key\":\"key\"},{\"editProps\":{\"name\":\"value\",\"label\":\"\",\"type\":1,\"required\":false,\"inputTip\":\"value\"},\"dataIndex\":\"value\",\"title\":\"参数值\",\"key\":\"value\"}]},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"varList\",\"dynamic\":false,\"value\":[],\"order\":\"5\"},{\"validateReg\":\"\",\"onlyKey\":\"776e0b84-c832-4488-9e6a-a3f4735604a8\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"作业描述\",\"type\":2,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"description\",\"dynamic\":false,\"value\":[],\"order\":\"6\"}]}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"5d9feaab-ed88-4e16-b4f3-602858f796d3\",\"id\":\"5d9feaab-ed88-4e16-b4f3-602858f796d3\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:5e340274-4520-48d6-992b-3139383c4aa8",
+			"isImport":1,
+			"appId":"job",
+			"name":"5e340274-4520-48d6-992b-3139383c4aa8",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:5e340274-4520-48d6-992b-3139383c4aa8\",\"isImport\":0,\"gmtModified\":1680090664685,\"lastModifier\":\"\",\"label\":\"新增输出\",\"gmtCreate\":1680090664148,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"c581d711-36ea-4d45-a48f-3b62751713ae\",\"elements\":[{\"type\":\"STEP_ACTION\",\"config\":{\"title\":\"分步操作\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"e7492450-2b30-4242-b167-563dde140f60\",\"blocks\":[\"job:BLOCK:f5d7d64b-74f7-4f22-8f2a-6bacfa050a8f\",\"job:BLOCK:07898937-852b-469c-b8f4-7827b6a28bbe\",\"job:BLOCK:0a75ca5f-1fa2-4af1-a3c1-e8df0e664c0e\",\"job:BLOCK:445bff29-78de-416b-a97e-d049f7054149\"]}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"5e340274-4520-48d6-992b-3139383c4aa8\",\"id\":\"5e340274-4520-48d6-992b-3139383c4aa8\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
 			"version":"0",
 			"stageId":"dev"
 		},
@@ -441,6 +770,26 @@
 			"name":"5fa962d2-fbf9-4d99-b541-26f889e5fcee",
 			"type":"BLOCK",
 			"config":"{\"elementId\":\"job:BLOCK:5fa962d2-fbf9-4d99-b541-26f889e5fcee\",\"isImport\":1,\"gmtModified\":1645186830218,\"lastModifier\":\"999999999\",\"label\":\"修改\",\"gmtCreate\":1645186640870,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"46df07d4-6cd4-4022-b639-7d092e70b7d9\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":1,\"submitLabel\":\"修改\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  var varList = [];\\n  if (nodeParams.varConf) {\\n      for(var key in nodeParams.varConf) {\\n          varList.push({\\\"key\\\":key, \\\"value\\\":nodeParams.varConf[key]});\\n      }\\n  }\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:{\\n      varList:varList\\n  },dynamicItems:[]}\\n}\\n\",\"method\":\"POST\",\"uniqueKey\":\"6875bfa8-00b8-4916-90bc-343a56fbdd11\",\"refresh\":[\"Y\"],\"label\":\"修改作业\",\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\",\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues){\\n  var res = {\\\"varConf\\\":{}, \\\"triggerConf\\\":{}};\\n\\n  if (nodeParams.triggerType == \\\"cron\\\") {\\n      res[\\\"triggerConf\\\"] = {\\n        \\\"cronExpression\\\": nodeParams.cronExpression,\\n        \\\"enabled\\\": false\\n      }\\n  }\\n  \\n  formValues.varList.forEach(function(row){\\n      res[\\\"varConf\\\"][row.key] = row.value;\\n  });\\n  \\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:res}\\n}\",\"api\":\"gateway/sreworks-job/job/modify?id=$(id)\",\"parameters\":[{\"name\":\"name\",\"label\":\"作业标识\",\"defaultValue\":[],\"value\":[],\"validValue\":[],\"type\":1,\"dynamic\":false,\"required\":2,\"validateType\":\"string\",\"visible\":2,\"isHidden\":2,\"readonly\":2,\"toolTip\":\"\",\"defModel\":{},\"order\":0,\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"onlyKey\":\"86900a8f-7c6b-4baa-9bcf-7e2bc1270398\"},{\"validateReg\":\"\",\"onlyKey\":\"85f7dfef-7112-4c1c-9efb-89e65f4890f9\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"作业名称\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"alias\",\"dynamic\":false,\"value\":[],\"order\":1},{\"validateReg\":\"\",\"onlyKey\":\"e2deaef0-578e-4d08-bc53-75f5e9247763\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"触发器类型\",\"type\":14,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{\"defaultValue\":\"normal\",\"options\":[{\"label\":\"普通作业\",\"value\":\"normal\"},{\"label\":\"定时作业\",\"value\":\"cron\"}]},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"triggerType\",\"dynamic\":false,\"value\":[],\"order\":2},{\"validateReg\":\"\",\"onlyKey\":\"bf214d8d-24da-41e1-8ad2-b856b08bfad3\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"触发器配置\",\"type\":28,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"formValues.triggerType === \\\"cron\\\"\",\"name\":\"cronExpression\",\"dynamic\":false,\"value\":[],\"order\":3},{\"validateReg\":\"\",\"onlyKey\":\"01301d7c-afa8-407f-bf39-6bef7a380890\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"作业标签\",\"type\":27,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"tags\",\"dynamic\":false,\"value\":[],\"order\":4},{\"validateReg\":\"\",\"onlyKey\":\"6adb1cf8-ea25-45bd-b643-125fd9e829c1\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"作业场景\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{},\"isHidden\":2,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"sceneType\",\"dynamic\":false,\"value\":[],\"order\":5},{\"validateReg\":\"\",\"onlyKey\":\"68b85cc0-117b-42eb-9db3-f298664c99e8\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"参数配置\",\"type\":85,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"enableRemove\":true,\"pagination\":false,\"columns\":[{\"editProps\":{\"name\":\"key\",\"label\":\"\",\"type\":1,\"required\":false,\"inputTip\":\"value\"},\"dataIndex\":\"key\",\"title\":\"参数名\",\"key\":\"key\"},{\"editProps\":{\"name\":\"value\",\"label\":\"\",\"type\":1,\"required\":false,\"inputTip\":\"value\"},\"dataIndex\":\"value\",\"title\":\"参数值\",\"key\":\"value\"}],\"enableAdd\":true,\"enableEdit\":true},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"varList\",\"dynamic\":false,\"value\":[],\"order\":6},{\"validateReg\":\"\",\"onlyKey\":\"776e0b84-c832-4488-9e6a-a3f4735604a8\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"作业描述\",\"type\":2,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"description\",\"dynamic\":false,\"value\":[],\"order\":7}]}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"5fa962d2-fbf9-4d99-b541-26f889e5fcee\",\"id\":\"5fa962d2-fbf9-4d99-b541-26f889e5fcee\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:63323164-f200-4915-88c2-f0b7865d97e3",
+			"isImport":1,
+			"appId":"job",
+			"name":"63323164-f200-4915-88c2-f0b7865d97e3",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:63323164-f200-4915-88c2-f0b7865d97e3\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"8909c9e9-7b68-4e83-baa9-c279da28b387\",\"elements\":[{\"type\":\"STEP_ACTION\",\"config\":{\"title\":\"分步操作\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"d6ca286e-45f6-47b2-a101-50db299719c1\",\"blocks\":[\"job:BLOCK:4842fdc7-d542-4320-9991-fac4477e5cd2\",\"job:BLOCK:0e6098ca-c589-47b8-afad-5ef48f9f3b70\",\"job:BLOCK:3dc3b8aa-9e28-4a8d-aba9-1dc5520ecdae\",\"job:BLOCK:c1345617-64dc-4a6d-8fc8-3fde64fab448\",\"job:BLOCK:8c22d4d1-8a97-4eec-be61-5e25cb2ab600\"]}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"63323164-f200-4915-88c2-f0b7865d97e3\",\"id\":\"63323164-f200-4915-88c2-f0b7865d97e3\",\"label\":\"编辑\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:65d918dc-f96d-40e2-b83e-b226ed8c440a",
+			"isImport":1,
+			"appId":"job",
+			"name":"65d918dc-f96d-40e2-b83e-b226ed8c440a",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:65d918dc-f96d-40e2-b83e-b226ed8c440a\",\"isImport\":0,\"gmtModified\":1681510380213,\"lastModifier\":\"\",\"label\":\"运行环境\",\"gmtCreate\":1681510231271,\"type\":\"BLOCK\",\"version\":0,\"tags\":\"private\",\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"0f1b2d22-26d8-4cb9-89e7-3029d5a6f130\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"dependParams\":[],\"dataSourceMeta\":{\"function\":\"function getData(nodeParams){\\n\\tvar res = {};\\n\\tconfigMapping = {\\n       \\\"settings_parallelism\\\": \\\"settings.parallelism\\\",\\n       \\\"settings_numberOfTaskManagers\\\": \\\"settings.numberOfTaskManagers\\\",\\n       \\\"settings_taskmanager_cpu\\\": \\\"settings.resources.taskmanager.cpu\\\",\\n       \\\"settings_taskmanager_memory\\\": \\\"settings.resources.taskmanager.memory\\\",\\n       \\\"settings_jobmanager_cpu\\\": \\\"settings.resources.jobmanager.cpu\\\",\\n       \\\"settings_jobmanager_memory\\\": \\\"settings.resources.jobmanager.memory\\\",\\n       \\\"settings_pythonRuntimeId\\\": \\\"settings.pythonRuntimeId\\\",\\n\\t};\\n\\tres[\\\"configMapping\\\"] = JSON.stringify(configMapping);\\n\\tif(nodeParams.options && nodeParams.options.settings && nodeParams.options.settings.pythonRuntimeId){\\n\\t   res[\\\"settings_pythonRuntimeId\\\"] = nodeParams.options.settings.pythonRuntimeId;\\n\\t}\\n\\treturn res;\\n}\\n\",\"type\":\"FUNCTION\"},\"uniqueKey\":\"777fbf11-5c3b-44ef-b3bd-f48fb82198b4\",\"title\":\"操作\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"7b0da2e8-9e55-43ab-81a9-ae9ae3237d12\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"Python运行环境\",\"type\":3,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"gateway/sreworks-job/stream-job/runtimes?page=1&pageSize=100\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  console.log(respData);\\n  respData.items.forEach(function(item){\\n    item.label = item.name;\\n    item.value = item.id;\\n  });\\n  return respData.items;\\n}\",\"type\":\"API\"},\"validValue\":[],\"visibleExp\":\"\",\"name\":\"settings_pythonRuntimeId\",\"dynamic\":false,\"value\":[],\"order\":1},{\"validateReg\":\"\",\"onlyKey\":\"c5f88e32-5f2b-4144-b16b-4e5ceb2954b5\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"configMapping\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":1,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"configMapping\",\"dynamic\":false,\"value\":[],\"order\":3}],\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"}}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"65d918dc-f96d-40e2-b83e-b226ed8c440a\",\"id\":\"65d918dc-f96d-40e2-b83e-b226ed8c440a\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
 			"version":"0",
 			"stageId":"dev"
 		},
@@ -485,6 +834,16 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:7c767e2e-1485-4d0c-ab73-f3fd84891b1c",
+			"isImport":1,
+			"appId":"job",
+			"name":"7c767e2e-1485-4d0c-ab73-f3fd84891b1c",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:7c767e2e-1485-4d0c-ab73-f3fd84891b1c\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"1635ac9b-5a35-47d8-b738-6caa21703b1a\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"title\":\"操作\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"3603d04a-cd3c-4ad8-a766-054a0321ea25\",\"parameters\":[{\"name\":\"name\",\"label\":\"名称\",\"defaultValue\":[],\"value\":[],\"validValue\":[],\"type\":1,\"dynamic\":false,\"required\":1,\"validateType\":\"string\",\"visible\":2,\"isHidden\":2,\"readonly\":2,\"toolTip\":\"\",\"defModel\":{},\"order\":0,\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"onlyKey\":\"6a5a0cf8-7a17-4d8d-85ab-97abe9f520dc\",\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\"},{\"name\":\"sourceTypeStr\",\"label\":\"输入源类型\",\"defaultValue\":[\"$(data.sourceType)\"],\"value\":[],\"validValue\":[],\"type\":1,\"dynamic\":false,\"required\":1,\"validateType\":\"string\",\"visible\":2,\"isHidden\":2,\"readonly\":2,\"toolTip\":\"\",\"defModel\":{},\"order\":1,\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"onlyKey\":\"b0732326-95ea-4713-bd42-c695849d6cd4\"}]}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"7c767e2e-1485-4d0c-ab73-f3fd84891b1c\",\"id\":\"7c767e2e-1485-4d0c-ab73-f3fd84891b1c\",\"label\":\"输入源信息\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]},\"tags\":\"private\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:7e11c283-becd-4edf-99d2-9d6e0add8ec9",
 			"isImport":1,
 			"appId":"job",
@@ -511,6 +870,16 @@
 			"name":"85a4a484-e8b5-46a0-b913-e40243e7b2b0",
 			"type":"BLOCK",
 			"config":"{\"elementId\":\"job:BLOCK:85a4a484-e8b5-46a0-b913-e40243e7b2b0\",\"isImport\":1,\"gmtModified\":1632897792316,\"lastModifier\":\"999999999\",\"label\":\"编辑任务\",\"gmtCreate\":1632897569546,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"944e2c5b-e1c2-4e27-a709-1011fd420ac2\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":1,\"submitLabel\":\"修改\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"method\":\"POST\",\"uniqueKey\":\"cb6a4a60-3cf9-4f45-87ee-6c62b4da566a\",\"refresh\":[\"Y\"],\"label\":\"任务保存\",\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\",\"dataSourceMeta\":{\"beforeRequestHandler\":\"function beforeRequest(nodeParams){\\n  return {}\\n}\",\"method\":\"GET\",\"api\":\"gateway/sreworks-job/task/get?id=$(id)\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  var varList = []\\n  for (var key in respData.varConf) {\\n　　 var value = respData.varConf[key];\\n    varList.push({\\\"key\\\": key, \\\"value\\\": value});\\n  }\\n  respData['varList'] = varList\\n  return respData;\\n}\",\"type\":\"API\"},\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues){\\n  var res = {};\\n  res[\\\"varConf\\\"] = {}\\n  formValues.varList.forEach(function(row){\\n  \\tres[\\\"varConf\\\"][row.key] = row.value;\\n  });\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:res}\\n}\\n\",\"api\":\"gateway/sreworks-job/task/modify?id=$(id)\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"c0afcc71-7efb-4262-8f10-960b3d29ac54\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"任务标识\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"name\",\"dynamic\":false,\"value\":[],\"order\":\"0\"},{\"validateReg\":\"\",\"onlyKey\":\"ae52afa5-db22-464c-b05d-519a203d6448\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"任务名称\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{},\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"alias\",\"dynamic\":false,\"value\":[],\"order\":\"1\"},{\"validateReg\":\"\",\"onlyKey\":\"5b8461d7-12d0-4d07-b01b-527eafa5c0e6\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"/gateway/sreworks-job/worker/listExecType\",\"label\":\"任务类型\",\"type\":14,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{},\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"execType\",\"dynamic\":false,\"value\":[],\"order\":\"2\"},{\"validateReg\":\"\",\"onlyKey\":\"037d5145-c7ef-4b31-87fa-9869a50422da\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"任务内容\",\"type\":83,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{},\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"execContent\",\"dynamic\":false,\"value\":[],\"order\":\"3\"},{\"validateReg\":\"^[1-9][0-9]*$\",\"onlyKey\":\"6bdb785d-6391-48c9-b32d-07c1138ba25e\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[\"30\"],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"超时时间\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{\"suffix\":\"秒\"},\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"execTimeout\",\"dynamic\":false,\"value\":[],\"order\":4,\"isHidden\":2},{\"validateReg\":\"\",\"onlyKey\":\"b2e9e44c-c7c2-40f0-bbee-85c52d69ff03\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"任务场景\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":2,\"defModel\":{},\"isHidden\":2,\"readonly\":2,\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"/gateway/sreworks-job/job/listSceneType\",\"type\":\"API\"},\"validValue\":[],\"visibleExp\":\"\",\"name\":\"sceneType\",\"dynamic\":false,\"value\":[],\"order\":5},{\"validateReg\":\"\",\"onlyKey\":\"317740ac-f1cd-4ac2-aace-5845da443071\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"参数\",\"type\":85,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"enableRemove\":true,\"columns\":[{\"editProps\":{\"name\":\"key\",\"label\":\"\",\"type\":1,\"required\":false,\"inputTip\":\"key\"},\"dataIndex\":\"key\",\"title\":\"key\",\"key\":\"key\"},{\"editProps\":{\"name\":\"value\",\"label\":\"\",\"type\":1,\"required\":false,\"inputTip\":\"value\"},\"dataIndex\":\"value\",\"title\":\"value\",\"key\":\"value\"}],\"enableAdd\":true,\"enableEdit\":true},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"varList\",\"dynamic\":false,\"value\":[],\"order\":\"6\"}]}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"85a4a484-e8b5-46a0-b913-e40243e7b2b0\",\"id\":\"85a4a484-e8b5-46a0-b913-e40243e7b2b0\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:86ec3869-bfdc-4d13-81b5-9a332ed8f3a9",
+			"isImport":1,
+			"appId":"job",
+			"name":"86ec3869-bfdc-4d13-81b5-9a332ed8f3a9",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:86ec3869-bfdc-4d13-81b5-9a332ed8f3a9\",\"isImport\":0,\"gmtModified\":1681510976333,\"lastModifier\":\"\",\"label\":\"运行资源\",\"gmtCreate\":1681510561083,\"type\":\"BLOCK\",\"version\":0,\"tags\":\"private\",\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"c7cbdc43-9ea8-413a-a985-a8384c285d1d\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":1,\"submitLabel\":\"执行\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"method\":\"POST\",\"uniqueKey\":\"36e68cf8-cd3b-4e10-bafb-820ef938e2b3\",\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\",\"dataSourceMeta\":{\"function\":\"function getData(nodeParams){\\n\\n\\tfunction getNestedValue(obj, keys) {\\n\\t  for (var i = 0; i < keys.length; i++) {\\n\\t    obj = obj[keys[i]];\\n\\t    if (obj === undefined) {\\n\\t      return undefined;\\n\\t    }\\n\\t  }\\n\\t  return obj;\\n\\t}\\n\\n\\tconsole.log(nodeParams);\\n\\n\\tvar res = {};\\n\\tif(nodeParams.options && nodeParams.options.settings){\\n\\t  \\n\\t  var configMapping = JSON.parse(nodeParams.configMapping);\\n\\n    for(var i in configMapping){\\n      var index = configMapping[i].split(\\\".\\\");\\n      var value = getNestedValue(nodeParams.options, index);\\n      console.log(i, index, value);\\n      if(value){\\n        res[i] = value;\\n      }\\n    }\\n\\t  \\n\\t}\\n  \\n  console.log(res);\\t\\n\\t\\n\\treturn res;\\n}\",\"type\":\"FUNCTION\"},\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues,httpClient){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:{}}\\n}\",\"labelSpan\":\"6\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"b185f465-6c37-45a9-b5ae-116cd83c040a\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"<a target=\\\"_blank\\\" href=\\\"https://docs.ververica.com/user_guide/application_operations/deployments/scaling.html#parallelism-number-of-taskmanagers-and-slots\\\">Parallelism</a> ≤ taskmanager.numberOfTaskSlots × numberOfTaskManagers\",\"initApi\":\"\",\"label\":\"并发\",\"type\":114,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"layout\":{\"category\":\"并行设置\",\"span\":\"24\"}},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"settings_parallelism\",\"dynamic\":false,\"value\":[],\"order\":2},{\"validateReg\":\"\",\"onlyKey\":\"fccfd636-044f-46b0-8063-07596e2acff8\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"numberOfTaskManagers\",\"initApi\":\"\",\"label\":\"Task Manager数量\",\"type\":114,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"layout\":{\"category\":\"并行设置\",\"span\":\"24\"}},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"settings_numberOfTaskManagers\",\"dynamic\":false,\"value\":[],\"order\":3},{\"validateReg\":\"\",\"onlyKey\":\"bf3746f1-943d-406a-a8c6-11a0716a53ee\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"最小0.1\",\"initApi\":\"\",\"label\":\"Task Manager CPU\",\"type\":114,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"layout\":{\"category\":\"运行资源\",\"span\":\"24\"}},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"settings_taskmanager_cpu\",\"dynamic\":false,\"value\":[],\"order\":4},{\"validateReg\":\"\",\"onlyKey\":\"ae21250b-7b7a-4fb0-8b08-853bffde4abf\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"最小1g\",\"initApi\":\"\",\"label\":\"Task Manager内存\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"layout\":{\"category\":\"运行资源\",\"span\":\"24\"}},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"settings_taskmanager_memory\",\"dynamic\":false,\"value\":[],\"order\":5},{\"validateReg\":\"\",\"onlyKey\":\"7a722e4a-17ed-48d6-a9ed-b7660ac591dd\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"最小0.1\",\"initApi\":\"\",\"label\":\"Job Manager CPU\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"layout\":{\"category\":\"运行资源\",\"span\":\"24\"}},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"settings_jobmanager_cpu\",\"dynamic\":false,\"value\":[],\"order\":6},{\"validateReg\":\"\",\"onlyKey\":\"644b9eb8-21f1-4e8c-a9ed-47ee63bfad1f\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"最小650m\",\"initApi\":\"\",\"label\":\"Job Manager内存\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"layout\":{\"category\":\"运行资源\",\"span\":\"24\"}},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"settings_jobmanager_memory\",\"dynamic\":false,\"value\":[],\"order\":7},{\"validateReg\":\"\",\"onlyKey\":\"c857fcbb-9d0c-4813-86d1-063e5a8a7be0\",\"validateType\":\"string\",\"visible\":1,\"defaultValue\":[],\"toolTip\":\"taskmanager.numberOfTaskSlots\",\"initApi\":\"\",\"label\":\"Task Manager资源槽数\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"layout\":{\"category\":\"并行设置\",\"span\":\"24\"}},\"isHidden\":1,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"taskmanager_NumberOfTaskSlots\",\"dynamic\":false,\"value\":[],\"order\":7}]}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"86ec3869-bfdc-4d13-81b5-9a332ed8f3a9\",\"id\":\"86ec3869-bfdc-4d13-81b5-9a332ed8f3a9\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
 			"version":"0",
 			"stageId":"dev"
 		},
@@ -545,12 +914,52 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:8c22d4d1-8a97-4eec-be61-5e25cb2ab600",
+			"isImport":1,
+			"appId":"job",
+			"name":"8c22d4d1-8a97-4eec-be61-5e25cb2ab600",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:8c22d4d1-8a97-4eec-be61-5e25cb2ab600\",\"isImport\":0,\"gmtModified\":1683062921373,\"lastModifier\":\"\",\"label\":\"依赖资源\",\"gmtCreate\":1683006157887,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"9dd68945-c637-498c-af2a-a1edf14f9562\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":1,\"submitLabel\":\"执行\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"method\":\"POST\",\"uniqueKey\":\"1cd6bc0a-6c44-437e-95b5-aabbd21830a0\",\"label\":\"新增运行时\",\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\",\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues,httpClient){\\n  \\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:{}}\\n}\",\"api\":\"\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"c67080d5-be35-4c22-966d-c217c541eaa6\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"\",\"type\":85,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"enableRemove\":true,\"pagination\":false,\"columns\":[{\"editProps\":{\"name\":\"filename\",\"label\":\"\",\"api\":\"gateway/sreworks-job/stream-job/artifacts?isRespOptions=true\",\"type\":3,\"defModel\":{\"optionMapping\":{\"label\":\"filename\",\"value\":\"filename\"},\"remote\":true},\"required\":false,\"inputTip\":\"文件选择\"},\"dataIndex\":\"filename\",\"title\":\"文件\",\"key\":\"filename\"}],\"enableAdd\":true,\"enableEdit\":true},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"settings_additionalDependencies\",\"dynamic\":false,\"value\":[],\"order\":0}]}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"8c22d4d1-8a97-4eec-be61-5e25cb2ab600\",\"id\":\"8c22d4d1-8a97-4eec-be61-5e25cb2ab600\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:8dc96f22-5daa-4f2e-98c6-016344a470b3",
+			"isImport":1,
+			"appId":"job",
+			"name":"8dc96f22-5daa-4f2e-98c6-016344a470b3",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:8dc96f22-5daa-4f2e-98c6-016344a470b3\",\"isImport\":0,\"gmtModified\":1681509619813,\"lastModifier\":\"\",\"label\":\"启动实例\",\"gmtCreate\":1681509409147,\"type\":\"BLOCK\",\"version\":0,\"tags\":\"private\",\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"a1daa45a-8a84-431c-8580-1316b4c27028\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":1,\"submitLabel\":\"执行\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"method\":\"POST\",\"uniqueKey\":\"fdc88412-becc-4e49-8748-90b92112b7e6\",\"label\":\"启动实例\",\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\",\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues,httpClient){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:{}}\\n}\",\"api\":\"gateway/sreworks-job/stream-job/$(id)/operate/start\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"72122394-cef7-4a32-bb82-bb3a6154180e\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"ID\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"id\",\"dynamic\":false,\"value\":[],\"order\":0}],\"refresh\":[\"Y\"]}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"8dc96f22-5daa-4f2e-98c6-016344a470b3\",\"id\":\"8dc96f22-5daa-4f2e-98c6-016344a470b3\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:8f014569-6c8c-428a-99d6-d1e589cdb9fe",
+			"isImport":1,
+			"appId":"job",
+			"name":"8f014569-6c8c-428a-99d6-d1e589cdb9fe",
+			"type":"BLOCK",
+			"config":"{\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"ae5d3230-8b29-4432-a2c8-ee1362c3336c\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"title\":\"操作\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"7857ffec-bb3b-4287-8588-64abe11127dd\",\"parameters\":[{\"name\":\"arg-1\",\"label\":\"arg-1\",\"defaultValue\":[],\"value\":[],\"validValue\":[],\"type\":1,\"dynamic\":false,\"required\":2,\"validateType\":\"string\",\"visible\":2,\"isHidden\":2,\"readonly\":1,\"toolTip\":\"\",\"defModel\":{},\"order\":0,\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"onlyKey\":\"49d4c3bb-e450-401c-b295-88a8fedf4323\"}]}}],\"rang\":[0,24],\"chosen\":false}]}}],\"name\":\"8f014569-6c8c-428a-99d6-d1e589cdb9fe\",\"id\":\"8f014569-6c8c-428a-99d6-d1e589cdb9fe\",\"label\":\"新增SQL处理\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:9010efbb-290f-4fc2-b93c-bb2a76e3f58c",
 			"isImport":1,
 			"appId":"job",
 			"name":"9010efbb-290f-4fc2-b93c-bb2a76e3f58c",
 			"type":"BLOCK",
 			"config":"{\"elementId\":\"job:BLOCK:9010efbb-290f-4fc2-b93c-bb2a76e3f58c\",\"gmtModified\":1632986354627,\"lastModifier\":\"999999999\",\"label\":\"调度类型过滤器\",\"gmtCreate\":1632986354627,\"type\":\"BLOCK\",\"version\":0,\"tags\":\"private\",\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"877222b4-84a3-4553-86f5-e4b00831ae51\",\"elements\":[{\"type\":\"FILTER_TAB\",\"config\":{\"outputs\":[],\"outputName\":\"scheduleType\",\"uniqueKey\":\"c8e47213-096b-473c-991e-9d973a7ee204\",\"tabPosition\":\"left\",\"tabType\":\"Button\",\"title\":\"TAB过滤项\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"autoSubmit\":false,\"dependParams\":[],\"tabSize\":\"small\",\"showSearch\":true,\"scenes\":[],\"enterSubmit\":false,\"parameters\":[{\"name\":\"tab1\",\"label\":\"串行调度\"},{\"name\":\"tab2\",\"label\":\"并行调度\"}]}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"9010efbb-290f-4fc2-b93c-bb2a76e3f58c\",\"id\":\"9010efbb-290f-4fc2-b93c-bb2a76e3f58c\",\"category\":\"FILTER\",\"config\":{\"functionMeta\":[]}}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:990ab57e-59f0-4705-b97c-a09a14617e85",
+			"isImport":1,
+			"appId":"job",
+			"name":"990ab57e-59f0-4705-b97c-a09a14617e85",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:990ab57e-59f0-4705-b97c-a09a14617e85\",\"isImport\":0,\"gmtModified\":1680166030525,\"lastModifier\":\"\",\"label\":\"选择输入源\",\"gmtCreate\":1680165022265,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"eb2906e7-1341-4ae0-9553-befd8fe83946\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"dependParams\":[],\"uniqueKey\":\"713c5e7d-b23c-47b4-96a0-2d6f1dde55dd\",\"title\":\"操作\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"24e91954-0b65-4592-a013-1bbb62871a2c\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"\",\"type\":70,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  console.log(formValues.sourceType);\\n  return {\\n    \\\"sourceTypeStr\\\": formValues.sourceType[0].id\\n  }\\n}\",\"required\":2,\"defModel\":{\"isSingle\":true},\"isHidden\":2,\"readonly\":1,\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"gateway/sreworks-job/stream-job/connectors\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  var resp = {\\\"options\\\":[]};\\n  respData.forEach(function(item){\\n    resp.options.push({\\n      \\\"id\\\": item.type,\\n      \\\"value\\\": item.type,\\n      \\\"name\\\": item.type,\\n      \\\"label\\\": item.type,\\n      \\\"description\\\": item.supportedFormats.join(\\\",\\\"),\\n    })\\n  });\\n  if(resp.options.length > 0){\\n    resp.initValue = [{\\n      \\\"id\\\": resp.options[0].id,\\n      \\\"value\\\": resp.options[0].value,\\n    }];\\n  }\\n  return resp;\\n}\",\"type\":\"API\",\"params\":{\"source\":true}},\"validValue\":[],\"visibleExp\":\"\",\"name\":\"sourceType\",\"dynamic\":false,\"value\":[],\"order\":0},{\"validateReg\":\"\",\"onlyKey\":\"9e642682-4abc-4fd3-868c-24bb7e9f620c\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"sourceTypeStr\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":1,\"readonly\":2,\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"gateway/sreworks-job/stream-job/connectors\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  console.log(respData);\\n  var resp = \\\"\\\";\\n  if(respData.length > 0){\\n    resp = respData[0].type;\\n  }\\n  return resp;\\n}\",\"type\":\"API\",\"params\":{\"source\":true}},\"validValue\":[],\"visibleExp\":\"\",\"name\":\"sourceTypeStr\",\"dynamic\":false,\"value\":[],\"order\":1}],\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"}}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"990ab57e-59f0-4705-b97c-a09a14617e85\",\"id\":\"990ab57e-59f0-4705-b97c-a09a14617e85\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
 			"version":"0",
 			"stageId":"dev"
 		},
@@ -575,6 +984,16 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:ad2cf751-abf7-43e4-9a89-a6448d219521",
+			"isImport":1,
+			"appId":"job",
+			"name":"ad2cf751-abf7-43e4-9a89-a6448d219521",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:ad2cf751-abf7-43e4-9a89-a6448d219521\",\"isImport\":0,\"gmtModified\":1681113485074,\"lastModifier\":\"\",\"label\":\"删除步骤\",\"gmtCreate\":1681113483720,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"e314b9ea-6215-435f-b9f7-bba1be69e9cd\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"dependParams\":[],\"uniqueKey\":\"422a13a0-4482-4b03-9625-9f9f0bba7a60\",\"title\":\"操作\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"42500c79-bc71-4d35-ac61-88a357f0008e\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"streamJobId\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"streamJobId\",\"dynamic\":false,\"value\":[],\"order\":0},{\"validateReg\":\"\",\"onlyKey\":\"e83d77aa-a285-42af-b7f6-c6f245dfea50\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"id\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"id\",\"dynamic\":false,\"value\":[],\"order\":1}],\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"api\":\"gateway/sreworks-job/stream-job/$(streamJobId)/block/$(id)\",\"label\":\"删除步骤\",\"bodyType\":1,\"method\":\"DELETE\",\"submitLabel\":\"执行\",\"refresh\":[\"Y\"],\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues,httpClient){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:{}}\\n}\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\"}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"ad2cf751-abf7-43e4-9a89-a6448d219521\",\"id\":\"ad2cf751-abf7-43e4-9a89-a6448d219521\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:ae262a21-6f43-4784-b191-c9a226b440e4",
 			"isImport":1,
 			"appId":"job",
@@ -595,12 +1014,32 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:b7d36d68-e93f-4956-9907-375451427669",
+			"isImport":1,
+			"appId":"job",
+			"name":"b7d36d68-e93f-4956-9907-375451427669",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:b7d36d68-e93f-4956-9907-375451427669\",\"isImport\":0,\"gmtModified\":1683584693272,\"lastModifier\":\"\",\"label\":\"修改输出参数\",\"gmtCreate\":1683584379081,\"type\":\"BLOCK\",\"version\":0,\"tags\":\"private\",\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"e13e10ad-c7e4-428d-a7f6-6aed131abefe\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":1,\"submitLabel\":\"执行\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"method\":\"PUT\",\"uniqueKey\":\"a4ff47b0-ccc8-4fe4-8216-b13c68072369\",\"refresh\":[\"Y\"],\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\",\"dataSourceMeta\":{\"function\":\"function getData(nodeParams){\\n  var res = {};\\n  if(nodeParams.data && nodeParams.data.options){\\n    res[\\\"options\\\"] = nodeParams.data.options;\\n  }\\n  \\n  return res;\\n}\",\"type\":\"FUNCTION\"},\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues,httpClient){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:{}}\\n}\",\"api\":\"gateway/sreworks-job/stream-job/$(streamJobId)/sink/$(id)\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"e99e667e-345d-490d-be17-56741048ec01\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"\",\"type\":85,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"enableRemove\":true,\"pagination\":false,\"columns\":[{\"editProps\":{\"name\":\"key\",\"label\":\"\",\"api\":\"gateway/sreworks-job/stream-job/connector/properties?type=$(sinkTypeStr)&columns=$(columnList)\",\"type\":3,\"required\":false,\"defModel\":{\"remote\":true},\"inputTip\":\"key\"},\"dataIndex\":\"key\",\"title\":\"配置项\",\"key\":\"key\"},{\"editProps\":{\"name\":\"value\",\"label\":\"\",\"type\":1,\"required\":false,\"inputTip\":\"value\"},\"dataIndex\":\"value\",\"title\":\"配置值\",\"key\":\"value\"}],\"enableAdd\":true,\"enableEdit\":true},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"options\",\"dynamic\":false,\"value\":[],\"order\":0}]}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"b7d36d68-e93f-4956-9907-375451427669\",\"id\":\"b7d36d68-e93f-4956-9907-375451427669\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:bb7198a0-61c5-411d-8a10-b98670dd43e3",
 			"isImport":1,
 			"appId":"job",
 			"name":"bb7198a0-61c5-411d-8a10-b98670dd43e3",
 			"type":"BLOCK",
 			"config":"{\"elementId\":\"job:BLOCK:bb7198a0-61c5-411d-8a10-b98670dd43e3\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"5a5cff9f-23f7-4a5b-b5eb-80672cbde480\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":1,\"submitLabel\":\"启动\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"method\":\"POST\",\"uniqueKey\":\"5a1693d1-a82a-400d-9554-6b500dd1d994\",\"label\":\"启动\",\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"gateway/sreworks-job/job/get?id=$(id)\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  var inputValues = {};\\n  if(respData.scheduleConf && respData.scheduleConf.taskIdList){\\n     respData.scheduleConf.taskIdList.forEach(function(task){\\n        for (var key in task.varConf) {\\n           if(!inputValues.hasOwnProperty(key)){\\n              inputValues[key] = task.varConf[key]; \\n           }\\n        }\\n     });\\n  }\\n  if(respData.varConf){\\n    for (var key in respData.varConf) {\\n        inputValues[key] = respData.varConf[key];\\n    }\\n  }\\n  var varList = [];\\n  for (var key in inputValues) {\\n     varList.push({key: key, value: inputValues[key]});\\n  }\\n  return {varList: varList};\\n}\",\"type\":\"API\"},\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues){\\n  var res = {\\\"varConf\\\":{}};\\n  formValues.varList.forEach(function(row){\\n  \\tres[\\\"varConf\\\"][row.key] = row.value;\\n  });\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:res}\\n}\",\"api\":\"/gateway/sreworks-job/job/start?id=$(id)\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"651b5bd2-79a6-4575-b3d5-75778fd7ad9b\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"作业参数\",\"type\":85,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"columns\":[{\"dataIndex\":\"key\",\"title\":\"参数名\",\"key\":\"key\"},{\"editProps\":{\"name\":\"value\",\"label\":\"\",\"type\":1,\"required\":false,\"inputTip\":\"value\"},\"dataIndex\":\"value\",\"title\":\"参数值\",\"key\":\"value\"}],\"enableEdit\":true},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"varList\",\"dynamic\":false,\"value\":[],\"order\":\"\"}]}}],\"rang\":[0,24],\"chosen\":false}]}}],\"name\":\"bb7198a0-61c5-411d-8a10-b98670dd43e3\",\"id\":\"bb7198a0-61c5-411d-8a10-b98670dd43e3\",\"label\":\"执行作业\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:c1345617-64dc-4a6d-8fc8-3fde64fab448",
+			"isImport":1,
+			"appId":"job",
+			"name":"c1345617-64dc-4a6d-8fc8-3fde64fab448",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:c1345617-64dc-4a6d-8fc8-3fde64fab448\",\"isImport\":0,\"gmtModified\":1683062488287,\"lastModifier\":\"\",\"label\":\"Python运行时\",\"gmtCreate\":1683006068512,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"65e7cb8d-670d-4324-838d-eb9f7ff56856\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"dependParams\":[],\"uniqueKey\":\"8068a157-ec41-42a3-87be-2e97859eadb8\",\"title\":\"操作\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"e8c80d3b-35c0-4b2f-8fe7-3cd44a4c7b0c\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"Python venv包\",\"type\":3,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"gateway/sreworks-job/stream-job/artifacts\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  respData.forEach(function(item){\\n    item.label = item.filename;\\n    item.value = item.filename;\\n  });\\n  respData.unshift({\\n     label:\\\"无\\\",\\n     value:\\\"\\\",\\n  });\\n  console.log(respData);\\n  return respData;\\n}\",\"type\":\"API\",\"beforeRequestHandler\":\"function beforeRequest(nodeParams,){\\n  return {}\\n}\"},\"validValue\":[],\"visibleExp\":\"\",\"name\":\"settings_pyArchives\",\"dynamic\":false,\"value\":[],\"order\":0},{\"validateReg\":\"\",\"onlyKey\":\"0f4057e1-2341-4702-930b-3245e4409f4d\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"Python执行入口\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"settings_pyClientExecutable\",\"dynamic\":false,\"value\":[],\"order\":1}],\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"}}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"c1345617-64dc-4a6d-8fc8-3fde64fab448\",\"id\":\"c1345617-64dc-4a6d-8fc8-3fde64fab448\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
 			"version":"0",
 			"stageId":"dev"
 		},
@@ -635,12 +1074,72 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:cc16d660-430c-40ba-bb3b-7c30d13a4910",
+			"isImport":1,
+			"appId":"job",
+			"name":"cc16d660-430c-40ba-bb3b-7c30d13a4910",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:cc16d660-430c-40ba-bb3b-7c30d13a4910\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"50f171d6-95ba-451a-a870-c0e818325eb9\",\"elements\":[{\"type\":\"STEP_ACTION\",\"config\":{\"title\":\"分步操作\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"5b7df193-6cfb-4baa-b9b2-e76983c1f33d\",\"blocks\":[\"job:BLOCK:f2d54e32-519f-4ef0-a889-462675f22f28\",\"job:BLOCK:0a75ca5f-1fa2-4af1-a3c1-e8df0e664c0e\",\"job:BLOCK:b7d36d68-e93f-4956-9907-375451427669\"]}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"cc16d660-430c-40ba-bb3b-7c30d13a4910\",\"id\":\"cc16d660-430c-40ba-bb3b-7c30d13a4910\",\"label\":\"编辑输出结果\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:cc4041e7-ef80-4047-b5d2-ebbfde94989a",
+			"isImport":1,
+			"appId":"job",
+			"name":"cc4041e7-ef80-4047-b5d2-ebbfde94989a",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:cc4041e7-ef80-4047-b5d2-ebbfde94989a\",\"isImport\":0,\"gmtModified\":1680251743184,\"lastModifier\":\"\",\"label\":\"运行参数\",\"gmtCreate\":1680251694668,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"de951c05-f54d-4894-82c9-a640cba48409\",\"elements\":[{\"type\":\"STEP_ACTION\",\"config\":{\"outputs\":[],\"dependParams\":[],\"blocks\":[\"job:BLOCK:65d918dc-f96d-40e2-b83e-b226ed8c440a\",\"job:BLOCK:86ec3869-bfdc-4d13-81b5-9a332ed8f3a9\",\"job:BLOCK:561fdf7a-8a14-4643-8ea3-229e393f86eb\"],\"uniqueKey\":\"1e789134-51fe-48a6-8fe6-aa0daa5b327d\",\"title\":\"分步操作\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"}}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"cc4041e7-ef80-4047-b5d2-ebbfde94989a\",\"id\":\"cc4041e7-ef80-4047-b5d2-ebbfde94989a\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:cfd0d55b-3b23-4d75-897c-661ab6d6e25e",
 			"isImport":1,
 			"appId":"job",
 			"name":"cfd0d55b-3b23-4d75-897c-661ab6d6e25e",
 			"type":"BLOCK",
 			"config":"{\"elementId\":\"job:BLOCK:cfd0d55b-3b23-4d75-897c-661ab6d6e25e\",\"isImport\":1,\"gmtModified\":1660020085989,\"lastModifier\":\"\",\"label\":\"启动\",\"gmtCreate\":1660020085987,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"e84068d6-795b-4fe7-81ec-c0ef5a3d4279\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"bodyType\":1,\"submitLabel\":\"启动\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"method\":\"POST\",\"uniqueKey\":\"5eee19b5-06a8-4c67-8cc7-258a61bcc404\",\"label\":\"启动\",\"title\":\"操作\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"dependParams\":[],\"formLayout\":\"horizontal\",\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"gateway/sreworks-job/job/get?id=$(id)\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  var inputValues = {};\\n  if(respData.scheduleConf && respData.scheduleConf.taskIdList){\\n     respData.scheduleConf.taskIdList.forEach(function(task){\\n        for (var key in task.varConf) {\\n           if(!inputValues.hasOwnProperty(key)){\\n              inputValues[key] = task.varConf[key]; \\n           }\\n        }\\n     });\\n  }\\n  if(respData.varConf){\\n    for (var key in respData.varConf) {\\n        inputValues[key] = respData.varConf[key];\\n    }\\n  }\\n  var varList = [];\\n  for (var key in inputValues) {\\n     varList.push({key: key, value: inputValues[key]});\\n  }\\n  return {varList: varList};\\n}\",\"type\":\"API\"},\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues){\\n  var res = {\\\"varConf\\\":{}};\\n  formValues.varList.forEach(function(row){\\n  \\tres[\\\"varConf\\\"][row.key] = row.value;\\n  });\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:res}\\n}\",\"api\":\"/gateway/sreworks-job/job/start?id=$(id)\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"651b5bd2-79a6-4575-b3d5-75778fd7ad9b\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"执行参数和作业参数合并后传递给任务\",\"initApi\":\"\",\"label\":\"执行参数\",\"type\":85,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{\"enableRemove\":true,\"pagination\":false,\"columns\":[{\"dataIndex\":\"key\",\"title\":\"参数名\",\"key\":\"key\"},{\"editProps\":{\"name\":\"value\",\"label\":\"\",\"type\":1,\"required\":false,\"inputTip\":\"value\"},\"dataIndex\":\"value\",\"title\":\"参数值\",\"key\":\"value\"}],\"enableAdd\":true,\"enableEdit\":true},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"varList\",\"dynamic\":false,\"value\":[],\"order\":0}]}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"cfd0d55b-3b23-4d75-897c-661ab6d6e25e\",\"id\":\"cfd0d55b-3b23-4d75-897c-661ab6d6e25e\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:d07f725f-3392-40aa-a985-2d7a285aa846",
+			"isImport":1,
+			"appId":"job",
+			"name":"d07f725f-3392-40aa-a985-2d7a285aa846",
+			"type":"BLOCK",
+			"config":"{\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"91385aa2-22b1-4cf4-9015-3e62b9fee673\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"title\":\"操作\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"8f4b693a-936a-4426-a193-93024aa8a8b3\",\"parameters\":[{\"name\":\"arg-1\",\"label\":\"arg-1\",\"defaultValue\":[],\"value\":[],\"validValue\":[],\"type\":1,\"dynamic\":false,\"required\":2,\"validateType\":\"string\",\"visible\":2,\"isHidden\":2,\"readonly\":1,\"toolTip\":\"\",\"defModel\":{},\"order\":0,\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"onlyKey\":\"1fc4a8b6-bad3-4ba2-92fa-f893d8fbb459\"}]}}],\"rang\":[0,24],\"chosen\":false}]}}],\"name\":\"d07f725f-3392-40aa-a985-2d7a285aa846\",\"id\":\"d07f725f-3392-40aa-a985-2d7a285aa846\",\"label\":\"配置输出参数\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:d11a20cc-c0dd-4ed6-b25e-9b0048f7d714",
+			"isImport":1,
+			"appId":"job",
+			"name":"d11a20cc-c0dd-4ed6-b25e-9b0048f7d714",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:d11a20cc-c0dd-4ed6-b25e-9b0048f7d714\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"4bc9ddb5-e4c4-4c00-8622-ca5f91ddeed0\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"dependParams\":[],\"uniqueKey\":\"777fbf11-5c3b-44ef-b3bd-f48fb82198b4\",\"title\":\"操作\",\"parameters\":[{\"name\":\"arg-2\",\"label\":\"arg-2\",\"defaultValue\":[],\"value\":[],\"validValue\":[],\"type\":1,\"dynamic\":false,\"required\":2,\"validateType\":\"string\",\"visible\":2,\"isHidden\":2,\"readonly\":1,\"toolTip\":\"\",\"defModel\":{},\"order\":1,\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"onlyKey\":\"ef804c19-9a0d-4c8e-a26d-b018fd1c780c\"}],\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"}}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"d11a20cc-c0dd-4ed6-b25e-9b0048f7d714\",\"id\":\"d11a20cc-c0dd-4ed6-b25e-9b0048f7d714\",\"label\":\"配置运行参数\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:da8c5c8b-56ae-48d9-90de-065307ad95b4",
+			"isImport":1,
+			"appId":"job",
+			"name":"da8c5c8b-56ae-48d9-90de-065307ad95b4",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:da8c5c8b-56ae-48d9-90de-065307ad95b4\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"b2314c45-b0f8-47c5-8622-c0f1df6df968\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"title\":\"操作\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"95e80876-5ba7-4fd3-bc48-0c75a1442cab\",\"parameters\":[{\"name\":\"id\",\"label\":\"ID\",\"defaultValue\":[],\"value\":[],\"validValue\":[],\"type\":1,\"dynamic\":false,\"required\":1,\"validateType\":\"string\",\"visible\":2,\"isHidden\":2,\"readonly\":2,\"toolTip\":\"\",\"defModel\":{},\"order\":0,\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"onlyKey\":\"60e27ffb-be92-476d-bdd7-8329f47537af\"}],\"api\":\"gateway/sreworks-job/stream-job/$(id)/operate/stop\",\"bodyType\":1,\"method\":\"PUT\",\"submitLabel\":\"执行\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues,httpClient){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:{}}\\n}\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\",\"label\":\"停止实例\",\"refresh\":[\"Y\"]}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"da8c5c8b-56ae-48d9-90de-065307ad95b4\",\"id\":\"da8c5c8b-56ae-48d9-90de-065307ad95b4\",\"label\":\"停止实例\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:db8147f6-9a9a-4921-81b1-5efb8adbc38e",
+			"isImport":1,
+			"appId":"job",
+			"name":"db8147f6-9a9a-4921-81b1-5efb8adbc38e",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:db8147f6-9a9a-4921-81b1-5efb8adbc38e\",\"isImport\":0,\"gmtModified\":1683063349351,\"lastModifier\":\"\",\"label\":\"预览\",\"gmtCreate\":1683063344200,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"2e1c99f4-3f0b-4dce-a340-6caf278e28f9\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"dependParams\":[],\"dataSourceMeta\":{\"beforeRequestHandler\":\"function beforeRequest(nodeParams,){\\n  var res = {\\\"settings\\\":{}, \\\"name\\\": nodeParams.name};\\n  \\n  for (var key in nodeParams){\\n     if(key.startsWith(\\\"settings_\\\")){\\n       res[\\\"settings\\\"][key.replace(\\\"settings_\\\",\\\"\\\")] = nodeParams[key];\\n     }  \\n  }\\n\\n  return res;\\n}\",\"method\":\"POST\",\"api\":\"gateway/sreworks-job/stream-job/runtime/preview\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  return {\\n    \\\"preview\\\": respData\\n  };\\n}\",\"type\":\"API\"},\"uniqueKey\":\"a5484688-ca0c-4965-b96c-c8856a637293\",\"title\":\"操作\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"dac815fc-26a9-48e1-a4cc-2bb0dae164c6\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"\",\"type\":83,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":1,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"preview\",\"dynamic\":false,\"value\":[],\"order\":0}],\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"api\":\"gateway/sreworks-job/stream-job/runtime\",\"bodyType\":1,\"method\":\"POST\",\"submitLabel\":\"执行\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues,httpClient){\\n  \\n  var res = {\\\"settings\\\":{}, \\\"name\\\": nodeParams.name};\\n  \\n  for (var key in nodeParams){\\n     if(key.startsWith(\\\"settings_\\\")){\\n       res[\\\"settings\\\"][key.replace(\\\"settings_\\\",\\\"\\\")] = nodeParams[key];\\n     }  \\n  }\\n  \\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:res}\\n}\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\"}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"db8147f6-9a9a-4921-81b1-5efb8adbc38e\",\"id\":\"db8147f6-9a9a-4921-81b1-5efb8adbc38e\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
 			"version":"0",
 			"stageId":"dev"
 		},
@@ -695,12 +1194,62 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:e71ba625-2b39-4909-8cf2-41a472d1e552",
+			"isImport":1,
+			"appId":"job",
+			"name":"e71ba625-2b39-4909-8cf2-41a472d1e552",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:e71ba625-2b39-4909-8cf2-41a472d1e552\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"4efbfa1f-dfa3-41d5-a374-98669fe2d076\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"title\":\"操作\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"bea36fa7-1cb7-40ec-b93a-d6adcef09182\",\"parameters\":[{\"name\":\"id\",\"label\":\"ID\",\"defaultValue\":[],\"value\":[],\"validValue\":[],\"type\":1,\"dynamic\":false,\"required\":1,\"validateType\":\"string\",\"visible\":2,\"isHidden\":2,\"readonly\":2,\"toolTip\":\"\",\"defModel\":{},\"order\":0,\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"onlyKey\":\"981f14ef-0b1b-4987-807f-db8641e2b392\"}],\"api\":\"gateway/sreworks-job/stream-job/$(id)/export/link\",\"label\":\"导出\",\"bodyType\":1,\"method\":\"POST\",\"submitLabel\":\"执行\",\"jumpPath\":\"/gateway/sreworks-job/stream-job/$(id)/export\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues,httpClient){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:{}}\\n}\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\"}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"e71ba625-2b39-4909-8cf2-41a472d1e552\",\"id\":\"e71ba625-2b39-4909-8cf2-41a472d1e552\",\"label\":\"实时作业导出\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:ef9239ea-d51d-4747-a257-50f4e505b23e",
 			"isImport":1,
 			"appId":"job",
 			"name":"ef9239ea-d51d-4747-a257-50f4e505b23e",
 			"type":"BLOCK",
 			"config":"{\"elementId\":\"job:BLOCK:ef9239ea-d51d-4747-a257-50f4e505b23e\",\"gmtModified\":1632920330323,\"lastModifier\":\"999999999\",\"label\":\"执行结果-错误输出\",\"gmtCreate\":1632920130841,\"type\":\"BLOCK\",\"version\":0,\"tags\":\"private\",\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"184fb5eb-d42c-4f76-a7b2-e42a7e31904a\",\"elements\":[{\"type\":\"CustomRender\",\"config\":{\"outputs\":[],\"toolbar\":{\"docList\":[],\"actionList\":[],\"type\":\"button\"},\"dependParams\":[],\"hasWrapper\":\"none\",\"dataSourceMeta\":{\"method\":\"GET\",\"api\":\"gateway/sreworks-job/taskInstance/getWithBlobs?id=$(id)\",\"afterResponseHandler\":\"function afterResponse(respData){\\n  return respData.stderr;\\n}\",\"type\":\"API\"},\"uniqueKey\":\"c94aee2b-2c65-4ee6-8224-cd9a13e6dc6b\",\"cardBorder\":true,\"wrapper\":\"default\",\"title\":\"New widget\",\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"jsxDom\":\"<pre style=\\\"white-space: pre-wrap;\\\">\\n{ widgetData }\\n</pre>\"}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"ef9239ea-d51d-4747-a257-50f4e505b23e\",\"id\":\"ef9239ea-d51d-4747-a257-50f4e505b23e\",\"category\":\"PAGE\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:f2d54e32-519f-4ef0-a889-462675f22f28",
+			"isImport":1,
+			"appId":"job",
+			"name":"f2d54e32-519f-4ef0-a889-462675f22f28",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:f2d54e32-519f-4ef0-a889-462675f22f28\",\"isImport\":0,\"gmtModified\":1683584492718,\"lastModifier\":\"\",\"label\":\"输出信息\",\"gmtCreate\":1683584324385,\"type\":\"BLOCK\",\"version\":0,\"tags\":\"private\",\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"85d15538-030a-49c7-95e0-92690e506bc3\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"dependParams\":[],\"uniqueKey\":\"22dbb20b-e306-47a4-93a2-43252e8f3c59\",\"title\":\"操作\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"dd7dcce0-ef30-4fab-b851-04b6987e6ce0\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"名称\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"name\",\"dynamic\":false,\"value\":[],\"order\":0},{\"validateReg\":\"\",\"onlyKey\":\"b0732326-95ea-4713-bd42-c695849d6cd4\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[\"$(data.sinkType)\"],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"输出类型\",\"type\":1,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"sinkTypeStr\",\"dynamic\":false,\"value\":[],\"order\":1}],\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"}}}],\"rang\":[0,24],\"selected\":false,\"chosen\":false}]}}],\"name\":\"f2d54e32-519f-4ef0-a889-462675f22f28\",\"id\":\"f2d54e32-519f-4ef0-a889-462675f22f28\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:f38eaff7-8e23-41d1-be8e-8838ce18879c",
+			"isImport":1,
+			"appId":"job",
+			"name":"f38eaff7-8e23-41d1-be8e-8838ce18879c",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:f38eaff7-8e23-41d1-be8e-8838ce18879c\",\"isImport\":0,\"gmtModified\":1680093649814,\"lastModifier\":\"\",\"label\":\"删除流式作业\",\"gmtCreate\":1680093649814,\"type\":\"BLOCK\",\"version\":0,\"appId\":\"job\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"b3635125-0dab-414f-867e-bee1fad7a9f6\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"outputs\":[],\"dependParams\":[],\"uniqueKey\":\"a11189e1-8c35-4013-a877-e09c07727a1a\",\"title\":\"操作\",\"parameters\":[{\"validateReg\":\"\",\"onlyKey\":\"4f2a0330-5d87-48ba-9209-6804499b101f\",\"validateType\":\"string\",\"visible\":2,\"defaultValue\":[],\"toolTip\":\"\",\"initApi\":\"\",\"label\":\"ID\",\"type\":1,\"required\":1,\"defModel\":{},\"isHidden\":2,\"readonly\":2,\"validValue\":[],\"visibleExp\":\"\",\"name\":\"id\",\"dynamic\":false,\"value\":[],\"order\":0,\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\"}],\"gridPos\":{\"w\":50,\"x\":0,\"h\":36,\"y\":0,\"i\":\"init\"},\"api\":\"gateway/sreworks-job/stream-job/$(id)/delete\",\"bodyType\":1,\"method\":\"DELETE\",\"submitLabel\":\"执行\",\"beforeHandler\":\"function beforeHandler(nodeParams){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:false,dynamicItems:[]}\\n}\",\"beforeSubmitHandler\":\"function beforeSubmitHandler(nodeParams,formValues,httpClient){\\n  return {type:\\\"\\\",message:\\\"\\\",title:\\\"\\\",pass:true,transformParams:{}}\\n}\",\"hintFunction\":\"function hintHandler(nodeParams,formValues){\\n  return \\\"\\\"\\n}\",\"formLayout\":\"horizontal\",\"responseHandler\":\"function responseHandler(response){\\n  return \\\"\\\"\\n}\",\"label\":\"删除流式作业\",\"refresh\":[\"Y\"]}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"f38eaff7-8e23-41d1-be8e-8838ce18879c\",\"id\":\"f38eaff7-8e23-41d1-be8e-8838ce18879c\",\"category\":\"ACTION\",\"config\":{\"functionMeta\":[]},\"stageId\":\"dev\"}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:f5d7d64b-74f7-4f22-8f2a-6bacfa050a8f",
+			"isImport":1,
+			"appId":"job",
+			"name":"f5d7d64b-74f7-4f22-8f2a-6bacfa050a8f",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:f5d7d64b-74f7-4f22-8f2a-6bacfa050a8f\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"fbfd6784-5acf-4133-9800-f5fb82818e98\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"title\":\"操作\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"52289b93-bce2-4578-86ae-f5a939664ba8\",\"parameters\":[{\"name\":\"sinkName\",\"label\":\"输出结果名称\",\"defaultValue\":[],\"value\":[],\"validValue\":[],\"type\":1,\"dynamic\":false,\"required\":2,\"validateType\":\"string\",\"visible\":2,\"isHidden\":2,\"readonly\":1,\"toolTip\":\"\",\"defModel\":{},\"order\":0,\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"onlyKey\":\"bfaa0906-0c06-4fbe-aff2-95434582ddd5\"}]}}],\"rang\":[0,24],\"chosen\":false,\"selected\":false}]}}],\"name\":\"f5d7d64b-74f7-4f22-8f2a-6bacfa050a8f\",\"id\":\"f5d7d64b-74f7-4f22-8f2a-6bacfa050a8f\",\"label\":\"配置输出名称\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
+			"version":"0",
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:faf3fb21-c81b-49f7-a22f-ca9c802aff5a",
+			"isImport":1,
+			"appId":"job",
+			"name":"faf3fb21-c81b-49f7-a22f-ca9c802aff5a",
+			"type":"BLOCK",
+			"config":"{\"elementId\":\"job:BLOCK:faf3fb21-c81b-49f7-a22f-ca9c802aff5a\",\"elements\":[{\"type\":\"FluidGrid\",\"config\":{\"rows\":[{\"spans\":\"24\",\"uniqueKey\":\"175c60db-31c5-4157-87b0-abba07f01fa9\",\"elements\":[{\"type\":\"ACTION\",\"config\":{\"title\":\"操作\",\"gridPos\":{\"x\":0,\"y\":0,\"h\":36,\"w\":50,\"i\":\"init\"},\"dependParams\":[],\"outputs\":[],\"uniqueKey\":\"b99b4c57-8a65-4edb-9462-05ad7a5b7cf2\",\"parameters\":[{\"name\":\"id\",\"label\":\"ID\",\"defaultValue\":[],\"value\":[],\"validValue\":[],\"type\":1,\"dynamic\":false,\"required\":1,\"validateType\":\"string\",\"visible\":2,\"isHidden\":2,\"readonly\":2,\"toolTip\":\"\",\"defModel\":{},\"order\":0,\"initApi\":\"\",\"validateReg\":\"\",\"visibleExp\":\"\",\"effectHandler\":\"function effectHandler(nodeParams,formValues){\\n  return {}\\n}\",\"onlyKey\":\"b38f3dd6-db73-40a8-b640-2f7ee4ca315f\"}]}}],\"rang\":[0,24],\"chosen\":false}]}}],\"name\":\"faf3fb21-c81b-49f7-a22f-ca9c802aff5a\",\"id\":\"faf3fb21-c81b-49f7-a22f-ca9c802aff5a\",\"label\":\"流式作业启动\",\"type\":\"BLOCK\",\"category\":\"ACTION\",\"version\":0,\"config\":{\"functionMeta\":[]}}",
 			"version":"0",
 			"stageId":"dev"
 		}
@@ -716,10 +1265,28 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:0142a262-f9ed-409b-8321-2f02b9a4fa15",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:04240d77-9be4-44fe-a394-6220d47b39ee",
 			"isImport":1,
 			"nodeTypePath":"job|app|T:Y9edsIba1::vvvPFnjtc::WAoL_9TBP",
 			"appId":"job",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:07898937-852b-469c-b8f4-7827b6a28bbe",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
 			"nodeOrder":999,
 			"stageId":"dev"
 		},
@@ -732,9 +1299,36 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:0a75ca5f-1fa2-4af1-a3c1-e8df0e664c0e",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:0c614bc6-3c82-4688-81c1-28887f3ec660",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:0d8ebcd2-c4d1-4877-8f60-31cf41b5061c",
 			"isImport":1,
 			"nodeTypePath":"job|app|T:tEUTdTsCc::tTvloIPRL",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:0e6098ca-c589-47b8-afad-5ef48f9f3b70",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::asdxtqcFK",
 			"appId":"job",
 			"config":"null",
 			"nodeOrder":999,
@@ -750,10 +1344,55 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:0f5ca095-aece-4e0d-b105-305ea2e864d8",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:121d138c-388f-490c-a324-4f8b14847de4",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:1365c766-cda3-4da9-be56-d7ee6abdc8f2",
 			"isImport":1,
 			"nodeTypePath":"job|app|T:Y9edsIba1::vvvPFnjtc::mY7boZvs0",
 			"appId":"job",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:15d999d6-8f39-487d-a9c4-8690f6fb0828",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:20607fe7-4570-48ff-b900-09373b2be40d",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:207e61e1-33aa-493d-a5e0-a6794924a809",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
 			"nodeOrder":999,
 			"stageId":"dev"
 		},
@@ -784,9 +1423,45 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:36f6c010-93d0-4816-b39b-17ef578bfbc2",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:394e473e-fb94-478d-a702-21aebacae0e6",
 			"isImport":1,
 			"nodeTypePath":"job|app|T:tEUTdTsCc::tTvloIPRL",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:3a902316-c825-463e-ba23-f670011b3398",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::asdxtqcFK",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:3dc3b8aa-9e28-4a8d-aba9-1dc5520ecdae",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::asdxtqcFK",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:3e092e2e-f9e8-41de-baf4-e85154ad9ec1",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
 			"appId":"job",
 			"config":"null",
 			"nodeOrder":999,
@@ -802,9 +1477,72 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:445bff29-78de-416b-a97e-d049f7054149",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:4733c394-fd55-4ad8-a135-6af99e3f9d9a",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:4842fdc7-d542-4320-9991-fac4477e5cd2",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::asdxtqcFK",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:4da71b99-eba4-460e-b7b3-53f790c1ebac",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:5073fc34-f87a-4543-a2e6-8af75b282174",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::asdxtqcFK",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:561fdf7a-8a14-4643-8ea3-229e393f86eb",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:5d9feaab-ed88-4e16-b4f3-602858f796d3",
 			"isImport":1,
 			"nodeTypePath":"job|app|T:Y9edsIba1::JWwyHWrSt",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:5e340274-4520-48d6-992b-3139383c4aa8",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
 			"appId":"job",
 			"config":"null",
 			"nodeOrder":999,
@@ -823,6 +1561,24 @@
 			"elementId":"job:BLOCK:5fa962d2-fbf9-4d99-b541-26f889e5fcee",
 			"isImport":1,
 			"nodeTypePath":"job|app|T:Y9edsIba1::JWwyHWrSt",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:63323164-f200-4915-88c2-f0b7865d97e3",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::asdxtqcFK",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:65d918dc-f96d-40e2-b83e-b226ed8c440a",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
 			"appId":"job",
 			"config":"null",
 			"nodeOrder":999,
@@ -864,6 +1620,15 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:7c767e2e-1485-4d0c-ab73-f3fd84891b1c",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:7e11c283-becd-4edf-99d2-9d6e0add8ec9",
 			"isImport":1,
 			"nodeTypePath":"job|app|T:tEUTdTsCc::qEomE50AP",
@@ -891,6 +1656,15 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:86ec3869-bfdc-4d13-81b5-9a332ed8f3a9",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:88e80733-2836-4478-9763-b1f2b7fdee15",
 			"isImport":1,
 			"nodeTypePath":"job|app|T:Y9edsIba1::vvvPFnjtc::H8QUbTzJo",
@@ -908,10 +1682,55 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:8c22d4d1-8a97-4eec-be61-5e25cb2ab600",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::asdxtqcFK",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:8dc96f22-5daa-4f2e-98c6-016344a470b3",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:8f014569-6c8c-428a-99d6-d1e589cdb9fe",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:990ab57e-59f0-4705-b97c-a09a14617e85",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:9c65a10e-9260-4697-9c02-8328f7488bfb",
 			"isImport":1,
 			"nodeTypePath":"job|app|T:Y9edsIba1::vvvPFnjtc::WAoL_9TBP",
 			"appId":"job",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:ad2cf751-abf7-43e4-9a89-a6448d219521",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
 			"nodeOrder":999,
 			"stageId":"dev"
 		},
@@ -932,9 +1751,27 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:b7d36d68-e93f-4956-9907-375451427669",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:bb7198a0-61c5-411d-8a10-b98670dd43e3",
 			"isImport":1,
 			"nodeTypePath":"job|app|T:Y9edsIba1::vvvPFnjtc::Kl-2h4Jwk",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:c1345617-64dc-4a6d-8fc8-3fde64fab448",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::asdxtqcFK",
 			"appId":"job",
 			"config":"null",
 			"nodeOrder":999,
@@ -959,9 +1796,45 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:cc16d660-430c-40ba-bb3b-7c30d13a4910",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:cc4041e7-ef80-4047-b5d2-ebbfde94989a",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:cfd0d55b-3b23-4d75-897c-661ab6d6e25e",
 			"isImport":1,
 			"nodeTypePath":"job|app|T:Y9edsIba1::JWwyHWrSt",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:da8c5c8b-56ae-48d9-90de-065307ad95b4",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:db8147f6-9a9a-4921-81b1-5efb8adbc38e",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::asdxtqcFK",
 			"appId":"job",
 			"config":"null",
 			"nodeOrder":999,
@@ -995,9 +1868,45 @@
 			"stageId":"dev"
 		},
 		{
+			"elementId":"job:BLOCK:e71ba625-2b39-4909-8cf2-41a472d1e552",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
 			"elementId":"job:BLOCK:ef9239ea-d51d-4747-a257-50f4e505b23e",
 			"isImport":1,
 			"nodeTypePath":"job|app|T:tEUTdTsCc::tTvloIPRL",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:f2d54e32-519f-4ef0-a889-462675f22f28",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:f38eaff7-8e23-41d1-be8e-8838ce18879c",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
+			"appId":"job",
+			"config":"null",
+			"nodeOrder":999,
+			"stageId":"dev"
+		},
+		{
+			"elementId":"job:BLOCK:f5d7d64b-74f7-4f22-8f2a-6bacfa050a8f",
+			"isImport":1,
+			"nodeTypePath":"job|app|T:KbYqol7jW::u2VAC12vH",
 			"appId":"job",
 			"config":"null",
 			"nodeOrder":999,

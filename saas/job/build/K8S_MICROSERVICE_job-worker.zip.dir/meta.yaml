@@ -2,7 +2,7 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 10.2.0+20230321151754371188
+    annotations.appmanager.oam.dev/version: 10.2.7+20230523040425204337
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
     appId: job
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 10.2.0+20230321151754371188
+        annotations.appmanager.oam.dev/version: 10.2.7+20230523040425204337
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -44,8 +44,9 @@ spec:
       replicas: 1
       name: ''
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/job-job-worker-job-worker:1679411874675
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/job-job-worker-job-worker:1684814665759
         name: job-worker
+      serviceName: ''
       env:
         ES_ENDPOINT: '{{ Global.ES_ENDPOINT }}'
         SREWORKS_JOB_MASTER_ENDPOINT: '{{ Global.SREWORKS_JOB_MASTER_ENDPOINT }}'

@@ -24,7 +24,7 @@ public class StreamJobPythonCreateParam {
 
     private String scriptContent;
 
-    private JSONArray options;
+//    private JSONArray options;
 
     public SreworksStreamJobBlock init(Long streamJobId, String appId) {
         return SreworksStreamJobBlock.builder()
@@ -33,7 +33,7 @@ public class StreamJobPythonCreateParam {
             .creator(getCreator())
             .blockType("python")
              .data(JsonUtil.map(
-                "options", getOptions(),
+//                "options", getOptions(),
                        "content", getScriptContent()
              ).toJSONString())
             .operator(getOperator())

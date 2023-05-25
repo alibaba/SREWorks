@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -317,18 +318,8 @@ public class StreamJobController extends BaseController {
         byte[] bytes = param.getFile().getBytes();
         File zipFile = Files.createTempFile("stream-job", ".zip").toFile();
         Files.write(zipFile.toPath(), bytes);
-        Path jobFiles = streamJobService.unzipFile(zipFile.getAbsolutePath());
-        JSONObject options = new JSONObject();
-        if (Files.exists(jobFiles.resolve("template.py"))){
-            String templateContent = new String(Files.readAllBytes(Paths.get(jobFiles.resolve("template.py").toFile().getAbsolutePath())));
-            options.put("template", templateContent);
-        }
-        if (Files.exists(jobFiles.resolve("settings.json"))){
-            String settingsJson = new String(Files.readAllBytes(Paths.get(jobFiles.resolve("settings.json").toFile().getAbsolutePath())));
-            options.put("settings", JSONObject.parseObject(settingsJson));
-        }
-        param.setOptions(options);
-        SreworksStreamJobDTO job = streamJobService.create(param);
+        
+        SreworksStreamJobDTO job = streamJobService.importFile(param, zipFile);
         return buildSucceedResult(job);
     }
 

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.io.*;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -478,6 +479,76 @@ public class StreamJobService {
     public SreworksStreamJobRuntimeDTO runtimeGetById(Long runtimeId){
         SreworksStreamJobRuntime runtime = sreworksStreamJobRuntimeRepository.findFirstById(runtimeId);
         return  new SreworksStreamJobRuntimeDTO(runtime);
+    }
+
+    public SreworksStreamJobDTO importFile(StreamJobCreateParam param, File zipFile) throws Exception {
+        Path jobFiles = unzipFile(zipFile.getAbsolutePath());
+        JSONObject options = new JSONObject();
+        if (Files.exists(jobFiles.resolve("template.py"))){
+            String templateContent = new String(Files.readAllBytes(Paths.get(jobFiles.resolve("template.py").toFile().getAbsolutePath())));
+            options.put("template", templateContent);
+        }
+        if (Files.exists(jobFiles.resolve("settings.json"))){
+            String settingsJson = new String(Files.readAllBytes(Paths.get(jobFiles.resolve("settings.json").toFile().getAbsolutePath())));
+            options.put("settings", JSONObject.parseObject(settingsJson));
+        }
+        param.setOptions(options);
+        SreworksStreamJobDTO job = create(param);
+
+        // 导入block
+        Path sourcesDirectory = jobFiles.resolve("sources");
+        if (Files.exists(sourcesDirectory) && Files.isDirectory(sourcesDirectory)) {
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(sourcesDirectory)) {
+                for (Path file : directoryStream) {
+                    JSONObject content = JSONObject.parseObject(Files.readString(Paths.get(file.toFile().getAbsolutePath())));
+                    StreamJobSourceCreateParam request = StreamJobSourceCreateParam.builder()
+                            .creator(param.getCreator())
+                            .operator(param.getOperator())
+                            .options(content.getJSONArray("options"))
+                            .columns(content.getJSONArray("columns"))
+                            .type(content.getString("sourceType"))
+                            .sourceName(file.getFileName().toString().replaceFirst("\\.[^.]+$", ""))
+                            .build();
+                    streamJobBlockService.addSource(job.getId(), param.getAppId(), request);
+                }
+            }
+        }
+
+        Path sinksDirectory = jobFiles.resolve("sinks");
+        if (Files.exists(sinksDirectory) && Files.isDirectory(sinksDirectory)) {
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(sinksDirectory)) {
+                for (Path file : directoryStream) {
+                    JSONObject content = JSONObject.parseObject(Files.readString(Paths.get(file.toFile().getAbsolutePath())));
+                    StreamJobSinkCreateParam request = StreamJobSinkCreateParam.builder()
+                            .creator(param.getCreator())
+                            .operator(param.getOperator())
+                            .options(content.getJSONArray("options"))
+                            .columns(content.getJSONArray("columns"))
+                            .type(content.getString("sinkType"))
+                            .sinkName(file.getFileName().toString().replaceFirst("\\.[^.]+$", ""))
+                            .build();
+                    streamJobBlockService.addSink(job.getId(), param.getAppId(), request);
+                }
+            }
+        }
+
+        Path pythonsDirectory = jobFiles.resolve("pythons");
+        if (Files.exists(pythonsDirectory) && Files.isDirectory(pythonsDirectory)) {
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(pythonsDirectory)) {
+                for (Path file : directoryStream) {
+                    String content = Files.readString(Paths.get(file.toFile().getAbsolutePath()));
+                    StreamJobPythonCreateParam request = StreamJobPythonCreateParam.builder()
+                            .creator(param.getCreator())
+                            .operator(param.getOperator())
+                            .scriptContent(content)
+                            .scriptName(file.getFileName().toString().replaceFirst("\\.[^.]+$", ""))
+                            .build();
+                    streamJobBlockService.addPython(job.getId(), param.getAppId(), request);
+                }
+            }
+        }
+
+        return job;
     }
 
     public File exportFile(SreworksStreamJobDTO job) throws Exception {

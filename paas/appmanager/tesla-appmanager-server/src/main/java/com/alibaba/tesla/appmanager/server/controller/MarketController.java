@@ -277,13 +277,13 @@ public class MarketController extends AppManagerBaseController {
             JSONObject appJsonObject = JSONObject.parseObject(appJson);
             if(appJsonObject.getJSONArray("Type:parameterValues") != null) {
                 DeployConfigUpsertReq deployConfigUpdateRequest = DeployConfigUpsertReq.builder()
-                .appId(request.getAppId())
-                .typeId("Type:parameterValues")
-                .envId("")
-                .configJsonArray(appJsonObject.getJSONArray("Type:parameterValues"))
-                .isolateNamespaceId("sreworks")
-                .isolateStageId("dev")
-                .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2).build();
+                        .appId(request.getAppId())
+                        .typeId("Type:parameterValues")
+                        .envId("")
+                        .configJsonArray(appJsonObject.getJSONArray("Type:parameterValues"))
+                        .isolateNamespaceId("sreworks")
+                        .isolateStageId("dev")
+                        .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2).build();
                 deployConfigProvider.upsert(deployConfigUpdateRequest);
             }
 

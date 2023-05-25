@@ -127,25 +127,6 @@ public class AppController extends AppManagerBaseController {
 
         request.setAppId(appId);
         boolean result = appMetaProvider.delete(request, getOperator(auth));
-        appVersionProvider.clean(appId, getOperator(auth));
-        if (request.getRemoveAllDeployConfigs()) {
-            DeployConfigListReq deployConfigRequest = DeployConfigListReq.builder()
-                    .appId(request.getAppId())
-                    .build();
-            Pagination<DeployConfigDTO> deployConfigs = deployConfigProvider.list(deployConfigRequest);
-            for (DeployConfigDTO deployConfigDTO : deployConfigs.getItems()) {
-                deployConfigProvider.delete(
-                        DeployConfigDeleteReq.builder()
-                            .appId(deployConfigDTO.getAppId())
-                            .apiVersion(deployConfigDTO.getApiVersion())
-                            .typeId(deployConfigDTO.getTypeId())
-                            .envId(deployConfigDTO.getEnvId())
-                            .isolateNamespaceId(deployConfigDTO.getNamespaceId())
-                            .isolateStageId(deployConfigDTO.getStageId())
-                            .build()
-                );
-            }
-        }
         return buildSucceedResult(result);
     }
 

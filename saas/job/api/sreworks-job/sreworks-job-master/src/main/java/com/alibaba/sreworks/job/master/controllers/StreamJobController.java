@@ -318,7 +318,7 @@ public class StreamJobController extends BaseController {
         byte[] bytes = param.getFile().getBytes();
         File zipFile = Files.createTempFile("stream-job", ".zip").toFile();
         Files.write(zipFile.toPath(), bytes);
-        
+
         SreworksStreamJobDTO job = streamJobService.importFile(param, zipFile);
         return buildSucceedResult(job);
     }

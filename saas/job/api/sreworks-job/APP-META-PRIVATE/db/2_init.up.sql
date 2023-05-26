@@ -48,7 +48,7 @@ CREATE TABLE `sreworks_stream_job_runtime` (
        PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO `sreworks_stream_job_runtime` (`id`, `creator`, `description`, `gmt_create`, `gmt_modified`, `name`, `operator`, `settings`, `tags`) VALUES ('1',null,null,'1683326290582','1683326290582','flink-ml',null,'{
+INSERT IGNORE INTO `sreworks_stream_job_runtime` (`id`, `creator`, `description`, `gmt_create`, `gmt_modified`, `name`, `operator`, `settings`, `tags`) VALUES ('1',null,null,'1683326290582','1683326290582','flink-ml',null,'{
 	"flinkImage": "sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/flink:1.15.2-stream4-scala_2.12-java11-python3.8-pyflink",
 	"additionalDependencies": [{
         "filename": "flink-ml-uber-2.2-SNAPSHOT.jar"
@@ -59,7 +59,7 @@ INSERT INTO `sreworks_stream_job_runtime` (`id`, `creator`, `description`, `gmt_
 	"pyArchives": "venv5-2.2.zip",
 	"pyClientExecutable": "/venv/bin/python"
 }',null);
-INSERT INTO `sreworks_stream_job_runtime` (`id`, `creator`, `description`, `gmt_create`, `gmt_modified`, `name`, `operator`, `settings`, `tags`) VALUES ('2',null,null,'1683327874331','1683327874331','default',null,'{
+INSERT IGNORE INTO `sreworks_stream_job_runtime` (`id`, `creator`, `description`, `gmt_create`, `gmt_modified`, `name`, `operator`, `settings`, `tags`) VALUES ('2',null,null,'1683327874331','1683327874331','default',null,'{
 	"flinkImage": "sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/flink:1.15.2-stream4-scala_2.12-java11-python3.8-pyflink",
 	"additionalDependencies": [],
 	"entryClass": "org.apache.flink.client.python.PythonDriver",

@@ -11,5 +11,6 @@ RUN chmod +x /app/sbin/mc
 RUN mkdir /app/sreworks-job-resource/
 RUN wget https://sreworks.oss-cn-beijing.aliyuncs.com/resource/venv5-2.2.zip -O /app/sreworks-job-resource/venv5-2.2.zip
 RUN wget https://sreworks.oss-cn-beijing.aliyuncs.com/resource/flink-ml-uber-2.2-SNAPSHOT.jar -O /app/sreworks-job-resource/flink-ml-uber-2.2-SNAPSHOT.jar
+RUN wget https://sreworks.oss-cn-beijing.aliyuncs.com/resource/flink-python_2.12-1.15.2.jar -O /app/sreworks-job-resource/flink-python_2.12-1.15.2.jar
 
 ENTRYPOINT ["/bin/sh", "/app/sbin/init.sh"]

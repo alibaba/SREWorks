@@ -1,4 +1,4 @@
-CREATE TABLE `sreworks_stream_job` (
+CREATE TABLE IF NOT EXISTS `sreworks_stream_job` (
        `id` bigint NOT NULL AUTO_INCREMENT,
        `alias` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
        `app_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE `sreworks_stream_job` (
 
 
 
-CREATE TABLE `sreworks_stream_job_block` (
+CREATE TABLE IF NOT EXISTS `sreworks_stream_job_block` (
      `id` bigint NOT NULL AUTO_INCREMENT,
      `app_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
      `block_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE `sreworks_stream_job_block` (
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
-CREATE TABLE `sreworks_stream_job_runtime` (
+CREATE TABLE IF NOT EXISTS `sreworks_stream_job_runtime` (
        `id` bigint NOT NULL AUTO_INCREMENT,
        `creator` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
        `description` longtext COLLATE utf8mb4_general_ci,

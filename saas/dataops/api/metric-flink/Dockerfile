@@ -31,11 +31,6 @@ RUN chmod +x /app/sbin/entrypoint.sh
 RUN wget https://sreworks.oss-cn-beijing.aliyuncs.com/bin/mc-linux-amd64 -O /app/sbin/mc
 RUN chmod +x /app/sbin/mc
 
-# sreworks env job
-RUN mkdir /app/sreworks-job-resource/
-RUN wget https://sreworks.oss-cn-beijing.aliyuncs.com/resource/venv5-2.2.zip -O /app/sreworks-job-resource/venv5-2.2.zip
-RUN wget https://sreworks.oss-cn-beijing.aliyuncs.com/resource/flink-ml-uber-2.2-SNAPSHOT.jar -O /app/sreworks-job-resource/flink-ml-uber-2.2-SNAPSHOT.jar
-
 # kafka init
 RUN apk add gcc python3 python3-dev py3-pip musl-dev librdkafka-dev
 RUN pip3 install -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com confluent_kafka==1.8.2

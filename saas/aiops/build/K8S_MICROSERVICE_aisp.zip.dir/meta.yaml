@@ -2,7 +2,7 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 4.2.6+20230525065901133611
+    annotations.appmanager.oam.dev/version: 4.2.9+20230526072932442350
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
     appId: aiops
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 4.2.6+20230525065901133611
+        annotations.appmanager.oam.dev/version: 4.2.9+20230526072932442350
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -44,18 +44,21 @@ spec:
       replicas: 1
       name: ''
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-aisp-aisp:1684997941394
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-aisp-aisp:1685086172277
         name: aisp
       serviceName: ''
       env:
         DB_PORT: '{{ Global.DB_PORT }}'
         DB_USER: '{{ Global.DB_USER }}'
+        MINIO_ACCESS_KEY: '{{ Global.MINIO_ACCESS_KEY }}'
         DB_NAME: '{{ Global.DB_NAME }}'
+        MINIO_ENDPOINT: '{{ Global.MINIO_ENDPOINT }}'
+        MINIO_SECRET_KEY: '{{ Global.MINIO_SECRET_KEY }}'
         DB_HOST: '{{ Global.DB_HOST }}'
         DB_PASSWORD: '{{ Global.DB_PASSWORD }}'
         CACHE_TYPE: '{{ Global.CACHE_TYPE }}'
       initContainers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-aisp-sreworks-migration:1684997941394
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-aisp-sreworks-migration:1685086172277
         name: sreworks-migration
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-aisp-log-clustering-init:1684997941394
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-aisp-log-clustering-init:1685086172277
         name: log-clustering-init

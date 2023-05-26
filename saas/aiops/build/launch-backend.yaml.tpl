@@ -101,6 +101,8 @@ spec:
       value: local
     - name: Global.DB_HOST
       value: ${DATAOPS_DB_HOST}
+    - name: Global.MINIO_ENDPOINT
+      value: sreworks-minio.sreworks:9000
     revisionName: K8S_MICROSERVICE|aisp|_
     scopes:
     - scopeRef:

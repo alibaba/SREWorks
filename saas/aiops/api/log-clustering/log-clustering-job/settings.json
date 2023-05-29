@@ -14,19 +14,19 @@
 	},
 	"execParams":[
 		{
-			"value":"{DB_HOST}",
+			"value":"",
 			"key":"host"
 		},
 		{
-			"value":"{DB_USER}",
+			"value":"",
 			"key":"user"
 		},
 		{
-			"value":"{DB_PASSWORD}",
+			"value":"",
 			"key":"password"
 		},
 		{
-			"value":"{DB_NAME}",
+			"value":"",
 			"key":"database"
 		},
 		{
@@ -34,7 +34,7 @@
 			"key":"table"
 		},
 		{
-			"value":"{DB_PORT}",
+			"value":"",
 			"key":"port"
 		}
 	]

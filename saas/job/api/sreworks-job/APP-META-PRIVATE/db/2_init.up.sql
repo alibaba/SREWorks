@@ -17,7 +17,6 @@ CREATE TABLE IF NOT EXISTS `sreworks_stream_job` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
-
 CREATE TABLE IF NOT EXISTS `sreworks_stream_job_block` (
      `id` bigint NOT NULL AUTO_INCREMENT,
      `app_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -32,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `sreworks_stream_job_block` (
      PRIMARY KEY (`id`),
      UNIQUE KEY `stream_job_index` (`stream_job_id`,`name`,`block_type`) USING BTREE,
      KEY `stream_job_id` (`stream_job_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 CREATE TABLE IF NOT EXISTS `sreworks_stream_job_runtime` (
@@ -46,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `sreworks_stream_job_runtime` (
        `settings` longtext COLLATE utf8mb4_general_ci,
        `tags` longtext COLLATE utf8mb4_general_ci,
        PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT IGNORE INTO `sreworks_stream_job_runtime` (`id`, `creator`, `description`, `gmt_create`, `gmt_modified`, `name`, `operator`, `settings`, `tags`) VALUES ('1',null,null,'1683326290582','1683326290582','flink-ml',null,'{
 	"flinkImage": "sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/flink:1.15.2-stream4-scala_2.12-java11-python3.8-pyflink",

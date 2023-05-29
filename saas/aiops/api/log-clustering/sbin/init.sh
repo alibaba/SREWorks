@@ -7,5 +7,8 @@ $ROOT/mc cp /app/sreworks-job-resource/flink-ml-uber-2.2-SNAPSHOT.jar sw/vvp/art
 $ROOT/mc cp /app/sreworks-job-resource/flink-python_2.12-1.15.2.jar sw/vvp/artifacts/namespaces/default/flink-python_2.12-1.15.2.jar
 
 
+# 上传日志聚类作业
+python3 /app/sbin/init-job.py
+
 
 

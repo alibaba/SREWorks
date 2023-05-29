@@ -2,6 +2,7 @@
 FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/alpine:latest AS release
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
 
+RUN apk add python3 py3-requests
 COPY . /app
 
 RUN wget https://sreworks.oss-cn-beijing.aliyuncs.com/bin/mc-linux-amd64 -O /app/sbin/mc

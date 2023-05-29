@@ -318,7 +318,7 @@ public class StreamJobController extends BaseController {
         byte[] bytes = param.getFile().getBytes();
         File zipFile = Files.createTempFile("stream-job", ".zip").toFile();
         Files.write(zipFile.toPath(), bytes);
-
+        log.info("job import => {}", param);
         SreworksStreamJobDTO job = streamJobService.importFile(param, zipFile);
         return buildSucceedResult(job);
     }
@@ -367,6 +367,15 @@ public class StreamJobController extends BaseController {
             streamJobService.updateStatus(job, "CANCELLED");
         }
         return buildSucceedResult(response);
+    }
+
+    @RequestMapping(value = "getByName/{name}", method = RequestMethod.GET)
+    public TeslaBaseResult getByName(@PathVariable("name") String name) throws Exception {
+        SreworksStreamJobDTO job = streamJobService.getByName(name);
+        if(job.getId() == null){
+            return buildResult(404, "stream job not found", null);
+        }
+        return buildSucceedResult(job);
     }
 
     @RequestMapping(value = "gets", method = RequestMethod.GET)

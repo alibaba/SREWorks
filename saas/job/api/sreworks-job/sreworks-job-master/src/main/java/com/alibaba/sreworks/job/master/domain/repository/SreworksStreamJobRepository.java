@@ -17,6 +17,8 @@ public interface SreworksStreamJobRepository
 
     SreworksStreamJob findFirstById(Long id);
 
+    SreworksStreamJob findFirstByName(String name);
+
     Page<SreworksStreamJob> findAll(Pageable pageable);
 
 }

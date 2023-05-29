@@ -70,6 +70,11 @@ public class StreamJobService {
         return new SreworksStreamJobDTO(job);
     }
 
+    public SreworksStreamJobDTO getByName(String name) throws Exception {
+        SreworksStreamJob job = streamJobRepository.findFirstByName(name);
+        return new SreworksStreamJobDTO(job);
+    }
+
     public void delete(Long streamJobId) {
         streamJobRepository.deleteById(streamJobId);
     }
@@ -485,8 +490,11 @@ public class StreamJobService {
         Path jobFiles = unzipFile(zipFile.getAbsolutePath());
         JSONObject options = new JSONObject();
         if (Files.exists(jobFiles.resolve("template.py"))){
+            log.info("find template.py in {}", zipFile.getAbsolutePath());
             String templateContent = new String(Files.readAllBytes(Paths.get(jobFiles.resolve("template.py").toFile().getAbsolutePath())));
             options.put("template", templateContent);
+        } else {
+            log.info("not find template.py in {}", zipFile.getAbsolutePath());
         }
         if (Files.exists(jobFiles.resolve("settings.json"))){
             String settingsJson = new String(Files.readAllBytes(Paths.get(jobFiles.resolve("settings.json").toFile().getAbsolutePath())));

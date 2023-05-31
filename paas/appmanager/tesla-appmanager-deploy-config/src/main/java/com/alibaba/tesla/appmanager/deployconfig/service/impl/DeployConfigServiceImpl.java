@@ -963,13 +963,14 @@ public class DeployConfigServiceImpl implements DeployConfigService {
         }
 
         // 检查是否有 components 被完成组装，如果没有的话，说明本次生成 Yaml 请求无效
-        if (schema.getSpec().getComponents().size() == 0) {
-            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
-                    String.format("the current application does not have permission to access the environment|" +
-                                    "appId=%s|unitId=%s|clusterId=%s|namespaceId=%s|stageId=%s|isolateNamespaceId=%s|" +
-                                    "isolateStageId=%s",
-                            appId, unitId, clusterId, namespaceId, stageId, isolateNamespaceId, isolateStageId));
-        }
+        // 注释掉，因为为空可能会由后面进行 component package 级别的补全
+//        if (schema.getSpec().getComponents().size() == 0) {
+//            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+//                    String.format("the current application does not have permission to access the environment|" +
+//                                    "appId=%s|unitId=%s|clusterId=%s|namespaceId=%s|stageId=%s|isolateNamespaceId=%s|" +
+//                                    "isolateStageId=%s",
+//                            appId, unitId, clusterId, namespaceId, stageId, isolateNamespaceId, isolateStageId));
+//        }
         return schema;
     }
 

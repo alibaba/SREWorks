@@ -35,6 +35,7 @@ import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.ClassPathResource;
@@ -289,7 +290,11 @@ public class K8sMicroserviceComponenPackage implements ComponentPackageBase {
                                 break;
                             }
                         }
-
+                        if (DateUtils.addHours(waitePod.getStart(), 3).before(new Date())) {
+                            String logContent = "action=checkTaskStatus|| Build task have been timeout: 3 hours!";
+                            waitePod.appendLog(logContent);
+                            waitePod.setIsFailed(true);
+                        }
                     }
                 } catch (Exception e) {
                     log.error("action=checkTaskStatus|| Check task status have error!", e);

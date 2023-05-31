@@ -15,6 +15,8 @@
     <result column="component_name" jdbcType="VARCHAR" property="componentName" />
     <result column="package_md5" jdbcType="VARCHAR" property="packageMd5" />
     <result column="version" jdbcType="INTEGER" property="version" />
+    <result column="namespace_id" jdbcType="VARCHAR" property="namespaceId" />
+    <result column="stage_id" jdbcType="VARCHAR" property="stageId" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.alibaba.tesla.appmanager.server.repository.domain.ComponentPackageDO">
     <!--@mbg.generated-->
@@ -86,7 +88,7 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, gmt_create, gmt_modified, app_id, package_version, package_path, package_creator, 
-    component_type, component_name, package_md5, version
+    component_type, component_name, package_md5, version, namespace_id, stage_id
   </sql>
   <sql id="Blob_Column_List">
     <!--@mbg.generated-->
@@ -177,6 +179,12 @@
       <if test="version != null">
         version,
       </if>
+      <if test="namespaceId != null">
+        namespace_id,
+      </if>
+      <if test="stageId != null">
+        stage_id,
+      </if>
       <if test="componentSchema != null">
         component_schema,
       </if>
@@ -217,6 +225,12 @@
       </if>
       <if test="version != null">
         #{version,jdbcType=INTEGER},
+      </if>
+      <if test="namespaceId != null">
+        #{namespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="stageId != null">
+        #{stageId,jdbcType=VARCHAR},
       </if>
       <if test="componentSchema != null">
         #{componentSchema,jdbcType=LONGVARCHAR},
@@ -276,6 +290,12 @@
       <if test="record.packageAddon != null">
         package_addon = #{record.packageAddon,jdbcType=LONGVARCHAR},
       </if>
+      <if test="record.namespaceId != null">
+        namespace_id = #{record.namespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stageId != null">
+        stage_id = #{record.stageId,jdbcType=VARCHAR},
+      </if>
       <if test="record.packageOptions != null">
         package_options = #{record.packageOptions,jdbcType=LONGVARCHAR},
       </if>
@@ -323,6 +343,12 @@
       </if>
       <if test="packageOptions != null">
         package_options = #{packageOptions,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="namespaceId != null">
+        namespace_id = #{namespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="stageId != null">
+        stage_id = #{stageId,jdbcType=VARCHAR},
       </if>
       version = version + 1,
     </set>

@@ -50,7 +50,22 @@ public class AppPackageQueryReq extends BaseRequest {
     private String packageCreator;
 
     /**
+     * 隔离 Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * 隔离 Stage ID
+     */
+    private String stageId;
+
+    /**
      * tag列表
      */
     private List<String> tagList;
+
+    /**
+     * 是否忽略namespaceId和stageId展示所有的版本
+     */
+    private Boolean showAllVersions;
 }

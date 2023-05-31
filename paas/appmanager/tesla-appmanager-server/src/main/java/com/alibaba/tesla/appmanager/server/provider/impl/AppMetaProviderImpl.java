@@ -3,6 +3,9 @@ package com.alibaba.tesla.appmanager.server.provider.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.AppMetaProvider;
+import com.alibaba.tesla.appmanager.api.provider.AppVersionProvider;
+import com.alibaba.tesla.appmanager.api.provider.DeployAppProvider;
+import com.alibaba.tesla.appmanager.api.provider.DeployConfigProvider;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.AppOptionUpdateModeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
@@ -12,10 +15,13 @@ import com.alibaba.tesla.appmanager.common.util.EnvUtil;
 import com.alibaba.tesla.appmanager.common.util.RequestUtil;
 import com.alibaba.tesla.appmanager.domain.dto.AppDeployEnvironmentDTO;
 import com.alibaba.tesla.appmanager.domain.dto.AppMetaDTO;
+import com.alibaba.tesla.appmanager.domain.dto.DeployConfigDTO;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaCreateReq;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.AppMetaUpdateReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigListReq;
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.repository.condition.K8sMicroserviceMetaQueryCondition;
 import com.alibaba.tesla.appmanager.meta.k8smicroservice.service.K8sMicroserviceMetaService;
 import com.alibaba.tesla.appmanager.server.assembly.AppMetaDtoConvert;
@@ -32,6 +38,7 @@ import com.alibaba.tesla.appmanager.server.service.apppackage.AppPackageTagServi
 import com.alibaba.tesla.appmanager.server.service.apppackage.AppPackageTaskService;
 import com.alibaba.tesla.appmanager.server.service.componentpackage.ComponentPackageService;
 import com.alibaba.tesla.appmanager.server.service.componentpackage.ComponentPackageTaskService;
+import com.alibaba.tesla.appmanager.server.service.deploy.DeployAppService;
 import com.alibaba.tesla.appmanager.server.service.rtappinstance.RtAppInstanceService;
 import com.google.common.base.Enums;
 import lombok.extern.slf4j.Slf4j;
@@ -91,6 +98,15 @@ public class AppMetaProviderImpl implements AppMetaProvider {
 
     @Autowired
     private AppComponentService appComponentService;
+
+    @Autowired
+    private AppVersionProvider appVersionProvider;
+
+    @Autowired
+    private DeployConfigProvider deployConfigProvider;
+
+    @Autowired
+    private DeployAppService deployAppService;
 
     /**
      * 查询应用元信息
@@ -224,6 +240,38 @@ public class AppMetaProviderImpl implements AppMetaProvider {
 
         deleteAppPackage(appId);
         log.info("action=appMetaProvider|deleteAppPackage SUCCESS|appId={}", appId);
+
+        // 删除所有应用版本
+        appVersionProvider.clean(appId, operator);
+
+        // 删除所有部署配置
+        if (request.getRemoveAllDeployConfigs()) {
+            DeployConfigListReq deployConfigRequest = DeployConfigListReq.builder()
+                    .appId(request.getAppId())
+                    .build();
+            Pagination<DeployConfigDTO> deployConfigs = deployConfigProvider.list(deployConfigRequest);
+            for (DeployConfigDTO deployConfigDTO : deployConfigs.getItems()) {
+                deployConfigProvider.delete(
+                        DeployConfigDeleteReq.builder()
+                                .appId(deployConfigDTO.getAppId())
+                                .apiVersion(deployConfigDTO.getApiVersion())
+                                .typeId(deployConfigDTO.getTypeId())
+                                .envId(deployConfigDTO.getEnvId())
+                                .isolateNamespaceId(deployConfigDTO.getNamespaceId())
+                                .isolateStageId(deployConfigDTO.getStageId())
+                                .build()
+                );
+            }
+        }
+
+        // 删除所有部署记录
+        if (request.getRemoveAllDeployments()) {
+            int count = deployAppService.deleteByCondition(DeployAppQueryCondition.builder()
+                    .appId(appId)
+                    .build());
+            log.info("action=appMetaProvider|deleteDeployments SUCCESS|appId={}|count={}", appId, count);
+        }
+
         return true;
     }
 

@@ -1,13 +1,9 @@
 package com.alibaba.tesla.appmanager.domain.dto;
 
-import java.util.Date;
-
 import com.alibaba.fastjson.JSONObject;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.Date;
 
 /**
  * 应用版本 DTO
@@ -52,4 +48,9 @@ public class AppVersionDTO {
      * 版本属性
      */
     private JSONObject versionProperties;
+
+    /**
+     * 是否为全局版本
+     */
+    private Boolean isGlobal = false;
 }

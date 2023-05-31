@@ -230,8 +230,10 @@ public class AppPackageTaskServiceImpl implements AppPackageTaskService {
                 .withBlobs(true)
                 .build());
         if (appPackageTask == null) {
-            log.error("cannot find app package task records when updates component task status|" +
-                    "componentPackageTaskId={}|appPackageTaskId={}", taskDO.getId(), taskDO.getAppPackageTaskId());
+            if (taskDO.getAppPackageTaskId() != null && taskDO.getAppPackageTaskId() > 0) {
+                log.error("cannot find app package task records when updates component task status|" +
+                        "componentPackageTaskId={}|appPackageTaskId={}", taskDO.getId(), taskDO.getAppPackageTaskId());
+            }
             return;
         }
         freshAppPackageTask(appPackageTask);
@@ -430,6 +432,8 @@ public class AppPackageTaskServiceImpl implements AppPackageTaskService {
                 .appSchema(appPackageTaskDO.getPackageOptions())
                 .swapp(appPackageTaskDO.getSwapp())
                 .componentCount((long) CollectionUtils.size(componentPackageTaskDOList))
+                .namespaceId(appPackageTaskDO.getNamespaceId())
+                .stageId(appPackageTaskDO.getStageId())
                 .build();
         insertAppPackage(appPackageDO, componentPackageTaskDOList);
         return appPackageDO;

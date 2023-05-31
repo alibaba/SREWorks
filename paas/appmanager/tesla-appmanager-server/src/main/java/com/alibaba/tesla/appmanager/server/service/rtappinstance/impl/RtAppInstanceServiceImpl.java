@@ -549,7 +549,7 @@ public class RtAppInstanceServiceImpl implements RtAppInstanceService {
                     .withController(true)
                     .build());
         } catch (Exception e) {
-            log.error("cannot getOrCreate application cr|clusterId={}|namespaceId={}|appInstanceId={}|" +
+            log.info("cannot getOrCreate application cr|clusterId={}|namespaceId={}|appInstanceId={}|" +
                     "exception={}", clusterId, namespaceId, appInstanceName, ExceptionUtils.getStackTrace(e));
             return "";
         }

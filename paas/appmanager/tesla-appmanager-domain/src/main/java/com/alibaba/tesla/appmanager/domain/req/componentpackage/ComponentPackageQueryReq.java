@@ -51,4 +51,14 @@ public class ComponentPackageQueryReq extends BaseRequest {
      * 排序规则
      */
     private String orderBy;
+
+    /**
+     * 隔离 Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * 隔离 Stage ID
+     */
+    private String stageId;
 }

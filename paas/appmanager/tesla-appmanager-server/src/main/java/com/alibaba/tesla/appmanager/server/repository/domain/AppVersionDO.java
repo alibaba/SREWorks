@@ -1,12 +1,8 @@
 package com.alibaba.tesla.appmanager.server.repository.domain;
 
-import java.util.Date;
+import lombok.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.util.Date;
 
 /**
  * 应用版本表
@@ -51,4 +47,9 @@ public class AppVersionDO {
      * 版本属性
      */
     private String versionProperties;
+
+    /**
+     * 是否是全局版本
+     */
+    private Boolean isGlobal = false;
 }

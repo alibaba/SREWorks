@@ -47,7 +47,13 @@ public class AppComponentPackageTaskController extends AppManagerBaseController 
     public TeslaBaseResult list(
             @PathVariable String appId,
             @ParameterObject @ModelAttribute ComponentPackageTaskListQueryReq request,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
+        request.setNamespaceId(namespaceId);
+        request.setStageId(stageId);
         return buildSucceedResult(componentPackageProvider.listTask(request, getOperator(auth)));
     }
 

@@ -165,6 +165,8 @@ public class ComponentPackageProviderImpl implements ComponentPackageProvider {
         ComponentPackageTaskQueryCondition condition = ComponentPackageTaskQueryCondition.builder()
                 .idList(req.getComponentPackageTaskIdList())
                 .appPackageTaskId(req.getAppPackageTaskId())
+                .namespaceId(req.getNamespaceId())
+                .stageId(req.getStageId())
                 .page(req.getPage())
                 .pageSize(req.getPageSize())
                 .withBlobs(req.isWithBlobs())

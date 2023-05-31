@@ -105,6 +105,12 @@ public class ComponentPackageRepositoryImpl implements ComponentPackageRepositor
         if (StringUtils.isNotBlank(condition.getPackageVersion())) {
             criteria.andPackageVersionEqualTo(condition.getPackageVersion());
         }
+        if (StringUtils.isNotBlank(condition.getNamespaceId())) {
+            criteria.andNamespaceIdEqualTo(condition.getNamespaceId());
+        }
+        if (StringUtils.isNotBlank(condition.getStageId())) {
+            criteria.andStageIdEqualTo(condition.getStageId());
+        }
         return example;
     }
 

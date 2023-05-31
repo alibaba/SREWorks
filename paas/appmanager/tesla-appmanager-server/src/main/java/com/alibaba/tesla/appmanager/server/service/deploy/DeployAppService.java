@@ -64,4 +64,11 @@ public interface DeployAppService {
      * @param order 工单记录
      */
     void update(DeployAppDO order);
+
+    /**
+     * 根据条件删除部署记录
+     *
+     * @param condition
+     */
+    int deleteByCondition(DeployAppQueryCondition condition);
 }

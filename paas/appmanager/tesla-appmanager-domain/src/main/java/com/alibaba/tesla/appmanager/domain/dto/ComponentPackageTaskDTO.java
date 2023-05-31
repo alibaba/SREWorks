@@ -116,4 +116,14 @@ public class ComponentPackageTaskDTO {
      * 环境 ID
      */
     private String envId;
+
+    /**
+     * 隔离 Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * 隔离 Stage ID
+     */
+    private String stageId;
 }

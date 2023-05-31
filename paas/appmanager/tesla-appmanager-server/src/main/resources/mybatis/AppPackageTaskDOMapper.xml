@@ -14,6 +14,8 @@
     <result column="package_version" jdbcType="VARCHAR" property="packageVersion" />
     <result column="version" jdbcType="INTEGER" property="version" />
     <result column="env_id" jdbcType="VARCHAR" property="envId" />
+    <result column="namespace_id" jdbcType="VARCHAR" property="namespaceId" />
+    <result column="stage_id" jdbcType="VARCHAR" property="stageId" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.alibaba.tesla.appmanager.server.repository.domain.AppPackageTaskDO">
     <!--@mbg.generated-->
@@ -53,8 +55,8 @@
   </sql>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, gmt_create, gmt_modified, app_id, app_package_id, package_creator, task_status, 
-    package_version, version, env_id
+    id, gmt_create, gmt_modified, app_id, app_package_id, package_creator, task_status,
+    package_version, version, env_id, namespace_id, stage_id
   </sql>
   <sql id="Blob_Column_List">
     <!--@mbg.generated-->
@@ -126,6 +128,12 @@
       <if test="envId != null">
         env_id,
       </if>
+      <if test="namespaceId != null">
+        namespace_id,
+      </if>
+      <if test="stageId != null">
+        stage_id,
+      </if>
       <if test="packageOptions != null">
         package_options,
       </if>
@@ -160,6 +168,12 @@
       </if>
       <if test="envId != null">
         #{envId,jdbcType=VARCHAR},
+      </if>
+      <if test="namespaceId != null">
+        #{namespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="stageId != null">
+        #{stageId,jdbcType=VARCHAR},
       </if>
       <if test="packageOptions != null">
         #{packageOptions,jdbcType=LONGVARCHAR},
@@ -235,6 +249,12 @@
       </if>
       <if test="record.envId != null">
         env_id = #{record.envId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.namespaceId != null">
+        namespace_id = #{record.namespaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stageId != null">
+        stage_id = #{record.stageId,jdbcType=VARCHAR},
       </if>
       <if test="record.packageOptions != null">
         package_options = #{record.packageOptions,jdbcType=LONGVARCHAR},

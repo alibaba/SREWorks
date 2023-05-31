@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.server.controller;
 
 import com.alibaba.tesla.appmanager.api.provider.AppComponentProvider;
 import com.alibaba.tesla.appmanager.api.provider.AppMetaProvider;
+import com.alibaba.tesla.appmanager.api.provider.AppVersionProvider;
 import com.alibaba.tesla.appmanager.api.provider.DeployConfigProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
@@ -50,6 +51,9 @@ public class AppController extends AppManagerBaseController {
 
     @Autowired
     private AppComponentProvider appComponentProvider;
+
+    @Autowired
+    private AppVersionProvider appVersionProvider;
 
     @Operation(summary = "查询应用列表")
     @GetMapping
@@ -123,24 +127,6 @@ public class AppController extends AppManagerBaseController {
 
         request.setAppId(appId);
         boolean result = appMetaProvider.delete(request, getOperator(auth));
-        if (request.getRemoveAllDeployConfigs()) {
-            DeployConfigListReq deployConfigRequest = DeployConfigListReq.builder()
-                    .appId(request.getAppId())
-                    .build();
-            Pagination<DeployConfigDTO> deployConfigs = deployConfigProvider.list(deployConfigRequest);
-            for (DeployConfigDTO deployConfigDTO : deployConfigs.getItems()) {
-                deployConfigProvider.delete(
-                        DeployConfigDeleteReq.builder()
-                            .appId(deployConfigDTO.getAppId())
-                            .apiVersion(deployConfigDTO.getApiVersion())
-                            .typeId(deployConfigDTO.getTypeId())
-                            .envId(deployConfigDTO.getEnvId())
-                            .isolateNamespaceId(deployConfigDTO.getNamespaceId())
-                            .isolateStageId(deployConfigDTO.getStageId())
-                            .build()
-                );
-            }
-        }
         return buildSucceedResult(result);
     }
 

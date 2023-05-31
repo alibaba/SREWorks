@@ -1,17 +1,18 @@
 package com.alibaba.tesla.appmanager.server.repository.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.io.Serializable;
 import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 组件包详情表
  */
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -70,6 +71,16 @@ public class ComponentPackageDO implements Serializable {
      * VERSION
      */
     private Integer version;
+
+    /**
+     * 隔离 Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * 隔离 Stage ID
+     */
+    private String stageId;
 
     /**
      * 包的 ComponentSchema 信息 (YAML)

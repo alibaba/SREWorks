@@ -26,4 +26,14 @@ public class AppPackageTaskQueryReq extends BaseRequest {
      * 应用打包的任务ID
      */
     private Long appPackageTaskId;
+
+    /**
+     * 隔离 Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * 隔离 Stage ID
+     */
+    private String stageId;
 }

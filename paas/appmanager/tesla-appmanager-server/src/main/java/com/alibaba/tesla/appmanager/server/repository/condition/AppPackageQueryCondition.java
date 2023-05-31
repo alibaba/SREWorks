@@ -32,6 +32,10 @@ public class AppPackageQueryCondition extends BaseCondition {
 
     private String packageCreator;
 
+    private String namespaceId;
+
+    private String stageId;
+
     private String orderBy;
 
     private List<String> tags = new ArrayList<>();

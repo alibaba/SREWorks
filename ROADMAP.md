@@ -23,9 +23,13 @@
 - Official website homepage online
 - Builtin Application push to Application market
 
-## SREWorks v1.4
+## SREWorks v1.4 (2023/01/06 Released)
 - Frontend engineering adopts monorepo for code refactoring
 - Improvement of offline image deployment plan
 
+## SREWorks v1.5
+- Realtime task platform
+- Log clustering algorithm open-sourced for the first time
+- Visual orchestration of OAM applications
+ 
 
-- 

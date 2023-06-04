@@ -2,7 +2,7 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 4.2.4+20230404062614238879
+    annotations.appmanager.oam.dev/version: 4.3.0+20230529090310870370
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
     appId: aiops
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 4.2.4+20230404062614238879
+        annotations.appmanager.oam.dev/version: 4.3.0+20230529090310870370
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -44,15 +44,21 @@ spec:
       replicas: 1
       name: ''
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-aisp-aisp:1680589574212
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-aisp-aisp:1685350990216
         name: aisp
+      serviceName: ''
       env:
         DB_PORT: '{{ Global.DB_PORT }}'
         DB_USER: '{{ Global.DB_USER }}'
+        MINIO_ACCESS_KEY: '{{ Global.MINIO_ACCESS_KEY }}'
         DB_NAME: '{{ Global.DB_NAME }}'
+        MINIO_ENDPOINT: '{{ Global.MINIO_ENDPOINT }}'
+        MINIO_SECRET_KEY: '{{ Global.MINIO_SECRET_KEY }}'
         DB_HOST: '{{ Global.DB_HOST }}'
         DB_PASSWORD: '{{ Global.DB_PASSWORD }}'
         CACHE_TYPE: '{{ Global.CACHE_TYPE }}'
       initContainers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-aisp-sreworks-migration:1680589574212
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-aisp-sreworks-migration:1685350990216
         name: sreworks-migration
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-aisp-log-clustering-init:1685350990216
+        name: log-clustering-init

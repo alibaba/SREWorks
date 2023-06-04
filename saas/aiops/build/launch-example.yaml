@@ -87,6 +87,8 @@ spec:
       value: local
     - name: Global.DB_HOST
       value: '{{Global.STAGE_ID}}-dataops-mysql.sreworks-dataops'
+    - name: Global.MINIO_ENDPOINT
+      value: sreworks-minio.sreworks:9000
     revisionName: K8S_MICROSERVICE|aisp|_
     scopes:
     - scopeRef:

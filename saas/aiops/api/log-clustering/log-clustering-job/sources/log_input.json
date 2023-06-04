@@ -1,0 +1,62 @@
+{
+	"sourceType":"kafka",
+	"columns":[
+		{
+			"columnType":"MAP<STRING,STRING>",
+			"columnName":"contents"
+		},
+		{
+			"columnType":"as contents['content']",
+			"columnName":"content"
+		},
+		{
+			"columnType":"TIMESTAMP(3) METADATA VIRTUAL",
+			"columnName":"timestamp"
+		},
+		{
+			"columnType":"AS `timestamp`",
+			"columnName":"time_ltz"
+		},
+		{
+			"columnType":"AS UNIX_TIMESTAMP(DATE_FORMAT(`timestamp`, 'yyyy-MM-dd hh:mm:ss'), 'yyyy-MM-dd hh:mm:ss')",
+			"columnName":"__timestamp__"
+		},
+		{
+			"columnType":"AS PROCTIME()",
+			"columnName":"user_action_time"
+		},
+		{
+			"columnType":"WATERMARK FOR time_ltz AS time_ltz - INTERVAL '5' SECOND"
+		}
+	],
+	"options":[
+		{
+			"value":"kafka",
+			"key":"connector"
+		},
+		{
+			"value":"http://prod-dataops-kafka.sreworks-dataops:9092",
+			"key":"properties.bootstrap.servers"
+		},
+		{
+			"value":"json",
+			"key":"format"
+		},
+		{
+			"value":"latest-offset",
+			"key":"scan.startup.mode"
+		},
+		{
+			"value":"pod-log",
+			"key":"topic"
+		},
+		{
+			"value":"ALL",
+			"key":"value.fields-include"
+		},
+		{
+			"value":"pod-log-group",
+			"key":"properties.group.id"
+		}
+	]
+}

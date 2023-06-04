@@ -3,7 +3,6 @@ package com.alibaba.tesla.appmanager.server.dag.nodes;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.tesla.appmanager.common.constants.AppFlowParamKey;
 import com.alibaba.tesla.appmanager.common.constants.AppFlowVariableKey;
-import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.util.InstanceIdUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.domain.container.DeployAppRevisionName;
@@ -15,7 +14,6 @@ import com.alibaba.tesla.dag.common.BeanUtil;
 import com.alibaba.tesla.dag.local.AbstractLocalNodeBase;
 import com.alibaba.tesla.dag.model.domain.dagnode.DagInstNodeRunRet;
 import com.aliyuncs.utils.StringUtils;
-import com.google.common.base.Enums;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;

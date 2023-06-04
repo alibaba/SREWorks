@@ -1,7 +1,6 @@
 package com.alibaba.tesla.appmanager.server.service.apppackage;
 
 import com.alibaba.tesla.appmanager.common.enums.ComponentPackageTaskStateEnum;
-import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppPackageTaskInQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.condition.AppPackageTaskQueryCondition;

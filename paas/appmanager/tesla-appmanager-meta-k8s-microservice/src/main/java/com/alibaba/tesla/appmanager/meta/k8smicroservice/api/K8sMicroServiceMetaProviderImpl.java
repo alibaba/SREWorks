@@ -658,10 +658,10 @@ public class K8sMicroServiceMetaProviderImpl implements K8sMicroServiceMetaProvi
         String metaNamespaceId = meta.getNamespaceId();
         String metaStageId = meta.getStageId();
         // TODO: FOR SREWORKS ONLY TEMPORARY
-        if (EnvUtil.isSreworks()) {
-            metaNamespaceId = EnvUtil.defaultNamespaceId();
-            metaStageId = EnvUtil.defaultStageId();
-        }
+//        if (EnvUtil.isSreworks()) {
+//            metaNamespaceId = EnvUtil.defaultNamespaceId();
+//            metaStageId = EnvUtil.defaultStageId();
+//        }
         deployConfigService.update(DeployConfigUpsertReq.builder()
                 .apiVersion(DefaultConstant.API_VERSION_V1_ALPHA2)
                 .appId(meta.getAppId())

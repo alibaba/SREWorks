@@ -4,9 +4,13 @@ WORKDIR /app
 RUN mkdir /root/.m2/ && curl https://sreworks.oss-cn-beijing.aliyuncs.com/resource/settings.xml -o /root/.m2/settings.xml
 RUN mvn -Dmaven.test.skip=true clean package
 
+FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/vvp-gateway:2.8.2 AS vvp
+RUN ls -l /vvp
+
 FROM sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/openjdk11:alpine-jre AS release
 USER root
 WORKDIR /root
+COPY --from=vvp /vvp/sql/opt /app/vvp
 COPY --from=build /app/sreworks-job-master/target/sreworks-job.jar /app/sreworks-job.jar
 COPY entrypoint.sh /app/entrypoint.sh
 ENTRYPOINT ["/bin/sh","/app/entrypoint.sh"]

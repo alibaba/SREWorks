@@ -5,8 +5,8 @@ import com.alibaba.tesla.appmanager.common.constants.RedisKeyConstant
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode
 import com.alibaba.tesla.appmanager.common.exception.AppException
+import com.alibaba.tesla.appmanager.common.service.StreamLogService
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil
-import com.alibaba.tesla.appmanager.common.util.StreamLogHelper
 import com.alibaba.tesla.appmanager.domain.req.deploy.DeployAppLaunchReq
 import com.alibaba.tesla.appmanager.domain.req.workflow.ExecutePolicyHandlerReq
 import com.alibaba.tesla.appmanager.domain.req.workflow.ExecuteWorkflowHandlerReq
@@ -47,13 +47,13 @@ class WorkflowRemoteDeployHandler implements WorkflowHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 11
+    public static final Integer REVISION = 14
 
     @Autowired
     private UnitService unitService
 
     @Autowired
-    private StreamLogHelper streamLogHelper
+    private StreamLogService streamLogService;
 
     /**
      * 执行逻辑
@@ -67,14 +67,15 @@ class WorkflowRemoteDeployHandler implements WorkflowHandler {
         def streamKey = String.format("%s_%s", RedisKeyConstant.WORKFLOW_TASK_LOG,
                 request.getTaskId())
         try {
-            streamLogHelper.info(streamKey,String.format("enter workflow remote deploy task|workflowInstanceId=%s|workflowTaskId=%s|context=%s",
-                    request.getInstanceId(), request.getTaskId(), JSONObject.toJSONString(context)),log)
+            streamLogService.info(streamKey, String.format("enter workflow remote deploy task|workflowInstanceId=%s|workflowTaskId=%s|context=%s",
+                    request.getInstanceId(), request.getTaskId(), JSONObject.toJSONString(context)), log)
 
             // 如果已经由前置节点成功发起，那么直接进入等待状态
             if (context.getLongValue("deployAppId") > 0) {
-                log.info("deploy request has applied (direct)|workflowInstanceId={}|workflowTaskId={}|appId={}|" +
-                        "context={}|configuration={}", request.getInstanceId(), request.getTaskId(), request.getAppId(),
-                        JSONObject.toJSONString(context), JSONObject.toJSONString(configuration))
+                streamLogService.info(streamKey, String.format("deploy request has applied (direct)|" +
+                        "workflowInstanceId=%s|workflowTaskId=%s|appId=%s|" +
+                        "context=%s|configuration=%s", request.getInstanceId(), request.getTaskId(), request.getAppId(),
+                        JSONObject.toJSONString(context), JSONObject.toJSONString(configuration)), log)
                 return ExecuteWorkflowHandlerRes.builder()
                         .deployAppId(context.getLongValue("deployAppId"))
                         .deployAppUnitId(context.getString("unitId"))
@@ -107,9 +108,10 @@ class WorkflowRemoteDeployHandler implements WorkflowHandler {
                             .context(context)
                             .configuration(configuration)
                             .build()
-                    log.info("preapre to execute policy in workflow task|workflowInstanceId={}|workflowTaskId={}|" +
-                            "appId={}|context={}|configuration={}", request.getInstanceId(), request.getTaskId(),
-                            request.getAppId(), JSONObject.toJSONString(context), JSONObject.toJSONString(configuration))
+                    streamLogService.info(streamKey, String.format("prepare to execute policy in workflow task" +
+                            "|workflowInstanceId=%s|workflowTaskId=%s|" +
+                            "appId=%s|context=%s|configuration=%s", request.getInstanceId(), request.getTaskId(),
+                            request.getAppId(), JSONObject.toJSONString(context), JSONObject.toJSONString(configuration)), log)
                     def res = policyHandler.execute(req)
                     if (res.getContext() != null) {
                         context = res.getContext()
@@ -120,6 +122,7 @@ class WorkflowRemoteDeployHandler implements WorkflowHandler {
                     log.info("policy has exeucted in workflow task|workflowInstanceId={}|workflowTaskId={}|appId={}|" +
                             "context={}|configuration={}", request.getInstanceId(), request.getTaskId(), request.getAppId(),
                             JSONObject.toJSONString(context), JSONObject.toJSONString(configuration))
+                    streamLogService.info(streamKey, "policy has exeucted in workflow task")
                 }
             }
 
@@ -153,6 +156,7 @@ class WorkflowRemoteDeployHandler implements WorkflowHandler {
                 log.info("deploy request has applied|workflowInstanceId={}|workflowTaskId={}|appId={}|context={}|" +
                         "configuration={}", request.getInstanceId(), request.getTaskId(), request.getAppId(),
                         JSONObject.toJSONString(context), JSONObject.toJSONString(configuration))
+                streamLogService.info(streamKey, "deploy request has applied")
                 return ExecuteWorkflowHandlerRes.builder()
                         .deployAppId(deployAppId)
                         .deployAppUnitId(unitId)
@@ -167,10 +171,10 @@ class WorkflowRemoteDeployHandler implements WorkflowHandler {
                                 unitId, appPackageId, ExceptionUtils.getStackTrace(e)))
             }
         } catch (Exception ex) {
-            streamLogHelper.info(streamKey,ExceptionUtils.getStackTrace(ex))
+            streamLogService.info(streamKey, ExceptionUtils.getStackTrace(ex))
             throw ex;
         } finally {
-            streamLogHelper.clean(streamKey);
+            streamLogService.clean(streamKey, true);
         }
     }
 }

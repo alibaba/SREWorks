@@ -2,6 +2,7 @@ package com.alibaba.tesla.appmanager.server.controller;
 
 import com.alibaba.tesla.appmanager.api.provider.ComponentPackageProvider;
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
+import com.alibaba.tesla.appmanager.domain.container.BizAppContainer;
 import com.alibaba.tesla.appmanager.domain.req.componentpackage.ComponentPackageLatestVersionListReq;
 import com.alibaba.tesla.appmanager.domain.req.componentpackage.ComponentPackageQueryReq;
 import com.alibaba.tesla.common.base.TeslaBaseResult;
@@ -40,8 +41,14 @@ public class AppComponentPackageController extends AppManagerBaseController {
     public TeslaBaseResult list(
             @PathVariable String appId,
             @ParameterObject @ModelAttribute ComponentPackageQueryReq request,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
             OAuth2Authentication auth) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
         request.setAppId(appId);
+        request.setNamespaceId(namespaceId);
+        request.setStageId(stageId);
         return buildSucceedResult(componentPackageProvider.list(request, getOperator(auth)));
     }
 

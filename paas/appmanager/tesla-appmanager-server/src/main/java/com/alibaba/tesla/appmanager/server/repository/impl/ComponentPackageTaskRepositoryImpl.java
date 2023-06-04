@@ -85,10 +85,10 @@ public class ComponentPackageTaskRepositoryImpl implements ComponentPackageTaskR
         if (StringUtils.isNotBlank(condition.getAppId())) {
             criteria.andAppIdEqualTo(condition.getAppId());
         }
-        if (condition.getNamespaceId() != null) {
+        if (StringUtils.isNotBlank(condition.getNamespaceId())) {
             criteria.andNamespaceIdEqualTo(condition.getNamespaceId());
         }
-        if (condition.getStageId() != null) {
+        if (StringUtils.isNotBlank(condition.getStageId())) {
             criteria.andStageIdEqualTo(condition.getStageId());
         }
         if (StringUtils.isNotBlank(condition.getComponentType())) {

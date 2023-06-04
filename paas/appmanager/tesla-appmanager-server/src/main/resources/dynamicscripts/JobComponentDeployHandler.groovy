@@ -3,10 +3,13 @@ package dynamicscripts
 import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import com.alibaba.tesla.appmanager.autoconfig.SystemProperties
+import com.alibaba.tesla.appmanager.common.constants.RedisKeyConstant
+import com.alibaba.tesla.appmanager.common.enums.ComponentInstanceStatusEnum
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentStateEnum
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode
 import com.alibaba.tesla.appmanager.common.exception.AppException
+import com.alibaba.tesla.appmanager.common.service.StreamLogService
 import com.alibaba.tesla.appmanager.common.util.CommandUtil
 import com.alibaba.tesla.appmanager.common.util.ImageUtil
 import com.alibaba.tesla.appmanager.common.util.NetworkUtil
@@ -55,7 +58,10 @@ class JobComponentDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 18
+    public static final Integer REVISION = 20
+
+    @Autowired
+    private StreamLogService streamLogService
 
     /**
      * CRD Context
@@ -72,7 +78,8 @@ class JobComponentDeployHandler implements DeployComponentHandler {
     private KubernetesClientFactory kubernetesClientFactory;
 
     @Autowired
-    private SystemProperties systemProperties;
+    private SystemProperties systemProperties
+
 
     /**
      * 部署组件过程
@@ -81,10 +88,14 @@ class JobComponentDeployHandler implements DeployComponentHandler {
      */
     @Override
     LaunchDeployComponentHandlerRes launch(LaunchDeployComponentHandlerReq request) {
+        def streamKey = String.format("%s_%s", RedisKeyConstant.DEPLOY_TASK_LOG,
+                request.getDeployComponentId())
+        streamLogService.info(streamKey, "start execute JobComponentBuildHandler")
         def packageDir = getPackageDir(request)
+        streamLogService.info(streamKey, "action=getPackageDir|workDir=" + packageDir)
         def componentSchema = request.getComponentSchema()
         refreshComponentSchemaWorkload(componentSchema)
-        pushImages(componentSchema, packageDir)
+        pushImages(componentSchema, packageDir, streamKey)
         apply(request, componentSchema)
 
         try {
@@ -94,7 +105,9 @@ class JobComponentDeployHandler implements DeployComponentHandler {
         }
         LaunchDeployComponentHandlerRes res = LaunchDeployComponentHandlerRes.builder()
                 .componentSchema(componentSchema)
+                .status(ComponentInstanceStatusEnum.UPDATING.toString())
                 .build()
+        streamLogService.info(streamKey, "execute JobComponentBuildHandler finish!")
         return res
     }
 
@@ -118,7 +131,7 @@ class JobComponentDeployHandler implements DeployComponentHandler {
      * @param componentSchema ComponentSchema 对象
      * @param packageDir 解压包目录
      */
-    private void pushImages(ComponentSchema componentSchema, String packageDir) {
+    private void pushImages(ComponentSchema componentSchema, String packageDir, String streamKey) {
         def images = componentSchema.getSpec().getImages()
         for (def image : images) {
             if (StringUtils.isNotEmpty(image.getName())) {
@@ -126,22 +139,26 @@ class JobComponentDeployHandler implements DeployComponentHandler {
                 if (systemArch == "x86_64") {
                     if (StringUtils.isNotEmpty(image.getArch()) && image.getArch() != "x86") {
                         log.info("image arch {} is incompatible with system arch {}, skip", image.getArch(), systemArch)
+                        streamLogService.info(streamKey, "image arch is incompatible with system arch, skip")
                         continue
                     }
                 } else if (systemArch == "aarch64") {
                     if (StringUtils.isNotEmpty(image.getArch()) && image.getArch() != "arm") {
                         log.info("image arch {} is incompatible with system arch {}, skip", image.getArch(), systemArch)
+                        streamLogService.info(streamKey, "image arch is incompatible with system arch, skip")
                         continue
                     }
                 } else if (systemArch == "sw_64") {
                     if (StringUtils.isNotEmpty(image.getArch()) && image.getArch() != "sw6b") {
                         log.info("image arch {} is incompatible with system arch {}, skip", image.getArch(), systemArch)
+                        streamLogService.info(streamKey, "image arch is incompatible with system arch, skip")
                         continue
                     }
                 }
                 singleImagePush(packageDir, image.getImage(), image.getName(), image.getSha256())
                 log.info("image {} has put into registry|arch={}|name={}",
                         image.getImage(), image.getArch(), image.getName())
+                streamLogService.info(streamKey, "image has put into registry")
             }
         }
     }
@@ -234,6 +251,8 @@ class JobComponentDeployHandler implements DeployComponentHandler {
      * @param componentSchema ComponentSchema 对象
      */
     private void apply(LaunchDeployComponentHandlerReq request, ComponentSchema componentSchema) {
+        def streamKey = String.format("%s_%s", RedisKeyConstant.DEPLOY_TASK_LOG,
+                request.getDeployComponentId())
         def userCustomName = ((JSONObject) componentSchema.getSpec().getWorkload().getSpec()).getString("name")
         def appId = request.getAppId()
         def componentName = request.getComponentName()
@@ -298,6 +317,7 @@ class JobComponentDeployHandler implements DeployComponentHandler {
                     def result = client.customResource(CRD_CONTEXT).create(namespace, resource)
                     log.info("cr yaml has created in kubernetes|cluster={}|namespace={}|stageId={}|name={}|cr={}|" +
                             "result={}", cluster, namespace, stageId, name, cr, JSONObject.toJSONString(result))
+                    streamLogService.info(streamKey, "cr yaml has created in kubernetes")
                 } else {
                     def current = new JSONObject(currentCr)
                     def labels = resource.getJSONObject("metadata").getJSONObject("labels")
@@ -314,12 +334,14 @@ class JobComponentDeployHandler implements DeployComponentHandler {
                     def result = client.customResource(CRD_CONTEXT).edit(namespace, name, current)
                     log.info("cr yaml has updated in kubernetes|cluster={}|namespace={}|stageId={}|name={}|cr={}|result={}",
                             cluster, namespace, stageId, name, cr, JSONObject.toJSONString(result))
+                    streamLogService.info(streamKey, "cr yaml has created in kubernetes")
                 }
             } catch (KubernetesClientException e) {
                 if (e.getCode() == 404) {
                     def result = client.customResource(CRD_CONTEXT).create(namespace, resource)
                     log.info("cr yaml has created in kubernetes|cluster={}|namespace={}|stageId={}|name={}|cr={}|" +
                             "result={}", cluster, namespace, stageId, name, cr, JSONObject.toJSONString(result))
+                    streamLogService.info(streamKey, "cr yaml has created in kubernetes")
                 } else {
                     throw e;
                 }
@@ -327,6 +349,7 @@ class JobComponentDeployHandler implements DeployComponentHandler {
         } catch (Exception e) {
             log.error("apply cr yaml to kubernetes failed|cluster={}|namespace={}|stageId={}|" +
                     "exception={}|cr={}", cluster, namespace, stageId, ExceptionUtils.getStackTrace(e), cr)
+            streamLogService.info(streamKey, "apply cr yaml to kubernetes failed")
             throw e
         }
     }

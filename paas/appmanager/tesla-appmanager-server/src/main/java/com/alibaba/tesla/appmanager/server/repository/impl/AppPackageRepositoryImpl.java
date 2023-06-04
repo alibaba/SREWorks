@@ -121,6 +121,12 @@ public class AppPackageRepositoryImpl implements AppPackageRepository {
         if (StringUtils.isNotBlank(condition.getPackageVersionLessThan())) {
             criteria.andPackageVersionLessThan(condition.getPackageVersionLessThan());
         }
+        if (StringUtils.isNotBlank(condition.getNamespaceId())) {
+            criteria.andNamespaceIdEqualTo(condition.getNamespaceId());
+        }
+        if (StringUtils.isNotBlank(condition.getStageId())) {
+            criteria.andStageIdEqualTo(condition.getStageId());
+        }
         return example;
     }
 

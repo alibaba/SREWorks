@@ -47,4 +47,9 @@ public class WorkflowTaskListReq implements Serializable {
      * 部署 Workflow Instance ID
      */
     private Long deployWorkflowInstanceId;
+
+    /**
+     * 是否查询大对象
+     */
+    private boolean withBlobs = false;
 }

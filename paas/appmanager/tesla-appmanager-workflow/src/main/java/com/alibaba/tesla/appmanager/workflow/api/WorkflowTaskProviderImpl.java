@@ -59,6 +59,7 @@ public class WorkflowTaskProviderImpl implements WorkflowTaskProvider {
                 .taskStatus(request.getTaskStatus())
                 .deployAppId(request.getDeployAppId())
                 .deployWorkflowInstanceId(request.getDeployWorkflowInstanceId())
+                .withBlobs(request.isWithBlobs())
                 .build());
         return Pagination.transform(tasks, item -> convert.to(item));
     }

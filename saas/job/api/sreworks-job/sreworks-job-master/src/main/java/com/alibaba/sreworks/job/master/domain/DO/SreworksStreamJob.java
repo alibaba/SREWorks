@@ -51,6 +51,12 @@ public class SreworksStreamJob {
     @Column
     private String alias;
 
+    @Column
+    private String status;
+
+    @Column
+    private Long executionPoolId;
+
     @Column(columnDefinition = "longtext")
     private String tags;
 

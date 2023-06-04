@@ -3,7 +3,7 @@ from confluent_kafka.admin import AdminClient, NewTopic
 
 a = AdminClient({'bootstrap.servers': os.environ.get('KAFKA_URL')})
 
-new_topics = [NewTopic(topic, num_partitions=3, replication_factor=1) for topic in ["sreworks-dataops-metric-data", "sreworks-telemetry-metric", "sreworks-pmdb-parsed-metric", "sreworks-health-incident"]]
+new_topics = [NewTopic(topic, num_partitions=3, replication_factor=1) for topic in ["sreworks-dataops-metric-data", "sreworks-telemetry-metric", "sreworks-pmdb-parsed-metric", "sreworks-health-incident", "pod-log"]]
 # Note: In a multi-cluster production scenario, it is more typical to use a replication_factor of 3 for durability.
 
 # Call create_topics to asynchronously create topics. A dict

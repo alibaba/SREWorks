@@ -98,9 +98,17 @@ public class AppPackageTaskController extends AppManagerBaseController {
      */
     @GetMapping("/apps/{appId}/app-package-tasks")
     @ResponseBody
-    public TeslaBaseResult list(@PathVariable String appId, OAuth2Authentication auth) {
+    public TeslaBaseResult list(
+            @PathVariable String appId,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
+            OAuth2Authentication auth) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
         AppPackageTaskQueryReq request = AppPackageTaskQueryReq.builder()
                 .appId(appId)
+                .namespaceId(namespaceId)
+                .stageId(stageId)
                 .build();
         return buildSucceedResult(appPackageTaskProvider.list(request, getOperator(auth), true));
     }
@@ -114,9 +122,18 @@ public class AppPackageTaskController extends AppManagerBaseController {
     @GetMapping("/app-package-tasks")
     @ResponseBody
     public TeslaBaseResult listCompatible(
-            @ParameterObject @ModelAttribute AppPackageTaskQueryReq request, OAuth2Authentication auth) {
+            @ParameterObject @ModelAttribute AppPackageTaskQueryReq request,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp,
+            OAuth2Authentication auth) {
+        BizAppContainer container = BizAppContainer.valueOf(headerBizApp);
+        String namespaceId = container.getNamespaceId();
+        String stageId = container.getStageId();
         return buildSucceedResult(appPackageTaskProvider.list(
-                AppPackageTaskQueryReq.builder().appId(request.getAppId()).build(),
+                AppPackageTaskQueryReq.builder()
+                        .appId(request.getAppId())
+                        .namespaceId(namespaceId)
+                        .stageId(stageId)
+                        .build(),
                 getOperator(auth), true));
     }
 
@@ -137,11 +154,11 @@ public class AppPackageTaskController extends AppManagerBaseController {
                 .appPackageTaskId(taskId)
                 .withBlobs(true)
                 .build();
-        Pagination<AppPackageTaskDTO> tasks = appPackageTaskProvider.list(request, getOperator(auth), true);
-        if (!tasks.isEmpty()) {
-            return buildSucceedResult(tasks.getItems().get(0));
+        AppPackageTaskDTO task = appPackageTaskProvider.get(request, getOperator(auth));
+        if (task == null) {
+            return buildClientErrorResult(AppErrorCode.INVALID_USER_ARGS.getDescription());
         }
-        return buildClientErrorResult(AppErrorCode.INVALID_USER_ARGS.getDescription());
+        return buildSucceedResult(task);
     }
 
     @PostMapping("/apps/{appId}/app-package-tasks/quick-create")

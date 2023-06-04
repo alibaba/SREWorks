@@ -5,8 +5,8 @@ import com.alibaba.tesla.appmanager.common.enums.DeployComponentEventEnum;
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentStateEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
+import com.alibaba.tesla.appmanager.common.service.StreamLogService;
 import com.alibaba.tesla.appmanager.common.util.DateUtil;
-import com.alibaba.tesla.appmanager.common.util.StreamLogHelper;
 import com.alibaba.tesla.appmanager.server.action.DeployComponentStateAction;
 import com.alibaba.tesla.appmanager.server.action.DeployComponentStateActionManager;
 import com.alibaba.tesla.appmanager.server.event.deploy.DeployComponentEvent;
@@ -41,7 +41,7 @@ public class DeployComponentEventListener implements ApplicationListener<DeployC
     private ApplicationEventPublisher publisher;
 
     @Autowired
-    private StreamLogHelper streamLogHelper;
+    private StreamLogService streamLogService;
 
     /**
      * 处理 Component 部署单事件
@@ -83,7 +83,9 @@ public class DeployComponentEventListener implements ApplicationListener<DeployC
         if (order.getGmtStart() == null || order.getGmtStart().getTime() == 0L) {
             order.setGmtStart(DateUtil.now());
         }
-        order.setGmtEnd(DateUtil.now());
+        if (nextStatus.isFinalState()) {
+            order.setGmtEnd(DateUtil.now());
+        }
         String logSuffix = String.format("|deployAppId=%d|deployComponentId=%d|fromStatus=%s|toStatus=%s",
                 deployAppId, deployComponentId, status, nextStatus);
         try {
@@ -124,9 +126,9 @@ public class DeployComponentEventListener implements ApplicationListener<DeployC
                         "fromStatus={}|toStatus={}|exception={}", deployAppId, deployComponentId, fromStatus.toString(),
                 DeployComponentStateEnum.EXCEPTION, errorMessage);
         String streamKey = String.format("%s_%s", RedisKeyConstant.DEPLOY_TASK_LOG, deployComponentId);
-        streamLogHelper.clean(streamKey, String.format("action=event.component.ERROR|message=status has changed|deployAppId=%s|deployComponentId=%s|" +
+        streamLogService.clean(streamKey, String.format("action=event.component.ERROR|message=status has changed|deployAppId=%s|deployComponentId=%s|" +
                         "fromStatus=%s|toStatus=%s|exception=%s", deployAppId, deployComponentId, fromStatus,
-                DeployComponentStateEnum.EXCEPTION, errorMessage));
+                DeployComponentStateEnum.EXCEPTION, errorMessage),true);
         publisher.publishEvent(new DeployComponentEvent(this, DeployComponentEventEnum.TRIGGER_UPDATE, order.getId()));
     }
 }

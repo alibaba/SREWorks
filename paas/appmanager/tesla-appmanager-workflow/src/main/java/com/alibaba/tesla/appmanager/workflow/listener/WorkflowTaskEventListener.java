@@ -8,9 +8,7 @@ import com.alibaba.tesla.appmanager.common.util.DateUtil;
 import com.alibaba.tesla.appmanager.workflow.action.WorkflowTaskStateAction;
 import com.alibaba.tesla.appmanager.workflow.action.WorkflowTaskStateActionManager;
 import com.alibaba.tesla.appmanager.workflow.event.WorkflowTaskEvent;
-import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO;
-import com.alibaba.tesla.appmanager.workflow.service.WorkflowInstanceService;
 import com.alibaba.tesla.appmanager.workflow.service.WorkflowTaskService;
 import com.google.common.base.Enums;
 import lombok.extern.slf4j.Slf4j;
@@ -74,7 +72,9 @@ public class WorkflowTaskEventListener implements ApplicationListener<WorkflowTa
         if (task.getGmtStart() == null || task.getGmtStart().getTime() == 0L) {
             task.setGmtStart(DateUtil.now());
         }
-        task.setGmtEnd(DateUtil.now());
+        if (nextStatus.isFinalState()) {
+            task.setGmtEnd(DateUtil.now());
+        }
         // maybe "", it's ok
         if (event.getTask().getTaskErrorMessage() != null) {
             task.setTaskErrorMessage(event.getTask().getTaskErrorMessage());

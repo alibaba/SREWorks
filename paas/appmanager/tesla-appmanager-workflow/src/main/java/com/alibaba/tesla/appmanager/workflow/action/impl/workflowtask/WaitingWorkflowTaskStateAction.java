@@ -1,6 +1,5 @@
 package com.alibaba.tesla.appmanager.workflow.action.impl.workflowtask;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.api.provider.DeployAppProvider;
 import com.alibaba.tesla.appmanager.api.provider.UnitProvider;
@@ -19,7 +18,6 @@ import com.alibaba.tesla.appmanager.domain.schema.DeployAppSchema;
 import com.alibaba.tesla.appmanager.workflow.action.WorkflowTaskStateAction;
 import com.alibaba.tesla.appmanager.workflow.event.WorkflowTaskEvent;
 import com.alibaba.tesla.appmanager.workflow.event.loader.WorkflowTaskStateActionLoadedEvent;
-import com.alibaba.tesla.appmanager.workflow.repository.condition.WorkflowSnapshotQueryCondition;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowInstanceDO;
 import com.alibaba.tesla.appmanager.workflow.repository.domain.WorkflowTaskDO;
 import com.alibaba.tesla.appmanager.workflow.service.WorkflowInstanceService;
@@ -35,7 +33,6 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import org.springframework.stereotype.Service;
 
-import javax.ws.rs.HEAD;
 import java.util.List;
 
 @Slf4j
@@ -114,11 +111,13 @@ public class WaitingWorkflowTaskStateAction implements WorkflowTaskStateAction, 
                     publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.WAITING_FINISHED, task));
                     break;
                 case FAILURE:
+                case TERMINATED:
                 case WAIT_FOR_OP:
-                    log.warn("the deployment has been completed, but reached FAILURE/WAIT_FOR_OP status, and the workflow" +
-                                    "task has ended waiting|workflowInstanceId={}|workflowTaskId={}|deployAppId={}|" +
-                                    "deployStatus={}|errorMessage={}", task.getWorkflowInstanceId(), task.getId(),
-                            deployApp.getId(), deployApp.getDeployStatus(), deployApp.getDeployErrorMessage());
+                    log.warn("the deployment has been completed, but reached FAILURE/WAIT_FOR_OP/TERMINATED status, " +
+                                    "and the workflow task has ended waiting|workflowInstanceId={}|workflowTaskId={}|" +
+                                    "deployAppId={}|deployStatus={}|errorMessage={}", task.getWorkflowInstanceId(),
+                            task.getId(), deployApp.getId(), deployApp.getDeployStatus(),
+                            deployApp.getDeployErrorMessage());
                     task.setTaskStatus(WorkflowTaskStateEnum.FAILURE.toString());
                     task.setTaskErrorMessage(deployApp.getDeployErrorMessage());
                     publisher.publishEvent(new WorkflowTaskEvent(this, WorkflowTaskEventEnum.WAITING_FAILED, task));

@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Date;
 
 @Service
@@ -73,7 +74,11 @@ public class TraitRepositoryImpl implements TraitRepository {
         TraitDOExample example = new TraitDOExample();
         TraitDOExample.Criteria criteria = example.createCriteria();
         if (StringUtils.isNotBlank(condition.getName())) {
-            criteria.andNameEqualTo(condition.getName());
+            if (condition.getName().contains(",")) {
+                criteria.andNameIn(Arrays.asList(condition.getName().split(",")));
+            } else {
+                criteria.andNameEqualTo(condition.getName());
+            }
         }
         if (StringUtils.isNotBlank(condition.getClassName())) {
             criteria.andClassNameEqualTo(condition.getClassName());

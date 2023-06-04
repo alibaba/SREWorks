@@ -30,7 +30,6 @@ import com.alibaba.tesla.appmanager.server.service.deploy.handler.DeployComponen
 import com.alibaba.tesla.appmanager.server.service.rtcomponentinstance.RtComponentInstanceService;
 import com.alibaba.tesla.appmanager.server.storage.Storage;
 import com.alibaba.tesla.dag.services.DagInstService;
-import com.google.common.base.Enums;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -267,6 +266,31 @@ public class ProcessingDeployComponentStateAction implements DeployComponentStat
                                     "deployComponentId={}|identifier={}|componentSchema={}", subOrder.getDeployId(),
                             subOrder.getId(), subOrder.getIdentifier(),
                             JSONObject.toJSONString(response.getComponentSchema()));
+                }
+                if (response.getAttrMap() != null) {
+                    for (Map.Entry<String, String> entry : response.getAttrMap().entrySet()) {
+                        deployComponentService.updateAttr(subOrder.getId(), entry.getKey(), entry.getValue());
+                    }
+                }
+                if (StringUtils.isNotEmpty(response.getStatus())) {
+                    JSONObject annotations = (JSONObject) componentSchema.getSpec()
+                            .getWorkload().getMetadata().getAnnotations();
+                    String version = (String) annotations.getOrDefault(ANNOTATIONS_VERSION, "");
+                    String componentInstanceId = (String) annotations.getOrDefault(ANNOTATIONS_COMPONENT_INSTANCE_ID, "");
+                    String appInstanceName = (String) annotations.getOrDefault(ANNOTATIONS_APP_INSTANCE_NAME, "");
+                    rtComponentInstanceService.report(ReportRtComponentInstanceStatusReq.builder()
+                            .componentInstanceId(componentInstanceId)
+                            .appInstanceName(appInstanceName)
+                            .clusterId(subOrder.getClusterId())
+                            .namespaceId(subOrder.getNamespaceId())
+                            .stageId(subOrder.getStageId())
+                            .appId(subOrder.getAppId())
+                            .componentType(componentPackageDO.getComponentType())
+                            .componentName(componentPackageDO.getComponentName())
+                            .version(version)
+                            .status(response.getStatus())
+                            .conditions(new ArrayList<>())
+                            .build());
                 }
                 publisher.publishEvent(new DeployComponentEvent(this,
                         DeployComponentEventEnum.PROCESS_FINISHED, subOrder.getId()));

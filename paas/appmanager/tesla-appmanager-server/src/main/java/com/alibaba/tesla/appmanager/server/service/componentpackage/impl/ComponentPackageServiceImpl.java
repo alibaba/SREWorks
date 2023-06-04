@@ -106,6 +106,8 @@ public class ComponentPackageServiceImpl implements ComponentPackageService {
         boolean resetVersion = req.isResetVersion();
         String componentType = req.getComponentPackageItem().getComponentType();
         String componentName = req.getComponentPackageItem().getComponentName();
+        String namespaceId = req.getNamespaceId();
+        String stageId = req.getStageId();
         ComponentPackageDO item = ComponentPackageDO.builder()
                 .appId(appId)
                 .componentType(componentType)
@@ -116,6 +118,8 @@ public class ComponentPackageServiceImpl implements ComponentPackageService {
                 .packageAddon(req.getComponentPackageItem().getPackageAddon())
                 .packageOptions(req.getComponentPackageItem().getPackageOptions())
                 .componentSchema(req.getComponentPackageItem().getPackageExt())
+                .namespaceId(namespaceId)
+                .stageId(stageId)
                 .build();
 
         if (force && resetVersion) {

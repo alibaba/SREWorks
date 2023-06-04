@@ -92,12 +92,12 @@ public class ComponentPackageTaskDO {
     private String envId;
 
     /**
-     * Namespace ID
+     * 隔离 Namespace ID
      */
     private String namespaceId;
 
     /**
-     * Stage ID
+     * 隔离 Stage ID
      */
     private String stageId;
 

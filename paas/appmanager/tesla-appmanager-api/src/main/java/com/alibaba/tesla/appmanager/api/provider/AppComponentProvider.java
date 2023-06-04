@@ -63,6 +63,17 @@ public interface AppComponentProvider {
     void delete(AppComponentDeleteReq request, String operator);
 
     /**
+     * 清理指定应用下所有的 Component 对象
+     *
+     * @param appId 应用 ID
+     * @param isolateNamespaceId 隔离 Namespace ID
+     * @param isolateStageId 隔离 Stage ID
+     * @param operator 操作人
+     * @return AppComponentDTO
+     */
+    void clean(String appId, String isolateNamespaceId, String isolateStageId, String operator);
+
+    /**
      * 获取指定 appId 下的所有关联 Component 对象
      *
      * @param request  查询请求

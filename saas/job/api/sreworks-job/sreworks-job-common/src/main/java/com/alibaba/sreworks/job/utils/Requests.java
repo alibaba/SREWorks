@@ -5,13 +5,17 @@ import com.alibaba.fastjson.JSONValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.nio.file.Files;
 
 public class Requests {
 
@@ -58,6 +62,22 @@ public class Requests {
 
     }
 
+    public static HttpResponse<String> put(
+            String url, JSONObject headers, JSONObject params, String postBody) throws IOException, InterruptedException {
+
+        if (postBody == null) {
+            postBody = "";
+        }
+        url = addParams(url, params);
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .PUT(BodyPublishers.ofString(postBody));
+        addHeaders(builder, headers);
+        return client.send(builder.build(), BodyHandlers.ofString());
+
+    }
+
     public static HttpResponse<String> get(
         String url, JSONObject headers, JSONObject params) throws IOException, InterruptedException {
 
@@ -65,6 +85,21 @@ public class Requests {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
             .uri(URI.create(url))
             .GET();
+        addHeaders(builder, headers);
+        return client.send(builder.build(), BodyHandlers.ofString());
+
+    }
+
+    public static HttpResponse<String> patch(
+            String url, JSONObject headers, JSONObject params, String postBody) throws IOException, InterruptedException, URISyntaxException {
+
+        url = addParams(url, params);
+
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
+                .uri(new URI(url))
+                .method("PATCH", HttpRequest.BodyPublishers.ofString(postBody))
+                .header("Content-Type", "application/json");
+
         addHeaders(builder, headers);
         return client.send(builder.build(), BodyHandlers.ofString());
 
@@ -80,6 +115,49 @@ public class Requests {
         addHeaders(builder, headers);
         return client.send(builder.build(), BodyHandlers.ofString());
 
+    }
+
+    public static HttpResponse<String> upload(File uploadFile, String url, JSONObject headers, JSONObject params) throws IOException, InterruptedException {
+        url = addParams(url, params);
+        String boundary = "boundary_" + System.currentTimeMillis();
+        byte[] bytes = Files.readAllBytes(uploadFile.toPath());
+
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "multipart/form-data; boundary=" + boundary)
+                .POST(HttpRequest.BodyPublishers.ofByteArray(createMultipartRequestEntity(bytes, uploadFile.getName(), boundary)));
+        addHeaders(builder, headers);
+        return client.send(builder.build(), HttpResponse.BodyHandlers.ofString());
+    }
+
+    /**
+     * 创建多部分请求实体
+     *
+     * @param bytes 文件字节流
+     * @param fileName 文件名
+     * @param boundary boundary
+     * @return 多部分请求实体字节流
+     */
+    private static byte[] createMultipartRequestEntity(byte[] bytes, String fileName, String boundary) {
+        String lineSeparator = "\r\n";
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("--").append(boundary).append(lineSeparator);
+        builder.append("Content-Disposition: form-data; name=\"file\"; filename=\"").append(fileName).append("\"").append(lineSeparator);
+        builder.append("Content-Type: application/octet-stream").append(lineSeparator);
+        builder.append(lineSeparator);
+
+        String header = builder.toString();
+        byte[] headerBytes = header.getBytes();
+
+        byte[] footerBytes = (lineSeparator + "--" + boundary + "--" + lineSeparator).getBytes();
+
+        byte[] result = new byte[headerBytes.length + bytes.length + footerBytes.length];
+        System.arraycopy(headerBytes, 0, result, 0, headerBytes.length);
+        System.arraycopy(bytes, 0, result, headerBytes.length, bytes.length);
+        System.arraycopy(footerBytes, 0, result, headerBytes.length + bytes.length, footerBytes.length);
+
+        return result;
     }
 
     public static void checkResponseStatus(HttpResponse<String> response) throws Exception {

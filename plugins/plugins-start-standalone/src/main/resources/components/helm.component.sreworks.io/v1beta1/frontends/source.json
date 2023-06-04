@@ -6,7 +6,8 @@
         "parameters":[{
             "type": 1,
             "name": "chartUrl",
-            "label": "Chart仓库"
+            "label": "Chart仓库",
+            "toolTip": "类似 https://charts.bitnami.com/bitnami 这样的仓库地址"
         },{
             "type": 1,
             "name": "chartName",

@@ -44,7 +44,11 @@ public class DeploymentController extends AppManagerBaseController {
             @ParameterObject @Valid @ModelAttribute DeployAppLaunchReq request,
             @RequestBody String body, OAuth2Authentication auth
     ) {
-        request.setConfiguration(body);
+        if (DeployAppLaunchReq.BODY_TYPE_JSON.equals(request.getBodyType())) {
+            request = JSONObject.parseObject(body, DeployAppLaunchReq.class);
+        } else {
+            request.setConfiguration(body);
+        }
         try {
             DeployAppPackageLaunchRes response = deployAppProvider.launch(request, getOperator(auth));
             return buildSucceedResult(response);

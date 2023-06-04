@@ -1,0 +1,26 @@
+apiVersion: core.oam.dev/v1beta1
+kind: TraitDefinition
+metadata:
+  name: node-selector.trait.sreworks.io/v1beta1
+  annotations:
+    definition.oam.dev/description: "The Node Selector"
+    definition.oam.dev/version: "1.0.3"
+    definition.oam.dev/tags: "key=value"
+spec:
+  appliesToWorkloads:
+    - microservice.component.sreworks.io/v1beta1
+  schematic:
+    groovy:
+      files:
+        - kind: TRAIT
+          path: dynamicscripts/TraitNodeSelectorCommon.groovy
+          name: "node-selector.trait.sreworks.io/v1beta1"
+          properties:
+            runtime: pre
+            definitionSchema:
+              name: "node-selector.trait.schema.sreworks.io"
+              jsonSchema: {}
+    frontend:
+      files:
+        - kind: DEPLOY
+          path: frontends/deploy.json

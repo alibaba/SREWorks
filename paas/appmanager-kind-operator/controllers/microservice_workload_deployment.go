@@ -44,6 +44,7 @@ func (r *MicroserviceReconciler) constructForDeployment(raw *appmanagerabmiov1.M
 					Volumes:        raw.Spec.Volumes,
 					Affinity:       raw.Spec.Affinity,
 					Tolerations:    raw.Spec.Tolerations,
+					NodeSelector:   raw.Spec.NodeSelector,
 				},
 			},
 		},

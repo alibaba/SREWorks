@@ -73,6 +73,16 @@ public class ComponentPackageDTO implements Serializable {
     private String packageMd5;
 
     /**
+     * 隔离 Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * 隔离 Stage ID
+     */
+    private String stageId;
+
+    /**
      * 包 Addon 描述信息
      */
     private JSONObject packageAddon;

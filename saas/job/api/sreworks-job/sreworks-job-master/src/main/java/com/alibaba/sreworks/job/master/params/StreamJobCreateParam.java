@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @Slf4j
@@ -34,6 +35,10 @@ public class StreamJobCreateParam {
 
     private String jobType;
 
+    private Long executionPoolId;
+
+    private MultipartFile file;
+
     public SreworksStreamJob job() {
         return SreworksStreamJob.builder()
             .gmtCreate(System.currentTimeMillis())
@@ -42,6 +47,7 @@ public class StreamJobCreateParam {
             .operator(getOperator())
             .appId(getAppId())
             .name(getName())
+            .executionPoolId(getExecutionPoolId())
             .alias(getAlias())
             .tags(JSONObject.toJSONString(getTags()))
             .description(getDescription())

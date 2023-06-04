@@ -42,4 +42,14 @@ public class AppPackageImportReq implements Serializable {
      * 重置版本
      */
     private Boolean resetVersion;
+
+    /**
+     * 隔离 Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * 隔离 Stage ID
+     */
+    private String stageId;
 }

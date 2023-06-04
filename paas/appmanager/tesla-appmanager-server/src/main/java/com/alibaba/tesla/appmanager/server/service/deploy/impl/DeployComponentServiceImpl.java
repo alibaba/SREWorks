@@ -154,9 +154,21 @@ public class DeployComponentServiceImpl implements DeployComponentService {
      */
     @Override
     public void updateAttr(Long deployComponentId, DeployComponentAttrTypeEnum attrType, String attrValue) {
+        updateAttr(deployComponentId, attrType.toString(), attrValue);
+    }
+
+    /**
+     * 更新指定部署工单的指定属性内容
+     *
+     * @param deployComponentId 部署 Component 工单 ID
+     * @param attrType          属性类型
+     * @param attrValue         属性内容
+     */
+    @Override
+    public void updateAttr(Long deployComponentId, String attrType, String attrValue) {
         DeployComponentAttrQueryCondition condition = DeployComponentAttrQueryCondition.builder()
                 .deployComponentId(deployComponentId)
-                .attrType(attrType.toString())
+                .attrType(attrType)
                 .build();
         List<DeployComponentAttrDO> attrList = deployComponentAttrRepository.selectByCondition(condition);
         assert attrList.size() <= 1;
@@ -164,7 +176,7 @@ public class DeployComponentServiceImpl implements DeployComponentService {
         if (attrList.size() == 0) {
             deployComponentAttrRepository.insert(DeployComponentAttrDO.builder()
                     .deployComponentId(deployComponentId)
-                    .attrType(attrType.toString())
+                    .attrType(attrType)
                     .attrValue(attrValue)
                     .build());
         } else {

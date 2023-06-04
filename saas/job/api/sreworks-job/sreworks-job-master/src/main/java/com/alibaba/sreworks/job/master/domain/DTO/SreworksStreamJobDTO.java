@@ -44,19 +44,24 @@ public class SreworksStreamJobDTO {
 
     private String jobType;
 
+    private String status;
+
     public SreworksStreamJobDTO(SreworksStreamJob job) {
-        id = job.getId();
-        gmtCreate = job.getGmtCreate();
-        gmtModified = job.getGmtModified();
-        appId = job.getAppId();
-        name = job.getName();
-        alias = job.getAlias();
-        tags = JSONObject.parseArray(job.getTags());
-        creator = job.getCreator();
-        operator = job.getOperator();
-        description = job.getDescription();
-        options = JSONObject.parseObject(job.getOptions());
-        jobType = job.getJobType();
+        if (job != null) {
+            id = job.getId();
+            gmtCreate = job.getGmtCreate();
+            gmtModified = job.getGmtModified();
+            appId = job.getAppId();
+            name = job.getName();
+            status = job.getStatus();
+            alias = job.getAlias();
+            tags = JSONObject.parseArray(job.getTags());
+            creator = job.getCreator();
+            operator = job.getOperator();
+            description = job.getDescription();
+            options = JSONObject.parseObject(job.getOptions());
+            jobType = job.getJobType();
+        }
     }
 
 }

@@ -50,6 +50,7 @@ spec:
       name: ''
       kind: StatefulSet
       replicas: 1
+      serviceName: ''
 {%- if env %}
       env:
 {%- for envItem in env %}

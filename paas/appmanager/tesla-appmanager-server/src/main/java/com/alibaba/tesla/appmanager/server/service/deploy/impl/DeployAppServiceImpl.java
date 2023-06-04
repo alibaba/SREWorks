@@ -1,13 +1,9 @@
 package com.alibaba.tesla.appmanager.server.service.deploy.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.tesla.appmanager.common.enums.DeployAppEventEnum;
-import com.alibaba.tesla.appmanager.common.enums.DeployAppStateEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
-import com.alibaba.tesla.appmanager.common.util.DateUtil;
-import com.alibaba.tesla.appmanager.server.event.deploy.DeployAppEvent;
 import com.alibaba.tesla.appmanager.server.repository.DeployAppAttrRepository;
 import com.alibaba.tesla.appmanager.server.repository.DeployAppRepository;
 import com.alibaba.tesla.appmanager.server.repository.condition.DeployAppAttrQueryCondition;
@@ -17,6 +13,7 @@ import com.alibaba.tesla.appmanager.server.repository.domain.DeployAppDO;
 import com.alibaba.tesla.appmanager.server.service.deploy.DeployAppService;
 import com.alibaba.tesla.appmanager.server.service.deploy.business.DeployAppBO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -197,5 +194,18 @@ public class DeployAppServiceImpl implements DeployAppService {
         if (count == 0) {
             throw new AppException(AppErrorCode.LOCKER_VERSION_EXPIRED);
         }
+    }
+
+    /**
+     * 根据条件删除部署记录
+     *
+     * @param condition
+     */
+    @Override
+    public int deleteByCondition(DeployAppQueryCondition condition) {
+        if (StringUtils.isEmpty(condition.getAppId())) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "appId is empty");
+        }
+        return deployAppRepository.deleteByCondition(condition);
     }
 }

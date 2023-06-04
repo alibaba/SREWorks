@@ -100,7 +100,22 @@ public class AppPackageDTO implements Serializable {
     private String swapp;
 
     /**
+     * 隔离 Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * 隔离 Stage ID
+     */
+    private String stageId;
+
+    /**
      * Tag 列表
      */
     private List<String> tags = new ArrayList<>();
+
+    /**
+     *  versionLabel
+     */
+    private String versionLabel;
 }

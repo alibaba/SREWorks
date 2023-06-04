@@ -2,7 +2,6 @@ package com.alibaba.tesla.appmanager.server.addon;
 
 import com.alibaba.tesla.appmanager.common.constants.CheckNullObject;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
-import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.AddonUtil;

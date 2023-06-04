@@ -24,4 +24,9 @@ public class AppMetaDeleteReq {
      * 删除相关的deployConfig
      */
     private Boolean removeAllDeployConfigs = false;
+
+    /**
+     * 删除所有的部署记录
+     */
+    private Boolean removeAllDeployments = false;
 }

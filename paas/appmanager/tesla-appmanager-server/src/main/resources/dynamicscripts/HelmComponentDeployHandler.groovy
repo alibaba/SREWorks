@@ -58,7 +58,7 @@ class HelmComponentDeployHandler implements DeployComponentHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 53
+    public static final Integer REVISION = 54
 
     private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
     private static final String ANNOTATIONS_COMPONENT_INSTANCE_ID = "annotations.appmanager.oam.dev/componentInstanceId"
@@ -136,25 +136,6 @@ class HelmComponentDeployHandler implements DeployComponentHandler {
         spec.put("name", name)
         log.info("name {} has put into component schema", name)
 
-        // 上报状态
-        def annotations = (JSONObject) componentSchema.getSpec().getWorkload().getMetadata().getAnnotations()
-        def version = (String) annotations.getOrDefault(ANNOTATIONS_VERSION, "")
-        def componentInstanceId = (String) annotations.getOrDefault(ANNOTATIONS_COMPONENT_INSTANCE_ID, "")
-        def appInstanceName = (String) annotations.getOrDefault(ANNOTATIONS_APP_INSTANCE_NAME, "")
-        componentInstanceService.report(ReportRtComponentInstanceStatusReq.builder()
-                .componentInstanceId(componentInstanceId)
-                .appInstanceName(appInstanceName)
-                .clusterId(request.getClusterId())
-                .namespaceId(request.getNamespaceId())
-                .stageId(request.getStageId())
-                .appId(request.getAppId())
-                .componentType(request.getComponentType())
-                .componentName(request.getComponentName())
-                .version(version)
-                .status(ComponentInstanceStatusEnum.COMPLETED.toString())
-                .conditions(new ArrayList<>())
-                .build())
-
         try {
             FileUtils.deleteDirectory(Paths.get(packageDir).toFile())
         } catch (Exception ignored) {
@@ -162,6 +143,7 @@ class HelmComponentDeployHandler implements DeployComponentHandler {
         }
         LaunchDeployComponentHandlerRes res = LaunchDeployComponentHandlerRes.builder()
                 .componentSchema(componentSchema)
+                .status(ComponentInstanceStatusEnum.COMPLETED.toString())
                 .build()
         return res
     }

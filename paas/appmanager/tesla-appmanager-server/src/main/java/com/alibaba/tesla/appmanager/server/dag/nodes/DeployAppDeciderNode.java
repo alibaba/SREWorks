@@ -3,7 +3,6 @@ package com.alibaba.tesla.appmanager.server.dag.nodes;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.tesla.appmanager.common.constants.AppFlowParamKey;
 import com.alibaba.tesla.appmanager.common.constants.AppFlowVariableKey;
-import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.ParameterValueSetPolicy;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;

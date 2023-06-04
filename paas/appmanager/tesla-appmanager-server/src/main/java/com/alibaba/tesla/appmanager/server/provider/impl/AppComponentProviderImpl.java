@@ -1,10 +1,7 @@
 package com.alibaba.tesla.appmanager.server.provider.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.tesla.appmanager.api.provider.AppAddonProvider;
-import com.alibaba.tesla.appmanager.api.provider.AppComponentProvider;
-import com.alibaba.tesla.appmanager.api.provider.HelmMetaProvider;
-import com.alibaba.tesla.appmanager.api.provider.K8sMicroServiceMetaProvider;
+import com.alibaba.tesla.appmanager.api.provider.*;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.enums.ComponentTypeEnum;
 import com.alibaba.tesla.appmanager.common.enums.PluginKindEnum;
@@ -16,6 +13,7 @@ import com.alibaba.tesla.appmanager.deployconfig.util.DeployConfigGenerator;
 import com.alibaba.tesla.appmanager.domain.container.AppComponentLocationContainer;
 import com.alibaba.tesla.appmanager.domain.container.DeployConfigTypeId;
 import com.alibaba.tesla.appmanager.domain.dto.AppComponentDTO;
+import com.alibaba.tesla.appmanager.domain.dto.DeployConfigDTO;
 import com.alibaba.tesla.appmanager.domain.req.AppAddonQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.K8sMicroServiceMetaQueryReq;
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentCreateReq;
@@ -24,6 +22,7 @@ import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentQueryReq
 import com.alibaba.tesla.appmanager.domain.req.appcomponent.AppComponentUpdateReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigDeleteReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigHasEnvBindingReq;
+import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigListReq;
 import com.alibaba.tesla.appmanager.domain.req.deployconfig.DeployConfigUpsertReq;
 import com.alibaba.tesla.appmanager.domain.req.helm.HelmMetaQueryReq;
 import com.alibaba.tesla.appmanager.plugin.repository.condition.PluginDefinitionQueryCondition;
@@ -74,6 +73,9 @@ public class AppComponentProviderImpl implements AppComponentProvider {
     @Autowired
     private DeployConfigService deployConfigService;
 
+    @Autowired
+    private DeployConfigProvider deployConfigProvider;
+
     /**
      * 获取指定应用下绑定了哪些组件及组件名称
      * @param appId 应用 ID
@@ -85,6 +87,27 @@ public class AppComponentProviderImpl implements AppComponentProvider {
     public List<AppComponentLocationContainer> getFullComponentRelations(
             String appId, String isolateNamespaceId, String isolateStageId) {
         return appComponentService.getFullComponentRelations(appId, isolateNamespaceId, isolateStageId);
+    }
+
+    /**
+     * 清理指定应用下所有的组件
+     * @param appId 应用 ID
+     * @param isolateNamespaceId 隔离 Namespace ID
+     * @param isolateStageId 隔离 Stage ID
+     * @param operator 操作人
+     * @return void
+     */
+    @Override
+    public void clean(String appId, String isolateNamespaceId, String isolateStageId, String operator) {
+        AppComponentQueryCondition conditions = AppComponentQueryCondition.builder()
+                .appId(appId)
+                .namespaceId(isolateNamespaceId)
+                .stageId(isolateStageId)
+                .build();
+        List<AppComponentDO> components = appComponentService.list(conditions);
+        for(AppComponentDO component: components) {
+            delete(AppComponentDeleteReq.builder().id(component.getId()).build(), operator);
+        }
     }
 
     /**
@@ -277,6 +300,45 @@ public class AppComponentProviderImpl implements AppComponentProvider {
         log.info("app component record has deleted|id={}|appId={}|componentType={}|componentName={}|namespaceId={}|" +
                         "stageId={}|typeId={}", condition.getId(), appId, componentType, componentName, namespaceId,
                 stageId, typeId);
+
+        for (DeployConfigDTO deployConfigDTO : deployConfigProvider.list(DeployConfigListReq.builder()
+                .appId(appId)
+                .typeIdPrefix(String.format(
+                        "Type:traits::ComponentType:%s::ComponentName:%s",
+                        componentType, componentName
+                ))
+                .build()).getItems()) {
+            deployConfigProvider.delete(
+                    DeployConfigDeleteReq.builder()
+                            .appId(deployConfigDTO.getAppId())
+                            .apiVersion(deployConfigDTO.getApiVersion())
+                            .typeId(deployConfigDTO.getTypeId())
+                            .envId(deployConfigDTO.getEnvId())
+                            .isolateNamespaceId(deployConfigDTO.getNamespaceId())
+                            .isolateStageId(deployConfigDTO.getStageId())
+                            .build()
+            );
+        }
+
+        for (DeployConfigDTO deployConfigDTO : deployConfigProvider.list(DeployConfigListReq.builder()
+                .appId(appId)
+                .typeId(String.format(
+                        "Type:components::ComponentType:%s::ComponentName:%s",
+                        componentType, componentName
+                ))
+                .build()).getItems()) {
+            deployConfigProvider.delete(
+                    DeployConfigDeleteReq.builder()
+                            .appId(deployConfigDTO.getAppId())
+                            .apiVersion(deployConfigDTO.getApiVersion())
+                            .typeId(deployConfigDTO.getTypeId())
+                            .envId(deployConfigDTO.getEnvId())
+                            .isolateNamespaceId(deployConfigDTO.getNamespaceId())
+                            .isolateStageId(deployConfigDTO.getStageId())
+                            .build()
+            );
+        }
+
     }
 
     /**

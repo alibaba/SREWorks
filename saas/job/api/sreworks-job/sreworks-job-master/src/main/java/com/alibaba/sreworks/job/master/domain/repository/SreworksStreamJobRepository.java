@@ -10,12 +10,14 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.List;
 
 /**
- * @author jinghua.yjh
+ * @author jiongen.zje
  */
 public interface SreworksStreamJobRepository
     extends JpaRepository<SreworksStreamJob, Long>, JpaSpecificationExecutor<SreworksStreamJob> {
 
     SreworksStreamJob findFirstById(Long id);
+
+    SreworksStreamJob findFirstByName(String name);
 
     Page<SreworksStreamJob> findAll(Pageable pageable);
 

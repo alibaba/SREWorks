@@ -6,16 +6,13 @@ import com.alibaba.tesla.appmanager.api.provider.DefinitionSchemaProvider;
 import com.alibaba.tesla.appmanager.api.provider.TraitProvider;
 import com.alibaba.tesla.appmanager.autoconfig.PackageProperties;
 import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
-import com.alibaba.tesla.appmanager.common.constants.PatternConstant;
 import com.alibaba.tesla.appmanager.common.enums.PluginKindEnum;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.pagination.Pagination;
-import com.alibaba.tesla.appmanager.common.util.EnvUtil;
 import com.alibaba.tesla.appmanager.common.util.PackageUtil;
 import com.alibaba.tesla.appmanager.common.util.SchemaUtil;
 import com.alibaba.tesla.appmanager.common.util.ZipUtil;
-import com.alibaba.tesla.appmanager.definition.service.DefinitionSchemaService;
 import com.alibaba.tesla.appmanager.domain.core.ScriptIdentifier;
 import com.alibaba.tesla.appmanager.domain.core.StorageFile;
 import com.alibaba.tesla.appmanager.domain.dto.DefinitionSchemaDTO;
@@ -36,7 +33,6 @@ import com.alibaba.tesla.appmanager.plugin.service.PluginFrontendService;
 import com.alibaba.tesla.appmanager.plugin.service.PluginService;
 import com.alibaba.tesla.appmanager.plugin.util.PluginValidator;
 import com.alibaba.tesla.appmanager.server.storage.Storage;
-import com.alibaba.tesla.appmanager.trait.service.TraitService;
 import groovy.lang.GroovyClassLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -53,7 +49,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -276,7 +271,7 @@ public class PluginServiceImpl implements PluginService {
 
         // 写入 DB 记录
         return update(definitionSchema, pluginKind, pluginName, pluginVersion,
-                pluginDescription, pluginTags, storageFile);
+                pluginDescription, pluginTags, storageFile, force);
     }
 
     /**
@@ -294,7 +289,7 @@ public class PluginServiceImpl implements PluginService {
     @Transactional(rollbackFor = Exception.class)
     public PluginDefinitionDO update(
             PluginDefinitionSchema definitionSchema, PluginKindEnum pluginKind, String pluginName, String pluginVersion,
-            String pluginDescription, List<String> pluginTags, StorageFile storageFile) {
+            String pluginDescription, List<String> pluginTags, StorageFile storageFile, boolean force) {
         String logSuffix = String.format("pluginKind=%s|pluginName=%s|pluginVersion=%s|pluginTags=%s|packagePath=%s",
                 pluginKind, pluginName, pluginVersion, JSONArray.toJSONString(pluginTags), storageFile.toPath());
         String pluginSchemaStr = SchemaUtil.toYamlMapStr(definitionSchema);
@@ -322,9 +317,10 @@ public class PluginServiceImpl implements PluginService {
             } else {
                 log.error("insert plugin definition failed|{}|count=0", logSuffix);
             }
-        } else if (definitionDO.getPluginRegistered()) {
-            throw new AppException(AppErrorCode.INVALID_USER_ARGS, "the specified operation cloud not be completed " +
-                    "because the plugin has been successfully registered and enabled");
+        } else if (definitionDO.getPluginRegistered() && !force) {
+            throw new AppException(AppErrorCode.INVALID_USER_ARGS,
+                    "the specified operation could not be completed because the plugin has been " +
+                            "successfully registered and enabled");
         } else {
             definitionDO.setPluginKind(pluginKind.toString());
             definitionDO.setPluginRegistered(false);

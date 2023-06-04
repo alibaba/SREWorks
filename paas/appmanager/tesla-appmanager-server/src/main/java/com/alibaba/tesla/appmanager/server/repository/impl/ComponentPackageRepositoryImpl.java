@@ -1,7 +1,6 @@
 package com.alibaba.tesla.appmanager.server.repository.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.tesla.appmanager.common.constants.DefaultConstant;
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode;
 import com.alibaba.tesla.appmanager.common.exception.AppException;
 import com.alibaba.tesla.appmanager.common.util.DateUtil;
@@ -105,6 +104,12 @@ public class ComponentPackageRepositoryImpl implements ComponentPackageRepositor
         }
         if (StringUtils.isNotBlank(condition.getPackageVersion())) {
             criteria.andPackageVersionEqualTo(condition.getPackageVersion());
+        }
+        if (StringUtils.isNotBlank(condition.getNamespaceId())) {
+            criteria.andNamespaceIdEqualTo(condition.getNamespaceId());
+        }
+        if (StringUtils.isNotBlank(condition.getStageId())) {
+            criteria.andStageIdEqualTo(condition.getStageId());
         }
         return example;
     }

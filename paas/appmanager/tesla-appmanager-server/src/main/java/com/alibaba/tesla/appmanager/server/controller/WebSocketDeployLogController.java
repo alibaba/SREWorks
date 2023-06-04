@@ -1,10 +1,12 @@
 package com.alibaba.tesla.appmanager.server.controller;
 
 import com.alibaba.tesla.appmanager.auth.controller.AppManagerBaseController;
+import com.alibaba.tesla.appmanager.autoconfig.PackageProperties;
 import com.alibaba.tesla.appmanager.common.constants.RedisKeyConstant;
 import com.alibaba.tesla.appmanager.common.enums.DeployComponentStateEnum;
 import com.alibaba.tesla.appmanager.server.service.deploy.DeployComponentService;
 import com.alibaba.tesla.appmanager.server.service.deploy.business.DeployComponentBO;
+import com.alibaba.tesla.appmanager.server.storage.Storage;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 import static com.alibaba.tesla.appmanager.common.constants.RedisKeyConstant.STREAM_LOG_KEY;
@@ -34,6 +37,10 @@ public class WebSocketDeployLogController extends AppManagerBaseController {
 
     private static StreamMessageListenerContainer streamMessageListenerContainer;
 
+    private static Storage storage;
+
+    private static PackageProperties packageProperties;
+
     @Autowired
     public void setComponentPackageProvider(DeployComponentService deployComponentService) {
         WebSocketDeployLogController.deployComponentService = deployComponentService;
@@ -44,16 +51,26 @@ public class WebSocketDeployLogController extends AppManagerBaseController {
         WebSocketDeployLogController.streamMessageListenerContainer = streamMessageListenerContainer;
     }
 
+    @Autowired
+    public void setStorage(Storage storage) {
+        WebSocketDeployLogController.storage = storage;
+    }
+
+    @Autowired
+    public void setPackageProperties(PackageProperties packageProperties) {
+        WebSocketDeployLogController.packageProperties = packageProperties;
+    }
+
 
     @OnOpen
     public void onOpen(@PathParam("deployComponentId") Long deployComponentId, Session session) throws IOException {
         log.info("new ws connection: {}", deployComponentId);
+        String streamKey = String.format("%s_%s", RedisKeyConstant.DEPLOY_TASK_LOG, deployComponentId);
         DeployComponentBO response = deployComponentService.get(deployComponentId, false);
         String status = response.getSubOrder().getDeployStatus();
         if (status.equals(DeployComponentStateEnum.CREATED.toString())
                 || status.equals(DeployComponentStateEnum.PROCESSING.toString())
                 || status.equals(DeployComponentStateEnum.RUNNING.toString())) {
-            String streamKey = String.format("%s_%s", RedisKeyConstant.DEPLOY_TASK_LOG, deployComponentId);
             streamMessageListenerContainer.receive(StreamOffset.fromStart(streamKey),
                     message -> {
                         Object stream = message.getStream();
@@ -67,7 +84,10 @@ public class WebSocketDeployLogController extends AppManagerBaseController {
                         }
                     });
         } else {
-            session.getBasicRemote().sendText("");
+            String date = new SimpleDateFormat("yyyyMMdd").format(response.getSubOrder().getGmtCreate());
+            String bucketName = packageProperties.getBucketName();
+            String objectName = String.format("stream_log/%s/%s.txt", date, streamKey);
+            session.getBasicRemote().sendText(storage.getObjectContent(bucketName,objectName));
         }
     }
 

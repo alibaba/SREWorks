@@ -127,10 +127,13 @@ export default class FormElementFactory {
         },
       }
     }
-
+    let cssObj = { visibility: hidden ? 'hidden' : 'visible' }
+    if (hidden) {
+      cssObj = Object.assign({}, cssObj, { height: 0, margin: 0 })
+    }
     if (item.tooltip) {
       label = (
-        <span key={item.label} style={{ visibility: hidden ? 'hidden' : 'visible' }}>
+        <span key={item.label} style={{ ...cssObj }}>
           {item.label}
           <em className="optional">
             {mark}
@@ -147,7 +150,7 @@ export default class FormElementFactory {
           itemElement = (
             <InputNumber
               {...defModel}
-              style={{ width: '100%', visibility: hidden ? 'hidden' : 'visible' }}
+              style={{ width: '100%', ...cssObj }}
               placeholder={
                 defModel.inputTip
                   ? defModel.inputTip
@@ -159,7 +162,7 @@ export default class FormElementFactory {
         } else {
           itemElement = (
             <Input
-              style={{ visibility: hidden ? 'hidden' : 'visible' }}
+              style={{ ...cssObj }}
               disabled={item.disabled || false}
               prefix={prefix && <JSXRender jsx={prefix} />}
               addonBefore={addonBefore && <JSXRender jsx={addonBefore} />}
@@ -181,18 +184,18 @@ export default class FormElementFactory {
       case FormElementType.ENHANCED_INPUT: //增强输入框
         itemElement = (
           <EnhancedInput
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
+            style={{ ...cssObj }}
             defModel={defModel}
             form={form}
             item={item}
-            style={{ width: '100%', visibility: hidden ? 'hidden' : 'visible' }}
+            style={{ width: '100%', ...cssObj }}
           />
         )
         break
       case FormElementType.TEXTAREA: //textarea
         itemElement = (
           <TextArea
-            style={{ minHeight: 32, visibility: hidden ? 'hidden' : 'visible' }}
+            style={{ minHeight: 32, ...cssObj }}
             placeholder={
               defModel.inputTip || item.tooltip
                 ? defModel.inputTip || item.tooltip
@@ -206,12 +209,7 @@ export default class FormElementFactory {
       case FormElementType.SELECT: //单选
         if (needSelectWrapper) {
           itemElement = (
-            <SelectItemWrapper
-              style={{ visibility: hidden ? 'hidden' : 'visible' }}
-              item={item}
-              selectType="select"
-              form={form}
-            />
+            <SelectItemWrapper style={{ ...cssObj }} item={item} selectType="select" form={form} />
           )
           break
         }
@@ -229,7 +227,7 @@ export default class FormElementFactory {
             showSearch
             allowClear={true}
             optionFilterProp="children"
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
+            style={{ ...cssObj }}
             type="hidden"
             placeholder={
               defModel.inputTip || item.inputTip
@@ -244,12 +242,7 @@ export default class FormElementFactory {
       case FormElementType.MULTI_SELECT: //多选
         if (needSelectWrapper) {
           itemElement = (
-            <SelectItemWrapper
-              style={{ visibility: hidden ? 'hidden' : 'visible' }}
-              item={item}
-              selectType="select"
-              form={form}
-            />
+            <SelectItemWrapper style={{ ...cssObj }} item={item} selectType="select" form={form} />
           )
           break
         }
@@ -265,7 +258,7 @@ export default class FormElementFactory {
         itemElement = (
           <Select
             showSearch
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
+            style={{ ...cssObj }}
             mode="multiple"
             allowClear={true}
             optionFilterProp="children"
@@ -283,7 +276,7 @@ export default class FormElementFactory {
         itemElement = (
           <DatePickerWrapper
             item={item}
-            style={{ width: '100%', visibility: hidden ? 'hidden' : 'visible' }}
+            style={{ width: '100%', ...cssObj }}
             format={window.APPLICATION_DATE_FORMAT || 'YYYY-MM-DD HH:mm'}
           />
         )
@@ -293,7 +286,7 @@ export default class FormElementFactory {
           <DatePickerWrapper
             item={item}
             type="range"
-            style={{ width: '100%', visibility: hidden ? 'hidden' : 'visible' }}
+            style={{ width: '100%', ...cssObj }}
             placeholder={['', '']}
             format={window.APPLICATION_DATE_FORMAT || 'YYYY-MM-DD HH:mm'}
             showTime={{ format: 'HH:mm' }}
@@ -307,7 +300,7 @@ export default class FormElementFactory {
         itemElement = (
           <InputNumber
             model={item}
-            style={{ width: '100%', visibility: hidden ? 'hidden' : 'visible' }}
+            style={{ width: '100%', ...cssObj }}
             placeholder={
               defModel.inputTip
                 ? defModel.inputTip
@@ -320,7 +313,7 @@ export default class FormElementFactory {
         itemElement = (
           <TextArea
             disabled={true}
-            style={{ minHeight: 32, visibility: hidden ? 'hidden' : 'visible' }}
+            style={{ minHeight: 32, ...cssObj }}
             placeholder={
               defModel.inputTip || item.tooltip
                 ? defModel.inputTip || item.tooltip
@@ -344,7 +337,7 @@ export default class FormElementFactory {
         itemElement = (
           <Select
             mode="tags"
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
+            style={{ ...cssObj }}
             allowClear={true}
             //tokenSeparators={[","]}
             placeholder={item.inputTip || defModel.inputTip}
@@ -356,7 +349,7 @@ export default class FormElementFactory {
       case FormElementType.SELECT_TREE: //选择树
         itemElement = (
           <TreeSelect
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
+            style={{ ...cssObj }}
             treeData={Array.isArray(item.treeData) ? item.treeData : [item.treeData]}
             treeCheckable="true"
             showCheckedStrategy={TreeSelect.SHOW_PARENT}
@@ -364,25 +357,15 @@ export default class FormElementFactory {
         )
         break
       case FormElementType.RADIO: //radio单选
-        itemElement = (
-          <RadioGroup
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-            options={item.optionValues}
-          />
-        )
+        itemElement = <RadioGroup style={{ ...cssObj }} options={item.optionValues} />
         break
       case FormElementType.CHECKBOX: //checkbox多选
-        itemElement = (
-          <CheckboxGroup
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-            options={item.optionValues}
-          />
-        )
+        itemElement = <CheckboxGroup style={{ ...cssObj }} options={item.optionValues} />
         break
       case 12:
         itemElement = (
           <TreeSelect
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
+            style={{ ...cssObj }}
             treeData={Array.isArray(item.treeData) ? item.treeData : [item.treeData]}
             treeCheckable="true"
             showCheckedStrategy={TreeSelect.SHOW_CHILD}
@@ -391,13 +374,11 @@ export default class FormElementFactory {
         )
         break
       case FormElementType.TIME_PICKER: //时间选择
-        itemElement = (
-          <TimePicker style={{ width: '100%', visibility: hidden ? 'hidden' : 'visible' }} />
-        )
+        itemElement = <TimePicker style={{ width: '100%', ...cssObj }} />
         break
       case 14: //Radio.Button
         itemElement = (
-          <RadioGroup style={{ visibility: hidden ? 'hidden' : 'visible' }}>
+          <RadioGroup style={{ ...cssObj }}>
             {item.optionValues.map((ib) => {
               return (
                 <Radio.Button value={ib.value} key={ib.value}>
@@ -410,36 +391,22 @@ export default class FormElementFactory {
         break
       case 15: //Slider 滑条
         //itemElement=<Slider {...defModel}  {...item}/>;
-        itemElement = (
-          <SliderItem style={{ visibility: hidden ? 'hidden' : 'visible' }} model={item} />
-        )
+        itemElement = <SliderItem style={{ ...cssObj }} model={item} />
         break
       case FormElementType.SWITCH: //Switch 开关
-        itemElement = (
-          <Switch style={{ visibility: hidden ? 'hidden' : 'visible' }} {...defModel} {...item} />
-        )
+        itemElement = <Switch style={{ ...cssObj }} {...defModel} {...item} />
         break
       case 17: //级联选择
         if (needOption || remote) {
           itemElement = (
-            <SelectItemWrapper
-              style={{ visibility: hidden ? 'hidden' : 'visible' }}
-              item={item}
-              selectType="cascader"
-            />
+            <SelectItemWrapper style={{ ...cssObj }} item={item} selectType="cascader" />
           )
           break
         }
-        itemElement = (
-          <Cascader
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-            options={item.optionValues || []}
-            {...item}
-          />
-        )
+        itemElement = <Cascader style={{ ...cssObj }} options={item.optionValues || []} {...item} />
         break
       case 18: //password
-        itemElement = <Input.Password style={{ visibility: hidden ? 'hidden' : 'visible' }} />
+        itemElement = <Input.Password style={{ ...cssObj }} />
         break
       case 92:
         return null
@@ -467,7 +434,7 @@ export default class FormElementFactory {
         innerFormItem = false
         itemElement = (
           <GroupFormItem
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
+            style={{ ...cssObj }}
             key={item.name}
             form={form}
             model={item}
@@ -478,12 +445,7 @@ export default class FormElementFactory {
       case 87: //选择输入
         innerFormItem = false
         itemElement = (
-          <FormItem
-            {...formItemLayout}
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-            label={label}
-            key={item.name}
-          >
+          <FormItem {...formItemLayout} style={{ ...cssObj }} label={label} key={item.name}>
             {getFieldDecorator(item.name + 'Group', {
               initialValue: item.initValue,
               rules: [inputRule, ...customRules],
@@ -492,24 +454,13 @@ export default class FormElementFactory {
         )
         break
       case 86: //json编辑器
-        itemElement = (
-          <JSONEditor
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-            key={item.name}
-            model={item}
-          />
-        )
+        itemElement = <JSONEditor style={{ ...cssObj }} key={item.name} model={item} />
         break
       case 85: //table显示
         if (defModel.enableEdit || defModel.enableSelected) {
           innerFormItem = false
           itemElement = (
-            <FormItem
-              {...formItemLayout}
-              style={{ visibility: hidden ? 'hidden' : 'visible' }}
-              label={label}
-              key={item.name}
-            >
+            <FormItem {...formItemLayout} style={{ ...cssObj }} label={label} key={item.name}>
               {getFieldDecorator(item.name, {
                 rules: [
                   {
@@ -525,7 +476,7 @@ export default class FormElementFactory {
         } else {
           itemElement = (
             <TableItem
-              style={{ visibility: hidden ? 'hidden' : 'visible' }}
+              style={{ ...cssObj }}
               defModel={defModel}
               form={form}
               key={item.name}
@@ -538,7 +489,7 @@ export default class FormElementFactory {
         innerFormItem = false
         itemElement = (
           <CascadeGroup
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
+            style={{ ...cssObj }}
             key={item.name}
             form={form}
             model={item}
@@ -547,77 +498,37 @@ export default class FormElementFactory {
         )
         break
       case 83: //AceView
-        itemElement = (
-          <AceViewer
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-            key={item.name}
-            model={item}
-          />
-        )
+        itemElement = <AceViewer style={{ ...cssObj }} key={item.name} model={item} />
         break
       case FormElementType.ACEVIEW_JAVASCRIPT: //AceView
         itemElement = (
-          <AceViewer
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-            key={item.name}
-            model={item}
-            mode={'javascript'}
-          />
+          <AceViewer style={{ ...cssObj }} key={item.name} model={item} mode={'javascript'} />
         )
         break
       // case 82: //运维挂件OamWidget
       //   itemElement = (
       //     <OamWidgetItem
-      //       style={{ visibility: hidden ? 'hidden' : 'visible' }}
+      //       style={{ ...cssObj }}
       //       key={item.name}
       //       model={item}
       //     />
       //   )
       //   break
       case 81: //上传组件
-        itemElement = (
-          <FileUpload
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-            key={item.name}
-            model={item}
-          />
-        )
+        itemElement = <FileUpload style={{ ...cssObj }} key={item.name} model={item} />
         break
       case 811: //图片上传组件
-        itemElement = (
-          <ImageUpload
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-            key={item.name}
-            model={item}
-          />
-        )
+        itemElement = <ImageUpload style={{ ...cssObj }} key={item.name} model={item} />
         break
       case FormElementType.FILE_UPLOAD_NODEFER: // 文件同步上传
-        itemElement = (
-          <FileUploadNoDefer
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-            key={item.name}
-            model={item}
-          />
-        )
+        itemElement = <FileUploadNoDefer style={{ ...cssObj }} key={item.name} model={item} />
         break
       case FormElementType.FILE_UPLOAD_SINGLE:
-        itemElement = (
-          <FileUploadSingle
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-            key={item.name}
-            model={item}
-          />
-        )
+        itemElement = <FileUploadSingle style={{ ...cssObj }} key={item.name} model={item} />
         break
       case FormElementType.IMAGE_UPLOAD_MULTI: //图片上传组件
         itemElement = (
-          <ImageUpload
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-            isMulti={true}
-            key={item.name}
-            model={item}
-          />
+          <ImageUpload style={{ ...cssObj }} isMulti={true} key={item.name} model={item} />
         )
         break
       case 80: //GOC对接
@@ -626,7 +537,7 @@ export default class FormElementFactory {
         innerFormItem = false
         itemElement = (
           <JSONSchemaItem
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
+            style={{ ...cssObj }}
             key={item.name}
             form={form}
             model={item}
@@ -636,60 +547,22 @@ export default class FormElementFactory {
         break
       //卡片选择组件 70
       case FormElementType.GRID_CHECKBOX:
-        itemElement = (
-          <GridCheckBoxWrapper
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-            key={item.name}
-            model={item}
-          />
-        )
+        itemElement = <GridCheckBoxWrapper style={{ ...cssObj }} key={item.name} model={item} />
         break
       case FormElementType.MODAL_ACE: //Modal Ace
-        itemElement = (
-          <PopoverAceEditor
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-            key={item.name}
-            model={item}
-          />
-        )
+        itemElement = <PopoverAceEditor style={{ ...cssObj }} key={item.name} model={item} />
         break
       case FormElementType.COLOR_PICKER: //拾色器
-        itemElement = (
-          <ColorPicker
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-            key={item.name}
-            {...item}
-          />
-        )
+        itemElement = <ColorPicker style={{ ...cssObj }} key={item.name} {...item} />
         break
       case FormElementType.HANDLE_TAG:
-        itemElement = (
-          <HandleTag
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-            key={item.name}
-            {...item}
-          />
-        )
+        itemElement = <HandleTag style={{ ...cssObj }} key={item.name} {...item} />
         break
       case FormElementType.CRON:
-        itemElement = (
-          <SRECron
-            form={form}
-            key={item.name}
-            model={item}
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-          />
-        )
+        itemElement = <SRECron form={form} key={item.name} model={item} style={{ ...cssObj }} />
         break
       case FormElementType.DYNAMIC_FORM:
-        itemElement = (
-          <DynamicForm
-            form={form}
-            key={item.name}
-            model={item}
-            style={{ visibility: hidden ? 'hidden' : 'visible' }}
-          />
-        )
+        itemElement = <DynamicForm form={form} key={item.name} model={item} style={{ ...cssObj }} />
         break
       case FormElementType.ICON_SELECTOR:
         itemElement = <IconSelector key={item.name} {...item} />
@@ -711,7 +584,7 @@ export default class FormElementFactory {
         <FormItem
           {...formItemLayout}
           label={label}
-          style={{ visibility: hidden ? 'hidden' : 'visible' }}
+          style={{ ...cssObj }}
           key={item.name}
           extra={defModel && defModel.extra && <JSXRender key="_jsx_hint" jsx={defModel.extra} />}
         >
@@ -736,7 +609,7 @@ export default class FormElementFactory {
     if (item.readonly === 2) {
       return (
         <Tooltip
-          style={{ visibility: hidden ? 'hidden' : 'visible' }}
+          style={{ ...cssObj }}
           title={item.tooltip ? <JSXRender jsx={item.tooltip} /> : '只读项'}
         >
           <div>
@@ -750,7 +623,7 @@ export default class FormElementFactory {
     }
     if (hintMark) {
       return (
-        <div style={{ visibility: hidden ? 'hidden' : 'visible' }} key={item.name + '__item_con'}>
+        <div style={{ ...cssObj }} key={item.name + '__item_con'}>
           {hintMark}
           {itemElement}
         </div>

@@ -24,7 +24,6 @@ import com.alibaba.tesla.appmanager.server.repository.condition.RtAppInstanceHis
 import com.alibaba.tesla.appmanager.server.repository.condition.RtAppInstanceQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.condition.RtComponentInstanceQueryCondition;
 import com.alibaba.tesla.appmanager.server.repository.domain.*;
-import com.alibaba.tesla.appmanager.server.service.appmeta.AppMetaService;
 import com.alibaba.tesla.appmanager.server.service.appoption.AppOptionConstant;
 import com.alibaba.tesla.appmanager.server.service.appoption.AppOptionService;
 import com.alibaba.tesla.appmanager.server.service.apppackage.AppPackageService;
@@ -550,7 +549,7 @@ public class RtAppInstanceServiceImpl implements RtAppInstanceService {
                     .withController(true)
                     .build());
         } catch (Exception e) {
-            log.error("cannot getOrCreate application cr|clusterId={}|namespaceId={}|appInstanceId={}|" +
+            log.info("cannot getOrCreate application cr|clusterId={}|namespaceId={}|appInstanceId={}|" +
                     "exception={}", clusterId, namespaceId, appInstanceName, ExceptionUtils.getStackTrace(e));
             return "";
         }

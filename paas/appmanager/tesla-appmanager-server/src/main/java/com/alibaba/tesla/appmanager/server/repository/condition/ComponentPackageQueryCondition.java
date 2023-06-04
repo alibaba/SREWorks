@@ -31,4 +31,8 @@ public class ComponentPackageQueryCondition extends BaseCondition {
     private String packageCreator;
 
     private List<Long> idList;
+
+    private String namespaceId;
+
+    private String stageId;
 }

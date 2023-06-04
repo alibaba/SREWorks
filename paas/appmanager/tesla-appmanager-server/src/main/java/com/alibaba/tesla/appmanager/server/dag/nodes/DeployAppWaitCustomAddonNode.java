@@ -243,6 +243,7 @@ public class DeployAppWaitCustomAddonNode extends AbstractLocalNodeBase {
                 customAddonInstanceTaskRep.updateByPrimaryKey(record);
                 break;
             case FAILURE:
+            case TERMINATED:
                 record.setTaskStatus(AddonInstanceTaskStatusEnum.FAILURE.toString());
                 customAddonInstanceTaskRep.updateByPrimaryKey(record);
                 break;

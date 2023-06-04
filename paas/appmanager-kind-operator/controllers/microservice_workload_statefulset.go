@@ -44,6 +44,7 @@ func (r *MicroserviceReconciler) constructForStatefulSet(raw *appmanagerabmiov1.
 					Volumes:        raw.Spec.Volumes,
 					Affinity:       raw.Spec.Affinity,
 					Tolerations:    raw.Spec.Tolerations,
+					NodeSelector:   raw.Spec.NodeSelector,
 				},
 			},
 		},

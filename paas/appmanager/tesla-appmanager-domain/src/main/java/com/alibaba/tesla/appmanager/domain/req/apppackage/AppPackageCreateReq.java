@@ -27,4 +27,14 @@ public class AppPackageCreateReq {
      * 当前 AppPackage 引用的 components 列表
      */
     private List<Long> componentPackageIdList;
+
+    /**
+     * 隔离 Namespace ID
+     */
+    private String namespaceId;
+
+    /**
+     * 隔离 Stage ID
+     */
+    private String stageId;
 }

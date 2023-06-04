@@ -237,7 +237,12 @@ public class RtComponentInstanceServiceImpl implements RtComponentInstanceServic
         record.setVersion(request.getVersion());
         record.setStatus(request.getStatus());
         record.setWatchKind(getWatchKind(request.getComponentType()));
-        record.setTimes(record.getTimes());
+        // 如果当前是 UPDATING 状态，直接提高到最高优先级
+        if (request.getStatus().equals(ComponentInstanceStatusEnum.UPDATING.toString())) {
+            record.setTimes(0L);
+        } else {
+            record.setTimes(record.getTimes());
+        }
         record.setConditions(JSONObject.toJSONString(request.getConditions()));
         int updated = repository.updateByCondition(record, condition);
         if (updated == 0) {

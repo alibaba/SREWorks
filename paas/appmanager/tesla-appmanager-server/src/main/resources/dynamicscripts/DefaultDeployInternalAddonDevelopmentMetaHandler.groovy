@@ -65,12 +65,9 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 18
+    public static final Integer REVISION = 19
 
     private static final String EXPORT_OPTION_FILE = "option.json"
-    private static final String ANNOTATIONS_VERSION = "annotations.appmanager.oam.dev/version"
-    private static final String ANNOTATIONS_COMPONENT_INSTANCE_ID = "annotations.appmanager.oam.dev/componentInstanceId"
-    private static final String ANNOTATIONS_APP_INSTANCE_NAME = "annotations.appmanager.oam.dev/appInstanceName"
 
     @Autowired
     private SystemProperties systemProperties
@@ -218,25 +215,6 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
             }
         }
 
-        // 上报状态
-        def annotations = (JSONObject) componentSchema.getSpec().getWorkload().getMetadata().getAnnotations()
-        def version = (String) annotations.getOrDefault(ANNOTATIONS_VERSION, "")
-        def componentInstanceId = (String) annotations.getOrDefault(ANNOTATIONS_COMPONENT_INSTANCE_ID, "")
-        def appInstanceName = (String) annotations.getOrDefault(ANNOTATIONS_APP_INSTANCE_NAME, "")
-        componentInstanceService.report(ReportRtComponentInstanceStatusReq.builder()
-                .componentInstanceId(componentInstanceId)
-                .appInstanceName(appInstanceName)
-                .clusterId(request.getClusterId())
-                .namespaceId(request.getNamespaceId())
-                .stageId(request.getStageId())
-                .appId(request.getAppId())
-                .componentType(request.getComponentType())
-                .componentName(request.getComponentName())
-                .version(version)
-                .status(ComponentInstanceStatusEnum.COMPLETED.toString())
-                .conditions(new ArrayList<>())
-                .build())
-
         // 资源清理
         try {
             FileUtils.deleteDirectory(packageDir.toFile())
@@ -245,6 +223,7 @@ class DefaultDeployInternalAddonDevelopmentMetaHandler implements DeployComponen
         }
         LaunchDeployComponentHandlerRes res = LaunchDeployComponentHandlerRes.builder()
                 .componentSchema(componentSchema)
+                .status(ComponentInstanceStatusEnum.COMPLETED.toString())
                 .build()
         return res
     }

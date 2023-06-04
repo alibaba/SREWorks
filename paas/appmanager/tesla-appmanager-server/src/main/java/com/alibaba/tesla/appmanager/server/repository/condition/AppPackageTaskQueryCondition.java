@@ -32,4 +32,8 @@ public class AppPackageTaskQueryCondition extends BaseCondition {
     private List<AppPackageTaskStatusEnum> taskStatusList;
 
     private String envId;
+
+    private String namespaceId;
+
+    private String stageId;
 }

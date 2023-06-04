@@ -1,6 +1,5 @@
-<p align="center">
-  <img src="/paas/frontend/app/src/assets/icons/sreworks-logo.png" width="120">
-</p>
+![image.png](/paas/frontend/app/src/assets/icons/sreworks-logo.png)
+
 <h1 align="center"> SREWorks </h1>
 <p align="center"><b> Cloud Native DataOps & AIOps Platform </b></p>
 <p align="center">

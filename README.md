@@ -1,5 +1,6 @@
-![image.png](/paas/frontend/app/src/assets/icons/sreworks-logo.png)
-
+<p align="center">
+  <img src="https://sreworks.oss-cn-beijing.aliyuncs.com/logo/logo.png" width="120">
+</p>
 <h1 align="center"> SREWorks </h1>
 <p align="center"><b> Cloud Native DataOps & AIOps Platform </b></p>
 <p align="center">

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="/paas/frontend/app/src/assets/icons/sreworks-logo.png" width="120">
+  <img src="https://sreworks.oss-cn-beijing.aliyuncs.com/logo/logo.png" width="120">
 </p>
 <h1 align="center"> SREWorks </h1>
 <p align="center"><b> 云原生数智运维平台 </b></p>

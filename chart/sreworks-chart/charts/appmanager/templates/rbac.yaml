@@ -1,9 +1,8 @@
 {{ if eq .Values.server.rbac "default" }}
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRole
 metadata:
   name: appmanager-operator-leader-election-role
-  namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups:
   - ""
@@ -44,10 +43,9 @@ rules:
   - patch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRole
 metadata:
   name: appmanager-operator-manager-role
-  namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups:
   - apps
@@ -209,10 +207,9 @@ rules:
   - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRole
 metadata:
   name: appmanager-operator-proxy-role
-  namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups:
   - authentication.k8s.io
@@ -238,45 +235,42 @@ rules:
   verbs: ["*"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+kind: ClusterRoleBinding
 metadata:
   name: appmanager-operator-leader-election-rolebinding
-  namespace: {{ .Release.Namespace }}
 roleRef:
+  kind: ClusterRole
   apiGroup: rbac.authorization.k8s.io
-  kind: Role
   name: appmanager-operator-leader-election-role
 subjects:
 - kind: ServiceAccount
-  name: default
+  name: appmanager-operator-account
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+kind: ClusterRoleBinding
 metadata:
   name: appmanager-operator-manager-rolebinding
-  namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: Role
+  kind: ClusterRole
   name: appmanager-operator-manager-role
 subjects:
 - kind: ServiceAccount
-  name: default
+  name: appmanager-operator-account
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+kind: ClusterRoleBinding
 metadata:
   name: appmanager-operator-proxy-rolebinding
-  namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: Role
+  kind: ClusterRole
   name: appmanager-operator-proxy-role
 subjects:
 - kind: ServiceAccount
-  name: default
+  name: appmanager-operator-account
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1

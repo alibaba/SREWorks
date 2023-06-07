@@ -26,7 +26,7 @@ rules:
   resources: ["*"]
   verbs: ["*"]
 - apiGroups: ["*"]
-  resources: ["services"]
+  resources: ["services","ingresses"]
   verbs: ["*"]
 
 ---
@@ -44,7 +44,7 @@ rules:
   resources: ["*"]
   verbs: ["*"]
 - apiGroups: ["*"]
-  resources: ["services"]
+  resources: ["services","ingresses"]
   verbs: ["*"]
 
 ---

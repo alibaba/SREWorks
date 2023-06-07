@@ -21,6 +21,9 @@ metadata:
 rules:
 - apiGroups: ["*"]
   resources: ["*"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps.abm.io"]
+  resources: ["*"]
   verbs: ["*"]
 
 ---
@@ -32,6 +35,9 @@ metadata:
   namespace: {{ template "aiops.namespace" . }}
 rules:
 - apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps.abm.io"]
   resources: ["*"]
   verbs: ["*"]
 

@@ -33,7 +33,7 @@ data:
   APPMANAGER_ACCESS_SECRET: {{ .Values.server.accessSecret | quote }}
   APPMANAGER_CLIENT_ID: {{ .Values.server.clientId | quote }}
   APPMANAGER_CLIENT_SECRET: {{ .Values.server.clientSecret | quote }}
-  APPMANAGER_JWT_SECRET_KEY: {{ .Values.home.url | sha256sum | quote }}
+  APPMANAGER_JWT_SECRET_KEY: {{ .Values.server.jwtSecretKey | quote }}
   CLOUD_TYPE: {{ .Values.server.cloudType | default "PaaS" | quote }}
   JVM_XMX: {{ .Values.server.jvmXMX | default "4000m" | quote }}
   DOCKER_HOST: {{ .Values.server.docker.host | default "tcp://127.0.0.1:2375" | quote }}

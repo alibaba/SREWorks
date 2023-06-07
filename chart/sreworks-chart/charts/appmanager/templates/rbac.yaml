@@ -236,6 +236,9 @@ rules:
 - apiGroups: ["apps.abm.io"]
   resources: ["*"]
   verbs: ["*"]
+- apiGroups: ["*"]
+  resources: ["services"]
+  verbs: ["*"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

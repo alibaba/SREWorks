@@ -25,6 +25,9 @@ rules:
 - apiGroups: ["apps.abm.io"]
   resources: ["*"]
   verbs: ["*"]
+- apiGroups: ["*"]
+  resources: ["services"]
+  verbs: ["*"]
 
 ---
 
@@ -39,6 +42,9 @@ rules:
   verbs: ["get", "list", "watch"]
 - apiGroups: ["apps.abm.io"]
   resources: ["*"]
+  verbs: ["*"]
+- apiGroups: ["*"]
+  resources: ["services"]
   verbs: ["*"]
 
 ---

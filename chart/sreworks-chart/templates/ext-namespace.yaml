@@ -16,17 +16,11 @@ metadata:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: sreworks-base-role
+  name: appmanager-role
   namespace: {{ template "dataops.namespace" . }}
 rules:
 - apiGroups: ["*"]
   resources: ["*"]
-  verbs: ["get", "list", "watch"]
-- apiGroups: ["apps.abm.io"]
-  resources: ["*"]
-  verbs: ["*"]
-- apiGroups: ["*"]
-  resources: ["services","ingresses"]
   verbs: ["*"]
 
 ---
@@ -34,17 +28,11 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: sreworks-base-role
+  name: appmanager-role
   namespace: {{ template "aiops.namespace" . }}
 rules:
 - apiGroups: ["*"]
   resources: ["*"]
-  verbs: ["get", "list", "watch"]
-- apiGroups: ["apps.abm.io"]
-  resources: ["*"]
-  verbs: ["*"]
-- apiGroups: ["*"]
-  resources: ["services","ingresses"]
   verbs: ["*"]
 
 ---
@@ -52,30 +40,30 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: sreworks-base-rolebinding
+  name: appmanager-rolebinding
   namespace: {{ template "aiops.namespace" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: sreworks-base-role
+  name: appmanager-role
 subjects:
 - kind: ServiceAccount
-  name: default
+  name: appmanager-account
   namespace: {{ .Release.Namespace }}
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: sreworks-base-rolebinding
+  name: appmanager-rolebinding
   namespace: {{ template "dataops.namespace" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: sreworks-base-role
+  name: appmanager-role
 subjects:
 - kind: ServiceAccount
-  name: default
+  name: appmanager-account
   namespace: {{ .Release.Namespace }}
 
 

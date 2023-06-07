@@ -13,6 +13,7 @@ spec:
       labels:
         name: {{ template "name.server" . }}
     spec:
+      serviceAccountName: appmanager-account
       initContainers:
         - name: server-init
           image: {{ template "images.dbMigration" . }}
@@ -43,4 +44,12 @@ spec:
 
           securityContext:
             privileged: true
+ 
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: appmanager-account
+
 {{- end -}}

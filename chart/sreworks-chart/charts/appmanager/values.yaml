@@ -18,7 +18,7 @@ images:
 
 server:
   sreworksEnvs: false
-  rbac: admin
+  rbac: default
   database:
     #host: 
     port: 3306

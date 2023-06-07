@@ -15,6 +15,7 @@ data:
   APPMANAGER_DB_USER: {{ .Values.server.database.user | quote }}
   APPMANAGER_DB_PASSWORD: {{ .Values.server.database.password | quote }}
   APPMANAGER_DB_NAME: {{ .Values.server.database.name | default "appmanager" | quote }}
+  APPMANAGER_DAG_LOCAL_POOL_SIZE: "100"
   APPMANAGER_PACKAGE_DRIVER: {{ .Values.server.package.driver | quote }}
   APPMANAGER_PACKAGE_ENDPOINT: {{ template "server.package.endpoint" . }}
   APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL: {{ .Values.server.package.endpointProtocol| default "http://" | quote }}

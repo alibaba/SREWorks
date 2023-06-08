@@ -48,7 +48,7 @@ server:
   accessSecret: yJfIYmjAiCL0ondV3kY7e5x6kVTpvC3h
   clientId: superclient
   clientSecret: stLCjCPKbWmki65DsAj2jPoeBLPimpJa
-  jwtSecretKey: 3d8e06065426
+  #jwtSecretKey: 3d8e06065426
   kafkaBrokerPort: 9092
   enableAuth: true
   docker:

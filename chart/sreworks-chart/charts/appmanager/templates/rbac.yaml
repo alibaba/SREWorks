@@ -233,6 +233,16 @@ rules:
 - apiGroups: ["*"]
   resources: ["*"]
   verbs: ["*"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: sreworks-base-role
+rules:
+- apiGroups: ["*"]
+  resources: ["services"]
+  verbs: ["list","get"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -285,5 +295,18 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: appmanager-account
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: sreworks-base-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: sreworks-base-role
+subjects:
+- kind: ServiceAccount
+  name: default
   namespace: {{ .Release.Namespace }}
 {{ end }} 

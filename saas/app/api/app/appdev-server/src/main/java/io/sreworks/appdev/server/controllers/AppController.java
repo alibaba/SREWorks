@@ -256,8 +256,15 @@ public class AppController extends BaseController {
         return buildSucceedResult(ret);
     }
 
-//    @ApiOperation(value = "getComponents")
-//    @RequestMapping(value = "getComponents", method = RequestMethod.GET)
+    @ApiOperation(value = "application-configurations/types")
+    @RequestMapping(value = "application-configurations/types", method = RequestMethod.GET)
+    public TeslaBaseResult getApplicationConfigurationTypes(String appId) throws IOException, ApiException {
+        JSONObject data = appmanagerService.getApplicationConfigurationTypes(appId);
+        JSONArray components = appmanagerComponentService.getComponents(appId);
+        data.put("components", components);
+        return buildSucceedResult(data);
+    }
+
 //    public TeslaBaseResult getComponents(Long appId, @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp) throws IOException {
 //        if (appId == null) {
 //            return buildSucceedResult(new ArrayList<>());

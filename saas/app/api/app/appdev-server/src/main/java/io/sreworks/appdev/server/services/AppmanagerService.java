@@ -53,9 +53,13 @@ public class AppmanagerService {
         return options;
     }
 
-    public JSONObject getApplicationConfigurationTypes(String appId) throws IOException {
+    public JSONObject getApplicationConfigurationTypes(String appId, String headerBizApp) throws IOException {
         String url = AppmanagerServiceUtil.getEndpoint() + "/application-configurations/types?appId=" + appId;
-        return new Requests(url).get().getJSONObject().getJSONObject("data");
+        JSONObject headers = new JSONObject();
+        if (headerBizApp != null){
+            headers.put("X-Biz-App", headerBizApp);
+        }
+        return new Requests(url).headers(headers).get().getJSONObject().getJSONObject("data");
     }
 
     public void delete(String appId, String user) throws Exception {

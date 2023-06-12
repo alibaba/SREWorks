@@ -41,9 +41,13 @@ public class AppmanagerComponentService {
         return JSONArray.parseArray(JSON.toJSONString(components));
     }
 
-    public JSONArray getComponents(String appId) throws IOException {
+    public JSONArray getComponents(String appId, String headerBizApp) throws IOException {
         String url = AppmanagerServiceUtil.getEndpoint() + "/apps/" + appId + "/components";
-        return new Requests(url).get().getJSONObject().getJSONArray("data");
+        JSONObject headers = new JSONObject();
+        if (headerBizApp != null){
+            headers.put("X-Biz-App", headerBizApp);
+        }
+        return new Requests(url).headers(headers).get().getJSONObject().getJSONArray("data");
     }
 
     public Long count(String appId, String user)  throws Exception {

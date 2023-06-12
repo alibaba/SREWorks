@@ -258,9 +258,13 @@ public class AppController extends BaseController {
 
     @ApiOperation(value = "application-configurations/types")
     @RequestMapping(value = "application-configurations/types", method = RequestMethod.GET)
-    public TeslaBaseResult getApplicationConfigurationTypes(String appId) throws IOException, ApiException {
-        JSONObject data = appmanagerService.getApplicationConfigurationTypes(appId);
-        JSONArray components = appmanagerComponentService.getComponents(appId);
+    public TeslaBaseResult getApplicationConfigurationTypes(
+            String appId,
+            @RequestHeader(value = "X-Biz-App", required = false) String headerBizApp
+    ) throws IOException, ApiException {
+        log.info(headerBizApp);
+        JSONObject data = appmanagerService.getApplicationConfigurationTypes(appId, headerBizApp);
+        JSONArray components = appmanagerComponentService.getComponents(appId, headerBizApp);
         data.put("components", components);
         return buildSucceedResult(data);
     }

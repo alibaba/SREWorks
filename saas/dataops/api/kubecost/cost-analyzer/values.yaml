@@ -299,7 +299,7 @@ networkPolicy:
     #     - namespaceSelector: {}
 
 podSecurityPolicy:
-  enabled: true
+  enabled: false
 
 ## @param extraVolumes A list of volumes to be added to the pod
 ##

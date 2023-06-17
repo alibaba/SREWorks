@@ -1071,6 +1071,11 @@ spec:
           size: 20Gi
           storageClass: '{{ Global.STORAGE_CLASS }}'
           subPath: ''
+        ui:
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
         vvp:
           blobStorage:
             baseUri: s3://vvp

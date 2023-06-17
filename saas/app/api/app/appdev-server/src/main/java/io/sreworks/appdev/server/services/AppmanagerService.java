@@ -10,6 +10,8 @@ import com.alibaba.tesla.web.constant.HttpHeaderNames;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 import static com.alibaba.sreworks.domain.utils.AppUtil.appmanagerId;
 
 @Slf4j
@@ -49,6 +51,15 @@ public class AppmanagerService {
         options.put("source", "app");
         options.put("apiVersion", "v2");
         return options;
+    }
+
+    public JSONObject getApplicationConfigurationTypes(String appId, String headerBizApp) throws IOException {
+        String url = AppmanagerServiceUtil.getEndpoint() + "/application-configurations/types?appId=" + appId;
+        JSONObject headers = new JSONObject();
+        if (headerBizApp != null){
+            headers.put("X-Biz-App", headerBizApp);
+        }
+        return new Requests(url).headers(headers).get().getJSONObject().getJSONObject("data");
     }
 
     public void delete(String appId, String user) throws Exception {

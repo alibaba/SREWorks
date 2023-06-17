@@ -2,7 +2,7 @@ rbac:
   create: true
   ## Use an existing ClusterRole/Role (depending on rbac.namespaced false/true)
   # useExistingRole: name-of-some-(cluster)role
-  pspEnabled: true
+  pspEnabled: false
   pspUseAppArmor: true
   namespaced: false
   extraRoleRules: []

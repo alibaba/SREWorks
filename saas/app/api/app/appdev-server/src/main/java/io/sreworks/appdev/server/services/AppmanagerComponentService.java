@@ -11,6 +11,7 @@ import io.sreworks.common.util.Requests;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -38,6 +39,15 @@ public class AppmanagerComponentService {
             component.put("deployConfig", componentsConfigs.getJSONObject(component.getString("typeId")));
         }
         return JSONArray.parseArray(JSON.toJSONString(components));
+    }
+
+    public JSONArray getComponents(String appId, String headerBizApp) throws IOException {
+        String url = AppmanagerServiceUtil.getEndpoint() + "/apps/" + appId + "/components";
+        JSONObject headers = new JSONObject();
+        if (headerBizApp != null){
+            headers.put("X-Biz-App", headerBizApp);
+        }
+        return new Requests(url).headers(headers).get().getJSONObject().getJSONArray("data");
     }
 
     public Long count(String appId, String user)  throws Exception {

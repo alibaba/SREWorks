@@ -1,9 +1,8 @@
 {{ if eq .Values.server.rbac "default" }}
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRole
 metadata:
   name: appmanager-operator-leader-election-role
-  namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups:
   - ""
@@ -44,10 +43,9 @@ rules:
   - patch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRole
 metadata:
   name: appmanager-operator-manager-role
-  namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups:
   - apps
@@ -209,10 +207,9 @@ rules:
   - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRole
 metadata:
   name: appmanager-operator-proxy-role
-  namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups:
   - authentication.k8s.io
@@ -228,44 +225,110 @@ rules:
   - create
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+kind: Role
+metadata:
+  name: appmanager-role
+  namespace: {{ .Release.Namespace }}
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: appmanager-cluster-role
+rules:
+- apiGroups: ["*"]
+  resources: ["clusterroles","clusterrolebindings"]
+  verbs: ["*"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: sreworks-base-role
+rules:
+- apiGroups: ["*"]
+  resources: ["services"]
+  verbs: ["list","get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
 metadata:
   name: appmanager-operator-leader-election-rolebinding
-  namespace: {{ .Release.Namespace }}
 roleRef:
+  kind: ClusterRole
   apiGroup: rbac.authorization.k8s.io
-  kind: Role
   name: appmanager-operator-leader-election-role
 subjects:
 - kind: ServiceAccount
-  name: default
+  name: appmanager-operator-account
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+kind: ClusterRoleBinding
 metadata:
   name: appmanager-operator-manager-rolebinding
-  namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: Role
+  kind: ClusterRole
   name: appmanager-operator-manager-role
 subjects:
 - kind: ServiceAccount
-  name: default
+  name: appmanager-operator-account
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: appmanager-operator-proxy-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: appmanager-operator-proxy-role
+subjects:
+- kind: ServiceAccount
+  name: appmanager-operator-account
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: appmanager-operator-proxy-rolebinding
+  name: appmanager-rolebinding
   namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: appmanager-operator-proxy-role
+  name: appmanager-role
+subjects:
+- kind: ServiceAccount
+  name: appmanager-account
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: appmanager-cluster-rolebinding
+roleRef:
+  kind: ClusterRole
+  name: appmanager-cluster-role
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: appmanager-account
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: sreworks-base-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: sreworks-base-role
 subjects:
 - kind: ServiceAccount
   name: default
   namespace: {{ .Release.Namespace }}
-{{ end }} 
+{{ end }}

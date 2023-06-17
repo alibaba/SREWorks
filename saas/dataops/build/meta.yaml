@@ -9,7 +9,7 @@ componentPackages:
     metadata:
       name: microservice-dataops-pmdb
       annotations:
-        annotations.appmanager.oam.dev/version: "9.1.2+20230616065519397552"
+        annotations.appmanager.oam.dev/version: "9.1.3+20230617003138363152"
       labels:
         labels.appmanager.oam.dev/appId: "dataops"
         labels.appmanager.oam.dev/componentName: "pmdb"
@@ -39,7 +39,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "9.1.2+20230616065519397552"
+            annotations.appmanager.oam.dev/version: "9.1.3+20230617003138363152"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -77,15 +77,15 @@ componentPackages:
             VVP_ENDPOINT: "{{ Global.VVP_ENDPOINT }}"
           initContainers:
           - name: "db-migration"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/dataops-pmdb-db-migration:1686898519372"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/dataops-pmdb-db-migration:1686961898818"
           - name: "metric-flink"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/dataops-pmdb-metric-flink:1686898519372"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/dataops-pmdb-metric-flink:1686961898818"
           containers:
           - name: "pmdb"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/dataops-pmdb-pmdb:1686898519372"
-  packageMd5: 28daa721bc80cf4989f75d55e9c1d2be
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/dataops-pmdb-pmdb:1686961898818"
+  packageMd5: bea6cfb17cf092aff5038061bb817155
   packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://atomgit.com/sreworks/SREWorks.git","dockerfileTemplate":"Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/pmdb","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"pmdb"}],"env":["DB_HOST","DB_PORT","DB_USER","DB_PASSWORD","DB_NAME","DATA_DB_HOST","DATA_DB_PORT","DATA_DB_USER","DATA_DB_PASSWORD","DATA_DB_PMDB_NAME","DATA_SKYW_HOST","DATA_SKYW_PORT","DATA_SKYW_ENABLE","KAFKA_ENDPOINT","DATA_ES_HOST","DATA_ES_PORT","DATA_ES_USER","DATA_ES_PASSWORD","DATA_DB_HEALTH_NAME","MINIO_ENDPOINT","MINIO_ACCESS_KEY","MINIO_SECRET_KEY","KAFKA_URL","ES_URL","HEALTH_ENDPOINT","VVP_ENDPOINT"],"initContainers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://atomgit.com/sreworks/SREWorks.git","dockerfileTemplate":"Dockerfile-db-migration","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/pmdb","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"db-migration"},{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://atomgit.com/sreworks/SREWorks.git","dockerfileTemplate":"Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/metric-flink","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"metric-flink"}],"componentConfiguration":"revisionName: K8S_MICROSERVICE|pmdb|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 7001\n- name: gateway.trait.abm.io\n  runtime: post\n  spec:\n    path: /pmdb/**\n    authEnabled: false\n    serviceName: ''{{ Global.STAGE_ID }}-dataops-pmdb.{{ Global.NAMESPACE_ID }}''\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n- name: Global.DATA_DB_PMDB_NAME\n  value: pmdb\n- name: Global.DATA_SKYW_HOST\n  value: ''{{Global.STAGE_ID}}-dataops-skywalking-skywalking-helm-oap''\n- name: Global.DATA_SKYW_PORT\n  value: ''11800''\n- name: Global.DATA_SKYW_ENABLE\n  value: ''true''\n- name: Global.KAFKA_ENDPOINT\n  value: prod-dataops-kafka.sreworks-dataops:9092\n- name: Global.DATA_DB_HEALTH_NAME\n  value: sw_saas_health\n- name: Global.MINIO_ENDPOINT\n  value: sreworks-minio.sreworks:9000\n- name: Global.KAFKA_URL\n  value: prod-dataops-kafka.sreworks-dataops:9092\n- name: Global.HEALTH_ENDPOINT\n  value: ''{{Global.STAGE_ID}}-health-health.sreworks.svc.cluster.local:80''\n- name: Global.VVP_ENDPOINT\n  value: ''{{Global.STAGE_ID}}-dataops-ververica-platform-ververica-platform''\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 9.1.2+20230616065519397552
+  packageVersion: 9.1.3+20230617003138363152
   relativePath: K8S_MICROSERVICE_pmdb.zip
 - componentName: warehouse
   componentType: K8S_MICROSERVICE
@@ -96,7 +96,7 @@ componentPackages:
     metadata:
       name: microservice-dataops-warehouse
       annotations:
-        annotations.appmanager.oam.dev/version: "9.1.2+20230616065519991464"
+        annotations.appmanager.oam.dev/version: "9.1.3+20230617003138824530"
       labels:
         labels.appmanager.oam.dev/appId: "dataops"
         labels.appmanager.oam.dev/componentName: "warehouse"
@@ -126,7 +126,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "9.1.2+20230616065519991464"
+            annotations.appmanager.oam.dev/version: "9.1.3+20230617003138824530"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -147,13 +147,13 @@ componentPackages:
             DATA_DB_PASSWORD: "{{ Global.DATA_DB_PASSWORD }}"
           initContainers:
           - name: "db-migration"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/dataops-warehouse-db-migration:1686898519397"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/dataops-warehouse-db-migration:1686961898812"
           containers:
           - name: "warehouse"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/dataops-warehouse-warehouse:1686898519397"
-  packageMd5: 84e3888b5c554d510f5e841a1288fba4
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/dataops-warehouse-warehouse:1686961898812"
+  packageMd5: 587799aaff7020276c59f35e6983174e
   packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://atomgit.com/sreworks/SREWorks.git","dockerfileTemplate":"Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/warehouse","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"warehouse"}],"env":["DATA_DB_WAREHOUSE_NAME","DATA_DB_HOST","DATA_DB_PORT","DATA_ES_HOST","DATA_ES_PORT","DATA_ES_USER","DATA_ES_PASSWORD","DATA_DB_USER","DATA_DB_PASSWORD"],"initContainers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://atomgit.com/sreworks/SREWorks.git","dockerfileTemplate":"Dockerfile-db-migration","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/warehouse","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"db-migration"}],"componentConfiguration":"revisionName: K8S_MICROSERVICE|warehouse|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 7001\n- name: gateway.trait.abm.io\n  runtime: post\n  spec:\n    path: /warehouse/**\n    authEnabled: false\n    serviceName: ''{{ Global.STAGE_ID }}-dataops-warehouse.{{ Global.NAMESPACE_ID }}''\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n- name: Global.DATA_DB_WAREHOUSE_NAME\n  value: sw_saas_warehouse\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 9.1.2+20230616065519991464
+  packageVersion: 9.1.3+20230617003138824530
   relativePath: K8S_MICROSERVICE_warehouse.zip
 - componentName: dataset
   componentType: K8S_MICROSERVICE
@@ -164,7 +164,7 @@ componentPackages:
     metadata:
       name: microservice-dataops-dataset
       annotations:
-        annotations.appmanager.oam.dev/version: "9.1.2+20230616065519955479"
+        annotations.appmanager.oam.dev/version: "9.1.3+20230617003138869346"
       labels:
         labels.appmanager.oam.dev/appId: "dataops"
         labels.appmanager.oam.dev/componentName: "dataset"
@@ -194,7 +194,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "9.1.2+20230616065519955479"
+            annotations.appmanager.oam.dev/version: "9.1.3+20230617003138869346"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -221,15 +221,15 @@ componentPackages:
             DATA_DB_USER: "{{ Global.DATA_DB_USER }}"
           initContainers:
           - name: "db-migration"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/dataops-dataset-db-migration:1686898519394"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/dataops-dataset-db-migration:1686961898832"
           - name: "db-migration-datasource"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/dataops-dataset-db-migration-datasource:1686898519394"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/dataops-dataset-db-migration-datasource:1686961898832"
           containers:
           - name: "dataset"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/dataops-dataset-dataset:1686898519394"
-  packageMd5: 5a28f146885d944e75608fdc84d18089
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/dataops-dataset-dataset:1686961898832"
+  packageMd5: 5a2047949e3bc8ce41a56f521ffc2020
   packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://atomgit.com/sreworks/SREWorks.git","dockerfileTemplate":"Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/dataset","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"dataset"}],"env":["DATA_DB_PASSWORD","DATA_DB_DATASET_NAME","DATA_DB_PMDB_NAME","DATA_ES_HOST","DATA_ES_PORT","DATA_ES_INDEX","DATA_DB_DATASOURCE_NAME","DATA_SKYW_HOST","DATA_SKYW_PORT","DATA_SKYW_ENABLE","DATA_DB_HOST","DATA_DB_PORT","DATA_ES_USER","DATA_ES_PASSWORD","DATA_DB_USER"],"initContainers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://atomgit.com/sreworks/SREWorks.git","dockerfileTemplate":"Dockerfile-db-migration","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/dataset","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"db-migration"},{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://atomgit.com/sreworks/SREWorks.git","dockerfileTemplate":"Dockerfile-db-migration-datasource","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/dataset","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"db-migration-datasource"}],"componentConfiguration":"revisionName: K8S_MICROSERVICE|dataset|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 7001\n- name: gateway.trait.abm.io\n  runtime: post\n  spec:\n    path: /dataset/**\n    authEnabled: false\n    serviceName: ''{{ Global.STAGE_ID }}-dataops-dataset.{{ Global.NAMESPACE_ID }}''\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n- name: Global.DATA_DB_DATASET_NAME\n  value: sw_saas_dataset\n- name: Global.DATA_DB_PMDB_NAME\n  value: pmdb\n- name: Global.DATA_ES_HOST\n  value: ''{{Global.STAGE_ID}}-dataops-elasticsearch-master''\n- name: Global.DATA_ES_PORT\n  value: ''9200''\n- name: Global.DATA_ES_INDEX\n  value: metricbeat-7.13.0\n- name: Global.DATA_DB_DATASOURCE_NAME\n  value: sw_saas_datasource\n- name: Global.DATA_SKYW_HOST\n  value: ''{{Global.STAGE_ID}}-dataops-skywalking-skywalking-helm-oap''\n- name: Global.DATA_SKYW_PORT\n  value: ''11800''\n- name: Global.DATA_SKYW_ENABLE\n  value: ''true''\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 9.1.2+20230616065519955479
+  packageVersion: 9.1.3+20230617003138869346
   relativePath: K8S_MICROSERVICE_dataset.zip
 - componentName: logstash
   componentType: HELM
@@ -240,7 +240,7 @@ componentPackages:
     metadata:
       name: microservice-dataops-logstash
       annotations:
-        annotations.appmanager.oam.dev/version: "4.7.2+20230616065519528978"
+        annotations.appmanager.oam.dev/version: "4.7.3+20230617003138643024"
       labels:
         labels.appmanager.oam.dev/appId: "dataops"
         labels.appmanager.oam.dev/componentName: "logstash"
@@ -270,7 +270,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "4.7.2+20230616065519528978"
+            annotations.appmanager.oam.dev/version: "4.7.3+20230617003138643024"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -281,9 +281,9 @@ componentPackages:
           repoPath: "saas/dataops/api/logstash/logstash-chart"
           name: ""
           values: {}
-  packageMd5: 81e1046efdfa4c44287734b38b58edef
+  packageMd5: e50aba7289f4035060cd5451a70ead32
   packageOptions: '{"repo":"https://atomgit.com/sreworks/SREWorks.git","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/logstash/logstash-chart","branch":"master","env":[],"componentConfiguration":"revisionName: HELM|logstash|_\ntraits: []\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: values\n  value:\n    logstashPipeline:\n      logstash.conf: |\n        input {\n          elasticsearch {\n            hosts => \"prod-dataops-elasticsearch-master.sreworks-dataops:9200\"\n            user => \"elastic\"\n            password => \"sreworkses123.\"\n            index => \"metricbeat\"\n            query => ''{\"query\":{\"bool\":{\"must\":[{\"range\":{\"@timestamp\":{\"gte\":\"now-1m/m\",\"lt\":\"now/m\"}}},{\"query_string\":{\"query\":\"metricset.name:json\"}},{\"exists\":{\"field\":\"http\"}}]}},\"sort\":[\"service.address\"]}''\n            schedule => \"* * * * *\"\n            scroll => \"5m\"\n            size => 10000\n          }\n        }\n        output {\n          kafka {\n            bootstrap_servers => \"prod-dataops-kafka.sreworks-dataops.svc.cluster.local:9092\"\n            codec => json\n            topic_id => \"sreworks-telemetry-metric\"\n          }\n        }\n    image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/logstash\n    service:\n      loadBalancerIP: ''''\n      ports:\n      - name: beats\n        port: 5044\n        protocol: TCP\n        targetPort: 5044\n      - name: http\n        port: 8080\n        protocol: TCP\n        targetPort: 8080\n      type: ClusterIP\n    volumeClaimTemplate:\n      accessModes:\n      - ReadWriteOnce\n      resources:\n        requests:\n          storage: 50Gi\n      storageClassName: ''{{ Global.STORAGE_CLASS }}''\n    imageTag: 7.10.2\n    logstashConfig:\n      logstash.yml: |\n        http.host: 0.0.0.0\n        xpack.monitoring.enabled: true\n        xpack.monitoring.elasticsearch.username: ''elastic''\n        xpack.monitoring.elasticsearch.password: ''sreworkses123.''\n        xpack.monitoring.elasticsearch.hosts: [\"prod-dataops-elasticsearch-master.sreworks-dataops:9200\"]\n  toFieldPaths:\n  - spec.values\n- name: name\n  value: ''{{ Global.STAGE_ID }}-dataops-logstash''\n  toFieldPaths:\n  - spec.name\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 4.7.2+20230616065519528978
+  packageVersion: 4.7.3+20230617003138643024
   relativePath: HELM_logstash.zip
 - componentName: kafka
   componentType: HELM
@@ -294,7 +294,7 @@ componentPackages:
     metadata:
       name: microservice-dataops-kafka
       annotations:
-        annotations.appmanager.oam.dev/version: "1.3.2+20230616065519847395"
+        annotations.appmanager.oam.dev/version: "1.3.3+20230617003138715186"
       labels:
         labels.appmanager.oam.dev/appId: "dataops"
         labels.appmanager.oam.dev/componentName: "kafka"
@@ -324,7 +324,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "1.3.2+20230616065519847395"
+            annotations.appmanager.oam.dev/version: "1.3.3+20230617003138715186"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -335,9 +335,9 @@ componentPackages:
           repoPath: "saas/dataops/api/kafka/kafka-chart"
           name: ""
           values: {}
-  packageMd5: b1649c4da0b2767bf7e6685a23c2b550
+  packageMd5: 80c499a9a0a768797d4d29ba069a9bc3
   packageOptions: '{"repo":"https://atomgit.com/sreworks/SREWorks.git","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/kafka/kafka-chart","branch":"master","env":[],"componentConfiguration":"revisionName: HELM|kafka|_\ntraits: []\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: values\n  value:\n    image:\n      registry: sreworks-registry.cn-beijing.cr.aliyuncs.com\n      repository: hub/kafka\n    zookeeper:\n      persistence:\n        size: 20Gi\n      image:\n        registry: sreworks-registry.cn-beijing.cr.aliyuncs.com\n        repository: hub/zookeeper\n    persistence:\n      size: 20Gi\n    global:\n      storageClass: ''{{ Global.STORAGE_CLASS }}''\n  toFieldPaths:\n  - spec.values\n- name: name\n  value: ''{{ Global.STAGE_ID }}-dataops-kafka''\n  toFieldPaths:\n  - spec.name\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 1.3.2+20230616065519847395
+  packageVersion: 1.3.3+20230617003138715186
   relativePath: HELM_kafka.zip
 - componentName: kubecost
   componentType: HELM
@@ -348,7 +348,7 @@ componentPackages:
     metadata:
       name: microservice-dataops-kubecost
       annotations:
-        annotations.appmanager.oam.dev/version: "1.4.6+20230616065519766811"
+        annotations.appmanager.oam.dev/version: "1.4.7+20230617003138646502"
       labels:
         labels.appmanager.oam.dev/appId: "dataops"
         labels.appmanager.oam.dev/componentName: "kubecost"
@@ -378,7 +378,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "1.4.6+20230616065519766811"
+            annotations.appmanager.oam.dev/version: "1.4.7+20230617003138646502"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -389,9 +389,9 @@ componentPackages:
           repoPath: "saas/dataops/api/kubecost/cost-analyzer"
           name: ""
           values: {}
-  packageMd5: fc8b6806c8a335dd485afcb714832c80
+  packageMd5: ad809861ea6685218fc1f5bbe6a2cbf3
   packageOptions: '{"repo":"https://atomgit.com/sreworks/SREWorks.git","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/kubecost/cost-analyzer","branch":"master","env":[],"componentConfiguration":"revisionName: HELM|kubecost|_\ntraits: []\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: values\n  value:\n    kubecostProductConfigs:\n      clusterName: cluster123\n      currencyCode: CNY\n    global:\n      prometheus:\n        enabled: false\n        fqdn: http://{{ Global.DATA_PROM_HOST}}:{{ Global.DATA_PROM_PORT }}\n      thanos:\n        enabled: false\n      grafana:\n        enabled: false\n        domainName: prod-dataops-grafana.sreworks-dataops\n        proxy: false\n      notifications:\n        alertmanager:\n          enabled: false\n          fqdn: http://{{ Global.DATA_PROM_HOST}}:{{ Global.DATA_PROM_PORT }}\n    kubecostModel:\n      image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kubecost1/cost-model\n      imagePullPolicy: Always\n      resources:\n        requests:\n          cpu: 200m\n          memory: 55Mi\n    kubecostDeployment:\n      replicas: 1\n    ingress:\n      enabled: false\n      className: nginx\n      annotations: null\n      paths:\n      - /\n      pathType: ImplementationSpecific\n      hosts:\n      - kubecost-cost-analyzer.c38cca9c474484bdc9873f44f733d8bcd.cn-beijing.alicontainer.com\n      tls: []\n    networkCosts:\n      enabled: false\n      podSecurityPolicy:\n        enabled: false\n      image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kubecost1/kubecost-network-costs\n      tag: v15.7\n      imagePullPolicy: Always\n      prometheusScrape: false\n      trafficLogging: true\n      port: 3001\n      resources: {}\n    persistentVolume:\n      size: 100Gi\n      dbSize: 100.0Gi\n      enabled: true\n      storageClass: ''{{ Global.STORAGE_CLASS }}''\n      accessModes:\n      - ReadWriteOnce\n    kubecost:\n      disableServer: false\n      image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kubecost1/server\n      resources:\n        requests:\n          cpu: 100m\n          memory: 55Mi\n    grafana:\n      sidecar:\n        dashboards:\n          enabled: true\n          label: kubecost_grafana_dashboard\n        datasources:\n          enabled: false\n      grafana.ini:\n        server:\n          root_url: ''%(protocol)s://%(domain)s:%(http_port)s/grafana''\n    service:\n      type: ClusterIP\n      port: 9090\n      targetPort: 9090\n      labels: {}\n      annotations: {}\n    clusterController:\n      enabled: false\n      image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kubecost1/cluster-controller\n      tag: v0.0.2\n      imagePullPolicy: Always\n    kubecostFrontend:\n      image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kubecost1/frontend\n      imagePullPolicy: Always\n      resources:\n        requests:\n          cpu: 10m\n          memory: 55Mi\n    kubecostToken: MzEyMTg5Mzk3QHFxLmNvbQ==xm343yadf98\n    prometheus:\n      kube-state-metrics:\n        disabled: false\n        image:\n          repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kube-state-metrics\n          tag: v1.9.8\n          pullPolicy: Always\n      server:\n        resources: {}\n        global:\n          scrape_interval: 1m\n          scrape_timeout: 10s\n          evaluation_interval: 1m\n          external_labels:\n            cluster_id: cluster123\n        persistentVolume:\n          size: 100Gi\n          enabled: true\n          storageClass: ''{{ Global.STORAGE_CLASS }}''\n          accessModes:\n          - ReadWriteOnce\n        extraArgs:\n          query.max-concurrency: 1\n          query.max-samples: 100000000\n        tolerations: []\n      alertmanager:\n        enabled: false\n        persistentVolume:\n          enabled: true\n      nodeExporter:\n        enabled: true\n        service:\n          annotations:\n            prometheus.io/scrape: ''true''\n          clusterIP: None\n          hostPort: 9010\n          servicePort: 9010\n          type: ClusterIP\n      pushgateway:\n        enabled: false\n        persistentVolume:\n          enabled: true\n  toFieldPaths:\n  - spec.values\n- name: name\n  value: ''{{ Global.STAGE_ID }}-dataops-kubecost''\n  toFieldPaths:\n  - spec.name\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 1.4.6+20230616065519766811
+  packageVersion: 1.4.7+20230617003138646502
   relativePath: HELM_kubecost.zip
 - componentName: prometheus
   componentType: HELM
@@ -402,7 +402,7 @@ componentPackages:
     metadata:
       name: microservice-dataops-prometheus
       annotations:
-        annotations.appmanager.oam.dev/version: "2.9.0+20230616065519359751"
+        annotations.appmanager.oam.dev/version: "3.0.0+20230617003138879589"
       labels:
         labels.appmanager.oam.dev/appId: "dataops"
         labels.appmanager.oam.dev/componentName: "prometheus"
@@ -432,7 +432,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "2.9.0+20230616065519359751"
+            annotations.appmanager.oam.dev/version: "3.0.0+20230617003138879589"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -443,9 +443,9 @@ componentPackages:
           repoPath: "saas/dataops/api/prometheus/prometheus-chart"
           name: ""
           values: {}
-  packageMd5: 951cea927d6a63ee3c0e374507028a55
+  packageMd5: 42b03c56169e67b08c8a2f7cdab3f47b
   packageOptions: '{"repo":"https://atomgit.com/sreworks/SREWorks.git","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/prometheus/prometheus-chart","branch":"master","env":[],"componentConfiguration":"revisionName: HELM|prometheus|_\ntraits: []\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: values\n  value:\n    kubeStateMetrics:\n      enabled: false\n    server:\n      enabled: true\n      persistentVolume:\n        enabled: true\n        accessModes:\n        - ReadWriteOnce\n        storageClass: ''{{ Global.STORAGE_CLASS }}''\n        existingClaim: ''''\n        mountPath: /data\n        size: 20Gi\n    configmapReload:\n      prometheus:\n        enabled: false\n      alertmanager:\n        enabled: false\n    serviceAccounts:\n      alertmanager:\n        create: true\n        name: null\n        annotations: {}\n      nodeExporter:\n        create: true\n        name: null\n        annotations: {}\n      pushgateway:\n        create: true\n        name: null\n        annotations: {}\n      server:\n        create: true\n        name: null\n        annotations: {}\n    rbac:\n      create: true\n    serverFiles:\n      recording_rules.yml:\n        groups:\n        - name: CPU\n          rules:\n          - expr: sum(rate(container_cpu_usage_seconds_total{container_name!=\"\"}[5m]))\n            record: cluster:cpu_usage:rate5m\n          - expr: rate(container_cpu_usage_seconds_total{container_name!=\"\"}[5m])\n            record: cluster:cpu_usage_nosum:rate5m\n          - expr: avg(irate(container_cpu_usage_seconds_total{container_name!=\"POD\", container_name!=\"\"}[5m])) by (container_name,pod_name,namespace)\n            record: kubecost_container_cpu_usage_irate\n          - expr: sum(container_memory_working_set_bytes{container_name!=\"POD\",container_name!=\"\"}) by (container_name,pod_name,namespace)\n            record: kubecost_container_memory_working_set_bytes\n          - expr: sum(container_memory_working_set_bytes{container_name!=\"POD\",container_name!=\"\"})\n            record: kubecost_cluster_memory_working_set_bytes\n        - name: Savings\n          rules:\n          - expr: sum(avg(kube_pod_owner{owner_kind!=\"DaemonSet\"}) by (pod) * sum(container_cpu_allocation) by (pod))\n            labels:\n              daemonset: ''false''\n            record: kubecost_savings_cpu_allocation\n          - expr: sum(avg(kube_pod_owner{owner_kind=\"DaemonSet\"}) by (pod) * sum(container_cpu_allocation) by (pod)) / sum(kube_node_info)\n            labels:\n              daemonset: ''true''\n            record: kubecost_savings_cpu_allocation\n          - expr: sum(avg(kube_pod_owner{owner_kind!=\"DaemonSet\"}) by (pod) * sum(container_memory_allocation_bytes) by (pod))\n            labels:\n              daemonset: ''false''\n            record: kubecost_savings_memory_allocation_bytes\n          - expr: sum(avg(kube_pod_owner{owner_kind=\"DaemonSet\"}) by (pod) * sum(container_memory_allocation_bytes) by (pod)) / sum(kube_node_info)\n            labels:\n              daemonset: ''true''\n            record: kubecost_savings_memory_allocation_bytes\n          - expr: label_replace(sum(kube_pod_status_phase{phase=\"Running\",namespace!=\"kube-system\"} > 0) by (pod, namespace), \"pod_name\", \"$1\", \"pod\", \"(.+)\")\n            record: kubecost_savings_running_pods\n          - expr: sum(rate(container_cpu_usage_seconds_total{container_name!=\"\",container_name!=\"POD\",instance!=\"\"}[5m])) by (namespace, pod_name, container_name, instance)\n            record: kubecost_savings_container_cpu_usage_seconds\n          - expr: sum(container_memory_working_set_bytes{container_name!=\"\",container_name!=\"POD\",instance!=\"\"}) by (namespace, pod_name, container_name, instance)\n            record: kubecost_savings_container_memory_usage_bytes\n          - expr: avg(sum(kube_pod_container_resource_requests{resource=\"cpu\", unit=\"core\", namespace!=\"kube-system\"}) by (pod, namespace, instance)) by (pod, namespace)\n            record: kubecost_savings_pod_requests_cpu_cores\n          - expr: avg(sum(kube_pod_container_resource_requests{resource=\"memory\", unit=\"byte\", namespace!=\"kube-system\"}) by (pod, namespace, instance)) by (pod, namespace)\n            record: kubecost_savings_pod_requests_memory_bytes\n      prometheus.yml:\n        rule_files:\n        - /etc/config/recording_rules.yml\n        - /etc/config/alerting_rules.yml\n        scrape_configs:\n        - job_name: prometheus\n          static_configs:\n          - targets:\n            - localhost:9090\n        - job_name: kubernetes-pods\n          kubernetes_sd_configs:\n          - role: pod\n          relabel_configs:\n          - action: keep\n            regex: true\n            source_labels:\n            - __meta_kubernetes_pod_annotation_prometheus_io_scrape\n          - action: replace\n            regex: (.+)\n            source_labels:\n            - __meta_kubernetes_pod_annotation_prometheus_io_path\n            target_label: __metrics_path__\n          - action: replace\n            regex: ([^:]+)(?::\\d+)?;(\\d+)\n            replacement: $1:$2\n            source_labels:\n            - __address__\n            - __meta_kubernetes_pod_annotation_prometheus_io_port\n            target_label: __address__\n          - action: labelmap\n            regex: __meta_kubernetes_pod_label_(.+)\n          - action: replace\n            source_labels:\n            - __meta_kubernetes_namespace\n            target_label: kubernetes_namespace\n          - action: replace\n            source_labels:\n            - __meta_kubernetes_pod_name\n            target_label: kubernetes_pod_name\n        - bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n          job_name: kubernetes-nodes-cadvisor\n          kubernetes_sd_configs:\n          - role: node\n          metric_relabel_configs:\n          - action: keep\n            regex: (container_cpu_usage_seconds_total|container_memory_working_set_bytes|container_network_receive_errors_total|container_network_transmit_errors_total|container_network_receive_packets_dropped_total|container_network_transmit_packets_dropped_total|container_memory_usage_bytes|container_cpu_cfs_throttled_periods_total|container_cpu_cfs_periods_total|container_fs_usage_bytes|container_fs_limit_bytes|container_cpu_cfs_periods_total|container_fs_inodes_free|container_fs_inodes_total|container_fs_usage_bytes|container_fs_limit_bytes|container_cpu_cfs_throttled_periods_total|container_cpu_cfs_periods_total|container_network_receive_bytes_total|container_network_transmit_bytes_total|container_fs_inodes_free|container_fs_inodes_total|container_fs_usage_bytes|container_fs_limit_bytes|container_spec_cpu_shares|container_spec_memory_limit_bytes|container_network_receive_bytes_total|container_network_transmit_bytes_total|container_fs_reads_bytes_total|container_network_receive_bytes_total|container_fs_writes_bytes_total|container_fs_reads_bytes_total|cadvisor_version_info)\n            source_labels:\n            - __name__\n          - action: replace\n            regex: (.+)\n            source_labels:\n            - container\n            target_label: container_name\n          - action: replace\n            regex: (.+)\n            source_labels:\n            - pod\n            target_label: pod_name\n          relabel_configs:\n          - action: labelmap\n            regex: __meta_kubernetes_node_label_(.+)\n          - replacement: kubernetes.default.svc:443\n            target_label: __address__\n          - regex: (.+)\n            replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor\n            source_labels:\n            - __meta_kubernetes_node_name\n            target_label: __metrics_path__\n          scheme: https\n          tls_config:\n            ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n            insecure_skip_verify: true\n        - job_name: kubernetes-service-endpoints\n          kubernetes_sd_configs:\n          - role: endpoints\n          metric_relabel_configs:\n          - action: keep\n            regex: (container_gpu_allocation|container_cpu_allocation|container_cpu_usage_seconds_total|container_fs_limit_bytes|container_memory_allocation_bytes|container_memory_usage_bytes|container_memory_working_set_bytes|container_network_receive_bytes_total|container_network_transmit_bytes_total|deployment_match_labels|kube_deployment_spec_replicas|kube_deployment_status_replicas_available|kube_job_status_failed|kube_namespace_annotations|kube_namespace_labels|kube_node_info|kube_node_labels|kube_node_status_capacity|kube_node_status_capacity_cpu_cores|kube_node_status_capacity_memory_bytes|kube_node_status_condition|kube_persistentvolume_capacity_bytes|kube_persistentvolume_status_phase|kube_persistentvolumeclaim_info|kube_persistentvolumeclaim_resource_requests_storage_bytes|kube_persistentvolumeclaim_resource_requests_storage_bytes|container_memory_allocation_bytes|kube_pod_container_resource_limits|kube_pod_container_resource_limits_cpu_cores|kube_pod_container_resource_limits_memory_bytes|kube_pod_container_resource_requests_cpu_cores|kube_pod_container_resource_requests_cpu_cores|container_cpu_usage_seconds_total|kube_pod_container_resource_requests_memory_bytes|kube_pod_container_resource_requests_memory_bytes|kube_pod_container_resource_requests|kube_pod_container_status_restarts_total|kube_pod_container_status_running|kube_pod_container_status_terminated_reason|kube_pod_labels|kube_pod_owner|kube_pod_status_phase|kubecost_cluster_memory_working_set_bytes|kubecost_pod_network_egress_bytes_total|node_cpu_hourly_cost|node_cpu_seconds_total|node_disk_reads_completed|node_disk_reads_completed_total|node_disk_writes_completed|node_disk_writes_completed_total|node_filesystem_device_error|node_gpu_hourly_cost|node_memory_Buffers_bytes|node_memory_Cached_bytes|node_memory_MemAvailable_bytes|node_memory_MemFree_bytes|node_memory_MemTotal_bytes|node_network_transmit_bytes_total|node_ram_hourly_cost|pod_pvc_allocation|pv_hourly_cost|service_selector_labels|statefulSet_match_labels|up|kube_node_status_allocatable|kube_node_status_allocatable_cpu_cores|kube_node_status_allocatable_memory_bytes|container_fs_writes_bytes_total|kube_deployment_status_replicas|kube_statefulset_replicas|kube_daemonset_status_desired_number_scheduled|kube_deployment_status_replicas_available|kube_statefulset_status_replicas|kube_daemonset_status_number_ready|kube_deployment_status_replicas|kube_statefulset_replicas|kube_daemonset_status_desired_number_scheduled|kube_replicaset_owner|kube_pod_container_info|DCGM_FI_DEV_GPU_UTIL)\n            source_labels:\n            - __name__\n          relabel_configs:\n          - action: keep\n            regex: true\n            source_labels:\n            - __meta_kubernetes_service_annotation_prometheus_io_scrape\n          - action: replace\n            regex: (https?)\n            source_labels:\n            - __meta_kubernetes_service_annotation_prometheus_io_scheme\n            target_label: __scheme__\n          - action: replace\n            regex: (.+)\n            source_labels:\n            - __meta_kubernetes_service_annotation_prometheus_io_path\n            target_label: __metrics_path__\n          - action: replace\n            regex: ([^:]+)(?::\\d+)?;(\\d+)\n            replacement: $1:$2\n            source_labels:\n            - __address__\n            - __meta_kubernetes_service_annotation_prometheus_io_port\n            target_label: __address__\n          - action: labelmap\n            regex: __meta_kubernetes_service_label_(.+)\n          - action: replace\n            source_labels:\n            - __meta_kubernetes_namespace\n            target_label: kubernetes_namespace\n          - action: replace\n            source_labels:\n            - __meta_kubernetes_service_name\n            target_label: kubernetes_name\n          - action: replace\n            source_labels:\n            - __meta_kubernetes_pod_node_name\n            target_label: kubernetes_node\n        - job_name: kubernetes-service-endpoints-slow\n          kubernetes_sd_configs:\n          - role: endpoints\n          relabel_configs:\n          - action: keep\n            regex: true\n            source_labels:\n            - __meta_kubernetes_service_annotation_prometheus_io_scrape_slow\n          - action: replace\n            regex: (https?)\n            source_labels:\n            - __meta_kubernetes_service_annotation_prometheus_io_scheme\n            target_label: __scheme__\n          - action: replace\n            regex: (.+)\n            source_labels:\n            - __meta_kubernetes_service_annotation_prometheus_io_path\n            target_label: __metrics_path__\n          - action: replace\n            regex: ([^:]+)(?::\\d+)?;(\\d+)\n            replacement: $1:$2\n            source_labels:\n            - __address__\n            - __meta_kubernetes_service_annotation_prometheus_io_port\n            target_label: __address__\n          - action: labelmap\n            regex: __meta_kubernetes_service_label_(.+)\n          - action: replace\n            source_labels:\n            - __meta_kubernetes_namespace\n            target_label: kubernetes_namespace\n          - action: replace\n            source_labels:\n            - __meta_kubernetes_service_name\n            target_label: kubernetes_name\n          - action: replace\n            source_labels:\n            - __meta_kubernetes_pod_node_name\n            target_label: kubernetes_node\n          scrape_interval: 5m\n          scrape_timeout: 30s\n        - honor_labels: true\n          job_name: prometheus-pushgateway\n          kubernetes_sd_configs:\n          - role: service\n          relabel_configs:\n          - action: keep\n            regex: pushgateway\n            source_labels:\n            - __meta_kubernetes_service_annotation_prometheus_io_probe\n        - job_name: kubernetes-services\n          kubernetes_sd_configs:\n          - role: service\n          metrics_path: /probe\n          params:\n            module:\n            - http_2xx\n          relabel_configs:\n          - action: keep\n            regex: true\n            source_labels:\n            - __meta_kubernetes_service_annotation_prometheus_io_probe\n          - source_labels:\n            - __address__\n            target_label: __param_target\n          - replacement: blackbox\n            target_label: __address__\n          - source_labels:\n            - __param_target\n            target_label: instance\n          - action: labelmap\n            regex: __meta_kubernetes_service_label_(.+)\n          - source_labels:\n            - __meta_kubernetes_namespace\n            target_label: kubernetes_namespace\n          - source_labels:\n            - __meta_kubernetes_service_name\n            target_label: kubernetes_name\n        - job_name: kubecost\n          honor_labels: true\n          scrape_interval: 1m\n          scrape_timeout: 10s\n          metrics_path: /metrics\n          scheme: http\n          dns_sd_configs:\n          - names:\n            - prod-dataops-kubecost-cost-analyzer\n            type: A\n            port: 9003\n        - job_name: kubecost-networking\n          kubernetes_sd_configs:\n          - role: pod\n          relabel_configs:\n          - source_labels:\n            - __meta_kubernetes_pod_label_app\n            action: keep\n            regex: prod-dataops-kubecost-network-costs\n    nodeExporter:\n      enabled: false\n    pushgateway:\n      enabled: false\n    podSecurityPolicy:\n      enabled: false\n    alertmanager:\n      enabled: false\n  toFieldPaths:\n  - spec.values\n- name: name\n  value: ''{{ Global.STAGE_ID }}-dataops-prometheus''\n  toFieldPaths:\n  - spec.name\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 2.9.0+20230616065519359751
+  packageVersion: 3.0.0+20230617003138879589
   relativePath: HELM_prometheus.zip
 - componentName: elasticsearch
   componentType: HELM
@@ -456,7 +456,7 @@ componentPackages:
     metadata:
       name: microservice-dataops-elasticsearch
       annotations:
-        annotations.appmanager.oam.dev/version: "5.4.9+20230616065519369756"
+        annotations.appmanager.oam.dev/version: "5.5.0+20230617003138572338"
       labels:
         labels.appmanager.oam.dev/appId: "dataops"
         labels.appmanager.oam.dev/componentName: "elasticsearch"
@@ -486,7 +486,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "5.4.9+20230616065519369756"
+            annotations.appmanager.oam.dev/version: "5.5.0+20230617003138572338"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -497,9 +497,9 @@ componentPackages:
           repoPath: "saas/dataops/api/elasticsearch/elasticsearch-chart"
           name: ""
           values: {}
-  packageMd5: f14a068992994462d6df2d6d96c8d127
+  packageMd5: 580b180e0d686ca7390613972f1e5559
   packageOptions: '{"repo":"https://atomgit.com/sreworks/SREWorks.git","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/elasticsearch/elasticsearch-chart","branch":"master","env":[],"componentConfiguration":"revisionName: HELM|elasticsearch|_\ntraits: []\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: values\n  value:\n    image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/elasticsearch\n    replicas: 1\n    extraEnvs:\n    - name: cluster.initial_master_nodes\n      value: ''''\n    - name: ELASTIC_PASSWORD\n      value: ''{{ Global.DATA_ES_PASSWORD }}''\n    - name: ELASTIC_USERNAME\n      value: ''{{ Global.DATA_ES_USER }}''\n    clusterName: ''{{ Global.STAGE_ID }}-dataops-elasticsearch''\n    esConfig:\n      elasticsearch.yml: |\n        xpack.security.enabled: true\n        discovery.type: single-node\n        path.data: /usr/share/elasticsearch/data\n    volumeClaimTemplate:\n      accessModes:\n      - ReadWriteOnce\n      storageClassName: ''{{ Global.STORAGE_CLASS }}''\n      resources:\n        requests:\n          storage: 100Gi\n    minimumMasterNodes: 1\n    imageTag: 7.10.2-with-plugins\n    clusterHealthCheckEnable: false\n  toFieldPaths:\n  - spec.values\n- name: name\n  value: ''{{ Global.STAGE_ID }}-dataops-elasticsearch''\n  toFieldPaths:\n  - spec.name\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 5.4.9+20230616065519369756
+  packageVersion: 5.5.0+20230617003138572338
   relativePath: HELM_elasticsearch.zip
 - componentName: filebeat
   componentType: HELM
@@ -510,7 +510,7 @@ componentPackages:
     metadata:
       name: microservice-dataops-filebeat
       annotations:
-        annotations.appmanager.oam.dev/version: "5.4.9+20230616065519514700"
+        annotations.appmanager.oam.dev/version: "5.5.0+20230617003138766092"
       labels:
         labels.appmanager.oam.dev/appId: "dataops"
         labels.appmanager.oam.dev/componentName: "filebeat"
@@ -540,7 +540,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "5.4.9+20230616065519514700"
+            annotations.appmanager.oam.dev/version: "5.5.0+20230617003138766092"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -551,9 +551,9 @@ componentPackages:
           repoPath: "saas/dataops/api/filebeat/filebeat-chart"
           name: ""
           values: {}
-  packageMd5: ab2c36125490388221ecd487bc51cb37
+  packageMd5: c5c14f9098cea9b5ca962e65a992df3d
   packageOptions: '{"repo":"https://atomgit.com/sreworks/SREWorks.git","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/filebeat/filebeat-chart","branch":"master","env":[],"componentConfiguration":"revisionName: HELM|filebeat|_\ntraits: []\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: values\n  value:\n    image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/filebeat\n    hostNetworking: true\n    extraEnvs:\n    - name: NODE_NAME\n      valueFrom:\n        fieldRef:\n          fieldPath: spec.nodeName\n    filebeatConfig:\n      filebeat.yml: |-\n        filebeat.autodiscover:\n          providers:\n            - type: kubernetes\n              node: ${NODE_NAME}\n              resource: pod\n              scope: node\n              templates:\n                - condition:\n                    equals:\n                      kubernetes.labels.sreworks-telemetry-log: enable\n                  config:\n                    - type: container\n                      paths:\n                        - /var/log/containers/*${data.kubernetes.container.id}.log\n                      multiline:\n                        type: pattern\n                        pattern: ''^(\\[)?20\\d{2}-(1[0-2]|0?[1-9])-(0?[1-9]|[1-2]\\d|30|31)''\n                        negate: true\n                        match: after\n                      processors:\n                        - add_kubernetes_metadata:\n                            host: ${NODE_NAME}\n                            matchers:\n                            - logs_path:\n                                logs_path: \"/var/log/containers/\"\n\n        setup.ilm.enabled: auto\n        setup.ilm.rollover_alias: \"filebeat\"\n        setup.ilm.pattern: \"{now/d}-000001\"\n        setup.template.name: \"filebeat\"\n        setup.template.pattern: \"filebeat-*\"\n\n        output.elasticsearch:\n          hosts: ''{{ Global.DATA_ES_HOST }}:{{ Global.DATA_ES_PORT }}''\n          index: \"filebeat-%{+yyyy.MM.dd}\"\n          username: \"{{ Global.DATA_ES_USER }}\"\n          password: \"{{ Global.DATA_ES_PASSWORD }}\"\n    imageTag: 7.10.2\n    podAnnotations:\n      name: filebeat\n    labels:\n      k8s-app: filebeat\n  toFieldPaths:\n  - spec.values\n- name: name\n  value: ''{{ Global.STAGE_ID }}-dataops-filebeat''\n  toFieldPaths:\n  - spec.name\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 5.4.9+20230616065519514700
+  packageVersion: 5.5.0+20230617003138766092
   relativePath: HELM_filebeat.zip
 - componentName: grafana
   componentType: HELM
@@ -564,7 +564,7 @@ componentPackages:
     metadata:
       name: microservice-dataops-grafana
       annotations:
-        annotations.appmanager.oam.dev/version: "5.4.9+20230616065519585902"
+        annotations.appmanager.oam.dev/version: "5.5.0+20230617003138469889"
       labels:
         labels.appmanager.oam.dev/appId: "dataops"
         labels.appmanager.oam.dev/componentName: "grafana"
@@ -594,7 +594,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "5.4.9+20230616065519585902"
+            annotations.appmanager.oam.dev/version: "5.5.0+20230617003138469889"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -605,9 +605,9 @@ componentPackages:
           repoPath: "saas/dataops/api/grafana/grafana-chart"
           name: ""
           values: {}
-  packageMd5: 1c188eb81f4bccdb427cbd354e8efaa8
+  packageMd5: 68948aa14fc84b5f0046899347e699a2
   packageOptions: '{"repo":"https://atomgit.com/sreworks/SREWorks.git","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/grafana/grafana-chart","branch":"master","env":[],"componentConfiguration":"revisionName: HELM|grafana|_\ntraits: []\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: values\n  value:\n    image:\n      repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/grafana\n      tag: 7.5.3\n    adminUser: admin\n    datasources:\n      datasources.yaml:\n        apiVersion: 1\n        datasources:\n        - name: elasticsearch-metricbeat\n          type: elasticsearch\n          url: http://{{ Global.DATA_ES_HOST }}:{{ Global.DATA_ES_PORT }}\n          database: ''[metricbeat]*''\n          basicAuth: true\n          basicAuthUser: ''{{ Global.DATA_ES_USER }}''\n          basicAuthPassword: ''{{ Global.DATA_ES_PASSWORD }}''\n          access: proxy\n          isDefault: true\n          jsonData:\n            interval: Yearly\n            timeField: ''@timestamp''\n            esVersion: 70\n        - name: elasticsearch-filebeat\n          type: elasticsearch\n          url: http://{{ Global.DATA_ES_HOST }}:{{ Global.DATA_ES_PORT }}\n          database: ''[filebeat]*''\n          basicAuth: true\n          basicAuthUser: ''{{ Global.DATA_ES_USER }}''\n          basicAuthPassword: ''{{ Global.DATA_ES_PASSWORD }}''\n          access: proxy\n          isDefault: false\n          jsonData:\n            interval: Yearly\n            timeField: ''@timestamp''\n            esVersion: 70\n            logMessageField: message\n            logLevelField: fields.level\n        - name: dataops-prometheus\n          type: prometheus\n          access: proxy\n          httpMethod: POST\n          url: http://{{ Global.DATA_PROM_HOST}}:{{ Global.DATA_PROM_PORT }}\n        - name: prometheus-cluster-default\n          type: prometheus\n          access: proxy\n          httpMethod: POST\n          url: http://{{ Global.DATA_PROM_HOST}}:{{ Global.DATA_PROM_PORT }}\n        - name: dataset\n          type: marcusolsson-json-datasource\n          url: http://{{ Global.STAGE_ID }}-{{ Global.APP_ID }}-dataset.{{ Global.NAMESPACE_ID }}\n          access: proxy\n          isDefault: false\n    plugins:\n    - marcusolsson-json-datasource\n    grafana.ini:\n      security:\n        allow_embedding: true\n      server:\n        root_url: /gateway/dataops-grafana/\n        serve_from_sub_path: true\n      auth.basic:\n        enabled: false\n      auth.proxy:\n        enabled: true\n        auto_sign_up: true\n        enable_login_token: false\n        ldap_sync_ttl: 60\n        sync_ttl: 60\n        header_name: x-auth-user\n        headers: Name:x-auth-user Email:x-auth-email-addr\n      auth.anonymous:\n        enabled: false\n    dashboards:\n      flink:\n        flink-dashboard:\n          file: dashboards/flink-dashboard.json\n      cost:\n        cost-dashboard:\n          file: dashboards/cost-dashboard.json\n    dashboardProviders:\n      dashboardproviders.yaml:\n        apiVersion: 1\n        providers:\n        - name: flink\n          orgId: 1\n          folder: sreworks-dataops\n          type: file\n          disableDeletion: false\n          editable: true\n          options:\n            path: /var/lib/grafana/dashboards/flink\n        - name: cost\n          orgId: 1\n          folder: sreworks-dataops\n          type: file\n          disableDeletion: false\n          editable: true\n          options:\n            path: /var/lib/grafana/dashboards/cost\n    adminPassword: sreworks123456\n  toFieldPaths:\n  - spec.values\n- name: name\n  value: ''{{ Global.STAGE_ID }}-dataops-grafana''\n  toFieldPaths:\n  - spec.name\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 5.4.9+20230616065519585902
+  packageVersion: 5.5.0+20230617003138469889
   relativePath: HELM_grafana.zip
 - componentName: kibana
   componentType: HELM
@@ -618,7 +618,7 @@ componentPackages:
     metadata:
       name: microservice-dataops-kibana
       annotations:
-        annotations.appmanager.oam.dev/version: "5.4.9+20230616065519899928"
+        annotations.appmanager.oam.dev/version: "5.5.0+20230617003138202906"
       labels:
         labels.appmanager.oam.dev/appId: "dataops"
         labels.appmanager.oam.dev/componentName: "kibana"
@@ -648,7 +648,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "5.4.9+20230616065519899928"
+            annotations.appmanager.oam.dev/version: "5.5.0+20230617003138202906"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -659,9 +659,9 @@ componentPackages:
           repoPath: "saas/dataops/api/kibana/kibana-chart"
           name: ""
           values: {}
-  packageMd5: 3d19b558414351fb58c75ae5e8e00343
+  packageMd5: 61682139b28fd321ca4d5b4be4cd05d9
   packageOptions: '{"repo":"https://atomgit.com/sreworks/SREWorks.git","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/kibana/kibana-chart","branch":"master","env":[],"componentConfiguration":"revisionName: HELM|kibana|_\ntraits: []\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: values\n  value:\n    ingress:\n      enabled: false\n    image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/kibana\n    kibanaConfig:\n      kibana.yml: |-\n        elasticsearch.username: {{ Global.DATA_ES_USER }}\n        elasticsearch.password: {{ Global.DATA_ES_PASSWORD }}\n    resources:\n      requests:\n        cpu: 200m\n        memory: 512Mi\n      limits:\n        cpu: 300m\n        memory: 512Mi\n    elasticsearchHosts: http://{{ Global.DATA_ES_HOST }}:{{ Global.DATA_ES_PORT }}\n  toFieldPaths:\n  - spec.values\n- name: name\n  value: ''{{ Global.STAGE_ID }}-dataops-kibana''\n  toFieldPaths:\n  - spec.name\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 5.4.9+20230616065519899928
+  packageVersion: 5.5.0+20230617003138202906
   relativePath: HELM_kibana.zip
 - componentName: metricbeat
   componentType: HELM
@@ -672,7 +672,7 @@ componentPackages:
     metadata:
       name: microservice-dataops-metricbeat
       annotations:
-        annotations.appmanager.oam.dev/version: "5.4.9+20230616065519108395"
+        annotations.appmanager.oam.dev/version: "5.5.0+20230617003138602749"
       labels:
         labels.appmanager.oam.dev/appId: "dataops"
         labels.appmanager.oam.dev/componentName: "metricbeat"
@@ -702,7 +702,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "5.4.9+20230616065519108395"
+            annotations.appmanager.oam.dev/version: "5.5.0+20230617003138602749"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -713,9 +713,9 @@ componentPackages:
           repoPath: "saas/dataops/api/metricbeat/metricbeat-chart"
           name: ""
           values: {}
-  packageMd5: 5f98a1c390f7a89b7cfdc1d61406a107
+  packageMd5: 5cc51e7cf9edea9667a9ac9c95ffe1dc
   packageOptions: '{"repo":"https://atomgit.com/sreworks/SREWorks.git","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/metricbeat/metricbeat-chart","branch":"master","env":[],"componentConfiguration":"revisionName: HELM|metricbeat|_\ntraits: []\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: values\n  value:\n    kube_state_metrics:\n      enabled: false\n    image: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/metricbeat\n    clusterRoleRules:\n    - apiGroups:\n      - ''''\n      resources:\n      - nodes\n      - namespaces\n      - events\n      - pods\n      verbs:\n      - get\n      - list\n      - watch\n    - apiGroups:\n      - extensions\n      resources:\n      - replicasets\n      verbs:\n      - get\n      - list\n      - watch\n    - apiGroups:\n      - apps\n      resources:\n      - statefulsets\n      - deployments\n      - replicasets\n      verbs:\n      - get\n      - list\n      - watch\n    - apiGroups:\n      - ''''\n      resources:\n      - nodes/stats\n      - nodes\n      - services\n      - endpoints\n      - pods\n      verbs:\n      - get\n      - list\n      - watch\n    - nonResourceURLs:\n      - /metrics\n      verbs:\n      - get\n    - apiGroups:\n      - coordination.k8s.io\n      resources:\n      - leases\n      verbs:\n      - ''*''\n    serviceAccount: metricbeat-sa\n    daemonset:\n      annotations:\n        name: metricbeat\n      labels:\n        k8s-app: metricbeat\n      enabled: true\n      extraEnvs:\n      - name: ELASTICSEARCH_HOSTS\n        value: ''{{ Global.STAGE_ID }}-dataops-elasticsearch-master.{{ Global.NAMESPACE_ID }}.svc.cluster.local''\n      - name: NODE_NAME\n        valueFrom:\n          fieldRef:\n            fieldPath: spec.nodeName\n      - name: NODE_IP\n        valueFrom:\n          fieldRef:\n            fieldPath: status.hostIP\n      hostNetworking: true\n      metricbeatConfig:\n        metricbeat.yml: |\n          metricbeat.modules:\n          - module: prometheus\n            period: 1m\n            hosts: [\"{{ Global.DATA_PROM_HOST}}:{{ Global.DATA_PROM_PORT }}\"]\n            metricsets: [\"query\"]\n            queries:\n            - name: \"pod_ram_gb_hours_allocation\"\n              path: \"/api/v1/query\"\n              params:\n                query: ''avg(avg_over_time(container_memory_allocation_bytes{container!=\"\", container!=\"POD\", node!=\"\"}[1h])) by (pod, namespace, node) / 1024 / 1024 / 1024 + on(pod, namespace) group_left(label_labels_appmanager_oam_dev_appInstanceId, label_labels_appmanager_oam_dev_appId, label_labels_appmanager_oam_dev_appInstanceName, label_labels_appmanager_oam_dev_clusterId, label_labels_appmanager_oam_dev_componentName, label_labels_appmanager_oam_dev_stageId)(0 * kube_pod_labels{uid!=\"\",label_labels_appmanager_oam_dev_appInstanceId!=\"\"})''\n            - name: \"pod_ram_gb_hours_usage_avg\"\n              path: \"/api/v1/query\"\n              params:\n                query: ''avg(avg_over_time(container_memory_working_set_bytes{container!=\"\", container_name!=\"POD\", container!=\"POD\"}[1h])) by (pod, namespace) / 1024 / 1024 / 1024 + on(pod, namespace) group_left(label_labels_appmanager_oam_dev_appInstanceId, label_labels_appmanager_oam_dev_appId, label_labels_appmanager_oam_dev_appInstanceName, label_labels_appmanager_oam_dev_clusterId, label_labels_appmanager_oam_dev_componentName, label_labels_appmanager_oam_dev_stageId)(0 * kube_pod_labels{uid!=\"\",label_labels_appmanager_oam_dev_appInstanceId!=\"\"})''\n            - name: \"pod_cpu_core_hours_allocation\"\n              path: \"/api/v1/query\"\n              params:\n                query: ''avg(avg_over_time(container_cpu_allocation{container!=\"\", container!=\"POD\", node!=\"\"}[1h])) by (pod, namespace, node) + on(pod, namespace) group_left(label_labels_appmanager_oam_dev_appInstanceId, label_labels_appmanager_oam_dev_appId, label_labels_appmanager_oam_dev_appInstanceName, label_labels_appmanager_oam_dev_clusterId, label_labels_appmanager_oam_dev_componentName, label_labels_appmanager_oam_dev_stageId)(0 * kube_pod_labels{uid!=\"\",label_labels_appmanager_oam_dev_appInstanceId!=\"\"})''\n            - name: \"pod_cpu_core_hours_usage_avg\"\n              path: \"/api/v1/query\"\n              params:\n                query: ''avg(rate(container_cpu_usage_seconds_total{container!=\"\", container_name!=\"POD\", container!=\"POD\"}[1h])) by (pod, namespace) + on(pod, namespace) group_left(label_labels_appmanager_oam_dev_appInstanceId, label_labels_appmanager_oam_dev_appId, label_labels_appmanager_oam_dev_appInstanceName, label_labels_appmanager_oam_dev_clusterId, label_labels_appmanager_oam_dev_componentName, label_labels_appmanager_oam_dev_stageId)(0 * kube_pod_labels{uid!=\"\",label_labels_appmanager_oam_dev_appInstanceId!=\"\"})''\n            - name: \"pod_pvc_gb_hours_allocation\"\n              path: \"/api/v1/query\"\n              params:\n                query: ''avg(avg_over_time(pod_pvc_allocation[1h])) by (pod, namespace) / 1024 / 1024 / 1024 + on(pod, namespace) group_left(label_labels_appmanager_oam_dev_appInstanceId, label_labels_appmanager_oam_dev_appId, label_labels_appmanager_oam_dev_appInstanceName, label_labels_appmanager_oam_dev_clusterId, label_labels_appmanager_oam_dev_componentName, label_labels_appmanager_oam_dev_stageId)(0 * kube_pod_labels{uid!=\"\",label_labels_appmanager_oam_dev_appInstanceId!=\"\"})''\n          - module: kubernetes\n            metricsets:\n              - container\n              - node\n              - pod\n              - system\n              - volume\n            period: 1m\n            host: \"${NODE_NAME}\"\n            hosts: [\"https://${NODE_IP}:10250\"]\n            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n            ssl.verification_mode: \"none\"\n            # If using Red Hat OpenShift remove ssl.verification_mode entry and\n            # uncomment these settings:\n            ssl.certificate_authorities:\n              - /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n            processors:\n            - add_kubernetes_metadata: ~\n          - module: kubernetes\n            enabled: true\n            metricsets:\n              - event\n          - module: kubernetes\n            metricsets:\n              - proxy\n            period: 1m\n            host: ${NODE_NAME}\n            hosts: [\"localhost:10249\"]\n          - module: system\n            period: 1m\n            metricsets:\n              - cpu\n              - load\n              - memory\n              - network\n              - process\n              - process_summary\n            cpu.metrics: [percentages, normalized_percentages]\n            processes: [''.*'']\n            process.include_top_n:\n              by_cpu: 5\n              by_memory: 5\n          - module: system\n            period: 1m\n            metricsets:\n              - filesystem\n              - fsstat\n            processors:\n            - drop_event.when.regexp:\n                system.filesystem.mount_point: ''^/(sys|cgroup|proc|dev|etc|host|lib)($|/)''\n\n          metricbeat.autodiscover:\n            providers:\n              - type: kubernetes\n                scope: node\n                node: ${NODE_NAME}\n                include_labels: [\"sreworks-telemetry-metric\"]\n                resource: pod\n                templates:\n                  - condition:\n                      equals:\n                        kubernetes.labels.sreworks-telemetry-metric: enable\n                    config:\n                      - module: http\n                        metricsets:\n                          - json\n                        period: 1m\n                        hosts: [\"http://${data.host}:10080\"]\n                        namespace: \"${data.kubernetes.namespace}#${data.kubernetes.service.name}\"\n                        path: \"/\"\n                        method: \"GET\"\n\n              - type: kubernetes\n                scope: cluster\n                node: ${NODE_NAME}\n                unique: true\n                include_labels: [\"sreworks-prometheus-scrape-metric\"]\n                templates:\n                  - condition:\n                      equals:\n                        kubernetes.labels.sreworks-prometheus-scrape-metric: enable\n                    config:\n                      - module: prometheus\n                        period: 1m\n                        hosts: [\"${data.host}:${data.port}\"]\n                        metrics_path: /metrics\n\n              - type: kubernetes\n                scope: cluster\n                node: ${NODE_NAME}\n                unique: true\n                templates:\n                  - config:\n                      - module: kubernetes\n                        hosts: [\"prod-dataops-kubecost-kube-state-metrics.sreworks-dataops.svc.cluster.local:8080\"]\n                        period: 1m\n                        add_metadata: true\n                        metricsets:\n                          - state_node\n                          - state_deployment\n                          - state_daemonset\n                          - state_replicaset\n                          - state_pod\n                          - state_container\n                          - state_cronjob\n                          - state_resourcequota\n                          - state_statefulset\n                          - state_service\n\n          processors:\n            - add_cloud_metadata:\n\n          setup.ilm.enabled: auto\n          setup.ilm.rollover_alias: \"metricbeat\"\n          setup.ilm.pattern: \"{now/d}-000001\"\n          setup.template.name: \"metricbeat\"\n          setup.template.pattern: \"metricbeat-*\"\n\n          output.elasticsearch:\n            hosts: ''{{ Global.DATA_ES_HOST }}:{{ Global.DATA_ES_PORT }}''\n            index: \"metricbeat-%{+yyyy.MM.dd}\"\n            username: \"{{ Global.DATA_ES_USER }}\"\n            password: \"{{ Global.DATA_ES_PASSWORD }}\"\n      resources:\n        requests:\n          cpu: 100m\n          memory: 100Mi\n        limits:\n          cpu: 1000m\n          memory: 500Mi\n    deployment:\n      enabled: false\n  toFieldPaths:\n  - spec.values\n- name: name\n  value: ''{{ Global.STAGE_ID }}-dataops-metricbeat''\n  toFieldPaths:\n  - spec.name\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 5.4.9+20230616065519108395
+  packageVersion: 5.5.0+20230617003138602749
   relativePath: HELM_metricbeat.zip
 - componentName: mysql
   componentType: HELM
@@ -726,7 +726,7 @@ componentPackages:
     metadata:
       name: microservice-dataops-mysql
       annotations:
-        annotations.appmanager.oam.dev/version: "2.4.5+20230616065519292193"
+        annotations.appmanager.oam.dev/version: "2.4.6+20230617003138156446"
       labels:
         labels.appmanager.oam.dev/appId: "dataops"
         labels.appmanager.oam.dev/componentName: "mysql"
@@ -756,7 +756,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "2.4.5+20230616065519292193"
+            annotations.appmanager.oam.dev/version: "2.4.6+20230617003138156446"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -767,9 +767,9 @@ componentPackages:
           repoPath: "saas/dataops/api/mysql/mysql-chart"
           name: ""
           values: {}
-  packageMd5: 83d9899cc471768a8e5b392deca6a1a8
+  packageMd5: 870fe8beb6c69fcef11da0a8f59ada47
   packageOptions: '{"repo":"https://atomgit.com/sreworks/SREWorks.git","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/mysql/mysql-chart","branch":"master","env":[],"componentConfiguration":"revisionName: HELM|mysql|_\ntraits: []\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: values\n  value:\n    replication:\n      enabled: false\n    image:\n      registry: sreworks-registry.cn-beijing.cr.aliyuncs.com\n      repository: mirror/mysql\n      tag: 8.0.22-debian-10-r44\n    auth:\n      rootPassword: cb56b5is5e21_c359b42223\n    global:\n      storageClass: ''{{ Global.STORAGE_CLASS }}''\n    primary:\n      service:\n        type: ClusterIP\n      persistence:\n        size: 50Gi\n      extraFlags: --max-connect-errors=1000 --max_connections=10000\n  toFieldPaths:\n  - spec.values\n- name: name\n  value: ''{{ Global.STAGE_ID }}-dataops-mysql''\n  toFieldPaths:\n  - spec.name\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 2.4.5+20230616065519292193
+  packageVersion: 2.4.6+20230617003138156446
   relativePath: HELM_mysql.zip
 - componentName: skywalking
   componentType: HELM
@@ -780,7 +780,7 @@ componentPackages:
     metadata:
       name: microservice-dataops-skywalking
       annotations:
-        annotations.appmanager.oam.dev/version: "5.4.9+20230616065519225587"
+        annotations.appmanager.oam.dev/version: "5.5.0+20230617003138803770"
       labels:
         labels.appmanager.oam.dev/appId: "dataops"
         labels.appmanager.oam.dev/componentName: "skywalking"
@@ -810,7 +810,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "5.4.9+20230616065519225587"
+            annotations.appmanager.oam.dev/version: "5.5.0+20230617003138803770"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -821,9 +821,9 @@ componentPackages:
           repoPath: "saas/dataops/api/skywalking/skywalking-chart"
           name: ""
           values: {}
-  packageMd5: e50afa80ade5de7a55f8cb1f33f585f4
+  packageMd5: f0a593e2993fc1955d0a2dcffebaebdf
   packageOptions: '{"repo":"https://atomgit.com/sreworks/SREWorks.git","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/skywalking/skywalking-chart","branch":"master","env":[],"componentConfiguration":"revisionName: HELM|skywalking|_\ntraits: []\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: values\n  value:\n    ui:\n      image:\n        repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-ui\n        tag: 9.3.0\n    elasticsearch:\n      enabled: false\n      config:\n        host: ''{{ Global.STAGE_ID }}-dataops-elasticsearch-master.{{ Global.NAMESPACE_ID }}.svc.cluster.local''\n        port:\n          http: 9200\n        user: ''{{ Global.DATA_ES_USER }}''\n        password: ''{{ Global.DATA_ES_PASSWORD }}''\n    oap:\n      replicas: 1\n      image:\n        repository: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror/skywalking-oap-server-utc-8\n        tag: 9.3.0\n      storageType: elasticsearch\n      javaOpts: -Xmx1g -Xms1g\n  toFieldPaths:\n  - spec.values\n- name: name\n  value: ''{{ Global.STAGE_ID }}-dataops-skywalking''\n  toFieldPaths:\n  - spec.name\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 5.4.9+20230616065519225587
+  packageVersion: 5.5.0+20230617003138803770
   relativePath: HELM_skywalking.zip
 - componentName: ververica-platform
   componentType: HELM
@@ -834,7 +834,7 @@ componentPackages:
     metadata:
       name: microservice-dataops-ververica-platform
       annotations:
-        annotations.appmanager.oam.dev/version: "5.4.9+20230616065519386197"
+        annotations.appmanager.oam.dev/version: "5.5.0+20230617003138379915"
       labels:
         labels.appmanager.oam.dev/appId: "dataops"
         labels.appmanager.oam.dev/componentName: "ververica-platform"
@@ -864,7 +864,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "5.4.9+20230616065519386197"
+            annotations.appmanager.oam.dev/version: "5.5.0+20230617003138379915"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -875,9 +875,9 @@ componentPackages:
           repoPath: "saas/dataops/api/ververica-platform/ververica-platform-chart"
           name: ""
           values: {}
-  packageMd5: 041ec129687db43dee12dbe555a901ce
+  packageMd5: 7890d06ca3ea24eacbdb47cfcead9eaf
   packageOptions: '{"repo":"https://atomgit.com/sreworks/SREWorks.git","ciAccount":"public","ciToken":"public","repoPath":"saas/dataops/api/ververica-platform/ververica-platform-chart","branch":"master","env":[],"componentConfiguration":"revisionName: HELM|ververica-platform|_\ntraits: []\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: values\n  value:\n    vvp:\n      registry: sreworks-registry.cn-beijing.cr.aliyuncs.com/mirror\n      persistence:\n        type: local\n      blobStorage:\n        baseUri: s3://vvp\n        s3:\n          endpoint: http://sreworks-minio.sreworks:9000\n      globalDeploymentDefaults: |\n        spec:\n          state: RUNNING\n          template:\n            spec:\n              resources:\n                jobmanager:\n                  cpu: 0.5\n                  memory: 1G\n                taskmanager:\n                  cpu: 0.5\n                  memory: 1G\n              flinkConfiguration:\n                state.backend: filesystem\n                taskmanager.memory.managed.fraction: 0.0 # no managed memory needed for filesystem statebackend\n                high-availability: vvp-kubernetes\n                metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter\n                execution.checkpointing.interval: 10s\n                execution.checkpointing.externalized-checkpoint-retention: RETAIN_ON_CANCELLATION\n      sqlService:\n        pool:\n          coreSize: 1\n          maxSize: 1\n    ui:\n      resources:\n        limits:\n          cpu: 500m\n          memory: 1Gi\n    persistentVolume:\n      enabled: true\n      accessModes:\n      - ReadWriteOnce\n      annotations: {}\n      size: 20Gi\n      storageClass: ''{{ Global.STORAGE_CLASS }}''\n      subPath: ''''\n    acceptCommunityEditionLicense: true\n    blobStorageCredentials:\n      s3:\n        accessKeyId: ''{{ Global.MINIO_ACCESS_KEY }}''\n        secretAccessKey: ''{{ Global.MINIO_SECRET_KEY }}''\n  toFieldPaths:\n  - spec.values\n- name: name\n  value: ''{{ Global.STAGE_ID }}-dataops-ververica-platform''\n  toFieldPaths:\n  - spec.name\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 5.4.9+20230616065519386197
+  packageVersion: 5.5.0+20230617003138379915
   relativePath: HELM_ververica-platform.zip
 - componentName: productopsv2
   componentType: INTERNAL_ADDON
@@ -888,7 +888,7 @@ componentPackages:
     metadata:
       name: microservice-dataops-productopsv2
       annotations:
-        annotations.appmanager.oam.dev/version: "2.5.0+20230616065519573917"
+        annotations.appmanager.oam.dev/version: "2.5.1+20230617003138152497"
       labels:
         labels.appmanager.oam.dev/appId: "dataops"
         labels.appmanager.oam.dev/componentName: "productopsv2"
@@ -918,15 +918,15 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "2.5.0+20230616065519573917"
+            annotations.appmanager.oam.dev/version: "2.5.1+20230617003138152497"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec:
           targetEndpoint: ''
-  packageMd5: 2fc9c1ae4b8814830d9ba30504e2566a
+  packageMd5: 8863911fb04aa19478114207f1c90078
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"componentConfiguration":"clusterId: ''''\ndataInputs: []\ndataOutputs: []\ndependencies: []\nnamespaceId: ''''\nparameterValues: []\nrevisionName: INTERNAL_ADDON|productopsv2|_\nscopes: []\nstageId: ''''\ntraits: []\n","isDevelop":true,"binderTraits":[]}'
-  packageVersion: 2.5.0+20230616065519573917
+  packageVersion: 2.5.1+20230617003138152497
   relativePath: INTERNAL_ADDON_productopsv2.zip
 - componentName: system-env@system-env
   componentType: RESOURCE_ADDON
@@ -969,9 +969,9 @@ componentPackages:
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec: {}
-  packageMd5: 20566a14f201e34baf78467f0f6f1e5c
+  packageMd5: f250d6f171a7f803f8a42cce86faab7d
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"componentConfiguration":"clusterId: ''''\ndataInputs: []\ndataOutputs:\n- fieldPath: ''{{ spec.env.DB_HOST }}''\n  name: Global.DB_HOST\n- fieldPath: ''{{ spec.env.DB_PASSWORD }}''\n  name: Global.DB_PASSWORD\n- fieldPath: ''{{ spec.env.DB_PORT }}''\n  name: Global.DB_PORT\n- fieldPath: ''{{ spec.env.DB_USER }}''\n  name: Global.DB_USER\n- fieldPath: ''{{ spec.env.APPMANAGER_ACCESS_ID }}''\n  name: Global.APPMANAGER_USERNAME\n- fieldPath: ''{{ spec.env.APPMANAGER_ACCESS_SECRET }}''\n  name: Global.APPMANAGER_PASSWORD\n- fieldPath: ''{{ spec.env.APPMANAGER_CLIENT_ID }}''\n  name: Global.APPMANAGER_CLIENT_ID\n- fieldPath: ''{{ spec.env.APPMANAGER_CLIENT_SECRET }}''\n  name: Global.APPMANAGER_CLIENT_SECRET\n- fieldPath: ''{{ spec.env.COOKIE_DOMAIN }}''\n  name: Global.COOKIE_DOMAIN\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ACCESS_KEY }}''\n  name: Global.APPMANAGER_PACKAGE_ACCESS_KEY\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_SECRET_KEY }}''\n  name: Global.APPMANAGER_PACKAGE_SECRET_KEY\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL }}''\n  name: Global.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT }}''\n  name: Global.APPMANAGER_PACKAGE_ENDPOINT\n- fieldPath: ''{{ spec.env.STORAGE_CLASS }}''\n  name: Global.STORAGE_CLASS\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_CLIENT_ID }}''\n  name: Global.ACCOUNT_SUPER_CLIENT_ID\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_CLIENT_SECRET }}''\n  name: Global.ACCOUNT_SUPER_CLIENT_SECRET\n- fieldPath: ''{{ spec.env.DATA_ES_PASSWORD }}''\n  name: Global.DATA_ES_PASSWORD\n- fieldPath: ''{{ spec.env.DATA_ES_USER }}''\n  name: Global.DATA_ES_USER\n- fieldPath: ''{{ spec.env.DATA_ES_HOST }}''\n  name: Global.DATA_ES_HOST\n- fieldPath: ''{{ spec.env.DATA_ES_PORT }}''\n  name: Global.DATA_ES_PORT\n- fieldPath: ''{{ spec.env.DATA_PROM_HOST }}''\n  name: Global.DATA_PROM_HOST\n- fieldPath: ''{{ spec.env.DATA_PROM_PORT }}''\n  name: Global.DATA_PROM_PORT\n- fieldPath: ''{{ spec.env.DATA_DB_PORT }}''\n  name: Global.DATA_DB_PORT\n- fieldPath: ''{{ spec.env.DATA_DB_HOST }}''\n  name: Global.DATA_DB_HOST\n- fieldPath: ''{{ spec.env.DATA_DB_USER }}''\n  name: Global.DATA_DB_USER\n- fieldPath: ''{{ spec.env.DATA_DB_PASSWORD }}''\n  name: Global.DATA_DB_PASSWORD\n- fieldPath: ''{{ spec.env.KAFKA_ENDPOINT }}''\n  name: Global.KAFKA_ENDPOINT\n- fieldPath: ''{{ spec.env.MINIO_ENDPOINT }}''\n  name: Global.MINIO_ENDPOINT\n- fieldPath: ''{{ spec.env.MINIO_ACCESS_KEY }}''\n  name: Global.MINIO_ACCESS_KEY\n- fieldPath: ''{{ spec.env.MINIO_SECRET_KEY }}''\n  name: Global.MINIO_SECRET_KEY\n- fieldPath: ''{{ spec.env.HOME_URL }}''\n  name: Global.HOME_URL\n- fieldPath: ''{{ spec.env.REDIS_ENDPOINT }}''\n  name: Global.REDIS_ENDPOINT\n- fieldPath: ''{{ spec.env.APPMANAGER_REDIS_PORT }}''\n  name: Global.APPMANAGER_REDIS_PORT\n- fieldPath: ''{{ spec.env.REDIS_PASSWORD }}''\n  name: Global.REDIS_PASSWORD\n- fieldPath: ''{{ spec.env.APPMANAGER_JWT_SECRET_KEY }}''\n  name: Global.APPMANAGER_JWT_SECRET_KEY\n- fieldPath: ''{{ spec.env.PLATFORM_NAME }}''\n  name: Global.PLATFORM_NAME\n- fieldPath: ''{{ spec.env.PLATFORM_LOGO }}''\n  name: Global.PLATFORM_LOGO\n- fieldPath: ''{{ spec.env.K8S_NAMESPACE }}''\n  name: Global.K8S_NAMESPACE\n- fieldPath: ''{{ spec.env.ENDPOINT_PAAS_MINIO }}''\n  name: Global.ENDPOINT_PAAS_MINIO\n- fieldPath: ''{{ spec.env.ZOOKEEPER_ENDPOINT }}''\n  name: Global.ZOOKEEPER_ENDPOINT\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_SECRET_KEY }}''\n  name: Global.ACCOUNT_SUPER_SECRET_KEY\n- fieldPath: ''{{ spec.env.ADMIN_INIT_PASSWORD }}''\n  name: Global.ADMIN_INIT_PASSWORD\ndependencies: []\nnamespaceId: ''''\nparameterValues:\n- name: keys\n  toFieldPaths:\n  - spec.keys\n  value:\n  - DB_HOST\n  - DB_PASSWORD\n  - DB_PORT\n  - DB_USER\n  - APPMANAGER_ACCESS_ID\n  - APPMANAGER_ACCESS_SECRET\n  - APPMANAGER_CLIENT_ID\n  - APPMANAGER_CLIENT_SECRET\n  - COOKIE_DOMAIN\n  - APPMANAGER_PACKAGE_ACCESS_KEY\n  - APPMANAGER_PACKAGE_SECRET_KEY\n  - APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL\n  - APPMANAGER_PACKAGE_ENDPOINT\n  - STORAGE_CLASS\n  - ACCOUNT_SUPER_CLIENT_ID\n  - ACCOUNT_SUPER_CLIENT_SECRET\n  - DATA_ES_PASSWORD\n  - DATA_ES_USER\n  - DATA_ES_HOST\n  - DATA_ES_PORT\n  - DATA_PROM_HOST\n  - DATA_PROM_PORT\n  - DATA_DB_HOST\n  - DATA_DB_PORT\n  - DATA_DB_USER\n  - DATA_DB_PASSWORD\n  - KAFKA_ENDPOINT\n  - MINIO_ENDPOINT\n  - MINIO_ACCESS_KEY\n  - MINIO_SECRET_KEY\n  - HOME_URL\n  - REDIS_ENDPOINT\n  - APPMANAGER_REDIS_PORT\n  - REDIS_PASSWORD\n  - APPMANAGER_JWT_SECRET_KEY\n  - PLATFORM_NAME\n  - PLATFORM_LOGO\n  - K8S_NAMESPACE\n  - ENDPOINT_PAAS_MINIO\n  - ZOOKEEPER_ENDPOINT\n  - ACCOUNT_SUPER_SECRET_KEY\n  - ADMIN_INIT_PASSWORD\nrevisionName: RESOURCE_ADDON|system-env@system-env|1.0\nscopes: []\nstageId: ''''\ntraits: []\n","binderTraits":[]}'
-  packageVersion: 1.8.7+20230616065519679936
+  packageVersion: 1.8.8+20230617003138934000
   relativePath: RESOURCE_ADDON_system-env@system-env.zip
 - componentName: developmentmeta
   componentType: INTERNAL_ADDON
@@ -982,7 +982,7 @@ componentPackages:
     metadata:
       name: internal-addon-dataops-developmentmeta
       annotations:
-        annotations.appmanager.oam.dev/version: "2.5.0+20230616065519918252"
+        annotations.appmanager.oam.dev/version: "2.5.1+20230617003138593018"
       labels:
         labels.appmanager.oam.dev/appId: "dataops"
         labels.appmanager.oam.dev/componentName: "developmentmeta"
@@ -1012,14 +1012,14 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "2.5.0+20230616065519918252"
+            annotations.appmanager.oam.dev/version: "2.5.1+20230617003138593018"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec: {}
-  packageMd5: 55803ea440bbd36c70139460045f2fec
+  packageMd5: e0dbe081be7c0579f9df8b04f5a9e1b5
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
-  packageVersion: 2.5.0+20230616065519918252
+  packageVersion: 2.5.1+20230617003138593018
   relativePath: INTERNAL_ADDON_developmentmeta.zip
 - componentName: appmeta
   componentType: INTERNAL_ADDON
@@ -1030,7 +1030,7 @@ componentPackages:
     metadata:
       name: internal-addon-dataops-appmeta
       annotations:
-        annotations.appmanager.oam.dev/version: "2.5.0+20230616065519704838"
+        annotations.appmanager.oam.dev/version: "2.5.1+20230617003138121271"
       labels:
         labels.appmanager.oam.dev/appId: "dataops"
         labels.appmanager.oam.dev/componentName: "appmeta"
@@ -1060,19 +1060,19 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "2.5.0+20230616065519704838"
+            annotations.appmanager.oam.dev/version: "2.5.1+20230617003138121271"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec:
           overwriteIsDevelopment: false
           overwriteBuiltIn: false
-  packageMd5: b05a76176ab5bd339c767ab3da15ab23
+  packageMd5: 8e3fc5d8ac514f27f6c58f7cc70cb74a
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
-  packageVersion: 2.5.0+20230616065519704838
+  packageVersion: 2.5.1+20230617003138121271
   relativePath: INTERNAL_ADDON_appmeta.zip
 packageCreator: '999999999'
-packageVersion: 8.6.8+20230616075818702356
+packageVersion: 8.6.9+20230617064039500644
 tags:
 - release=sreworks/x86_64
 - on-sale

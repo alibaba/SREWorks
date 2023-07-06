@@ -1,64 +1,98 @@
-<p align="center">
-  <img src="https://sreworks.oss-cn-beijing.aliyuncs.com/logo/logo.png" width="120">
-</p>
-<h1 align="center"> SREWorks </h1>
-<p align="center"><b> Cloud Native DataOps & AIOps Platform </b></p>
-<p align="center">
-  <a href="./LICENSE"><img src="https://img.shields.io/github/license/alibaba/sreworks" /></a>
-  <img src="https://img.shields.io/github/repo-size/alibaba/sreworks" />
-</p>
+# SREWorks
+**Cloud Native DataOps & AIOps Platform**
 
-<p align="center">
-   <a href="https://www.yuque.com/sreworks-doc/docs" target="_blank">Documentation</a> 
-   <a href="https://sreworks.opensource.alibaba.com/" target="_blank">Website</a> 
-</p>
+![license](https://img.shields.io/github/license/alibaba/sreworks)
+![size](https://img.shields.io/github/repo-size/alibaba/sreworks)
 
----
-
-<p align="center">
-   English | <a href="README-CN.md">中文<a/>
-</p>
-
-
+[documentation](https://www.yuque.com/sreworks-doc/docs)
+[website](https://sreworks.opensource.alibaba.com/)
 ## Introduction
 
-SREWorks: Alibaba Cloud Big Data SRE team's cloud-native operation and maintenance (O&M) platform was born out of nearly a decade of business precipitation, using the thinking of "Big Data and AI" for O&M work（we call it DataOps and AIOps）, to help more practitioners use DataOps and AIOps to do a efficient O&M work.
-
-Google suggested a job title of SRE (Site Reliability Engineer) in 2003. It consists of a team of software engineers and system administrators who place a premium on O & M personnel's development skills, forcing them to devote less than half of their time to daily tasks and the other half to the creation of automation technologies to decrease labor needs.
-
-SREWorks focuses on the application-centric one-stop "cloud native" and "DataOps and AIOps" O & M SaaS management suite as an engineering practice for the Alibaba Cloud Big Data SRE team's SRE concept. It enables companies to achieve the delivery and maintenance of cloud-native apps and resources via two primary capabilities: enterprise application and resource management and O & M development.
-
-Alibaba Cloud Big Data SRE team has been working hard to practice the "DataOps and AIOps" concept, the industry's DataOps (data operation and maintenance) first proposed by the team, is naturally close to big data and AI, is very familiar with Big Data & AI technology, and has the big data and AI computing power resources on demand, has been working hard to practice the "DataOps and AIOps" concept, the industry's DataOps Standard O & M warehouses, data O & M platforms, and operation centers are among the end-to-end DataOps closed-loop engineering methods in the SREWorks.
-
-There are many excellent open-source O & M platforms that reflect cloud-native scenarios in the traditional IT O&M field. There are currently no systematic O & M solutions available. With the rise of the cloud-native era, the Alibaba Cloud Big Data SRE team will open-source its O & M platform, SREWorks, in the hopes of providing O & M engineers with an out-of-the-box experience.
-
-![image.png](paas/frontend/docs/docs/pictures/1663627633334-32214451-31cf-4e1a-b0a3-3cc3047ab842.jpeg.png)
+SREWorks is a cloud-based operation and maintenance (O&M) platform developed by the Alibaba Cloud Big Data SRE team using Big Data and AI concepts for efficient O&M work, called DataOps and AIOps. The platform includes application and resource management and O&M development capabilities for delivering and maintaining cloud-native apps. The SRE team uses comprehensive DataOps tools, including standard O&M warehouses, data O&M platforms, and operation centers, to apply the "DataOps and AIOps" principle and achieve end-to-end closed-loop engineering methods in the SREWorks framework.
 
 ## Getting Started
 
-- [Quick Install](/paas/frontend/docs/docs/rr5g10.md)
-- [Installation from source code](/paas/frontend/docs/docs/ek2tysaxo4d9108i.md)
+### Prerequisites
+- Kubernetes 1.20+
+- Hardware:
+  - Distributed deployment: It is recommended to have at least 3 nodes (configured with a 4-core CPU and 16GB of memory), with storage space of over 300G, and a k8s cluster capable of at least 90 Pods.
+  - Single machine full deployment: It is recommended to have at least 8 cores/32G memory/300G storage space.
+  - Single machine basic deployment: It is recommended to have at least 4 cores/16G memory/100G storage space.
+- Installation steps and duration (taking the full version as an example):
+  - Deploying SREWorks on Kubernetes cluster (1-2 minutes)
+  - Deploying O&M applications on the SREWorks (5-15 minutes)
+  - After installation, SREWorks can be accessed through a browser.
+
+### Installation
+
+1. Add repository
+
+`helm repo add sreworks https://sreworks.oss-cn-beijing.aliyuncs.com/helm/`
+
+2. Choose network mode parameters
+
+**Ingress**
+> The deployment of SREWorks in Ingress mode must specify the domain name of ingress.
+
+- Taking Alibaba Cloud ACK cluster as an example, domain names can be found in _Basic Information_, such as `http://*.ceea604.cn-huhehaote.alicontainer.com` and `http://sreworks.c34a60e3c93854680b590b0d5a190310a.cn-zhangjiakou.alicontainer.com`
+
+- Those who do not use the Alibaba Cloud ACK cluster can find the domain name to access the SREWorks console themselves. When installing, just pass it in the `appmanager.home.url` parameter
+
+The deployment parameters for the Ingress network mode are as follows:
+
+`--set appmanager.home.url="https://your-website.***.com"`
+
+**NodePort**
+> When running NodePort mode on a server, it is necessary to pay attention to the settings of network security group or firewall of the node, and you need to open the corresponding port (30767)
+
+The deployment parameters for NodePort mode are as follows:
+```
+--set global.accessMode="nodePort" 
+--set appmanager.home.url="http://NODE_IP:30767"
+```
+
+3. Installation with helm
+
+The basic version of SREWorks can be started normally on a **single 4-core with 16G memory** machine. The basic deployment only contains basic application, while the default full deployment contains basic application and digital intelligent application. The deployment command of basic version and NodePort mode is as follows:
+
+Replace NODE_IP with the IP which is accessible from a browser
+```
+helm install sreworks sreworks/sreworks \
+    --create-namespace --namespace sreworks \
+    --set global.accessMode="nodePort" \
+    --set appmanager.home.url="http://NODE_IP:30767" \
+    --set saas.onlyBase=true
+```
+
+4. Verify installation
+
+Enter the domain name of the previous step in the browser, and if you can see the page, it indicates that the installation is completed (it will take about 5 minutes). 
+
+Register and start using SREWorks with the following account:
+
+- default account: admin 
+- default password: 12345678
+
+5. Uninstall 
+
+Please be sure to follow the order below. Kindly note that you should not delete the namespace without executing `helm uninstall`. Or, it will cause various crds to become dirty data and remain in the cluster!
+
+```
+Helm uninstall sreworks -nsreworks
+Kubectl delete namespace sreworks
+```
+
+**For more installation parameters and FAQs, please see the links below:**
+
+- [Quick Install](https://github.com/alibaba/SREWorks/blob/master/paas/frontend/docs/docs/rr5g10.md)
+- [Installation from source code](https://github.com/alibaba/SREWorks/blob/master/paas/frontend/docs/docs/ek2tysaxo4d9108i.md)
 - [Document](https://www.yuque.com/sreworks-doc/docs/)
 - [Online Demo](https://wj.qq.com/s2/10565748/53da/)
 
-## Roadmap
-
-[ROADMAP](ROADMAP.md)
-
 ## Contributing
 
-We'd love to accept your patches and contributions to SREWorks. Please refer to [CONTRIBUTING](CONTRIBUTING.md) for a few small guidelines you need to follow.
-
-## Community
-
-- Wechat Chat Group (*Chinese*): Broker wechat to add you into the user group.
-
-<img src="/paas/frontend/app/src/assets/icons/weixin.jpg" width="100" />
-
-- Dingtalk Chat Group (*Chinese*): 35853026
-
-<img src="/paas/frontend/app/src/assets/icons/ding.jpg" width="100" />
+We'd love to accept your patches and contributions to SREWorks. Please refer to [CONTRIBUTING](https://github.com/alibaba/SREWorks/blob/master/CONTRIBUTING.md) for a few small guidelines you need to follow.
 
 ## Code of Conduct
 
-Contributions to the SREWorks are expected to adhere to our [Code of Conduct](CODE_OF_CONDUCT.md).
+Contributions to the SREWorks are expected to adhere to our [Code of Conduct](https://github.com/alibaba/SREWorks/blob/master/CODE_OF_CONDUCT.md).

@@ -11,6 +11,7 @@ spec:
   ttlSecondsAfterFinished: 600
   template:
     spec:
+      serviceAccountName: appmanager-account
       restartPolicy: OnFailure 
       containers:
       - image: {{ template "images.progressCheck" . }}

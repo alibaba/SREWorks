@@ -240,7 +240,7 @@ metadata:
   name: appmanager-cluster-role
 rules:
 - apiGroups: ["*"]
-  resources: ["clusterroles","clusterrolebindings","pods","nodes","namespaces","services"]
+  resources: ["clusterroles","clusterrolebindings","pods","nodes","namespaces","services","configmaps"]
   verbs: ["*"]
 
 ---

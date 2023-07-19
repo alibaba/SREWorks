@@ -51,5 +51,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: appmanager-account
+imagePullSecrets:
+- name: {{ .Values.server.docker.secret }}
 
 {{- end -}}

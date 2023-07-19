@@ -24,7 +24,7 @@ if ret == 0:
     helm_bin = out.strip().decode('ascii')
 
 # 使用helm命令渲染获取yaml
-command = helm_bin + " template sreworks " + self_path + "/../chart/sreworks-chart " + " ".join(sys.argv[1:])
+command = helm_bin + " template sreworks " + self_path + "/../chart/sreworks-chart --set appmanager.server.jwtSecretKey=a123" + " ".join(sys.argv[1:])
 sys.stderr.write(command + "\n")
 
 images = set()

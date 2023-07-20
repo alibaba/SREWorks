@@ -207,7 +207,8 @@ class WebDesignerWorkbench extends Component {
     }
     httpClient
       .post(`gateway/v2/foundation/appmanager/apps/${appId}/addon`, addonParams, {
-        headers: { 'X-Biz-App': `${appId},${properties.defaultNamespace},dev` },
+        headers: { 'X-Biz-App': `${appId},sreworks,dev` },
+        //headers: { 'X-Biz-App': `${appId},${properties.defaultNamespace},dev` },
       })
       .then((result) => {
         console.log(result)

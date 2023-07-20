@@ -67,7 +67,7 @@ app.router(router)
   }
   try {
     const isLogined = await AppService.isLogined()
-    if (isLogined && islogined['name']) {
+    if (isLogined && isLogined['name']) {
       const res = await AppService.getAllProfile(params)
       let { collectList = [], customQuickList = [], workspaces } = res.profile
       app.start('#root')

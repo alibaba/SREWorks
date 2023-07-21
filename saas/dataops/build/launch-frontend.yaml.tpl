@@ -1015,10 +1015,10 @@ spec:
       value:
         elasticsearch:
           config:
-            host: '{{ Global.STAGE_ID }}-dataops-elasticsearch-master.{{ Global.NAMESPACE_ID }}.svc.cluster.local'
+            host: '{{ Global.DATA_ES_HOST }}'
             password: '{{ Global.DATA_ES_PASSWORD }}'
             port:
-              http: 9200
+              http: '{{ Global.DATA_ES_PORT }}'
             user: '{{ Global.DATA_ES_USER }}'
           enabled: false
         oap:

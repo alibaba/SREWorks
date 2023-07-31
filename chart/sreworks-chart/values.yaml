@@ -122,7 +122,7 @@ swcli:
 
 source:
   branch: v1.5
-  repo: https://code.aliyun.com/sreworks_public/mirror.git
+  repo: https://atomgit.com/sreworks/SREWorks.git
 
 appmanagerbase:
   enabled: true

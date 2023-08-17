@@ -85,11 +85,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.sreworks</groupId>
-            <artifactId>tesla-swagger-spring-boot-starter</artifactId>
-            <version>2.1.9</version>
-        </dependency>
     </dependencies>
     <build>
         <plugins>

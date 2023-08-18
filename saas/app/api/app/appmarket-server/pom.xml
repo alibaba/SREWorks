@@ -31,10 +31,6 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.sreworks</groupId>
-            <artifactId>tesla-swagger-spring-boot-starter</artifactId>
-        </dependency>
 
         <!-- tesla dependency -->
         <dependency>

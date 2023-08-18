@@ -14,14 +14,15 @@ def popen(command):
     child = Popen(command, stdin = PIPE, stdout = PIPE, stderr = PIPE, shell = True)
     out, err = child.communicate()
     ret = child.wait()
-    return (ret, out.strip(), err.strip())
+    return (ret, out.decode('utf-8').strip(), err.decode('utf-8').strip())
 
 
 self_path = os.path.split(os.path.realpath(__file__))[0]
 helm_bin = self_path + "/../saas/cluster/api/clustermanage/helm"
 (ret, out, err) = popen("which helm")
 if ret == 0:
-    helm_bin = out.strip().decode('ascii')
+    #helm_bin = out.strip().decode('ascii')
+    helm_bin = out
 
 # 使用helm命令渲染获取yaml
 command = helm_bin + " template sreworks " + self_path + "/../chart/sreworks-chart --set appmanager.server.jwtSecretKey=a123" + " ".join(sys.argv[1:])

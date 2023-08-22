@@ -16,6 +16,8 @@ public interface AppRepository extends JpaRepository<App, Long>, JpaSpecificatio
 
     App findFirstById(Long id);
 
+    App findFirstByName(String name);
+
     @Query(value = ""
         + "select app.*, team.name as team_name "
         + "from app app "

@@ -6,7 +6,7 @@
     <parent>
         <artifactId>sreworks-base</artifactId>
         <groupId>io.sreworks</groupId>
-        <version>1.1.5</version>
+        <version>1.1.7</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -19,7 +19,7 @@
         <dependency>
             <artifactId>sreworks-domain</artifactId>
             <groupId>io.sreworks</groupId>
-            <version>1.1.5</version>
+            <version>1.1.7</version>
         </dependency>
 
         <!-- alibaba dependency -->
@@ -27,10 +27,10 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.sreworks</groupId>
-            <artifactId>tesla-swagger-spring-boot-starter</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.sreworks</groupId>-->
+<!--            <artifactId>tesla-swagger-spring-boot-starter</artifactId>-->
+<!--        </dependency>-->
 
         <!-- tesla dependency -->
         <dependency>

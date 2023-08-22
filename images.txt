@@ -53,8 +53,8 @@ sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/swcli-builtin-package:v1.5
 sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/system-plugin-account-aliyun-plugin-account-aliyun:1679411738404
 sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/system-plugin-aliyun-cluster-plugin-aliyun-cluster:1679411738369
 sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/system-plugin-aliyun-cluster-resource-upload:1679411738369
-sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/team-team-db-migration:1692382179247
-sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/team-team-team:1692382179247
-sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/upload-filemanage-db-migration:1692382190131
-sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/upload-filemanage-filemanage:1692382190131
+sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/team-team-db-migration:1692608911383
+sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/team-team-team:1692608911383
+sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/upload-filemanage-db-migration:1692686804294
+sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/upload-filemanage-filemanage:1692686804294
 sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/zookeeper:v1.0

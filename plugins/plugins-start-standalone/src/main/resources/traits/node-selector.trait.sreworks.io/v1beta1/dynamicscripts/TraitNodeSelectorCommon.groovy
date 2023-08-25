@@ -34,7 +34,7 @@ class TraitNodeSelectorCommon implements TraitHandler {
     /**
      * 当前内置 Handler 版本
      */
-    public static final Integer REVISION = 1
+    public static final Integer REVISION = 2
 
     @Autowired
     private KubernetesClientFactory clientFactory

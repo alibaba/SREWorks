@@ -1,0 +1,19 @@
+apiVersion: core.oam.dev/v1beta1
+kind: PolicyDefinition
+metadata:
+  name: override.policy.sreworks.io/v1beta1
+  annotations:
+    definition.oam.dev/description: "Override"
+    definition.oam.dev/version: "1.0.0"
+    definition.oam.dev/tags: ""
+spec:
+  workload:
+    definition:
+      apiVersion: apps/v1
+      kind: POLICY
+  schematic:
+    groovy:
+      files:
+        - kind: POLICY
+          name: override.policy.sreworks.io/v1beta1
+          path: dynamicscripts/PolicyOverrideHandler.groovy

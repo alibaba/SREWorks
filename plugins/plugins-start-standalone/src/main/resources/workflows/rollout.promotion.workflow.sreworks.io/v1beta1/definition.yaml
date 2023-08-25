@@ -1,0 +1,16 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: WorkflowStepDefinition
+metadata:
+  name: rollout.promotion.sreworks.io/v1beta1
+  annotations:
+    definition.oam.dev/description: "Rollout Promotion Handler"
+    definition.oam.dev/version: "1.0.0"
+spec:
+  appliesToWorkloads:
+    - "*"
+  schematic:
+    groovy:
+      files:
+        - kind: WORKFLOW
+          path: dynamicscripts/WorkflowRolloutPromotionHandler.groovy
+          name: rollout.promotion.sreworks.io/v1beta1

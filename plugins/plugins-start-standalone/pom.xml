@@ -3,9 +3,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>plugins</artifactId>
-        <groupId>com.alibaba.tesla</groupId>
-        <version>1.0.6-SNAPSHOT</version>
+        <artifactId>tesla-appmanager</artifactId>
+        <groupId>io.sreworks</groupId>
+        <version>1.1.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -22,24 +22,37 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
-            <artifactId>tesla-appmanager-trait</artifactId>
+            <groupId>io.sreworks</groupId>
+            <artifactId>tesla-appmanager-domain</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>kubernetes-model</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
-            <artifactId>tesla-appmanager-common</artifactId>
+            <groupId>io.fabric8</groupId>
+            <artifactId>kubernetes-client</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
-            <artifactId>tesla-appmanager-storage</artifactId>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
-            <artifactId>tesla-appmanager-meta-k8s-microservice</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>com.alibaba.tesla</groupId>
-            <artifactId>tesla-appmanager-meta-helm</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
         </dependency>
 
         <dependency>
@@ -50,16 +63,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <scope>test</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
@@ -72,11 +76,6 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-stream-test-support</artifactId>
         </dependency>
 
         <dependency>
@@ -102,22 +101,6 @@
     </dependencies>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <mainClass>com.alibaba.plugins.Application</mainClass>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
         <finalName>plugins</finalName>
     </build>
 </project>

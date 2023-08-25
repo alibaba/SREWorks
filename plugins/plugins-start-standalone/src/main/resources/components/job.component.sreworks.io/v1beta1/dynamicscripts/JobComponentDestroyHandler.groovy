@@ -1,6 +1,5 @@
 package dynamicscripts
 
-
 import com.alibaba.tesla.appmanager.common.enums.DynamicScriptKindEnum
 import com.alibaba.tesla.appmanager.common.exception.AppErrorCode
 import com.alibaba.tesla.appmanager.common.exception.AppException
@@ -16,29 +15,29 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 
 /**
- * Microservice 组件销毁 Handler
+ * Job 组件销毁 Handler
  *
  * @author yaoxing.gyx@alibaba-inc.com
  */
-class MicroServiceV1Beta1ComponentDestroyHandler implements ComponentDestroyHandler {
+class JobComponentDestroyHandler implements ComponentDestroyHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(MicroServiceV1Beta1ComponentDestroyHandler.class)
+    private static final Logger log = LoggerFactory.getLogger(JobComponentDestroyHandler.class)
 
     /**
      * Handler 元信息
      */
     public static final String KIND = DynamicScriptKindEnum.COMPONENT_DESTROY.toString()
-    public static final String NAME = "microservice.component.sreworks.io/v1beta1"
-    public static final Integer REVISION = 4
+    public static final String NAME = "job.component.sreworks.io/v1beta1/destroy"
+    public static final Integer REVISION = 3
 
     /**
      * CRD Context
      */
     private static final CustomResourceDefinitionContext CRD_CONTEXT = new CustomResourceDefinitionContext.Builder()
-            .withName("microservices.apps.sreworks.io")
+            .withName("jobs.apps.sreworks.io")
             .withGroup("apps.sreworks.io")
             .withVersion("v1")
-            .withPlural("microservices")
+            .withPlural("jobs")
             .withScope("Namespaced")
             .build()
 
@@ -72,32 +71,17 @@ class MicroServiceV1Beta1ComponentDestroyHandler implements ComponentDestroyHand
             throw new AppException(AppErrorCode.INVALID_USER_ARGS, "cannot find app instance when destroy component " +
                     "instance|{}", logSuffix)
         } else if (StringUtils.isNotEmpty(appInstance.getOwnerReference())) {
-            log.info("find owner reference in app instance, no need to delete microservice cr, skip|{}", logSuffix)
+            log.info("find owner reference in app instance, no need to delete job cr, skip|{}", logSuffix)
             return
         }
 
-        // 删除历史上创建出来的 CR/svc/ingress (兼容使用)
-        def microserviceCr = client.customResource(CRD_CONTEXT).inNamespace(namespace).withName(name).get()
-        if (microserviceCr == null || microserviceCr.size() == 0) {
-            log.info("no need to delete microservice cr, skip|{}", logSuffix)
-        } else {
-            client.customResource(CRD_CONTEXT).inNamespace(namespace).withName(name).delete()
-            log.info("delete microservice cr succeed|{}", logSuffix)
+        def currentCr = client.customResource(CRD_CONTEXT).inNamespace(namespace).withName(name).get()
+        if (currentCr == null || currentCr.size() == 0) {
+            log.info("no need to delete job cr, skip|{}", logSuffix)
+            return
         }
-        def svcCr = client.services().inNamespace(namespace).withName(name).get()
-        if (svcCr == null) {
-            log.info("no need to delete service, skip|{}", logSuffix)
-        } else {
-            client.services().inNamespace(namespace).withName(name).delete()
-            log.info("delete service succeed|{}", logSuffix)
-        }
-        def ingressCr = client.extensions().ingresses().inNamespace(namespace).withName(name).get()
-        if (ingressCr == null) {
-            log.info("no need to delete ingress, skip|{}", logSuffix)
-        } else {
-            client.extensions().ingresses().inNamespace(namespace).withName(name).delete()
-            log.info("delete ingress succeed|{}", logSuffix)
-        }
+        client.customResource(CRD_CONTEXT).inNamespace(namespace).withName(name).delete()
+        log.info("delete job cr succeed|{}", logSuffix)
     }
 
     private static String getMetaName(String appId, String componentName, String stageId) {

@@ -1,0 +1,25 @@
+apiVersion: core.oam.dev/v1beta1
+kind: ComponentDefinition
+metadata:
+  name: productops.internal.addon.sreworks.io/v1beta1
+  annotations:
+    definition.oam.dev/description: "Default Productops Provider Internal Addon"
+    definition.oam.dev/version: "1.0.0"
+    definition.oam.dev/tags: ""
+spec:
+  workload:
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+  schematic:
+    groovy:
+      files:
+        - kind: COMPONENT
+          name: productops.internal.addon.sreworks.io/v1beta1
+          path: dynamicscripts/DefaultInternalAddonProductopsHandler.groovy
+        - kind: COMPONENT_BUILD
+          name: productops.internal.addon.sreworks.io/v1beta1/build
+          path: dynamicscripts/DefaultBuildInternalAddonProductopsHandler.groovy
+        - kind: COMPONENT_DEPLOY
+          name: productops.internal.addon.sreworks.io/v1beta1/deploy
+          path: dynamicscripts/DefaultDeployInternalAddonProductopsHandler.groovy

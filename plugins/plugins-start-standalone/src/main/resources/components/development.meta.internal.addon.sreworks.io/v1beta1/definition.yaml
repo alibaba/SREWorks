@@ -1,0 +1,25 @@
+apiVersion: core.oam.dev/v1beta1
+kind: ComponentDefinition
+metadata:
+  name: development.meta.internal.addon.sreworks.io/v1beta1
+  annotations:
+    definition.oam.dev/description: "Default Development Meta Internal Addon"
+    definition.oam.dev/version: "1.0.0"
+    definition.oam.dev/tags: ""
+spec:
+  workload:
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+  schematic:
+    groovy:
+      files:
+        - kind: COMPONENT
+          name: development.meta.internal.addon.sreworks.io/v1beta1
+          path: dynamicscripts/DefaultInternalAddonDevelopmentMetaHandler.groovy
+        - kind: COMPONENT_BUILD
+          name: development.meta.internal.addon.sreworks.io/v1beta1/build
+          path: dynamicscripts/DefaultBuildInternalAddonDevelopmentMetaHandler.groovy
+        - kind: COMPONENT_DEPLOY
+          name: development.meta.internal.addon.sreworks.io/v1beta1/deploy
+          path: dynamicscripts/DefaultDeployInternalAddonDevelopmentMetaHandler.groovy

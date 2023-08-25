@@ -1,0 +1,31 @@
+apiVersion: core.oam.dev/v1beta1
+kind: ComponentDefinition
+metadata:
+  name: job.component.sreworks.io/v1beta1
+  annotations:
+    definition.oam.dev/description: "Default Job Chart"
+    definition.oam.dev/version: "1.0.0"
+    definition.oam.dev/tags: ""
+spec:
+  workload:
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+  schematic:
+    groovy:
+      files:
+        - kind: COMPONENT
+          name: job.component.sreworks.io/v1beta1
+          path: dynamicscripts/JobComponentHandler.groovy
+        - kind: COMPONENT_BUILD
+          name: job.component.sreworks.io/v1beta1/build
+          path: dynamicscripts/JobComponentBuildHandler.groovy
+        - kind: COMPONENT_DEPLOY
+          name: job.component.sreworks.io/v1beta1/deploy
+          path: dynamicscripts/JobComponentDeployHandler.groovy
+        - kind: COMPONENT_DESTROY
+          name: job.component.sreworks.io/v1beta1/destroy
+          path: dynamicscripts/JobComponentDestroyHandler.groovy
+        - kind: COMPONENT_WATCH_KUBERNETES_INFORMER
+          name: job.component.sreworks.io/v1beta1/watch
+          path: dynamicscripts/JobComponentWatchKubernetesInformerHandler.groovy

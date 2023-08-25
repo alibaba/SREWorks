@@ -1,0 +1,20 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: TraitDefinition
+metadata:
+  name: topology.spread.constraints.trait.sreworks.io/v1beta1
+  annotations:
+    definition.oam.dev/description: "Topology Spread Constraints"
+    definition.oam.dev/version: "1.0.0"
+spec:
+  appliesToWorkloads:
+    - "*"
+  schematic:
+    groovy:
+      files:
+        - kind: TRAIT
+          path: dynamicscripts/TraitTopologySpreadConstraints.groovy
+          properties:
+            runtime: pre
+            definitionSchema:
+              name: "topology.spread.constraints.trait.sreworks.io/v1beta1"
+              jsonSchema: {}

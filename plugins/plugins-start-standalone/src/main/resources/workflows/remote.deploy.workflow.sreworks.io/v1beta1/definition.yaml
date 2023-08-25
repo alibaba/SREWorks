@@ -1,0 +1,16 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: WorkflowStepDefinition
+metadata:
+  name: remote.deploy.sreworks.io/v1beta1
+  annotations:
+    definition.oam.dev/description: "Remote Deploy Handler"
+    definition.oam.dev/version: "1.0.0"
+spec:
+  appliesToWorkloads:
+    - "*"
+  schematic:
+    groovy:
+      files:
+        - kind: WORKFLOW
+          path: dynamicscripts/WorkflowRemoteDeployHandler.groovy
+          name: remote.deploy.sreworks.io/v1beta1

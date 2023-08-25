@@ -1,0 +1,20 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: TraitDefinition
+metadata:
+  name: system.env.trait.sreworks.io/v1beta1
+  annotations:
+    definition.oam.dev/description: "System Env"
+    definition.oam.dev/version: "1.0.0"
+spec:
+  appliesToWorkloads:
+    - "*"
+  schematic:
+    groovy:
+      files:
+        - kind: TRAIT
+          path: dynamicscripts/TraitSystemEnv.groovy
+          properties:
+            runtime: pre
+            definitionSchema:
+              name: "system.env.trait.sreworks.io/v1beta1"
+              jsonSchema: {}

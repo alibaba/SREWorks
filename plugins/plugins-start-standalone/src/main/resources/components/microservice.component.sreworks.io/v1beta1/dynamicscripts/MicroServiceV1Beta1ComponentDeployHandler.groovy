@@ -42,7 +42,7 @@ import java.nio.file.Paths
  */
 class MicroServiceV1Beta1ComponentDeployHandler implements DeployComponentHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(MicroserviceComponentDeployHandler.class)
+    private static final Logger log = LoggerFactory.getLogger(MicroServiceV1Beta1ComponentDeployHandler.class)
 
     private static final String KEY_COMPONENT_PACKAGE_URL = "appmanager_deploy_component_package"
 
@@ -76,8 +76,8 @@ class MicroServiceV1Beta1ComponentDeployHandler implements DeployComponentHandle
      * CRD Context
      */
     private static final CustomResourceDefinitionContext CRD_CONTEXT = new CustomResourceDefinitionContext.Builder()
-            .withName("microservices.apps.abm.io")
-            .withGroup("apps.abm.io")
+            .withName("microservices.apps.sreworks.io")
+            .withGroup("apps.sreworks.io")
             .withVersion("v1")
             .withPlural("microservices")
             .withScope("Namespaced")

@@ -1118,13 +1118,77 @@ sw_schemas = [{
     },
     "fieldsReq": [{
         "buildIn": True,
-        "field": "id",
+        "field":"architecture",
+        "nullable": True,
+        "alias":"指令集架构",
+        "description":"",
+        "dim":"architecture",
+        "type":"STRING"
+    },{
+        "buildIn": True,
+        "field":"container_runtime_version",
+        "nullable": True,
+        "alias":"容器运行时版本",
+        "description":"",
+        "dim":"container_runtime_version",
+        "type":"STRING"
+    },{
+        "buildIn": True,
+        "field":"cpu",
+        "nullable": True,
+        "alias":"CPU数量",
+        "description":"",
+        "dim":"cpu",
+        "type":"STRING"
+    },{
+        "buildIn": True,
+        "field":"hostname",
         "nullable": False,
-        "alias": "节点ID",
-        "description": "主键",
-        "dim": "id",
-        "type": "STRING"
-    }]
+        "alias":"主机名",
+        "description":"",
+        "dim":"hostname",
+        "type":"STRING"
+    },{
+        "buildIn": True,
+        "field":"id",
+        "nullable": False,
+        "alias":"节点ID",
+        "description":"主键",
+        "dim":"id",
+        "type":"STRING"
+    },{
+        "buildIn": True,
+        "field":"ip",
+        "nullable": True,
+        "alias":"IP",
+        "description":"",
+        "dim":"ip",
+        "type":"STRING"
+    },{
+        "buildIn": True,
+        "field":"memory",
+        "nullable": True,
+        "alias":"内存容量",
+        "description":"",
+        "dim":"memory",
+        "type":"STRING"
+    },{
+        "buildIn": True,
+        "field":"name",
+        "nullable": False,
+        "alias":"名称",
+        "description":"",
+        "dim":"name",
+        "type":"STRING"
+    },{
+        "buildIn": True,
+        "field":"os_image",
+        "nullable": True,
+        "alias":"操作系统镜像版本",
+        "description":"",
+        "dim":"os_image",
+        "type":"STRING"
+    }],
 }, {
     "metaReq": {
         "description": "作业实体",

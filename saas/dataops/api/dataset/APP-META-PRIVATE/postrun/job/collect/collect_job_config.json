@@ -811,4 +811,52 @@
   "varConf": {},
   "notifyConf": null,
   "eventConf": []
+},{
+  "id": 138,
+  "gmtCreate": 1693813785757,
+  "gmtModified": 1693817097075,
+  "creator": "999999999",
+  "operator": "999999999",
+  "appId": "",
+  "name": "oem_cluster_collect",
+  "alias": "集群信息采集(内置)",
+  "tags": ["cluster"],
+  "description": null,
+  "options": null,
+  "triggerType": "cron",
+  "triggerConf": {
+    "cronExpression": "0 0 * * * ? *",
+    "enabled": false
+  },
+  "scheduleType": "parallel",
+  "scheduleConf": {
+    "taskIdList": [{
+      "gmtCreate": 1693812167988,
+      "gmtModified": 1693815385217,
+      "creator": "999999999",
+      "operator": "999999999",
+      "appId": "",
+      "name": "oem_cluster_definition",
+      "alias": "集群定义(内置)",
+      "execTimeout": 30,
+      "execType": "python",
+      "execContent": "# coding: utf-8\n\nimport datetime\nimport json\nimport time\n\nimport requests\n\napi = {\n    \"cluster\": \"http://prod-cluster-clustermanage.sreworks\"\n}\n\n\ndef get_cluster_def():\n    ds = datetime.datetime.now().strftime(\"%Y%m%d\")\n    url = api[\"cluster\"] + \"/cluster/listAll\"\n    r = requests.get(url)\n    ret = r.json().get(\"data\", [])\n    datas = []\n    for item in ret:\n        data = {\n            \"creator\": item[\"creator\"],\n            \"team_id\": item[\"teamid\"],\n            \"last_modifier\": item[\"lastmodifier\"],\n            \"gmt_modified\": item[\"datemodified\"],\n            \"cluster_name\": item[\"name\"],\n            \"name\": item[\"name\"],\n            \"description\": item[\"description\"],\n            \"id\": item[\"id\"],\n            \"gmt_create\": item[\"datecreate\"],\n            \"kubeconfig\": \"\",\n            \"ds\": ds,\n            \"account_id\": \"\",\n        }\n        datas.append(data)\n\n    return datas\n\n\nprint(json.dumps(get_cluster_def()))\n",
+      "execRetryTimes": 0,
+      "execRetryInterval": 0,
+      "varConf": {},
+      "sceneType": "collect",
+      "sceneConf": {
+        "isPushQueue": "false",
+        "syncDw": "true",
+        "id": 6,
+        "type": "entity",
+        "layer": "ods"
+      }
+    }]
+  },
+  "sceneType": "collect",
+  "sceneConf": null,
+  "varConf": {},
+  "notifyConf": null,
+  "eventConf": []
 }]

@@ -1183,11 +1183,27 @@ sw_schemas = [{
         "buildIn": True,
         "field": "id",
         "nullable": False,
-        "alias": "命名空间ID",
+        "alias": "命名空间+集群",
         "description": "主键",
         "dim": "id",
         "type": "STRING"
-    }]
+    },{
+        "buildIn": True,
+        "field": "cluster_id",
+        "nullable": False,
+        "alias": "集群ID",
+        "description": "",
+        "dim": "cluster_id",
+        "type": "LONG",
+    },{
+        "buildIn": True,
+        "field": "namespace",
+        "nullable": False,
+        "alias": "命名空间",
+        "description": "",
+        "dim": "namespace",
+        "type": "STRING",
+    }],
 }, {
     "metaReq": {
         "description": "云服务实体",

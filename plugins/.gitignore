@@ -1,4 +1,6 @@
 *~
 *.iml
 .idea
+.DS_Store
 plugins-start-standalone/target
+plugins-start-standalone/src/main/resources/application-local.properties

@@ -38,7 +38,9 @@ task_dw_model_mapping = {
     "oem_app_alert_instance": "ALERT_INSTANCE",
     "oem_app_incident_instance": "INCIDENT_INSTANCE",
     "oem_app_failure_instance": "FAILURE_INSTANCE",
-    "oem_app_pod_status": "APP_POD_STATUS"
+    "oem_app_pod_status": "APP_POD_STATUS",
+    "oem_cluster_definition": "CLUSTER",
+    "oem_namespace_fetch": "NAMESPACE",
 }
 
 task_metric_mapping = {
@@ -59,6 +61,14 @@ def get_dw_models():
             models[data["name"]] = data["id"]
     return models
 
+def get_dw_entities():
+    r = requests.get(host["warehouse"] + "/entity/meta/getEntities", headers=headers)
+    entities = {}
+    if r.status_code == 200:
+        datas = r.json().get("data", None)
+        for data in datas:
+            entities[data["name"]] = data["id"]
+    return entities
 
 def get_pmdb_metric_id(metric_name, labels):
     if not labels:
@@ -78,6 +88,7 @@ def load_job_configs():
         job_configs = json.load(load_f)
 
     models = get_dw_models()
+    entities = get_dw_entities()
 
     for job_config in job_configs:
         task_list = job_config.get("scheduleConf", {}).get("taskIdList", [])
@@ -93,6 +104,9 @@ def load_job_configs():
                     print(task["name"])
                     print("任务需要同步数仓,但模型信息配置失败")
                     return None
+                elif dw_type == "entity":
+                    dw_id = entities.get(dw_name)
+                    scene_conf["id"] = dw_id
                 else:
                     dw_id = models.get(dw_name)
                     scene_conf["id"] = dw_id

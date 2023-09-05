@@ -41,6 +41,7 @@ task_dw_model_mapping = {
     "oem_app_pod_status": "APP_POD_STATUS",
     "oem_cluster_definition": "CLUSTER",
     "oem_namespace_fetch": "NAMESPACE",
+    "oem_node_fetch": "NODE",
 }
 
 task_metric_mapping = {

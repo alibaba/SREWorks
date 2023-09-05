@@ -826,7 +826,7 @@
   "triggerType":"cron",
   "triggerConf":{
     "cronExpression":"0 0 * * * ? *",
-    "enabled":false
+    "enabled":true
   },
   "scheduleType":"parallel",
   "scheduleConf":{
@@ -876,8 +876,31 @@
         "type":"entity",
         "layer":"ods"
       }
-    }
-    ]},
+    },{
+        "id": 1846,
+        "gmtCreate": 1693886131399,
+        "gmtModified": 1693886131399,
+        "creator": "999999999",
+        "operator": "999999999",
+        "appId": "\"\"",
+        "name": "oem_node_fetch",
+        "alias": "集群节点采集(内置)",
+        "execTimeout": 30,
+        "execType": "python",
+        "execContent": "# coding: utf-8\n\nimport datetime\nimport json\nimport time\nimport yaml\nfrom kubernetes import client, config\n\nimport requests\n\napi = {\n    \"cluster\": \"http://prod-cluster-clustermanage.sreworks\"\n}\n\n\ndef get_nodes():\n    ds = datetime.datetime.now().strftime(\"%Y%m%d\")\n    url = api[\"cluster\"] + \"/cluster/listAll\"\n    r = requests.get(url)\n    ret = r.json().get(\"data\", [])\n    datas = []\n    for item in ret:\n        detail_url = api[\"cluster\"] + \"/cluster/get?id=\" + str(item[\"id\"])\n        dr = requests.get(detail_url)\n        info = dr.json().get(\"data\", {})\n        config.load_kube_config_from_dict(config_dict=yaml.safe_load(info[\"kubeconfig\"]))\n\n        v1 = client.CoreV1Api()\n\n        node_list = v1.list_node(pretty=True)\n        for node in node_list.items:\n            labels = node.metadata.labels\n            \n            ip = \"\"\n            for address in node.status.addresses:\n                if address.type == 'InternalIP':\n                    ip = address.address\n                    break\n\n            data = {\n              \"name\": node.metadata.name,\n              \"hostname\": labels.get('kubernetes.io/hostname', node.metadata.name),\n              \"ds\": ds,\n              \"id\": str(item[\"id\"]) + \"#\" + node.metadata.name,\n              \"os_image\": node.status.node_info.os_image,\n              \"container_runtime_version\": node.status.node_info.container_runtime_version,\n              \"architecture\": node.status.node_info.architecture,\n              \"cpu\": node.status.capacity.get(\"cpu\", \"\"),\n              \"memory\": node.status.capacity.get(\"memory\", \"\"),\n              \"ip\": ip,\n            }\n            datas.append(data)\n\n    return datas\n\n\nprint(json.dumps(get_nodes()))\n",
+        "execRetryTimes": 0,
+        "execRetryInterval": 0,
+        "varConf": {},
+        "sceneType": "collect",
+        "sceneConf": {
+          "isPushQueue": "false",
+          "syncDw": "true",
+          "id": 12,
+          "type": "entity",
+          "layer": "ods"
+        }
+    }]
+  },
   "sceneType":"collect",
   "sceneConf":null,
   "varConf":{},

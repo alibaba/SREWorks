@@ -10,7 +10,7 @@ WORKDIR /root
 COPY --from=build /app/sreworks-job-worker/target/sreworks-job.jar /app/sreworks-job.jar
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && apk add build-base curl bash python3 python3-dev py3-pip
 RUN pip3 config set global.index-url http://mirrors.aliyun.com/pypi/simple && pip3 config set global.trusted-host mirrors.aliyun.com
-RUN pip3 install requests python-dateutil==1.4 --pre gql[aiohttp] "kubernetes>=27.2.0" PyYAML
+RUN pip3 install requests "python-dateutil>=1.4" --pre gql[aiohttp] "kubernetes>=27.2.0" PyYAML
 COPY entrypoint.sh /app/entrypoint.sh
 ENTRYPOINT ["/bin/sh", "/app/entrypoint.sh"]
 

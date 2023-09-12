@@ -1,6 +1,7 @@
 paas/swcli/builtin_package/
 paas/action/test.sh
 
+.test
 .DS_Store
 *.log
 .idea

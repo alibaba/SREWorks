@@ -12,7 +12,7 @@ export JVM_XMX="128m"
 
 # SkyWalking ENV 配置
 export SW_AGENT_NAMESPACE=data
-export SW_AGENT_NAME=pmdb
+export SW_AGENT_NAME=health
 export SW_AGENT_COLLECTOR_BACKEND_SERVICES=${DATA_SKYW_HOST}:${DATA_SKYW_PORT}
 export JAVA_AGENT=-javaagent:/app/skywalking-agent/skywalking-agent.jar
 

@@ -256,17 +256,17 @@ primary:
   ##
   livenessProbe:
     enabled: true
-    initialDelaySeconds: 120
+    initialDelaySeconds: 300
     periodSeconds: 10
-    timeoutSeconds: 1
-    failureThreshold: 3
+    timeoutSeconds: 5
+    failureThreshold: 5
     successThreshold: 1
   readinessProbe:
     enabled: true
-    initialDelaySeconds: 30
+    initialDelaySeconds: 60
     periodSeconds: 10
-    timeoutSeconds: 1
-    failureThreshold: 3
+    timeoutSeconds: 5
+    failureThreshold: 5
     successThreshold: 1
 
   ## MySQL primary custom liveness probe
@@ -540,17 +540,17 @@ secondary:
   ##
   livenessProbe:
     enabled: true
-    initialDelaySeconds: 120
+    initialDelaySeconds: 300
     periodSeconds: 10
-    timeoutSeconds: 1
-    failureThreshold: 3
+    timeoutSeconds: 5
+    failureThreshold: 5
     successThreshold: 1
   readinessProbe:
     enabled: true
-    initialDelaySeconds: 30
+    initialDelaySeconds: 60
     periodSeconds: 10
-    timeoutSeconds: 1
-    failureThreshold: 3
+    timeoutSeconds: 5
+    failureThreshold: 5
     successThreshold: 1
 
   ## MySQL secondary custom liveness probe

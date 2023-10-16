@@ -2,7 +2,7 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 23.5.4+20230321151538140257
+    annotations.appmanager.oam.dev/version: 24.1.0+20231013222235179551
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
     appId: system
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 23.5.4+20230321151538140257
+        annotations.appmanager.oam.dev/version: 24.1.0+20231013222235179551
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -44,13 +44,14 @@ spec:
       replicas: 1
       name: ''
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/system-plugin-aliyun-cluster-plugin-aliyun-cluster:1679411738369
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/system-plugin-aliyun-cluster-plugin-aliyun-cluster:1697235755727
         name: plugin-aliyun-cluster
+      serviceName: ''
       env:
         APPMANAGER_PACKAGE_ACCESS_KEY: '{{ Global.APPMANAGER_PACKAGE_ACCESS_KEY }}'
         APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL: '{{ Global.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL }}'
         APPMANAGER_PACKAGE_ENDPOINT: '{{ Global.APPMANAGER_PACKAGE_ENDPOINT }}'
         APPMANAGER_PACKAGE_SECRET_KEY: '{{ Global.APPMANAGER_PACKAGE_SECRET_KEY }}'
       initContainers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/system-plugin-aliyun-cluster-resource-upload:1679411738369
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/system-plugin-aliyun-cluster-resource-upload:1697235755727
         name: resource-upload

@@ -2,7 +2,7 @@ apiVersion: core.oam.dev/v1alpha2
 kind: Component
 metadata:
   annotations:
-    annotations.appmanager.oam.dev/version: 16.2.5+20230313100300495711
+    annotations.appmanager.oam.dev/version: 16.2.9+20231013224805626094
   labels:
     labels.appmanager.oam.dev/clusterId: PLACEHOLDER_CLUSTER_ID
     appId: cluster
@@ -22,7 +22,7 @@ spec:
       annotations:
         annotations.appmanager.oam.dev/deployAppId: PLACEHOLDER_DEPLOY_APP_ID
         annotations.appmanager.oam.dev/deployComponentId: PLACEHOLDER_DEPLOY_COMPONENT_ID
-        annotations.appmanager.oam.dev/version: 16.2.5+20230313100300495711
+        annotations.appmanager.oam.dev/version: 16.2.9+20231013224805626094
         annotations.appmanager.oam.dev/appInstanceId: PLACEHOLDER_APP_INSTANCE_ID
         annotations.appmanager.oam.dev/appInstanceName: PLACEHOLDER_APP_INSTANCE_NAME
         annotations.appmanager.oam.dev/componentInstanceId: PLACEHOLDER_COMPONENT_INSTANCE_ID
@@ -44,8 +44,9 @@ spec:
       replicas: 1
       name: ''
       containers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/cluster-clustermanage-clustermanage:1678701780593
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/cluster-clustermanage-clustermanage:1697237285661
         name: clustermanage
+      serviceName: ''
       env:
         COOKIE_DOMAIN: '{{ Global.COOKIE_DOMAIN }}'
         DB_PORT: '{{ Global.DB_PORT }}'
@@ -64,7 +65,7 @@ spec:
         AUTHPROXY_ENDPOINT: '{{ Global.AUTHPROXY_ENDPOINT }}'
         DB_PASSWORD: '{{ Global.DB_PASSWORD }}'
       initContainers:
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/cluster-clustermanage-db-migration:1678701780593
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/cluster-clustermanage-db-migration:1697237285661
         name: db-migration
-      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/cluster-clustermanage-init-cluster:1678701780593
+      - image: sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/cluster-clustermanage-init-cluster:1697237285661
         name: init-cluster

@@ -41,7 +41,7 @@
     "source": "INCIDENT",
     "type": "KAFKA",
     "config": {
-      "server": "prod-dataops-kafka.sreworks-dataops:9092",
+        "server": "prod-dataops-kafka.sreworks-dataops:9092",
       "topics": ["sreworks-health-incident-{{incidentDefinitionId}}"]
     }
   }]

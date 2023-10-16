@@ -9,7 +9,7 @@ componentPackages:
     metadata:
       name: microservice-aiops-anomalydetection
       annotations:
-        annotations.appmanager.oam.dev/version: "4.3.0+20230529090310243195"
+        annotations.appmanager.oam.dev/version: "4.3.3+20231013222438339493"
       labels:
         labels.appmanager.oam.dev/appId: "aiops"
         labels.appmanager.oam.dev/componentName: "anomalydetection"
@@ -39,7 +39,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "4.3.0+20230529090310243195"
+            annotations.appmanager.oam.dev/version: "4.3.3+20231013222438339493"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -50,10 +50,10 @@ componentPackages:
           serviceName: ''
           containers:
           - name: "anomalydetection"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-anomalydetection-anomalydetection:1685350990214"
-  packageMd5: d9fe53bc7013400946429daecaf3da00
-  packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"saas/aiops/api/anomalydetection","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"anomalydetection"}],"env":[],"componentConfiguration":"revisionName: K8S_MICROSERVICE|anomalydetection|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 5000\n- name: gateway.trait.abm.io\n  runtime: post\n  spec:\n    path: /aiops/anomalydetection/**\n    authEnabled: false\n    serviceName: ''{{ Global.STAGE_ID }}-aiops-anomalydetection.{{ Global.NAMESPACE_ID }}''\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 4.3.0+20230529090310243195
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-anomalydetection-anomalydetection:1697235878247"
+  packageMd5: 54908c80fb409db055e84d710236b09a
+  packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://atomgit.com/sreworks/SREWorks.git","dockerfileTemplate":"Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"saas/aiops/api/anomalydetection","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"anomalydetection"}],"env":[],"componentConfiguration":"revisionName: K8S_MICROSERVICE|anomalydetection|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 5000\n- name: gateway.trait.abm.io\n  runtime: post\n  spec:\n    path: /aiops/anomalydetection/**\n    authEnabled: false\n    serviceName: ''{{ Global.STAGE_ID }}-aiops-anomalydetection.{{ Global.NAMESPACE_ID }}''\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
+  packageVersion: 4.3.3+20231013222438339493
   relativePath: K8S_MICROSERVICE_anomalydetection.zip
 - componentName: processstrategy
   componentType: K8S_MICROSERVICE
@@ -64,7 +64,7 @@ componentPackages:
     metadata:
       name: microservice-aiops-processstrategy
       annotations:
-        annotations.appmanager.oam.dev/version: "4.3.0+20230529090310461844"
+        annotations.appmanager.oam.dev/version: "4.3.3+20231013222438260381"
       labels:
         labels.appmanager.oam.dev/appId: "aiops"
         labels.appmanager.oam.dev/componentName: "processstrategy"
@@ -94,7 +94,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "4.3.0+20230529090310461844"
+            annotations.appmanager.oam.dev/version: "4.3.3+20231013222438260381"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -109,10 +109,10 @@ componentPackages:
             AISP_URL: "{{ Global.AISP_URL }}"
           containers:
           - name: "processstrategy"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-processstrategy-processstrategy:1685350990216"
-  packageMd5: be5700213ea97e3f352250c7ebb4bf2f
-  packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"saas/aiops/api/aisp-process-strategy","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"processstrategy"}],"env":["TASKPLATFORM_QUERY_URL","TASKPLATFORM_SUBMIT_URL","AISP_URL"],"componentConfiguration":"revisionName: K8S_MICROSERVICE|processstrategy|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 5000\n- name: gateway.trait.abm.io\n  runtime: post\n  spec:\n    path: /aiops/processstrategy/**\n    authEnabled: false\n    serviceName: ''{{ Global.STAGE_ID }}-aiops-processstrategy.{{ Global.NAMESPACE_ID }}''\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n- name: Global.TASKPLATFORM_QUERY_URL\n  value: http://prod-job-job-master.sreworks/jobInstance/get\n- name: Global.TASKPLATFORM_SUBMIT_URL\n  value: http://prod-job-job-master.sreworks/job/start\n- name: Global.AISP_URL\n  value: http://prod-aiops-aisp\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 4.3.0+20230529090310461844
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-processstrategy-processstrategy:1697235878248"
+  packageMd5: 49262d3993b318c4ced26fc5f689b7d0
+  packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://atomgit.com/sreworks/SREWorks.git","dockerfileTemplate":"Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"saas/aiops/api/aisp-process-strategy","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"processstrategy"}],"env":["TASKPLATFORM_QUERY_URL","TASKPLATFORM_SUBMIT_URL","AISP_URL"],"componentConfiguration":"revisionName: K8S_MICROSERVICE|processstrategy|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 5000\n- name: gateway.trait.abm.io\n  runtime: post\n  spec:\n    path: /aiops/processstrategy/**\n    authEnabled: false\n    serviceName: ''{{ Global.STAGE_ID }}-aiops-processstrategy.{{ Global.NAMESPACE_ID }}''\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n- name: Global.TASKPLATFORM_QUERY_URL\n  value: http://prod-job-job-master.sreworks/jobInstance/get\n- name: Global.TASKPLATFORM_SUBMIT_URL\n  value: http://prod-job-job-master.sreworks/job/start\n- name: Global.AISP_URL\n  value: http://prod-aiops-aisp\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
+  packageVersion: 4.3.3+20231013222438260381
   relativePath: K8S_MICROSERVICE_processstrategy.zip
 - componentName: aisp
   componentType: K8S_MICROSERVICE
@@ -123,7 +123,7 @@ componentPackages:
     metadata:
       name: microservice-aiops-aisp
       annotations:
-        annotations.appmanager.oam.dev/version: "4.3.0+20230529090310870370"
+        annotations.appmanager.oam.dev/version: "4.3.3+20231013222438727339"
       labels:
         labels.appmanager.oam.dev/appId: "aiops"
         labels.appmanager.oam.dev/componentName: "aisp"
@@ -153,7 +153,7 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "4.3.0+20230529090310870370"
+            annotations.appmanager.oam.dev/version: "4.3.3+20231013222438727339"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
@@ -174,15 +174,15 @@ componentPackages:
             MINIO_SECRET_KEY: "{{ Global.MINIO_SECRET_KEY }}"
           initContainers:
           - name: "sreworks-migration"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-aisp-sreworks-migration:1685350990216"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-aisp-sreworks-migration:1697235878250"
           - name: "log-clustering-init"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-aisp-log-clustering-init:1685350990216"
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-aisp-log-clustering-init:1697235878250"
           containers:
           - name: "aisp"
-            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-aisp-aisp:1685350990216"
-  packageMd5: df3cf9fdbe8382704cae50851892360b
-  packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile_sreworks","ciAccount":"public","ciToken":"public","repoPath":"saas/aiops/api/aisp","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"aisp"}],"env":["DB_PORT","DB_USER","DB_PASSWORD","DB_NAME","CACHE_TYPE","DB_HOST","MINIO_ENDPOINT","MINIO_ACCESS_KEY","MINIO_SECRET_KEY"],"initContainers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile-sreworks-migration","ciAccount":"public","ciToken":"public","repoPath":"saas/aiops/api/aisp","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"sreworks-migration"},{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://code.aliyun.com/sreworks_public/mirror.git","dockerfileTemplate":"Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"saas/aiops/api/log-clustering","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"log-clustering-init"}],"componentConfiguration":"revisionName: K8S_MICROSERVICE|aisp|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 7001\n- name: gateway.trait.abm.io\n  runtime: post\n  spec:\n    path: /aiops/aisp/**\n    authEnabled: false\n    serviceName: ''{{ Global.STAGE_ID }}-aiops-aisp.{{ Global.NAMESPACE_ID }}''\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n- name: Global.DB_PORT\n  value: ''3306''\n- name: Global.DB_USER\n  value: root\n- name: Global.DB_PASSWORD\n  value: cb56b5is5e21_c359b42223\n- name: Global.DB_NAME\n  value: aiops_aisp\n- name: Global.CACHE_TYPE\n  value: local\n- name: Global.DB_HOST\n  value: ''{{Global.STAGE_ID}}-dataops-mysql.sreworks-dataops''\n- name: Global.MINIO_ENDPOINT\n  value: sreworks-minio.sreworks:9000\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
-  packageVersion: 4.3.0+20230529090310870370
+            image: "sreworks-registry.cn-beijing.cr.aliyuncs.com/hub/aiops-aisp-aisp:1697235878250"
+  packageMd5: f96dff3608b3ca4056d882d1460cebcf
+  packageOptions: '{"kind":"Deployment","containers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://atomgit.com/sreworks/SREWorks.git","dockerfileTemplate":"Dockerfile_sreworks","ciAccount":"public","ciToken":"public","repoPath":"saas/aiops/api/aisp","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"aisp"}],"env":["DB_PORT","DB_USER","DB_PASSWORD","DB_NAME","CACHE_TYPE","DB_HOST","MINIO_ENDPOINT","MINIO_ACCESS_KEY","MINIO_SECRET_KEY"],"initContainers":[{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://atomgit.com/sreworks/SREWorks.git","dockerfileTemplate":"Dockerfile-sreworks-migration","ciAccount":"public","ciToken":"public","repoPath":"saas/aiops/api/aisp","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"sreworks-migration"},{"build":{"args":{},"dockerfileTemplateArgs":{},"repo":"https://atomgit.com/sreworks/SREWorks.git","dockerfileTemplate":"Dockerfile","ciAccount":"public","ciToken":"public","repoPath":"saas/aiops/api/log-clustering","branch":"master","imagePush":true,"imagePushRegistry":"sreworks-registry.cn-beijing.cr.aliyuncs.com/hub"},"name":"log-clustering-init"}],"componentConfiguration":"revisionName: K8S_MICROSERVICE|aisp|_\ntraits:\n- name: service.trait.abm.io\n  runtime: post\n  spec:\n    ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 7001\n- name: gateway.trait.abm.io\n  runtime: post\n  spec:\n    path: /aiops/aisp/**\n    authEnabled: false\n    serviceName: ''{{ Global.STAGE_ID }}-aiops-aisp.{{ Global.NAMESPACE_ID }}''\nscopes:\n- scopeRef:\n    apiVersion: core.oam.dev/v1alpha2\n    kind: Namespace\n    spec:\n      autoCreate: true\ndependencies:\n- component: RESOURCE_ADDON|system-env@system-env\nparameterValues:\n- name: REPLICAS\n  value: 1\n  toFieldPaths:\n  - spec.replicas\n- name: Global.DB_PORT\n  value: ''3306''\n- name: Global.DB_USER\n  value: root\n- name: Global.DB_PASSWORD\n  value: cb56b5is5e21_c359b42223\n- name: Global.DB_NAME\n  value: aiops_aisp\n- name: Global.CACHE_TYPE\n  value: local\n- name: Global.DB_HOST\n  value: ''{{Global.STAGE_ID}}-dataops-mysql.sreworks-dataops''\n- name: Global.MINIO_ENDPOINT\n  value: sreworks-minio.sreworks:9000\n","binderParameterValues":[],"binderTraits":[],"binderDependencies":[]}'
+  packageVersion: 4.3.3+20231013222438727339
   relativePath: K8S_MICROSERVICE_aisp.zip
 - componentName: productopsv2
   componentType: INTERNAL_ADDON
@@ -193,7 +193,7 @@ componentPackages:
     metadata:
       name: microservice-aiops-productopsv2
       annotations:
-        annotations.appmanager.oam.dev/version: "1.1.4+20230529090310797437"
+        annotations.appmanager.oam.dev/version: "1.1.5+20231013222438284027"
       labels:
         labels.appmanager.oam.dev/appId: "aiops"
         labels.appmanager.oam.dev/componentName: "productopsv2"
@@ -223,15 +223,15 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "1.1.4+20230529090310797437"
+            annotations.appmanager.oam.dev/version: "1.1.5+20231013222438284027"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec:
           targetEndpoint: ''
-  packageMd5: 5c1e3dd4818c790ac8429116dca8e588
+  packageMd5: 8c656b6dc7fbbfd77765ec1cccb4cd5e
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"componentConfiguration":"clusterId: ''''\ndataInputs: []\ndataOutputs: []\ndependencies: []\nnamespaceId: ''''\nparameterValues: []\nrevisionName: INTERNAL_ADDON|productopsv2|_\nscopes: []\nstageId: ''''\ntraits: []\n","isDevelop":true,"binderTraits":[]}'
-  packageVersion: 1.1.4+20230529090310797437
+  packageVersion: 1.1.5+20231013222438284027
   relativePath: INTERNAL_ADDON_productopsv2.zip
 - componentName: system-env@system-env
   componentType: RESOURCE_ADDON
@@ -274,9 +274,9 @@ componentPackages:
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec: {}
-  packageMd5: 5f9c1ed1f4afc74c5519dff1bfca5e97
+  packageMd5: a1d06cb9bab4639b018e400a4ef948d6
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"componentConfiguration":"clusterId: ''''\ndataInputs: []\ndataOutputs:\n- fieldPath: ''{{ spec.env.DB_HOST }}''\n  name: Global.DB_HOST\n- fieldPath: ''{{ spec.env.DB_PASSWORD }}''\n  name: Global.DB_PASSWORD\n- fieldPath: ''{{ spec.env.DB_PORT }}''\n  name: Global.DB_PORT\n- fieldPath: ''{{ spec.env.DB_USER }}''\n  name: Global.DB_USER\n- fieldPath: ''{{ spec.env.APPMANAGER_ACCESS_ID }}''\n  name: Global.APPMANAGER_USERNAME\n- fieldPath: ''{{ spec.env.APPMANAGER_ACCESS_SECRET }}''\n  name: Global.APPMANAGER_PASSWORD\n- fieldPath: ''{{ spec.env.APPMANAGER_CLIENT_ID }}''\n  name: Global.APPMANAGER_CLIENT_ID\n- fieldPath: ''{{ spec.env.APPMANAGER_CLIENT_SECRET }}''\n  name: Global.APPMANAGER_CLIENT_SECRET\n- fieldPath: ''{{ spec.env.COOKIE_DOMAIN }}''\n  name: Global.COOKIE_DOMAIN\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ACCESS_KEY }}''\n  name: Global.APPMANAGER_PACKAGE_ACCESS_KEY\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_SECRET_KEY }}''\n  name: Global.APPMANAGER_PACKAGE_SECRET_KEY\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL }}''\n  name: Global.APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL\n- fieldPath: ''{{ spec.env.APPMANAGER_PACKAGE_ENDPOINT }}''\n  name: Global.APPMANAGER_PACKAGE_ENDPOINT\n- fieldPath: ''{{ spec.env.STORAGE_CLASS }}''\n  name: Global.STORAGE_CLASS\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_CLIENT_ID }}''\n  name: Global.ACCOUNT_SUPER_CLIENT_ID\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_CLIENT_SECRET }}''\n  name: Global.ACCOUNT_SUPER_CLIENT_SECRET\n- fieldPath: ''{{ spec.env.DATA_ES_PASSWORD }}''\n  name: Global.DATA_ES_PASSWORD\n- fieldPath: ''{{ spec.env.DATA_ES_USER }}''\n  name: Global.DATA_ES_USER\n- fieldPath: ''{{ spec.env.DATA_ES_HOST }}''\n  name: Global.DATA_ES_HOST\n- fieldPath: ''{{ spec.env.DATA_ES_PORT }}''\n  name: Global.DATA_ES_PORT\n- fieldPath: ''{{ spec.env.DATA_PROM_HOST }}''\n  name: Global.DATA_PROM_HOST\n- fieldPath: ''{{ spec.env.DATA_PROM_PORT }}''\n  name: Global.DATA_PROM_PORT\n- fieldPath: ''{{ spec.env.DATA_DB_PORT }}''\n  name: Global.DATA_DB_PORT\n- fieldPath: ''{{ spec.env.DATA_DB_HOST }}''\n  name: Global.DATA_DB_HOST\n- fieldPath: ''{{ spec.env.DATA_DB_USER }}''\n  name: Global.DATA_DB_USER\n- fieldPath: ''{{ spec.env.DATA_DB_PASSWORD }}''\n  name: Global.DATA_DB_PASSWORD\n- fieldPath: ''{{ spec.env.KAFKA_ENDPOINT }}''\n  name: Global.KAFKA_ENDPOINT\n- fieldPath: ''{{ spec.env.MINIO_ENDPOINT }}''\n  name: Global.MINIO_ENDPOINT\n- fieldPath: ''{{ spec.env.MINIO_ACCESS_KEY }}''\n  name: Global.MINIO_ACCESS_KEY\n- fieldPath: ''{{ spec.env.MINIO_SECRET_KEY }}''\n  name: Global.MINIO_SECRET_KEY\n- fieldPath: ''{{ spec.env.HOME_URL }}''\n  name: Global.HOME_URL\n- fieldPath: ''{{ spec.env.REDIS_ENDPOINT }}''\n  name: Global.REDIS_ENDPOINT\n- fieldPath: ''{{ spec.env.APPMANAGER_REDIS_PORT }}''\n  name: Global.APPMANAGER_REDIS_PORT\n- fieldPath: ''{{ spec.env.REDIS_PASSWORD }}''\n  name: Global.REDIS_PASSWORD\n- fieldPath: ''{{ spec.env.APPMANAGER_JWT_SECRET_KEY }}''\n  name: Global.APPMANAGER_JWT_SECRET_KEY\n- fieldPath: ''{{ spec.env.PLATFORM_NAME }}''\n  name: Global.PLATFORM_NAME\n- fieldPath: ''{{ spec.env.PLATFORM_LOGO }}''\n  name: Global.PLATFORM_LOGO\n- fieldPath: ''{{ spec.env.K8S_NAMESPACE }}''\n  name: Global.K8S_NAMESPACE\n- fieldPath: ''{{ spec.env.ENDPOINT_PAAS_MINIO }}''\n  name: Global.ENDPOINT_PAAS_MINIO\n- fieldPath: ''{{ spec.env.ZOOKEEPER_ENDPOINT }}''\n  name: Global.ZOOKEEPER_ENDPOINT\n- fieldPath: ''{{ spec.env.ACCOUNT_SUPER_SECRET_KEY }}''\n  name: Global.ACCOUNT_SUPER_SECRET_KEY\n- fieldPath: ''{{ spec.env.ADMIN_INIT_PASSWORD }}''\n  name: Global.ADMIN_INIT_PASSWORD\ndependencies: []\nnamespaceId: ''''\nparameterValues:\n- name: keys\n  toFieldPaths:\n  - spec.keys\n  value:\n  - DB_HOST\n  - DB_PASSWORD\n  - DB_PORT\n  - DB_USER\n  - APPMANAGER_ACCESS_ID\n  - APPMANAGER_ACCESS_SECRET\n  - APPMANAGER_CLIENT_ID\n  - APPMANAGER_CLIENT_SECRET\n  - COOKIE_DOMAIN\n  - APPMANAGER_PACKAGE_ACCESS_KEY\n  - APPMANAGER_PACKAGE_SECRET_KEY\n  - APPMANAGER_PACKAGE_ENDPOINT_PROTOCOL\n  - APPMANAGER_PACKAGE_ENDPOINT\n  - STORAGE_CLASS\n  - ACCOUNT_SUPER_CLIENT_ID\n  - ACCOUNT_SUPER_CLIENT_SECRET\n  - DATA_ES_PASSWORD\n  - DATA_ES_USER\n  - DATA_ES_HOST\n  - DATA_ES_PORT\n  - DATA_PROM_HOST\n  - DATA_PROM_PORT\n  - DATA_DB_HOST\n  - DATA_DB_PORT\n  - DATA_DB_USER\n  - DATA_DB_PASSWORD\n  - KAFKA_ENDPOINT\n  - MINIO_ENDPOINT\n  - MINIO_ACCESS_KEY\n  - MINIO_SECRET_KEY\n  - HOME_URL\n  - REDIS_ENDPOINT\n  - APPMANAGER_REDIS_PORT\n  - REDIS_PASSWORD\n  - APPMANAGER_JWT_SECRET_KEY\n  - PLATFORM_NAME\n  - PLATFORM_LOGO\n  - K8S_NAMESPACE\n  - ENDPOINT_PAAS_MINIO\n  - ZOOKEEPER_ENDPOINT\n  - ACCOUNT_SUPER_SECRET_KEY\n  - ADMIN_INIT_PASSWORD\nrevisionName: RESOURCE_ADDON|system-env@system-env|1.0\nscopes: []\nstageId: ''''\ntraits: []\n","binderTraits":[]}'
-  packageVersion: 1.1.3+20230529090310216297
+  packageVersion: 1.1.4+20231013222438384656
   relativePath: RESOURCE_ADDON_system-env@system-env.zip
 - componentName: developmentmeta
   componentType: INTERNAL_ADDON
@@ -287,7 +287,7 @@ componentPackages:
     metadata:
       name: internal-addon-aiops-developmentmeta
       annotations:
-        annotations.appmanager.oam.dev/version: "1.1.4+20230529090310655682"
+        annotations.appmanager.oam.dev/version: "1.1.5+20231013222438706950"
       labels:
         labels.appmanager.oam.dev/appId: "aiops"
         labels.appmanager.oam.dev/componentName: "developmentmeta"
@@ -317,14 +317,14 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "1.1.4+20230529090310655682"
+            annotations.appmanager.oam.dev/version: "1.1.5+20231013222438706950"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec: {}
-  packageMd5: b869688d2d26700b8a4d23a829bb8a01
+  packageMd5: 31f7a1d38dee9ec0467bd04c45111c58
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
-  packageVersion: 1.1.4+20230529090310655682
+  packageVersion: 1.1.5+20231013222438706950
   relativePath: INTERNAL_ADDON_developmentmeta.zip
 - componentName: appmeta
   componentType: INTERNAL_ADDON
@@ -335,7 +335,7 @@ componentPackages:
     metadata:
       name: internal-addon-aiops-appmeta
       annotations:
-        annotations.appmanager.oam.dev/version: "1.1.4+20230529090310217215"
+        annotations.appmanager.oam.dev/version: "1.1.5+20231013222438887887"
       labels:
         labels.appmanager.oam.dev/appId: "aiops"
         labels.appmanager.oam.dev/componentName: "appmeta"
@@ -365,19 +365,19 @@ componentPackages:
           annotations:
             annotations.appmanager.oam.dev/deployAppId: "PLACEHOLDER_DEPLOY_APP_ID"
             annotations.appmanager.oam.dev/deployComponentId: "PLACEHOLDER_DEPLOY_COMPONENT_ID"
-            annotations.appmanager.oam.dev/version: "1.1.4+20230529090310217215"
+            annotations.appmanager.oam.dev/version: "1.1.5+20231013222438887887"
             annotations.appmanager.oam.dev/appInstanceId: "PLACEHOLDER_APP_INSTANCE_ID"
             annotations.appmanager.oam.dev/appInstanceName: "PLACEHOLDER_APP_INSTANCE_NAME"
             annotations.appmanager.oam.dev/componentInstanceId: "PLACEHOLDER_COMPONENT_INSTANCE_ID"
         spec:
           overwriteIsDevelopment: false
           overwriteBuiltIn: false
-  packageMd5: a27762a1c9763f27dd4e9cb918ce75d0
+  packageMd5: dd41d52db8da3404c55d147a14d94e23
   packageOptions: '{"binderParameterValues":[],"binderDependencies":[],"binderTraits":[]}'
-  packageVersion: 1.1.4+20230529090310217215
+  packageVersion: 1.1.5+20231013222438887887
   relativePath: INTERNAL_ADDON_appmeta.zip
 packageCreator: '999999999'
-packageVersion: 1.0.6+20230529100454363354
+packageVersion: 1.0.7+20231013224310517509
 tags:
 - release=sreworks/x86_64
 - on-sale

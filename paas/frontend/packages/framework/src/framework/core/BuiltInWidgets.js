@@ -7,17 +7,23 @@ import { SRE_builtInWidgets, SRE_builtInWidgetMetaMapping } from '@sreworks/widg
 let builtInWidgets = {}
 let builtInWidgetMetaMapping = {}
 //扫描内置挂件包,生成内置挂件映射 todo----暂时未将@sreworks/widgets 纳入
-const widgetsContext = require.context('./', true, /^\.\/widgets\/((?!\/)[\s\S])+\/index\.js$/)
+// const widgetsContext = require.context('./', true, /^\.\/widgets\/((?!\/)[\s\S])+\/index\.js$/)
+const widgetsContext = require.context('./widgets/', true, /index\.js$/)
 widgetsContext.keys().forEach((key) => {
   //获取每个挂件包,以包名为key注册到内置组件映射挂件对象上
-  let widgetName = key.split('/')[2]
+  // let widgetName = key.split('/')[2]
+  let reg = new RegExp('index.js', 'g')
+  let widgetName = key.split('/')[1].replace(reg, '')
   builtInWidgets[widgetName] = widgetsContext(key)
 })
 //扫描内置挂件定义元数据,生成内置挂件列表 todo----暂时未将@sreworks/widgets 纳入
-const widgetMetasContext = require.context('./', true, /^\.\/widgets\/((?!\/)[\s\S])+\/meta\.js$/)
+// const widgetMetasContext = require.context('./', true, /^\.\/widgets\/((?!\/)[\s\S])+\/meta\.js$/)
+const widgetMetasContext = require.context('./widgets/', true, /meta\.js$/)
 widgetMetasContext.keys().forEach((key) => {
   //获取每个挂件包下的meta定义,如果未定义type以包名为type
-  let widgetName = key.split('/')[2]
+  // let widgetName = key.split('/')[2]
+  let reg = new RegExp('meta.js', 'g')
+  let widgetName = key.split('/')[1].replace(reg, '')
   const meta = widgetMetasContext(key)
   if (!meta.type) {
     meta.type = widgetName

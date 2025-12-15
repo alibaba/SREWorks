@@ -89,7 +89,7 @@ class SRESearch extends Component {
   }
   handleClickOutside = (evt) => {
     const { hotKeyWordsVisible } = this.state
-    const area = ReactDOM.findDomNode(this.currentRef.current)
+    const area = ReactDOM.findDOMNode(this.currentRef.current)
     if (!area.contains(evt.target) && hotKeyWordsVisible) {
       this.navType = ''
       this.setState({
